@@ -1,8 +1,71 @@
 ---
 title: "@arkenv/nuxt"
-description: Nuxt integration for ArkEnv.
+description: Nuxt module and client/server environment entries.
 ---
 
-Stub reference for the Nuxt module and runtime config validation.
+`@arkenv/nuxt` registers a Nuxt module and provides `arkenv()` helpers that respect `NUXT_PUBLIC_` boundaries.
 
-> Content TBD — flat Section leaf under a Separator (URL depth n=1), not a Nested Folder.
+## Install
+
+```package-install
+pnpm add @arkenv/core @arkenv/nuxt arktype
+```
+
+Or with Standard Schema:
+
+```package-install
+pnpm add @arkenv/standard @arkenv/nuxt zod
+```
+
+## Subpaths
+
+| Subpath                         | Role                                                     |
+| ------------------------------- | -------------------------------------------------------- |
+| `.`                             | Runtime `arkenv` for flat layouts                        |
+| `./server`                      | Server-only entry                                        |
+| `./client`                      | Client entry                                             |
+| `./module`                      | Nuxt module (`modules: ["@arkenv/nuxt/module"]`)         |
+| `./config`                      | `setupArkEnv` and config types                           |
+| `./standard` and `./standard/*` | Standard Schema variants (including `./standard/module`) |
+
+## Module setup
+
+```ts title="./nuxt.config.ts"
+export default defineNuxtConfig({
+  modules: ["@arkenv/nuxt/module"],
+  arkenv: {
+    layout: "flat",
+  },
+});
+```
+
+### Module options (`arkenv` in `nuxt.config`)
+
+| Option                | Default  | Meaning                        |
+| --------------------- | -------- | ------------------------------ |
+| `validate`            | `true`   | Validate during Nuxt build/dev |
+| `layout`              | `"flat"` | `"flat"` or `"strict"`         |
+| `schemaPath`          | auto     | Schema entry path              |
+| `logger` / `logLevel` | (none)   | Logging controls               |
+
+The schema module is the surface. Nuxt leaves `env.gen.ts` to Next.js.
+
+## Flat schema
+
+```ts title="./env.ts"
+import arkenv from "@arkenv/nuxt";
+
+export const env = arkenv({
+  DATABASE_URL: "string",
+  NUXT_PUBLIC_API_URL: "string",
+});
+```
+
+## Strict schema
+
+Use `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. Shared and client schemas can auto-merge via Nuxt virtual aliases when you omit `extends`. See [Client vs. server](/docs/validating-environment-variables).
+
+## Related
+
+- [Framework guide](/docs/guides/frameworks/nuxt)
+- [`@arkenv/core`](/docs/reference/core)

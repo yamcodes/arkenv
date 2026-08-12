@@ -81,6 +81,11 @@ const config = {
 				permanent: true,
 			},
 			{
+				source: "/docs/core-concepts/morphs",
+				destination: "/docs/core-concepts/transforms",
+				permanent: true,
+			},
+			{
 				source: "/docs/arkenv/keywords",
 				destination: "/docs/reference/keywords",
 				permanent: true,
@@ -247,10 +252,9 @@ const config = {
 				permanent: true,
 			},
 			{
-				// `--json` / `--agent` are global CLI flags; land on the Terminal hub.
-				// `init` documents them in detail once the API reference content lands.
+				// `--json` / `--agent` are global CLI flags; documented on init.
 				source: "/docs/cli/machine-readable-output",
-				destination: "/docs/reference",
+				destination: "/docs/reference/init",
 				permanent: true,
 			},
 			{

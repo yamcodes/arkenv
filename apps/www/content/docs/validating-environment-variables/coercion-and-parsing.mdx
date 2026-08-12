@@ -49,7 +49,7 @@ env.DEBUG;
 // ^?
 ```
 
-Need a wider truthy set? Normalize with a morph (ArkType) or the validator's own transform (Zod/Valibot), or keep the field as `string` and map it in application code.
+Need a wider truthy set? Normalize with a [transform](/docs/core-concepts/transforms) (ArkType morph or Zod/Valibot `.transform`), or keep the field as `string` and map it in application code.
 
 ## Arrays
 
@@ -119,29 +119,52 @@ env.DATABASE;
 // ^?
 ```
 
-## Morphs (ArkType)
+## Transforms
 
-Custom transforms with `@arkenv/core` use ArkType `.pipe` via `type()`. Zod and Valibot use their own `.transform` / pipe APIs on the field schema instead.
+Custom transforms reshape values during validation. Both engines support them; each library has its own API name (ArkType [morph](https://arktype.io/docs/morphs), Zod `.transform`, Valibot pipe/transform).
 
-```ts title="./env.ts" twoslash
-import arkenv, { type } from "@arkenv/core";
+<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
+  <Tab value="ArkType (@arkenv/core)">
+    ```ts title="./env.ts" twoslash
+    import arkenv, { type } from "@arkenv/core";
 
-export const env = arkenv(
-  {
-    BUILD_ID: type("string").pipe((value) => value.trim().toUpperCase()),
-  },
-  { env: { BUILD_ID: "  abc  " } },
-);
+    export const env = arkenv(
+    	{
+    		BUILD_ID: type("string").pipe((value) => value.trim().toUpperCase()),
+    	},
+    	{ env: { BUILD_ID: "  abc  " } },
+    );
 
-env.BUILD_ID;
-// ^?
-```
+    env.BUILD_ID;
+    // ^?
+    ```
+  </Tab>
 
-ArkEnv's built-in coercion still handles the common string-to-number and string-to-boolean cases before ArkType morphs run.
+  <Tab value="Zod (@arkenv/standard)">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
 
-## Standard Schema coercion (Zod, Valibot, etc.)
+    export const env = arkenv(
+    	{
+    		BUILD_ID: z
+    			.string()
+    			.transform((value) => value.trim().toUpperCase()),
+    	},
+    	{ env: { BUILD_ID: "  abc  " } },
+    );
 
-[`@arkenv/standard`](/docs/reference/standard) coerces when the validator exposes JSON Schema that ArkEnv can introspect. Support includes Zod (v4.2+), Valibot (v1.2+ with `@valibot/to-json-schema`), Zod Mini, VineJS (v4.3+), and other libraries on the [Standard JSON Schema](https://standardschema.dev/json-schema#what-schema-libraries-support-this-spec) list.
+    env.BUILD_ID;
+    // ^?
+    ```
+  </Tab>
+</Tabs>
+
+ArkEnv's built-in coercion still handles the common string-to-number and string-to-boolean cases before schema transforms run. See [Transforms](/docs/core-concepts/transforms).
+
+## Coercion with Standard Schema validators
+
+The same `coerce` option works with `@arkenv/standard` when each field is [Standard JSON Schema v1](https://standardschema.dev/json-schema) — not merely Standard Schema. Those specs are orthogonal. Zod 4.2+, VineJS 4.3+, Valibot with `@valibot/to-json-schema`, Zod Mini, and other libraries on the [compatible list](https://standardschema.dev/json-schema#what-schema-libraries-support-this-spec) qualify.
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/standard";
@@ -175,7 +198,7 @@ env.PORT;
 // ^?
 ```
 
-With `coerce: false`, a schema of `"number"` rejects `"3000"` unless you morph it yourself.
+With `coerce: false`, a schema of `"number"` rejects `"3000"` unless you transform it yourself.
 
 ## Next steps
 
