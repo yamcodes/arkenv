@@ -11,6 +11,7 @@
 
 import { execSync } from "node:child_process";
 import { argv, env } from "node:process";
+import { normalizeMdxCodeIndent } from "./normalize-mdx-code-indent.js";
 import { unescapeMdxMarkers } from "./unescape-mdx-markers.js";
 
 const args = argv.slice(2);
@@ -36,6 +37,11 @@ execSync("pnpm run fix:mdx", { stdio: "inherit" });
 // Changesets' intentional escapes are not corrupted.
 console.log("Unescaping MDX markers...");
 unescapeMdxMarkers(process.cwd());
+
+// Normalize fenced code indentation to two spaces (leading tabs → 2 spaces).
+// Keeps docs, Twoslash sources, and LLM markdown copy-paste consistent.
+console.log("Normalizing MDX code fence indentation...");
+normalizeMdxCodeIndent(process.cwd());
 
 // Conditionally run manypkg fix
 if (!skipManypkg) {
