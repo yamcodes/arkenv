@@ -8,7 +8,7 @@ Calling `arkenv({ ... })` defines the schema and parses the current environment 
 ## Shared `type()` definition
 
 ```ts title="./env-schema.ts" twoslash
-import { type } from "@arkenv/core";
+import arkenv, { type } from "@arkenv/core";
 
 export const Env = type({
 	HOST: "string.host = 'localhost'",
@@ -16,12 +16,8 @@ export const Env = type({
 	VITE_API_URL: "string",
 	DATABASE_URL: "string",
 });
-```
 
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/core";
-import { Env } from "./env-schema";
-
+// Reuse the same compiled schema in every runtime
 export const env = arkenv(Env);
 ```
 
