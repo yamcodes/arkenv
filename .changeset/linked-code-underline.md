@@ -2,4 +2,14 @@
 "@arkenv/fumadocs-ui": patch
 ---
 
-Fix link underlines when a docs link includes inline code (code-only or mixed with text). Use a continuous `text-decoration` underline so the line runs through plain text and inside the code chip at the same baseline, instead of a `border-bottom` that the chip background covers.
+#### Fix continuous underlines for docs links that include inline code
+
+Links that wrap only a code chip or mix plain text with code now keep one continuous underline through the text and inside the code chip, instead of losing the line under the chip background.
+
+Affected markdown patterns:
+
+```md
+[`number.port`](/docs/reference/keywords)
+
+[see the `number.port` keyword](/docs/reference/keywords)
+```
