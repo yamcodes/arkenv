@@ -33,7 +33,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 	return (
 		<html
 			lang="en"
-			className={`${GeistSans.className} ${GeistSans.variable} ${GeistMono.variable} ${GeistPixelGrid.variable}`}
+			className={`dark ${GeistSans.className} ${GeistSans.variable} ${GeistMono.variable} ${GeistPixelGrid.variable}`}
 			suppressHydrationWarning
 			data-scroll-behavior="smooth"
 		>

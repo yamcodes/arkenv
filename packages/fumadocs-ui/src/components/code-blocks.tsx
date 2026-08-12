@@ -86,7 +86,10 @@ export function Pre(props: ComponentProps<"pre">) {
 	return (
 		<pre
 			{...props}
-			className={cn("min-w-full w-max *:flex *:flex-col", props.className)}
+			className={cn(
+				"min-w-full w-max *:flex *:flex-col [tab-size:2]",
+				props.className,
+			)}
 		>
 			{props.children}
 		</pre>

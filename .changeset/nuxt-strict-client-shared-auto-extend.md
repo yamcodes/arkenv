@@ -15,7 +15,7 @@ Usage:
 import arkenv from "@arkenv/nuxt/client";
 
 export const env = arkenv({
-	NUXT_PUBLIC_API_URL: "string",
+  NUXT_PUBLIC_API_URL: "string",
 });
 ```
 
