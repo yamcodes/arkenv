@@ -6,13 +6,14 @@ description: Environment variables are auto-morphed into typesafe numbers, boole
 Traditionally, environment variables are always strings by default. ArkEnv **coerces** these strings into their target types based on your schema, so you only have to think about the types you want.
 
 :::note
-Coercion in [@arkenv/standard](/docs/arkenv/standard) only works with:
+Coercion in [@arkenv/standard](/docs/arkenv/standard) prefers validators that expose [Standard JSON Schema](https://standardschema.dev/json-schema) on the value itself:
 
 - [Zod](https://zod.dev) (v4.2+)
-- [Valibot](https://valibot.dev) (v1.2+ via `@valibot/to-json-schema`)
 - [Zod Mini](https://zod.dev/packages/mini)
 - [VineJS](https://vinejs.dev/) (v4.3.0+)
 - Any validator compliant with [Standard JSON Schema v1](https://standardschema.dev/json-schema#what-schema-libraries-support-this-spec)
+
+[Valibot](https://valibot.dev) (v1.2+) keeps JSON Schema conversion in [`@valibot/to-json-schema`](https://valibot.dev/guides/json-schema/) rather than on the schema. Wire ArkEnv's optional `toJsonSchema` escape hatch — see [Valibot](#valibot-tojsonschema).
   :::
 
 ## Numbers
@@ -102,10 +103,36 @@ Coercion works recursively: even variables inside a JSON object are coerced to t
 
 ArkEnv uses a unified pre-coercion model shared across both `@arkenv/core` and `@arkenv/standard`. When you call `arkenv()`:
 
-1. **Introspection**: ArkEnv extracts the JSON Schema of your defined schema. For `@arkenv/core` (ArkType), it introspects the schema (with a fallback to handle unjsonifiable parts of the schema like custom morphs or predicates). For `@arkenv/standard` (e.g., Zod, Valibot), it extracts JSON Schema using the validator's standard metadata.
+1. **Introspection**: ArkEnv extracts the JSON Schema of your defined schema. For `@arkenv/core` (ArkType), it introspects the schema (with a fallback to handle unjsonifiable parts of the schema like custom morphs or predicates). For `@arkenv/standard` (e.g., Zod), it extracts JSON Schema using the validator's standard metadata. When a key has no Standard JSON Schema on the value, an optional [`toJsonSchema`](#valibot-tojsonschema) callback can supply one.
 2. **Paths Identification**: It computes the exact paths requiring coercion (using `findCoercionPaths`) to identify target non-string types like numbers, booleans, arrays, or objects.
 3. **Pre-Coercion**: ArkEnv creates a shallow copy of the input environment object and applies coercion to it directly (using `applyCoercion`), preventing any mutation of the original `process.env`.
 4. **Validation**: Finally, the pre-coerced copy is passed to the original, unmodified schema for validation.
+
+## Valibot (`toJsonSchema`)
+
+Valibot implements Standard Schema validation but intentionally does **not** embed Standard JSON Schema on each schema value. Conversion lives in [`@valibot/to-json-schema`](https://valibot.dev/guides/json-schema/). Pass a `toJsonSchema` callback so ArkEnv can coerce env strings toward types like `v.number()` and `v.boolean()`:
+
+```ts
+import arkenv from "@arkenv/standard";
+import * as v from "valibot";
+import { toJsonSchema } from "@valibot/to-json-schema";
+
+export const env = arkenv(
+  { PORT: v.number(), DEBUG: v.boolean() },
+  {
+    toJsonSchema: (schema) =>
+      toJsonSchema(schema as v.GenericSchema, {
+        typeMode: "input",
+        target: "draft-07",
+      }),
+  },
+);
+```
+
+- `target: "draft-07"` matches ArkEnv's built-in probes.
+- `typeMode: "input"` coerces env strings toward the schema's input type. Do **not** pass a bare `{ toJsonSchema }` function reference — Valibot's default `typeMode` is `"ignore"`, which can silently mis-coerce piped schemas.
+- The callback runs **only** as a fallback after Standard JSON Schema probes fail for that key. Zod fields in a hybrid schema still coerce without it.
+- Install `@valibot/to-json-schema` yourself; `@arkenv/standard` does not depend on it.
 
 ## Performance
 

@@ -6,7 +6,7 @@ description: Configuration options for the arkenv() function.
 The second argument to `arkenv()` is an optional configuration object.
 
 :::note
-All options listed below apply to both `@arkenv/core` (ArkType mode) and `@arkenv/standard` (Standard Schema mode).
+Most options listed below apply to both `@arkenv/core` (ArkType mode) and `@arkenv/standard` (Standard Schema mode). `toJsonSchema` is **standard-mode only** — see [Coercion → Valibot](/docs/arkenv/coercion#valibot-tojsonschema).
 :::
 
 ## Configuration options
@@ -80,6 +80,12 @@ const env = arkenv(
 // env.PORT  → 3000 (default applied)
 // env.DEBUG → false (default applied)
 ```
+
+### `toJsonSchema` (standard mode only)
+
+When a Standard Schema validator does not expose JSON Schema on the value (notably Valibot), pass a fallback converter. See [Coercion → Valibot](/docs/arkenv/coercion#valibot-tojsonschema) for the full wiring example.
+
+This option does **not** apply to `@arkenv/core` / ArkType `ArkEnvConfig`.
 
 ## `safe`
 

@@ -63,13 +63,46 @@ export type ParseStandardConfig = {
 
 	/**
 	 * Whether to perform best-effort coercion on the environment variables.
-	 * Coercion requires validators that implement the StandardJSONSchemaV1 spec
-	 * (e.g. Zod, Valibot).
+	 * Coercion prefers validators that expose Standard JSON Schema on the value
+	 * itself (e.g. Zod). For converters that live outside the schema (e.g. Valibot
+	 * via `@valibot/to-json-schema`), pass {@link toJsonSchema}.
 	 *
 	 * @see https://standard-schema.dev
 	 * @default true
 	 */
 	coerce?: boolean;
+
+	/**
+	 * Optional fallback that converts a Standard Schema validator to JSON Schema
+	 * for ArkEnv pre-coercion when built-in Standard JSON Schema probes fail for
+	 * that key.
+	 *
+	 * Invoked per key only after probes miss. Not called when omitted, when
+	 * `coerce` is `false`, or when a built-in probe already produced a schema.
+	 *
+	 * - Return a plain object to use as that key's JSON Schema.
+	 * - Return `undefined` to skip coercion for that key only.
+	 * - Throwing or returning a non-plain object fails the parse with
+	 *   {@link ArkEnvError} for that key (`INVALID_SCHEMA`).
+	 *
+	 * @example Valibot wiring
+	 * ```ts
+	 * import { toJsonSchema } from "@valibot/to-json-schema";
+	 * import * as v from "valibot";
+	 *
+	 * arkenv(
+	 *   { PORT: v.number() },
+	 *   {
+	 *     toJsonSchema: (schema) =>
+	 *       toJsonSchema(schema as v.GenericSchema, {
+	 *         typeMode: "input",
+	 *         target: "draft-07",
+	 *       }),
+	 *   },
+	 * );
+	 * ```
+	 */
+	toJsonSchema?: (schema: StandardSchemaV1) => object | undefined;
 
 	/**
 	 * The format to use for array parsing when coercion is enabled.
@@ -120,6 +153,7 @@ export function parseStandard(
 		coerce = true,
 		arrayFormat = "comma",
 		emptyAsUndefined = false,
+		toJsonSchema,
 	} = config;
 	const output: Record<string, unknown> = {};
 	const errors: EnvIssue[] = [];
@@ -135,7 +169,7 @@ export function parseStandard(
 		coerce
 			? () => {
 					const { jsonSchema, hasJsonSchema, missingKeys } =
-						extractJsonSchema(def);
+						extractJsonSchema(def, toJsonSchema);
 					return {
 						schema: jsonSchema,
 						hasSchema: hasJsonSchema,

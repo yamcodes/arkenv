@@ -22,7 +22,7 @@ Already using ArkType? You can still use Zod, Valibot, and other Standard Schema
 
 ¹ ArkEnv extends ArkType with custom keywords like `string.host` and `number.port` - see [keywords](/docs/arkenv/keywords)
 
-² Only works with Standard JSON Schema validators like Zod 4, Zod Mini and Valibot - see [Coercion](/docs/arkenv/coercion)
+² Automatic coercion works with Standard JSON Schema validators like Zod 4 and Zod Mini. For Valibot, wire the optional `toJsonSchema` escape hatch — see [Coercion](/docs/arkenv/coercion#valibot-tojsonschema).
 
 ✅ Built-in / first-class support
 

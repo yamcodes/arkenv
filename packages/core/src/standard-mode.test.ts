@@ -301,6 +301,271 @@ describe("Standard Mode Coercion", () => {
 	});
 });
 
+describe("Standard Mode toJsonSchema", () => {
+	const createMockWithoutJsonSchema = <TOutput>(
+		validate: (value: unknown) =>
+			| { value: TOutput }
+			| { issues: { message: string }[] },
+	) => ({
+		"~standard": {
+			version: 1 as const,
+			vendor: "mock",
+			types: {} as { input: unknown; output: TOutput },
+			validate,
+		},
+	});
+
+	it("coerces via toJsonSchema when built-in probes miss", () => {
+		vi.stubEnv("PORT", "3000");
+		vi.stubEnv("DEBUG", "true");
+
+		const portSchema = createMockWithoutJsonSchema((value) =>
+			typeof value === "number"
+				? { value }
+				: {
+						issues: [{ message: `Expected number, received ${typeof value}` }],
+					},
+		);
+		const debugSchema = createMockWithoutJsonSchema((value) =>
+			typeof value === "boolean"
+				? { value }
+				: {
+						issues: [
+							{ message: `Expected boolean, received ${typeof value}` },
+						],
+					},
+		);
+
+		const env = arkenv(
+			{
+				PORT: portSchema,
+				DEBUG: debugSchema,
+			},
+			{
+				toJsonSchema: (schema) => {
+					if (schema === portSchema) return { type: "number" };
+					if (schema === debugSchema) return { type: "boolean" };
+					return undefined;
+				},
+			},
+		);
+
+		expect(env.PORT).toBe(3000);
+		expect(env.DEBUG).toBe(true);
+	});
+
+	it("coerces Valibot number/boolean fields via toJsonSchema", async () => {
+		const v = await import("valibot");
+		const { toJsonSchema } = await import("@valibot/to-json-schema");
+
+		vi.stubEnv("PORT", "3000");
+		vi.stubEnv("DEBUG", "true");
+
+		const env = arkenv(
+			{
+				PORT: v.number(),
+				DEBUG: v.boolean(),
+			},
+			{
+				toJsonSchema: (schema) =>
+					toJsonSchema(schema as v.GenericSchema, {
+						typeMode: "input",
+						target: "draft-07",
+					}),
+			},
+		);
+
+		expect(env.PORT).toBe(3000);
+		expect(env.DEBUG).toBe(true);
+	});
+
+	it("coerces hybrid Zod + Valibot schemas when toJsonSchema is provided", async () => {
+		const { z } = await import("zod");
+		const v = await import("valibot");
+		const { toJsonSchema } = await import("@valibot/to-json-schema");
+
+		vi.stubEnv("ZOD_PORT", "8080");
+		vi.stubEnv("VALIBOT_DEBUG", "false");
+
+		const env = arkenv(
+			{
+				ZOD_PORT: z.number(),
+				VALIBOT_DEBUG: v.boolean(),
+			},
+			{
+				toJsonSchema: (schema) =>
+					toJsonSchema(schema as v.GenericSchema, {
+						typeMode: "input",
+						target: "draft-07",
+					}),
+			},
+		);
+
+		expect(env.ZOD_PORT).toBe(8080);
+		expect(env.VALIBOT_DEBUG).toBe(false);
+	});
+
+	it("does not invoke toJsonSchema for keys with Standard JSON Schema", () => {
+		vi.stubEnv("NUMBER_VAR", "42");
+		const toJsonSchema = vi.fn(() => ({ type: "number" }));
+
+		const env = arkenv(
+			{
+				NUMBER_VAR: createMockStandardJSONSchema(42, { type: "number" }),
+			},
+			{ toJsonSchema },
+		);
+
+		expect(env.NUMBER_VAR).toBe(42);
+		expect(toJsonSchema).not.toHaveBeenCalled();
+	});
+
+	it("does not invoke toJsonSchema when coerce is false", () => {
+		vi.stubEnv("NUMBER_VAR", "42");
+		const toJsonSchema = vi.fn(() => ({ type: "number" }));
+
+		expect(() =>
+			arkenv(
+				{
+					NUMBER_VAR: createMockWithoutJsonSchema((value) =>
+						typeof value === "number"
+							? { value }
+							: {
+									issues: [
+										{ message: `Expected number, received ${typeof value}` },
+									],
+								},
+					),
+				},
+				{ coerce: false, toJsonSchema },
+			),
+		).toThrow(/Expected number, received string/);
+
+		expect(toJsonSchema).not.toHaveBeenCalled();
+	});
+
+	it("leaves behavior unchanged when toJsonSchema is omitted", () => {
+		vi.stubEnv("NUMBER_VAR", "42");
+
+		expect(() =>
+			arkenv({
+				NUMBER_VAR: createMockWithoutJsonSchema(() => ({
+					issues: [{ message: "Expected number, received string" }],
+				})),
+			}),
+		).toThrow(
+			/Hint: coercion is enabled by default, but the validator for 'NUMBER_VAR' lacks Standard JSON Schema support/,
+		);
+	});
+
+	it("throws ArkEnvError when toJsonSchema throws for a key", () => {
+		vi.stubEnv("BAD_VAR", "1");
+
+		try {
+			arkenv(
+				{
+					BAD_VAR: createMockWithoutJsonSchema((value) => ({
+						value: value as number,
+					})),
+				},
+				{
+					toJsonSchema: () => {
+						throw new Error("converter exploded");
+					},
+				},
+			);
+			expect.fail("Should throw");
+		} catch (error: any) {
+			expect(error).toBeInstanceOf(ArkEnvError);
+			expect(error.issues[0].path).toBe("BAD_VAR");
+			expect(error.issues[0].code).toBe("INVALID_SCHEMA");
+			expect(error.issues[0].message).toContain("toJsonSchema failed");
+			expect(error.issues[0].message).toContain("converter exploded");
+		}
+	});
+
+	it("skips only the key when toJsonSchema returns undefined", () => {
+		const skipSchema = createMockWithoutJsonSchema((value) =>
+			typeof value === "number"
+				? { value }
+				: {
+						issues: [{ message: `Expected number, received ${typeof value}` }],
+					},
+		);
+		const coerceSchema = createMockWithoutJsonSchema((value) =>
+			typeof value === "boolean"
+				? { value }
+				: {
+						issues: [
+							{ message: `Expected boolean, received ${typeof value}` },
+						],
+					},
+		);
+		const passThroughSchema = createMockWithoutJsonSchema(
+			(value) => ({ value: value as string }),
+		);
+
+		expect(() =>
+			arkenv(
+				{
+					SKIP_VAR: skipSchema,
+					COERCE_VAR: coerceSchema,
+				},
+				{
+					env: { SKIP_VAR: "42", COERCE_VAR: "true" },
+					toJsonSchema: (schema) => {
+						if (schema === skipSchema) return undefined;
+						return { type: "boolean" };
+					},
+				},
+			),
+		).toThrow(
+			/Hint: coercion is enabled by default, but the validator for 'SKIP_VAR' lacks Standard JSON Schema support/,
+		);
+
+		const env = arkenv(
+			{
+				COERCE_VAR: coerceSchema,
+				PASS_VAR: passThroughSchema,
+			},
+			{
+				env: { COERCE_VAR: "true", PASS_VAR: "hello" },
+				toJsonSchema: (schema) => {
+					if (schema === passThroughSchema) return undefined;
+					return { type: "boolean" };
+				},
+			},
+		);
+		expect(env.COERCE_VAR).toBe(true);
+		expect(env.PASS_VAR).toBe("hello");
+	});
+
+	it("throws ArkEnvError when toJsonSchema returns a non-plain object", () => {
+		vi.stubEnv("DATE_SCHEMA", "1");
+
+		for (const bad of [new Date(), ["array"], () => ({})]) {
+			try {
+				arkenv(
+					{
+						DATE_SCHEMA: createMockWithoutJsonSchema((value) => ({
+							value: value as number,
+						})),
+					},
+					{
+						toJsonSchema: () => bad as object,
+					},
+				);
+				expect.fail(`Should throw for ${Object.prototype.toString.call(bad)}`);
+			} catch (error: any) {
+				expect(error).toBeInstanceOf(ArkEnvError);
+				expect(error.issues[0].path).toBe("DATE_SCHEMA");
+				expect(error.issues[0].code).toBe("INVALID_SCHEMA");
+				expect(error.issues[0].message).toMatch(/plain object/);
+			}
+		}
+	});
+});
+
 describe("Standard Mode emptyAsUndefined", () => {
 	it("should treat empty strings as undefined when enabled", () => {
 		vi.stubEnv("STRING_VAR", "");
