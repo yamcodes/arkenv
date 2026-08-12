@@ -76,16 +76,17 @@ Engines are separate packages so peer dependencies stay honest. Framework plugin
 
 [Standard Schema](https://standardschema.dev/) and [Standard JSON Schema](https://standardschema.dev/json-schema) are **orthogonal** specs: one is about validation, the other about converting a type to JSON Schema. A value can implement one, both, or neither.
 
-ArkEnv’s pre-coercion step for `@arkenv/standard` needs **Standard JSON Schema v1** (`~standard.jsonSchema.input` / `.output`). If a validator implements that interface, the converter exists by construction — there is no separate “metadata may or may not be there” check. (Conversion can still throw for unsupported schemas or JSON Schema targets; the spec allows that.)
+ArkEnv’s pre-coercion step for `@arkenv/standard` needs **Standard JSON Schema v1** (`~standard.jsonSchema.input` / `.output`). If a validator implements that interface, the converter exists by construction. (Conversion can still throw for unsupported schemas or JSON Schema targets; the spec allows that.)
 
 | Library                                  | Implements Standard JSON Schema v1 |
 | ---------------------------------------- | ---------------------------------- |
-| Zod (v4.2+)                              | Yes (on the schema itself)         |
-| VineJS (v4.3+)                           | Yes (on the schema itself)         |
-| Valibot (v1.2+)                          | Only after wrapping — see below    |
-| Zod Mini                                 | Only after wrapping — see below    |
+| Zod (v4.2+)                              | Yes                                |
+| VineJS (v4.3+)                           | Yes                                |
+| Valibot (v1.2+ with `@valibot/to-json-schema`) | Yes                          |
+| Zod Mini                                 | Yes                                |
 | Other Standard JSON Schema v1 validators | Yes                                |
 
+<<<<<<< HEAD
 Raw Valibot / Zod Mini schemas are Standard Schema (validate) but not Standard JSON Schema. Those libraries keep conversion in a separate helper for bundle size. Wrap before you pass the field into `arkenv`:
 
 ```ts
@@ -108,6 +109,9 @@ export const env = arkenv({
 ```
 
 Without that wrap, ArkEnv cannot coerce from env strings for that key — use the validator’s own coerce/transform helpers or set `coerce: false` and [transform](/docs/core-concepts/transforms) yourself. See [Coercion](/docs/core-concepts/coercion).
+=======
+Some libraries keep conversion in a separate helper for bundle size (Valibot, Zod Mini). Prefer Zod/VineJS-style schemas that carry Standard JSON Schema on the value itself, or use the validator’s own coerce/transform helpers and set `coerce: false` when needed. See [Coercion](/docs/core-concepts/coercion).
+>>>>>>> 218e6c73 (docs: drop Valibot/Zod Mini wrap examples from coercion docs)
 
 ## Related
 
