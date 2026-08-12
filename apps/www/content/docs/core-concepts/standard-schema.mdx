@@ -78,15 +78,36 @@ Engines are separate packages so peer dependencies stay honest. Framework plugin
 
 ArkEnv’s pre-coercion step for `@arkenv/standard` needs **Standard JSON Schema v1** (`~standard.jsonSchema.input` / `.output`). If a validator implements that interface, the converter exists by construction — there is no separate “metadata may or may not be there” check. (Conversion can still throw for unsupported schemas or JSON Schema targets; the spec allows that.)
 
-| Library                                  | Implements Standard JSON Schema v1                             |
-| ---------------------------------------- | -------------------------------------------------------------- |
-| Zod (v4.2+)                              | Yes (on the schema itself)                                     |
-| Valibot (v1.2+)                          | Yes, via `toStandardJsonSchema` from `@valibot/to-json-schema` |
-| Zod Mini                                 | Yes, via `z.toJSONSchema(...)`                                 |
-| VineJS (v4.3+)                           | Yes                                                            |
-| Other Standard JSON Schema v1 validators | Yes                                                            |
+| Library                                  | Implements Standard JSON Schema v1 |
+| ---------------------------------------- | ---------------------------------- |
+| Zod (v4.2+)                              | Yes (on the schema itself)         |
+| VineJS (v4.3+)                           | Yes (on the schema itself)         |
+| Valibot (v1.2+)                          | Only after wrapping — see below    |
+| Zod Mini                                 | Only after wrapping — see below    |
+| Other Standard JSON Schema v1 validators | Yes                                |
 
-Standard Schema alone is not enough for ArkEnv coercion. Pass values that satisfy Standard JSON Schema (including wrappers like Valibot’s `toStandardJsonSchema`), or use the validator’s own coerce helpers / set `coerce: false` and [transform](/docs/core-concepts/transforms) strings yourself. See [Coercion](/docs/core-concepts/coercion).
+Raw Valibot / Zod Mini schemas are Standard Schema (validate) but not Standard JSON Schema. Those libraries keep conversion in a separate helper for bundle size. Wrap before you pass the field into `arkenv`:
+
+```ts
+import arkenv from "@arkenv/standard";
+import * as v from "valibot";
+import { toStandardJsonSchema } from "@valibot/to-json-schema";
+
+export const env = arkenv({
+	PORT: toStandardJsonSchema(v.number()),
+});
+```
+
+```ts
+import arkenv from "@arkenv/standard";
+import * as z from "zod/mini";
+
+export const env = arkenv({
+	PORT: z.toJSONSchema(z.number()),
+});
+```
+
+Without that wrap, ArkEnv cannot coerce from env strings for that key — use the validator’s own coerce/transform helpers or set `coerce: false` and [transform](/docs/core-concepts/transforms) yourself. See [Coercion](/docs/core-concepts/coercion).
 
 ## Related
 
