@@ -5,7 +5,7 @@ description: "Answer questions about ArkEnv and help implement environment varia
 
 # ArkEnv
 
-ArkEnv is a typesafe environment variable validator for modern JavaScript runtimes. `@arkenv/core` and `@arkenv/standard` have **zero runtime dependencies**. It uses `ArkType` by default for schema definition but supports any `Standard Schema` validator (like `Zod` or `Valibot`).
+ArkEnv is a typesafe environment variable validator for modern JavaScript runtimes. It uses `ArkType` by default for schema definition but supports any `Standard Schema` validator (like `Zod` or `Valibot`).
 
 ## Capabilities
 

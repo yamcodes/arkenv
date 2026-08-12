@@ -18,8 +18,7 @@ import { SiteFooter } from "~/components/site-footer";
 
 export const metadata: Metadata = {
 	title: "ArkEnv",
-	description:
-		"The simple way to validate environment variables — with a zero-dependency core.",
+	description: "The simple way to validate environment variables.",
 };
 
 export default function HomePage() {
@@ -53,7 +52,8 @@ export default function HomePage() {
 					Define your <code>env</code> vars in ArkType, Zod, or any Standard
 					Schema.
 					<br />
-					Zero runtime dependencies. Fail fast, ship faster.
+					ArkEnv validates, parses, and keeps them typesafe. Fail fast, ship
+					faster.
 				</p>
 				<div
 					className="home-aurora__install-row rise"

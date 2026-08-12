@@ -2,7 +2,7 @@
 	"name": "@arkenv/core",
 	"type": "module",
 	"version": "1.0.0-alpha.4",
-	"description": "Zero-dependency, typesafe environment variables parsing and validation with ArkType",
+	"description": "Typesafe environment variables parsing and validation with ArkType",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.mts",
@@ -39,7 +39,6 @@
 		"config",
 		"validation",
 		"typesafe",
-		"zero-dependency",
 		"standard-schema",
 		"arktype"
 	],

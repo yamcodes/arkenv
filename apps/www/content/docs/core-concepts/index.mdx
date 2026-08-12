@@ -5,10 +5,10 @@ description: Foundational ideas behind ArkEnv validation, coercion, and typesafe
 
 These pages explain how ArkEnv thinks about environment variables: when validation runs, how strings become typed values, and why the imported `env` object is the surface you use everywhere.
 
-ArkEnv has two engines that share the same runtime pipeline and options. Both have **zero runtime dependencies**:
+ArkEnv has two engines that share the same runtime pipeline and options:
 
-- [`@arkenv/core`](/docs/reference/core) with ArkType (ArkType is a peer)
-- [`@arkenv/standard`](/docs/reference/standard) with Zod, Valibot, or any [Standard Schema](https://standardschema.dev/) validator (no peers)
+- [`@arkenv/core`](/docs/reference/core) with ArkType
+- [`@arkenv/standard`](/docs/reference/standard) with Zod, Valibot, or any [Standard Schema](https://standardschema.dev/) validator
 
 Concept pages treat both as first-class. Examples usually show ArkType and Zod side by side; engine-only details use callouts.
 
@@ -23,5 +23,5 @@ For step-by-step setup, see [Validating environment variables](/docs/validating-
 
   <Card href="/docs/core-concepts/typesafety" title="Typesafety" description="Infer types from the schema through to the env object." />
 
-  <Card href="/docs/core-concepts/standard-schema" title="Choosing an engine" description="Zero-dependency engines: ArkType vs Zod, Valibot, and friends." />
+  <Card href="/docs/core-concepts/standard-schema" title="Choosing an engine" description="When to use @arkenv/core vs @arkenv/standard." />
 </Cards>

@@ -32,17 +32,6 @@ const FAQ: readonly {
 		),
 	},
 	{
-		id: "zero-deps",
-		question: "Is ArkEnv zero-dependency?",
-		teaser: (
-			<>
-				Yes. <code>@arkenv/core</code> and <code>@arkenv/standard</code> have
-				zero runtime dependencies. You install ArkType, Zod, or another
-				validator yourself — typically the schema library you already use.
-			</>
-		),
-	},
-	{
 		id: "env-files",
 		question: (
 			<>
