@@ -3,65 +3,55 @@ title: Start with an example
 description: Explore playground templates and runnable ArkEnv examples.
 ---
 
-The [ArkEnv repository](https://github.com/yamcodes/arkenv) ships runnable examples under `examples/`. Each one is a standalone project that installs **published** packages from npm, so you can clone, install, and run without the monorepo.
-
-Inside the repo, `apps/playgrounds/` holds workspace sandboxes used for development and CI. Most examples are synced from those playgrounds; contributors edit the playground first, then run `pnpm sync:examples`.
-
-## Scaffold with the CLI
-
-The fastest way to start is `arkenv init --example`. It copies a verified template, installs dependencies, and writes starter files:
+Use `arkenv init --example` to bootstrap a project from a verified template:
 
 ```bash title="Terminal"
 pnpm dlx arkenv@latest init --example with-vite-react --name my-app
 pnpm dlx arkenv@latest init --example basic
 ```
 
-Run this in an **empty directory** (or pass `--force` when you mean to overwrite). The `--example` flag always triggers the new-project flow, even if the directory is not empty.
+Run this in an empty directory (or pass `--force` to overwrite). `--example` always uses the new-project flow.
 
-Available templates include `basic`, `with-nextjs`, `with-nextjs-strict`, `with-nuxt`, `with-vite-react`, `with-bun`, `with-bun-react`, `with-zod`, and `with-valibot`. See the full list in [`examples/registry.json`](https://github.com/yamcodes/arkenv/blob/main/examples/registry.json).
+Templates available to the CLI include `basic`, `with-nextjs`, `with-nextjs-strict`, `with-nuxt`, `with-vite-react`, `with-bun`, `with-bun-react`, `with-zod`, and `with-valibot`. See [`examples/registry.json`](https://github.com/yamcodes/arkenv/blob/main/examples/registry.json).
 
 <Callout type="info">
-  To wire ArkEnv into a repo that already has application code, skip `--example`
-  and follow [Add to an existing repository](/docs/getting-started/add-to-existing-repository).
+  For a repo that already has application code, skip `--example` and follow
+  [Add to an existing repository](/docs/getting-started/add-to-existing-repository).
 </Callout>
 
-## Browse examples
+## Examples
+
+Each example under [`examples/`](https://github.com/yamcodes/arkenv/tree/main/examples) is a standalone project that installs published packages from npm. Open the README in the example for setup steps.
 
 <Cards>
-  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/basic" title="basic" description="Minimal Node.js app with ArkType — defaults, coercion, and the .env.example workflow." />
+  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/basic" title="basic" description="Minimal Node.js app with ArkType." />
 
-  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/basic-js" title="basic-js" description="Same fundamentals in plain JavaScript. Weaker editor guarantees; see editor integration." />
+  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/basic-js" title="basic-js" description="Same fundamentals in plain JavaScript." />
 
-  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-zod" title="with-zod" description="Node.js with @arkenv/standard and Zod instead of ArkType." />
+  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-zod" title="with-zod" description="Node.js with @arkenv/standard and Zod." />
 
-  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-valibot" title="with-valibot" description="Node.js with @arkenv/standard and Valibot instead of ArkType." />
+  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-valibot" title="with-valibot" description="Node.js with @arkenv/standard and Valibot." />
 
-  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-standard-schema" title="with-standard-schema" description="Mix ArkType with Standard Schema validators like Zod in one schema." />
+  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-standard-schema" title="with-standard-schema" description="Mix ArkType with Standard Schema validators." />
 
-  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-nextjs" title="with-nextjs" description="Next.js flat layout with withArkEnv and client/server boundaries." />
+  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-nextjs" title="with-nextjs" description="Next.js flat layout with withArkEnv." />
 
-  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-nextjs-strict" title="with-nextjs-strict" description="Next.js strict split layout — separate client, server, and shared modules." />
+  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-nextjs-strict" title="with-nextjs-strict" description="Next.js strict client/server split." />
 
   <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-nuxt" title="with-nuxt" description="Nuxt flat layout with @arkenv/nuxt." />
 
-  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-nuxt-strict" title="with-nuxt-strict" description="Nuxt strict layout with auto-extended client and server entrypoints." />
+  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-nuxt-strict" title="with-nuxt-strict" description="Nuxt strict client/server split." />
 
-  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react" title="with-vite-react" description="Vite + React with @arkenv/vite-plugin and typesafe import.meta.env." />
+  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react" title="with-vite-react" description="Vite + React with @arkenv/vite-plugin." />
 
-  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-solid-start" title="with-solid-start" description="SolidStart with the Vite plugin and SSR/client env split." />
+  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-solid-start" title="with-solid-start" description="SolidStart with the Vite plugin." />
 
   <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-bun" title="with-bun" description="Minimal Bun runtime project." />
 
   <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-bun-react" title="with-bun-react" description="Bun fullstack + React with @arkenv/bun-plugin." />
 </Cards>
 
-Each example includes a `README.md` with setup steps. TypeScript is the recommended path; see [basic-js](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) for plain JavaScript tradeoffs.
-
-## Run an example locally
-
-1. Clone or download the example directory.
-2. Copy `.env.example` to `.env` when the example ships one.
-3. Install dependencies and start the dev script.
+You can also clone an example and run it locally:
 
 ```bash title="Terminal"
 git clone https://github.com/yamcodes/arkenv.git
@@ -71,47 +61,10 @@ npm install
 npm run dev
 ```
 
-Framework examples typically use `pnpm dev` / `pnpm build`. Bun examples use `bun dev` or `bun run index.ts`. Check the example's `package.json` scripts when in doubt.
+Or try the [StackBlitz demo](https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/stackblitz?file=index.ts) in the browser. That template is adapted for WebContainer, so prefer the standalone examples when you want the exact production stack.
 
-| Example                                                                | Typical commands                           |
-| ---------------------------------------------------------------------- | ------------------------------------------ |
-| `basic`, `basic-js`, `with-zod`, `with-valibot`                        | `npm install` → `npm run dev`              |
-| `with-nextjs`, `with-nextjs-strict`                                    | `pnpm install` → `pnpm dev`                |
-| `with-nuxt`, `with-nuxt-strict`, `with-vite-react`, `with-solid-start` | `pnpm install` → `pnpm dev` / `pnpm build` |
-| `with-bun`, `with-bun-react`                                           | `bun install` → `bun dev`                  |
-
-## Try in the browser
-
-Open the [StackBlitz demo](https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/stackblitz?file=index.ts) to explore ArkEnv without a local install. That template is adapted for WebContainer (for example, it uses `ts-node` instead of `tsx`), so prefer the standalone examples above when you want the exact production stack.
-
-## Monorepo playgrounds (contributors)
-
-If you are working inside the ArkEnv repo, playgrounds under `apps/playgrounds/` consume `workspace:*` packages so you can test local changes:
-
-```bash title="Terminal"
-cd apps/playgrounds/node
-cp .env.example .env
-pnpm start
-```
-
-| Example                | Playground source                  |
-| ---------------------- | ---------------------------------- |
-| `basic`                | `apps/playgrounds/node`            |
-| `basic-js`             | `apps/playgrounds/js`              |
-| `with-nextjs`          | `apps/playgrounds/nextjs`          |
-| `with-nextjs-strict`   | `apps/playgrounds/nextjs-strict`   |
-| `with-nuxt`            | `apps/playgrounds/nuxt`            |
-| `with-nuxt-strict`     | `apps/playgrounds/nuxt-strict`     |
-| `with-vite-react`      | `apps/playgrounds/vite`            |
-| `with-bun`             | `apps/playgrounds/bun`             |
-| `with-bun-react`       | `apps/playgrounds/bun-react`       |
-| `with-solid-start`     | `apps/playgrounds/solid-start`     |
-| `with-standard-schema` | `apps/playgrounds/standard-schema` |
-
-Edit the playground, run `pnpm sync:examples`, then commit both directories.
-
-## Next steps
-
-- [Add to an existing repository](/docs/getting-started/add-to-existing-repository) when you already have a project.
-- [Structuring your schema](/docs/validating-environment-variables/structuring-your-schema) to understand `env.ts` layout.
-- [Framework integration](/docs/validating-environment-variables/framework-integration) for Next.js, Nuxt, Vite, and Bun specifics.
+<Callout type="info">
+  Contributors: examples sync from `apps/playgrounds/` via `pnpm sync:examples`.
+  Edit the playground, sync, then commit both directories. Mapping lives in
+  [`examples/README.md`](https://github.com/yamcodes/arkenv/blob/main/examples/README.md).
+</Callout>

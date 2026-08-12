@@ -3,11 +3,25 @@ title: Editor integration
 description: Configure your editor for ArkEnv auto-imports and validation tooltips.
 ---
 
-ArkEnv's developer experience comes from TypeScript inference on the validated `env` object, optional framework type augmentation, and the ArkType VS Code extension for schema syntax highlighting. No separate ArkEnv IDE plugin exists — configure these pieces once and autocomplete follows your schema.
+ArkEnv leans on TypeScript inference and the ArkType VS Code extension. There is no separate ArkEnv IDE plugin.
 
-## Use TypeScript
+## ArkType VS Code extension
 
-TypeScript with `strict: true` is the supported path. The `arkenv init` wizard checks for strict mode and can enable it when missing.
+Install the [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark) (`arktypeio.arkdark`). It highlights ArkType schema strings when the import uses the default export name `arkenv`:
+
+```ts title="./env.ts"
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  API_URL: "string.url",
+});
+```
+
+Keep that import name. Auto-import then picks up highlighting without a rename. See [ADR 0008](https://github.com/yamcodes/arkenv/blob/main/docs/adr/0008-default-export-and-function-naming.md).
+
+## Autocomplete on `env.*`
+
+TypeScript reads keys and types from the schema you pass to `arkenv()`:
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/core";
@@ -19,50 +33,13 @@ export const env = arkenv({
 });
 ```
 
-Reading `env.PORT` gives a `number`. Reading `process.env.PORT` stays an untyped string. Import the validated object everywhere:
+Import `{ env }` in application code. `env.PORT` is a `number`; `process.env.PORT` stays an untyped string.
 
-<Callout type="info">
-  The validated `env` object is the product. Read `env.DATABASE_URL`, not
-  `process.env.DATABASE_URL`. That surface is typed, coerced, and defaulted —
-  raw env maps are not.
-</Callout>
+## Framework type augmentation
 
-Plain JavaScript works at runtime, but autocomplete and type checking depend on your editor and are not guaranteed. See the [basic-js example](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js) for tradeoffs.
+Some hosts expose env through globals. `arkenv init` can scaffold these declaration files.
 
-## VS Code — ArkType extension
-
-Install the [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark) (`arktypeio.arkdark`). It highlights ArkType schema strings when your import uses the default export name `arkenv`:
-
-```ts title="./env.ts"
-import arkenv from "@arkenv/core";
-
-export const env = arkenv({
-  API_URL: "string.url",
-});
-```
-
-That naming is intentional: a default export named `arkenv` triggers syntax highlighting on auto-import without a manual rename. See [ADR 0008](https://github.com/yamcodes/arkenv/blob/main/docs/adr/0008-default-export-and-function-naming.md) for the rationale.
-
-## Autocomplete on `env.*`
-
-Once the schema is defined, your editor infers keys, types, and defaults on the exported object:
-
-```ts title="./src/server.ts"
-import { env } from "../env";
-
-console.log(env.HOST); // string
-console.log(env.PORT); // number
-```
-
-Typos and wrong types surface at compile time. At runtime, missing or invalid values throw before your app boots.
-
-## Framework-specific typings
-
-Some hosts expose env through globals (`import.meta.env`, augmented `process.env`). Init can scaffold the declaration files below; say yes when prompted during `arkenv init`.
-
-### Vite — `vite-env.d.ts`
-
-Augment `import.meta.env` so only client-safe keys autocomplete in browser code:
+### Vite: `vite-env.d.ts`
 
 ```ts title="./vite-env.d.ts"
 /// <reference types="vite/client" />
@@ -75,11 +52,9 @@ type ImportMetaEnvAugmented =
 interface ImportMetaEnv extends ImportMetaEnvAugmented {}
 ```
 
-With this file, `import.meta.env.VITE_*` keys are fully typed. Server-only keys (without the `VITE_` prefix) error in client code. See the [with-vite-react example](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react) for a complete setup.
+`import.meta.env.VITE_*` keys autocomplete in client code. Keys without the `VITE_` prefix error there.
 
-### Bun fullstack — `bun-env.d.ts`
-
-Augment `process.env` for Bun bundler and fullstack apps:
+### Bun fullstack: `bun-env.d.ts`
 
 ```ts title="./bun-env.d.ts"
 /// <reference types="bun-types" />
@@ -93,41 +68,4 @@ declare namespace NodeJS {
 }
 ```
 
-### Next.js — codegen
-
-Next.js projects use `withArkEnv` and generated `env.gen.ts` for client/server boundaries. Init wraps `next.config.ts` and scaffolds the flat or strict layout. See [Client vs. server](/docs/validating-environment-variables/client-vs-server) for layout choice.
-
-## `.env.example` workflow
-
-Keep `.env.example` in version control as the **key catalog** for your team:
-
-- Lists every variable the schema expects, without secret values
-- Lets `arkenv init` seed a schema from detected keys on brownfield projects
-- Gives new contributors a copy-paste starting point
-
-Local development flow:
-
-```bash title="Terminal"
-cp .env.example .env
-# edit .env with real values (never commit .env)
-```
-
-When init finds `.env` but no `.env.example`, it generates an example file with values stripped so credentials do not leak into git.
-
-Pair the example file with your schema: when you add a key to `env.ts`, add a placeholder line to `.env.example` so teammates and tooling stay aligned.
-
-## Plain JavaScript
-
-<Callout type="warn">
-  Without TypeScript, you lose compile-time autocomplete and most static
-  guarantees. Runtime validation still works — missing keys still fail fast — but
-  prefer TypeScript for day-to-day development.
-</Callout>
-
-If you must stay on JavaScript, rely on runtime errors from ArkEnv and JSDoc where helpful. For predictable editor support, migrate to TypeScript or start from the [basic example](https://github.com/yamcodes/arkenv/tree/main/examples/basic).
-
-## Next steps
-
-- [Structuring your schema](/docs/validating-environment-variables/structuring-your-schema) — where `env.ts` lives and how to export it.
-- [Client vs. server](/docs/validating-environment-variables/client-vs-server) — public prefixes and strict layouts.
-- [Start with an example](/docs/getting-started/examples) — runnable templates with IDE setup already wired.
+Next.js uses `withArkEnv` codegen (`env.gen.ts`) for the same kind of boundary typing. See [Client vs. server](/docs/validating-environment-variables/client-vs-server).
