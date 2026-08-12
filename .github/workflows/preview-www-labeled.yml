@@ -2,11 +2,9 @@ name: Preview www (Label Triggered)
 
 on:
   # pull_request_target so fork PRs receive repository secrets when a maintainer applies `preview`.
+  # No base-branch filter — same as preview-www-default (collective targets included).
   pull_request_target:
     types: [labeled]
-    branches:
-      - dev
-      - v1
 
 concurrency:
   group: preview-www-labeled-${{ github.event.pull_request.number }}
