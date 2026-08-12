@@ -11,3 +11,4 @@
 - Throwing or returning a non-plain object fails the parse with `ArkEnvError` (`INVALID_SCHEMA`) for that key
 - Zod and other Standard JSON Schema validators are unchanged (callback is not invoked when probes succeed)
 - No new package dependencies on `@arkenv/standard`
+- Bundle size budget for `@arkenv/standard` raised from 3.6 kB to 3.7 kB for the callback path

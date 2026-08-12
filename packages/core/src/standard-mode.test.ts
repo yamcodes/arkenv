@@ -1,5 +1,9 @@
 import { ArkEnvError, arkenv } from "@arkenv/standard";
+import { toJsonSchema } from "@valibot/to-json-schema";
+import type { GenericSchema } from "valibot";
+import * as v from "valibot";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
+import { z } from "zod";
 
 // Mock Standard Schema validators for testing
 const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({
@@ -352,10 +356,7 @@ describe("Standard Mode toJsonSchema", () => {
 		expect(env.DEBUG).toBe(true);
 	});
 
-	it("coerces Valibot number/boolean fields via toJsonSchema", async () => {
-		const v = await import("valibot");
-		const { toJsonSchema } = await import("@valibot/to-json-schema");
-
+	it("coerces Valibot number/boolean fields via toJsonSchema", () => {
 		vi.stubEnv("PORT", "3000");
 		vi.stubEnv("DEBUG", "true");
 
@@ -366,7 +367,7 @@ describe("Standard Mode toJsonSchema", () => {
 			},
 			{
 				toJsonSchema: (schema) =>
-					toJsonSchema(schema as v.GenericSchema, {
+					toJsonSchema(schema as GenericSchema, {
 						typeMode: "input",
 						target: "draft-07",
 					}),
@@ -377,11 +378,7 @@ describe("Standard Mode toJsonSchema", () => {
 		expect(env.DEBUG).toBe(true);
 	});
 
-	it("coerces hybrid Zod + Valibot schemas when toJsonSchema is provided", async () => {
-		const { z } = await import("zod");
-		const v = await import("valibot");
-		const { toJsonSchema } = await import("@valibot/to-json-schema");
-
+	it("coerces hybrid Zod + Valibot schemas when toJsonSchema is provided", () => {
 		vi.stubEnv("ZOD_PORT", "8080");
 		vi.stubEnv("VALIBOT_DEBUG", "false");
 
@@ -392,7 +389,7 @@ describe("Standard Mode toJsonSchema", () => {
 			},
 			{
 				toJsonSchema: (schema) =>
-					toJsonSchema(schema as v.GenericSchema, {
+					toJsonSchema(schema as GenericSchema, {
 						typeMode: "input",
 						target: "draft-07",
 					}),
