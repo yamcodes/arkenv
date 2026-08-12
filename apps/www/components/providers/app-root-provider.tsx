@@ -9,6 +9,11 @@ import ArkenvSearchDialog from "~/components/search/arkenv-search-dialog";
  * hydration. next-themes injects a FOUC `<script>`; React 19 warns when that
  * tag is reconciled on the client. Keep JS on the server (runs in HTML), mark
  * it as a data block on the client (script already ran; suppresses the warn).
+ *
+ * Light/system themes are disabled while the PostHog `theme-toggle` flag is
+ * off — force dark so stored localStorage / prefers-color-scheme cannot flip
+ * the site to light. When re-enabling the toggle, drop `forcedTheme` and
+ * restore `enableSystem` + the light/system theme entries.
  */
 export function AppRootProvider({ children }: { children: ReactNode }) {
 	return (
@@ -21,9 +26,10 @@ export function AppRootProvider({ children }: { children: ReactNode }) {
 			}}
 			theme={{
 				enableColorScheme: true,
-				enableSystem: true,
+				enableSystem: false,
 				defaultTheme: "dark",
-				themes: ["system", "light", "dark"],
+				forcedTheme: "dark",
+				themes: ["dark"],
 				scriptProps:
 					typeof window === "undefined"
 						? undefined
