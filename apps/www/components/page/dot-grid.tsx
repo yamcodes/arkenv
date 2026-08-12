@@ -2,7 +2,7 @@
 
 import { type CSSProperties, useEffect, useRef } from "react";
 
-/** Physics tuned for a quiet Aurora field - push ripples, then settle. */
+/** Physics tuned for a quiet Aurora field at `DEFAULT_SPACING`. */
 const DEFAULT_SPACING = 24;
 const DEFAULT_RADIUS = 1;
 const INFLUENCE = 110;
@@ -15,8 +15,10 @@ const MAX_POINTER_SPEED = 2600;
 const REST_THRESHOLD = 0.01;
 
 /**
- * Interactive faded-dot atmosphere for the home hero.
+ * Interactive faded-dot atmosphere for the home hero and docs CTAs.
  * Static CSS dots paint first; the canvas takes over after hydration.
+ * Spatial push (influence, force, drag, max travel) scales with `spacing`
+ * so a denser/zoomed grid keeps the same feel as the hero field.
  */
 export function DotGrid({
 	spacing = DEFAULT_SPACING,
@@ -34,6 +36,14 @@ export function DotGrid({
 		if (!canvas) return;
 		const ctx = canvas.getContext("2d");
 		if (!ctx) return;
+
+		const scale = spacing / DEFAULT_SPACING;
+		const influence = INFLUENCE * scale;
+		const influenceSq = influence * influence;
+		const push = PUSH * scale;
+		const drag = DRAG * scale;
+		const maxOffset = MAX_OFFSET * scale;
+		const maxOffsetSq = maxOffset * maxOffset;
 
 		let width = 0;
 		let height = 0;
@@ -78,7 +88,6 @@ export function DotGrid({
 		};
 
 		const step = (dt: number) => {
-			const influenceSq = INFLUENCE * INFLUENCE;
 			let moving = false;
 			for (let row = 0; row < rows; row++) {
 				const baseY = spacing / 2 + row * spacing;
@@ -99,9 +108,9 @@ export function DotGrid({
 						const distSq = dx * dx + dy * dy;
 						if (distSq < influenceSq) {
 							const dist = Math.sqrt(distSq) || 1;
-							const falloff = 1 - dist / INFLUENCE;
-							ax += ((dx / dist) * PUSH + pointer.vx * DRAG) * falloff;
-							ay += ((dy / dist) * PUSH + pointer.vy * DRAG) * falloff;
+							const falloff = 1 - dist / influence;
+							ax += ((dx / dist) * push + pointer.vx * drag) * falloff;
+							ay += ((dy / dist) * push + pointer.vy * drag) * falloff;
 						}
 					}
 
@@ -111,10 +120,10 @@ export function DotGrid({
 					oy += vy * dt;
 
 					const offsetSq = ox * ox + oy * oy;
-					if (offsetSq > MAX_OFFSET * MAX_OFFSET) {
-						const scale = MAX_OFFSET / Math.sqrt(offsetSq);
-						ox *= scale;
-						oy *= scale;
+					if (offsetSq > maxOffsetSq) {
+						const clamp = maxOffset / Math.sqrt(offsetSq);
+						ox *= clamp;
+						oy *= clamp;
 					}
 
 					if (offsetSq > REST_THRESHOLD || vx * vx + vy * vy > REST_THRESHOLD) {
@@ -196,10 +205,10 @@ export function DotGrid({
 			const x = event.clientX - rect.left;
 			const y = event.clientY - rect.top;
 			const inRange =
-				x > -INFLUENCE &&
-				y > -INFLUENCE &&
-				x < rect.width + INFLUENCE &&
-				y < rect.height + INFLUENCE;
+				x > -influence &&
+				y > -influence &&
+				x < rect.width + influence &&
+				y < rect.height + influence;
 			if (!inRange) {
 				deactivatePointer();
 				return;
