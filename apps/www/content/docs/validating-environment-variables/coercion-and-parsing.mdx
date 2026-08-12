@@ -15,18 +15,18 @@ Any field typed as `number` or a numeric subtype (including [`number.port`](/doc
 import arkenv from "@arkenv/core";
 
 export const env = arkenv(
-	{
-		PORT: "number.port",
-		RETRY_COUNT: "number.integer = 3",
-		AGE: "0 <= number.integer <= 120",
-	},
-	{
-		env: {
-			PORT: "8080",
-			RETRY_COUNT: "5",
-			AGE: "30",
-		},
-	},
+  {
+    PORT: "number.port",
+    RETRY_COUNT: "number.integer = 3",
+    AGE: "0 <= number.integer <= 120",
+  },
+  {
+    env: {
+      PORT: "8080",
+      RETRY_COUNT: "5",
+      AGE: "30",
+    },
+  },
 );
 
 env.PORT;
@@ -41,8 +41,8 @@ env.PORT;
 import arkenv from "@arkenv/core";
 
 export const env = arkenv(
-	{ DEBUG: "boolean = false" },
-	{ env: { DEBUG: "true" } },
+  { DEBUG: "boolean = false" },
+  { env: { DEBUG: "true" } },
 );
 
 env.DEBUG;
@@ -59,16 +59,16 @@ By default ArkEnv splits on commas and trims each entry:
 import arkenv from "@arkenv/core";
 
 export const env = arkenv(
-	{
-		TAGS: "string[]",
-		PORTS: "number[]",
-	},
-	{
-		env: {
-			TAGS: "web, app, api",
-			PORTS: "3000, 8080",
-		},
-	},
+  {
+    TAGS: "string[]",
+    PORTS: "number[]",
+  },
+  {
+    env: {
+      TAGS: "web, app, api",
+      PORTS: "3000, 8080",
+    },
+  },
 );
 
 env.TAGS;
@@ -83,11 +83,11 @@ Switch to JSON arrays with `arrayFormat: "json"`:
 import arkenv from "@arkenv/core";
 
 export const env = arkenv(
-	{ TAGS: "string[]" },
-	{
-		arrayFormat: "json",
-		env: { TAGS: '["web", "app"]' },
-	},
+  { TAGS: "string[]" },
+  {
+    arrayFormat: "json",
+    env: { TAGS: '["web", "app"]' },
+  },
 );
 
 env.TAGS;
@@ -102,17 +102,17 @@ JSON strings map onto nested object schemas. Nested fields are coerced too:
 import arkenv from "@arkenv/core";
 
 export const env = arkenv(
-	{
-		DATABASE: {
-			HOST: "string",
-			PORT: "number",
-		},
-	},
-	{
-		env: {
-			DATABASE: '{"HOST": "localhost", "PORT": "5432"}',
-		},
-	},
+  {
+    DATABASE: {
+      HOST: "string",
+      PORT: "number",
+    },
+  },
+  {
+    env: {
+      DATABASE: '{"HOST": "localhost", "PORT": "5432"}',
+    },
+  },
 );
 
 env.DATABASE;
@@ -127,10 +127,10 @@ Custom transforms with `@arkenv/core` use ArkType `.pipe` via `type()`. Zod and 
 import arkenv, { type } from "@arkenv/core";
 
 export const env = arkenv(
-	{
-		BUILD_ID: type("string").pipe((value) => value.trim().toUpperCase()),
-	},
-	{ env: { BUILD_ID: "  abc  " } },
+  {
+    BUILD_ID: type("string").pipe((value) => value.trim().toUpperCase()),
+  },
+  { env: { BUILD_ID: "  abc  " } },
 );
 
 env.BUILD_ID;
@@ -148,11 +148,11 @@ import arkenv from "@arkenv/standard";
 import { z } from "zod";
 
 export const env = arkenv(
-	{
-		PORT: z.number().int(),
-		DEBUG: z.boolean(),
-	},
-	{ env: { PORT: "3000", DEBUG: "true" } },
+  {
+    PORT: z.number().int(),
+    DEBUG: z.boolean(),
+  },
+  { env: { PORT: "3000", DEBUG: "true" } },
 );
 
 env.PORT;
@@ -167,8 +167,8 @@ You can also lean on the validator's own coercion (`z.coerce.number()`) and keep
 import arkenv from "@arkenv/core";
 
 export const env = arkenv(
-	{ PORT: "string" },
-	{ coerce: false, env: { PORT: "3000" } },
+  { PORT: "string" },
+  { coerce: false, env: { PORT: "3000" } },
 );
 
 env.PORT;

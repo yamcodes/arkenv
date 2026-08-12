@@ -117,14 +117,14 @@ After `arkenv init -H vercel` on a Next.js app, the generated schema includes th
 import arkenv from "@/generated/env.gen";
 
 export const env = arkenv({
-	DATABASE_URL: "string",
-	NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-	// Hosting preset (Vercel)
-	VERCEL: "string?",
-	VERCEL_ENV: "'production' | 'preview' | 'development'?",
-	VERCEL_URL: "string?",
-	NEXT_PUBLIC_VERCEL_ENV: "'production' | 'preview' | 'development'?",
-	NEXT_PUBLIC_VERCEL_URL: "string?",
+  DATABASE_URL: "string",
+  NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+  // Hosting preset (Vercel)
+  VERCEL: "string?",
+  VERCEL_ENV: "'production' | 'preview' | 'development'?",
+  VERCEL_URL: "string?",
+  NEXT_PUBLIC_VERCEL_ENV: "'production' | 'preview' | 'development'?",
+  NEXT_PUBLIC_VERCEL_URL: "string?",
 });
 ```
 

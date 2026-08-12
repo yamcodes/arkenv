@@ -19,9 +19,9 @@ Create `env.ts` next to the code that boots first. Root of the app or package is
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
-	HOST: "string.host = 'localhost'",
-	PORT: "number.port = 3000",
-	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+  HOST: "string.host = 'localhost'",
+  PORT: "number.port = 3000",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
 ```
 
@@ -79,8 +79,8 @@ By default `arkenv()` reads `process.env`. Pass a custom record for tests, Worke
 import arkenv from "@arkenv/core";
 
 export const env = arkenv(
-	{ PORT: "number.port" },
-	{ env: { PORT: "3000" } },
+  { PORT: "number.port" },
+  { env: { PORT: "3000" } },
 );
 ```
 
@@ -95,8 +95,8 @@ import arkenv from "@arkenv/standard";
 import { z } from "zod";
 
 export const env = arkenv({
-	PORT: z.coerce.number().int().min(0).max(65535),
-	HOST: z.string().default("localhost"),
+  PORT: z.coerce.number().int().min(0).max(65535),
+  HOST: z.string().default("localhost"),
 });
 ```
 

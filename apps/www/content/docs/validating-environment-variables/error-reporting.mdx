@@ -23,19 +23,19 @@ Most apps let that throw stop the process. You do not need a `try/catch` around 
 import arkenv, { ArkEnvError } from "@arkenv/core";
 
 try {
-	arkenv(
-		{
-			PORT: "number.port",
-			DATABASE_URL: "string",
-		},
-		{ env: { PORT: "abc" } },
-	);
+  arkenv(
+    {
+      PORT: "number.port",
+      DATABASE_URL: "string",
+    },
+    { env: { PORT: "abc" } },
+  );
 } catch (error) {
-	if (error instanceof ArkEnvError) {
-		console.error(error.message);
-		console.error(error.issues);
-	}
-	throw error;
+  if (error instanceof ArkEnvError) {
+    console.error(error.message);
+    console.error(error.issues);
+  }
+  throw error;
 }
 ```
 
@@ -75,12 +75,12 @@ Pass `{ safe: true }` when you want a result object instead of a throw (tests, c
 import arkenv from "@arkenv/core";
 
 const result = arkenv(
-	{ PORT: "number.port" },
-	{ safe: true, env: { PORT: "nope" } },
+  { PORT: "number.port" },
+  { safe: true, env: { PORT: "nope" } },
 );
 
 if (!result.success) {
-	console.error(result.issues);
+  console.error(result.issues);
 }
 ```
 

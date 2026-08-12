@@ -18,10 +18,10 @@ Common cases:
 import arkenv, { type } from "@arkenv/core";
 
 export const Env = type({
-	HOST: "string.host = 'localhost'",
-	PORT: "number.port = 3000",
-	VITE_API_URL: "string",
-	DATABASE_URL: "string",
+  HOST: "string.host = 'localhost'",
+  PORT: "number.port = 3000",
+  VITE_API_URL: "string",
+  DATABASE_URL: "string",
 });
 
 // Reuse the same compiled schema in every runtime
@@ -37,8 +37,8 @@ import arkenv from "@arkenv/core";
 const rootEnv = arkenv(Env, { env: loadEnv("development", process.cwd(), "") });
 
 export default defineConfig({
-	plugins: [arkenvPlugin(Env)],
-	server: { port: rootEnv.PORT },
+  plugins: [arkenvPlugin(Env)],
+  server: { port: rootEnv.PORT },
 });
 ```
 
@@ -53,8 +53,8 @@ import arkenv from "@arkenv/nextjs/server";
 import { env as clientEnv } from "./client";
 
 export const env = arkenv(
-	{ DATABASE_URL: "string" },
-	{ extends: [clientEnv] },
+  { DATABASE_URL: "string" },
+  { extends: [clientEnv] },
 );
 ```
 
@@ -68,8 +68,8 @@ Put the compiled schema in an internal package, then call the host `arkenv` (or 
 import { type } from "@arkenv/core";
 
 export const AppEnv = type({
-	DATABASE_URL: "string",
-	NEXT_PUBLIC_API_URL: "string",
+  DATABASE_URL: "string",
+  NEXT_PUBLIC_API_URL: "string",
 });
 ```
 
@@ -90,8 +90,8 @@ With `@arkenv/standard`, reuse means exporting the same field map:
 import { z } from "zod";
 
 export const schema = {
-	PORT: z.coerce.number(),
-	HOST: z.string().default("localhost"),
+  PORT: z.coerce.number(),
+  HOST: z.string().default("localhost"),
 } as const;
 ```
 

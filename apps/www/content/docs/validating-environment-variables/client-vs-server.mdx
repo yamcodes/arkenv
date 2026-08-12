@@ -34,9 +34,9 @@ Flat layout uses one `env.ts`. Prefixes decide which keys reach the client. This
 import arkenv from "@/generated/env.gen";
 
 export const env = arkenv({
-	DATABASE_URL: "string",
-	NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+  DATABASE_URL: "string",
+  NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
 ```
 
@@ -97,7 +97,7 @@ Strict layout splits files so the server schema never enters the client module g
 import { type } from "@arkenv/core";
 
 export const SharedSchema = type({
-	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
 ```
 
@@ -106,10 +106,10 @@ import arkenv from "./generated/env.gen";
 import { SharedSchema } from "./internal/shared";
 
 export const env = arkenv(
-	{
-		NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-	},
-	{ extends: [SharedSchema] },
+  {
+    NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+  },
+  { extends: [SharedSchema] },
 );
 ```
 
@@ -118,10 +118,10 @@ import arkenv from "@arkenv/nextjs/server";
 import { env as clientEnv } from "./client";
 
 export const env = arkenv(
-	{
-		DATABASE_URL: "string",
-	},
-	{ extends: [clientEnv] },
+  {
+    DATABASE_URL: "string",
+  },
+  { extends: [clientEnv] },
 );
 ```
 
