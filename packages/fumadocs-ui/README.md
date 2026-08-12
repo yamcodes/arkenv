@@ -36,7 +36,7 @@ Use the prebuilt mapping in your MDX provider:
 import { arkenvComponents } from "@arkenv/fumadocs-ui/mdx";
 
 export const mdxComponents = {
-	...arkenvComponents,
+  ...arkenvComponents,
 };
 ```
 
