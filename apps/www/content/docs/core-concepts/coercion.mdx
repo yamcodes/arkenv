@@ -87,13 +87,13 @@ ArkEnv does not wrap your schema in a coercion pipe. It uses a shared pre-coerci
 Cookbook examples: [Coercion and parsing](/docs/validating-environment-variables/coercion-and-parsing).
 
 <Callout type="info" title="Standard Schema ≠ Standard JSON Schema">
-	Automatic coercion with `@arkenv/standard` needs [Standard JSON Schema
-	v1](https://standardschema.dev/json-schema), not merely Standard Schema. Those
-	specs are orthogonal. Zod 4.2+ and VineJS 4.3+ put the converter on the schema.
-	Valibot and Zod Mini keep conversion out of the schema for bundle size — wrap
-	each field with `toStandardJsonSchema(...)` from `@valibot/to-json-schema` or
-	`z.toJSONSchema(...)` before passing it to `arkenv`. If you skip the wrap, use
-	the validator’s own coerce/transform helpers or disable ArkEnv coercion.
+  Automatic coercion with `@arkenv/standard` needs [Standard JSON Schema
+  v1](https://standardschema.dev/json-schema), not merely Standard Schema. Those
+  specs are orthogonal. Zod 4.2+ and VineJS 4.3+ put the converter on the schema.
+  Valibot and Zod Mini keep conversion out of the schema for bundle size — wrap
+  each field with `toStandardJsonSchema(...)` from `@valibot/to-json-schema` or
+  `z.toJSONSchema(...)` before passing it to `arkenv`. If you skip the wrap, use
+  the validator’s own coerce/transform helpers or disable ArkEnv coercion.
 </Callout>
 
 ## Disabling coercion
@@ -133,6 +133,8 @@ With `coerce: false`, a numeric schema rejects `"3000"` unless you [transform](/
 
 <Cards>
   <Card href="/docs/core-concepts/transforms" title="Transforms" description="Reshape values after coercion with morphs or Zod transforms." />
+
   <Card href="/docs/reference/options#coerce" title="options.coerce" description="Toggle ArkEnv’s built-in string coercion." />
+
   <Card href="/docs/core-concepts/validation" title="Validation" description="Boot and build-time checks with either engine." />
 </Cards>

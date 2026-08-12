@@ -94,7 +94,7 @@ import * as v from "valibot";
 import { toStandardJsonSchema } from "@valibot/to-json-schema";
 
 export const env = arkenv({
-	PORT: toStandardJsonSchema(v.number()),
+  PORT: toStandardJsonSchema(v.number()),
 });
 ```
 
@@ -103,7 +103,7 @@ import arkenv from "@arkenv/standard";
 import * as z from "zod/mini";
 
 export const env = arkenv({
-	PORT: z.toJSONSchema(z.number()),
+  PORT: z.toJSONSchema(z.number()),
 });
 ```
 
@@ -113,7 +113,10 @@ Without that wrap, ArkEnv cannot coerce from env strings for that key — use th
 
 <Cards>
   <Card href="/docs/reference/core" title="@arkenv/core" description="ArkType engine package reference." />
+
   <Card href="/docs/reference/standard" title="@arkenv/standard" description="Standard Schema engine package reference." />
+
   <Card href="/docs/validating-environment-variables/defining-types" title="Defining types" description="Declare field types for either engine." />
+
   <Card href="/docs/reference/schema" title="schema" description="The schema object you pass to arkenv()." />
 </Cards>
