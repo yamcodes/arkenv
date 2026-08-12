@@ -41,7 +41,7 @@ export const env = arkenv(
 
 Default: `true`
 
-Coerce string values toward the types declared in your schema (numbers, booleans, arrays, objects) before validation. See [Coercion and parsing](/docs/validating-environment-variables/coercion-and-parsing).
+Coerce string values toward the types declared in your schema (numbers, booleans, arrays, objects) before validation. See [Coercion and parsing](/docs/validating-environment-variables).
 
 Set `false` when you need raw strings and morph them yourself.
 
@@ -100,10 +100,9 @@ if (!result.success) {
 ```
 
 <Callout type="warn">
-  Framework plugins omit `safe` so a failed validation cannot soft-fail into the
-  client bundle.
+	Framework plugins omit `safe`. A failed validation must not inject `{ success: false }` into the client bundle.
 </Callout>
 
 ## Framework-only options
 
-`extends` is **not** part of core `ArkEnvConfig`. Next.js and Nuxt wrappers accept `extends` to merge shared or client env objects into a server schema. See [Client vs. server](/docs/validating-environment-variables/client-vs-server).
+`extends` is **not** part of core `ArkEnvConfig`. Next.js and Nuxt wrappers accept `extends` to merge shared or client env objects into a server schema. See [Client vs. server](/docs/validating-environment-variables).

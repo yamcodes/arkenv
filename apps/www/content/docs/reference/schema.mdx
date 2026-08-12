@@ -37,7 +37,7 @@ export const Env = type({
 export const env = arkenv(Env);
 ```
 
-See [Reusing schemas](/docs/validating-environment-variables/reusing-schemas).
+See [Reusing schemas](/docs/validating-environment-variables).
 
 ## Standard Schema maps
 
@@ -76,4 +76,4 @@ Core has no client/server split. Framework packages add layouts and prefixes:
 - Flat: one schema; public prefixes decide client exposure
 - Strict: separate client/server/shared modules with `extends`
 
-Details: [Client vs. server](/docs/validating-environment-variables/client-vs-server), [`@arkenv/nextjs`](/docs/reference/nextjs), [`@arkenv/nuxt`](/docs/reference/nuxt).
+Details: [Client vs. server](/docs/validating-environment-variables), [`@arkenv/nextjs`](/docs/reference/nextjs), [`@arkenv/nuxt`](/docs/reference/nuxt).

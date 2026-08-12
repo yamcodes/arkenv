@@ -18,7 +18,7 @@ export const env = arkenv({
 });
 ```
 
-Invalid or missing values throw [`ArkEnvError`](/docs/validating-environment-variables/error-reporting). Use `{ safe: true }` only when you handle the result yourself (tests, custom boot UI).
+Invalid or missing values throw [`ArkEnvError`](/docs/validating-environment-variables). Use `{ safe: true }` only when you handle the result yourself (tests, custom boot UI).
 
 ## Framework build validation
 
@@ -44,6 +44,6 @@ Or assert in tests by calling `arkenv(schema, { env: fixture, safe: true })`.
 
 ## Related
 
-- [Error reporting](/docs/validating-environment-variables/error-reporting)
+- [Error reporting](/docs/validating-environment-variables)
 - [options](/docs/reference/options)
 - [init](/docs/reference/init)
