@@ -90,7 +90,7 @@
 		"jsdom": "29.1.1",
 		"mdast-util-mdx-jsx": "3.2.0",
 		"next-video": "2.7.1",
-		"postcss": "8.5.14",
+		"postcss": "8.5.23",
 		"rimraf": "catalog:",
 		"styled-jsx": "5.1.7",
 		"tailwindcss": "4.2.4",
