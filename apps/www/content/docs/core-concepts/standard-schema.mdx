@@ -7,13 +7,13 @@ description: Validate environment variables with Zod, Valibot, and other Standar
 
 ## Two engines
 
-| | `@arkenv/core` | `@arkenv/standard` |
-| --- | --- | --- |
-| DSL | ArkType strings + `type()` | Per-key Standard Schema validators |
-| Keywords | `string.host`, `number.port` | None |
-| Peer `arktype` | Required | None |
-| Coercion | Built-in | When the validator exposes JSON Schema |
-| Plugins | `@arkenv/*/…` | Matching `/standard` subpaths |
+|                | `@arkenv/core`               | `@arkenv/standard`                     |
+| -------------- | ---------------------------- | -------------------------------------- |
+| DSL            | ArkType strings + `type()`   | Per-key Standard Schema validators     |
+| Keywords       | `string.host`, `number.port` | None                                   |
+| Peer `arktype` | Required                     | None                                   |
+| Coercion       | Built-in                     | When the validator exposes JSON Schema |
+| Plugins        | `@arkenv/*/…`                | Matching `/standard` subpaths          |
 
 Prefer `@arkenv/core` for new TypeScript apps that can take ArkType. Reach for `@arkenv/standard` when you are migrating an existing Zod/Valibot schema or must stay ArkType-free.
 

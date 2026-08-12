@@ -22,12 +22,12 @@ Importing `./env` in a server entrypoint is enough to abort a bad deploy before 
 
 ## When checks run
 
-| Moment | What runs |
-| --- | --- |
-| Module load | `arkenv()` validates the current `env` source (default `process.env`) |
-| Next.js / Nuxt build | Framework wrappers validate again during config or module setup |
-| Vite / Bun build | Plugins validate in the bundler pipeline |
-| Client bundle | Public keys are already validated at build time; server secrets are stripped or guarded |
+| Moment               | What runs                                                                               |
+| -------------------- | --------------------------------------------------------------------------------------- |
+| Module load          | `arkenv()` validates the current `env` source (default `process.env`)                   |
+| Next.js / Nuxt build | Framework wrappers validate again during config or module setup                         |
+| Vite / Bun build     | Plugins validate in the bundler pipeline                                                |
+| Client bundle        | Public keys are already validated at build time; server secrets are stripped or guarded |
 
 Framework adapters default to validating in builds. Soft-failing a production build with unchecked config is a last resort, not the default.
 

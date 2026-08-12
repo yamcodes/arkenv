@@ -27,11 +27,11 @@ This object surface is the product default across Next.js, Nuxt, Vite, and Bun. 
 
 ## Inference paths
 
-| Input | Result |
-| --- | --- |
-| Declarative map (`{ PORT: "number" }`) | `Infer<typeof schema>` |
-| Compiled `type({ ... })` | `typeof Env.infer` / `Infer<typeof Env>` |
-| Standard Schema field map | Output types from each validator |
+| Input                                  | Result                                   |
+| -------------------------------------- | ---------------------------------------- |
+| Declarative map (`{ PORT: "number" }`) | `Infer<typeof schema>`                   |
+| Compiled `type({ ... })`               | `typeof Env.infer` / `Infer<typeof Env>` |
+| Standard Schema field map              | Output types from each validator         |
 
 Hovering `env` in the editor shows the coerced output types when coercion is enabled.
 

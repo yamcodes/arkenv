@@ -41,10 +41,10 @@ With `{ coerce: false }`, `"3"` never becomes a number unless the morph accepts 
 
 ## When to morph vs coerce
 
-| Need | Prefer |
-| --- | --- |
-| `"3000"` → `number`, `"true"` → `boolean` | [Coercion](/docs/core-concepts/coercion) (default on) |
-| Trim, normalize, clamp, map enums | Morph (`.pipe`) |
+| Need                                          | Prefer                                                    |
+| --------------------------------------------- | --------------------------------------------------------- |
+| `"3000"` → `number`, `"true"` → `boolean`     | [Coercion](/docs/core-concepts/coercion) (default on)     |
+| Trim, normalize, clamp, map enums             | Morph (`.pipe`)                                           |
 | Validator-owned transforms (Zod `.transform`) | [`@arkenv/standard`](/docs/core-concepts/standard-schema) |
 
 ## Standard Schema
