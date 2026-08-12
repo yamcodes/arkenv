@@ -6,8 +6,8 @@ import {
 	createGenerator,
 } from "fumadocs-typescript";
 import {
-	AutoTypeTable as FumaAutoTypeTable,
 	type AutoTypeTableProps,
+	AutoTypeTable as FumaAutoTypeTable,
 } from "fumadocs-typescript/ui";
 import {
 	Callout,
