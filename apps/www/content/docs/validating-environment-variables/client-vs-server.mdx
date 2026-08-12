@@ -66,15 +66,16 @@ Use strict mode when variable **names** reveal infrastructure you want out of th
 Strict mode splits files so the server schema never enters the client module graph:
 
 <Files>
-  <Folder name="env" defaultOpen>
-    <File name="client.ts" />
-
-    <File name="server.ts" />
-
-    <Folder name="internal" defaultOpen>
-      <File name="shared.ts" />
-    </Folder>
-  </Folder>
+	<Folder name="env" defaultOpen>
+		<File name="client.ts" />
+		<File name="server.ts" />
+		<Folder name="generated" defaultOpen>
+			<File name="env.gen.ts" />
+		</Folder>
+		<Folder name="internal" defaultOpen>
+			<File name="shared.ts" />
+		</Folder>
+	</Folder>
 </Files>
 
 ```ts title="./env/internal/shared.ts"
