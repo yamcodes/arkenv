@@ -78,13 +78,13 @@ Engines are separate packages so peer dependencies stay honest. Framework plugin
 
 ArkEnv’s pre-coercion step for `@arkenv/standard` needs **Standard JSON Schema v1** (`~standard.jsonSchema.input` / `.output`). If a validator implements that interface, the converter exists by construction. (Conversion can still throw for unsupported schemas or JSON Schema targets; the spec allows that.)
 
-| Library                                  | Implements Standard JSON Schema v1 |
-| ---------------------------------------- | ---------------------------------- |
-| Zod (v4.2+)                              | Yes                                |
-| VineJS (v4.3+)                           | Yes                                |
-| Valibot (v1.2+ with `@valibot/to-json-schema`) | Yes                          |
-| Zod Mini                                 | Yes                                |
-| Other Standard JSON Schema v1 validators | Yes                                |
+| Library                                        | Implements Standard JSON Schema v1 |
+| ---------------------------------------------- | ---------------------------------- |
+| Zod (v4.2+)                                    | Yes                                |
+| VineJS (v4.3+)                                 | Yes                                |
+| Valibot (v1.2+ with `@valibot/to-json-schema`) | Yes                                |
+| Zod Mini                                       | Yes                                |
+| Other Standard JSON Schema v1 validators       | Yes                                |
 
 Some libraries keep conversion in a separate helper for bundle size (Valibot, Zod Mini). Prefer Zod/VineJS-style schemas that carry Standard JSON Schema on the value itself, or use the validator’s own coerce/transform helpers and set `coerce: false` when needed. See [Coercion](/docs/core-concepts/coercion).
 
