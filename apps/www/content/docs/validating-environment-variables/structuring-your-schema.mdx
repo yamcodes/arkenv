@@ -15,7 +15,7 @@ pnpm add @arkenv/core arktype
 
 Create `env.ts` at the root of the app or package that boots first:
 
-```ts title="./env.ts" twoslash
+```ts title="./env.ts"
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
@@ -75,7 +75,7 @@ Keep `.env.example` in sync with the schema so new contributors know which keys 
 
 By default `arkenv()` reads `process.env`. Pass a custom record when the host injects env another way (tests, Cloudflare Workers, Vite `loadEnv`):
 
-```ts title="./env.ts" twoslash
+```ts title="./env.ts"
 import arkenv from "@arkenv/core";
 
 export const env = arkenv(
@@ -90,7 +90,7 @@ See [options](/docs/reference/options) for `coerce`, `arrayFormat`, `emptyAsUnde
 
 If the project already uses Zod, Valibot, or another [Standard Schema](https://standardschema.dev/) validator, swap the import:
 
-```ts title="./env.ts" twoslash
+```ts title="./env.ts"
 import arkenv from "@arkenv/standard";
 import { z } from "zod";
 

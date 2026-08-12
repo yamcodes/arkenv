@@ -9,7 +9,7 @@ Environment values arrive as strings. Your schema tells ArkEnv which TypeScript 
 
 A bare `string` requires the key. Append `= 'value'` for a default when the key is missing:
 
-```ts title="./env.ts" twoslash
+```ts title="./env.ts"
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
@@ -25,7 +25,7 @@ export const env = arkenv({
 
 Declare numeric and boolean targets. ArkEnv [coerces](/docs/validating-environment-variables/coercion-and-parsing) `"3000"` and `"true"` for you when coercion is on (the default):
 
-```ts title="./env.ts" twoslash
+```ts title="./env.ts"
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
@@ -41,7 +41,7 @@ export const env = arkenv({
 
 Use ArkType string literals for fixed sets of values:
 
-```ts title="./env.ts" twoslash
+```ts title="./env.ts"
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
@@ -59,7 +59,7 @@ export const env = arkenv({
 | `string.host` | An IP address or `"localhost"` |
 | `number.port` | An integer from `0` to `65535` |
 
-```ts title="./env.ts" twoslash
+```ts title="./env.ts"
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
@@ -74,7 +74,7 @@ Keywords work only with `@arkenv/core` and ArkType. Full details live under [key
 
 For morphs, function defaults, or reuse across files, build the field with `type()`:
 
-```ts title="./env.ts" twoslash
+```ts title="./env.ts"
 import arkenv, { type } from "@arkenv/core";
 
 export const env = arkenv({
@@ -90,7 +90,7 @@ See [reusing schemas](/docs/validating-environment-variables/reusing-schemas) wh
 
 With `@arkenv/standard`, pass Zod (or Valibot, ArkType via Standard Schema, and others) schemas as values:
 
-```ts title="./env.ts" twoslash
+```ts title="./env.ts"
 import arkenv from "@arkenv/standard";
 import { z } from "zod";
 

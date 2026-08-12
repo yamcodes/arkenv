@@ -11,7 +11,7 @@ Coercion runs on a copy of the input before validation. Disable it with `{ coerc
 
 Any field typed as `number` or a numeric subtype (including [`number.port`](/docs/reference/keywords)) is parsed from the string form:
 
-```ts title="./env.ts" twoslash
+```ts title="./env.ts"
 import arkenv from "@arkenv/core";
 
 export const env = arkenv(
@@ -36,7 +36,7 @@ env.PORT; // number
 
 `boolean` accepts `"true"` and `"false"`:
 
-```ts title="./env.ts" twoslash
+```ts title="./env.ts"
 import arkenv from "@arkenv/core";
 
 export const env = arkenv(
@@ -51,7 +51,7 @@ env.DEBUG; // true
 
 By default ArkEnv splits on commas and trims each entry:
 
-```ts title="./env.ts" twoslash
+```ts title="./env.ts"
 import arkenv from "@arkenv/core";
 
 export const env = arkenv(
@@ -70,7 +70,7 @@ export const env = arkenv(
 
 Switch to JSON arrays with `arrayFormat: "json"`:
 
-```ts title="./env.ts" twoslash
+```ts title="./env.ts"
 import arkenv from "@arkenv/core";
 
 export const env = arkenv(
@@ -86,7 +86,7 @@ export const env = arkenv(
 
 JSON strings map onto nested object schemas. Nested fields are coerced too:
 
-```ts title="./env.ts" twoslash
+```ts title="./env.ts"
 import arkenv from "@arkenv/core";
 
 export const env = arkenv(
@@ -110,7 +110,7 @@ env.DATABASE.PORT; // number
 
 For custom transforms, use ArkType `.pipe` via `type()`:
 
-```ts title="./env.ts" twoslash
+```ts title="./env.ts"
 import arkenv, { type } from "@arkenv/core";
 
 export const env = arkenv({
@@ -124,7 +124,7 @@ Morphs run as part of ArkType validation. Coercion still handles the common stri
 
 [`@arkenv/standard`](/docs/reference/standard) coerces when the validator exposes JSON Schema that ArkEnv can introspect. Support includes Zod (v4.2+), Valibot (v1.2+ with `@valibot/to-json-schema`), Zod Mini, VineJS (v4.3+), and other Standard JSON Schema v1 libraries.
 
-```ts title="./env.ts" twoslash
+```ts title="./env.ts"
 import arkenv from "@arkenv/standard";
 import { z } from "zod";
 
@@ -138,7 +138,7 @@ You can also lean on the validator's own coercion (`z.coerce.number()`) and keep
 
 ## Disabling coercion
 
-```ts title="./env.ts" twoslash
+```ts title="./env.ts"
 import arkenv from "@arkenv/core";
 
 export const env = arkenv(
