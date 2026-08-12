@@ -1,0 +1,83 @@
+---
+title: ArkType
+description: Validate env vars with @arkenv/core and ArkType.
+---
+
+Recipe for ArkType via [`@arkenv/core`](/docs/reference/core). Engine choice: [Choosing an engine](/docs/core-concepts/standard-schema).
+
+`@arkenv/core` is the default ArkEnv engine. You write ArkType DSL strings (or `type()`), get ArkEnv keywords like `number.port`, and rely on built-in [coercion](/docs/core-concepts/coercion).
+
+## Install
+
+```package-install
+pnpm add @arkenv/core arktype
+```
+
+## Minimal `env.ts`
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  DATABASE_URL: "string",
+  PORT: "number.port = 3000",
+  DEBUG: "boolean = false",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+Import `{ env } from "./env"` wherever the process boots. Missing or invalid values throw [`ArkEnvError`](/docs/reference/core) at startup.
+
+## Coercion
+
+ArkType schemas coerce through ArkEnv’s pre-coercion pipeline (JSON Schema introspection of the compiled type). No extra callback is required.
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  {
+    PORT: "number.port",
+    DEBUG: "boolean",
+    TAGS: "string[]",
+  },
+  {
+    env: {
+      PORT: "8080",
+      DEBUG: "true",
+      TAGS: "web, api",
+    },
+  },
+);
+
+env.PORT; // number
+env.DEBUG; // boolean
+env.TAGS; // string[]
+```
+
+Disable with `{ coerce: false }` when you want raw strings and [morphs](/docs/core-concepts/transforms) instead. Details: [Coercion](/docs/core-concepts/coercion).
+
+## Defaults and optionals
+
+| Pattern                 | Meaning                                      |
+| ----------------------- | -------------------------------------------- |
+| `= 'value'` / `= 3000`  | Default when the key is missing              |
+| `string \| undefined`   | Optional key                                 |
+| `emptyAsUndefined: true` | Treat `PORT=` as missing so defaults apply |
+
+Keywords (`string.host`, `number.port`): [keywords](/docs/reference/keywords). Richer morphs and `type()`: [Defining types](/docs/validating-environment-variables/defining-types).
+
+## Frameworks
+
+Wire the same `env.ts` into a host:
+
+- [Next.js](/docs/guides/frameworks/nextjs)
+- [Nuxt](/docs/guides/frameworks/nuxt)
+- [Vite](/docs/guides/frameworks/vite)
+- [Bun](/docs/guides/frameworks/bun)
+
+## Next steps
+
+- [`@arkenv/core`](/docs/reference/core)
+- [Choosing an engine](/docs/core-concepts/standard-schema)
+- [Validation](/docs/core-concepts/validation)

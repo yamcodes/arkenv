@@ -1,0 +1,83 @@
+---
+title: Zod
+description: Validate env vars with @arkenv/standard and Zod.
+---
+
+Recipe for Zod via [`@arkenv/standard`](/docs/reference/standard). Engine choice: [Choosing an engine](/docs/core-concepts/standard-schema).
+
+Zod 4.2+ embeds [Standard JSON Schema](https://standardschema.dev/json-schema) on the schema value. ArkEnv’s built-in probes read that metadata and pre-coerce env strings — **no** `toJsonSchema` callback.
+
+## Install
+
+```package-install
+pnpm add @arkenv/standard zod
+```
+
+## Minimal `env.ts`
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import { z } from "zod";
+
+export const env = arkenv({
+  DATABASE_URL: z.string().url(),
+  PORT: z.number().int().min(0).max(65535).default(3000),
+  DEBUG: z.boolean().default(false),
+  NODE_ENV: z
+    .enum(["development", "production", "test"])
+    .default("development"),
+});
+```
+
+Prefer `z.number()` / `z.boolean()` when you want ArkEnv coercion. You can also use `z.coerce.number()` (and friends) and keep ArkEnv’s `coerce` option as a backup.
+
+## Coercion
+
+Standard JSON Schema is already on the value. Omit `toJsonSchema`. Hybrid schemas that mix Zod with Valibot still coerce Zod keys without a callback; only Valibot keys need the [Valibot](/docs/guides/validators/valibot) escape hatch.
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import { z } from "zod";
+
+export const env = arkenv(
+  {
+    PORT: z.number(),
+    DEBUG: z.boolean(),
+    TAGS: z.array(z.string()),
+  },
+  {
+    env: {
+      PORT: "8080",
+      DEBUG: "true",
+      TAGS: "web, api",
+    },
+  },
+);
+
+env.PORT; // number
+env.DEBUG; // boolean
+env.TAGS; // string[]
+```
+
+## Defaults and optionals
+
+| Pattern              | Meaning                         |
+| -------------------- | ------------------------------- |
+| `.default(...)`      | Default when the key is missing |
+| `.optional()`        | Optional key                    |
+| `emptyAsUndefined: true` | Treat empty strings as missing |
+
+## Frameworks
+
+Use each host’s `/standard` entry with the same Zod schema:
+
+- [Next.js](/docs/guides/frameworks/nextjs) — `@arkenv/nextjs/standard`
+- [Nuxt](/docs/guides/frameworks/nuxt)
+- [Vite](/docs/guides/frameworks/vite) — `@arkenv/vite-plugin/standard`
+- [Bun](/docs/guides/frameworks/bun) — `@arkenv/bun-plugin/standard`
+
+## Next steps
+
+- [`@arkenv/standard`](/docs/reference/standard)
+- [Coercion](/docs/core-concepts/coercion)
+- Runnable example: [`examples/with-zod`](https://github.com/yamcodes/arkenv/tree/main/examples/with-zod)

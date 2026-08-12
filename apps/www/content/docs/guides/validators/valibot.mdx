@@ -1,0 +1,85 @@
+---
+title: Valibot
+description: Validate env vars with @arkenv/standard and Valibot.
+---
+
+Recipe for Valibot via [`@arkenv/standard`](/docs/reference/standard). Engine choice: [Choosing an engine](/docs/core-concepts/standard-schema).
+
+Valibot implements Standard Schema validation but keeps JSON Schema conversion in [`@valibot/to-json-schema`](https://valibot.dev/guides/json-schema/) rather than on each schema value. Wire ArkEnv’s optional `toJsonSchema` callback once so `v.number()` and `v.boolean()` pre-coerce like Zod.
+
+## Install
+
+```package-install
+pnpm add @arkenv/standard valibot @valibot/to-json-schema
+```
+
+## Minimal `env.ts`
+
+```ts title="./env.ts"
+import arkenv from "@arkenv/standard";
+import * as v from "valibot";
+import { toJsonSchema } from "@valibot/to-json-schema";
+
+export const env = arkenv(
+  {
+    DATABASE_URL: v.pipe(v.string(), v.url()),
+    PORT: v.optional(v.number(), 3000),
+    DEBUG: v.optional(v.boolean(), false),
+    NODE_ENV: v.optional(
+      v.picklist(["development", "production", "test"]),
+      "development",
+    ),
+  },
+  {
+    toJsonSchema: (schema) =>
+      toJsonSchema(schema as v.GenericSchema, {
+        typeMode: "input",
+        target: "draft-07",
+      }),
+  },
+);
+```
+
+Prefer `v.number()` / `v.boolean()` with this wiring — do **not** reach for `v.transform(Number)` just to satisfy env strings.
+
+## Coercion (`toJsonSchema`)
+
+Pass an explicit wrapper (not a bare `{ toJsonSchema }` function reference):
+
+```ts
+toJsonSchema: (schema) =>
+  toJsonSchema(schema as v.GenericSchema, {
+    typeMode: "input",
+    target: "draft-07",
+  }),
+```
+
+- `target: "draft-07"` matches ArkEnv’s built-in probes.
+- `typeMode: "input"` coerces env strings toward the schema’s input type. Valibot’s default `typeMode` is `"ignore"`, which can silently mis-coerce piped schemas if you pass the function by reference.
+- The callback runs **only** after Standard JSON Schema probes fail for that key. Zod fields in a hybrid schema still coerce without it.
+- Return `undefined` to skip one key; throwing or returning a non-plain object fails the parse with `ArkEnvError` for that key.
+
+Do **not** wrap every field with a per-key `toStandardJsonSchema(...)` helper as the happy path — configure `toJsonSchema` once on `arkenv()`.
+
+## Defaults and optionals
+
+| Pattern                  | Meaning                         |
+| ------------------------ | ------------------------------- |
+| `v.optional(schema, def)` | Default when the key is missing |
+| `v.optional(schema)`     | Optional key                    |
+| `emptyAsUndefined: true` | Treat empty strings as missing  |
+
+## Frameworks
+
+Use each host’s `/standard` entry and pass the same `toJsonSchema` option in plugin config (it aliases `ParseStandardConfig` / `StandardEnvConfig`):
+
+- [Next.js](/docs/guides/frameworks/nextjs) — `@arkenv/nextjs/standard`
+- [Nuxt](/docs/guides/frameworks/nuxt)
+- [Vite](/docs/guides/frameworks/vite) — `@arkenv/vite-plugin/standard`
+- [Bun](/docs/guides/frameworks/bun) — `@arkenv/bun-plugin/standard`
+
+## Next steps
+
+- [Coercion → Valibot](/docs/core-concepts/coercion#valibot-tojsonschema)
+- [`@arkenv/standard`](/docs/reference/standard)
+- Runnable example: [`examples/with-valibot`](https://github.com/yamcodes/arkenv/tree/main/examples/with-valibot)

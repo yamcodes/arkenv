@@ -36,7 +36,7 @@ export const env = arkenv({
 | Keywords (`string.host`, `number.port`) | Yes                         | No                                                                                              |
 | Peer `arktype`                          | Required                    | None                                                                                            |
 | [Options](/docs/reference/options)      | Same                        | Same                                                                                            |
-| Coercion                                | Built-in for ArkType shapes | Needs JSON Schema introspection (Zod 4.2+, Valibot with `@valibot/to-json-schema`, and similar) |
+| Coercion                                | Built-in for ArkType shapes | Standard JSON Schema on the value, or [`toJsonSchema`](/docs/core-concepts/coercion#valibot-tojsonschema) for Valibot-style converters |
 
 ## Exports
 
@@ -51,3 +51,9 @@ export const env = arkenv({
 ## Framework `/standard` subpaths
 
 Next.js, Nuxt, Vite, and Bun ship `/standard` (and related) entries that pair with this package. See each package reference for import paths.
+
+## Next steps
+
+- [Validators](/docs/guides/validators) — ArkType, Zod, and Valibot cookbooks
+- [Coercion](/docs/core-concepts/coercion)
+- [Choosing an engine](/docs/core-concepts/standard-schema)
