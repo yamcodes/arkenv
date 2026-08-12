@@ -8,7 +8,7 @@ const env = arkenv(
 		PORT: v.number(),
 		HOST: v.union([
 			v.literal("localhost"),
-			v.pipe(v.string(), v.regex(/^[a-z0-9.-]+$/i)),
+			v.pipe(v.string(), v.regex(/^[a-zA-Z0-9.-]+$/)),
 		]),
 		DEBUG: v.boolean(),
 	},
