@@ -41,7 +41,8 @@ export default function ArkenvSearchDialog({
 			? { type: "fetch", api, locale, delayMs }
 			: { type: "static", from: api, locale, delayMs },
 	);
-	const resultsOpen = query.data !== "empty";
+	const items = query.data !== "empty" ? query.data : null;
+	const resultsOpen = Array.isArray(items);
 
 	return (
 		<SearchDialog
@@ -63,7 +64,7 @@ export default function ArkenvSearchDialog({
 					<SearchDialogInput />
 					<SearchDialogClose />
 				</SearchDialogHeader>
-				<SearchDialogList items={resultsOpen ? query.data : null} />
+				<SearchDialogList items={items} />
 			</SearchDialogContent>
 		</SearchDialog>
 	);
