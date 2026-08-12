@@ -3,6 +3,147 @@ title: Add to an existing repository
 description: Add ArkEnv environment validation to an existing project.
 ---
 
-Stub guide for wiring ArkEnv into a repo that already has application code.
+You do not need a greenfield scaffold to adopt ArkEnv. When `arkenv init` finds a `package.json`, it runs the **existing-project flow**: detect your stack, read env keys already in use, generate schema files, and wire framework integrations.
 
-> Content TBD — Getting started leaf.
+## Before you start
+
+<Callout type="warn">
+  Commit or stash your work first. By default, `arkenv init` refuses to run when
+  the git working tree is dirty. Pass `--force` only when you accept overwriting
+  generated files and skipping that check.
+</Callout>
+
+ArkEnv works best with **TypeScript strict mode** enabled. The init wizard can offer to turn strict on when it is missing. Plain JavaScript works at runtime, but editor autocomplete and type checking are weaker — see [Editor integration](/docs/getting-started/editor-integration).
+
+Install the packages you need, or let init add them:
+
+```package-install
+pnpm add @arkenv/core
+pnpm add -D arkenv
+```
+
+## Run init
+
+From your project root:
+
+```bash title="Terminal"
+pnpm dlx arkenv@latest init
+```
+
+Init detects whether you are brownfield or greenfield:
+
+| Situation | Flow |
+| --------- | ---- |
+| Directory contains `package.json` | Existing-project wizard (this guide) |
+| Empty directory | New-project scaffold (pick an example or blank template) |
+| `--example` flag | Always new-project, even in a non-empty directory |
+
+Useful flags for existing repos:
+
+```bash title="Terminal"
+pnpm dlx arkenv@latest init --yes              # non-interactive; flat layout default for Next/Nuxt
+pnpm dlx arkenv@latest init --strict           # strict client/server file split for Next.js or Nuxt
+pnpm dlx arkenv@latest init --host-preset vercel
+pnpm dlx arkenv@latest init --agent            # --yes --quiet --json for AI agents
+```
+
+See [hosting presets](/docs/validating-environment-variables/hosting-presets) for provider values (`vercel`, `netlify`, `cloudflare`, `railway`, `render`, `fly`).
+
+## What init detects
+
+The wizard inspects your repo and asks targeted questions:
+
+1. **Framework** — Next.js, Nuxt, Vite, Bun fullstack, or vanilla Node from dependencies and config files.
+2. **Layout** — flat (default) or [strict](/docs/validating-environment-variables/client-vs-server#strict-layout) split for Next.js and Nuxt.
+3. **Existing schema** — whether to overwrite `env.ts` (or strict layout files).
+4. **Environment keys** — parsed from `.env.example`, or scanned from `process.env`, `import.meta.env`, and `env.*` usage in source when no example file exists.
+5. **Validator** — ArkType (default), Zod, or Valibot via `@arkenv/standard`.
+6. **Hosting preset** — optional provider system variables.
+
+When `.env.example` is present, init offers to seed the schema from its keys:
+
+```txt
+Detected .env.example with 12 keys. Use them for your schema?
+```
+
+When only source usage is found:
+
+```txt
+Detected 8 environment variables used in your project. Use them for your schema?
+```
+
+## What init generates
+
+Typical output for a Next.js flat layout:
+
+<Files>
+  <Folder name="my-app" defaultOpen>
+    <File name="env.ts" />
+    <File name=".env.example" />
+    <File name=".env" />
+    <Folder name="generated">
+      <File name="env.gen.ts" />
+    </Folder>
+    <File name="next.config.ts" />
+  </Folder>
+</Files>
+
+Depending on your stack, init may also:
+
+- Wrap `next.config.ts` with `withArkEnv` (Next.js codegen)
+- Scaffold `vite-env.d.ts` or `bun-env.d.ts` for framework env typing
+- Append `.env` and `.env.local` to `.gitignore` when missing
+- Create `.env` from `.env.example`, or create `.env.example` from `.env` with **values stripped** so secrets are not committed
+
+<Callout type="info">
+  ArkEnv does not load `.env` files itself. Your framework, Bun, or a tool like
+  `tsx --env-file` must populate `process.env` before `arkenv()` runs. See
+  [Framework integration — Loading .env files](/docs/validating-environment-variables/framework-integration#loading-env-files).
+</Callout>
+
+## After init
+
+1. Copy `.env.example` to `.env` if you still need local values:
+
+   ```bash title="Terminal"
+   cp .env.example .env
+   ```
+
+2. Import the validated object everywhere instead of raw env maps:
+
+   ```ts title="./src/server.ts"
+   import { env } from "../env";
+
+   console.log(env.DATABASE_URL);
+   ```
+
+3. Read [Client vs. server](/docs/validating-environment-variables/client-vs-server) to understand public prefixes (`NEXT_PUBLIC_*`, `VITE_*`, and friends).
+
+4. Follow the framework guide for your stack: [Next.js](/docs/guides/frameworks/nextjs), [Nuxt](/docs/guides/frameworks/nuxt), [Vite](/docs/guides/frameworks/vite), or [Bun](/docs/guides/frameworks/bun).
+
+## Non-interactive and CI
+
+For scripts, CI, or agent workflows, combine flags to skip prompts:
+
+```bash title="Terminal"
+pnpm dlx arkenv@latest init --yes --host-preset vercel --agent
+```
+
+`--agent` implies `--yes`, `--quiet`, and JSON output suitable for tooling.
+
+## Troubleshooting
+
+| Problem | Fix |
+| ------- | --- |
+| Git working tree is not clean | Commit, stash (`git stash -u` for untracked files), or use `--force` |
+| Technical requirements not met | Enable TypeScript strict mode, or use `--force` to bypass checks |
+| Non-empty directory without `package.json` | Run in a subdirectory, use `--example` for a new scaffold, or `--force` |
+| `--simple` flag | Deprecated — remove it; flat layout is the default |
+
+The deprecated `--simple` layout hard-fails on Next.js. Use flat layout (default) or `--strict` when you need a split schema.
+
+## Next steps
+
+- [Editor integration](/docs/getting-started/editor-integration) for autocomplete and IDE setup.
+- [Structuring your schema](/docs/validating-environment-variables/structuring-your-schema) for export patterns and Standard Schema.
+- [Start with an example](/docs/getting-started/examples) to compare against a known-good template.
