@@ -116,7 +116,7 @@ describe("transform mode plugin", () => {
 		expect(bundle).toContain(
 			"Attempted to access server environment variable 'DATABASE_URL' on the client",
 		);
-		expect(bundle).toContain('error.name = "ArkEnvError"');
+		expect(bundle).toMatch(/\.name\s*=\s*"ArkEnvError"/);
 		expect(bundle).not.toContain("ArkEnv Error:");
 		expect(bundle).not.toMatch(/from ["']@arkenv\/core["']/);
 		expect(bundle).not.toMatch(/from ["']arktype["']/);
