@@ -48,9 +48,9 @@ By default this writes `generated/env.gen.ts` and validates the schema during co
 import arkenv from "@/generated/env.gen";
 
 export const env = arkenv({
-	DATABASE_URL: "string",
-	NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+  DATABASE_URL: "string",
+  NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
 ```
 
@@ -98,8 +98,8 @@ import arkenv from "@arkenv/nextjs/server";
 import { env as clientEnv } from "./client";
 
 export const env = arkenv(
-	{ DATABASE_URL: "string" },
-	{ extends: [clientEnv] },
+  { DATABASE_URL: "string" },
+  { extends: [clientEnv] },
 );
 ```
 

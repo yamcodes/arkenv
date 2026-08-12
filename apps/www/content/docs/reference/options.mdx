@@ -9,12 +9,12 @@ Pass an optional config object as the second argument to `arkenv()`. The same op
 import arkenv from "@arkenv/core";
 
 export const env = arkenv(
-	{ PORT: "number.port = 3000" },
-	{
-		env: process.env,
-		coerce: true,
-		onUndeclaredKey: "delete",
-	},
+  { PORT: "number.port = 3000" },
+  {
+    env: process.env,
+    coerce: true,
+    onUndeclaredKey: "delete",
+  },
 );
 ```
 
@@ -32,8 +32,8 @@ Input record to validate. Values must be `string | undefined`, matching `process
 import arkenv from "@arkenv/core";
 
 export const env = arkenv(
-	{ PORT: "number.port" },
-	{ env: { PORT: "3000" } },
+  { PORT: "number.port" },
+  { env: { PORT: "3000" } },
 );
 ```
 
@@ -90,12 +90,12 @@ Return a result object instead of throwing:
 import arkenv from "@arkenv/core";
 
 const result = arkenv(
-	{ PORT: "number.port" },
-	{ safe: true, env: { PORT: "nope" } },
+  { PORT: "number.port" },
+  { safe: true, env: { PORT: "nope" } },
 );
 
 if (!result.success) {
-	console.error(result.issues);
+  console.error(result.issues);
 }
 ```
 

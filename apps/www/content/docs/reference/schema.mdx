@@ -13,10 +13,10 @@ Pass a declarative map of ArkType strings (or nested objects):
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
-	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-	HOST: "string.host = 'localhost'",
-	PORT: "number.port = 3000",
-	DATABASE_URL: "string",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+  HOST: "string.host = 'localhost'",
+  PORT: "number.port = 3000",
+  DATABASE_URL: "string",
 });
 ```
 
@@ -30,8 +30,8 @@ Build the schema once with `type()` when you reuse it across runtimes or package
 import arkenv, { type } from "@arkenv/core";
 
 export const Env = type({
-	PORT: "number.port = 3000",
-	DATABASE_URL: "string",
+  PORT: "number.port = 3000",
+  DATABASE_URL: "string",
 });
 
 export const env = arkenv(Env);
@@ -48,8 +48,8 @@ import arkenv from "@arkenv/standard";
 import { z } from "zod";
 
 export const env = arkenv({
-	PORT: z.coerce.number().int().min(0).max(65535),
-	DATABASE_URL: z.string().url(),
+  PORT: z.coerce.number().int().min(0).max(65535),
+  DATABASE_URL: z.string().url(),
 });
 ```
 
@@ -59,8 +59,8 @@ export const env = arkenv({
 import arkenv, { type Infer } from "@arkenv/core";
 
 const schema = {
-	DATABASE_URL: "string",
-	PORT: "number.port = 3000",
+  DATABASE_URL: "string",
+  PORT: "number.port = 3000",
 } as const;
 
 export const env = arkenv(schema);

@@ -32,10 +32,10 @@ pnpm add @arkenv/standard @arkenv/nuxt zod
 
 ```ts title="./nuxt.config.ts"
 export default defineNuxtConfig({
-	modules: ["@arkenv/nuxt/module"],
-	arkenv: {
-		layout: "flat",
-	},
+  modules: ["@arkenv/nuxt/module"],
+  arkenv: {
+    layout: "flat",
+  },
 });
 ```
 
@@ -56,8 +56,8 @@ The schema module is the surface. Nuxt leaves `env.gen.ts` to Next.js.
 import arkenv from "@arkenv/nuxt";
 
 export const env = arkenv({
-	DATABASE_URL: "string",
-	NUXT_PUBLIC_API_URL: "string",
+  DATABASE_URL: "string",
+  NUXT_PUBLIC_API_URL: "string",
 });
 ```
 

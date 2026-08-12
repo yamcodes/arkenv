@@ -34,8 +34,8 @@ Register the plugin in `Bun.build` (or your fullstack server setup):
 import arkenv from "@arkenv/bun-plugin";
 
 await Bun.build({
-	entrypoints: ["./src/index.ts"],
-	plugins: [arkenv()],
+  entrypoints: ["./src/index.ts"],
+  plugins: [arkenv()],
 });
 ```
 
@@ -43,8 +43,8 @@ await Bun.build({
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
-	DATABASE_URL: "string",
-	BUN_PUBLIC_API_URL: "string",
+  DATABASE_URL: "string",
+  BUN_PUBLIC_API_URL: "string",
 });
 ```
 

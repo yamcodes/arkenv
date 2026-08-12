@@ -23,7 +23,7 @@ import { defineConfig } from "vite";
 import arkenv from "@arkenv/vite-plugin";
 
 export default defineConfig({
-	plugins: [arkenv()],
+  plugins: [arkenv()],
 });
 ```
 
@@ -31,8 +31,8 @@ export default defineConfig({
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
-	DATABASE_URL: "string",
-	VITE_API_URL: "string",
+  DATABASE_URL: "string",
+  VITE_API_URL: "string",
 });
 ```
 
@@ -59,16 +59,16 @@ import arkenvPlugin from "@arkenv/vite-plugin";
 import arkenv, { type } from "@arkenv/core";
 
 export const Env = type({
-	PORT: "number.port",
-	VITE_API_URL: "string",
+  PORT: "number.port",
+  VITE_API_URL: "string",
 });
 
 export default defineConfig(({ mode }) => {
-	const env = arkenv(Env, { env: loadEnv(mode, process.cwd(), "") });
-	return {
-		plugins: [arkenvPlugin(Env)],
-		server: { port: env.PORT },
-	};
+  const env = arkenv(Env, { env: loadEnv(mode, process.cwd(), "") });
+  return {
+    plugins: [arkenvPlugin(Env)],
+    server: { port: env.PORT },
+  };
 });
 ```
 
