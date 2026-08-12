@@ -20,16 +20,20 @@ The imported validated environment object (`import { env } from "./env"`). This 
 *Avoid*: treating `import.meta.env` / `process.env` as the recommended ArkEnv API
 
 **Transform** (also **transformation**):
-Schema-agnostic reshape of a validated env value (trim, clamp, map, normalize) during validation. Prefer this word in ArkEnv docs, skills, and issue language whenever the behavior is not tied to one schema library.
-*Avoid*: using **morph** as the default product term for this idea
+Schema-agnostic reshape of a validated env value (trim, clamp, map, normalize) during validation. Prefer this word in ArkEnv docs, skills, and issue language whenever the behavior is not tied to one schema library. Docs show ArkType and Standard Schema (Zod, …) examples side by side as first-class paths.
+*Avoid*: using **morph** as the default product term for this idea; treating `@arkenv/standard` / Zod as an afterthought section
 
 **Morph**:
 ArkType’s name for a **transform** (`.pipe` morphs; ArkType docs also say “transformation”). Use when talking about ArkType APIs or linking to [ArkType morphs](https://arktype.io/docs/morphs). Zod’s parallel is `.transform`; Valibot uses pipe/transform helpers.
 *Avoid*: treating Morph as ArkEnv’s cross-validator vocabulary
 
 **Coercion**:
-ArkEnv’s pre-validation step that turns raw env strings into numbers, booleans, arrays, and objects before the schema library runs. Distinct from a **transform**: coercion is ArkEnv-owned and schema-introspected; transforms are declared on the field schema.
+ArkEnv’s pre-validation step that turns raw env strings into numbers, booleans, arrays, and objects before the schema library runs. Distinct from a **transform**: coercion is ArkEnv-owned and schema-introspected; transforms are declared on the field schema. Applies to both `@arkenv/core` and `@arkenv/standard`.
 *Avoid*: calling coercion a morph/transform, or calling a Zod `.transform` “coercion” unless the library’s own coerce helpers are meant
+
+**Engine** (`@arkenv/core` / `@arkenv/standard`):
+The two first-class validation entry points. Same `arkenv()` runtime options, errors, and framework plugins; different schema authoring style and peers. Prefer dual examples (Tabs) in docs over core-first prose with a Standard Schema appendix.
+*Avoid*: framing Standard Schema as migration-only or second-class
 
 **Schema/define path**:
 The Vite plugin call shape `arkenv(schema)` that validates at build time and inlines via Vite `define` into `import.meta.env.*`, with types from `ImportMetaEnvAugmented`. Still supported so existing apps keep working (#1328 acceptance). Lasting product stance is the open call on **#1333** (gates CLI #1332 and related SPA-mode work).

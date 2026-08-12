@@ -121,27 +121,49 @@ env.DATABASE;
 
 ## Transforms
 
-Custom transforms reshape values during validation. With `@arkenv/core`, that is an ArkType [morph](https://arktype.io/docs/morphs) via `.pipe`. Zod and Valibot use their own `.transform` / pipe APIs on the field schema instead.
+Custom transforms reshape values during validation. Both engines support them; each library has its own API name (ArkType [morph](https://arktype.io/docs/morphs), Zod `.transform`, Valibot pipe/transform).
 
-```ts title="./env.ts" twoslash
-import arkenv, { type } from "@arkenv/core";
+<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
+  <Tab value="ArkType (@arkenv/core)">
+    ```ts title="./env.ts" twoslash
+    import arkenv, { type } from "@arkenv/core";
 
-export const env = arkenv(
-  {
-    BUILD_ID: type("string").pipe((value) => value.trim().toUpperCase()),
-  },
-  { env: { BUILD_ID: "  abc  " } },
-);
+    export const env = arkenv(
+    	{
+    		BUILD_ID: type("string").pipe((value) => value.trim().toUpperCase()),
+    	},
+    	{ env: { BUILD_ID: "  abc  " } },
+    );
 
-env.BUILD_ID;
-// ^?
-```
+    env.BUILD_ID;
+    // ^?
+    ```
+  </Tab>
+  <Tab value="Zod (@arkenv/standard)">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
+
+    export const env = arkenv(
+    	{
+    		BUILD_ID: z
+    			.string()
+    			.transform((value) => value.trim().toUpperCase()),
+    	},
+    	{ env: { BUILD_ID: "  abc  " } },
+    );
+
+    env.BUILD_ID;
+    // ^?
+    ```
+  </Tab>
+</Tabs>
 
 ArkEnv's built-in coercion still handles the common string-to-number and string-to-boolean cases before schema transforms run. See [Transforms](/docs/core-concepts/transforms).
 
-## Standard Schema coercion (Zod, Valibot, etc.)
+## Coercion with Standard Schema validators
 
-[`@arkenv/standard`](/docs/reference/standard) coerces when the validator exposes JSON Schema that ArkEnv can introspect. Support includes Zod (v4.2+), Valibot (v1.2+ with `@valibot/to-json-schema`), Zod Mini, VineJS (v4.3+), and other libraries on the [Standard JSON Schema](https://standardschema.dev/json-schema#what-schema-libraries-support-this-spec) list.
+The same `coerce` option works with `@arkenv/standard` when the validator exposes JSON Schema ArkEnv can introspect (Zod 4.2+, Valibot with `@valibot/to-json-schema`, Zod Mini, VineJS 4.3+, and other libraries on the [Standard JSON Schema](https://standardschema.dev/json-schema#what-schema-libraries-support-this-spec) list).
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/standard";

@@ -1,78 +1,99 @@
 ---
 title: Transforms
-description: Reshape validated env values with schema-library transforms.
+description: Reshape validated env values during schema validation.
 ---
 
-A **transform** reshapes a value as part of validation: trim a string, clamp a number, map an enum. The idea is schema-agnostic. Each validator has its own API name for it:
+A **transform** reshapes a value as part of validation: trim a string, clamp a number, map an enum. ArkEnv uses that word for the idea across engines. Your schema library may call it something else:
 
-| Library                  | Their word                                                           | Typical API                      |
-| ------------------------ | -------------------------------------------------------------------- | -------------------------------- |
-| ArkType (`@arkenv/core`) | [Morph](https://arktype.io/docs/morphs) (sometimes “transformation”) | `type("string").pipe(...)`       |
-| Zod                      | Transform                                                            | `.transform(...)` / `.pipe(...)` |
-| Valibot                  | Transform / pipe                                                     | `pipe(...)`, `transform(...)`    |
+| Library | Their word | Typical API |
+| --- | --- | --- |
+| ArkType | [Morph](https://arktype.io/docs/morphs) (also “transformation”) | `type("string").pipe(...)` |
+| Zod | Transform | `.transform(...)` / `.pipe(...)` |
+| Valibot | Transform / pipe | `pipe(...)`, `transform(...)` |
 
-ArkEnv docs say **transform** when the behavior is the same across engines. Say **morph** when you mean ArkType’s morph specifically.
+Everyday string-to-number and string-to-boolean conversion is [coercion](/docs/core-concepts/coercion). Coercion runs first on a copy of the input. Transforms run during schema validation after that.
 
-Everyday string-to-number and string-to-boolean conversion is [coercion](/docs/core-concepts/coercion), which runs first on a copy of the input. Transforms run during schema validation after that.
+## Basic transform
 
-## ArkType morphs (`@arkenv/core`)
+Trim and normalize a string field:
 
-```ts title="./env.ts" twoslash
-import arkenv, { type } from "@arkenv/core";
+<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
+  <Tab value="ArkType (@arkenv/core)">
+    ```ts title="./env.ts" twoslash
+    import arkenv, { type } from "@arkenv/core";
 
-export const env = arkenv({
-  BUILD_ID: type("string").pipe((value) => value.trim().toUpperCase()),
-  PORT: "number.port = 3000",
-});
-```
+    export const env = arkenv({
+    	BUILD_ID: type("string").pipe((value) => value.trim().toUpperCase()),
+    	PORT: "number.port = 3000",
+    });
+    ```
+  </Tab>
+  <Tab value="Zod (@arkenv/standard)">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
 
-`BUILD_ID` is still validated as a string, then transformed by the morph. `PORT` uses coercion, not a manual transform.
+    export const env = arkenv({
+    	BUILD_ID: z
+    		.string()
+    		.transform((value) => value.trim().toUpperCase()),
+    	PORT: z.coerce.number().int().min(0).max(65535).default(3000),
+    });
+    ```
+  </Tab>
+</Tabs>
+
+`BUILD_ID` is validated as a string, then reshaped. `PORT` uses coercion (or Zod’s `z.coerce`), not a custom transform.
 
 ## Transform after coercion
 
-Coercion can feed a transform. Here the string `"42"` becomes a number before your pipe runs:
+Coercion can feed a transform. The string `"3"` becomes a number before your pipe runs:
 
-```ts title="./env.ts" twoslash
-import arkenv, { type } from "@arkenv/core";
+<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
+  <Tab value="ArkType (@arkenv/core)">
+    ```ts title="./env.ts" twoslash
+    import arkenv, { type } from "@arkenv/core";
 
-export const env = arkenv(
-  {
-    RETRY_COUNT: type("number").pipe((n) => Math.max(0, n)),
-  },
-  { env: { RETRY_COUNT: "3" } },
-);
+    export const env = arkenv(
+    	{
+    		RETRY_COUNT: type("number").pipe((n) => Math.max(0, n)),
+    	},
+    	{ env: { RETRY_COUNT: "3" } },
+    );
 
-env.RETRY_COUNT; // 3
-```
+    env.RETRY_COUNT; // 3
+    ```
+  </Tab>
+  <Tab value="Zod (@arkenv/standard)">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
 
-With `{ coerce: false }`, `"3"` never becomes a number unless the transform accepts a string itself.
+    export const env = arkenv(
+    	{
+    		RETRY_COUNT: z.number().transform((n) => Math.max(0, n)),
+    	},
+    	{ env: { RETRY_COUNT: "3" } },
+    );
+
+    env.RETRY_COUNT; // 3
+    ```
+  </Tab>
+</Tabs>
+
+With `{ coerce: false }`, `"3"` never becomes a number unless the transform accepts a string itself (or you use the library’s own coerce helpers).
 
 ## Transform vs coerce
 
-| Need                                                | Prefer                                                    |
-| --------------------------------------------------- | --------------------------------------------------------- |
-| `"3000"` → `number`, `"true"` → `boolean`           | [Coercion](/docs/core-concepts/coercion) (default on)     |
-| Trim, normalize, clamp, map enums                   | Transform (ArkType morph / Zod `.transform` / …)          |
-| Validator-owned pipelines on Standard Schema fields | [`@arkenv/standard`](/docs/core-concepts/standard-schema) |
-
-## Standard Schema transforms
-
-`@arkenv/standard` has no ArkType morphs. Put transforms on the validator before the value reaches your app:
-
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/standard";
-import { z } from "zod";
-
-export const env = arkenv({
-  BUILD_ID: z
-    .string()
-    .transform((value) => value.trim().toUpperCase()),
-});
-```
+| Need | Prefer |
+| --- | --- |
+| `"3000"` → `number`, `"true"` → `boolean` | [Coercion](/docs/core-concepts/coercion) (default on), or Zod `z.coerce.*` |
+| Trim, normalize, clamp, map enums | Transform on the field schema |
+| Multi-step pipelines | ArkType `.pipe` chains / Zod `.pipe` / Valibot `pipe` |
 
 ## Related
 
 - [Defining types](/docs/validating-environment-variables/defining-types)
-- [keywords](/docs/reference/keywords)
 - [Coercion](/docs/core-concepts/coercion)
 - [Coercion and parsing](/docs/validating-environment-variables/coercion-and-parsing)
+- [Choosing an engine](/docs/core-concepts/standard-schema)

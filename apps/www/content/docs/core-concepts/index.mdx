@@ -5,16 +5,23 @@ description: Foundational ideas behind ArkEnv validation, coercion, and typesafe
 
 These pages explain how ArkEnv thinks about environment variables: when validation runs, how strings become typed values, and why the imported `env` object is the surface you use everywhere.
 
+ArkEnv has two engines that share the same runtime pipeline and options:
+
+- [`@arkenv/core`](/docs/reference/core) with ArkType
+- [`@arkenv/standard`](/docs/reference/standard) with Zod, Valibot, or any [Standard Schema](https://standardschema.dev/) validator
+
+Concept pages treat both as first-class. Examples usually show ArkType and Zod side by side; engine-only details use callouts.
+
 For step-by-step setup, see [Validating environment variables](/docs/validating-environment-variables). For option and package lookups, see the [API reference](/docs/reference).
 
 <Cards>
-  <Card href="/docs/core-concepts/validation" title="Validation" description="Boot and build-time checks; how ArkEnv uses your schema library." />
+  <Card href="/docs/core-concepts/validation" title="Validation" description="Boot and build-time checks with either engine." />
 
-  <Card href="/docs/core-concepts/transforms" title="Transforms" description="Schema-agnostic value reshaping; ArkType morphs and Zod transforms." />
+  <Card href="/docs/core-concepts/transforms" title="Transforms" description="Reshape values with ArkType morphs or Zod transforms." />
 
-  <Card href="/docs/core-concepts/coercion" title="Coercion" description="String-to-type conversion for ArkType and Standard Schema." />
+  <Card href="/docs/core-concepts/coercion" title="Coercion" description="String-to-type conversion before your schema runs." />
 
   <Card href="/docs/core-concepts/typesafety" title="Typesafety" description="Infer types from the schema through to the env object." />
 
-  <Card href="/docs/core-concepts/standard-schema" title="Standard Schema" description="Zod, Valibot, and JSON Schema interop without ArkType." />
+  <Card href="/docs/core-concepts/standard-schema" title="Choosing an engine" description="When to use @arkenv/core vs @arkenv/standard." />
 </Cards>

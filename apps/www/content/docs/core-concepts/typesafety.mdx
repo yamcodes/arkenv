@@ -3,35 +3,55 @@ title: Typesafety
 description: Infer TypeScript types from your schema and consume a typed env object.
 ---
 
-ArkEnv pairs runtime validation with TypeScript inference. The schema is the single source of truth for both.
+ArkEnv pairs runtime validation with TypeScript inference. The schema is the single source of truth for both engines: ArkType via `@arkenv/core`, or Zod/Valibot via `@arkenv/standard`.
 
 ## Canonical surface: `env`
 
 Import a validated object. Do not sprinkle `process.env` reads through the app.
 
-```ts title="./env.ts" twoslash
-import arkenv, { type Infer } from "@arkenv/core";
+<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
+  <Tab value="ArkType (@arkenv/core)">
+    ```ts title="./env.ts" twoslash
+    import arkenv, { type Infer } from "@arkenv/core";
 
-const schema = {
-  DATABASE_URL: "string",
-  PORT: "number.port = 3000",
-} as const;
+    const schema = {
+    	DATABASE_URL: "string",
+    	PORT: "number.port = 3000",
+    } as const;
 
-export const env = arkenv(schema);
-export type Env = Infer<typeof schema>;
+    export const env = arkenv(schema);
+    export type Env = Infer<typeof schema>;
 
-env.PORT; // number
-```
+    env.PORT; // number
+    ```
+  </Tab>
+  <Tab value="Zod (@arkenv/standard)">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
 
-This object surface is the product default across Next.js, Nuxt, Vite, and Bun. Plugins and codegen exist to deliver that object safely on each host, not to invent a second dialect.
+    const schema = {
+    	DATABASE_URL: z.string().url(),
+    	PORT: z.coerce.number().int().min(0).max(65535).default(3000),
+    };
+
+    export const env = arkenv(schema);
+    export type Env = typeof env;
+
+    env.PORT; // number
+    ```
+  </Tab>
+</Tabs>
+
+This object surface is the product default across Next.js, Nuxt, Vite, and Bun. Plugins and codegen deliver that object safely on each host for either engine (use `/standard` subpaths when the schema is Standard Schema).
 
 ## Inference paths
 
-| Input                                  | Result                                   |
-| -------------------------------------- | ---------------------------------------- |
-| Declarative map (`{ PORT: "number" }`) | `Infer<typeof schema>`                   |
-| Compiled `type({ ... })`               | `typeof Env.infer` / `Infer<typeof Env>` |
-| Standard Schema field map              | Output types from each validator         |
+| Input | Result |
+| --- | --- |
+| ArkType declarative map (`{ PORT: "number" }`) | `Infer<typeof schema>` from `@arkenv/core` |
+| Compiled `type({ ... })` | `typeof Env.infer` / `Infer<typeof Env>` |
+| Standard Schema field map (Zod, Valibot, …) | `typeof env` after `arkenv(schema)`, or each validator’s own infer helper |
 
 Hovering `env` in the editor shows the coerced output types when coercion is enabled.
 
@@ -52,3 +72,5 @@ Types do not load `.env` files. Types do not stop you from reading `process.env`
 - [schema](/docs/reference/schema)
 - [env](/docs/reference/env)
 - [`@arkenv/core`](/docs/reference/core)
+- [`@arkenv/standard`](/docs/reference/standard)
+- [Choosing an engine](/docs/core-concepts/standard-schema)

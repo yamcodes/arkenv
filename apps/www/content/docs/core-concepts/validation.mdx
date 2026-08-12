@@ -3,50 +3,65 @@ title: Validation
 description: When and how ArkEnv checks environment variables against your schema.
 ---
 
-ArkEnv's job is to prove your process has the configuration it claims to need before application code runs. Validation is that proof.
+ArkEnv's job is to prove your process has the configuration it claims to need before application code runs. Validation is that proof. The same fail-fast path applies whether the schema is ArkType or Zod (or another Standard Schema validator).
 
 ## Fail fast
 
 Calling `arkenv()` parses the configured source immediately. Missing required keys or values that fail the schema throw [`ArkEnvError`](/docs/validating-environment-variables/error-reporting) at the call site.
 
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/core";
+<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
+  <Tab value="ArkType (@arkenv/core)">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/core";
 
-export const env = arkenv({
-  DATABASE_URL: "string",
-  PORT: "number.port = 3000",
-});
-```
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    	PORT: "number.port = 3000",
+    });
+    ```
+  </Tab>
+  <Tab value="Zod (@arkenv/standard)">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
+
+    export const env = arkenv({
+    	DATABASE_URL: z.string().url(),
+    	PORT: z.coerce.number().int().min(0).max(65535).default(3000),
+    });
+    ```
+  </Tab>
+</Tabs>
 
 Importing `./env` in a server entrypoint is enough to abort a bad deploy before a request is served.
 
 ## When checks run
 
-| Moment               | What runs                                                                               |
-| -------------------- | --------------------------------------------------------------------------------------- |
-| Module load          | `arkenv()` validates the current `env` source (default `process.env`)                   |
-| Next.js / Nuxt build | Framework wrappers validate again during config or module setup                         |
-| Vite / Bun build     | Plugins validate in the bundler pipeline                                                |
-| Client bundle        | Public keys are already validated at build time; server secrets are stripped or guarded |
+| Moment | What runs |
+| --- | --- |
+| Module load | `arkenv()` validates the current `env` source (default `process.env`) |
+| Next.js / Nuxt build | Framework wrappers validate again during config or module setup |
+| Vite / Bun build | Plugins validate in the bundler pipeline |
+| Client bundle | Public keys are already validated at build time; server secrets are stripped or guarded |
 
 Framework adapters default to validating in builds. Soft-failing a production build with unchecked config is a last resort, not the default.
 
-## Schema libraries
+## What ArkEnv owns vs your schema library
 
-ArkEnv does not invent its own validator. It orchestrates a schema you provide:
+ArkEnv loads the input record, optionally [coerces](/docs/core-concepts/coercion) strings, then hands the result to your schema library. Field rules always come from that library:
 
-| Package                                        | You supply                                                                                    | ArkEnv adds                                                                                              |
-| ---------------------------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| [`@arkenv/core`](/docs/reference/core)         | ArkType DSL strings or `type()` definitions                                                   | Keywords (`string.host`, `number.port`), [coercion](/docs/core-concepts/coercion), env-oriented defaults |
-| [`@arkenv/standard`](/docs/reference/standard) | A map of [Standard Schema](https://standardschema.dev/) validators (Zod, Valibot, and others) | The same runtime pipeline without an `arktype` peer                                                      |
+| Package | You supply | Shared with both engines |
+| --- | --- | --- |
+| [`@arkenv/core`](/docs/reference/core) | ArkType DSL strings or `type()` definitions | `arkenv()` options, `ArkEnvError`, fail-fast boot, framework plugins |
+| [`@arkenv/standard`](/docs/reference/standard) | A map of Standard Schema validators (Zod, Valibot, …) | Same |
 
-Validation always ends in the schema library's rules. ArkEnv loads the input record, optionally coerces strings, then hands the result to ArkType or your Standard Schema validator. See [Standard Schema](/docs/core-concepts/standard-schema) for the ArkType-free path.
+See [Choosing an engine](/docs/core-concepts/standard-schema) for packaging and peer-dependency differences.
 
 ## Schema is the contract
 
 Only keys you declare appear on the returned object (`onUndeclaredKey` defaults to `"delete"`). That keeps `env` a closed set of known fields instead of a bag of leftover process variables.
 
-See [options](/docs/reference/options) for `safe`, `emptyAsUndefined`, and undeclared-key behavior.
+See [options](/docs/reference/options) for `safe`, `emptyAsUndefined`, and undeclared-key behavior. Those options apply to both engines.
 
 ## Errors carry structure
 
@@ -56,5 +71,5 @@ Thrown errors expose `issues` with codes such as `MISSING_VARIABLE` and `INVALID
 
 - [Coercion](/docs/core-concepts/coercion) runs before the schema sees the input
 - [Typesafety](/docs/core-concepts/typesafety) turns a passing schema into TypeScript types
-- [Structuring your schema](/docs/validating-environment-variables/structuring-your-schema) (step-by-step guide)
+- [Structuring your schema](/docs/validating-environment-variables/structuring-your-schema)
 - [validate](/docs/reference/validate) for framework wiring notes
