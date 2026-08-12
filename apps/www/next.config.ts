@@ -247,8 +247,10 @@ const config = {
 				permanent: true,
 			},
 			{
+				// `--json` / `--agent` are global CLI flags; land on the Terminal hub.
+				// `init` documents them in detail once the API reference content lands.
 				source: "/docs/cli/machine-readable-output",
-				destination: "/docs/reference/init",
+				destination: "/docs/reference",
 				permanent: true,
 			},
 			{

@@ -30,7 +30,7 @@ export default function HomePage() {
 					style={{ animationDelay: "40ms" }}
 				>
 					<AnnouncementBadge
-						href="/docs/validating-environment-variables/hosting-presets"
+						href="/docs/validating-environment-variables"
 						new
 					>
 						Next.js, Netlify presets
