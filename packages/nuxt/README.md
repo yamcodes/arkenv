@@ -1,6 +1,6 @@
 # @arkenv/nuxt
 
-ArkEnv integration for Nuxt. Provides a typesafe environment variable parser and validator for Nuxt applications. It keeps public values correctly typed after deploy-time overrides, integrates with Nuxt's `runtimeConfig`, and blocks server-only secrets from reaching the client.
+ArkEnv integration for Nuxt. Provides a typesafe environment variable parser and validator for Nuxt applications. It keeps public values correctly typed after deploy-time overrides, integrates with Nuxt's `runtimeConfig`, and blocks server-only secrets from reaching the client. Validation comes from `@arkenv/core` or `@arkenv/standard`, which have zero runtime dependencies.
 
 ## Installation
 

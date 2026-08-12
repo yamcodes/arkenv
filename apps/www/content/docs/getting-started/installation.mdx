@@ -1,12 +1,18 @@
 ---
 title: Installation
-description: Install ArkEnv core validation library and plugins.
+description: Install ArkEnv's zero-dependency core validation library and plugins.
 ---
 
-Install the ArkEnv core package (`@arkenv/core`) using your package manager of choice:
+Install the ArkEnv core package (`@arkenv/core`) using your package manager of choice. It has **zero runtime dependencies**; ArkType is a peer.
 
 ```package-install
-pnpm add @arkenv/core
+pnpm add @arkenv/core arktype
+```
+
+To validate with Zod, Valibot, or another [Standard Schema](/docs/core-concepts/standard-schema) library instead — also zero dependencies, and no ArkType peer:
+
+```package-install
+pnpm add @arkenv/standard zod
 ```
 
 ## CLI Tooling (Optional)
@@ -34,3 +40,5 @@ pnpm add -D @arkenv/vite-plugin
 # Bun
 pnpm add -D @arkenv/bun-plugin
 ```
+
+Framework plugins add host-specific build tools. The validation engines stay dependency-free.

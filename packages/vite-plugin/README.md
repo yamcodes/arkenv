@@ -1,6 +1,6 @@
 # `@arkenv/vite-plugin`
 
-[Vite](https://vite.dev/) plugin to validate environment variables at build-time with ArkEnv.
+[Vite](https://vite.dev/) plugin to validate environment variables at build-time with ArkEnv. Validation comes from `@arkenv/core` or `@arkenv/standard`, which have zero runtime dependencies.
 
 <br />
 

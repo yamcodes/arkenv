@@ -41,7 +41,8 @@ export function BringYourOwnValidatorView({
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
 					Use ArkType, Zod, Valibot, or any{" "}
 					<a href="/docs/core-concepts/standard-schema">Standard Schema</a>{" "}
-					library. Either way, you get the same <code>env</code> API.
+					library. Either way, you get the same <code>env</code> API from a
+					zero-dependency engine.
 				</p>
 			</header>
 

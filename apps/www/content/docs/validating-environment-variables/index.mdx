@@ -3,7 +3,7 @@ title: Validating environment variables
 description: Design, parse, and secure environment variables with ArkEnv.
 ---
 
-Missing or malformed environment variables should fail as early as ArkEnv can see them: in `next build`, during Vite/Bun plugin runs, on server boot, and anywhere else you call `arkenv()`. These guides walk you through designing a schema, parsing values, and keeping secrets off the client.
+Missing or malformed environment variables should fail as early as ArkEnv can see them: in `next build`, during Vite/Bun plugin runs, on server boot, and anywhere else you call `arkenv()`. These guides walk you through designing a schema, parsing values, and keeping secrets off the client. The validation engines themselves have **zero runtime dependencies**.
 
 Read them in order the first time. Skip ahead once you know which slice you need.
 

@@ -1,9 +1,11 @@
 ---
 title: "@arkenv/core"
-description: ArkType-powered environment validation for TypeScript projects.
+description: Zero-dependency, ArkType-powered environment validation for TypeScript projects.
 ---
 
 `@arkenv/core` is the primary validation library. It exports `arkenv()` and an ArkType `type()` bound to ArkEnv keywords.
+
+It has **zero runtime dependencies** — nothing in `dependencies`. ArkType is a required peer, not a bundled package. That keeps the install graph empty, the bundle Edge-compatible, and the supply chain limited to the validator you chose.
 
 ## Install
 
@@ -11,7 +13,7 @@ description: ArkType-powered environment validation for TypeScript projects.
 pnpm add @arkenv/core arktype
 ```
 
-Peer dependency: `arktype` (^2.1.22).
+Peer dependency: `arktype` (^2.1.22). No other runtime packages.
 
 ## Quick start
 

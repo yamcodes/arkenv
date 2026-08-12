@@ -1,6 +1,6 @@
 # @arkenv/nextjs
 
-ArkEnv integration for Next.js. Provides a typesafe, zero-dependency (except peer dependencies) environment variable parser and validator for Next.js applications, with automatic code generation to eliminate manual `runtimeEnv` boilerplate.
+ArkEnv integration for Next.js. Provides a typesafe environment variable parser and validator for Next.js applications, with automatic code generation to eliminate manual `runtimeEnv` boilerplate. Validation comes from [`@arkenv/core`](https://www.npmjs.com/package/@arkenv/core) or [`@arkenv/standard`](https://www.npmjs.com/package/@arkenv/standard), which have zero runtime dependencies.
 
 ## Installation
 

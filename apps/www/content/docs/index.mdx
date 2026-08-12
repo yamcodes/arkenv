@@ -1,14 +1,15 @@
 ---
 title: Introduction
-description: Introducing ArkEnv, the simple way to validate environment variables.
+description: Introducing ArkEnv, the simple way to validate environment variables with a zero-dependency core.
 ---
 
-**ArkEnv** is a modern, lightweight, and type-safe environment variable validation library for JavaScript and TypeScript apps.
+**ArkEnv** is a modern, type-safe environment variable validation library for JavaScript and TypeScript apps. The validation engines — [`@arkenv/core`](/docs/reference/core) and [`@arkenv/standard`](/docs/reference/standard) — ship with **zero runtime dependencies**.
 
 Powered by [ArkType](https://arktype.io) and [Standard Schema](https://github.com/standard-schema/standard-schema), ArkEnv lets you define, validate, and parse environment variables seamlessly across client, server, and monorepo environments.
 
 ## Why ArkEnv?
 
+- **Zero dependencies**: `@arkenv/core` has an empty `dependencies` tree. ArkType is a peer you already chose as the validator. [`@arkenv/standard`](/docs/reference/standard) has no peers at all. That is a constraint the project preserves, not a nice-to-have.
 - **Type-safe by design**: Infer clean TypeScript types directly from your environment schema.
 - **Fail-fast boot check**: Prevent app startup with clear, beautiful console error messages if required env variables are missing or invalid.
 - **Client vs. Server isolation**: Ensure secret environment variables never accidentally leak into client bundle builds.

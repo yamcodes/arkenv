@@ -1,14 +1,15 @@
 ---
 title: Choosing an engine
-description: Pick @arkenv/core (ArkType) or @arkenv/standard (Zod, Valibot, and friends).
+description: Pick a zero-dependency engine: @arkenv/core (ArkType) or @arkenv/standard (Zod, Valibot, and friends).
 ---
 
-ArkEnv ships two engines. Both call `arkenv()`, share the same [options](/docs/reference/options), fail-fast errors, coercion pipeline, and framework plugins. They differ in how you write the schema and which peer dependencies you install.
+ArkEnv ships two engines. Both call `arkenv()`, share the same [options](/docs/reference/options), fail-fast errors, coercion pipeline, and framework plugins. Both have **zero runtime dependencies**. They differ in how you write the schema and which peer dependencies you install.
 
 |                                             | [`@arkenv/core`](/docs/reference/core) | [`@arkenv/standard`](/docs/reference/standard)   |
 | ------------------------------------------- | -------------------------------------- | ------------------------------------------------ |
 | Schema style                                | ArkType DSL strings + `type()`         | Per-key Standard Schema validators               |
 | Typical libraries                           | ArkType                                | Zod, Valibot, VineJS, Zod Mini, …                |
+| Runtime `dependencies`                      | None                                   | None                                             |
 | Peer `arktype`                              | Required                               | None                                             |
 | Env keywords (`string.host`, `number.port`) | Yes                                    | Use the validator’s own APIs                     |
 | Coercion                                    | Built-in                               | Built-in when fields are Standard JSON Schema v1 |
@@ -70,7 +71,7 @@ ArkType itself implements Standard Schema. If you already depend on ArkType, sta
 
 ## Packaging
 
-Engines are separate packages so peer dependencies stay honest. Framework plugins stay single packages with `/standard` subpaths (`@arkenv/nextjs/standard`, `@arkenv/vite-plugin/standard`, and so on) instead of a second npm package per host.
+Engines are separate packages so peer dependencies stay honest and the runtime stays dependency-free. `@arkenv/core` lists `arktype` as a peer so ArkType never lands in Standard Schema installs. `@arkenv/standard` lists nothing in `dependencies` or `peerDependencies`. Framework plugins stay single packages with `/standard` subpaths (`@arkenv/nextjs/standard`, `@arkenv/vite-plugin/standard`, and so on) instead of a second npm package per host.
 
 ## JSON Schema and coercion
 
@@ -91,9 +92,9 @@ Some libraries keep conversion in a separate helper for bundle size (Valibot, Zo
 ## Related
 
 <Cards>
-  <Card href="/docs/reference/core" title="@arkenv/core" description="ArkType engine package reference." />
+  <Card href="/docs/reference/core" title="@arkenv/core" description="Zero-dependency ArkType engine package reference." />
 
-  <Card href="/docs/reference/standard" title="@arkenv/standard" description="Standard Schema engine package reference." />
+  <Card href="/docs/reference/standard" title="@arkenv/standard" description="Zero-dependency Standard Schema engine package reference." />
 
   <Card href="/docs/validating-environment-variables/defining-types" title="Defining types" description="Declare field types for either engine." />
 
