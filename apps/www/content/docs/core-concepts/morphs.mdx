@@ -13,8 +13,8 @@ Morphs are for custom transforms. Everyday string-to-number and string-to-boolea
 import arkenv, { type } from "@arkenv/core";
 
 export const env = arkenv({
-	BUILD_ID: type("string").pipe((value) => value.trim().toUpperCase()),
-	PORT: "number.port = 3000",
+  BUILD_ID: type("string").pipe((value) => value.trim().toUpperCase()),
+  PORT: "number.port = 3000",
 });
 ```
 
@@ -28,10 +28,10 @@ Coercion can feed a morph. Here the string `"42"` becomes a number before your p
 import arkenv, { type } from "@arkenv/core";
 
 export const env = arkenv(
-	{
-		RETRY_COUNT: type("number").pipe((n) => Math.max(0, n)),
-	},
-	{ env: { RETRY_COUNT: "3" } },
+  {
+    RETRY_COUNT: type("number").pipe((n) => Math.max(0, n)),
+  },
+  { env: { RETRY_COUNT: "3" } },
 );
 
 env.RETRY_COUNT; // 3

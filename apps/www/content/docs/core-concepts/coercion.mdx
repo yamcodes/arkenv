@@ -13,18 +13,18 @@ Coercion is **on** by default (`coerce: true`) for both [`@arkenv/core`](/docs/r
 import arkenv from "@arkenv/core";
 
 export const env = arkenv(
-	{
-		PORT: "number.port",
-		DEBUG: "boolean = false",
-		TAGS: "string[]",
-	},
-	{
-		env: {
-			PORT: "8080",
-			DEBUG: "true",
-			TAGS: "web, api",
-		},
-	},
+  {
+    PORT: "number.port",
+    DEBUG: "boolean = false",
+    TAGS: "string[]",
+  },
+  {
+    env: {
+      PORT: "8080",
+      DEBUG: "true",
+      TAGS: "web, api",
+    },
+  },
 );
 
 env.PORT; // number
@@ -62,8 +62,8 @@ Automatic coercion in `@arkenv/standard` needs a validator that exposes JSON Sch
 import arkenv from "@arkenv/core";
 
 export const env = arkenv(
-	{ PORT: "string" },
-	{ coerce: false, env: { PORT: "3000" } },
+  { PORT: "string" },
+  { coerce: false, env: { PORT: "3000" } },
 );
 
 env.PORT; // "3000"

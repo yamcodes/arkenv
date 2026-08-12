@@ -13,8 +13,8 @@ Import a validated object. Do not sprinkle `process.env` reads through the app.
 import arkenv, { type Infer } from "@arkenv/core";
 
 const schema = {
-	DATABASE_URL: "string",
-	PORT: "number.port = 3000",
+  DATABASE_URL: "string",
+  PORT: "number.port = 3000",
 } as const;
 
 export const env = arkenv(schema);

@@ -13,8 +13,8 @@ Calling `arkenv()` parses the configured source immediately. Missing required ke
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
-	DATABASE_URL: "string",
-	PORT: "number.port = 3000",
+  DATABASE_URL: "string",
+  PORT: "number.port = 3000",
 });
 ```
 
@@ -35,10 +35,10 @@ Framework adapters default to validating in builds. Soft-failing a production bu
 
 ArkEnv does not invent its own validator. It orchestrates a schema you provide:
 
-| Package | You supply | ArkEnv adds |
-| --- | --- | --- |
-| [`@arkenv/core`](/docs/reference/core) | ArkType DSL strings or `type()` definitions | Keywords (`string.host`, `number.port`), [coercion](/docs/core-concepts/coercion), env-oriented defaults |
-| [`@arkenv/standard`](/docs/reference/standard) | A map of [Standard Schema](https://standardschema.dev/) validators (Zod, Valibot, and others) | The same runtime pipeline without an `arktype` peer |
+| Package                                        | You supply                                                                                    | ArkEnv adds                                                                                              |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| [`@arkenv/core`](/docs/reference/core)         | ArkType DSL strings or `type()` definitions                                                   | Keywords (`string.host`, `number.port`), [coercion](/docs/core-concepts/coercion), env-oriented defaults |
+| [`@arkenv/standard`](/docs/reference/standard) | A map of [Standard Schema](https://standardschema.dev/) validators (Zod, Valibot, and others) | The same runtime pipeline without an `arktype` peer                                                      |
 
 Validation always ends in the schema library's rules. ArkEnv loads the input record, optionally coerces strings, then hands the result to ArkType or your Standard Schema validator. See [Standard Schema](/docs/core-concepts/standard-schema) for the ArkType-free path.
 
