@@ -1,8 +1,89 @@
 ---
 title: "@arkenv/nextjs"
-description: Next.js integration for ArkEnv.
+description: "Next.js integration: withArkEnv, client/server entries, and codegen."
 ---
 
-Stub reference for `withArkEnv`, codegen, and Next.js env isolation.
+`@arkenv/nextjs` adds Next.js-aware `arkenv()` entries, build-time validation, and `env.gen.ts` codegen.
 
-> Content TBD — flat Section leaf under a Separator (URL depth n=1), not a Nested Folder.
+## Install
+
+```package-install
+pnpm add @arkenv/core @arkenv/nextjs arktype
+```
+
+Or with Standard Schema:
+
+```package-install
+pnpm add @arkenv/standard @arkenv/nextjs zod
+```
+
+Peers: `next`, `react`. `@arkenv/core` / `@arkenv/standard` / `arktype` are optional depending on dialect.
+
+## Subpaths
+
+| Subpath | Role |
+| --- | --- |
+| `.` | Unified `arkenv` (`react-server` condition for RSC, default for client/SSR) |
+| `./server` | Server-only `arkenv` (`server-only`) |
+| `./client` | Client `arkenv` |
+| `./config` | `withArkEnv`, `runCodegen`, config types |
+| `./standard` | Standard Schema unified entry |
+| `./standard/server`, `./standard/client`, `./standard/shared` | Split Standard entries |
+| `./standard/config` | Standard `withArkEnv` (forces Standard codegen) |
+
+## Config plugin
+
+```ts title="./next.config.ts"
+import type { NextConfig } from "next";
+import { withArkEnv } from "@arkenv/nextjs/config";
+
+const nextConfig: NextConfig = {};
+
+export default withArkEnv(nextConfig);
+```
+
+### `withArkEnv` options
+
+| Option | Default | Meaning |
+| --- | --- | --- |
+| `codegen` | `true` | Write `env.gen.ts` |
+| `validate` | `true` | Validate during config/build |
+| `layout` | `"flat"` | `"flat"` or `"strict"` |
+| `schemaPath` | auto | Schema entry path |
+| `outputPath` | auto | Generated file path |
+| `standard` | `false` | Standard Schema codegen |
+
+See [codegen](/docs/reference/codegen).
+
+## Flat schema
+
+```ts title="./env.ts"
+import arkenv from "@/generated/env.gen";
+
+export const env = arkenv({
+	DATABASE_URL: "string",
+	NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+Public keys use the `NEXT_PUBLIC_` prefix. A runtime Proxy blocks server-key reads on the client.
+
+## Strict schema
+
+```ts title="./env/server.ts"
+import arkenv from "@arkenv/nextjs/server";
+import { env as clientEnv } from "./client";
+
+export const env = arkenv(
+	{ DATABASE_URL: "string" },
+	{ extends: [clientEnv] },
+);
+```
+
+Scaffold with `arkenv init --strict`. Guide: [Client vs. server](/docs/validating-environment-variables/client-vs-server).
+
+## Related
+
+- [Framework guide](/docs/guides/frameworks/nextjs) (recipe-oriented)
+- [Hosting presets](/docs/validating-environment-variables/hosting-presets)

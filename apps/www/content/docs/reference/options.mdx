@@ -1,8 +1,109 @@
 ---
 title: options
-description: Runtime and schema options passed to ArkEnv.
+description: Configuration object passed as the second argument to arkenv().
 ---
 
-Stub reference for ArkEnv constructor and helper options (for example `env`, `skip`, and coercion settings).
+Pass an optional config object as the second argument to `arkenv()`. The same options apply to [`@arkenv/core`](/docs/reference/core) and [`@arkenv/standard`](/docs/reference/standard).
 
-> Content TBD — flat Section leaf under a Separator (URL depth n=1), not a Nested Folder.
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+	{ PORT: "number.port = 3000" },
+	{
+		env: process.env,
+		coerce: true,
+		onUndeclaredKey: "delete",
+	},
+);
+```
+
+<AutoTypeTable path="../../packages/core/src/arkenv.ts" name="ArkEnvConfig" />
+
+## Options
+
+### `env`
+
+Default: `process.env`
+
+Input record to validate. Values must be `string | undefined`, matching `process.env` semantics. Pass a custom object in tests, Cloudflare Workers, or when using Vite `loadEnv`.
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+	{ PORT: "number.port" },
+	{ env: { PORT: "3000" } },
+);
+```
+
+### `coerce`
+
+Default: `true`
+
+Coerce string values toward the types declared in your schema (numbers, booleans, arrays, objects) before validation. See [Coercion and parsing](/docs/validating-environment-variables/coercion-and-parsing).
+
+Set `false` when you need raw strings and morph them yourself.
+
+### `onUndeclaredKey`
+
+Default: `"delete"`
+
+How to treat keys present in `env` but missing from the schema:
+
+| Value | Behavior |
+| --- | --- |
+| `"delete"` | Allowed on input; stripped from the output object |
+| `"ignore"` | Allowed and kept on the output (ArkType's default elsewhere) |
+| `"reject"` | Validation fails with `UNDECLARED_KEY` |
+
+ArkEnv defaults to `"delete"` so the returned object only contains keys you declared.
+
+### `arrayFormat`
+
+Default: `"comma"`
+
+How array fields parse when `coerce` is enabled:
+
+- `"comma"`: split on commas and trim entries (`"a, b"` → `["a", "b"]`)
+- `"json"`: parse a JSON array string (`'["a","b"]'`)
+
+### `emptyAsUndefined`
+
+Default: `false`
+
+Treat `""` as missing before validation. With `PORT=` and a default on the schema, the default applies instead of failing a numeric parse.
+
+### `debugSecrets`
+
+Default: `true` when `ARKENV_DEBUG_SECRETS` is `"true"` or `"1"`, otherwise `false`
+
+Bypass secret redaction in error messages. Leave this off in shared CI and production logs.
+
+### `safe`
+
+Default: `false`
+
+Return a result object instead of throwing:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+const result = arkenv(
+	{ PORT: "number.port" },
+	{ safe: true, env: { PORT: "nope" } },
+);
+
+if (!result.success) {
+	console.error(result.issues);
+}
+```
+
+<Callout type="warn">
+	Framework plugins omit `safe`. A failed build or boot must not inject `{
+	success: false }` into the client bundle.
+</Callout>
+
+## Framework-only options
+
+`extends` is **not** part of core `ArkEnvConfig`. Next.js and Nuxt wrappers accept `extends` to merge shared or client env objects into a server schema. See [Client vs. server](/docs/validating-environment-variables/client-vs-server).

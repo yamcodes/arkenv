@@ -1,8 +1,71 @@
 ---
 title: "@arkenv/bun-plugin"
-description: Bun plugin for ArkEnv.
+description: Bun bundler plugin for build-time validation and BUN_PUBLIC_ isolation.
 ---
 
-Stub reference for Bun build/runtime validation and type augmentation.
+`@arkenv/bun-plugin` validates environment variables for Bun builds and fullstack apps that inline client env. Plain Bun **backend** scripts can stay on [`@arkenv/core`](/docs/reference/core) alone.
 
-> Content TBD — flat Section leaf under a Separator (URL depth n=1), not a Nested Folder.
+## Install
+
+```package-install
+pnpm add @arkenv/core arktype
+pnpm add -D @arkenv/bun-plugin
+```
+
+Standard Schema entry: `@arkenv/bun-plugin/standard`.
+
+## Exports
+
+| Export | Role |
+| --- | --- |
+| default | `hybrid` plugin (usual entry) |
+| named `arkenv` | Same dual-mode factory as Vite |
+| named `hybrid` | Explicit hybrid export |
+| `./standard` | Standard Schema plugin |
+| `ProcessEnvAugmented` | Type helper for `process.env` |
+
+Default client prefix: `BUN_PUBLIC_`.
+
+## Usage
+
+Register the plugin in `Bun.build` (or your fullstack server setup):
+
+```ts title="./build.ts"
+import arkenv from "@arkenv/bun-plugin";
+
+await Bun.build({
+	entrypoints: ["./src/index.ts"],
+	plugins: [arkenv()],
+});
+```
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+	DATABASE_URL: "string",
+	BUN_PUBLIC_API_URL: "string",
+});
+```
+
+## Modes
+
+Same dual call shapes as [`@arkenv/vite-plugin`](/docs/reference/vite-plugin):
+
+1. **Transform:** `arkenv()` or `arkenv({ schemaPath, clientPrefix, ... })` rewrites the schema module in the client graph.
+2. **Schema / define:** `arkenv(schema)` or `arkenv(schema, config)` validates and rewrites `process.env` accessors for SPA builds.
+
+`safe` is omitted from plugin config so failed validation cannot soft-fail into the bundle.
+
+## Types
+
+```ts
+import type { ProcessEnvAugmented } from "@arkenv/bun-plugin";
+```
+
+CLI `init` can write `bun-env.d.ts` for fullstack templates.
+
+## Related
+
+- [Framework guide](/docs/guides/frameworks/bun)
+- [Client vs. server](/docs/validating-environment-variables/client-vs-server)

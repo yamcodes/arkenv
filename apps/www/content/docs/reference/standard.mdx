@@ -1,8 +1,53 @@
 ---
 title: "@arkenv/standard"
-description: Standard Schema helpers for ArkEnv.
+description: ArkType-free environment validation via Standard Schema.
 ---
 
-Stub reference for Standard Schema adapters (Zod, Valibot, and others).
+`@arkenv/standard` validates environment variables with any [Standard Schema](https://standardschema.dev/) validator (Zod, Valibot, and others). It has **no** `arktype` peer dependency and **no** ArkEnv keywords.
 
-> Content TBD — flat Section leaf under a Separator (URL depth n=1), not a Nested Folder.
+Prefer [`@arkenv/core`](/docs/reference/core) for new TypeScript projects that can use ArkType. Use `@arkenv/standard` when you are migrating from Zod/Valibot or must stay ArkType-free.
+
+## Install
+
+```package-install
+pnpm add @arkenv/standard zod
+```
+
+Swap `zod` for your validator of choice.
+
+## Quick start
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import { z } from "zod";
+
+export const env = arkenv({
+	PORT: z.coerce.number().int().min(0).max(65535).default(3000),
+	DATABASE_URL: z.string().url(),
+	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+});
+```
+
+## Compared to `@arkenv/core`
+
+| | `@arkenv/core` | `@arkenv/standard` |
+| --- | --- | --- |
+| Validator | ArkType DSL + `type()` | Standard Schema map only |
+| Keywords (`string.host`, `number.port`) | Yes | No |
+| Peer `arktype` | Required | None |
+| [Options](/docs/reference/options) | Same | Same |
+| Coercion | Built-in for ArkType shapes | Needs JSON Schema introspection (Zod 4.2+, Valibot with `@valibot/to-json-schema`, and similar) |
+
+## Exports
+
+| Export | Kind | Role |
+| --- | --- | --- |
+| `arkenv` | function (default + named) | Validate a Standard Schema field map |
+| `ArkEnvError` | class | Thrown on validation failure |
+| `formatIssues` | function | Format issues |
+| `getSchemaKeys` | function | List schema keys |
+| Config / issue types | types | Same shapes as core (`StandardEnvConfig` aliases core options) |
+
+## Framework `/standard` subpaths
+
+Next.js, Nuxt, Vite, and Bun ship `/standard` (and related) entries that pair with this package. See each package reference for import paths.
