@@ -94,8 +94,7 @@ export function extractJsonSchema(
 			try {
 				converted = toJsonSchema(validator as StandardSchemaV1);
 			} catch (error) {
-				const detail =
-					error instanceof Error ? error.message : String(error);
+				const detail = error instanceof Error ? error.message : String(error);
 				throw new ArkEnvError([
 					buildEnvIssue(
 						key,

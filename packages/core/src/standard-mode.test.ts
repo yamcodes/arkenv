@@ -303,9 +303,9 @@ describe("Standard Mode Coercion", () => {
 
 describe("Standard Mode toJsonSchema", () => {
 	const createMockWithoutJsonSchema = <TOutput>(
-		validate: (value: unknown) =>
-			| { value: TOutput }
-			| { issues: { message: string }[] },
+		validate: (
+			value: unknown,
+		) => { value: TOutput } | { issues: { message: string }[] },
 	) => ({
 		"~standard": {
 			version: 1 as const,
@@ -330,9 +330,7 @@ describe("Standard Mode toJsonSchema", () => {
 			typeof value === "boolean"
 				? { value }
 				: {
-						issues: [
-							{ message: `Expected boolean, received ${typeof value}` },
-						],
+						issues: [{ message: `Expected boolean, received ${typeof value}` }],
 					},
 		);
 
@@ -496,14 +494,12 @@ describe("Standard Mode toJsonSchema", () => {
 			typeof value === "boolean"
 				? { value }
 				: {
-						issues: [
-							{ message: `Expected boolean, received ${typeof value}` },
-						],
+						issues: [{ message: `Expected boolean, received ${typeof value}` }],
 					},
 		);
-		const passThroughSchema = createMockWithoutJsonSchema(
-			(value) => ({ value: value as string }),
-		);
+		const passThroughSchema = createMockWithoutJsonSchema((value) => ({
+			value: value as string,
+		}));
 
 		expect(() =>
 			arkenv(

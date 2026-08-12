@@ -168,8 +168,10 @@ export function parseStandard(
 		arrayFormat,
 		coerce
 			? () => {
-					const { jsonSchema, hasJsonSchema, missingKeys } =
-						extractJsonSchema(def, toJsonSchema);
+					const { jsonSchema, hasJsonSchema, missingKeys } = extractJsonSchema(
+						def,
+						toJsonSchema,
+					);
 					return {
 						schema: jsonSchema,
 						hasSchema: hasJsonSchema,
