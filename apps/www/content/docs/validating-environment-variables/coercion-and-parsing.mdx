@@ -49,7 +49,7 @@ env.DEBUG;
 // ^?
 ```
 
-Need a wider truthy set? Normalize with a morph (ArkType) or the validator's own transform (Zod/Valibot), or keep the field as `string` and map it in application code.
+Need a wider truthy set? Normalize with a [transform](/docs/core-concepts/transforms) (ArkType morph or Zod/Valibot `.transform`), or keep the field as `string` and map it in application code.
 
 ## Arrays
 
@@ -119,9 +119,9 @@ env.DATABASE;
 // ^?
 ```
 
-## Morphs (ArkType)
+## Transforms
 
-Custom transforms with `@arkenv/core` use ArkType `.pipe` via `type()`. Zod and Valibot use their own `.transform` / pipe APIs on the field schema instead.
+Custom transforms reshape values during validation. With `@arkenv/core`, that is an ArkType [morph](https://arktype.io/docs/morphs) via `.pipe`. Zod and Valibot use their own `.transform` / pipe APIs on the field schema instead.
 
 ```ts title="./env.ts" twoslash
 import arkenv, { type } from "@arkenv/core";
@@ -137,7 +137,7 @@ env.BUILD_ID;
 // ^?
 ```
 
-ArkEnv's built-in coercion still handles the common string-to-number and string-to-boolean cases before ArkType morphs run.
+ArkEnv's built-in coercion still handles the common string-to-number and string-to-boolean cases before schema transforms run. See [Transforms](/docs/core-concepts/transforms).
 
 ## Standard Schema coercion (Zod, Valibot, etc.)
 
@@ -175,7 +175,7 @@ env.PORT;
 // ^?
 ```
 
-With `coerce: false`, a schema of `"number"` rejects `"3000"` unless you morph it yourself.
+With `coerce: false`, a schema of `"number"` rejects `"3000"` unless you transform it yourself.
 
 ## Next steps
 

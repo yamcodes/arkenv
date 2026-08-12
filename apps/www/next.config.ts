@@ -81,6 +81,11 @@ const config = {
 				permanent: true,
 			},
 			{
+				source: "/docs/core-concepts/morphs",
+				destination: "/docs/core-concepts/transforms",
+				permanent: true,
+			},
+			{
 				source: "/docs/arkenv/keywords",
 				destination: "/docs/reference/keywords",
 				permanent: true,

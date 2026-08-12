@@ -41,7 +41,7 @@ ArkEnv does not wrap your schema in a coercion `.pipe`. It uses a shared pre-coe
 3. **Copy** the input record and coerce only those paths on the copy
 4. **Validate** the copy with the original, unmodified schema
 
-`process.env` is never mutated. Morphs and refinements on the schema still see the coerced values.
+`process.env` is never mutated. Schema transforms (ArkType morphs, Zod `.transform`, and similar) and refinements still see the coerced values.
 
 ## Arrays and objects
 
@@ -69,10 +69,10 @@ export const env = arkenv(
 env.PORT; // "3000"
 ```
 
-With `coerce: false`, a `"number"` schema rejects `"3000"` unless you morph the string yourself.
+With `coerce: false`, a `"number"` schema rejects `"3000"` unless you transform the string yourself.
 
 ## Related
 
-- [Morphs](/docs/core-concepts/morphs)
+- [Transforms](/docs/core-concepts/transforms)
 - [options.coerce](/docs/reference/options#coerce)
 - [Validation](/docs/core-concepts/validation)
