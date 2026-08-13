@@ -3,7 +3,7 @@ title: "@arkenv/standard"
 description: ArkType-free environment validation via Standard Schema.
 ---
 
-`@arkenv/standard` validates environment variables with any [Standard Schema](https://standardschema.dev/) validator (Zod, Valibot, and others). No runtime dependencies or peers — install your validator yourself. Keywords live under [`@arkenv/core`](/docs/reference/core).
+`@arkenv/standard` validates environment variables with any [Standard Schema](https://standardschema.dev/) validator (Zod, Valibot, and others). No runtime dependencies or peers. Install your validator yourself.
 
 Choose `@arkenv/core` when you want ArkType. Choose `@arkenv/standard` when you migrate from Zod/Valibot or keep the tree ArkType-free.
 
@@ -33,7 +33,6 @@ export const env = arkenv({
 |                                         | `@arkenv/core`              | `@arkenv/standard`                                                                              |
 | --------------------------------------- | --------------------------- | ----------------------------------------------------------------------------------------------- |
 | Validator                               | ArkType DSL + `type()`      | Standard Schema map only                                                                        |
-| Keywords (`string.host`, `number.port`) | Yes                         | No                                                                                              |
 | Peer `arktype`                          | Required                    | None                                                                                            |
 | [Options](/docs/reference/options)      | Same                        | Same                                                                                            |
 | Coercion                                | Built-in for ArkType shapes | Needs JSON Schema introspection (Zod 4.2+, Valibot with `@valibot/to-json-schema`, and similar) |
