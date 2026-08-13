@@ -129,9 +129,9 @@ export const env = arkenv(
 );
 ```
 
-- `target: "draft-07"` matches ArkEnv's built-in probes.
+- `target: "draft-07"` matches the JSON Schema draft ArkEnv expects.
 - `typeMode: "input"` coerces env strings toward the schema's input type. Do **not** pass a bare `{ toJsonSchema }` function reference — Valibot's default `typeMode` is `"ignore"`, which can silently mis-coerce piped schemas.
-- The callback runs **only** as a fallback after Standard JSON Schema probes fail for that key. Zod fields in a hybrid schema still coerce without it.
+- ArkEnv calls the callback when a key has no Standard JSON Schema on the value. Zod fields in a hybrid schema still coerce without it.
 - Install `@valibot/to-json-schema` yourself; `@arkenv/standard` does not depend on it.
 
 ## Performance
