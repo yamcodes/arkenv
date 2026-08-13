@@ -88,21 +88,13 @@ Framework integrations do not expose `safe`. Invalid env still fails the build o
 
 ## Framework boundary errors
 
-Reading a server-only key from client code raises a **boundary access error**: a native `Error` with `name === "ArkEnvError"`, not an `ArkEnvError` instance (client graphs must not import the class). Stacks still print the same brand as validation failures:
+Reading a server-only key from client code is a misuse, not a schema failure. The throw is a native `Error` (so Vite/Bun client modules never import the `ArkEnvError` class) with `name = "ArkEnvError"` so the stack matches validation:
 
 ```txt
 ArkEnvError: Attempted to access server environment variable 'DATABASE_URL' on the client.
 ```
 
-Catch validation failures and boundary access together:
-
-```ts
-if (error instanceof Error && error.name === "ArkEnvError") {
-  // validation failures and boundary access
-}
-```
-
-`instanceof ArkEnvError` stays validation-only (and gives you `issues`).
+Do not catch this. Fix the access. `instanceof ArkEnvError` is for validation only — it is `false` here because there are no `issues`.
 
 Next.js, Nuxt, Vite, and Bun each enforce the boundary (runtime proxy, build-time import bans, or both). See [client vs. server](/docs/validating-environment-variables/client-vs-server).
 

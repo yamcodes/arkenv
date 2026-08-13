@@ -487,7 +487,7 @@ A non-interactive muted label that only **groups** sibling **Leaves** on a **Sid
 - `ArkEnvError` extends `Error` and formats ArkType validation errors
 - Errors include variable names and expected types
 - Fail-fast approach: app won't start if validation fails
-- **Boundary access error**: A native `Error` thrown when client code reads a server-only env key (Next.js, Nuxt, Vite, Bun). It is **not** an `ArkEnvError` instance — client-generated modules must stay import-free of the class — but it sets `error.name = "ArkEnvError"` so stacks print as `ArkEnvError: Attempted to access…`. The message must not embed `ArkEnvError:` (that would double-prefix as `Error: ArkEnvError: …`). `instanceof ArkEnvError` remains `false`; callers who need both validation and boundary failures check `error instanceof Error && error.name === "ArkEnvError"`.
+- **Boundary access error**: A native `Error` thrown when client code reads a server-only env key (Next.js, Nuxt, Vite, Bun). It is **not** an `ArkEnvError` instance — client-generated modules must stay import-free of the class, and there are no `EnvIssue`s — but it sets `error.name = "ArkEnvError"` so stacks print as `ArkEnvError: Attempted to access…`. The message must not embed `ArkEnvError:` (that would double-prefix as `Error: ArkEnvError: …`). `instanceof ArkEnvError` remains validation-only. Do not add a public `isArkEnvError` helper or fake `instanceof` via `Symbol.hasInstance`.
 
 ## Important constraints
 
