@@ -50,9 +50,9 @@ export const env = arkenv(
   },
 );
 
-env.PORT; // number
-env.DEBUG; // boolean
-env.TAGS; // string[]
+env.PORT; // hover to see type
+env.DEBUG; // hover to see type
+env.TAGS; // hover to see type
 ```
 
 Set `{ coerce: false }` for raw strings and [morphs](/docs/core-concepts/transforms). See [Coercion](/docs/core-concepts/coercion).
@@ -78,6 +78,10 @@ Point the host at the same `env.ts`:
 
 ## Next steps
 
-- [`@arkenv/core`](/docs/reference/core)
-- [Choosing an engine](/docs/core-concepts/standard-schema)
-- [Validation](/docs/core-concepts/validation)
+<Cards>
+  <Card href="/docs/reference/core" title="@arkenv/core" description="ArkType engine package reference." />
+
+  <Card href="/docs/core-concepts/standard-schema" title="Choosing an engine" description="When to use @arkenv/core vs @arkenv/standard." />
+
+  <Card href="/docs/core-concepts/validation" title="Validation" description="Boot and build-time checks with either engine." />
+</Cards>

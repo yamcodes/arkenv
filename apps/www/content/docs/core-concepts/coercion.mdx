@@ -31,9 +31,9 @@ Coercion is **on** by default (`coerce: true`).
     	},
     );
 
-    env.PORT; // number
-    env.DEBUG; // boolean
-    env.TAGS; // string[]
+    env.PORT; // hover to see type
+    env.DEBUG; // hover to see type
+    env.TAGS; // hover to see type
     ```
   </Tab>
 
@@ -57,9 +57,9 @@ Coercion is **on** by default (`coerce: true`).
     	},
     );
 
-    env.PORT; // number
-    env.DEBUG; // boolean
-    env.TAGS; // string[]
+    env.PORT; // hover to see type
+    env.DEBUG; // hover to see type
+    env.TAGS; // hover to see type
     ```
   </Tab>
 </Tabs>
@@ -133,7 +133,7 @@ export const env = arkenv(
     	{ coerce: false, env: { PORT: "3000" } },
     );
 
-    env.PORT; // "3000"
+    env.PORT; // hover to see type
     ```
   </Tab>
 
@@ -147,7 +147,7 @@ export const env = arkenv(
     	{ coerce: false, env: { PORT: "3000" } },
     );
 
-    env.PORT; // "3000"
+    env.PORT; // hover to see type
     ```
   </Tab>
 </Tabs>

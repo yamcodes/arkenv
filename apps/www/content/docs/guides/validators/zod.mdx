@@ -54,9 +54,9 @@ export const env = arkenv(
   },
 );
 
-env.PORT; // number
-env.DEBUG; // boolean
-env.TAGS; // string[]
+env.PORT; // hover to see type
+env.DEBUG; // hover to see type
+env.TAGS; // hover to see type
 ```
 
 ## Defaults and optionals
@@ -78,6 +78,10 @@ Use each host's `/standard` entry with the same Zod schema:
 
 ## Next steps
 
-- [`@arkenv/standard`](/docs/reference/standard)
-- [Coercion](/docs/core-concepts/coercion)
-- Example: [`examples/with-zod`](https://github.com/yamcodes/arkenv/tree/main/examples/with-zod)
+<Cards>
+  <Card href="/docs/reference/standard" title="@arkenv/standard" description="Standard Schema engine package reference." />
+
+  <Card href="/docs/core-concepts/coercion" title="Coercion" description="How ArkEnv turns env strings into typed outputs." />
+
+  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-zod" title="examples/with-zod" description="Node.js with @arkenv/standard and Zod." />
+</Cards>
