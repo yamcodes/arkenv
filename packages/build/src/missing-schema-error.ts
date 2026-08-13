@@ -29,9 +29,6 @@ export type FormatMissingSchemaErrorOptions = {
 /**
  * Format a missing-schema error shared by host integrations.
  *
- * Owns the no-starter policy: hosts must use this helper instead of inlining
- * example `env.ts` modules in thrown errors.
- *
  * @param options Host-specific labels and optional discovery paths
  * @returns A short, actionable missing-schema error message
  */

@@ -12,14 +12,8 @@ import { parse } from "./arktype";
 /**
  * Declarative environment schema definition accepted by ArkEnv.
  *
- * Represents a declarative schema object mapping environment
- * variable names to schema definitions (e.g. ArkType DSL strings
- * or Standard Schema validators).
- *
- * This type is used to validate that a schema object is compatible with
- * ArkEnv’s validator scope before being compiled or parsed.
- *
- * Most users will provide schemas in this form.
+ * Maps environment variable names to schema definitions (e.g. ArkType DSL
+ * strings or Standard Schema validators).
  *
  * @template def - The schema shape object
  */
@@ -59,12 +53,10 @@ export type ArkEnvConfig = {
 	/**
 	 * Control how ArkEnv handles environment variables that are not defined in your schema.
 	 *
-	 * Defaults to `'delete'` to ensure your output object only contains
-	 * keys you've explicitly declared. This differs from ArkType's standard behavior, which
-	 * mirrors TypeScript by defaulting to `'ignore'`.
+	 * Defaults to `'delete'` so the output object only contains keys you've declared.
 	 *
-	 * - `delete` (ArkEnv default): Undeclared keys are allowed on input but stripped from the output.
-	 * - `ignore` (ArkType default): Undeclared keys are allowed and preserved in the output.
+	 * - `delete` (default): Undeclared keys are allowed on input but stripped from the output.
+	 * - `ignore`: Undeclared keys are allowed and preserved in the output.
 	 * - `reject`: Undeclared keys will cause validation to fail.
 	 *
 	 * @default "delete"
@@ -112,18 +104,14 @@ export type ArkEnvConfig = {
 export type { SafeArkEnvResult };
 
 /**
- * Helper type to represent the output of parsing either an EnvSchema or CompiledEnvSchema.
+ * Parsed environment object inferred from an EnvSchema or CompiledEnvSchema.
  */
 export type ArkenvOutput<T extends SchemaShape, D> =
 	| distill.Out<at.infer<T, $>>
 	| InferType<D>;
 
 /**
- * Utility to parse environment variables using ArkType or Standard Schema
- *
- * Naming convention: the main function is lowercase (`arkenv`) following the
- * JavaScript convention for functions (e.g. `zod`, `joi`). Classes and types
- * use PascalCase with the full product name (`ArkEnvError`, `SafeArkEnvResult`).
+ * Parse and validate environment variables using ArkType or Standard Schema.
  *
  * @param def The schema definition
  * @param config The evaluation configuration

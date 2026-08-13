@@ -11,9 +11,6 @@ import type { MergeExtends, ResolveExtendsElement } from "./types";
 
 /**
  * Shared schema type auto-merged in Nuxt strict layout when `extends` is omitted.
- *
- * Resolved via the `#arkenv/shared-schema` virtual module alias registered by
- * `@arkenv/nuxt/module`.
  */
 type AutoSharedSchema = typeof import("#arkenv/shared-schema") extends {
 	SharedSchema: infer S;
@@ -24,7 +21,7 @@ type AutoSharedSchema = typeof import("#arkenv/shared-schema") extends {
 /**
  * Create a typesafe environment configuration for Nuxt (client entry).
  *
- * Reads the already-coerced public payload — does not import or run the validator.
+ * Reads already-coerced public values — this entry does not re-validate.
  *
  * With `@arkenv/nuxt/module` in strict layout, omitting `extends` includes the
  * shared schema by default. Any explicit `extends` is used as-is and opts out

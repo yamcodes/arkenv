@@ -3,7 +3,6 @@ import { styleText } from "./utils/style-text";
 
 /**
  * Machine-readable classification codes for environment validation issues.
- * Serves as the Source of Truth (SoT) for error categorization in ArkEnv.
  */
 export type EnvIssueCode =
 	/** The environment variable is required but was not provided, and has no default value. */

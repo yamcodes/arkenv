@@ -14,8 +14,6 @@ const TRANSFORM_OPTION_KEYS = new Set([
 
 /**
  * Options for the Vite plugin's env-module transform mode.
- *
- * @see docs/adr/0015-env-object-canonical-surface.md (on `dev`) — transform design
  */
 export type ViteTransformOptions = {
 	/**

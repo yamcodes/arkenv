@@ -12,9 +12,6 @@ import type { MergeExtends } from "./types";
 
 /**
  * Client env type auto-merged in Nuxt strict layout when `extends` is omitted.
- *
- * Resolved via the `#arkenv/client-env` virtual module alias registered by
- * `@arkenv/nuxt/module`.
  */
 type AutoClientEnv = typeof import("#arkenv/client-env") extends {
 	env: infer E;
@@ -25,8 +22,7 @@ type AutoClientEnv = typeof import("#arkenv/client-env") extends {
 /**
  * Create a typesafe environment configuration for Nuxt (server entry).
  *
- * Calls {@link ensureBootGate} then reads coerced `runtimeConfig` values —
- * does not re-validate with core in this entry.
+ * Reads already-coerced `runtimeConfig` values — this entry does not re-validate.
  *
  * With `@arkenv/nuxt/module` in strict layout, omitting `extends` includes the
  * client and shared env by default. Any explicit `extends` is used as-is and

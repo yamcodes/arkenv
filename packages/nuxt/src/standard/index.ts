@@ -19,8 +19,8 @@ type ClientVisibleKeys<
 /**
  * Create a typesafe environment configuration for Nuxt (Standard Mode).
  *
- * Values are read from the Nitro boot-gate coerced payload — this entry does
- * not run core validation.
+ * Reads already-coerced values from Nuxt runtime config. This entry does not
+ * re-validate.
  *
  * @param schema A flat schema of environment variable Standard Schema validators
  * @param options Optional configuration including client-side variables and extends
