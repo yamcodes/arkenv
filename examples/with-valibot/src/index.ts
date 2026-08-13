@@ -13,7 +13,7 @@ const env = arkenv(
 		DEBUG: v.boolean(),
 	},
 	{
-		toJsonSchema: (schema) =>
+		toJsonSchema: (schema: unknown) =>
 			toJsonSchema(schema as v.GenericSchema, {
 				typeMode: "input",
 				target: "draft-07",
