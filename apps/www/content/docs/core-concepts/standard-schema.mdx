@@ -9,6 +9,7 @@ ArkEnv ships two engines. Both call `arkenv()`, share fail-fast errors, the coer
 | ------------------------------------------- | -------------------------------------- | -------------------------------------------------------------------------- |
 | Schema style                                | ArkType DSL strings + `type()`         | Per-key Standard Schema validators                                         |
 | Typical libraries                           | ArkType                                | Zod, Valibot, VineJS, Zod Mini, …                                          |
+| Runtime `dependencies`                      | None                                   | None                                                                       |
 | Peer `arktype`                              | Required                               | None                                                                       |
 | Env keywords (`string.host`, `number.port`) | Yes                                    | Use the validator’s own APIs                                               |
 | Coercion                                    | Built-in                               | Built-in when fields expose Standard JSON Schema v1, or via `toJsonSchema` |
