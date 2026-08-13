@@ -92,7 +92,7 @@ export type ParseStandardConfig = {
 	 * arkenv(
 	 *   { PORT: v.number() },
 	 *   {
-	 *     toJsonSchema: (schema) =>
+	 *     toJsonSchema: (schema: unknown) =>
 	 *       toJsonSchema(schema as v.GenericSchema, {
 	 *         typeMode: "input",
 	 *         target: "draft-07",
