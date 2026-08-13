@@ -81,4 +81,9 @@ export { type } from "@arkenv/core";
 export type { ArkEnvScriptProps } from "./script";
 export { ArkEnvScript } from "./script";
 
+/**
+ * ArkEnv's Next.js integration export
+ *
+ * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
+ */
 export default arkenv;

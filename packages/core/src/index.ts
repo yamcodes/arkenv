@@ -26,4 +26,9 @@ export type {
 	SafeArkEnvResult,
 } from "./arkenv";
 
+/**
+ * ArkEnv's main export, an alias for {@link arkenv}
+ *
+ * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
+ */
 export default arkenv;
