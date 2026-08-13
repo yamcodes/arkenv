@@ -23,10 +23,6 @@ const arkenvCreator = createVitePlugin(
  *
  * @param options Transform options (`schemaPath`, `clientPrefix`) plus ArkEnv/logging config
  * @returns The Vite plugin instance
- *
- * @remarks
- * ADR 0015: env.ts is the canonical surface. Do not add `env.gen.ts` codegen or
- * client-side re-validation on this host.
  */
 export default function arkenv(options?: VitePluginFactoryConfig): Plugin;
 /**

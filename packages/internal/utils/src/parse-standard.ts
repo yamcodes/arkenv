@@ -45,10 +45,9 @@ export type ParseStandardConfig = {
 	/**
 	 * Control how ArkEnv handles environment variables that are not defined in your schema.
 	 *
-	 * Defaults to `'delete'` to ensure your output object only contains
-	 * keys you've explicitly declared.
+	 * Defaults to `'delete'` so the output object only contains keys you've declared.
 	 *
-	 * - `delete` (ArkEnv default): Undeclared keys are allowed on input but stripped from the output.
+	 * - `delete` (default): Undeclared keys are allowed on input but stripped from the output.
 	 * - `ignore`: Undeclared keys are allowed and preserved in the output.
 	 * - `reject`: Undeclared keys will cause validation to fail.
 	 *

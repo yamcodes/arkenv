@@ -22,7 +22,7 @@ export {
 };
 
 /**
- * Configuration options for the `arkenv/standard` entry's `arkenv`.
+ * Configuration options for `arkenv` from `@arkenv/standard`.
  */
 export type StandardEnvConfig = ParseStandardConfig;
 
