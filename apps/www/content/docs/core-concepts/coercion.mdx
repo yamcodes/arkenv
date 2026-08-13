@@ -99,7 +99,7 @@ Cookbook examples: [Coercion and parsing](/docs/validating-environment-variables
 
 Pass an optional `toJsonSchema` callback for keys without Standard JSON Schema on the value. ArkEnv invokes it after built-in probes fail for that key:
 
-```ts title="./env.ts"
+```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/standard";
 import * as v from "valibot";
 import { toJsonSchema } from "@valibot/to-json-schema";

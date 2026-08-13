@@ -1,11 +1,29 @@
+import type { StandardSchemaV1 } from "@repo/types";
+import { ArkEnvError } from "@/core";
+import { buildEnvIssue } from "./errors";
+
+/**
+ * Whether `value` is a plain object (`{}` / Object.create(null) style).
+ * Rejects arrays, `Date`, functions, boxed primitives, etc.
+ * @internal
+ */
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+	return Object.prototype.toString.call(value) === "[object Object]";
+}
+
 /**
  * Extract JSON Schema definitions from standard schema validators.
  *
  * @param def The schema dictionary mapping keys to validators
+ * @param toJsonSchema Optional fallback converter when built-in Standard JSON Schema probes fail
  * @returns The generated JSON Schema, a flag indicating if any JSON Schema was found,
  *          and a list of keys that do not support JSON Schema
+ * @throws {ArkEnvError} When `toJsonSchema` throws or returns a non-plain object for a key
  */
-export function extractJsonSchema(def: Record<string, unknown>): {
+export function extractJsonSchema(
+	def: Record<string, unknown>,
+	toJsonSchema?: (schema: StandardSchemaV1) => object | undefined,
+): {
 	jsonSchema: Record<string, any>;
 	hasJsonSchema: boolean;
 	missingKeys: string[];
@@ -68,6 +86,43 @@ export function extractJsonSchema(def: Record<string, unknown>): {
 					continue;
 				}
 			} catch {}
+		}
+
+		// 5. Optional user-supplied converter (e.g. Valibot via @valibot/to-json-schema)
+		if (toJsonSchema) {
+			let converted: object | undefined;
+			try {
+				converted = toJsonSchema(validator as StandardSchemaV1);
+			} catch (error) {
+				const detail = error instanceof Error ? error.message : String(error);
+				throw new ArkEnvError([
+					buildEnvIssue(
+						key,
+						`toJsonSchema failed for '${key}': ${detail}`,
+						"INVALID_SCHEMA",
+					),
+				]);
+			}
+
+			// undefined / falsy → skip this key only (siblings still coerce)
+			if (!converted) {
+				missingKeys.push(key);
+				continue;
+			}
+
+			if (!isPlainObject(converted)) {
+				throw new ArkEnvError([
+					buildEnvIssue(
+						key,
+						`toJsonSchema must return a plain object or undefined for '${key}'.`,
+						"INVALID_SCHEMA",
+					),
+				]);
+			}
+
+			jsonSchema.properties[key] = converted;
+			hasJsonSchema = true;
+			continue;
 		}
 
 		missingKeys.push(key);

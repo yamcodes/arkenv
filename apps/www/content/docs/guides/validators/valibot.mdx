@@ -15,7 +15,7 @@ pnpm add @arkenv/standard valibot @valibot/to-json-schema
 
 ## Minimal `env.ts`
 
-```ts title="./env.ts"
+```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/standard";
 import * as v from "valibot";
 import { toJsonSchema } from "@valibot/to-json-schema";
@@ -46,12 +46,21 @@ Use `v.number()` / `v.boolean()` with this callback. Skip `v.transform(Number)` 
 
 Pass an explicit wrapper. A bare `{ toJsonSchema }` function reference uses Valibot's default `typeMode: "ignore"`, which mis-coerces piped schemas.
 
-```ts
-toJsonSchema: (schema) =>
-  toJsonSchema(schema as v.GenericSchema, {
-    typeMode: "input",
-    target: "draft-07",
-  }),
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import * as v from "valibot";
+import { toJsonSchema } from "@valibot/to-json-schema";
+
+export const env = arkenv(
+  { PORT: v.number(), DEBUG: v.boolean() },
+  {
+    toJsonSchema: (schema) =>
+      toJsonSchema(schema as v.GenericSchema, {
+        typeMode: "input",
+        target: "draft-07",
+      }),
+  },
+);
 ```
 
 - `target: "draft-07"` matches ArkEnv's built-in probes.

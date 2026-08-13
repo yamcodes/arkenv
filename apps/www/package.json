@@ -84,6 +84,7 @@
 		"@types/node": "25.6.0",
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",
+		"@valibot/to-json-schema": "1.6.0",
 		"@vitejs/plugin-react": "catalog:",
 		"babel-plugin-react-compiler": "^1.0.0",
 		"concurrently": "catalog:",
