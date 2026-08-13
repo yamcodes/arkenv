@@ -74,11 +74,10 @@ export type ParseStandardConfig = {
 
 	/**
 	 * Optional fallback that converts a Standard Schema validator to JSON Schema
-	 * for ArkEnv pre-coercion when built-in Standard JSON Schema probes fail for
-	 * that key.
+	 * for ArkEnv pre-coercion when a key has no Standard JSON Schema on the value.
 	 *
-	 * Invoked per key only after probes miss. Not called when omitted, when
-	 * `coerce` is `false`, or when a built-in probe already produced a schema.
+	 * Called per key only in that case. Not called when omitted, when `coerce` is
+	 * `false`, or when JSON Schema was already read from the value.
 	 *
 	 * - Return a plain object to use as that key's JSON Schema.
 	 * - Return `undefined` to skip coercion for that key only.
