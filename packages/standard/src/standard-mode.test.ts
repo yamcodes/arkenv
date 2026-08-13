@@ -319,7 +319,7 @@ describe("Standard Mode toJsonSchema", () => {
 		},
 	});
 
-	it("coerces via toJsonSchema when built-in probes miss", () => {
+	it("coerces via toJsonSchema when the value has no JSON Schema", () => {
 		vi.stubEnv("PORT", "3000");
 		vi.stubEnv("DEBUG", "true");
 

@@ -15,7 +15,7 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
  * Extract JSON Schema definitions from standard schema validators.
  *
  * @param def The schema dictionary mapping keys to validators
- * @param toJsonSchema Optional fallback converter when built-in Standard JSON Schema probes fail
+ * @param toJsonSchema Optional fallback converter when a key has no Standard JSON Schema on the value
  * @returns The generated JSON Schema, a flag indicating if any JSON Schema was found,
  *          and a list of keys that do not support JSON Schema
  * @throws {ArkEnvError} When `toJsonSchema` throws or returns a non-plain object for a key
