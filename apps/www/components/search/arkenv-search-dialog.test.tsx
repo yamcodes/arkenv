@@ -74,17 +74,16 @@ describe("ArkenvSearchDialog", () => {
 		searchState.query = { isLoading: false, data: "empty" };
 	});
 
-	it("uses a capsule radius while the results list is collapsed", () => {
+	it("keeps the capsule class and collapsed list while the query is empty", () => {
 		render(<ArkenvSearchDialog open onOpenChange={vi.fn()} />);
 
 		const dialog = screen.getByRole("dialog");
 		expect(dialog).toHaveClass("arkenv-search-dialog");
 		expect(dialog).toHaveClass("rounded-full");
-		expect(dialog).not.toHaveClass("rounded-2xl");
 		expect(dialog.querySelector("[data-empty='true']")).toBeTruthy();
 	});
 
-	it("drops pill radius and shows result titles when matches are present", () => {
+	it("marks the list non-empty and shows result titles when matches are present", () => {
 		searchState.search = "getting";
 		searchState.query = {
 			isLoading: false,
@@ -101,21 +100,19 @@ describe("ArkenvSearchDialog", () => {
 
 		const dialog = screen.getByRole("dialog");
 		expect(dialog).toHaveClass("arkenv-search-dialog");
-		expect(dialog).toHaveClass("rounded-2xl");
-		expect(dialog).not.toHaveClass("rounded-full");
+		expect(dialog).toHaveClass("rounded-full");
 		expect(dialog.querySelector("[data-empty='false']")).toBeTruthy();
 		expect(screen.getByText("Getting started")).toBeInTheDocument();
 	});
 
-	it("keeps modest radius for an expanded empty-results panel", () => {
+	it("marks the list non-empty for an expanded no-match panel", () => {
 		searchState.search = "zzzz-no-match";
 		searchState.query = { isLoading: false, data: [] };
 
 		render(<ArkenvSearchDialog open onOpenChange={vi.fn()} />);
 
 		const dialog = screen.getByRole("dialog");
-		expect(dialog).toHaveClass("rounded-2xl");
-		expect(dialog).not.toHaveClass("rounded-full");
+		expect(dialog).toHaveClass("rounded-full");
 		expect(dialog.querySelector("[data-empty='false']")).toBeTruthy();
 	});
 });

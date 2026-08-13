@@ -407,10 +407,11 @@ div:has(+ #nd-sidebar-mobile) {
 }
 
 /*
- * Expanded results: modest radius so fumadocs’ overflow-hidden does not
- * clip the list into a pill/circle. Fumadocs SearchDialogList sets
- * data-empty=false once a query has result data (including “no matches”).
- * Input-only overlay keeps the Site Nav capsule (rounded-full).
+ * Expanded results (all viewports): modest radius so fumadocs’
+ * overflow-hidden does not clip the list into a pill/circle. Applies
+ * wherever the panel is tall — desktop had the same clip. Fumadocs
+ * SearchDialogList sets data-empty=false once a query has result data
+ * (including “no matches”). Input-only overlay keeps rounded-full.
  */
 .arkenv-search-dialog:has([data-empty="false"]) {
 	border-radius: 1.25rem !important;

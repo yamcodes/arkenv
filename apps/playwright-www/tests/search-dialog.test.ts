@@ -55,7 +55,7 @@ test.describe("Docs search dialog", () => {
 		await expect(dialog).toBeHidden();
 	});
 
-	test("desktop search still opens, lists results, and closes", async ({
+	test("desktop search lists results without pill-clipping and closes", async ({
 		page,
 	}) => {
 		await page.setViewportSize({ width: 1280, height: 800 });
@@ -68,6 +68,14 @@ test.describe("Docs search dialog", () => {
 		const input = dialog.locator("input").first();
 		await input.fill("getting");
 		await expect(dialog.getByText(/getting started/i).first()).toBeVisible();
+
+		const radius = await dialog.evaluate(
+			(el) => getComputedStyle(el).borderRadius,
+		);
+		expect(
+			firstRadiusPx(radius),
+			`expanded desktop dialog should not use pill radius (got ${radius})`,
+		).toBeLessThan(40);
 
 		await page.keyboard.press("Escape");
 		await expect(dialog).toBeHidden();
