@@ -5,7 +5,7 @@ description: Validate env vars with @arkenv/standard and Zod.
 
 Zod via [`@arkenv/standard`](/docs/reference/standard). Engine choice: [Choosing an engine](/docs/core-concepts/standard-schema).
 
-Zod 4.2+ embeds [Standard JSON Schema](https://standardschema.dev/json-schema) on the schema value. ArkEnv's probes read that metadata and pre-coerce env strings. Omit `toJsonSchema`.
+Zod 4.2+ embeds [Standard JSON Schema](https://standardschema.dev/json-schema) on the schema value. ArkEnv reads that metadata and pre-coerces env strings.
 
 ## Install
 
@@ -33,7 +33,7 @@ Use `z.number()` / `z.boolean()` for ArkEnv coercion. `z.coerce.number()` (and s
 
 ## Coercion
 
-Standard JSON Schema is already on the value, so leave `toJsonSchema` unset. In a Zod + Valibot hybrid, Zod keys still coerce without a callback. Valibot keys need the [Valibot](/docs/guides/validators/valibot) wiring.
+Standard JSON Schema on the value is enough. ArkEnv pre-coerces env strings from that metadata.
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/standard";

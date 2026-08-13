@@ -97,7 +97,7 @@ Cookbook examples: [Coercion and parsing](/docs/validating-environment-variables
 
 ## Valibot (`toJsonSchema`)
 
-Pass an optional `toJsonSchema` callback for keys without Standard JSON Schema on the value. ArkEnv invokes it after built-in probes fail for that key:
+Pass an optional `toJsonSchema` callback for keys without Standard JSON Schema on the value. ArkEnv calls it when it can't read JSON Schema from that key:
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/standard";
@@ -116,7 +116,7 @@ export const env = arkenv(
 );
 ```
 
-- `target: "draft-07"` matches built-in probes.
+- `target: "draft-07"` matches the JSON Schema draft ArkEnv expects.
 - `typeMode: "input"` coerces env strings toward the schema's input type. A bare `{ toJsonSchema }` function reference uses Valibot's default `typeMode: "ignore"`.
 - Install `@valibot/to-json-schema` yourself. `@arkenv/standard` does not depend on it.
 - Recipe: [Valibot](/docs/guides/validators/valibot).

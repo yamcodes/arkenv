@@ -83,7 +83,7 @@ env.DEBUG; // false
 
 ### `toJsonSchema` (standard mode only)
 
-Pass a fallback converter for Standard Schema validators that omit JSON Schema on the value (notably Valibot). ArkEnv invokes it per key after built-in probes fail. Wiring: [Valibot](/docs/guides/validators/valibot) and [Coercion](/docs/core-concepts/coercion#valibot-tojsonschema).
+Pass a fallback converter for Standard Schema validators that omit JSON Schema on the value (notably Valibot). ArkEnv calls it per key when it can't read JSON Schema from that value. Wiring: [Valibot](/docs/guides/validators/valibot) and [Coercion](/docs/core-concepts/coercion#valibot-tojsonschema).
 
 This field is absent from ArkType `ArkEnvConfig`. Vite/Bun `/standard` plugin configs that alias `ParseStandardConfig` inherit it.
 

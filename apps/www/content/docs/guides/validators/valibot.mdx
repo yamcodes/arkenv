@@ -63,9 +63,9 @@ export const env = arkenv(
 );
 ```
 
-- `target: "draft-07"` matches ArkEnv's built-in probes.
+- `target: "draft-07"` matches the JSON Schema draft ArkEnv expects.
 - `typeMode: "input"` coerces env strings toward the schema's input type.
-- ArkEnv calls the callback after Standard JSON Schema probes fail for that key. Zod fields in a hybrid schema still coerce without it.
+- ArkEnv calls the callback when a key has no Standard JSON Schema on the value.
 - Return `undefined` to skip one key. A throw or non-plain object fails the parse with `ArkEnvError` for that key.
 
 Configure `toJsonSchema` once on `arkenv()`. Per-key `toStandardJsonSchema(...)` wrappers are not the intended path.
