@@ -20,7 +20,6 @@ export { getSchemaKeys } from "./schema";
 export {
 	ARKENV_VALIDATION_ERROR_NAME,
 	boundaryAccessErrorMessage,
-	createBoundaryAccessError,
 } from "./utils/boundary-access-error";
 export {
 	buildEnvIssue,
