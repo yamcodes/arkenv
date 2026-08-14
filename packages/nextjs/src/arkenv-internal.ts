@@ -1,6 +1,5 @@
 import { logBuildWarning } from "@repo/log";
 import type { Dict, SchemaShape } from "@repo/types";
-import { createBoundaryAccessError } from "@repo/utils";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
@@ -305,7 +304,9 @@ export function arkenvInternal(
 
 			if (typeof prop === "string") {
 				if (serverOnlyKeys.has(prop) && !isServer) {
-					throw createBoundaryAccessError(prop);
+					throw new Error(
+						`Access to server-only key '${prop}' on the client was prevented by ArkEnv`,
+					);
 				}
 
 				// Allow schema keys and standard Object prototype properties

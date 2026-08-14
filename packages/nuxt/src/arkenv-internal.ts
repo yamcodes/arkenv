@@ -1,5 +1,5 @@
 import type { Dict, SchemaShape } from "@repo/types";
-import { createBoundaryAccessError, getSchemaKeys } from "@repo/utils";
+import { getSchemaKeys } from "@repo/utils";
 import { getBootGateResult } from "./boot-gate-state";
 import { createCaptureStub, isCapturing, recordCapture } from "./capture";
 import { isForceServer } from "./validate-context";
@@ -361,7 +361,9 @@ function createSecurityProxy(
 
 			if (typeof prop === "string") {
 				if (serverOnlyKeys.has(prop) && !isServer) {
-					throw createBoundaryAccessError(prop);
+					throw new Error(
+						`Access to server-only key '${prop}' on the client was prevented by ArkEnv`,
+					);
 				}
 
 				if (!allKeys.has(prop) && !(prop in Object.prototype)) {

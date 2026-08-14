@@ -51,25 +51,23 @@ export default function Page() {
 
 ### Client Components
 
-You can access client and shared variables. Reading a server-only key throws a native `Error` named `ArkEnvAccessError` that is **not** an `ArkEnvValidationError` instance:
+You can access client and shared variables. Reading a server-only key throws a native `Error` that is **not** an `ArkEnvValidationError` instance:
 
 ```txt
-ArkEnvAccessError: Attempted to access server environment variable 'DATABASE_URL' on the client.
+Error: Access to server-only key 'DATABASE_URL' on the client was prevented by ArkEnv
 ```
 
-```tsx title="app/client-component.tsx"
+```tsx title="app/components/connection-status.tsx"
 "use client";
 
-import { env } from "../env";
+import { env } from "@/env";
 
-export default function ClientComponent() {
-  const api = env.NEXT_PUBLIC_API_URL; // ✅ Allowed (string)
-  const dbUrl = env.DATABASE_URL; // ❌ Throws on the client
-  return <div>...</div>;
+export function ConnectionStatus() {
+  return <p>Connected to {env.DATABASE_URL}</p>; // throws on the client
 }
 ```
 
-Run `pnpm dev`, open the app, and click **Try accessing DATABASE_URL (Secret)**. The panel inspects `error.name`, `error.constructor.name`, and `instanceof ArkEnvValidationError`; the same throw is logged to the browser console.
+Run `pnpm dev`, open **Billing**, and read the overlay. Do not catch this throw; move the read to a Server Component.
 
 ## Running the Example
 

@@ -10,13 +10,13 @@ function expectBoundaryAccessError(run: () => unknown, key: string): void {
 	} catch (error) {
 		expect(error).toBeInstanceOf(Error);
 		expect(error).not.toBeInstanceOf(ArkEnvValidationError);
-		expect((error as Error).name).toBe("ArkEnvAccessError");
+		expect((error as Error).name).toBe("Error");
 		expect((error as Error).message).toBe(
-			`Attempted to access server environment variable '${key}' on the client.`,
+			`Access to server-only key '${key}' on the client was prevented by ArkEnv`,
 		);
 		expect(String(error)).toMatch(
 			new RegExp(
-				`^ArkEnvAccessError: Attempted to access server environment variable '${key}' on the client\\.`,
+				`^Error: Access to server-only key '${key}' on the client was prevented by ArkEnv$`,
 			),
 		);
 	}

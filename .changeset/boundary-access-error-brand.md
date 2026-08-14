@@ -8,9 +8,9 @@
 "@arkenv/bun-plugin": major
 ---
 
-#### Split validation and boundary-access error names
+#### Split validation failures from client/server boundary throws
 
-Give each failure its own name so the console line matches the catch API. `ArkEnvError` is gone; there is no deprecated alias.
+Give each failure its own contract. `ArkEnvError` is gone; there is no deprecated alias.
 
 Schema failures throw `ArkEnvValidationError` (`.issues` present). Catch that class when you inspect issues — custom boot UI, tests, or a wrapper:
 
@@ -29,15 +29,15 @@ try {
 }
 ```
 
-Reading a server-only key from client code is a misuse, not a bad `.env` file. Next.js, Nuxt, Vite, and Bun throw a native `Error` named `ArkEnvAccessError` (no exported class, no `.issues`):
+Reading a server-only key from client code is a misuse, not a bad `.env` file. Next.js, Nuxt, Vite, and Bun throw a native `Error` (`name` stays `"Error"`, no exported class, no `.issues`):
 
 ```txt
-ArkEnvAccessError: Attempted to access server environment variable 'DATABASE_URL' on the client.
+Error: Access to server-only key 'DATABASE_URL' on the client was prevented by ArkEnv
 ```
 
 Do not catch that throw; move the read. `instanceof ArkEnvValidationError` is false here because there are no issues. Vite and Bun client modules still do not import the validation class.
 
-**BREAKING CHANGE**: Rename `ArkEnvError` to `ArkEnvValidationError` in imports and `instanceof` checks. Boundary stacks now print `ArkEnvAccessError:`; update tests that matched the old strings.
+**BREAKING CHANGE**: Rename `ArkEnvError` to `ArkEnvValidationError` in imports and `instanceof` checks. Boundary stacks now print the attributed native `Error` above; update tests that matched the old strings.
 
 ```diff
 - import { ArkEnvError } from "@arkenv/core";
@@ -48,5 +48,5 @@ Do not catch that throw; move the read. `instanceof ArkEnvValidationError` is fa
 - ArkEnv Error: Attempted to access server environment variable 'DATABASE_URL' on the client.
 - Error: ArkEnvError: Attempted to access…
 - Accessing server-side environment variable 'DATABASE_URL' on the client is not allowed.
-+ ArkEnvAccessError: Attempted to access server environment variable 'DATABASE_URL' on the client.
++ Error: Access to server-only key 'DATABASE_URL' on the client was prevented by ArkEnv
 ```

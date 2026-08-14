@@ -1,7 +1,4 @@
-import {
-	ARKENV_ACCESS_ERROR_NAME,
-	boundaryAccessErrorMessage,
-} from "@repo/utils/boundary-access-error";
+import { boundaryAccessErrorMessage } from "@repo/utils/boundary-access-error";
 
 /**
  * Build the client-graph replacement module: inlined coerced literals + server-key guards.
@@ -28,9 +25,7 @@ export function generateClientEnvModule(
 		const message = boundaryAccessErrorMessage(key);
 		lines.push(
 			`  get [${JSON.stringify(key)}]() {`,
-			`    const error = new Error(${JSON.stringify(message)});`,
-			`    error.name = ${JSON.stringify(ARKENV_ACCESS_ERROR_NAME)};`,
-			"    throw error;",
+			`    throw new Error(${JSON.stringify(message)});`,
 			"  },",
 		);
 	}

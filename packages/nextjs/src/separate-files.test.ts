@@ -109,12 +109,12 @@ describe("Separate Files Next.js mode", () => {
 		} catch (error) {
 			expect(error).toBeInstanceOf(Error);
 			expect(error).not.toBeInstanceOf(ArkEnvValidationError);
-			expect((error as Error).name).toBe("ArkEnvAccessError");
+			expect((error as Error).name).toBe("Error");
 			expect((error as Error).message).toBe(
-				"Attempted to access server environment variable 'DATABASE_URL' on the client.",
+				"Access to server-only key 'DATABASE_URL' on the client was prevented by ArkEnv",
 			);
 			expect(String(error)).toMatch(
-				/^ArkEnvAccessError: Attempted to access server environment variable 'DATABASE_URL' on the client\./,
+				/^Error: Access to server-only key 'DATABASE_URL' on the client was prevented by ArkEnv$/,
 			);
 		}
 	});
