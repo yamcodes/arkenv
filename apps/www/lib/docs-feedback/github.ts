@@ -1,7 +1,9 @@
 import { App, type Octokit } from "octokit";
 import { breakDownGithubUrl } from "~/lib/utils/github";
 
-/** Must match a Discussion category name in the GitHub repo. */
+/**
+ * Must match a Discussion category name in the GitHub repo.
+ */
 export const DocsFeedbackCategory = "Docs Feedback";
 
 let octokitInstance: Octokit | undefined;
@@ -149,7 +151,9 @@ export async function createDocsFeedbackDiscussion(
 	return result.createDiscussion.discussion.url;
 }
 
-/** Build the markdown body posted to the Discussion (or comment). */
+/**
+ * Build the markdown body posted to the Discussion (or comment).
+ */
 export function buildDocsFeedbackBody(input: {
 	message: string;
 	pageTitle: string;

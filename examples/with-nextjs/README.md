@@ -51,19 +51,23 @@ export default function Page() {
 
 ### Client Components
 
-You can access client and shared variables, but accessing server variables will throw a runtime error:
+You can access client and shared variables. Reading a server-only key throws a native `Error` that is **not** an `ArkEnvError` instance:
 
-```tsx title="app/client-component.tsx"
+```txt
+Error: Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)
+```
+
+```tsx title="app/components/connection-status.tsx"
 "use client";
 
-import { env } from "../env";
+import { env } from "@/env";
 
-export default function ClientComponent() {
-  const api = env.NEXT_PUBLIC_API_URL; // ✅ Allowed (string)
-  const dbUrl = env.DATABASE_URL; // ❌ Throws runtime error on client!
-  return <div>...</div>;
+export function ConnectionStatus() {
+  return <p>Connected to {env.DATABASE_URL}</p>; // throws on the client
 }
 ```
+
+Run `pnpm dev`, open **Billing**, and read the overlay. Do not catch this throw; move the read to a Server Component.
 
 ## Running the Example
 

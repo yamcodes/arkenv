@@ -487,6 +487,7 @@ A non-interactive muted label that only **groups** sibling **Leaves** on a **Sid
 - `ArkEnvError` extends `Error` and formats ArkType validation errors
 - Errors include variable names and expected types
 - Fail-fast approach: app won't start if validation fails
+- **Boundary access error**: A native `Error` thrown when client code reads a server-only env key (Next.js, Nuxt, Vite, Bun). It is **not** an `ArkEnvError` instance — client-generated modules must stay import-free of the class, and there are no `EnvIssue`s. Leave `error.name` as `"Error"`. Message uses Next.js taint voice: `Do not access server-only key '${key}' on the client since it will leak sensitive data (prevented by ArkEnv)` (no trailing period). Do not catch this throw; fix the access. Do not add a public `isArkEnvError` helper or fake `instanceof` via `Symbol.hasInstance`. See [ADR 0024](./adr/0024-sibling-error-names.md).
 
 ## Important constraints
 

@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { generateClientEnvModule } from "@arkenv/build";
 import {
 	type ArkEnvLogOptions,
 	resolveBuildLog,
@@ -12,7 +13,6 @@ import {
 	normalizePrefixes,
 	resolveEnvModulePath,
 } from "./env-module-path";
-import { generateClientEnvModule } from "./generate-client-env-module";
 import { loadValidatedEnv } from "./load-validated-env";
 import type { VitePluginFactoryConfig } from "./plugin-config";
 

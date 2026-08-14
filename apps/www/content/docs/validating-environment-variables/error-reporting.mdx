@@ -88,13 +88,13 @@ Framework integrations do not expose `safe`. Invalid env still fails the build o
 
 ## Framework boundary errors
 
-Reading a server-only key from client code raises a boundary error, not a schema `ArkEnvError`:
+Reading a server-only key from client code is a misuse, not a schema failure. The throw is a native `Error` (so Vite/Bun client modules never import `ArkEnvError`). `name` stays `"Error"`. The message is an instruction, same shape as Next.js taint copy, with ArkEnv at the end so agents can attribute it:
 
 ```txt
-ArkEnv Error: Attempted to access server environment variable 'DATABASE_URL' on the client.
+Error: Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)
 ```
 
-That `"ArkEnv Error:"` prefix differs from the validation header (`Errors found while validating environment variables`). Tracking: [#1558](https://github.com/yamcodes/arkenv/issues/1558).
+Do not catch this. Fix the access. `instanceof ArkEnvError` is for schema failures only — it is `false` here because there are no `issues`.
 
 Next.js, Nuxt, Vite, and Bun each enforce the boundary (runtime proxy, build-time import bans, or both). See [client vs. server](/docs/validating-environment-variables/client-vs-server).
 

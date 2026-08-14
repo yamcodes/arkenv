@@ -8,14 +8,20 @@ import type { HostPreset } from "./presets";
  */
 export type ScaffoldContext = {
 	framework: Framework;
-	/** Client env prefix from the active framework strategy (e.g. `NEXT_PUBLIC_`, `VITE_`). */
+	/**
+	 * Client env prefix from the active framework strategy (e.g. `NEXT_PUBLIC_`, `VITE_`).
+	 */
 	clientPrefix: string;
-	/** Integration package name when the framework is codegen-aware. */
+	/**
+	 * Integration package name when the framework is codegen-aware.
+	 */
 	packageName?: string;
 	disableCodegen: boolean;
 	layout?: "strict" | "simple" | "flat";
 	nextjsImportPath?: string;
-	/** Hosting provider preset for schema field enrichment. */
+	/**
+	 * Hosting provider preset for schema field enrichment.
+	 */
 	hostPreset?: HostPreset;
 };
 

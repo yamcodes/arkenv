@@ -7,6 +7,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { ArkEnvError } from "@arkenv/core";
 import * as vite from "vite";
 import { afterEach, describe, expect, it } from "vitest";
 import {
@@ -57,8 +58,12 @@ describe("transform mode helpers", () => {
 		expect(code).toContain('"VITE_PORT": 8080');
 		expect(code).toContain('get ["DATABASE_URL"]()');
 		expect(code).toContain(
-			"Attempted to access server environment variable 'DATABASE_URL' on the client",
+			"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)",
 		);
+		expect(code).not.toContain("error.name");
+		expect(code).not.toContain("ArkEnvAccessError");
+		expect(code).not.toContain("ArkEnv Error:");
+		expect(code).not.toMatch(/import\b.*ArkEnvError/);
 		expect(code).not.toContain("arkenv");
 		expect(code).not.toContain("arktype");
 	});
@@ -111,8 +116,10 @@ describe("transform mode plugin", () => {
 		expect(bundle).toContain("8080");
 		expect(bundle).toContain("VITE_DEBUG");
 		expect(bundle).toContain(
-			"Attempted to access server environment variable 'DATABASE_URL' on the client",
+			"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)",
 		);
+		expect(bundle).not.toMatch(/\.name\s*=\s*"ArkEnvAccessError"/);
+		expect(bundle).not.toContain("ArkEnv Error:");
 		expect(bundle).not.toMatch(/from ["']@arkenv\/core["']/);
 		expect(bundle).not.toMatch(/from ["']arktype["']/);
 		expect(bundle).not.toContain("postgres://fixture:5432/db");
@@ -147,9 +154,20 @@ describe("transform mode plugin", () => {
 		expect(mod.config.apiUrl).toBe("https://fixture.example.com");
 		expect(mod.config.debug).toBe(true);
 		expect(mod.config.port).toBe(8080);
-		expect(() => mod.readServerSecret()).toThrow(
-			/Attempted to access server environment variable 'DATABASE_URL' on the client/,
-		);
+		try {
+			mod.readServerSecret();
+			expect.fail("Expected boundary access error");
+		} catch (error) {
+			expect(error).toBeInstanceOf(Error);
+			expect(error).not.toBeInstanceOf(ArkEnvError);
+			expect((error as Error).name).toBe("Error");
+			expect((error as Error).message).toBe(
+				"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)",
+			);
+			expect(String(error)).toBe(
+				"Error: Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)",
+			);
+		}
 	});
 
 	it("passes through the env module unchanged in the SSR graph", async () => {

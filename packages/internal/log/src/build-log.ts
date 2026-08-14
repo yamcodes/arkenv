@@ -2,10 +2,14 @@ import { formatErrorCause, logErrorWithCauseVia } from "./cause";
 import { defaultLogger } from "./state";
 import type { Logger } from "./types";
 
-/** Standard prefix for ArkEnv build-time log messages. */
+/**
+ * Standard prefix for ArkEnv build-time log messages.
+ */
 export const BUILD_PREFIX = "[ArkEnv]";
 
-/** Standard prefix for ArkEnv file-watcher log messages. */
+/**
+ * Standard prefix for ArkEnv file-watcher log messages.
+ */
 export const WATCHER_PREFIX = "[ArkEnv Watcher]";
 
 /**
@@ -74,37 +78,51 @@ export function bindDefaultBuildLog(logger: Logger): void {
 	activeBuildLog = createBuildLogHelpers(logger);
 }
 
-/** Log a warning message with the warning symbol and build prefix. */
+/**
+ * Log a warning message with the warning symbol and build prefix.
+ */
 export function logBuildWarning(message: string): void {
 	activeBuildLog.logBuildWarning(message);
 }
 
-/** Log an error message with the error symbol and build prefix. */
+/**
+ * Log an error message with the error symbol and build prefix.
+ */
 export function logBuildError(message: string): void {
 	activeBuildLog.logBuildError(message);
 }
 
-/** Log a secondary error detail line without the build prefix. */
+/**
+ * Log a secondary error detail line without the build prefix.
+ */
 export function logBuildErrorDetail(message: string): void {
 	activeBuildLog.logBuildErrorDetail(message);
 }
 
-/** Log a blank line after build error output for visual separation. */
+/**
+ * Log a blank line after build error output for visual separation.
+ */
 export function logBuildErrorBlankLine(): void {
 	activeBuildLog.logBuildErrorBlankLine();
 }
 
-/** Log a build error header plus the full cause (stack or string). */
+/**
+ * Log a build error header plus the full cause (stack or string).
+ */
 export function logBuildErrorWithCause(header: string, cause: unknown): void {
 	activeBuildLog.logBuildErrorWithCause(header, cause);
 }
 
-/** Log an error message for the file watcher. */
+/**
+ * Log an error message for the file watcher.
+ */
 export function logWatcherError(message: string): void {
 	activeBuildLog.logWatcherError(message);
 }
 
-/** Log a watcher error header plus the full cause (stack or string). */
+/**
+ * Log a watcher error header plus the full cause (stack or string).
+ */
 export function logWatcherErrorWithCause(header: string, cause: unknown): void {
 	activeBuildLog.logWatcherErrorWithCause(header, cause);
 }

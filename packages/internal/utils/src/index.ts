@@ -18,6 +18,10 @@ export {
 } from "./parse-standard";
 export { getSchemaKeys } from "./schema";
 export {
+	ARKENV_ERROR_NAME,
+	boundaryAccessErrorMessage,
+} from "./utils/boundary-access-error";
+export {
 	buildEnvIssue,
 	formatStandardIssueMessage,
 	getStandardMeta,

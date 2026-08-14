@@ -1,14 +1,21 @@
 import type { Dict, SchemaShape } from "@repo/types";
 import { getSchemaKeys } from "@repo/utils";
+import { boundaryAccessErrorMessage } from "@repo/utils/boundary-access-error";
 import { getBootGateResult } from "./boot-gate-state";
 import { createCaptureStub, isCapturing, recordCapture } from "./capture";
 import { isForceServer } from "./validate-context";
 
-/** Symbol key for the raw extended env values object on an env proxy. */
+/**
+ * Symbol key for the raw extended env values object on an env proxy.
+ */
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
-/** Symbol key for the set of declared schema keys on an env proxy. */
+/**
+ * Symbol key for the set of declared schema keys on an env proxy.
+ */
 export const ENV_KEYS = Symbol.for("arkenv.keys");
-/** Symbol key for server-only keys that must not be readable on the client. */
+/**
+ * Symbol key for server-only keys that must not be readable on the client.
+ */
 export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
 
 /**
@@ -28,9 +35,13 @@ export type LegacyNestedSchema = {
 export type FlatSchemaOptions = {
 	extends?: readonly unknown[];
 	runtimeEnv?: Dict<string>;
-	/** @deprecated Use `exposeToClient` instead. */
+	/**
+	 * @deprecated Use `exposeToClient` instead.
+	 */
 	expose?: readonly string[];
-	/** @deprecated Use `exposeToClient` instead. */
+	/**
+	 * @deprecated Use `exposeToClient` instead.
+	 */
 	shared?: readonly string[];
 	exposeToClient?: readonly string[];
 };
@@ -351,9 +362,7 @@ function createSecurityProxy(
 
 			if (typeof prop === "string") {
 				if (serverOnlyKeys.has(prop) && !isServer) {
-					throw new Error(
-						`Accessing server-side environment variable '${prop}' on the client is not allowed.`,
-					);
+					throw new Error(boundaryAccessErrorMessage(prop));
 				}
 
 				if (!allKeys.has(prop) && !(prop in Object.prototype)) {

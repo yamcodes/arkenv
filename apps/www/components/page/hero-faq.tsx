@@ -10,7 +10,9 @@ const FAQ: readonly {
 	id: string;
 	question: React.ReactNode;
 	teaser: React.ReactNode;
-	/** Optional deep link when the teaser is truncated. */
+	/**
+	 * Optional deep link when the teaser is truncated.
+	 */
 	continueHref?: string;
 }[] = [
 	{

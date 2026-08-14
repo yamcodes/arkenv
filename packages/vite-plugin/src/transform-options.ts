@@ -1,4 +1,6 @@
-/** Known plugin option keys used to discriminate transform-mode calls from schemas. */
+/**
+ * Known plugin option keys used to discriminate transform-mode calls from schemas.
+ */
 const TRANSFORM_OPTION_KEYS = new Set([
 	"schemaPath",
 	"clientPrefix",

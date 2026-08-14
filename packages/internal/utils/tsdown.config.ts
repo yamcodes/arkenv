@@ -4,6 +4,7 @@ export default defineConfig({
 	entry: {
 		index: "src/index.ts",
 		log: "src/utils/log-helpers.ts",
+		"boundary-access-error": "src/utils/boundary-access-error.ts",
 	},
 	format: ["esm", "cjs"],
 	minify: true,

@@ -1,3 +1,4 @@
+export { generateClientEnvModule } from "@arkenv/build";
 export { classifyEnvKeys } from "./classify-env-keys";
 export {
 	isDotEnvFile,
@@ -6,7 +7,6 @@ export {
 	normalizePrefixes,
 	resolveEnvModulePath,
 } from "./env-module-path";
-export { generateClientEnvModule } from "./generate-client-env-module";
 export { loadValidatedEnv } from "./load-validated-env";
 export {
 	isTransformModeCall,
