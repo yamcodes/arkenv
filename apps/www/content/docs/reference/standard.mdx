@@ -35,7 +35,7 @@ export const env = arkenv({
 | Validator                               | ArkType DSL + `type()`      | Standard Schema map only                                                                                                               |
 | Keywords (`string.host`, `number.port`) | Yes                         | No                                                                                                                                     |
 | Peer `arktype`                          | Required                    | None                                                                                                                                   |
-| [Options](/docs/reference/options)      | Same                        | Same                                                                                                                                   |
+| [Options](/docs/reference/options)      | `ArkEnvConfig`              | `StandardEnvConfig` (`ArkEnvConfig` plus `toJsonSchema`)                                                                               |
 | Coercion                                | Built-in for ArkType shapes | Standard JSON Schema on the value, or [`toJsonSchema`](/docs/core-concepts/coercion#valibot-tojsonschema) for Valibot-style converters |
 
 ## Exports
@@ -46,7 +46,7 @@ export const env = arkenv({
 | `ArkEnvError`        | class                      | Thrown on validation failure                                   |
 | `formatIssues`       | function                   | Format issues                                                  |
 | `getSchemaKeys`      | function                   | List schema keys                                               |
-| Config / issue types | types                      | Same shapes as core (`StandardEnvConfig` aliases core options) |
+| Config / issue types | types                      | `StandardEnvConfig` extends core options with `toJsonSchema` |
 
 ## Framework `/standard` subpaths
 

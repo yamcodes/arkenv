@@ -3,7 +3,7 @@ title: Choosing an engine
 description: Pick @arkenv/core (ArkType) or @arkenv/standard (Zod, Valibot, and friends).
 ---
 
-ArkEnv ships two engines. Both call `arkenv()`, share fail-fast errors, the coercion pipeline, and framework plugins. Most [options](/docs/reference/options) apply to both. `toJsonSchema` is standard-mode only. The engines differ in schema style and peer dependencies.
+ArkEnv ships two engines. Both call `arkenv()`, share fail-fast errors, the coercion pipeline, and framework plugins. Shared [options](/docs/reference/options) (`env`, `coerce`, `safe`, …) apply to both. `toJsonSchema` is on `@arkenv/standard` only; ArkType already exposes JSON Schema. The engines also differ in schema style and peer dependencies.
 
 |                                             | [`@arkenv/core`](/docs/reference/core) | [`@arkenv/standard`](/docs/reference/standard)                             |
 | ------------------------------------------- | -------------------------------------- | -------------------------------------------------------------------------- |

@@ -5,7 +5,7 @@ description: Foundational ideas behind ArkEnv validation, coercion, and typesafe
 
 These pages explain how ArkEnv thinks about environment variables: when validation runs, how strings become typed values, and why the imported `env` object is the surface you use everywhere.
 
-ArkEnv has two engines that share the same runtime pipeline and options:
+ArkEnv has two engines that share the same runtime pipeline. Shared [options](/docs/reference/options) apply to both; `toJsonSchema` is `@arkenv/standard` only:
 
 - [`@arkenv/core`](/docs/reference/core) with ArkType
 - [`@arkenv/standard`](/docs/reference/standard) with Zod, Valibot, or any [Standard Schema](https://standardschema.dev/) validator
