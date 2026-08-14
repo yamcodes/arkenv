@@ -2,9 +2,11 @@
 "@arkenv/standard": minor
 ---
 
-#### Add optional `toJsonSchema` for Valibot coercion
+#### Add optional `toJsonSchema` coercion callback
 
-Valibot keeps JSON Schema conversion in `@valibot/to-json-schema`. Pass that converter so ArkEnv coerces `v.number()` and `v.boolean()`.
+Pass a converter when a Standard Schema field has no JSON Schema on the value. ArkEnv calls it per key then, so number and boolean env strings coerce.
+
+Valibot is one such library (`@valibot/to-json-schema`):
 
 ```ts
 import arkenv from "@arkenv/standard";
@@ -25,4 +27,4 @@ export const env = arkenv(
 
 Return a plain object to coerce that key, or `undefined` to skip it. If the callback throws or returns a non-plain object, ArkEnv fails that key with `ArkEnvError` (`INVALID_SCHEMA`).
 
-Zod keys coerce from JSON Schema on the value. ArkEnv skips the callback for those.
+Keys that already expose JSON Schema (Zod 4.2+) coerce without the callback.
