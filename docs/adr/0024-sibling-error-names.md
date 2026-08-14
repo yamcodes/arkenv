@@ -19,10 +19,10 @@ v1.0.0-alpha is the rename window. Keeping the export name `ArkEnvError` as “t
 Split the **contracts**, not the `Error.name` of the boundary throw:
 
 - **`ArkEnvValidationError`** — the class thrown on schema failure. `instanceof` is true. `.issues` exists. Catch in boot UI / tests.
-- **Boundary access** — a native `Error` with `name` left as `"Error"`. No exported class. Vite/Bun getters stay import-free. Do not catch; fix the access. Attribute the library in the **message**, last in the sentence, with no trailing period (Next.js overlay style):
+- **Boundary access** — a native `Error` with `name` left as `"Error"`. No exported class. Vite/Bun getters stay import-free. Do not catch; move the read. Message uses Next.js taint voice (`Do not … since it will leak`), no trailing period. "on the client" not "Client Components", because Nuxt/Vite/Bun share the string:
 
 ```txt
-Error: Access to server-only key 'DATABASE_URL' on the client was prevented by ArkEnv
+Error: Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data
 ```
 
 No `error.name` rewrite (`ArkEnvAccessError`, `ArkEnvError`, …). No deprecated `ArkEnvError` alias. No `isArkEnvError` helper, `Symbol.hasInstance`, or `.code` until a concrete switch use case exists.
@@ -30,6 +30,6 @@ No `error.name` rewrite (`ArkEnvAccessError`, `ArkEnvError`, …). No deprecated
 ## Consequences
 
 - `import { ArkEnvValidationError } from "@arkenv/core"` (and `@arkenv/standard`) replaces `ArkEnvError`.
-- Boundary overlays match a framework tripwire (`Error:`), with `ArkEnv` as grammatical attribution so search and agents land on this library.
+- Boundary overlays match a framework tripwire (`Error: Do not … since it will leak`). The stack points at ArkEnv; do not brand `error.name`.
 - `instanceof ArkEnvValidationError` stays validation-only. There is no `instanceof` for boundary access.
 - Callers who caught `instanceof ArkEnvError` must switch to `ArkEnvValidationError`. Mechanical rename; no codemod in-tree for an alpha audience.

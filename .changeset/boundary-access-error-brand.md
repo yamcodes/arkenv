@@ -1,18 +1,11 @@
 ---
 "@arkenv/core": major
 "@arkenv/standard": major
-"@arkenv/build": patch
-"@arkenv/nextjs": major
-"@arkenv/nuxt": major
-"@arkenv/vite-plugin": major
-"@arkenv/bun-plugin": major
 ---
 
-#### Split validation failures from client/server boundary throws
+#### Rename `ArkEnvError` to `ArkEnvValidationError`
 
-Give each failure its own contract. `ArkEnvError` is gone; there is no deprecated alias.
-
-Schema failures throw `ArkEnvValidationError` (`.issues` present). Catch that class when you inspect issues — custom boot UI, tests, or a wrapper:
+Catch `ArkEnvValidationError` when a schema fails and you need `.issues`. `ArkEnvError` is gone.
 
 ```ts
 import arkenv, { ArkEnvValidationError } from "@arkenv/core";
@@ -22,31 +15,19 @@ try {
   arkenv({ PORT: "number.port" }, { env: { PORT: "abc" } });
 } catch (error) {
   if (error instanceof ArkEnvValidationError) {
-    console.error(error.message);
     console.error(error.issues);
   }
   throw error;
 }
 ```
 
-Reading a server-only key from client code is a misuse, not a bad `.env` file. Next.js, Nuxt, Vite, and Bun throw a native `Error` (`name` stays `"Error"`, no exported class, no `.issues`):
+This class is validation-only. Reading a server-only key from client code still throws a native `Error` — do not catch that; move the read.
 
-```txt
-Error: Access to server-only key 'DATABASE_URL' on the client was prevented by ArkEnv
-```
-
-Do not catch that throw; move the read. `instanceof ArkEnvValidationError` is false here because there are no issues. Vite and Bun client modules still do not import the validation class.
-
-**BREAKING CHANGE**: Rename `ArkEnvError` to `ArkEnvValidationError` in imports and `instanceof` checks. Boundary stacks now print the attributed native `Error` above; update tests that matched the old strings.
+**BREAKING CHANGE**: Replace `ArkEnvError` with `ArkEnvValidationError` in imports and `instanceof` checks.
 
 ```diff
 - import { ArkEnvError } from "@arkenv/core";
 - if (error instanceof ArkEnvError) { /* .issues */ }
 + import { ArkEnvValidationError } from "@arkenv/core";
 + if (error instanceof ArkEnvValidationError) { /* .issues */ }
-
-- ArkEnv Error: Attempted to access server environment variable 'DATABASE_URL' on the client.
-- Error: ArkEnvError: Attempted to access…
-- Accessing server-side environment variable 'DATABASE_URL' on the client is not allowed.
-+ Error: Access to server-only key 'DATABASE_URL' on the client was prevented by ArkEnv
 ```

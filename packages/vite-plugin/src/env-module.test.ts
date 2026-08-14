@@ -58,7 +58,7 @@ describe("transform mode helpers", () => {
 		expect(code).toContain('"VITE_PORT": 8080');
 		expect(code).toContain('get ["DATABASE_URL"]()');
 		expect(code).toContain(
-			"Access to server-only key 'DATABASE_URL' on the client was prevented by ArkEnv",
+			"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data",
 		);
 		expect(code).not.toContain("error.name");
 		expect(code).not.toContain("ArkEnvAccessError");
@@ -116,7 +116,7 @@ describe("transform mode plugin", () => {
 		expect(bundle).toContain("8080");
 		expect(bundle).toContain("VITE_DEBUG");
 		expect(bundle).toContain(
-			"Access to server-only key 'DATABASE_URL' on the client was prevented by ArkEnv",
+			"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data",
 		);
 		expect(bundle).not.toMatch(/\.name\s*=\s*"ArkEnvAccessError"/);
 		expect(bundle).not.toContain("ArkEnv Error:");
@@ -162,10 +162,10 @@ describe("transform mode plugin", () => {
 			expect(error).not.toBeInstanceOf(ArkEnvValidationError);
 			expect((error as Error).name).toBe("Error");
 			expect((error as Error).message).toMatch(
-				/Access to server-only key 'DATABASE_URL' on the client was prevented by ArkEnv/,
+				/Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data/,
 			);
 			expect(String(error)).toMatch(
-				/^Error: Access to server-only key 'DATABASE_URL' on the client was prevented by ArkEnv/,
+				/^Error: Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data/,
 			);
 		}
 	});

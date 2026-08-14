@@ -3,16 +3,16 @@ import { ArkEnvValidationError } from "../core";
 import { boundaryAccessErrorMessage } from "./boundary-access-error";
 
 describe("boundaryAccessErrorMessage", () => {
-	it("attributes a native Error without constructing ArkEnvValidationError", () => {
+	it("builds a native Error without constructing ArkEnvValidationError", () => {
 		const error = new Error(boundaryAccessErrorMessage("DATABASE_URL"));
 		expect(error).toBeInstanceOf(Error);
 		expect(error).not.toBeInstanceOf(ArkEnvValidationError);
 		expect(error.name).toBe("Error");
 		expect(error.message).toBe(
-			"Access to server-only key 'DATABASE_URL' on the client was prevented by ArkEnv",
+			"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data",
 		);
 		expect(String(error)).toMatch(
-			/^Error: Access to server-only key 'DATABASE_URL' on the client was prevented by ArkEnv$/,
+			/^Error: Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data$/,
 		);
 		expect(error.stack).toMatch(/^Error:/);
 	});

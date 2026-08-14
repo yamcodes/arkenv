@@ -11,7 +11,7 @@ describe("generateClientEnvModule", () => {
 		expect(code).toContain('"VITE_API_URL": "https://api.example.com"');
 		expect(code).toContain('get ["DATABASE_URL"]()');
 		expect(code).toContain(
-			"Access to server-only key 'DATABASE_URL' on the client was prevented by ArkEnv",
+			"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data",
 		);
 		expect(code).not.toContain("error.name");
 		expect(code).not.toContain("ArkEnvAccessError");

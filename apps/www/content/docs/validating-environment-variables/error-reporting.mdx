@@ -88,10 +88,10 @@ Framework integrations do not expose `safe`. Invalid env still fails the build o
 
 ## Framework boundary errors
 
-Reading a server-only key from client code is a misuse, not a schema failure. The throw is a native `Error` (so Vite/Bun client modules never import `ArkEnvValidationError`). `name` stays `"Error"`; the message attributes ArkEnv:
+Reading a server-only key from client code is a misuse, not a schema failure. The throw is a native `Error` (so Vite/Bun client modules never import `ArkEnvValidationError`). `name` stays `"Error"`. The message is an instruction, same shape as Next.js taint copy:
 
 ```txt
-Error: Access to server-only key 'DATABASE_URL' on the client was prevented by ArkEnv
+Error: Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data
 ```
 
 Do not catch this. Fix the access. `instanceof ArkEnvValidationError` is for schema failures only — it is `false` here because there are no `issues`.

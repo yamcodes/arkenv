@@ -87,7 +87,7 @@ describe("Next.js Standard Mode Flat Layout", () => {
 				expect(error).not.toBeInstanceOf(ArkEnvValidationError);
 				expect((error as Error).name).toBe("Error");
 				expect((error as Error).message).toBe(
-					"Access to server-only key 'DATABASE_URL' on the client was prevented by ArkEnv",
+					"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data",
 				);
 			}
 		} finally {
