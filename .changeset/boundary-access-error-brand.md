@@ -5,18 +5,22 @@
 "@arkenv/bun-plugin": major
 ---
 
-#### Brand client/server boundary access errors as `ArkEnvError`
+#### Show `ArkEnvError` when client code reads a server-only variable
 
-Boundary access throws (reading a server-only env key on the client) are still native `Error`s — they do not import or construct `ArkEnvError` — but they now set `error.name = "ArkEnvError"` and use one unprefixed message across Next.js, Nuxt, Vite, and Bun:
+If a Client Component (or other browser code) reads a server-only variable such as `DATABASE_URL`, ArkEnv still throws immediately so the secret never reaches the client. The overlay and stack now look like other ArkEnv errors:
 
-```ts
-const error = new Error(
-  `Attempted to access server environment variable '${key}' on the client.`,
-);
-error.name = "ArkEnvError";
-throw error;
+```txt
+ArkEnvError: Attempted to access server environment variable 'DATABASE_URL' on the client.
 ```
 
-Stacks print `ArkEnvError: Attempted to access…`. This is not an `ArkEnvError` instance (`instanceof` stays validation-only). Do not catch it — fix the client access.
+That is a bug in the component, not a bad `.env` file. Fix the access. Do not wrap it in `try/catch`. `instanceof ArkEnvError` still means startup validation failed and still has `.issues`.
 
-**BREAKING CHANGE**: Boundary access messages no longer use the `ArkEnv Error:` prefix (Next/Vite/Bun) or Nuxt's `Accessing server-side…` wording. Match on `error.name === "ArkEnvError"` or the new message text.
+Next.js, Vite, and Bun used to print `ArkEnv Error:` (with a space) in front of that sentence. Nuxt used a different sentence. All four now share the message above.
+
+**BREAKING CHANGE**: Update tests or log scrapers that matched the old strings:
+
+```diff
+- ArkEnv Error: Attempted to access server environment variable 'DATABASE_URL' on the client.
+- Accessing server-side environment variable 'DATABASE_URL' on the client is not allowed.
++ Attempted to access server environment variable 'DATABASE_URL' on the client.
+```
