@@ -77,15 +77,15 @@ Engines are separate packages so peer dependencies stay honest. Framework plugin
 
 [Standard Schema](https://standardschema.dev/) and [Standard JSON Schema](https://standardschema.dev/json-schema) are **orthogonal** specs: one is about validation, the other about converting a type to JSON Schema. A value can implement one, both, or neither.
 
-ArkEnv’s pre-coercion step for `@arkenv/standard` prefers **Standard JSON Schema v1** on the value (`~standard.jsonSchema.input` / `.output`). When a library keeps conversion outside the schema (Valibot), pass the optional [`toJsonSchema`](/docs/core-concepts/coercion#valibot-tojsonschema) escape hatch.
+ArkEnv’s pre-coercion step for `@arkenv/standard` prefers **Standard JSON Schema v1** on the value (`~standard.jsonSchema.input` / `.output`). When a library keeps conversion outside the schema (Valibot, then Zod Mini), pass the optional [`toJsonSchema`](/docs/core-concepts/coercion#valibot-tojsonschema) escape hatch.
 
-| Library                                        | How ArkEnv gets JSON Schema                                          |
-| ---------------------------------------------- | -------------------------------------------------------------------- |
-| Zod (v4.2+)                                    | On the value (Standard JSON Schema v1)                               |
-| VineJS (v4.3+)                                 | On the value (Standard JSON Schema v1)                               |
-| Zod Mini                                       | See library docs                                                     |
-| Valibot (v1.2+ with `@valibot/to-json-schema`) | Wire `toJsonSchema` (see [Valibot](/docs/guides/validators/valibot)) |
-| Other Standard JSON Schema v1 validators       | On the value                                                         |
+| Library                                        | How ArkEnv gets JSON Schema                                                                          |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Zod (v4.2+)                                    | On the value (Standard JSON Schema v1)                                                               |
+| VineJS (v4.3+)                                 | On the value (Standard JSON Schema v1)                                                               |
+| Valibot (v1.2+ with `@valibot/to-json-schema`) | Wire `toJsonSchema` (see [Valibot](/docs/guides/validators/valibot))                                 |
+| Zod Mini                                       | Wire `toJsonSchema` with `z.toJSONSchema` ([mixing](/docs/core-concepts/coercion#mixing-with-zod-mini)) |
+| Other Standard JSON Schema v1 validators       | On the value                                                                                         |
 
 See [Coercion](/docs/core-concepts/coercion).
 

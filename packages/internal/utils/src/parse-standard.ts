@@ -65,7 +65,8 @@ export type ParseStandardConfig = {
 	 * Whether to perform best-effort coercion on the environment variables.
 	 * Coercion prefers validators that expose Standard JSON Schema on the value
 	 * itself (e.g. Zod). For converters that live outside the schema (e.g. Valibot
-	 * via `@valibot/to-json-schema`), pass {@link toJsonSchema}.
+	 * via `@valibot/to-json-schema`, or Zod Mini via `z.toJSONSchema`), pass
+	 * {@link toJsonSchema}.
 	 *
 	 * @see https://standard-schema.dev
 	 * @default true

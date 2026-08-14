@@ -3,6 +3,7 @@ import type { GenericSchema } from "valibot";
 import * as v from "valibot";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { z } from "zod";
+import * as zMini from "zod/mini";
 import { ArkEnvError, arkenv } from "./index";
 
 // Mock Standard Schema validators for testing
@@ -253,13 +254,13 @@ describe("Standard Mode Coercion", () => {
 	});
 
 	it("should support fallback coercion triggers: toJSONSchema and toStandardJSONSchema.v1", () => {
-		vi.stubEnv("ZOD_MINI_VAR", "42");
+		vi.stubEnv("INSTANCE_JSON_SCHEMA_VAR", "42");
 		vi.stubEnv("STNL_VAR", "true");
 
-		const mockZodMiniValidator = {
+		const mockInstanceToJSONSchemaValidator = {
 			"~standard": {
 				version: 1 as const,
-				vendor: "zod-mini",
+				vendor: "mock",
 				types: {} as { input: unknown; output: number },
 				validate: (val: unknown) => {
 					if (typeof val !== "number") {
@@ -294,13 +295,13 @@ describe("Standard Mode Coercion", () => {
 
 		const env = arkenv(
 			{
-				ZOD_MINI_VAR: mockZodMiniValidator as any,
+				INSTANCE_JSON_SCHEMA_VAR: mockInstanceToJSONSchemaValidator as any,
 				STNL_VAR: mockStnlValidator as any,
 			},
 			{ coerce: true },
 		);
 
-		expect(env.ZOD_MINI_VAR).toBe(42);
+		expect(env.INSTANCE_JSON_SCHEMA_VAR).toBe(42);
 		expect(env.STNL_VAR).toBe(true);
 	});
 });
@@ -398,6 +399,69 @@ describe("Standard Mode toJsonSchema", () => {
 
 		expect(env.ZOD_PORT).toBe(8080);
 		expect(env.VALIBOT_DEBUG).toBe(false);
+	});
+
+	it("coerces Zod Mini number/boolean fields via z.toJSONSchema", () => {
+		vi.stubEnv("PORT", "3000");
+		vi.stubEnv("DEBUG", "true");
+
+		const env = arkenv(
+			{
+				PORT: zMini.number(),
+				DEBUG: zMini.boolean(),
+			},
+			{
+				toJsonSchema: (schema) =>
+					zMini.toJSONSchema(schema as zMini.ZodMiniType, {
+						io: "input",
+						target: "draft-07",
+					}),
+			},
+		);
+
+		expect(env.PORT).toBe(3000);
+		expect(env.DEBUG).toBe(true);
+	});
+
+	it("does not coerce Zod Mini without toJsonSchema", () => {
+		vi.stubEnv("PORT", "3000");
+
+		expect(() => arkenv({ PORT: zMini.number() })).toThrow(
+			/Hint: coercion is enabled by default, but the validator for 'PORT' lacks Standard JSON Schema support/,
+		);
+	});
+
+	it("coerces hybrid Valibot + Zod Mini schemas via vendor switch", () => {
+		vi.stubEnv("PORT", "8080");
+		vi.stubEnv("DEBUG", "false");
+
+		const env = arkenv(
+			{
+				PORT: v.number(),
+				DEBUG: zMini.boolean(),
+			},
+			{
+				toJsonSchema: (schema) => {
+					switch (schema["~standard"].vendor) {
+						case "valibot":
+							return toJsonSchema(schema as GenericSchema, {
+								typeMode: "input",
+								target: "draft-07",
+							});
+						case "zod":
+							return zMini.toJSONSchema(schema as zMini.ZodMiniType, {
+								io: "input",
+								target: "draft-07",
+							});
+						default:
+							return undefined;
+					}
+				},
+			},
+		);
+
+		expect(env.PORT).toBe(8080);
+		expect(env.DEBUG).toBe(false);
 	});
 
 	it("does not invoke toJsonSchema for keys with Standard JSON Schema", () => {

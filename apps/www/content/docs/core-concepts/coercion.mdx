@@ -91,8 +91,9 @@ Cookbook examples: [Coercion and parsing](/docs/validating-environment-variables
   v1](https://standardschema.dev/json-schema) on the value **or** a
   [`toJsonSchema`](#valibot-tojsonschema) fallback. Those specs are orthogonal to
   Standard Schema validation. Zod 4.2+ and VineJS 4.3+ put the converter on the
-  schema. Valibot keeps conversion in `@valibot/to-json-schema`; wire the
-  callback once (see [Valibot guide](/docs/guides/validators/valibot)).
+  schema. Valibot keeps conversion in `@valibot/to-json-schema`; Zod Mini uses
+  `z.toJSONSchema`. Wire the callback once (see
+  [Valibot guide](/docs/guides/validators/valibot)).
 </Callout>
 
 ## Valibot (`toJsonSchema`)
@@ -120,6 +121,42 @@ export const env = arkenv(
 - `typeMode: "input"` coerces env strings toward the schema's input type. A bare `{ toJsonSchema }` function reference uses Valibot's default `typeMode: "ignore"`.
 - Install `@valibot/to-json-schema` yourself. `@arkenv/standard` does not depend on it.
 - Recipe: [Valibot](/docs/guides/validators/valibot).
+
+### Mixing with Zod Mini
+
+Zod Mini also keeps conversion off the value (`z.toJSONSchema`). Mini has no `~standard.jsonSchema` and no instance `.toJSONSchema()`. When both libraries miss JSON Schema, switch on `schema["~standard"].vendor` and return `undefined` for anything else. Mini reports vendor `"zod"`. Classic Zod keys never reach the callback.
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import { toJsonSchema } from "@valibot/to-json-schema";
+import * as v from "valibot";
+import * as z from "zod/mini";
+
+export const env = arkenv(
+  {
+    PORT: v.number(),
+    DEBUG: z.boolean(),
+  },
+  {
+    toJsonSchema: (schema) => {
+      switch (schema["~standard"].vendor) {
+        case "valibot":
+          return toJsonSchema(schema as v.GenericSchema, {
+            typeMode: "input",
+            target: "draft-07",
+          });
+        case "zod":
+          return z.toJSONSchema(schema as z.ZodMiniType, {
+            io: "input",
+            target: "draft-07",
+          });
+        default:
+          return undefined;
+      }
+    },
+  },
+);
+```
 
 ## Disabling coercion
 

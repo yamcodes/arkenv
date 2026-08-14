@@ -64,7 +64,7 @@ export function extractJsonSchema(
 			} catch {}
 		}
 
-		// 3. toJSONSchema method (e.g. zod mini, zod-to-json-schema)
+		// 3. toJSONSchema method (e.g. classic Zod instance method, zod-to-json-schema)
 		if (typeof validator.toJSONSchema === "function") {
 			try {
 				const schema = validator.toJSONSchema();

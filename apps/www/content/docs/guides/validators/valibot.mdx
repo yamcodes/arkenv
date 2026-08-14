@@ -70,6 +70,8 @@ export const env = arkenv(
 
 Configure `toJsonSchema` once on `arkenv()`. Per-key `toStandardJsonSchema(...)` wrappers are not the intended path.
 
+When a second library also omits JSON Schema on the value, switch on `schema["~standard"].vendor`. Zod Mini is that second case (`z.toJSONSchema`, vendor `"zod"`). Classic Zod never reaches the callback. Example: [Mixing with Zod Mini](/docs/core-concepts/coercion#mixing-with-zod-mini).
+
 ## Defaults and optionals
 
 | Pattern                   | Meaning                         |

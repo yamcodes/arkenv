@@ -59,6 +59,10 @@ env.DEBUG; // hover to see type
 env.TAGS; // hover to see type
 ```
 
+## Zod Mini
+
+[Zod Mini](https://zod.dev/packages/mini) (`import * as z from "zod/mini"`) keeps JSON Schema conversion off the value: standalone `z.toJSONSchema(schema)`, no instance method, no `~standard.jsonSchema`. Pass it through `toJsonSchema`. Mixing Mini with Valibot: [Coercion](/docs/core-concepts/coercion#mixing-with-zod-mini).
+
 ## Defaults and optionals
 
 | Pattern                  | Meaning                         |
