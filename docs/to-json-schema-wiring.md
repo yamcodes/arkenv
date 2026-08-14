@@ -149,11 +149,186 @@ C5 does **not** replace B5. Generated Valibot-only / Zod+Valibot snippets can st
 
 **C5 CLI recipe (host-preset analogue)** — Same DX as C2, distributed the way we already distribute host fields: copy into user source, evolve the template in the CLI, `npx arkenv@latest …` to pick up changes, no `@arkenv/valibot` to semver. Scores well on vendor neutrality and maintenance hell. Costs CLI surface, AST-splice complexity, and stale-copy semantics. Complements S; does not replace it. Init-time emission when the validator is Valibot is the cheap end of this spectrum; `add` for existing projects is the expensive end.
 
-## Call-site shapes (for comparison)
+## S and A usage by use case
 
-Valibot-only / Zod + Valibot, inline (C1), no assertion:
+**S** is C1 (inline wrapper) on B5. **A** is the same typing with the wrapper tucked away: C2 (named helper), C3 (`createEnv` factory), C5 (CLI emits C2 into the project). C5 is shown as a hypothetical command; the file it would write is the C2 snippet.
+
+Classic Zod never needs a callback. Off-value maps do. Zod + Valibot reuses the Valibot helper unchanged.
+
+### 1. Classic Zod only
+
+No `toJsonSchema`. S and A are the same file.
 
 ```ts
+import arkenv from "@arkenv/standard";
+import { z } from "zod";
+
+export const env = arkenv({
+  PORT: z.number(),
+  DEBUG: z.boolean(),
+});
+```
+
+C2 / C3 / C5: do not add a converter. A Valibot `createEnv` that always passes `toJsonSchema` is still safe here (the callback is never invoked).
+
+### 2. Valibot only
+
+**S — inline**
+
+```ts
+import arkenv from "@arkenv/standard";
+import { toJsonSchema } from "@valibot/to-json-schema";
+import * as v from "valibot";
+
+export const env = arkenv(
+  { PORT: v.number(), DEBUG: v.boolean() },
+  {
+    toJsonSchema: (schema) =>
+      toJsonSchema(schema, {
+        typeMode: "input",
+        target: "draft-07",
+      }),
+  },
+);
+```
+
+**A — C2 named helper**
+
+```ts
+// to-json-schema.ts
+import { toJsonSchema } from "@valibot/to-json-schema";
+import type * as v from "valibot";
+
+export const valibotJsonSchema = (schema: v.GenericSchema) =>
+  toJsonSchema(schema, { typeMode: "input", target: "draft-07" });
+```
+
+```ts
+// env.ts
+import arkenv from "@arkenv/standard";
+import * as v from "valibot";
+import { valibotJsonSchema } from "./to-json-schema";
+
+export const env = arkenv(
+  { PORT: v.number(), DEBUG: v.boolean() },
+  { toJsonSchema: valibotJsonSchema },
+);
+```
+
+**A — C3 factory**
+
+```ts
+// create-env.ts
+import arkenv from "@arkenv/standard";
+import type { StandardEnvConfig } from "@arkenv/standard";
+import type { StandardSchemaV1 } from "@standard-schema/spec";
+import { toJsonSchema } from "@valibot/to-json-schema";
+
+export function createEnv<const T extends Record<string, StandardSchemaV1>>(
+  schema: T,
+  config?: Omit<StandardEnvConfig<T>, "toJsonSchema">,
+) {
+  return arkenv(schema, {
+    ...config,
+    toJsonSchema: (schema) =>
+      toJsonSchema(schema, {
+        typeMode: "input",
+        target: "draft-07",
+      }),
+  });
+}
+```
+
+```ts
+// env.ts
+import * as v from "valibot";
+import { createEnv } from "./create-env";
+
+export const env = createEnv({
+  PORT: v.number(),
+  DEBUG: v.boolean(),
+});
+```
+
+**A — C5 CLI** (hypothetical)
+
+```bash
+npx arkenv@latest add to-json-schema valibot
+```
+
+Writes the C2 helper (and wires `{ toJsonSchema: valibotJsonSchema }`, or inlines S during `init` when the validator is Valibot).
+
+### 3. Zod Mini only
+
+**S — inline**
+
+```ts
+import arkenv from "@arkenv/standard";
+import * as z from "zod/mini";
+
+export const env = arkenv(
+  { PORT: z.number(), DEBUG: z.boolean() },
+  {
+    toJsonSchema: (schema) =>
+      z.toJSONSchema(schema, {
+        io: "input",
+        target: "draft-07",
+      }),
+  },
+);
+```
+
+**A — C2 named helper**
+
+```ts
+// to-json-schema.ts
+import * as z from "zod/mini";
+
+export const miniJsonSchema = (schema: z.ZodMiniType) =>
+  z.toJSONSchema(schema, { io: "input", target: "draft-07" });
+```
+
+```ts
+// env.ts
+import arkenv from "@arkenv/standard";
+import * as z from "zod/mini";
+import { miniJsonSchema } from "./to-json-schema";
+
+export const env = arkenv(
+  { PORT: z.number(), DEBUG: z.boolean() },
+  { toJsonSchema: miniJsonSchema },
+);
+```
+
+**A — C3 factory**
+
+```ts
+toJsonSchema: (schema) =>
+  z.toJSONSchema(schema, { io: "input", target: "draft-07" }),
+```
+
+inside the same `createEnv` pattern as Valibot. `env.ts` is schema-only.
+
+**A — C5 CLI**
+
+```bash
+npx arkenv@latest add to-json-schema zod-mini
+```
+
+Emits the C2 Mini helper.
+
+### 4. Classic Zod + Valibot
+
+Same Valibot wrapper as use case 2. Zod never reaches the callback; no `as v.GenericSchema`.
+
+**S — inline**
+
+```ts
+import arkenv from "@arkenv/standard";
+import { toJsonSchema } from "@valibot/to-json-schema";
+import * as v from "valibot";
+import { z } from "zod";
+
 export const env = arkenv(
   { PORT: z.number(), DEBUG: v.boolean() },
   {
@@ -166,9 +341,69 @@ export const env = arkenv(
 );
 ```
 
-Named helper (C2), including what a C5 emit would look like for Valibot + Mini:
+**A — C2** — reuse `valibotJsonSchema` from use case 2:
 
 ```ts
+export const env = arkenv(
+  { PORT: z.number(), DEBUG: v.boolean() },
+  { toJsonSchema: valibotJsonSchema },
+);
+```
+
+**A — C3** — reuse the Valibot `createEnv`:
+
+```ts
+export const env = createEnv({
+  PORT: z.number(),
+  DEBUG: v.boolean(),
+});
+```
+
+**A — C5** — same command as Valibot-only (`add to-json-schema valibot`). Adding Zod later does not require a new recipe.
+
+### 5. Valibot + Zod Mini
+
+Both miss JSON Schema on the value. `vendor` does not narrow. Assertions live in the tucked helper, not next to the field map.
+
+**S — inline**
+
+```ts
+import arkenv from "@arkenv/standard";
+import { toJsonSchema } from "@valibot/to-json-schema";
+import * as v from "valibot";
+import * as z from "zod/mini";
+
+export const env = arkenv(
+  { PORT: v.number(), DEBUG: z.boolean() },
+  {
+    toJsonSchema: (schema) => {
+      switch (schema["~standard"].vendor) {
+        case "valibot":
+          return toJsonSchema(schema as v.GenericSchema, {
+            typeMode: "input",
+            target: "draft-07",
+          });
+        case "zod":
+          return z.toJSONSchema(schema as z.ZodMiniType, {
+            io: "input",
+            target: "draft-07",
+          });
+        default:
+          return undefined;
+      }
+    },
+  },
+);
+```
+
+**A — C2 named helper**
+
+```ts
+// to-json-schema.ts
+import { toJsonSchema } from "@valibot/to-json-schema";
+import * as v from "valibot";
+import * as z from "zod/mini";
+
 export const toJsonSchemaFallback = (
   schema: v.GenericSchema | z.ZodMiniType,
 ) => {
@@ -187,9 +422,30 @@ export const toJsonSchemaFallback = (
       return undefined;
   }
 };
-
-export const env = arkenv(schema, { toJsonSchema: toJsonSchemaFallback });
 ```
+
+```ts
+// env.ts
+import arkenv from "@arkenv/standard";
+import * as v from "valibot";
+import * as z from "zod/mini";
+import { toJsonSchemaFallback } from "./to-json-schema";
+
+export const env = arkenv(
+  { PORT: v.number(), DEBUG: z.boolean() },
+  { toJsonSchema: toJsonSchemaFallback },
+);
+```
+
+**A — C3 factory** — bake that switch into `createEnv`; `env.ts` stays the field map.
+
+**A — C5 CLI**
+
+```bash
+npx arkenv@latest add to-json-schema valibot,zod-mini
+```
+
+Emits the C2 mix helper. This is the only recipe that still contains `as` casts.
 
 ## Tier list
 
@@ -234,3 +490,4 @@ Keep **S** as the public API and docs default. Mention **C2** as optional tuck-a
 ## Changelog of this note
 
 - 2026-08-14: First write-up (layers A/B/C, metrics, tier list). Added C5 (CLI recipes / host-preset analogue).
+- 2026-08-14: S and A usage examples across Zod, Valibot, Mini, Zod+Valibot, Valibot+Mini.
