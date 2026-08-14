@@ -164,7 +164,7 @@ ArkEnv's built-in coercion still handles the common string-to-number and string-
 
 ## Coercion with Standard Schema validators
 
-The same `coerce` option works with `@arkenv/standard` when each field is [Standard JSON Schema v1](https://standardschema.dev/json-schema) — not merely Standard Schema. Those specs are orthogonal. Zod 4.2+, VineJS 4.3+, Valibot with `@valibot/to-json-schema`, Zod Mini, and other libraries on the [compatible list](https://standardschema.dev/json-schema#what-schema-libraries-support-this-spec) qualify.
+The same `coerce` option works with `@arkenv/standard` when each field exposes [Standard JSON Schema v1](https://standardschema.dev/json-schema) on the value, not merely Standard Schema. Those specs are orthogonal. Zod 4.2+, VineJS 4.3+, and other libraries on the [compatible list](https://standardschema.dev/json-schema#what-schema-libraries-support-this-spec) qualify. Valibot keeps conversion in `@valibot/to-json-schema`; Zod Mini uses `z.toJSONSchema`; Zod v3 typically uses `zod-to-json-schema`. Wire the optional [`toJsonSchema`](/docs/core-concepts/coercion#valibot-tojsonschema) callback ([Valibot](/docs/guides/validators/valibot), [Zod](/docs/guides/validators/zod), [mixing with Zod Mini](/docs/core-concepts/coercion#mixing-with-zod-mini)).
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/standard";
@@ -183,6 +183,8 @@ env.PORT;
 ```
 
 You can also lean on the validator's own coercion (`z.coerce.number()`) and keep ArkEnv's `coerce` option as a backup.
+
+Cookbooks: [Validators](/docs/guides/validators).
 
 ## Disabling coercion
 

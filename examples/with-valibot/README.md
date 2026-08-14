@@ -2,12 +2,13 @@
 
 This example demonstrates how to use ArkEnv with [Valibot](https://valibot.dev/) for validation, without ArkType.
 
-Because Valibot implements the [Standard Schema](https://standardschema.dev/) specification, its schemas can be passed straight to ArkEnv via the `@arkenv/standard` package.
+Because Valibot implements the [Standard Schema](https://standardschema.dev/) specification, its schemas can be passed straight to ArkEnv via the `@arkenv/standard` package. Valibot keeps JSON Schema conversion in [`@valibot/to-json-schema`](https://valibot.dev/guides/json-schema/) rather than on the schema itself, so this example wires ArkEnv's optional `toJsonSchema` escape hatch for automatic coercion.
 
 ## What's inside?
 
 - Pure Valibot usage via `@arkenv/standard` (no ArkType dependency)
-- A minimal schema validating a URL, a coerced number, and a hostname
+- ArkEnv coercion for `v.number()` / `v.boolean()` via `toJsonSchema` + `@valibot/to-json-schema`
+- A minimal schema validating a URL, a port number, a hostname, and a boolean
 - Full TypeScript type inference for the validated environment
 
 ## Getting started
@@ -30,6 +31,7 @@ Make sure you have [Node.js](https://nodejs.org) installed. We recommend using [
    HOST=localhost
    PORT=3000
    TEST_VALUE=https://example.com
+   DEBUG=true
    ```
 
 3. #### Start the development server with hot reloading enabled
@@ -43,8 +45,9 @@ Make sure you have [Node.js](https://nodejs.org) installed. We recommend using [
 ## Environment Variables
 
 - `TEST_VALUE` - A URL (validated by Valibot)
-- `PORT` - A port number (coerced from string to number)
+- `PORT` - A port number (coerced from string to number via ArkEnv)
 - `HOST` - `localhost` or a hostname
+- `DEBUG` - A boolean (coerced from `"true"` / `"false"` via ArkEnv)
 
 ## Next steps
 

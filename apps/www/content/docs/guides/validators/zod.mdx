@@ -1,0 +1,129 @@
+---
+title: Zod
+description: Validate env vars with @arkenv/standard and Zod.
+---
+
+Zod via [`@arkenv/standard`](/docs/reference/standard). Engine choice: [Choosing an engine](/docs/core-concepts/standard-schema).
+
+Zod 4.2+ embeds [Standard JSON Schema](https://standardschema.dev/json-schema) on the schema value. ArkEnv reads that metadata and pre-coerces env strings.
+
+## Install
+
+```package-install
+pnpm add @arkenv/standard zod
+```
+
+## Minimal `env.ts`
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import { z } from "zod";
+
+export const env = arkenv({
+  DATABASE_URL: z.string().url(),
+  PORT: z.number().int().min(0).max(65535).default(3000),
+  DEBUG: z.boolean().default(false),
+  NODE_ENV: z
+    .enum(["development", "production", "test"])
+    .default("development"),
+});
+```
+
+Use `z.number()` / `z.boolean()` for ArkEnv coercion. `z.coerce.number()` (and similar) still works; ArkEnv's `coerce` option stays as a backup.
+
+## Coercion
+
+Standard JSON Schema on the value is enough. ArkEnv pre-coerces env strings from that metadata.
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import { z } from "zod";
+
+export const env = arkenv(
+  {
+    PORT: z.number(),
+    DEBUG: z.boolean(),
+    TAGS: z.array(z.string()),
+  },
+  {
+    env: {
+      PORT: "8080",
+      DEBUG: "true",
+      TAGS: "web, api",
+    },
+  },
+);
+
+env.PORT; // hover to see type
+env.DEBUG; // hover to see type
+env.TAGS; // hover to see type
+```
+
+## Zod Mini
+
+[Zod Mini](https://zod.dev/packages/mini) (`import * as z from "zod/mini"`) keeps JSON Schema conversion off the value: standalone `z.toJSONSchema(schema)`, no instance method, no `~standard.jsonSchema`. Pass it through `toJsonSchema`. Mixing Mini with Valibot: [Coercion](/docs/core-concepts/coercion#mixing-with-zod-mini).
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import * as z from "zod/mini";
+
+export const env = arkenv(
+  { PORT: z.number(), DEBUG: z.boolean() },
+  {
+    toJsonSchema: (schema) =>
+      z.toJSONSchema(schema as z.ZodMiniType, {
+        io: "input",
+        target: "draft-07",
+      }),
+  },
+);
+```
+
+## Zod v3
+
+Zod 3 (including `import { z } from "zod/v3"` on Zod 4) implements Standard Schema validation but does **not** attach Standard JSON Schema on the value. Pre-coercion needs the same `toJsonSchema` escape hatch, typically via [`zod-to-json-schema`](https://github.com/StefanTerdell/zod-to-json-schema):
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import { z } from "zod/v3";
+import { zodToJsonSchema } from "zod-to-json-schema";
+
+export const env = arkenv(
+  { PORT: z.number(), DEBUG: z.boolean() },
+  {
+    toJsonSchema: (schema) =>
+      zodToJsonSchema(schema as z.ZodTypeAny, {
+        $refStrategy: "none",
+      }),
+  },
+);
+```
+
+Install `zod-to-json-schema` yourself. Prefer Zod 4.2+ when you can — classic Zod embeds JSON Schema and needs no callback.
+
+## Defaults and optionals
+
+| Pattern                  | Meaning                         |
+| ------------------------ | ------------------------------- |
+| `.default(...)`          | Default when the key is missing |
+| `.optional()`            | Optional key                    |
+| `emptyAsUndefined: true` | Treat empty strings as missing  |
+
+## Frameworks
+
+Use each host's `/standard` entry with the same Zod schema:
+
+- [Next.js](/docs/guides/frameworks/nextjs) (`@arkenv/nextjs/standard`)
+- [Nuxt](/docs/guides/frameworks/nuxt)
+- [Vite](/docs/guides/frameworks/vite) (`@arkenv/vite-plugin/standard`)
+- [Bun](/docs/guides/frameworks/bun) (`@arkenv/bun-plugin/standard`)
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/reference/standard" title="@arkenv/standard" description="Standard Schema engine package reference." />
+
+  <Card href="/docs/core-concepts/coercion" title="Coercion" description="How ArkEnv turns env strings into typed outputs." />
+
+  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-zod" title="examples/with-zod" description="Node.js with @arkenv/standard and Zod." />
+</Cards>
