@@ -4,7 +4,7 @@
 
 #### Add optional `toJsonSchema` coercion callback
 
-Add an optional `toJsonSchema` coercion callback to the config object. This is needed to enable coercion for Standard Schema validators that omit per-field JSON Schema (Valibot and Zod Mini omit it to save space; Zod v3 never exposes Standard JSON Schema on the value).
+Add an optional `toJsonSchema` coercion callback to the config object. Use it when a Standard Schema validator has no Standard JSON Schema on the value.
 
 ```ts
 import arkenv from "@arkenv/standard";
@@ -23,4 +23,9 @@ export const env = arkenv(
 );
 ```
 
-Note: ArkType and Zod v4.2+ do not need this — they already expose JSON Schema and never reach the callback. For Zod Mini, use `z.toJSONSchema(schema as z.ZodMiniType, { io: "input", target: "draft-07" })`. For Zod v3 (`zod` / `zod/v3`), use `zodToJsonSchema(schema as z.ZodTypeAny, { $refStrategy: "none" })` from `zod-to-json-schema`.
+Examples include:
+
+- Validators that keep conversion in separate helpers to save space like Valibot (above) and Zod Mini — use `z.toJSONSchema(schema as z.ZodMiniType, { io: "input", target: "draft-07" })`
+- Validators that are Standard Schema, but not Standard JSON Schema like Zod v3 (3.24+) — use `zodToJsonSchema(schema as z.ZodTypeAny, { $refStrategy: "none" })` from `zod-to-json-schema`
+
+Note: ArkType and Zod v4.2+ do not need this — they already expose JSON Schema and never reach the callback.
