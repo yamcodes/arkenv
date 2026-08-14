@@ -1,4 +1,6 @@
-/** `error.name` for validation `ArkEnvError` and branded boundary access throws. */
+/**
+ * `error.name` for validation `ArkEnvError` and branded boundary access throws.
+ */
 export const ARKENV_ERROR_NAME = "ArkEnvError";
 
 /**

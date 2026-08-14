@@ -1,4 +1,7 @@
-import { ARKENV_ERROR_NAME, boundaryAccessErrorMessage } from "@repo/utils";
+import {
+	ARKENV_ERROR_NAME,
+	boundaryAccessErrorMessage,
+} from "@repo/utils/boundary-access-error";
 
 /**
  * Build the client-graph replacement module: inlined coerced literals + server-key guards.
