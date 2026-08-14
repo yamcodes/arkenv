@@ -4,6 +4,8 @@ import * as v from "valibot";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { z } from "zod";
 import * as zMini from "zod/mini";
+import { z as z3 } from "zod/v3";
+import { zodToJsonSchema } from "zod-to-json-schema";
 import { ArkEnvError, arkenv } from "./index";
 
 // Mock Standard Schema validators for testing
@@ -421,6 +423,35 @@ describe("Standard Mode toJsonSchema", () => {
 
 		expect(env.PORT).toBe(3000);
 		expect(env.DEBUG).toBe(true);
+	});
+
+	it("coerces Zod v3 number/boolean fields via zod-to-json-schema", () => {
+		vi.stubEnv("PORT", "3000");
+		vi.stubEnv("DEBUG", "true");
+
+		const env = arkenv(
+			{
+				PORT: z3.number(),
+				DEBUG: z3.boolean(),
+			},
+			{
+				toJsonSchema: (schema) =>
+					zodToJsonSchema(schema as z3.ZodTypeAny, {
+						$refStrategy: "none",
+					}),
+			},
+		);
+
+		expect(env.PORT).toBe(3000);
+		expect(env.DEBUG).toBe(true);
+	});
+
+	it("does not coerce Zod v3 without toJsonSchema", () => {
+		vi.stubEnv("PORT", "3000");
+
+		expect(() => arkenv({ PORT: z3.number() })).toThrow(
+			/Hint: coercion is enabled by default, but the validator for 'PORT' lacks Standard JSON Schema support/,
+		);
 	});
 
 	it("does not coerce Zod Mini without toJsonSchema", () => {

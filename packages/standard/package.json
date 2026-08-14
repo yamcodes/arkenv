@@ -62,7 +62,8 @@
 		"typescript": "catalog:",
 		"valibot": "catalog:",
 		"vitest": "catalog:",
-		"zod": "catalog:"
+		"zod": "catalog:",
+		"zod-to-json-schema": "3.25.2"
 	},
 	"size-limit": [
 		{

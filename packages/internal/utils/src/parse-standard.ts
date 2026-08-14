@@ -65,8 +65,8 @@ export type ParseStandardConfig = {
 	 * Whether to perform best-effort coercion on the environment variables.
 	 * Coercion prefers validators that expose Standard JSON Schema on the value
 	 * itself (e.g. Zod). For converters that live outside the schema (e.g. Valibot
-	 * via `@valibot/to-json-schema`, or Zod Mini via `z.toJSONSchema`), pass
-	 * {@link toJsonSchema}.
+	 * via `@valibot/to-json-schema`, Zod Mini via `z.toJSONSchema`, or Zod v3 via
+	 * `zod-to-json-schema`), pass {@link toJsonSchema}.
 	 *
 	 * @see https://standard-schema.dev
 	 * @default true
@@ -85,9 +85,10 @@ export type ParseStandardConfig = {
 	 * - Throwing or returning a non-plain object fails the parse with
 	 *   {@link ArkEnvError} for that key (`INVALID_SCHEMA`).
 	 *
-	 * Typed as {@link StandardSchemaV1}. Host converters (Valibot, Zod Mini) do
-	 * not accept that type — assert at the converter call (`as v.GenericSchema`,
-	 * `as z.ZodMiniType`). Same assertion for a single-library map and a hybrid
+	 * Typed as {@link StandardSchemaV1}. Host converters (Valibot, Zod Mini,
+	 * Zod v3 via `zod-to-json-schema`) do not accept that type — assert at the
+	 * converter call (`as v.GenericSchema`, `as z.ZodMiniType`,
+	 * `as z.ZodTypeAny`). Same assertion for a single-library map and a hybrid
 	 * with classic Zod (Zod never reaches this callback at runtime).
 	 *
 	 * @example Valibot wiring
@@ -102,6 +103,22 @@ export type ParseStandardConfig = {
 	 *       toJsonSchema(schema as v.GenericSchema, {
 	 *         typeMode: "input",
 	 *         target: "draft-07",
+	 *       }),
+	 *   },
+	 * );
+	 * ```
+	 *
+	 * @example Zod v3 wiring
+	 * ```ts
+	 * import { z } from "zod/v3";
+	 * import { zodToJsonSchema } from "zod-to-json-schema";
+	 *
+	 * arkenv(
+	 *   { PORT: z.number() },
+	 *   {
+	 *     toJsonSchema: (schema) =>
+	 *       zodToJsonSchema(schema as z.ZodTypeAny, {
+	 *         $refStrategy: "none",
 	 *       }),
 	 *   },
 	 * );

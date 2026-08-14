@@ -92,8 +92,9 @@ Cookbook examples: [Coercion and parsing](/docs/validating-environment-variables
   [`toJsonSchema`](#valibot-tojsonschema) fallback. Those specs are orthogonal to
   Standard Schema validation. Zod 4.2+ and VineJS 4.3+ put the converter on the
   schema. Valibot keeps conversion in `@valibot/to-json-schema`; Zod Mini uses
-  `z.toJSONSchema`. Wire the callback once (see
-  [Valibot guide](/docs/guides/validators/valibot)).
+  `z.toJSONSchema`; Zod v3 typically uses `zod-to-json-schema`. Wire the callback
+  once (see [Valibot](/docs/guides/validators/valibot) and
+  [Zod](/docs/guides/validators/zod)).
 </Callout>
 
 ## Valibot (`toJsonSchema`)
@@ -122,6 +123,28 @@ export const env = arkenv(
 - Valibot's converter does not accept Standard Schema, so assert `as v.GenericSchema` at the call — Valibot-only and Zod + Valibot use the same wrapper.
 - Install `@valibot/to-json-schema` yourself. `@arkenv/standard` does not depend on it.
 - Recipe: [Valibot](/docs/guides/validators/valibot).
+
+### Zod v3
+
+Same escape hatch: Zod v3 validates via Standard Schema but omits Standard JSON Schema on the value. Convert with [`zod-to-json-schema`](https://github.com/StefanTerdell/zod-to-json-schema) (works with `zod@3` or Zod 4's `zod/v3` export):
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import { z } from "zod/v3";
+import { zodToJsonSchema } from "zod-to-json-schema";
+
+export const env = arkenv(
+  { PORT: z.number(), DEBUG: z.boolean() },
+  {
+    toJsonSchema: (schema) =>
+      zodToJsonSchema(schema as z.ZodTypeAny, {
+        $refStrategy: "none",
+      }),
+  },
+);
+```
+
+Recipe: [Zod](/docs/guides/validators/zod#zod-v3).
 
 ### Mixing with Zod Mini
 

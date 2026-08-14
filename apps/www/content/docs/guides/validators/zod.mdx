@@ -63,6 +63,44 @@ env.TAGS; // hover to see type
 
 [Zod Mini](https://zod.dev/packages/mini) (`import * as z from "zod/mini"`) keeps JSON Schema conversion off the value: standalone `z.toJSONSchema(schema)`, no instance method, no `~standard.jsonSchema`. Pass it through `toJsonSchema`. Mixing Mini with Valibot: [Coercion](/docs/core-concepts/coercion#mixing-with-zod-mini).
 
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import * as z from "zod/mini";
+
+export const env = arkenv(
+  { PORT: z.number(), DEBUG: z.boolean() },
+  {
+    toJsonSchema: (schema) =>
+      z.toJSONSchema(schema as z.ZodMiniType, {
+        io: "input",
+        target: "draft-07",
+      }),
+  },
+);
+```
+
+## Zod v3
+
+Zod 3 (including `import { z } from "zod/v3"` on Zod 4) implements Standard Schema validation but does **not** attach Standard JSON Schema on the value. Pre-coercion needs the same `toJsonSchema` escape hatch, typically via [`zod-to-json-schema`](https://github.com/StefanTerdell/zod-to-json-schema):
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import { z } from "zod/v3";
+import { zodToJsonSchema } from "zod-to-json-schema";
+
+export const env = arkenv(
+  { PORT: z.number(), DEBUG: z.boolean() },
+  {
+    toJsonSchema: (schema) =>
+      zodToJsonSchema(schema as z.ZodTypeAny, {
+        $refStrategy: "none",
+      }),
+  },
+);
+```
+
+Install `zod-to-json-schema` yourself. Prefer Zod 4.2+ when you can — classic Zod embeds JSON Schema and needs no callback.
+
 ## Defaults and optionals
 
 | Pattern                  | Meaning                         |

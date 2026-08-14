@@ -83,7 +83,7 @@ env.DEBUG; // false
 
 ### `toJsonSchema` (standard mode only)
 
-Pass a fallback converter for Standard Schema validators that omit JSON Schema on the value (notably Valibot; Zod Mini is the same off-value pattern). ArkEnv calls it per key when it can't read JSON Schema from that value. Wiring: [Valibot](/docs/guides/validators/valibot) and [Coercion](/docs/core-concepts/coercion#valibot-tojsonschema). Two off-value libraries: [Mixing with Zod Mini](/docs/core-concepts/coercion#mixing-with-zod-mini).
+Pass a fallback converter for Standard Schema validators that omit JSON Schema on the value (Valibot, Zod Mini, Zod v3 via `zod-to-json-schema`, and similar). ArkEnv calls it per key when it can't read JSON Schema from that value. Wiring: [Valibot](/docs/guides/validators/valibot), [Zod](/docs/guides/validators/zod) (Mini and v3), and [Coercion](/docs/core-concepts/coercion#valibot-tojsonschema).
 
 This field is not on ArkType `ArkEnvConfig`. Vite/Bun `/standard` plugin configs that alias `ParseStandardConfig` inherit it.
 
