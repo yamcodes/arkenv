@@ -16,6 +16,12 @@ export default function Home() {
 				Demonstrating compile-time and runtime validation for Next.js
 				environment variables.
 			</p>
+			<p>
+				The client panel can read <code>NEXT_PUBLIC_*</code> and{" "}
+				<code>NODE_ENV</code>. Click the red button to read{" "}
+				<code>DATABASE_URL</code> instead — the throw is a native{" "}
+				<code>Error</code> with <code>name = &quot;ArkEnvError&quot;</code>.
+			</p>
 
 			<div
 				style={{
