@@ -13,15 +13,7 @@ metadata:
 
 ## Overview
 
-Write the changelog the **package consumer** will read on npm and GitHub Releases. Automate version bumps, but treat the markdown body as product copy: someone who never opened this repo should understand what changed and what to do.
-
-A good changeset answers:
-
-1. Which packages are affected
-2. What type of version bump (`patch` / `minor` / `major`)
-3. What the reader will notice, and how to migrate if anything broke
-
-Do not write for the PR reviewer. Skip implementation details, ADRs, and internal type names unless the reader needs them to update their app.
+Automate the creation and modification of changesets following project conventions, ensuring proper version bumps and well-documented release notes.
 
 ## When to use
 
@@ -30,6 +22,14 @@ Do not write for the PR reviewer. Skip implementation details, ADRs, and interna
 - When updating or correcting an existing changeset
 - When preparing a release
 - To document breaking changes
+
+## What is a changeset?
+
+A changeset is a markdown file in the `.changeset/` directory that describes:
+
+1. Which packages are affected
+2. What type of version bump (patch/minor/major)
+3. A description of the change
 
 ## Changeset types
 
@@ -98,23 +98,6 @@ For packages in **v1+** (e.g. active `v1` branch):
 
 ## Creating a changeset
 
-### Voice: write for the unknowing consumer
-
-The body is pasted into `CHANGELOG.md`. Assume the reader installed `@arkenv/nextjs` (or similar) and hit an error or API change. They do not know “boundary access”, “client graph”, or whether a throw is a native `Error`.
-
-- **Lead with what they see or do** (console text, a new option, a renamed export).
-- **Say why it matters** in one or two sentences (secret stayed off the client, build now fails closed, types match runtime).
-- **Show before/after** with a snippet or `diff`. Do not paste the library’s internal throw helper unless they must call it.
-- **Stay imperative** (`Fix`, `Add`, `Show`) and concrete. Friendly is not fluffy, and it is not a commit message.
-
-Terse / insider (avoid):
-
-> Brand boundary throws as `ArkEnvError` via `error.name`. `instanceof` stays validation-only.
-
-Consumer-facing (prefer):
-
-> If client code reads a server-only variable such as `DATABASE_URL`, the overlay now shows `ArkEnvError: Attempted to access…`. Fix the component. `instanceof ArkEnvError` still means startup validation failed and still has `.issues`.
-
 ### Title convention
 
 - **Format**: All changeset descriptions MUST start with a `####` header.
@@ -171,16 +154,15 @@ export const env = arkenv({
 
 #### Imperative title of the change (e.g., "Add helper" - MUST be imperative mood)
 
-What the reader will notice, then how to use or migrate. A short paragraph is better than a stack of insider nouns. Include a snippet or diff when behavior or APIs change.
+A concise, technical description of the change (using the imperative mood for action summaries). Keep it brief, avoid long prose or bullet points, and provide code snippets/usage examples where helpful.
 
 Include:
-
-- **What they see** (error text, new flag, renamed export)
-- **Usage or before/after** (code blocks)
-- **Migration** for breaking changes (major bump and a **BREAKING CHANGE**: note at the bottom)
+- **Usage examples** (code blocks)
+- Bullet points for details
+- Migration instructions for breaking changes (using `major` bump and you MUST include a `**BREAKING CHANGE**:` note at the bottom)
 
 **Note**: Do NOT reference GitHub issues (e.g., #123) directly in the changeset. Changesets will automatically be linked to the PR and commits during the release process.
-**BREAKING CHANGE**: Place migration instructions at the **end**. Keep that footer to 1-3 lines plus an optional diff. Prefer showing old vs new strings or calls over explaining internals.
+**BREAKING CHANGE**: Place migration instructions or descriptions of breaking changes (using the `**BREAKING CHANGE**:` label) at the **end** of the changeset. Keep it concise - 1-2 lines max, 3 lines absolute maximum. Prefer using ```diff blocks to visually demonstrate syntax/behavior changes.
 ```
 
 
@@ -207,8 +189,7 @@ Include:
 - [ ] Bump type matches the decision guide (patch/minor for non-breaking, major for breaking)
 - [ ] Title starts with `####` header
 - [ ] All descriptions use imperative mood (no past tense, no indicative)
-- [ ] A newcomer could act on the note without reading the PR (what they see, what to do)
-- [ ] Usage examples or before/after present for user-facing changes
+- [ ] Usage examples present for user-facing changes
 - [ ] No GitHub issue references (# numbers)
 - [ ] Breaking changes use `major` bump and include a `**BREAKING CHANGE**:` note at the bottom
 
@@ -265,11 +246,10 @@ ls .changeset/*.md
 | Mistake               | Issue               | Fix                                              |
 | --------------------- | ------------------- | ------------------------------------------------ |
 | Wrong bump type       | Unexpected version  | Review decision guide above                      |
-| Vague description     | Poor CHANGELOG      | Be specific about what the reader will see       |
-| Terse / insider jargon | Consumer cannot act | Rewrite for someone who never opened the repo    |
+| Vague description     | Poor CHANGELOG      | Be specific about changes                        |
 | Missing changeset     | No release notes    | Always add before PR                             |
 | Past tense in body    | Style violation     | Rewrite in imperative mood                       |
-| Not including context | Hard to understand  | Explain *why* it matters to the app, not the PR  |
+| Not including context | Hard to understand  | Explain *why* not just *what*                    |
 | Meaningless changes   | Cluttered CHANGELOG | Only document changes with consumer value        |
 | Including issue links | Redundant data      | Remove # references; PR links them automatically |
 

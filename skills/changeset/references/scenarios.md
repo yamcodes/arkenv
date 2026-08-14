@@ -39,33 +39,6 @@ console.log(env.PORT) // number
 ```
 ````
 
-## Breaking change (v1)
-
-Show the old console or API next to the new one. The reader is matching strings in tests or logs, not reading the implementation.
-
-````markdown
----
-"@arkenv/nextjs": major
----
-
-#### Show `ArkEnvError` when client code reads a server-only variable
-
-If a Client Component reads `DATABASE_URL`, ArkEnv still throws so the secret never reaches the browser. The overlay now matches other ArkEnv errors:
-
-```txt
-ArkEnvError: Attempted to access server environment variable 'DATABASE_URL' on the client.
-```
-
-Fix the component. Do not catch this. `instanceof ArkEnvError` still means startup validation failed and still has `.issues`.
-
-**BREAKING CHANGE**: Update tests or log scrapers that matched the old message prefix:
-
-```diff
-- ArkEnv Error: Attempted to access server environment variable 'DATABASE_URL' on the client.
-+ Attempted to access server environment variable 'DATABASE_URL' on the client.
-```
-````
-
 ## Breaking change (v0)
 
 ````markdown
