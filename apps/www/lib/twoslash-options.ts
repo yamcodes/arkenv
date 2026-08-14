@@ -113,6 +113,10 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 				"@repo/types": [
 					path.join(root, "packages/internal/types/src/index.ts"),
 				],
+				"@repo/utils": [
+					path.join(root, "packages/internal/utils/src/index.ts"),
+				],
+				"@repo/log": [path.join(root, "packages/internal/log/src/index.ts")],
 				"@repo/scope": [
 					path.join(root, "packages/internal/scope/src/index.ts"),
 				],
