@@ -1,6 +1,5 @@
 ---
 "@arkenv/standard": minor
-"@arkenv/core": minor
 ---
 
 #### Add optional `toJsonSchema` coercion escape hatch
