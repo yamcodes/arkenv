@@ -8,10 +8,10 @@ This is a ranking of designs, not a decision. An ADR belongs here only after one
 
 ArkEnv throws in two situations that look related in DevTools and are unrelated in code:
 
-| Failure | What happened | Data | What you should do |
-| --- | --- | --- | --- |
-| **Validation** | Env values failed the schema | `.issues: EnvIssue[]` | Catch, inspect, fix env / boot UI |
-| **Boundary access** | Client code read a server-only key | None | Do not catch; move the read |
+| Failure             | What happened                      | Data                  | What you should do                |
+| ------------------- | ---------------------------------- | --------------------- | --------------------------------- |
+| **Validation**      | Env values failed the schema       | `.issues: EnvIssue[]` | Catch, inspect, fix env / boot UI |
+| **Boundary access** | Client code read a server-only key | None                  | Do not catch; move the read       |
 
 Validation is a real class, `ArkEnvError`, so stacks print `ArkEnvError: …` and `instanceof ArkEnvError` is true.
 
@@ -45,23 +45,23 @@ Constraint (3) is **narrower** than “you cannot have a class on the client.”
 
 Declared weights, so the tier list is not a vibes ranking:
 
-| Weight | Criterion | Question |
-| ---: | --- | --- |
-| **Primary** | Least surprise | Does the console name match the catch API? |
-| **Primary** | Conceptual integrity | One name → one contract? |
-| **Primary** | Catch honesty | Does `instanceof` / a guard imply `.issues` iff they exist? |
-| **Secondary** | Client isolation | Vite/Bun getters stay free of ArkType and the core barrel? |
-| **Secondary** | Cross-host consistency | Next, Nuxt, Vite, Bun tell the same story? |
-| **Secondary** | Misuse resistance | Does the API invite catching a “don’t catch this” throw? |
-| **Tertiary** | Simplicity | How many names, helpers, and docs pages? |
-| **Tertiary** | DRY | One throw helper / one message across hosts? |
-| **Tertiary** | Composability | Sentry grouping, TS narrowing, existing `instanceof` catches? |
-| **Tertiary** | Migration | How breaking is this on 1.0.0-alpha? |
-| **Tie-break** | Elegance | Few moving parts; no dual meaning; no lies in `.issues` |
+|        Weight | Criterion              | Question                                                      |
+| ------------: | ---------------------- | ------------------------------------------------------------- |
+|   **Primary** | Least surprise         | Does the console name match the catch API?                    |
+|   **Primary** | Conceptual integrity   | One name → one contract?                                      |
+|   **Primary** | Catch honesty          | Does `instanceof` / a guard imply `.issues` iff they exist?   |
+| **Secondary** | Client isolation       | Vite/Bun getters stay free of ArkType and the core barrel?    |
+| **Secondary** | Cross-host consistency | Next, Nuxt, Vite, Bun tell the same story?                    |
+| **Secondary** | Misuse resistance      | Does the API invite catching a “don’t catch this” throw?      |
+|  **Tertiary** | Simplicity             | How many names, helpers, and docs pages?                      |
+|  **Tertiary** | DRY                    | One throw helper / one message across hosts?                  |
+|  **Tertiary** | Composability          | Sentry grouping, TS narrowing, existing `instanceof` catches? |
+|  **Tertiary** | Migration              | How breaking is this on 1.0.0-alpha?                          |
+| **Tie-break** | Elegance               | Few moving parts; no dual meaning; no lies in `.issues`       |
 
 Deliberately **not** a goal: making boundary access a supported, recoverable catch path. The product still says fix the access.
 
-Legend for the matrix: **Y** strong, **~** mixed, **N** weak.
+Legend for the matrix: **Y** strong, **\~** mixed, **N** weak.
 
 ---
 
@@ -140,24 +140,24 @@ Emit `class ArkEnvError extends Error { ... }` (or a duplicate access class) in 
 
 ## Matrix
 
-| | Surprise | Integrity | Catch honesty | Isolation | Cross-host | Misuse resist | Simple | DRY | Compose | Migrate |
-| --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| O0 Status quo | N | N | Y | Y | N | Y | Y | N | N | Y |
-| O1 Current PR | N | N | Y | Y | Y | ~ | Y | Y | ~ | ~ |
-| O2 Dual-catch on `name` | N | N | N | Y | Y | N | ~ | Y | ~ | ~ |
-| O3 Drop brand | Y | Y | Y | Y | Y | Y | Y | Y | N | ~ |
-| O4 Split, branded Error | Y | Y | Y | Y | Y | Y | ~ | Y | ~ | ~ |
-| O5 Split, tiny class | Y | Y | Y | Y | Y | ~ | ~ | Y | Y | N |
-| O6 One class, tiny import | ~ | ~ | ~ | Y | Y | N | Y | Y | Y | N |
-| O7 Widen class | ~ | ~ | ~ | Y | Y | N | ~ | Y | Y | N |
-| O8 Empty `.issues` | ~ | N | N | Y | Y | N | Y | Y | ~ | ~ |
-| O9 `hasInstance` | ~ | N | N | Y | Y | N | ~ | Y | N | ~ |
-| O10 Codes as identity | ~ | ~ | Y | Y | Y | ~ | N | Y | Y | N |
-| O11 Split + codes | Y | Y | Y | Y | Y | Y | N | Y | Y | N |
-| O12 Helper | ~ | N | Y | Y | Y | ~ | ~ | Y | Y | ~ |
-| O13 Core barrel | ~ | ~ | ~ | N | Y | N | Y | Y | ~ | N |
-| O14 Host split | N | N | ~ | Y | N | ~ | N | N | N | ~ |
-| O15 Inlined copy | N | N | N | Y | ~ | N | ~ | ~ | N | ~ |
+|                           | Surprise | Integrity | Catch honesty | Isolation | Cross-host | Misuse resist | Simple | DRY | Compose | Migrate |
+| ------------------------- | :------: | :-------: | :-----------: | :-------: | :--------: | :-----------: | :----: | :-: | :-----: | :-----: |
+| O0 Status quo             |     N    |     N     |       Y       |     Y     |      N     |       Y       |    Y   |  N  |    N    |    Y    |
+| O1 Current PR             |     N    |     N     |       Y       |     Y     |      Y     |       \~      |    Y   |  Y  |    \~   |    \~   |
+| O2 Dual-catch on `name`   |     N    |     N     |       N       |     Y     |      Y     |       N       |   \~   |  Y  |    \~   |    \~   |
+| O3 Drop brand             |     Y    |     Y     |       Y       |     Y     |      Y     |       Y       |    Y   |  Y  |    N    |    \~   |
+| O4 Split, branded Error   |     Y    |     Y     |       Y       |     Y     |      Y     |       Y       |   \~   |  Y  |    \~   |    \~   |
+| O5 Split, tiny class      |     Y    |     Y     |       Y       |     Y     |      Y     |       \~      |   \~   |  Y  |    Y    |    N    |
+| O6 One class, tiny import |    \~    |     \~    |       \~      |     Y     |      Y     |       N       |    Y   |  Y  |    Y    |    N    |
+| O7 Widen class            |    \~    |     \~    |       \~      |     Y     |      Y     |       N       |   \~   |  Y  |    Y    |    N    |
+| O8 Empty `.issues`        |    \~    |     N     |       N       |     Y     |      Y     |       N       |    Y   |  Y  |    \~   |    \~   |
+| O9 `hasInstance`          |    \~    |     N     |       N       |     Y     |      Y     |       N       |   \~   |  Y  |    N    |    \~   |
+| O10 Codes as identity     |    \~    |     \~    |       Y       |     Y     |      Y     |       \~      |    N   |  Y  |    Y    |    N    |
+| O11 Split + codes         |     Y    |     Y     |       Y       |     Y     |      Y     |       Y       |    N   |  Y  |    Y    |    N    |
+| O12 Helper                |    \~    |     N     |       Y       |     Y     |      Y     |       \~      |   \~   |  Y  |    Y    |    \~   |
+| O13 Core barrel           |    \~    |     \~    |       \~      |     N     |      Y     |       N       |    Y   |  Y  |    \~   |    N    |
+| O14 Host split            |     N    |     N     |       \~      |     Y     |      N     |       \~      |    N   |  N  |    N    |    \~   |
+| O15 Inlined copy          |     N    |     N     |       N       |     Y     |     \~     |       N       |   \~   |  \~ |    N    |    \~   |
 
 Notes that the grid cannot say:
 
