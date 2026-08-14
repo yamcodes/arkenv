@@ -26,6 +26,10 @@ export {
  */
 export type StandardEnvConfig = ParseStandardConfig;
 
+type StandardEnvOutput<T extends Record<string, StandardSchemaV1>> = {
+	[K in keyof T]: StandardSchemaV1.InferOutput<T[K]>;
+};
+
 /**
  * Parse and validate environment variables using Standard Schema 1.0 validators (e.g. Zod, Valibot).
  *
@@ -48,20 +52,16 @@ export type StandardEnvConfig = ParseStandardConfig;
  * });
  * ```
  */
-export function arkenv<const T extends Record<string, StandardSchemaV1>>(
+export function arkenv<
+	const T extends Record<string, StandardSchemaV1>,
+	const Safe extends boolean | undefined = undefined,
+>(
 	def: T,
-	config?: StandardEnvConfig & { safe?: false },
-): { [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> };
-export function arkenv<const T extends Record<string, StandardSchemaV1>>(
-	def: T,
-	config: StandardEnvConfig & { safe: true },
-): SafeArkEnvResult<{ [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> }>;
-export function arkenv<const T extends Record<string, StandardSchemaV1>>(
-	def: T,
-	config: StandardEnvConfig = {},
-):
-	| { [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> }
-	| SafeArkEnvResult<{ [K in keyof T]: StandardSchemaV1.InferOutput<T[K]> }> {
+	config?: Omit<StandardEnvConfig, "safe"> & { safe?: Safe },
+): [Safe] extends [true]
+	? SafeArkEnvResult<StandardEnvOutput<T>>
+	: StandardEnvOutput<T> {
+	const resolved = (config ?? {}) as StandardEnvConfig;
 	assertStandardSchemaMap(def);
 
 	for (const key in def) {
@@ -70,18 +70,23 @@ export function arkenv<const T extends Record<string, StandardSchemaV1>>(
 		assertStandardSchema(key, validator);
 	}
 
-	if (config.safe) {
+	if (resolved.safe) {
 		return safeExecute(
 			() =>
-				parseStandard(def as Record<string, unknown>, config) as {
-					[K in keyof T]: StandardSchemaV1.InferOutput<T[K]>;
-				},
-		);
+				parseStandard(
+					def as Record<string, unknown>,
+					resolved,
+				) as StandardEnvOutput<T>,
+		) as [Safe] extends [true]
+			? SafeArkEnvResult<StandardEnvOutput<T>>
+			: StandardEnvOutput<T>;
 	}
 
-	return parseStandard(def as Record<string, unknown>, config) as {
-		[K in keyof T]: StandardSchemaV1.InferOutput<T[K]>;
-	};
+	return parseStandard(def as Record<string, unknown>, resolved) as [
+		Safe,
+	] extends [true]
+		? SafeArkEnvResult<StandardEnvOutput<T>>
+		: StandardEnvOutput<T>;
 }
 
 export default arkenv;

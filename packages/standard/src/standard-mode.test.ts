@@ -1,5 +1,4 @@
 import { toJsonSchema } from "@valibot/to-json-schema";
-import type { GenericSchema } from "valibot";
 import * as v from "valibot";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { z } from "zod";
@@ -368,7 +367,7 @@ describe("Standard Mode toJsonSchema", () => {
 			},
 			{
 				toJsonSchema: (schema) =>
-					toJsonSchema(schema as GenericSchema, {
+					toJsonSchema(schema, {
 						typeMode: "input",
 						target: "draft-07",
 					}),
@@ -390,7 +389,7 @@ describe("Standard Mode toJsonSchema", () => {
 			},
 			{
 				toJsonSchema: (schema) =>
-					toJsonSchema(schema as GenericSchema, {
+					toJsonSchema(schema, {
 						typeMode: "input",
 						target: "draft-07",
 					}),
@@ -412,7 +411,7 @@ describe("Standard Mode toJsonSchema", () => {
 			},
 			{
 				toJsonSchema: (schema) =>
-					zMini.toJSONSchema(schema as zMini.ZodMiniType, {
+					zMini.toJSONSchema(schema, {
 						io: "input",
 						target: "draft-07",
 					}),
@@ -444,12 +443,12 @@ describe("Standard Mode toJsonSchema", () => {
 				toJsonSchema: (schema) => {
 					switch (schema["~standard"].vendor) {
 						case "valibot":
-							return toJsonSchema(schema as GenericSchema, {
+							return toJsonSchema(schema, {
 								typeMode: "input",
 								target: "draft-07",
 							});
 						case "zod":
-							return zMini.toJSONSchema(schema as zMini.ZodMiniType, {
+							return zMini.toJSONSchema(schema, {
 								io: "input",
 								target: "draft-07",
 							});
@@ -841,6 +840,7 @@ describe("Standard Mode emptyAsUndefined", () => {
 		if (resultSuccess.success) {
 			expect(resultSuccess.data).toEqual({ PORT: "3000" });
 		}
+		expectTypeOf(resultSuccess).toHaveProperty("success");
 
 		const resultFail = arkenv(
 			{

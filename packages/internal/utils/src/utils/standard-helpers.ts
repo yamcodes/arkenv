@@ -1,4 +1,3 @@
-import type { StandardSchemaV1 } from "@repo/types";
 import { ArkEnvError } from "@/core";
 import { buildEnvIssue } from "./errors";
 
@@ -22,7 +21,8 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
  */
 export function extractJsonSchema(
 	def: Record<string, unknown>,
-	toJsonSchema?: (schema: StandardSchemaV1) => object | undefined,
+	// biome-ignore lint/suspicious/noExplicitAny: matches ParseStandardConfig.toJsonSchema
+	toJsonSchema?: (schema: any) => object | undefined,
 ): {
 	jsonSchema: Record<string, any>;
 	hasJsonSchema: boolean;
@@ -92,7 +92,7 @@ export function extractJsonSchema(
 		if (toJsonSchema) {
 			let converted: object | undefined;
 			try {
-				converted = toJsonSchema(validator as StandardSchemaV1);
+				converted = toJsonSchema(validator);
 			} catch (error) {
 				const detail = error instanceof Error ? error.message : String(error);
 				throw new ArkEnvError([

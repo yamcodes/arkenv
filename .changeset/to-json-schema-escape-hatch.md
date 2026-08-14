@@ -16,8 +16,8 @@ import { toJsonSchema } from "@valibot/to-json-schema";
 export const env = arkenv(
   { PORT: v.number(), DEBUG: v.boolean() },
   {
-    toJsonSchema: (schema: unknown) =>
-      toJsonSchema(schema as v.GenericSchema, {
+    toJsonSchema: (schema) =>
+      toJsonSchema(schema, {
         typeMode: "input",
         target: "draft-07",
       }),

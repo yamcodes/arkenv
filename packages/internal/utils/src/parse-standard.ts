@@ -85,6 +85,10 @@ export type ParseStandardConfig = {
 	 * - Throwing or returning a non-plain object fails the parse with
 	 *   {@link ArkEnvError} for that key (`INVALID_SCHEMA`).
 	 *
+	 * Host converters (Valibot `toJsonSchema`, Zod Mini `z.toJSONSchema`) do not
+	 * accept {@link StandardSchemaV1}, and `~standard.vendor` does not narrow those
+	 * library types, so the callback argument is intentionally `any`.
+	 *
 	 * @example Valibot wiring
 	 * ```ts
 	 * import { toJsonSchema } from "@valibot/to-json-schema";
@@ -93,8 +97,8 @@ export type ParseStandardConfig = {
 	 * arkenv(
 	 *   { PORT: v.number() },
 	 *   {
-	 *     toJsonSchema: (schema: unknown) =>
-	 *       toJsonSchema(schema as v.GenericSchema, {
+	 *     toJsonSchema: (schema) =>
+	 *       toJsonSchema(schema, {
 	 *         typeMode: "input",
 	 *         target: "draft-07",
 	 *       }),
@@ -102,7 +106,8 @@ export type ParseStandardConfig = {
 	 * );
 	 * ```
 	 */
-	toJsonSchema?: (schema: StandardSchemaV1) => object | undefined;
+	// biome-ignore lint/suspicious/noExplicitAny: vendor converters reject StandardSchemaV1
+	toJsonSchema?: (schema: any) => object | undefined;
 
 	/**
 	 * The format to use for array parsing when coercion is enabled.
