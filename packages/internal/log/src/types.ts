@@ -1,4 +1,6 @@
-/** Supported log level thresholds, from most to least verbose. */
+/**
+ * Supported log level thresholds, from most to least verbose.
+ */
 export type LogLevel = "debug" | "info" | "warn" | "error" | "silent";
 
 /**
@@ -13,7 +15,9 @@ export type Logger = {
 	error: (message: string, ...optionalParams: unknown[]) => void;
 };
 
-/** Programmatic logger configuration. Takes precedence over `ARKENV_LOG_LEVEL`. */
+/**
+ * Programmatic logger configuration. Takes precedence over `ARKENV_LOG_LEVEL`.
+ */
 export type LoggerConfig = {
 	level?: LogLevel;
 };

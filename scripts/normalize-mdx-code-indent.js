@@ -2,7 +2,9 @@ import fs from "node:fs";
 import path from "node:path";
 import { shouldSkipUnescapePath } from "./unescape-mdx-markers.js";
 
-/** Spaces each leading tab becomes when normalizing fence bodies. */
+/**
+ * Spaces each leading tab becomes when normalizing fence bodies.
+ */
 const SPACES_PER_TAB = 2;
 
 /**

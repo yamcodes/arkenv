@@ -13,7 +13,9 @@ export function withForceServer<T>(fn: () => T): T {
 	}
 }
 
-/** Whether build-time validation is currently forcing server-side resolution. */
+/**
+ * Whether build-time validation is currently forcing server-side resolution.
+ */
 export function isForceServer(): boolean {
 	return forceServerDepth > 0;
 }

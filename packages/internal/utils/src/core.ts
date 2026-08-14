@@ -7,38 +7,66 @@ import { styleText } from "./utils/style-text";
  * Serves as the Source of Truth (SoT) for error categorization in ArkEnv.
  */
 export type EnvIssueCode =
-	/** The environment variable is required but was not provided, and has no default value. */
+	/**
+	 * The environment variable is required but was not provided, and has no default value.
+	 */
 	| "MISSING_VARIABLE"
-	/** The variable value failed a type assertion (e.g., expected a number or boolean but received a string). */
+	/**
+	 * The variable value failed a type assertion (e.g., expected a number or boolean but received a string).
+	 */
 	| "INVALID_TYPE"
-	/** The variable value falls below the minimum allowed numeric limit or string/array length constraint. */
+	/**
+	 * The variable value falls below the minimum allowed numeric limit or string/array length constraint.
+	 */
 	| "VALUE_TOO_SMALL"
-	/** The variable value exceeds the maximum allowed numeric limit or string/array length constraint. */
+	/**
+	 * The variable value exceeds the maximum allowed numeric limit or string/array length constraint.
+	 */
 	| "VALUE_TOO_LARGE"
-	/** The variable value did not match the specified regular expression (regex) pattern constraint. */
+	/**
+	 * The variable value did not match the specified regular expression (regex) pattern constraint.
+	 */
 	| "PATTERN_MISMATCH"
-	/** The variable value is not in a valid format (e.g., failed email or UUID format validation). */
+	/**
+	 * The variable value is not in a valid format (e.g., failed email or UUID format validation).
+	 */
 	| "INVALID_FORMAT"
-	/** An undeclared key was found in the environment, and the schema config is set to reject undeclared keys. */
+	/**
+	 * An undeclared key was found in the environment, and the schema config is set to reject undeclared keys.
+	 */
 	| "UNDECLARED_KEY"
-	/** The provided validation schema definition itself is malformed or invalid. */
+	/**
+	 * The provided validation schema definition itself is malformed or invalid.
+	 */
 	| "INVALID_SCHEMA"
-	/** A validation error was triggered by a custom validator function or inline pipe logic. */
+	/**
+	 * A validation error was triggered by a custom validator function or inline pipe logic.
+	 */
 	| "CUSTOM";
 
 /**
  * Metadata associated with an environment validation issue.
  */
 export type EnvIssueMeta = {
-	/** The minimum expected boundary for numeric/string length constraints */
+	/**
+	 * The minimum expected boundary for numeric/string length constraints
+	 */
 	min?: number;
-	/** The maximum expected boundary for numeric/string length constraints */
+	/**
+	 * The maximum expected boundary for numeric/string length constraints
+	 */
 	max?: number;
-	/** Additional validation pattern/specifier details */
+	/**
+	 * Additional validation pattern/specifier details
+	 */
 	validation?: string;
-	/** Any custom constraint descriptions */
+	/**
+	 * Any custom constraint descriptions
+	 */
 	constraint?: string;
-	/** Traversal error occurred during JSON-parsing of the environment variable */
+	/**
+	 * Traversal error occurred during JSON-parsing of the environment variable
+	 */
 	traversalError?: string;
 };
 
@@ -46,17 +74,29 @@ export type EnvIssueMeta = {
  * Normalized validation issue representing a failure on a specific environment variable.
  */
 export type EnvIssue = {
-	/** The dot-separated property path/name of the environment variable */
+	/**
+	 * The dot-separated property path/name of the environment variable
+	 */
 	path: string;
-	/** The descriptive, user-friendly error message */
+	/**
+	 * The descriptive, user-friendly error message
+	 */
 	message: string;
-	/** The normalized classification code for the issue */
+	/**
+	 * The normalized classification code for the issue
+	 */
 	code: EnvIssueCode;
-	/** The expected type or value shape description */
+	/**
+	 * The expected type or value shape description
+	 */
 	expected?: string;
-	/** The raw value received (redacted in string formatting if sensitive) */
+	/**
+	 * The raw value received (redacted in string formatting if sensitive)
+	 */
 	received?: unknown;
-	/** Additional validation metadata */
+	/**
+	 * Additional validation metadata
+	 */
 	meta?: EnvIssueMeta;
 };
 
@@ -100,7 +140,9 @@ export function formatIssues(issues: EnvIssue[]): string {
  * ```
  */
 export class ArkEnvError extends Error {
-	/** The list of normalized issues that caused the validation failure */
+	/**
+	 * The list of normalized issues that caused the validation failure
+	 */
 	readonly issues: EnvIssue[];
 
 	constructor(

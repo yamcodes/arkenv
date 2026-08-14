@@ -2,7 +2,9 @@
 
 import { useEffect } from "react";
 
-/** Longest rise (1s blur) + max `animationDelay` (400ms) + small buffer. */
+/**
+ * Longest rise (1s blur) + max `animationDelay` (400ms) + small buffer.
+ */
 const HERO_MOTION_DONE_MS = 1500;
 
 /**

@@ -4,9 +4,13 @@ export type PlanDtsFileParams = {
 	typeFilePath: string;
 	typeFileExists: boolean;
 	envDtsHandling?: "overwrite" | "append" | "skip" | undefined;
-	/** Content when creating or overwriting the dts file. */
+	/**
+	 * Content when creating or overwriting the dts file.
+	 */
 	templateContent: string;
-	/** Content used for append actions (typically the schema file path). */
+	/**
+	 * Content used for append actions (typically the schema file path).
+	 */
 	appendContent: string;
 	overwriteLabel: string;
 	appendLabel: string;

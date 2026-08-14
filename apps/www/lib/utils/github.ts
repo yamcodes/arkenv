@@ -1,4 +1,6 @@
-/** Prefer the first non-empty trimmed string; treat "" as unset. */
+/**
+ * Prefer the first non-empty trimmed string; treat "" as unset.
+ */
 function firstNonEmpty(
 	...values: Array<string | undefined | null>
 ): string | undefined {

@@ -4,7 +4,9 @@ import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as esbuild from "esbuild";
 
-/** Packages that must never appear in a `/standard` entry's import graph. */
+/**
+ * Packages that must never appear in a `/standard` entry's import graph.
+ */
 export const FORBIDDEN_STANDARD_DEPS = Object.freeze([
 	"arktype",
 	"@arkenv/core",
@@ -25,7 +27,9 @@ export function getStandardExportEntries(packageDir, condition = "import") {
 		return [];
 	}
 
-	/** @type {{ exportPath: string, filePath: string }[]} */
+	/**
+	 * @type {{ exportPath: string, filePath: string }[]}
+	 */
 	const entries = [];
 
 	for (const [exportPath, target] of Object.entries(exportsMap)) {
@@ -145,7 +149,9 @@ export async function assertStandardEntryIsolated(entryFile, context = {}) {
 		logLevel: "silent",
 	});
 
-	/** @type {{ importer: string, path: string, kind: string }[]} */
+	/**
+	 * @type {{ importer: string, path: string, kind: string }[]}
+	 */
 	const forbidden = [];
 
 	for (const [importer, input] of Object.entries(result.metafile.inputs)) {
@@ -205,7 +211,9 @@ export async function assertPackageStandardIsolation(packageDir, options = {}) {
 	);
 	const packageName = packageJson.name ?? relative(process.cwd(), packageDir);
 
-	/** @type {Map<string, { exportPath: string, filePath: string }>} */
+	/**
+	 * @type {Map<string, { exportPath: string, filePath: string }>}
+	 */
 	const uniqueEntries = new Map();
 
 	for (const condition of conditions) {

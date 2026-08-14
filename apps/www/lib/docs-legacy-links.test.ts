@@ -4,7 +4,9 @@ import { describe, expect, it } from "vitest";
 
 const WWW_ROOT = join(import.meta.dirname, "..");
 
-/** Legacy package-scoped docs trees removed in the Simplify Docs nav revamp. */
+/**
+ * Legacy package-scoped docs trees removed in the Simplify Docs nav revamp.
+ */
 const LEGACY_HREF =
 	/["'`](\/?docs\/(?:arkenv|cli|nextjs|nuxt|vite-plugin|bun-plugin)(?:\/[^"'`#?]*)?)["'`]/g;
 

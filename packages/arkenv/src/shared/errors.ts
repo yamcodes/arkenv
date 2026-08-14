@@ -13,13 +13,21 @@
  *   This lets consumers distinguish a deliberate refusal from a crash.
  */
 export const ERROR_CODES = {
-	/** Technical requirements (e.g. Node.js version) were not met. Bypassable with `--force`. */
+	/**
+	 * Technical requirements (e.g. Node.js version) were not met. Bypassable with `--force`.
+	 */
 	REQUIREMENTS_NOT_MET: "REQUIREMENTS_NOT_MET",
-	/** The git working tree is not clean. Bypassable with `--force`. */
+	/**
+	 * The git working tree is not clean. Bypassable with `--force`.
+	 */
 	GIT_TREE_DIRTY: "GIT_TREE_DIRTY",
-	/** The target directory is not empty (and holds no `package.json`). Bypassable with `--force`. */
+	/**
+	 * The target directory is not empty (and holds no `package.json`). Bypassable with `--force`.
+	 */
 	NON_EMPTY_DIR: "NON_EMPTY_DIR",
-	/** An unexpected, internal failure. Not a deliberate refusal and not bypassable. */
+	/**
+	 * An unexpected, internal failure. Not a deliberate refusal and not bypassable.
+	 */
 	INTERNAL: "INTERNAL",
 } as const;
 
@@ -36,15 +44,21 @@ export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
  * without pattern-matching on human-oriented prose.
  */
 export type Refusal = {
-	/** Stable, documented code identifying the refusal reason. */
+	/**
+	 * Stable, documented code identifying the refusal reason.
+	 */
 	code: ErrorCode;
-	/** Human-readable summary of what was refused. */
+	/**
+	 * Human-readable summary of what was refused.
+	 */
 	message: string;
 	/**
 	 * Flags that would bypass the check when re-run (e.g. `["--force"]`).
 	 * Empty when the refusal cannot be bypassed.
 	 */
 	retryWith: string[];
-	/** Structured detail sufficient for a consumer to report the problem. */
+	/**
+	 * Structured detail sufficient for a consumer to report the problem.
+	 */
 	details?: Record<string, unknown>;
 };

@@ -6,7 +6,9 @@ const emotionNames = docsFeedbackEmotions.map((e) => e.name) as [
 	...(typeof docsFeedbackEmotions)[number]["name"][],
 ];
 
-/** Page feedback payload (Turborepo-style emotions + Fumadocs Discussion sink). */
+/**
+ * Page feedback payload (Turborepo-style emotions + Fumadocs Discussion sink).
+ */
 export const docsPageFeedback = z.object({
 	url: z.string().min(1),
 	pageTitle: z.string().min(1),
@@ -18,7 +20,9 @@ export type DocsPageFeedback = z.infer<typeof docsPageFeedback>;
 
 export const docsFeedbackActionResponse = z.object({
 	success: z.boolean(),
-	/** Created Discussion / comment URL when the GitHub App post succeeds. */
+	/**
+	 * Created Discussion / comment URL when the GitHub App post succeeds.
+	 */
 	githubUrl: z.string().optional(),
 	error: z.string().optional(),
 });

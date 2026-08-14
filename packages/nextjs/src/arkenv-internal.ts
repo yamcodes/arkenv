@@ -17,9 +17,13 @@ export type LegacyNestedSchema = {
 export type FlatSchemaOptions = {
 	extends?: readonly unknown[];
 	runtimeEnv?: Dict<string>;
-	/** @deprecated Use `exposeToClient` instead. */
+	/**
+	 * @deprecated Use `exposeToClient` instead.
+	 */
 	expose?: readonly string[];
-	/** @deprecated Use `exposeToClient` instead. */
+	/**
+	 * @deprecated Use `exposeToClient` instead.
+	 */
 	shared?: readonly string[];
 	exposeToClient?: readonly string[];
 };
@@ -41,9 +45,13 @@ export function arkenvInternal(
 				strictLayout?: "client" | "server";
 		  }
 		| undefined,
-	/** The core arkenv validation function (either `@arkenv/core` or `@arkenv/standard`). */
+	/**
+	 * The core arkenv validation function (either `@arkenv/core` or `@arkenv/standard`).
+	 */
 	coreArkenv: (schema: any, config?: any) => Record<string, unknown>,
-	/** Extracts the declared key names from a schema object. */
+	/**
+	 * Extracts the declared key names from a schema object.
+	 */
 	getSchemaKeysArg: (schema: SchemaShape) => string[],
 ): unknown {
 	let server: SchemaShape = {};

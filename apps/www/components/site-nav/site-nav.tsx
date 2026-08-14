@@ -49,7 +49,9 @@ function SiteNavLink({
 	pathname: string;
 	variant: "desktop" | "menu";
 	tabIndex?: number;
-	/** Close mobile menu (same-page hashes don't change pathname). */
+	/**
+	 * Close mobile menu (same-page hashes don't change pathname).
+	 */
 	onNavigate?: () => void;
 }) {
 	const active = isLinkActive(pathname, link);
@@ -88,7 +90,9 @@ function SiteNavLink({
 	);
 }
 
-/** Docs-only — same footprint as Get started (`.site-nav__action`). */
+/**
+ * Docs-only — same footprint as Get started (`.site-nav__action`).
+ */
 function SiteNavSearchAction() {
 	const { setOpenSearch } = useSearchContext();
 	const [modifier, setModifier] = useState("Ctrl");
@@ -116,11 +120,17 @@ function SiteNavSearchAction() {
 }
 
 export type SiteNavProps = {
-	/** Home / 404 — Get started in the shared right action slot. */
+	/**
+	 * Home / 404 — Get started in the shared right action slot.
+	 */
 	showGetStarted?: boolean;
-	/** Docs — Search in the shared right action slot (same footprint as Get started). */
+	/**
+	 * Docs — Search in the shared right action slot (same footprint as Get started).
+	 */
 	showSearch?: boolean;
-	/** Docs mobile only — sidebar tree toggle. */
+	/**
+	 * Docs mobile only — sidebar tree toggle.
+	 */
 	sidebarTrigger?: ReactNode;
 };
 

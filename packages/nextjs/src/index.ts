@@ -41,9 +41,13 @@ export function arkenv<
 		 * Use this option to expose custom variables that do not have the `NEXT_PUBLIC_` prefix.
 		 */
 		exposeToClient?: readonly TExpose[];
-		/** @deprecated Use `exposeToClient` instead */
+		/**
+		 * @deprecated Use `exposeToClient` instead
+		 */
 		expose?: readonly TExpose[];
-		/** @deprecated Use `exposeToClient` instead */
+		/**
+		 * @deprecated Use `exposeToClient` instead
+		 */
 		shared?: readonly TExpose[];
 		extends?: [...TExtends];
 		runtimeEnv?: Record<string, unknown>;

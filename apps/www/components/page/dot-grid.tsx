@@ -2,7 +2,9 @@
 
 import { type CSSProperties, useEffect, useRef } from "react";
 
-/** Physics tuned for a quiet Aurora field at `DEFAULT_SPACING`. */
+/**
+ * Physics tuned for a quiet Aurora field at `DEFAULT_SPACING`.
+ */
 const DEFAULT_SPACING = 24;
 const DEFAULT_RADIUS = 1;
 const INFLUENCE = 110;
@@ -24,9 +26,13 @@ export function DotGrid({
 	spacing = DEFAULT_SPACING,
 	radius = DEFAULT_RADIUS,
 }: {
-	/** Dot grid pitch in CSS pixels. Smaller = denser / more zoomed-out. */
+	/**
+	 * Dot grid pitch in CSS pixels. Smaller = denser / more zoomed-out.
+	 */
 	spacing?: number;
-	/** Dot radius in CSS pixels. */
+	/**
+	 * Dot radius in CSS pixels.
+	 */
 	radius?: number;
 } = {}) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);

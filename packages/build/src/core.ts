@@ -19,7 +19,9 @@ let activeWatcher: FSWatcher | undefined;
 
 export type LayoutMode = "simple" | "strict";
 
-/** Public layout values accepted by {@link resolveLayout}. */
+/**
+ * Public layout values accepted by {@link resolveLayout}.
+ */
 export type LayoutInput = LayoutMode | "flat";
 
 export type ResolvedLayout = {

@@ -32,14 +32,18 @@ import { cn } from "@/utils/cn";
 
 type DrillOverride = "url" | "root" | PageTree.Folder;
 
-/** Exact match for leaf active pills (avoids Overview matching every child URL). */
+/**
+ * Exact match for leaf active pills (avoids Overview matching every child URL).
+ */
 function isPathExact(url: string, pathname: string): boolean {
 	const normalize = (path: string) =>
 		path.length > 1 && path.endsWith("/") ? path.slice(0, -1) : path;
 	return normalize(pathname) === normalize(url);
 }
 
-/** True when `pathname` is this URL or a descendant path. */
+/**
+ * True when `pathname` is this URL or a descendant path.
+ */
 function isPathUnder(url: string, pathname: string): boolean {
 	if (isPathExact(url, pathname)) return true;
 	const prefix = url.endsWith("/") ? url : `${url}/`;
@@ -80,7 +84,9 @@ function nodeKey(node: PageTree.Node, index: number): string {
 	return `sep:${String(node.name)}:${index}`;
 }
 
-/** Prefer `folder.index`; fall back when Fumadocs only exposes the overview as a child page. */
+/**
+ * Prefer `folder.index`; fall back when Fumadocs only exposes the overview as a child page.
+ */
 function resolveFolderIndex(
 	folder: PageTree.Folder,
 ): PageTree.Item | undefined {
@@ -104,7 +110,9 @@ function itemClassName(_active: boolean): string {
 	return "group/item relative flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-sm font-medium text-start text-fd-foreground transition-colors";
 }
 
-/** Turbo-style group labels: smaller, dimmer, not interactive. */
+/**
+ * Turbo-style group labels: smaller, dimmer, not interactive.
+ */
 function groupLabelClassName(): string {
 	return "px-2.5 pt-4 pb-1 text-[13px] font-normal text-fd-muted-foreground empty:hidden select-none";
 }
@@ -128,7 +136,9 @@ function LeafItem({
 }: {
 	item: PageTree.Item;
 	pathname: string;
-	/** Nested Folder children — slightly dimmer than section-level leaves. */
+	/**
+	 * Nested Folder children — slightly dimmer than section-level leaves.
+	 */
 	muted?: boolean;
 }) {
 	const active = !item.external && isPathExact(item.url, pathname);
@@ -257,7 +267,9 @@ function NestedFolder({
 	);
 }
 
-/** Children of a Nested Folder: pages only (no further nesting). */
+/**
+ * Children of a Nested Folder: pages only (no further nesting).
+ */
 function NestedChild({
 	node,
 	pathname,
@@ -613,7 +625,9 @@ function DrillInNav({ className }: { className?: string }) {
 	);
 }
 
-/** @see drillInSidebarSlots */
+/**
+ * @see drillInSidebarSlots
+ */
 export function DrillInSidebar({
 	footer: _footer,
 	banner: _banner,

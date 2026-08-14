@@ -9,7 +9,9 @@ export type CodegenLayoutOptions = {
 	envKeys?: string[] | undefined;
 	dialect: Dialect;
 	config: CodegenFrameworkConfig;
-	/** Generated env import path when codegen is enabled (Next.js). */
+	/**
+	 * Generated env import path when codegen is enabled (Next.js).
+	 */
 	importPath?: string | undefined;
 	disableCodegen?: boolean | undefined;
 	/**
@@ -17,7 +19,9 @@ export type CodegenLayoutOptions = {
 	 * path kept for test parity; primary codegen path is flat when unset/flat.
 	 */
 	layout?: "strict" | "simple" | "flat" | undefined;
-	/** Hosting provider preset - appended to defaults when `envKeys` is empty. */
+	/**
+	 * Hosting provider preset - appended to defaults when `envKeys` is empty.
+	 */
 	hostPreset?: HostPreset | undefined;
 };
 

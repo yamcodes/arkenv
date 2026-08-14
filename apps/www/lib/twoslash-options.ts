@@ -156,7 +156,9 @@ declare global {
 			args
 		>
 
-		/** @ts-ignore cast variance */
+		/**
+		 * @ts-ignore cast variance
+		 */
 		export interface Any<out t = any, $ = any> extends a.BaseType<t, $> {}
 	}
 

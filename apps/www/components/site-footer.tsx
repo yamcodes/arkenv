@@ -11,7 +11,9 @@ export function SiteFooter({
 	reveal = false,
 }: {
 	className?: string;
-	/** Enable home-page scroll-reveal attribute. */
+	/**
+	 * Enable home-page scroll-reveal attribute.
+	 */
 	reveal?: boolean;
 }) {
 	const githubRepoUrl = getGithubRepoUrl();

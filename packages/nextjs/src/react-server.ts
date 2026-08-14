@@ -22,9 +22,13 @@ export function arkenv<
 		 * Use this option to expose custom variables that do not have the `NEXT_PUBLIC_` prefix.
 		 */
 		exposeToClient?: readonly TShared[];
-		/** @deprecated Use `exposeToClient` instead */
+		/**
+		 * @deprecated Use `exposeToClient` instead
+		 */
 		expose?: readonly TShared[];
-		/** @deprecated Use `exposeToClient` instead */
+		/**
+		 * @deprecated Use `exposeToClient` instead
+		 */
 		shared?: readonly TShared[];
 		extends?: [...TExtends];
 		runtimeEnv?: Record<string, unknown>;

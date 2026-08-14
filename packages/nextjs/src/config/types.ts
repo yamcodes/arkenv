@@ -53,7 +53,9 @@ export type ArkEnvConfigOptions = {
 	layout?:
 		| "flat"
 		| "strict"
-		/** @deprecated Use `"flat"` instead. `"simple"` will be removed in the next major version. */
+		/**
+		 * @deprecated Use `"flat"` instead. `"simple"` will be removed in the next major version.
+		 */
 		| "simple";
 
 	/**
