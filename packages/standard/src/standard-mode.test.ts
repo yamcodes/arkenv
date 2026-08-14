@@ -6,7 +6,7 @@ import { z } from "zod";
 import * as zMini from "zod/mini";
 import { z as z3 } from "zod/v3";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { ArkEnvValidationError, arkenv } from "./index";
+import { ArkEnvError, arkenv } from "./index";
 
 // Mock Standard Schema validators for testing
 const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({
@@ -548,7 +548,7 @@ describe("Standard Mode toJsonSchema", () => {
 		);
 	});
 
-	it("throws ArkEnvValidationError when toJsonSchema throws for a key", () => {
+	it("throws ArkEnvError when toJsonSchema throws for a key", () => {
 		vi.stubEnv("BAD_VAR", "1");
 
 		try {
@@ -566,7 +566,7 @@ describe("Standard Mode toJsonSchema", () => {
 			);
 			expect.fail("Should throw");
 		} catch (error: any) {
-			expect(error).toBeInstanceOf(ArkEnvValidationError);
+			expect(error).toBeInstanceOf(ArkEnvError);
 			expect(error.issues[0].path).toBe("BAD_VAR");
 			expect(error.issues[0].code).toBe("INVALID_SCHEMA");
 			expect(error.issues[0].message).toContain("toJsonSchema failed");
@@ -628,7 +628,7 @@ describe("Standard Mode toJsonSchema", () => {
 		expect(env.PASS_VAR).toBe("hello");
 	});
 
-	it("throws ArkEnvValidationError when toJsonSchema returns a non-plain object", () => {
+	it("throws ArkEnvError when toJsonSchema returns a non-plain object", () => {
 		vi.stubEnv("DATE_SCHEMA", "1");
 
 		for (const bad of [new Date(), ["array"], () => ({})]) {
@@ -645,7 +645,7 @@ describe("Standard Mode toJsonSchema", () => {
 				);
 				expect.fail(`Should throw for ${Object.prototype.toString.call(bad)}`);
 			} catch (error: any) {
-				expect(error).toBeInstanceOf(ArkEnvValidationError);
+				expect(error).toBeInstanceOf(ArkEnvError);
 				expect(error.issues[0].path).toBe("DATE_SCHEMA");
 				expect(error.issues[0].code).toBe("INVALID_SCHEMA");
 				expect(error.issues[0].message).toMatch(/plain object/);
@@ -730,7 +730,7 @@ describe("Standard Mode emptyAsUndefined", () => {
 			);
 			expect.fail("Should throw");
 		} catch (error: any) {
-			expect(error.name).toBe("ArkEnvValidationError");
+			expect(error.name).toBe("ArkEnvError");
 			expect(error.issues).toBeDefined();
 			expect(error.issues[0].code).toBe("MISSING_VARIABLE");
 			expect(error.issues[0].message).toContain("must be string");
@@ -746,7 +746,7 @@ describe("Standard Mode emptyAsUndefined", () => {
 			);
 			expect.fail("Should throw");
 		} catch (error: any) {
-			expect(error.name).toBe("ArkEnvValidationError");
+			expect(error.name).toBe("ArkEnvError");
 			expect(error.issues).toBeDefined();
 			expect(error.issues[0].code).toBe("INVALID_FORMAT");
 			expect(error.issues[0].message).toContain("must be string");

@@ -1,5 +1,5 @@
 import {
-	ArkEnvValidationError,
+	ArkEnvError,
 	type EnvIssue,
 	type EnvIssueCode,
 	type EnvIssueMeta,
@@ -76,15 +76,15 @@ export function getStandardMeta(issue: any): { min?: number; max?: number } {
 /**
  * Execute a parser function and return a SafeArkEnvResult.
  *
- * @param parseFn The function that parses the environment variables and might throw an ArkEnvValidationError
- * @returns A SafeArkEnvResult containing either the parsed data or the caught ArkEnvValidationError
+ * @param parseFn The function that parses the environment variables and might throw an ArkEnvError
+ * @returns A SafeArkEnvResult containing either the parsed data or the caught ArkEnvError
  * @internal
  */
 export function safeExecute<T>(parseFn: () => T): SafeArkEnvResult<T> {
 	try {
 		return { success: true, data: parseFn() };
 	} catch (error) {
-		if (error instanceof ArkEnvValidationError) {
+		if (error instanceof ArkEnvError) {
 			return { success: false, issues: error.issues };
 		}
 		throw error;

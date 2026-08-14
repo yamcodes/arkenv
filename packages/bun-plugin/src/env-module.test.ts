@@ -1,7 +1,7 @@
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { ArkEnvValidationError } from "@arkenv/core";
+import { ArkEnvError } from "@arkenv/core";
 import { afterEach, describe, expect, it } from "vitest";
 import {
 	classifyEnvKeys,
@@ -58,7 +58,7 @@ describe("transform mode helpers", () => {
 		expect(code).not.toContain("error.name");
 		expect(code).not.toContain("ArkEnvAccessError");
 		expect(code).not.toContain("ArkEnv Error:");
-		expect(code).not.toMatch(/import\b.*ArkEnvValidationError/);
+		expect(code).not.toMatch(/import\b.*ArkEnvError/);
 		expect(code).not.toContain("arkenv");
 		expect(code).not.toContain("arktype");
 	});
@@ -259,7 +259,7 @@ describe("transform mode plugin", () => {
 				expect.fail("Expected boundary access error");
 			} catch (error) {
 				expect(error).toBeInstanceOf(Error);
-				expect(error).not.toBeInstanceOf(ArkEnvValidationError);
+				expect(error).not.toBeInstanceOf(ArkEnvError);
 				expect((error as Error).name).toBe("Error");
 				expect((error as Error).message).toBe(
 					"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)",

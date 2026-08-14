@@ -1,4 +1,4 @@
-import { ArkEnvValidationError, arkenv } from "@arkenv/standard";
+import { ArkEnvError, arkenv } from "@arkenv/standard";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 
 // Mock Standard Schema validators for testing
@@ -377,7 +377,7 @@ describe("Standard Mode emptyAsUndefined", () => {
 			);
 			expect.fail("Should throw");
 		} catch (error: any) {
-			expect(error.name).toBe("ArkEnvValidationError");
+			expect(error.name).toBe("ArkEnvError");
 			expect(error.issues).toBeDefined();
 			expect(error.issues[0].code).toBe("MISSING_VARIABLE");
 			expect(error.issues[0].message).toContain("must be string");
@@ -393,7 +393,7 @@ describe("Standard Mode emptyAsUndefined", () => {
 			);
 			expect.fail("Should throw");
 		} catch (error: any) {
-			expect(error.name).toBe("ArkEnvValidationError");
+			expect(error.name).toBe("ArkEnvError");
 			expect(error.issues).toBeDefined();
 			expect(error.issues[0].code).toBe("INVALID_FORMAT");
 			expect(error.issues[0].message).toContain("must be string");

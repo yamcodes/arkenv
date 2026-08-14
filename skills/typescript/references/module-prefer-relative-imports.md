@@ -10,11 +10,11 @@ Files within the same local directory or immediate subdirectories should use rel
 
 ```typescript
 // inside packages/arkenv/src/guards.ts
-import { ArkEnvValidationError } from "@/core";
+import { ArkEnvError } from "@/core";
 import { parseStandard } from "@/parse-standard";
 
 // inside packages/arkenv/src/utils/errors.ts
-import { ArkEnvValidationError } from "../core";
+import { ArkEnvError } from "../core";
 
 // inside apps/www/components/ui/popover.tsx
 import { cn } from "../../lib/cn";
@@ -24,11 +24,11 @@ import { cn } from "../../lib/cn";
 
 ```typescript
 // inside packages/arkenv/src/guards.ts
-import { ArkEnvValidationError } from "./core";
+import { ArkEnvError } from "./core";
 import { parseStandard } from "./parse-standard";
 
 // inside packages/arkenv/src/utils/errors.ts
-import { ArkEnvValidationError } from "@/core";
+import { ArkEnvError } from "@/core";
 
 // inside apps/www/components/ui/popover.tsx
 import { cn } from "~/lib/cn";

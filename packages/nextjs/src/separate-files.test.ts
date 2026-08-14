@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-import { ArkEnvValidationError, type } from "@arkenv/core";
+import { ArkEnvError, type } from "@arkenv/core";
 import { arkenv as clientArkenv } from "./client";
 import { arkenv as serverArkenv } from "./server";
 
@@ -108,7 +108,7 @@ describe("Separate Files Next.js mode", () => {
 			expect.fail("Expected boundary access error");
 		} catch (error) {
 			expect(error).toBeInstanceOf(Error);
-			expect(error).not.toBeInstanceOf(ArkEnvValidationError);
+			expect(error).not.toBeInstanceOf(ArkEnvError);
 			expect((error as Error).name).toBe("Error");
 			expect((error as Error).message).toBe(
 				"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)",

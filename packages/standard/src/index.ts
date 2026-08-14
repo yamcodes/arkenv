@@ -1,6 +1,6 @@
 import type { StandardSchemaV1 } from "@repo/types";
 import {
-	ArkEnvValidationError,
+	ArkEnvError,
 	assertNotArkTypeDsl,
 	assertStandardSchema,
 	assertStandardSchemaMap,
@@ -14,7 +14,7 @@ import {
 } from "@repo/utils";
 
 export {
-	ArkEnvValidationError,
+	ArkEnvError,
 	type EnvIssue,
 	formatIssues,
 	getSchemaKeys,
@@ -39,7 +39,7 @@ type StandardEnvOutput<T extends Record<string, StandardSchemaV1>> = {
  * @param def An object mapping variable names to Standard Schema validators
  * @param config Optional configuration
  * @returns The validated environment variables, or a SafeArkEnvResult if `{ safe: true }` is configured
- * @throws An {@link ArkEnvValidationError} if validation fails and `safe` is not enabled
+ * @throws An {@link ArkEnvError} if validation fails and `safe` is not enabled
  *
  * @example
  * ```ts

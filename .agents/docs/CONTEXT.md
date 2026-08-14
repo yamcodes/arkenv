@@ -65,7 +65,7 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 
 - **Files**: kebab-case (`arkenv.ts`)
 - **Functions**: camelCase (`arkenvInternal`, `myFunction`)
-- **Types**: PascalCase (`ArkEnvValidationError`)
+- **Types**: PascalCase (`ArkEnvError`)
 - **Constants**: UPPER_SNAKE_CASE for environment variables
 
 **Code Quality Rules:**
@@ -98,7 +98,7 @@ The main goal is to provide a developer-friendly way to validate and type-check 
   - Main export: `arkenv` function (also exported as default export)
   - Uses ArkType's `scope` system for type validation
   - Custom types: `string.host`, `number.port`, `boolean`
-  - Error handling via `ArkEnvValidationError` class
+  - Error handling via `ArkEnvError` class
   - Zero external dependencies (except `arktype` as peer dependency)
 
 **Build System:**
@@ -183,7 +183,7 @@ pnpm run test:e2e                     # E2E tests
 - ArkEnv uses ArkType's type system to validate environment variables
 - Schema is defined using TypeScript-like syntax (e.g., `"string.host"`, `"number.port"`)
 - Validation happens at both build-time (via Vite plugin) and runtime
-- Missing or invalid variables throw `ArkEnvValidationError` with clear error messages
+- Missing or invalid variables throw `ArkEnvError` with clear error messages
 
 **ArkType Integration:**
 
@@ -222,7 +222,7 @@ pnpm run test:e2e                     # E2E tests
 
 **Error Handling:**
 
-- `ArkEnvValidationError` extends `Error` and formats ArkType validation errors
+- `ArkEnvError` extends `Error` and formats ArkType validation errors
 - Errors include variable names and expected types
 - Fail-fast approach: app won't start if validation fails
 

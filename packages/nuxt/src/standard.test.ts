@@ -1,4 +1,4 @@
-import { ArkEnvValidationError } from "@arkenv/core";
+import { ArkEnvError } from "@arkenv/core";
 import { describe, expect, it } from "vitest";
 import arkenvStandard, { arkenv as namedArkenvStandard } from "./standard";
 import { arkenv as clientArkenv } from "./standard/client";
@@ -82,7 +82,7 @@ describe("Nuxt Standard Mode Flat Layout", () => {
 				expect.fail("Expected boundary access error");
 			} catch (error) {
 				expect(error).toBeInstanceOf(Error);
-				expect(error).not.toBeInstanceOf(ArkEnvValidationError);
+				expect(error).not.toBeInstanceOf(ArkEnvError);
 				expect((error as Error).name).toBe("Error");
 				expect((error as Error).message).toBe(
 					"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)",

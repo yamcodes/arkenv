@@ -1,6 +1,6 @@
 export * from "./coercion";
 export {
-	ArkEnvValidationError,
+	ArkEnvError,
 	type EnvIssue,
 	type EnvIssueCode,
 	type EnvIssueMeta,
@@ -18,7 +18,7 @@ export {
 } from "./parse-standard";
 export { getSchemaKeys } from "./schema";
 export {
-	ARKENV_VALIDATION_ERROR_NAME,
+	ARKENV_ERROR_NAME,
 	boundaryAccessErrorMessage,
 } from "./utils/boundary-access-error";
 export {

@@ -23,7 +23,7 @@ describe("arkenv + type + scope + types integration", () => {
 			expect(env.HOST).toBe("127.0.0.1");
 		});
 
-		it("should throw ArkEnvValidationError for invalid host through arkenv", () => {
+		it("should throw ArkEnvError for invalid host through arkenv", () => {
 			vi.stubEnv("HOST", "invalid-host");
 
 			expect(() =>
@@ -66,7 +66,7 @@ describe("arkenv + type + scope + types integration", () => {
 			expect(env.PORT).toBe(65535);
 		});
 
-		it("should throw ArkEnvValidationError for invalid port through arkenv", () => {
+		it("should throw ArkEnvError for invalid port through arkenv", () => {
 			vi.stubEnv("PORT", "99999");
 
 			expect(() =>
@@ -76,7 +76,7 @@ describe("arkenv + type + scope + types integration", () => {
 			).toThrow(/PORT/);
 		});
 
-		it("should throw ArkEnvValidationError for non-numeric port through arkenv", () => {
+		it("should throw ArkEnvError for non-numeric port through arkenv", () => {
 			vi.stubEnv("PORT", "not-a-number");
 
 			expect(() =>
@@ -109,7 +109,7 @@ describe("arkenv + type + scope + types integration", () => {
 			expect(env.DEBUG).toBe(false);
 		});
 
-		it("should throw ArkEnvValidationError for invalid boolean through arkenv", () => {
+		it("should throw ArkEnvError for invalid boolean through arkenv", () => {
 			vi.stubEnv("DEBUG", "maybe");
 
 			expect(() =>
@@ -153,7 +153,7 @@ describe("arkenv + type + scope + types integration", () => {
 			expect(env.DEBUG).toBe(false);
 		});
 
-		it("should throw ArkEnvValidationError when one custom type fails", () => {
+		it("should throw ArkEnvError when one custom type fails", () => {
 			vi.stubEnv("HOST", "localhost");
 			vi.stubEnv("PORT", "99999"); // Invalid port
 			vi.stubEnv("DEBUG", "true");
@@ -167,7 +167,7 @@ describe("arkenv + type + scope + types integration", () => {
 			).toThrow(/PORT/);
 		});
 
-		it("should throw ArkEnvValidationError when multiple custom types fail", () => {
+		it("should throw ArkEnvError when multiple custom types fail", () => {
 			vi.stubEnv("HOST", "invalid-host");
 			vi.stubEnv("PORT", "99999");
 			vi.stubEnv("DEBUG", "maybe");

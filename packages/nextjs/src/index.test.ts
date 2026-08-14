@@ -1,4 +1,4 @@
-import { ArkEnvValidationError } from "@arkenv/core";
+import { ArkEnvError } from "@arkenv/core";
 import { describe, expect, it } from "vitest";
 import { arkenv as clientArkenv } from "./index";
 import { arkenv as serverArkenv } from "./react-server";
@@ -9,7 +9,7 @@ function expectBoundaryAccessError(run: () => unknown, key: string): void {
 		expect.fail("Expected boundary access error");
 	} catch (error) {
 		expect(error).toBeInstanceOf(Error);
-		expect(error).not.toBeInstanceOf(ArkEnvValidationError);
+		expect(error).not.toBeInstanceOf(ArkEnvError);
 		expect((error as Error).name).toBe("Error");
 		expect((error as Error).message).toBe(
 			`Do not access server-only key '${key}' on the client since it will leak sensitive data (prevented by ArkEnv)`,

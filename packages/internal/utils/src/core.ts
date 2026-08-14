@@ -1,4 +1,4 @@
-import { ARKENV_VALIDATION_ERROR_NAME } from "./utils/boundary-access-error";
+import { ARKENV_ERROR_NAME } from "./utils/boundary-access-error";
 import { indent } from "./utils/indent";
 import { styleText } from "./utils/style-text";
 
@@ -124,7 +124,7 @@ export function formatIssues(issues: EnvIssue[]): string {
  * @example
  * ```ts
  * import arkenv from 'arkenv';
- * import { ArkEnvValidationError } from '@arkenv/core';
+ * import { ArkEnvError } from '@arkenv/core';
  *
  * try {
  *   const env = arkenv({
@@ -132,13 +132,13 @@ export function formatIssues(issues: EnvIssue[]): string {
  *     HOST: 'string.host',
  *   });
  * } catch (error) {
- *   if (error instanceof ArkEnvValidationError) {
+ *   if (error instanceof ArkEnvError) {
  *     console.error('Environment validation failed:', error.message);
  *   }
  * }
  * ```
  */
-export class ArkEnvValidationError extends Error {
+export class ArkEnvError extends Error {
 	/**
 	 * The list of normalized issues that caused the validation failure
 	 */
@@ -150,13 +150,13 @@ export class ArkEnvValidationError extends Error {
 	) {
 		const formattedIssues = formatIssues(issues);
 		super(`${styleText("red", message)}\n${indent(formattedIssues)}\n`);
-		this.name = ARKENV_VALIDATION_ERROR_NAME;
+		this.name = ARKENV_ERROR_NAME;
 		this.issues = issues;
 	}
 }
 
-Object.defineProperty(ArkEnvValidationError, "name", {
-	value: ARKENV_VALIDATION_ERROR_NAME,
+Object.defineProperty(ArkEnvError, "name", {
+	value: ARKENV_ERROR_NAME,
 });
 
 /**

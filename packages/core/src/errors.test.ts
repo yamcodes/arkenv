@@ -1,6 +1,6 @@
 import { safeStringify, shouldRedact } from "@repo/utils";
 import { describe, expect, it } from "vitest";
-import { ArkEnvValidationError, type EnvIssue, formatIssues } from "@";
+import { ArkEnvError, type EnvIssue, formatIssues } from "@";
 import { arkenv } from "./arkenv";
 
 describe("shouldRedact", () => {
@@ -84,7 +84,7 @@ describe("formatIssues", () => {
 	});
 });
 
-describe("ArkEnvValidationError & arkenv safe mode", () => {
+describe("ArkEnvError & arkenv safe mode", () => {
 	it("should create error and store issues", () => {
 		const issues: EnvIssue[] = [
 			{
@@ -94,9 +94,9 @@ describe("ArkEnvValidationError & arkenv safe mode", () => {
 			},
 		];
 
-		const error = new ArkEnvValidationError(issues);
+		const error = new ArkEnvError(issues);
 		expect(error.issues).toEqual(issues);
-		expect(error.name).toBe("ArkEnvValidationError");
+		expect(error.name).toBe("ArkEnvError");
 	});
 
 	it("should run arkenv safely", () => {

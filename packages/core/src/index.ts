@@ -1,6 +1,6 @@
 import { $ } from "@repo/scope";
 import {
-	ArkEnvValidationError,
+	ArkEnvError,
 	type EnvIssue,
 	formatIssues,
 	getSchemaKeys,
@@ -8,7 +8,7 @@ import {
 import { arkenv } from "./arkenv";
 
 export type { EnvIssue };
-export { ArkEnvValidationError, arkenv, formatIssues, getSchemaKeys };
+export { ArkEnvError, arkenv, formatIssues, getSchemaKeys };
 /**
  * Like ArkType's `type`, but with ArkEnv's extra keywords, such as:
  *

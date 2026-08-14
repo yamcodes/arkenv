@@ -16,7 +16,7 @@ describe("generateClientEnvModule", () => {
 		expect(code).not.toContain("error.name");
 		expect(code).not.toContain("ArkEnvAccessError");
 		expect(code).not.toContain("ArkEnv Error:");
-		expect(code).not.toMatch(/import\b.*ArkEnvValidationError/);
+		expect(code).not.toMatch(/import\b.*ArkEnvError/);
 		expect(code).not.toContain("arktype");
 	});
 });

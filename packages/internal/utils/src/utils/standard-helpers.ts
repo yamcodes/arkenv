@@ -1,5 +1,5 @@
 import type { StandardSchemaV1 } from "@repo/types";
-import { ArkEnvValidationError } from "@/core";
+import { ArkEnvError } from "@/core";
 import { buildEnvIssue } from "./errors";
 
 /**
@@ -18,7 +18,7 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
  * @param toJsonSchema Optional fallback converter when a key has no Standard JSON Schema on the value
  * @returns The generated JSON Schema, a flag indicating if any JSON Schema was found,
  *          and a list of keys that do not support JSON Schema
- * @throws {ArkEnvValidationError} When `toJsonSchema` throws or returns a non-plain object for a key
+ * @throws {ArkEnvError} When `toJsonSchema` throws or returns a non-plain object for a key
  */
 export function extractJsonSchema(
 	def: Record<string, unknown>,
@@ -95,7 +95,7 @@ export function extractJsonSchema(
 				converted = toJsonSchema(validator as StandardSchemaV1);
 			} catch (error) {
 				const detail = error instanceof Error ? error.message : String(error);
-				throw new ArkEnvValidationError([
+				throw new ArkEnvError([
 					buildEnvIssue(
 						key,
 						`toJsonSchema failed for '${key}': ${detail}`,
@@ -111,7 +111,7 @@ export function extractJsonSchema(
 			}
 
 			if (!isPlainObject(converted)) {
-				throw new ArkEnvValidationError([
+				throw new ArkEnvError([
 					buildEnvIssue(
 						key,
 						`toJsonSchema must return a plain object or undefined for '${key}'.`,

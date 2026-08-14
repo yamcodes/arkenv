@@ -47,7 +47,7 @@ With the development server running (if it isn't - just run `npm run dev`), let'
 2. #### Notice the development server will show an error
 
    ```bash
-   ArkEnvValidationError: Errors found while validating environment variables
+   ArkEnvError: Errors found while validating environment variables
      MY_ENV_VAR must be a string (was missing)
    ```
 

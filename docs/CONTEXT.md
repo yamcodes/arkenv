@@ -153,7 +153,7 @@ A scroll-driven increase in **Glass material** opacity/blur so content sliding u
 
 - **Files**: kebab-case (`arkenv.ts`)
 - **Functions**: camelCase
-- **Types**: PascalCase (`ArkEnvValidationError`)
+- **Types**: PascalCase (`ArkEnvError`)
 - **Constants**: UPPER_SNAKE_CASE for environment variables
 
 **Code Quality Rules:**
@@ -191,7 +191,7 @@ A scroll-driven increase in **Glass material** opacity/blur so content sliding u
     - Main export: `arkenv` function (also exported as default export)
     - Uses ArkType's `scope` system for type validation
     - Custom types: `string.host`, `number.port`, `boolean`
-    - Error handling via `ArkEnvValidationError` class
+    - Error handling via `ArkEnvError` class
     - Zero external dependencies (except `arktype` as peer dependency)
   - **`@arkenv/standard`**:
     - Main export: `arkenv` function (also exported as default export)
@@ -434,7 +434,7 @@ A non-interactive muted label that only **groups** sibling **Leaves** on a **Sid
 - ArkEnv uses ArkType's type system to validate environment variables
 - Schema is defined using TypeScript-like syntax (e.g., `"string.host"`, `"number.port"`)
 - Validation happens at both build-time (via Vite plugin) and runtime
-- Missing or invalid variables throw `ArkEnvValidationError` with clear error messages
+- Missing or invalid variables throw `ArkEnvError` with clear error messages
 
 **ArkType Integration:**
 
@@ -482,12 +482,12 @@ A non-interactive muted label that only **groups** sibling **Leaves** on a **Sid
 
 - **Issue vs. Error Distinction**: ArkEnv strictly differentiates between an "Issue" and an "Error".
   - **Issue (`EnvIssue`)**: A single, isolated validation failure on a specific environment variable.
-  - **Error (`ArkEnvValidationError`)**: The overarching runtime exception that is thrown when validation fails. It contains an array of `EnvIssue`s.
-- Functions dealing with individual failures should use "Issue" (e.g., `formatIssues`), while functions dealing with the final halting exception should use "Error" (e.g., `ArkEnvValidationError`).
-- `ArkEnvValidationError` extends `Error` and formats ArkType validation errors
+  - **Error (`ArkEnvError`)**: The overarching runtime exception that is thrown when validation fails. It contains an array of `EnvIssue`s.
+- Functions dealing with individual failures should use "Issue" (e.g., `formatIssues`), while functions dealing with the final halting exception should use "Error" (e.g., `ArkEnvError`).
+- `ArkEnvError` extends `Error` and formats ArkType validation errors
 - Errors include variable names and expected types
 - Fail-fast approach: app won't start if validation fails
-- **Boundary access error**: A native `Error` thrown when client code reads a server-only env key (Next.js, Nuxt, Vite, Bun). It is **not** an `ArkEnvValidationError` instance — client-generated modules must stay import-free of the class, and there are no `EnvIssue`s. Leave `error.name` as `"Error"`. Message uses Next.js taint voice: `Do not access server-only key '${key}' on the client since it will leak sensitive data (prevented by ArkEnv)` (no trailing period). Do not catch this throw; fix the access. Do not add a public `isArkEnvError` helper, a deprecated `ArkEnvError` alias, or fake `instanceof` via `Symbol.hasInstance`. There is no in-tree codemod: rename `ArkEnvError` → `ArkEnvValidationError` in catch blocks. See [ADR 0024](./adr/0024-sibling-error-names.md).
+- **Boundary access error**: A native `Error` thrown when client code reads a server-only env key (Next.js, Nuxt, Vite, Bun). It is **not** an `ArkEnvError` instance — client-generated modules must stay import-free of the class, and there are no `EnvIssue`s. Leave `error.name` as `"Error"`. Message uses Next.js taint voice: `Do not access server-only key '${key}' on the client since it will leak sensitive data (prevented by ArkEnv)` (no trailing period). Do not catch this throw; fix the access. Do not add a public `isArkEnvError` helper or fake `instanceof` via `Symbol.hasInstance`. See [ADR 0024](./adr/0024-sibling-error-names.md).
 
 ## Important constraints
 

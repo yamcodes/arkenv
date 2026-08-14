@@ -316,7 +316,7 @@ These examples demonstrate real-world usage and can serve as templates for new i
 ### Security considerations
 
 - Always validate user input in examples and documentation
-- Use `ArkEnvValidationError` for environment variable errors, not generic errors
+- Use `ArkEnvError` for environment variable errors, not generic errors
 - Never log environment variable values in production code
 - Ensure examples demonstrate secure default practices
 

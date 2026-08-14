@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import arkenv, { type ArkEnvValidationError, type } from "@";
+import arkenv, { type ArkEnvError, type } from "@";
 
 // Helper to strip ANSI color codes (ESC character code 27)
 const stripAnsi = (str: string) =>
@@ -7,7 +7,7 @@ const stripAnsi = (str: string) =>
 
 describe("arkenv + type + errors + utils integration", () => {
 	describe("error propagation through full stack", () => {
-		it("should throw ArkEnvValidationError with formatted message for invalid type", () => {
+		it("should throw ArkEnvError with formatted message for invalid type", () => {
 			vi.stubEnv("PORT", "not-a-number");
 
 			try {
@@ -16,11 +16,11 @@ describe("arkenv + type + errors + utils integration", () => {
 				});
 				expect.fail("Should have thrown");
 			} catch (error) {
-				expect((error as any).name).toBe("ArkEnvValidationError");
+				expect((error as any).name).toBe("ArkEnvError");
 				expect(error).toBeInstanceOf(Error);
 
-				const envError = error as ArkEnvValidationError;
-				expect(envError.name).toBe("ArkEnvValidationError");
+				const envError = error as ArkEnvError;
+				expect(envError.name).toBe("ArkEnvError");
 				expect(envError.message).toContain("PORT");
 				expect(envError.message).toContain(
 					"Errors found while validating environment variables",
@@ -28,7 +28,7 @@ describe("arkenv + type + errors + utils integration", () => {
 			}
 		});
 
-		it("should throw ArkEnvValidationError with formatted message for invalid host", () => {
+		it("should throw ArkEnvError with formatted message for invalid host", () => {
 			vi.stubEnv("HOST", "invalid-host");
 
 			try {
@@ -37,8 +37,8 @@ describe("arkenv + type + errors + utils integration", () => {
 				});
 				expect.fail("Should have thrown");
 			} catch (error) {
-				expect((error as any).name).toBe("ArkEnvValidationError");
-				const envError = error as ArkEnvValidationError;
+				expect((error as any).name).toBe("ArkEnvError");
+				const envError = error as ArkEnvError;
 				expect(envError.message).toContain("HOST");
 				expect(envError.message).toContain(
 					"Errors found while validating environment variables",
@@ -46,7 +46,7 @@ describe("arkenv + type + errors + utils integration", () => {
 			}
 		});
 
-		it("should throw ArkEnvValidationError with formatted message for invalid boolean", () => {
+		it("should throw ArkEnvError with formatted message for invalid boolean", () => {
 			vi.stubEnv("DEBUG", "maybe");
 
 			try {
@@ -55,9 +55,9 @@ describe("arkenv + type + errors + utils integration", () => {
 				});
 				expect.fail("Should have thrown");
 			} catch (error) {
-				expect((error as any).name).toBe("ArkEnvValidationError");
-				const envError = error as ArkEnvValidationError;
-				expect(envError.name).toBe("ArkEnvValidationError");
+				expect((error as any).name).toBe("ArkEnvError");
+				const envError = error as ArkEnvError;
+				expect(envError.name).toBe("ArkEnvError");
 				expect(envError.message).toContain("DEBUG");
 				expect(envError.message).toContain(
 					"Errors found while validating environment variables",
@@ -65,16 +65,16 @@ describe("arkenv + type + errors + utils integration", () => {
 			}
 		});
 
-		it("should throw ArkEnvValidationError with formatted message for missing required variable", () => {
+		it("should throw ArkEnvError with formatted message for missing required variable", () => {
 			try {
 				arkenv({
 					REQUIRED_VAR: "string",
 				});
 				expect.fail("Should have thrown");
 			} catch (error) {
-				expect((error as any).name).toBe("ArkEnvValidationError");
-				const envError = error as ArkEnvValidationError;
-				expect(envError.name).toBe("ArkEnvValidationError");
+				expect((error as any).name).toBe("ArkEnvError");
+				const envError = error as ArkEnvError;
+				expect(envError.name).toBe("ArkEnvError");
 				expect(envError.message).toContain("REQUIRED_VAR");
 				expect(envError.message).toContain(
 					"Errors found while validating environment variables",
@@ -95,9 +95,9 @@ describe("arkenv + type + errors + utils integration", () => {
 				});
 				expect.fail("Should have thrown");
 			} catch (error) {
-				expect((error as any).name).toBe("ArkEnvValidationError");
-				const envError = error as ArkEnvValidationError;
-				expect(envError.name).toBe("ArkEnvValidationError");
+				expect((error as any).name).toBe("ArkEnvError");
+				const envError = error as ArkEnvError;
+				expect(envError.name).toBe("ArkEnvError");
 				expect(envError.message).toContain("HOST");
 				expect(envError.message).toContain("PORT");
 				expect(envError.message).toContain("DEBUG");
@@ -116,8 +116,8 @@ describe("arkenv + type + errors + utils integration", () => {
 				});
 				expect.fail("Should have thrown");
 			} catch (error) {
-				expect((error as any).name).toBe("ArkEnvValidationError");
-				const envError = error as ArkEnvValidationError;
+				expect((error as any).name).toBe("ArkEnvError");
+				const envError = error as ArkEnvError;
 				// Error message should contain indented formatting (indent function adds spaces)
 				// The formatted error should be indented under the main error message
 				const lines = envError.message.split("\n");
@@ -147,8 +147,8 @@ describe("arkenv + type + errors + utils integration", () => {
 				});
 				expect.fail("Should have thrown");
 			} catch (error) {
-				expect((error as any).name).toBe("ArkEnvValidationError");
-				const envError = error as ArkEnvValidationError;
+				expect((error as any).name).toBe("ArkEnvError");
+				const envError = error as ArkEnvError;
 				// Error should include the provided value in formatted output
 				expect(envError.message).toContain("PORT");
 				// Verify the actual invalid value appears in the error message
@@ -167,8 +167,8 @@ describe("arkenv + type + errors + utils integration", () => {
 				});
 				expect.fail("Should have thrown");
 			} catch (error) {
-				expect((error as any).name).toBe("ArkEnvValidationError");
-				const envError = error as ArkEnvValidationError;
+				expect((error as any).name).toBe("ArkEnvError");
+				const envError = error as ArkEnvError;
 				// Both errors should be formatted and included
 				expect(envError.message).toContain("HOST");
 				expect(envError.message).toContain("PORT");

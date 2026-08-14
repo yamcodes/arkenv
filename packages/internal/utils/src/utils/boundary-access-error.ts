@@ -1,7 +1,7 @@
 /**
- * `error.name` for the validation class {@link ArkEnvValidationError}.
+ * `error.name` for the validation class {@link ArkEnvError}.
  */
-export const ARKENV_VALIDATION_ERROR_NAME = "ArkEnvValidationError";
+export const ARKENV_ERROR_NAME = "ArkEnvError";
 
 /**
  * Build the message for a client read of a server-only env key.

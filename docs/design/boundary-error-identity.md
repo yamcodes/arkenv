@@ -1,6 +1,6 @@
 # Boundary vs validation errors: identity options
 
-Status: **decided** — `ArkEnvValidationError` (class) plus an attributed native `Error` for boundary access. See [ADR 0024](../adr/0024-sibling-error-names.md). The catalog below is the evaluation that led there.
+Status: **decided** — keep `ArkEnvError` (class) plus an attributed native `Error` for boundary access. See [ADR 0024](../adr/0024-sibling-error-names.md). The catalog below is the evaluation that led there.
 
 ## The problem
 
@@ -276,4 +276,4 @@ Ranked for the problem as stated above (brand + catch trap + isolation + attribu
 
 ## Recommendation
 
-**Done.** ADR 0024 records the choice: `ArkEnvValidationError` (class) for schema failures, and a native `Error` in Next.js taint voice (`Do not … since it will leak sensitive data (prevented by ArkEnv)`) for boundary access. No `error.name` brand, no alias, no helper, no access class.
+**Done.** ADR 0024 records the choice: keep `ArkEnvError` (class) for schema failures, and a native `Error` in Next.js taint voice (`Do not … since it will leak sensitive data (prevented by ArkEnv)`) for boundary access. No `error.name` brand on the boundary throw, no helper, no access class.
