@@ -30,23 +30,34 @@ export const env = arkenv({
 
 ## Compared to `@arkenv/core`
 
-|                                    | `@arkenv/core`              | `@arkenv/standard`                                                                              |
-| ---------------------------------- | --------------------------- | ----------------------------------------------------------------------------------------------- |
-| Validator                          | ArkType DSL + `type()`      | Standard Schema map only                                                                        |
-| Peer `arktype`                     | Required                    | None                                                                                            |
-| [Options](/docs/reference/options) | Same                        | Same                                                                                            |
-| Coercion                           | Built-in for ArkType shapes | Needs JSON Schema introspection (Zod 4.2+, Valibot with `@valibot/to-json-schema`, and similar) |
+|                                         | `@arkenv/core`              | `@arkenv/standard`                                                                                                                     |
+| --------------------------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Validator                               | ArkType DSL + `type()`      | Standard Schema map only                                                                                                               |
+| Keywords (`string.host`, `number.port`) | Yes                         | No                                                                                                                                     |
+| Peer `arktype`                          | Required                    | None                                                                                                                                   |
+| [Options](/docs/reference/options)      | `ArkEnvConfig`              | `StandardEnvConfig` (`ArkEnvConfig` plus `toJsonSchema`)                                                                               |
+| Coercion                                | Built-in for ArkType shapes | Standard JSON Schema on the value, or [`toJsonSchema`](/docs/core-concepts/coercion#valibot-tojsonschema) for Valibot-style converters |
 
 ## Exports
 
-| Export                  | Kind                       | Role                                                           |
-| ----------------------- | -------------------------- | -------------------------------------------------------------- |
-| `arkenv`                | function (default + named) | Validate a Standard Schema field map                           |
-| `ArkEnvValidationError` | class                      | Thrown on validation failure                                   |
-| `formatIssues`          | function                   | Format issues                                                  |
-| `getSchemaKeys`         | function                   | List schema keys                                               |
-| Config / issue types    | types                      | Same shapes as core (`StandardEnvConfig` aliases core options) |
+| Export                  | Kind                       | Role                                                         |
+| ----------------------- | -------------------------- | ------------------------------------------------------------ |
+| `arkenv`                | function (default + named) | Validate a Standard Schema field map                         |
+| `ArkEnvValidationError` | class                      | Thrown on validation failure                                 |
+| `formatIssues`          | function                   | Format issues                                                |
+| `getSchemaKeys`         | function                   | List schema keys                                             |
+| Config / issue types    | types                      | `StandardEnvConfig` extends core options with `toJsonSchema` |
 
 ## Framework `/standard` subpaths
 
 Next.js, Nuxt, Vite, and Bun ship `/standard` (and related) entries that pair with this package. See each package reference for import paths.
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/guides/validators" title="Validators" description="ArkType, Zod, and Valibot cookbooks." />
+
+  <Card href="/docs/core-concepts/coercion" title="Coercion" description="How ArkEnv turns env strings into typed outputs." />
+
+  <Card href="/docs/core-concepts/standard-schema" title="Choosing an engine" description="When to use @arkenv/core vs @arkenv/standard." />
+</Cards>

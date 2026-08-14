@@ -1,0 +1,87 @@
+---
+title: ArkType
+description: Validate env vars with @arkenv/core and ArkType.
+---
+
+ArkType via [`@arkenv/core`](/docs/reference/core). Engine choice: [Choosing an engine](/docs/core-concepts/standard-schema).
+
+`@arkenv/core` is the default ArkEnv engine. Write ArkType DSL strings or `type()`, use keywords like `number.port`, and keep built-in [coercion](/docs/core-concepts/coercion).
+
+## Install
+
+```package-install
+pnpm add @arkenv/core arktype
+```
+
+## Minimal `env.ts`
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  DATABASE_URL: "string",
+  PORT: "number.port = 3000",
+  DEBUG: "boolean = false",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+Import `{ env } from "./env"` at process boot. ArkEnv throws [`ArkEnvValidationError`](/docs/reference/core) if a value is missing or invalid.
+
+## Coercion
+
+ArkEnv introspects the compiled ArkType schema's JSON Schema and pre-coerces env strings. You do not pass a callback.
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  {
+    PORT: "number.port",
+    DEBUG: "boolean",
+    TAGS: "string[]",
+  },
+  {
+    env: {
+      PORT: "8080",
+      DEBUG: "true",
+      TAGS: "web, api",
+    },
+  },
+);
+
+env.PORT; // hover to see type
+env.DEBUG; // hover to see type
+env.TAGS; // hover to see type
+```
+
+Set `{ coerce: false }` for raw strings and [morphs](/docs/core-concepts/transforms). See [Coercion](/docs/core-concepts/coercion).
+
+## Defaults and optionals
+
+| Pattern                  | Meaning                                    |
+| ------------------------ | ------------------------------------------ |
+| `= 'value'` / `= 3000`   | Default when the key is missing            |
+| `string \| undefined`    | Optional key                               |
+| `emptyAsUndefined: true` | Treat `PORT=` as missing so defaults apply |
+
+Keywords (`string.host`, `number.port`): [keywords](/docs/reference/keywords). Morphs and `type()`: [Defining types](/docs/validating-environment-variables/defining-types).
+
+## Frameworks
+
+Point the host at the same `env.ts`:
+
+- [Next.js](/docs/guides/frameworks/nextjs)
+- [Nuxt](/docs/guides/frameworks/nuxt)
+- [Vite](/docs/guides/frameworks/vite)
+- [Bun](/docs/guides/frameworks/bun)
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/reference/core" title="@arkenv/core" description="ArkType engine package reference." />
+
+  <Card href="/docs/core-concepts/standard-schema" title="Choosing an engine" description="When to use @arkenv/core vs @arkenv/standard." />
+
+  <Card href="/docs/core-concepts/validation" title="Validation" description="Boot and build-time checks with either engine." />
+</Cards>
