@@ -3,6 +3,8 @@
 A tiny deck for comparing the two “S-tier” options.\
 Same feature either way — only the **typing story** differs.
 
+**Shipped story: Contender B (always-`as` / B6).** Contender A (smart types / B5) was evaluated and declined — those snippets do not compile against the current `StandardSchemaV1` callback typing. Keep them here as the comparison that led to B6; copy Contender B (or the Always-`as` section in [`to-json-schema-wiring.md`](./to-json-schema-wiring.md)) into real apps.
+
 Each example is a full file you’d put in a real app (e.g. `src/env.ts`).
 
 ---

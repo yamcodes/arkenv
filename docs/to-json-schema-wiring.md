@@ -192,11 +192,11 @@ toJsonSchema: (schema) =>
 
 C2 under B6 can still tuck the cast into a named helper typed as `GenericSchema` / `ZodMiniType` (wider param than `StandardSchemaV1` is assignable). The cast (or the wide param) lives once; `env.ts` stays a field map.
 
-## S and A usage by use case (B5 branch)
+## S and A usage by use case (B5 archive)
 
-**S** below is C1 on **B5** (what the branch teaches today). **A** is the same typing tucked away: C2 / C3 / C5. If B6 wins, swap the S snippets for the Always-`as` section above; A-tier placement (C2–C5) still applies.
+**S** below is C1 on **B5** (what the B5 branch taught before the B6 decision). **A** is the same typing tucked away: C2 / C3 / C5. B6 won — use the Always-`as` section above for live snippets; A-tier placement (C2–C5) still applies.
 
-Classic Zod never needs a callback. Off-value maps do. Under B5, Zod + Valibot reuses the Valibot helper with no `as`.
+Classic Zod never needs a callback. Off-value maps do. Under B5, Zod + Valibot reused the Valibot helper with no `as`.
 
 ### 1. Classic Zod only
 
