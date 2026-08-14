@@ -53,13 +53,15 @@ Declared weights, so the tier list is not a vibes ranking:
 | **Secondary** | Client isolation | Vite/Bun getters stay free of ArkType and the core barrel? |
 | **Secondary** | Cross-host consistency | Next, Nuxt, Vite, Bun tell the same story? |
 | **Secondary** | Misuse resistance | Does the API invite catching a “don’t catch this” throw? |
+| **Secondary** | Product attribution | Can a reader tell this throw is from ArkEnv from the console’s first line, not only from stack frames? |
 | **Tertiary** | Simplicity | How many names, helpers, and docs pages? |
 | **Tertiary** | DRY | One throw helper / one message across hosts? |
 | **Tertiary** | Composability | Sentry grouping, TS narrowing, existing `instanceof` catches? |
-| **Tertiary** | Migration | How breaking is this on 1.0.0-alpha? |
 | **Tie-break** | Elegance | Few moving parts; no dual meaning; no lies in `.issues` |
 
-Deliberately **not** a goal: making boundary access a supported, recoverable catch path. The product still says fix the access.
+v1.0.0-alpha is the rename window. **Keeping `ArkEnvError` as the class name is not an advantage** — it is leftover vocabulary. Migration cost is noted in prose, not used to rank.
+
+Deliberately **not** a goal: making boundary access a supported, recoverable catch path. If nothing needs to `switch` on that throw, do not add `.code`, a helper, or an access class for it.
 
 Legend for the matrix: **Y** strong, **~** mixed, **N** weak.
 
@@ -81,16 +83,43 @@ Same throw as O1, but teach `error instanceof Error && error.name === "ArkEnvErr
 
 ### O3 — Drop the boundary brand
 
-Boundary stays a plain `Error` with the unified message. `ArkEnvError` is **only** the validation class. Stacks: `Error: Attempted to access…`.
+Boundary stays a plain `Error` (`error.name` remains `"Error"`) with the unified message. The validation class is the only branded name.
 
-### O4 — Semantic split, access is a branded native Error
+What the user actually sees:
 
-Rename the contracts:
+```txt
+Error: Attempted to access server environment variable 'DATABASE_URL' on the client.
+    at Object.get (…generated env module…)
+```
 
-- `ArkEnvValidationError` — today’s class, `.issues`, catchable.
-- Boundary: native `Error` with `error.name = "ArkEnvAccessError"` (or `ArkEnvBoundaryError`).
+How they might still infer “this is ArkEnv”:
 
-No access class. Console name tells you not to look for `.issues`. (External option 1.)
+- The **message** is distinctive (server env key, “on the client”).
+- The **stack** points at ArkEnv-generated getters or the Next/Nuxt proxy.
+
+What they do **not** get: a product token on line 1. DevTools, Sentry title grouping, and “who threw this?” all look like a generic `Error`. That is the original #1558 complaint, minus the doubled `ArkEnv Error:` prefix and the Nuxt wording split.
+
+### O4 — Semantic split, two sibling names
+
+No umbrella type named `ArkEnvError`. Two peer names, both `ArkEnv*`:
+
+- `ArkEnvValidationError` — today’s class, `.issues`, catchable (`instanceof` true).
+- Boundary: native `Error` with `error.name = "ArkEnvAccessError"` (or `ArkEnvBoundaryError`). No access class.
+
+Console:
+
+```txt
+ArkEnvValidationError: Errors found while validating environment variables
+ArkEnvAccessError: Attempted to access server environment variable 'DATABASE_URL' on the client.
+```
+
+`instanceof ArkEnvValidationError` is the catch API. `instanceof ArkEnvAccessError` is not a thing (no class), so the name does not invite a false `instanceof`. (External option 1, full rename.)
+
+### O4-lite — Keep `ArkEnvError`, only rename the boundary
+
+Validation class stays `ArkEnvError`. Boundary `error.name = "ArkEnvAccessError"`.
+
+This reads as a parent/child (`ArkEnvAccessError` “is an” `ArkEnvError`) that is not true in the type system. Rejected as a ranking winner: v1 is the time to drop the umbrella name, not to keep it as “the class people already catch.”
 
 ### O5 — Semantic split, access is a tiny real class
 
@@ -140,32 +169,34 @@ Emit `class ArkEnvError extends Error { ... }` (or a duplicate access class) in 
 
 ## Matrix
 
-| | Surprise | Integrity | Catch honesty | Isolation | Cross-host | Misuse resist | Simple | DRY | Compose | Migrate |
+| | Surprise | Integrity | Catch honesty | Isolation | Cross-host | Misuse resist | Attribution | Simple | DRY | Compose |
 | --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| O0 Status quo | N | N | Y | Y | N | Y | Y | N | N | Y |
-| O1 Current PR | N | N | Y | Y | Y | ~ | Y | Y | ~ | ~ |
-| O2 Dual-catch on `name` | N | N | N | Y | Y | N | ~ | Y | ~ | ~ |
-| O3 Drop brand | Y | Y | Y | Y | Y | Y | Y | Y | N | ~ |
-| O4 Split, branded Error | Y | Y | Y | Y | Y | Y | ~ | Y | ~ | ~ |
-| O5 Split, tiny class | Y | Y | Y | Y | Y | ~ | ~ | Y | Y | N |
-| O6 One class, tiny import | ~ | ~ | ~ | Y | Y | N | Y | Y | Y | N |
-| O7 Widen class | ~ | ~ | ~ | Y | Y | N | ~ | Y | Y | N |
-| O8 Empty `.issues` | ~ | N | N | Y | Y | N | Y | Y | ~ | ~ |
-| O9 `hasInstance` | ~ | N | N | Y | Y | N | ~ | Y | N | ~ |
-| O10 Codes as identity | ~ | ~ | Y | Y | Y | ~ | N | Y | Y | N |
-| O11 Split + codes | Y | Y | Y | Y | Y | Y | N | Y | Y | N |
-| O12 Helper | ~ | N | Y | Y | Y | ~ | ~ | Y | Y | ~ |
-| O13 Core barrel | ~ | ~ | ~ | N | Y | N | Y | Y | ~ | N |
-| O14 Host split | N | N | ~ | Y | N | ~ | N | N | N | ~ |
-| O15 Inlined copy | N | N | N | Y | ~ | N | ~ | ~ | N | ~ |
+| O0 Status quo | N | N | Y | Y | N | Y | ~ | Y | N | N |
+| O1 Current PR | N | N | Y | Y | Y | ~ | Y | Y | Y | ~ |
+| O2 Dual-catch on `name` | N | N | N | Y | Y | N | Y | ~ | Y | ~ |
+| O3 Drop brand | Y | Y | Y | Y | Y | Y | N | Y | Y | N |
+| O4 Sibling names | Y | Y | Y | Y | Y | Y | Y | ~ | Y | ~ |
+| O4-lite Umbrella + access | ~ | N | Y | Y | Y | Y | Y | ~ | Y | ~ |
+| O5 Split, tiny class | Y | Y | Y | Y | Y | ~ | Y | ~ | Y | Y |
+| O6 One class, tiny import | ~ | ~ | ~ | Y | Y | N | Y | Y | Y | Y |
+| O7 Widen class | ~ | ~ | ~ | Y | Y | N | Y | ~ | Y | Y |
+| O8 Empty `.issues` | ~ | N | N | Y | Y | N | Y | Y | Y | ~ |
+| O9 `hasInstance` | ~ | N | N | Y | Y | N | Y | ~ | Y | N |
+| O10 Codes as identity | ~ | ~ | Y | Y | Y | ~ | N | N | Y | Y |
+| O11 Split + codes | Y | Y | Y | Y | Y | Y | Y | N | Y | Y |
+| O12 Helper | ~ | N | Y | Y | Y | ~ | Y | ~ | Y | Y |
+| O13 Core barrel | ~ | ~ | ~ | N | Y | N | Y | Y | Y | ~ |
+| O14 Host split | N | N | ~ | Y | N | ~ | ~ | N | N | N |
+| O15 Inlined copy | N | N | N | Y | ~ | N | Y | ~ | ~ | N |
 
 Notes that the grid cannot say:
 
 - **O1 catch honesty is Y** because the *class* still means validation; the trap is the *name*, scored under surprise / integrity.
+- **O3 attribution is N:** line 1 is `Error:`. Message + stack can still look like ArkEnv if you already know the wording; a new reader does not get a product token.
+- **O4 vs O4-lite:** both split the *boundary* name. O4-lite keeps `ArkEnvError` as an umbrella-shaped word that does not include `ArkEnvAccessError`. Integrity N.
 - **O4 vs O5 misuse:** O4 has no class to `instanceof`, so people are less likely to catch access. O5 makes access catchable, which fights “don’t catch this” unless docs are loud.
 - **O10 surprise is mixed** because consoles still print `Error: message` unless you *also* set `name`. Codes without names do not solve the original DevTools grouping.
 - **O12 catch honesty is Y** for a validation-only guard (`'issues' in error`). An `isArkEnvError` that keys off `name` alone is N (same trap as O2).
-- **Migration is cheap on alpha** in absolute terms; **N** here means “new public names/exports/codes,” not “impossible.”
 
 ---
 
@@ -173,9 +204,11 @@ Notes that the grid cannot say:
 
 **O1 (current PR)** solves the ticket that was filed: one unprefixed message, one stack prefix, Nuxt aligned, Vite/Bun still import-free. It does it by overloading the word `ArkEnvError`. That is a documentation tax forever. Every new agent and every new user will write `instanceof` once.
 
-**O3 (drop brand)** is the integrity-maximal cheap option. `ArkEnvError` stays a class. Boundary looks like a generic `Error`. You lose Sentry/DevTools grouping with validation. You keep isolation and you remove the trap. The original complaint (“I thought this was ArkEnv”) comes back in a milder form.
+**O3 (drop brand)** removes the trap and does not add a second name. The cost is product attribution: the console’s first line is a generic `Error`. You still have a unique message and ArkEnv frames in the stack, but nothing *says* ArkEnv until you read those. If “I need to know this came from ArkEnv” is a requirement, O3 fails it. It is the right answer only if attribution on line 1 is not a requirement.
 
-**O4 (semantic split, branded Error)** is the cleanest answer to least surprise **without** a new client import. Console says `ArkEnvAccessError`. There is no `ArkEnvAccessError` class to import, so `instanceof ArkEnvError` is correctly false and nobody is taught a second class. Cost: rename today’s class to `ArkEnvValidationError` (or keep `ArkEnvError` as the validation class and only rename the *boundary* name — even cheaper, and still splits the *visible* words). Keeping the validation class named `ArkEnvError` and only changing the boundary `name` to `ArkEnvAccessError` is the low-migration form of O4.
+**O4 (sibling names)** is the cleanest answer to least surprise **without** a new client import and **without** an umbrella type. Console says `ArkEnvAccessError`. There is no class by that name, so nobody writes `instanceof ArkEnvAccessError`. Validation is `ArkEnvValidationError`, which matches `instanceof`. Two peers, both `ArkEnv*`. v1 is the window to retire the export name `ArkEnvError`.
+
+**O4-lite** looks cheaper (keep the class name people already catch) and is the worse dictionary: `ArkEnvError` reads as “all ArkEnv errors,” and `ArkEnvAccessError` then looks like a subtype that is not a subtype. Do not pick this to save a rename.
 
 **O5 (tiny access class)** is O4 with a real `instanceof ArkEnvAccessError`. Worth it only if catching access is a use case. The product says it is not. Paying an import + a public class for a throw you should not catch is extra API.
 
@@ -195,39 +228,38 @@ Notes that the grid cannot say:
 
 ## Combinations worth treating as first-class
 
-Not every pair is a new idea. These two are:
+Not every pair is a new idea. This one is:
 
-1. **O4-lite:** Keep the validation class named `ArkEnvError`. Set boundary `error.name = "ArkEnvAccessError"` (or `ArkEnvBoundaryError`). Unify the message (already done). No new package, no client import, no `instanceof` trap on the name people already import.
-2. **O4-lite + `.code`:** Same, plus `error.code = "ERR_ARKENV_BOUNDARY"` for the few callers who want a stable programmatic hook without pretending it is the class.
+1. **O4 + deprecated alias:** export `ArkEnvError` as a type/value alias of `ArkEnvValidationError` for one prerelease, then delete it. Only if a concrete caller already catches `ArkEnvError` in the wild. Default is a clean break — no alias, no umbrella.
 
-O4-lite is scored like O4, with **better migration** (no rename of the validation class) and **slightly weaker integrity** (`ArkEnvError` still sounds like “all ArkEnv errors” in English). That trade is probably correct on alpha.
+Do **not** add `.code` or an access class unless a real switch/instanceof use case shows up. We do not have one.
 
 ---
 
 ## Tier list
 
-Ranked for the problem as stated above (brand + catch trap + isolation), not for “ship the smallest diff to close #1558.”
+Ranked for the problem as stated above (brand + catch trap + isolation + attribution), not for “smallest diff.”
 
 ### S
 
-- **O4-lite** — validation stays `ArkEnvError`; boundary prints `ArkEnvAccessError:` on a native `Error`. Least surprise for the class people already import. Isolation unchanged. Don’t-catch is in the name.
-- **O4** — rename the class to `ArkEnvValidationError` as well. Cleaner dictionary, more churn. Prefer if you are willing to break the validation export name in 1.0.
+- **O4** — `ArkEnvValidationError` (class) and `ArkEnvAccessError` (native `Error` name). Sibling names, no umbrella type. Isolation unchanged. Don’t-catch is in the access name. v1 is the time to rename the class.
 
 ### A
 
-- **O3** — drop the boundary brand. Honest, a bit plain, original grouping complaint returns.
-- **O11 / O4-lite+codes** — if you actually want a supported programmatic branch. Otherwise the `.code` is unused API.
-- **O5** — only if catching access is promoted to a real use case (tests, a client overlay). Otherwise the class is bait.
+- **O5** — only if catching access becomes a real use case. It is not one today; the class would be bait.
+- **O11** — only if something needs to `switch`. It does not; extra API.
 
 ### B
 
-- **O1 (current PR)** — right fix for the *string* ticket; wrong name for the *catch* ticket. Acceptable as a stepping stone, not as the identity story.
-- **O12 (validation-only helper)** — good extra on top of O4/O1; not a substitute for splitting the name. Do not add `isArkEnvError` keyed only on `name`.
-- **O6 / O7** — coherent if the product decision is “one catch bucket.” That decision has not been made, and it fights “don’t catch boundary.”
+- **O1 (current PR)** — right fix for the *string* ticket; same name on two different contracts.
+- **O3** — honest catch API, but line 1 is `Error:` so attribution is only message + stack.
+- **O4-lite** — avoids the `instanceof` trap and reintroduces an umbrella word that does not include the access throw.
+- **O12 (validation-only helper)** — extra on top of O4; not a substitute. No name-keyed `isArkEnvError`.
+- **O6 / O7** — coherent only if the product is “one catch bucket.” That fights “don’t catch boundary.”
 
 ### C
 
-- **O2** — documents the trap (`check name, not instanceof`) instead of removing it.
+- **O2** — documents the trap instead of removing it.
 - **O10 alone** — codes without a distinct console `name` do not fix what users see.
 
 ### D
@@ -246,8 +278,8 @@ Ranked for the problem as stated above (brand + catch trap + isolation), not for
 
 ## Recommendation (not a decision)
 
-Ship **O4-lite**: keep `ArkEnvError` as the validation class; stop putting that name on boundary throws; use `ArkEnvAccessError` (or `ArkEnvBoundaryError`) as `error.name` on the existing native `Error`; keep the unified unprefixed message and the import-free Vite/Bun getters.
+Ship **O4**: rename the validation class to `ArkEnvValidationError`; set boundary `error.name = "ArkEnvAccessError"` on the existing native `Error`; keep the unified unprefixed message and import-free Vite/Bun getters. Do not keep an `ArkEnvError` export unless a deprecation alias is proven necessary.
 
-That reuses almost all of PR #1567 (message, helper, tests, host alignment) and spends the rename on the *boundary* brand instead of overloading the *class* brand.
+Do not add `.code` or an access class. There is no switch use case.
 
-Add `.code` or a tiny access class only if a concrete caller needs to `switch` or `instanceof` the access throw. The playground should log the `Error` (so the console brand is visible) and should not teach `instanceof ArkEnvError` on that button.
+The playground should `console.error` the throw (so the access brand is visible) and must not teach `instanceof ArkEnvValidationError` on that button.
