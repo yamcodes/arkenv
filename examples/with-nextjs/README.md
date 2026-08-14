@@ -51,7 +51,11 @@ export default function Page() {
 
 ### Client Components
 
-You can access client and shared variables, but accessing server variables will throw a runtime error:
+You can access client and shared variables. Reading a server-only key throws a native `Error` branded as `ArkEnvError` (so the stack matches validation) that is **not** an `ArkEnvError` instance:
+
+```txt
+ArkEnvError: Attempted to access server environment variable 'DATABASE_URL' on the client.
+```
 
 ```tsx title="app/client-component.tsx"
 "use client";
@@ -60,10 +64,12 @@ import { env } from "../env";
 
 export default function ClientComponent() {
   const api = env.NEXT_PUBLIC_API_URL; // ✅ Allowed (string)
-  const dbUrl = env.DATABASE_URL; // ❌ Throws runtime error on client!
+  const dbUrl = env.DATABASE_URL; // ❌ Throws on the client
   return <div>...</div>;
 }
 ```
+
+Run `pnpm dev`, open the app, and click **Try accessing DATABASE_URL (Secret)** to inspect `error.name`, `error.constructor.name`, and `instanceof ArkEnvError`.
 
 ## Running the Example
 
