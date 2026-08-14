@@ -26,43 +26,43 @@ Two layers of solution exist. They compose.
 
 ## Metrics
 
-| Metric | Question |
-| --- | --- |
-| Honesty | Do types match runtime? Does Zod show up if it never reaches the callback? |
-| Tax fairness | Does adding library A force assertions for library B? |
-| Simplicity | Can a first Valibot `env.ts` be copied without a helper file or new export? |
-| DRY / tuck-away | Can the schema map stay a field map? |
-| Composability | Mixed maps, extra `arkenv` options, Vite/Bun `/standard`, a third off-value library later |
-| Vendor neutrality | No Valibot/Mini peers or subpaths on `@arkenv/standard` |
-| Footguns | `typeMode: "ignore"`, `any` unsafety, silent skip vs throw |
-| Elegance | Feels like the library, not a workaround the types failed to express |
-| Teachability | Docs can show it without a dissertation |
-| Maintenance hell | Does ArkEnv own a versioned runtime artifact that must track Valibot/Mini/host APIs forever? |
+| Metric            | Question                                                                                     |
+| ----------------- | -------------------------------------------------------------------------------------------- |
+| Honesty           | Do types match runtime? Does Zod show up if it never reaches the callback?                   |
+| Tax fairness      | Does adding library A force assertions for library B?                                        |
+| Simplicity        | Can a first Valibot `env.ts` be copied without a helper file or new export?                  |
+| DRY / tuck-away   | Can the schema map stay a field map?                                                         |
+| Composability     | Mixed maps, extra `arkenv` options, Vite/Bun `/standard`, a third off-value library later    |
+| Vendor neutrality | No Valibot/Mini peers or subpaths on `@arkenv/standard`                                      |
+| Footguns          | `typeMode: "ignore"`, `any` unsafety, silent skip vs throw                                   |
+| Elegance          | Feels like the library, not a workaround the types failed to express                         |
+| Teachability      | Docs can show it without a dissertation                                                      |
+| Maintenance hell  | Does ArkEnv own a versioned runtime artifact that must track Valibot/Mini/host APIs forever? |
 
 ## Inventory
 
 ### A. How JSON Schema gets into coercion
 
-| # | Solution | Notes |
-| --- | --- | --- |
-| A1 | Per-key `toStandardJsonSchema(...)` | Original ugly path. Issue: not the happy path. |
-| A2 | Skip ArkEnv coercion, use pipes/transforms | Pre-hatch workaround. |
-| A3 | Bare `{ toJsonSchema }` | Valibot default `typeMode: "ignore"` silently mis-coerces pipes. Locked rejected. |
-| A4 | Optional-peer / `vendor === "valibot"` auto-detect | Issue: out of scope. Magic; Mini also reports vendor `"zod"`. |
-| A5 | `@arkenv/standard/valibot` or `@arkenv/valibot` | Issue: out of scope. Splits the engine. |
-| A6 | Optional `toJsonSchema` callback (fallback after probes) | Shipped. Vendor-neutral. Hybrids work because Zod never calls it. |
+| #  | Solution                                                 | Notes                                                                             |
+| -- | -------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| A1 | Per-key `toStandardJsonSchema(...)`                      | Original ugly path. Issue: not the happy path.                                    |
+| A2 | Skip ArkEnv coercion, use pipes/transforms               | Pre-hatch workaround.                                                             |
+| A3 | Bare `{ toJsonSchema }`                                  | Valibot default `typeMode: "ignore"` silently mis-coerces pipes. Locked rejected. |
+| A4 | Optional-peer / `vendor === "valibot"` auto-detect       | Issue: out of scope. Magic; Mini also reports vendor `"zod"`.                     |
+| A5 | `@arkenv/standard/valibot` or `@arkenv/valibot`          | Issue: out of scope. Splits the engine.                                           |
+| A6 | Optional `toJsonSchema` callback (fallback after probes) | Shipped. Vendor-neutral. Hybrids work because Zod never calls it.                 |
 
 A6 is the product. The rest of this note is how to type and place it.
 
 ### B. How the callback is typed
 
-| # | Solution | Valibot-only | Zod + Valibot | Valibot + Mini |
-| --- | --- | --- | --- | --- |
-| B1 | `any` | No casts; pass `schema` to anything | Same | Same |
-| B2 | `unknown` | Need annotation or casts | Same | Same |
-| B3 | `StandardSchemaV1` | Always `as GenericSchema` | Same tax | Casts + vendor switch |
-| B4 | `T[keyof T]` | No cast | **Cast appears when you add Zod** | Casts + vendor switch |
-| B5 | `ToJsonSchemaInput<T>` (exclude on-value JSON Schema) | No cast | **No cast** | Casts + vendor switch (honest: both reach the callback) |
+| #  | Solution                                              | Valibot-only                        | Zod + Valibot                     | Valibot + Mini                                          |
+| -- | ----------------------------------------------------- | ----------------------------------- | --------------------------------- | ------------------------------------------------------- |
+| B1 | `any`                                                 | No casts; pass `schema` to anything | Same                              | Same                                                    |
+| B2 | `unknown`                                             | Need annotation or casts            | Same                              | Same                                                    |
+| B3 | `StandardSchemaV1`                                    | Always `as GenericSchema`           | Same tax                          | Casts + vendor switch                                   |
+| B4 | `T[keyof T]`                                          | No cast                             | **Cast appears when you add Zod** | Casts + vendor switch                                   |
+| B5 | `ToJsonSchemaInput<T>` (exclude on-value JSON Schema) | No cast                             | **No cast**                       | Casts + vendor switch (honest: both reach the callback) |
 
 B5 is what is on the branch now.
 
@@ -70,12 +70,12 @@ B5 is what is on the branch now.
 
 These assume A6 + a decent B (ideally B5).
 
-| # | Solution |
-| --- | --- |
-| C1 | Inline wrapper at `arkenv(schema, { toJsonSchema })` |
-| C2 | Named user-land function (`valibotJsonSchema` / mix fallback) |
-| C3 | Generic `createEnv(schema, config?)` factory that bakes the converter in |
-| C4 | Export helpers from `@arkenv/standard` (`valibotJsonSchema()`, maybe Mini / mix) |
+| #  | Solution                                                                                                            |
+| -- | ------------------------------------------------------------------------------------------------------------------- |
+| C1 | Inline wrapper at `arkenv(schema, { toJsonSchema })`                                                                |
+| C2 | Named user-land function (`valibotJsonSchema` / mix fallback)                                                       |
+| C3 | Generic `createEnv(schema, config?)` factory that bakes the converter in                                            |
+| C4 | Export helpers from `@arkenv/standard` (`valibotJsonSchema()`, maybe Mini / mix)                                    |
 | C5 | CLI recipe, same *intent* as hosting presets: emit source into the project, do not publish a runtime helper package |
 
 ## Hosting presets as the analogue (C5)
