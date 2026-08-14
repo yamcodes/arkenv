@@ -1,6 +1,6 @@
 "use client";
 
-import { ArkEnvError } from "@arkenv/core";
+import { ArkEnvValidationError } from "@arkenv/core";
 import { useState } from "react";
 import { env } from "@/env";
 
@@ -9,7 +9,7 @@ type BoundaryThrowInspection = {
 	name: string;
 	constructorName: string;
 	isNativeError: boolean;
-	isArkEnvErrorInstance: boolean;
+	isArkEnvValidationErrorInstance: boolean;
 };
 
 function inspectBoundaryThrow(error: unknown): BoundaryThrowInspection {
@@ -19,7 +19,7 @@ function inspectBoundaryThrow(error: unknown): BoundaryThrowInspection {
 			name: typeof error,
 			constructorName: "unknown",
 			isNativeError: false,
-			isArkEnvErrorInstance: false,
+			isArkEnvValidationErrorInstance: false,
 		};
 	}
 
@@ -28,7 +28,7 @@ function inspectBoundaryThrow(error: unknown): BoundaryThrowInspection {
 		name: error.name,
 		constructorName: error.constructor.name,
 		isNativeError: true,
-		isArkEnvErrorInstance: error instanceof ArkEnvError,
+		isArkEnvValidationErrorInstance: error instanceof ArkEnvValidationError,
 	};
 }
 
@@ -134,18 +134,19 @@ export default function ClientComponent() {
 								<td style={cellStyle}>{String(inspection.isNativeError)}</td>
 							</tr>
 							<tr style={rowStyle}>
-								<th style={cellStyle}>error instanceof ArkEnvError</th>
+								<th style={cellStyle}>error instanceof ArkEnvValidationError</th>
 								<td style={cellStyle}>
-									{String(inspection.isArkEnvErrorInstance)}
+									{String(inspection.isArkEnvValidationErrorInstance)}
 								</td>
 							</tr>
 						</tbody>
 					</table>
 					<p style={{ margin: "12px 0 0 0", fontSize: "13px" }}>
-						The same throw is in the browser console. The stack looks like a
-						validation error. <code>instanceof ArkEnvError</code> is false
-						because this is a native <code>Error</code> with a branded name —
-						not a schema failure, and there are no <code>.issues</code>.
+						The same throw is in the browser console as{" "}
+						<code>ArkEnvAccessError:</code>.{" "}
+						<code>instanceof ArkEnvValidationError</code> is false because this
+						is a native <code>Error</code> with a sibling name — not a schema
+						failure, and there are no <code>.issues</code>.
 					</p>
 				</div>
 			)}

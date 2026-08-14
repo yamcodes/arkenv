@@ -13,9 +13,9 @@ describe("generateClientEnvModule", () => {
 		expect(code).toContain(
 			"Attempted to access server environment variable 'DATABASE_URL' on the client",
 		);
-		expect(code).toContain('error.name = "ArkEnvError"');
+		expect(code).toContain('error.name = "ArkEnvAccessError"');
 		expect(code).not.toContain("ArkEnv Error:");
-		expect(code).not.toMatch(/import\b.*ArkEnvError/);
+		expect(code).not.toMatch(/import\b.*ArkEnvValidationError/);
 		expect(code).not.toContain("arktype");
 	});
 });

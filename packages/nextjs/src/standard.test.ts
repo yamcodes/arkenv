@@ -1,4 +1,4 @@
-import { ArkEnvError } from "@arkenv/core";
+import { ArkEnvValidationError } from "@arkenv/core";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
@@ -84,8 +84,8 @@ describe("Next.js Standard Mode Flat Layout", () => {
 				expect.fail("Expected boundary access error");
 			} catch (error) {
 				expect(error).toBeInstanceOf(Error);
-				expect(error).not.toBeInstanceOf(ArkEnvError);
-				expect((error as Error).name).toBe("ArkEnvError");
+				expect(error).not.toBeInstanceOf(ArkEnvValidationError);
+				expect((error as Error).name).toBe("ArkEnvAccessError");
 				expect((error as Error).message).toBe(
 					"Attempted to access server environment variable 'DATABASE_URL' on the client.",
 				);

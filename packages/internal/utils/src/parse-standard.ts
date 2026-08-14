@@ -1,6 +1,6 @@
 import type { Dict, StandardSchemaV1 } from "@repo/types";
 import { coerceEnvironment } from "./coercion";
-import { ArkEnvError, type EnvIssue, type EnvIssueMeta } from "./core";
+import { ArkEnvValidationError, type EnvIssue, type EnvIssueMeta } from "./core";
 import {
 	buildEnvIssue,
 	formatStandardIssueMessage,
@@ -107,7 +107,7 @@ export type ParseStandardConfig = {
  * @param def An object mapping environment variable keys to Standard Schema 1.0 validators
  * @param config Parsing options, including environment source, undeclared key handling, and coercion config
  * @returns The parsed and validated environment variables
- * @throws An ArkEnvError if validation fails
+ * @throws An ArkEnvValidationError if validation fails
  */
 export function parseStandard(
 	def: Record<string, unknown>,
@@ -156,7 +156,7 @@ export function parseStandard(
 			typeof validator !== "object" ||
 			!("~standard" in validator)
 		) {
-			throw new ArkEnvError([
+			throw new ArkEnvValidationError([
 				buildEnvIssue(
 					key,
 					`Invalid schema: expected a Standard Schema 1.0 validator (e.g. Zod, Valibot) in 'standard' mode.`,
@@ -168,7 +168,7 @@ export function parseStandard(
 		const result = (validator as StandardSchemaV1)["~standard"].validate(value);
 
 		if (result instanceof Promise) {
-			throw new ArkEnvError([
+			throw new ArkEnvValidationError([
 				buildEnvIssue(
 					key,
 					"Async validation is not supported. ArkEnv is synchronous.",
@@ -247,7 +247,7 @@ export function parseStandard(
 	}
 
 	if (errors.length > 0) {
-		throw new ArkEnvError(errors);
+		throw new ArkEnvValidationError(errors);
 	}
 
 	return output;

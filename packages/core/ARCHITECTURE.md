@@ -8,14 +8,14 @@ ArkEnv ships three public entry points from a single npm package:
 | -------- | ------------------------------------------- | ----------------- | ----------------------------------------------- |
 | Main     | `import arkenv from "arkenv"`               | Yes (static)      | ArkType-first `arkenv` + `type` helper          |
 | Standard | `import arkenv from "arkenv/standard"`      | No                | ArkType-free `arkenv` for Standard Schema users |
-| Core     | `import { ArkEnvError } from "arkenv/core"` | No                | Entry-agnostic primitives (errors, types)       |
+| Core     | `import { ArkEnvValidationError } from "arkenv/core"` | No                | Entry-agnostic primitives (errors, types)       |
 
 The main entry re-exports `type` from `src/arktype/index.ts`, which statically imports ArkType. This is intentional: the main entry is the ArkType-first surface and its dependency on ArkType is explicit. Users who need an ArkType-free import use `arkenv/standard` or `arkenv/core`.
 
 ## Ownership rules
 
 - **Entry-specific exports** belong in the entry (`src/index.ts` for ArkType, `src/standard.ts` for Standard Schema).
-- **Entry-agnostic exports** (e.g. `ArkEnvError`) belong in `arkenv/core` (`src/core.ts`).
+- **Entry-agnostic exports** (e.g. `ArkEnvValidationError`) belong in `arkenv/core` (`src/core.ts`).
 - **Internal modules** (`src/guards.ts`, `src/parse-standard.ts`, `src/arktype/`) are not public entries.
 
 ## Single-implementation invariant
@@ -31,7 +31,7 @@ If ArkType-specific behavior is needed, it belongs in `src/arktype/index.ts#pars
 Splitting `arkenv/standard` into a separate npm package (`arkenv-standard`) would:
 
 - Require separate versioning and release coordination
-- Duplicate shared code (`ArkEnvError`, `parseStandard`, `guards.ts`)
+- Duplicate shared code (`ArkEnvValidationError`, `parseStandard`, `guards.ts`)
 - Fragment the documentation surface
 
 The sub-path export approach (`arkenv/standard`) provides the same module isolation guarantee (disjoint module graph) at the bundler level, without the operational overhead of a separate package. Tree-shaking is NOT relied upon - the isolation is structural: `src/standard.ts` has no imports of `src/arkenv.ts` or any ArkType module.

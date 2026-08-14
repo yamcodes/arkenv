@@ -140,7 +140,7 @@ export function SecureBoundaryView({
 								Uncaught Error:
 							</div>
 							<div className="font-semibold text-rose-100 text-sm sm:text-base leading-snug">
-								ArkEnvError: Cannot access server-only key
+								ArkEnvAccessError: Cannot access server-only key
 								&quot;DATABASE_URL&quot; on client.
 							</div>
 						</div>

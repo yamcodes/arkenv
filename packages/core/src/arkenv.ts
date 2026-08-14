@@ -5,7 +5,7 @@ import type {
 	SchemaShape,
 	StandardSchemaV1,
 } from "@repo/types";
-import { ArkEnvError, type SafeArkEnvResult, safeExecute } from "@repo/utils";
+import { ArkEnvValidationError, type SafeArkEnvResult, safeExecute } from "@repo/utils";
 import type { type as at, distill } from "arktype";
 import { parse } from "./arktype";
 
@@ -116,7 +116,7 @@ export type ArkenvOutput<T extends SchemaShape, D> =
  * @param def The schema definition
  * @param config The evaluation configuration
  * @returns The parsed environment variables, or a SafeArkEnvResult if `{ safe: true }` is configured
- * @throws An {@link ArkEnvError | error} if the environment variables are invalid and `safe` is not enabled
+ * @throws An {@link ArkEnvValidationError | error} if the environment variables are invalid and `safe` is not enabled
  */
 export function arkenv<const T extends SchemaShape>(
 	def: EnvSchema<T>,

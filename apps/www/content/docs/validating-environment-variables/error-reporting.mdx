@@ -7,7 +7,7 @@ ArkEnv throws at the call site when a required variable is missing or a value fa
 
 ## What you see in the console
 
-Invalid input raises `ArkEnvError`. The message lists every failing path:
+Invalid input raises `ArkEnvValidationError`. The message lists every failing path:
 
 ```txt
 Errors found while validating environment variables
@@ -17,10 +17,10 @@ Errors found while validating environment variables
 
 Paths are highlighted; the header is red when ANSI color is available.
 
-Most apps let that throw stop the process. You do not need a `try/catch` around every `arkenv()` call. Catch only when you want to inspect `ArkEnvError` yourself (custom boot UI, tests, or a wrapper):
+Most apps let that throw stop the process. You do not need a `try/catch` around every `arkenv()` call. Catch only when you want to inspect `ArkEnvValidationError` yourself (custom boot UI, tests, or a wrapper):
 
 ```ts title="./boot.ts"
-import arkenv, { ArkEnvError } from "@arkenv/core";
+import arkenv, { ArkEnvValidationError } from "@arkenv/core";
 
 try {
   arkenv(
@@ -31,7 +31,7 @@ try {
     { env: { PORT: "abc" } },
   );
 } catch (error) {
-  if (error instanceof ArkEnvError) {
+  if (error instanceof ArkEnvValidationError) {
     console.error(error.message);
     console.error(error.issues);
   }
@@ -88,13 +88,13 @@ Framework integrations do not expose `safe`. Invalid env still fails the build o
 
 ## Framework boundary errors
 
-Reading a server-only key from client code is a misuse, not a schema failure. The throw is a native `Error` (so Vite/Bun client modules never import the `ArkEnvError` class) with `name = "ArkEnvError"` so the stack matches validation:
+Reading a server-only key from client code is a misuse, not a schema failure. The throw is a native `Error` (so Vite/Bun client modules never import `ArkEnvValidationError`) with `name = "ArkEnvAccessError"`:
 
 ```txt
-ArkEnvError: Attempted to access server environment variable 'DATABASE_URL' on the client.
+ArkEnvAccessError: Attempted to access server environment variable 'DATABASE_URL' on the client.
 ```
 
-Do not catch this. Fix the access. `instanceof ArkEnvError` is for validation only — it is `false` here because there are no `issues`.
+Do not catch this. Fix the access. `instanceof ArkEnvValidationError` is for schema failures only — it is `false` here because there are no `issues`.
 
 Next.js, Nuxt, Vite, and Bun each enforce the boundary (runtime proxy, build-time import bans, or both). See [client vs. server](/docs/validating-environment-variables/client-vs-server).
 

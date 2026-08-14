@@ -81,7 +81,7 @@ export function TypeSafetyShowcase() {
 							</span>
 						</div>
 						<div className="font-semibold text-rose-100 text-xs sm:text-sm">
-							ArkEnvError: Errors found while validating environment variables
+							ArkEnvValidationError: Errors found while validating environment variables
 						</div>
 						<div className="text-zinc-300 text-xs leading-relaxed space-y-1.5 pl-2 border-l-2 border-rose-500/40">
 							<div>

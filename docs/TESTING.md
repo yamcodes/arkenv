@@ -79,7 +79,7 @@ This ensures the library works in real scenarios while keeping examples clean an
 **Examples:**
 
 - `custom-types.integration.test.ts` - Tests `arkenv` + `scope` + custom types working together
-- `error.integration.test.ts` - Tests error propagation through `arkenv` + `formatErrors` + `ArkEnvError`
+- `error.integration.test.ts` - Tests error propagation through `arkenv` + `formatErrors` + `ArkEnvValidationError`
 - `copy-button.integration.test.tsx` - Tests `CopyButton` + `useToast` + `Toaster` as a complete flow
 - `heading.integration.test.tsx` - Tests `Heading` + `useIsMobile` responding to viewport changes
 - `toaster.integration.test.tsx` - Tests `useToast` hook + `Toaster` component state synchronization

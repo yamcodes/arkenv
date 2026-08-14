@@ -1,5 +1,5 @@
 import {
-	ARKENV_ERROR_NAME,
+	ARKENV_ACCESS_ERROR_NAME,
 	boundaryAccessErrorMessage,
 } from "@repo/utils/boundary-access-error";
 
@@ -29,7 +29,7 @@ export function generateClientEnvModule(
 		lines.push(
 			`  get [${JSON.stringify(key)}]() {`,
 			`    const error = new Error(${JSON.stringify(message)});`,
-			`    error.name = ${JSON.stringify(ARKENV_ERROR_NAME)};`,
+			`    error.name = ${JSON.stringify(ARKENV_ACCESS_ERROR_NAME)};`,
 			"    throw error;",
 			"  },",
 		);

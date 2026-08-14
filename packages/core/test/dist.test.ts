@@ -11,8 +11,8 @@ let defaultArkenv: any;
 let namedArkenv: any;
 let defaultStandardArkenv: any;
 let namedStandardArkenv: any;
-let ArkEnvError: any;
-let standardArkEnvError: any;
+let ArkEnvValidationError: any;
+let standardArkEnvValidationError: any;
 
 beforeAll(async () => {
 	const distDir = join(__dirname, "../dist");
@@ -45,17 +45,17 @@ beforeAll(async () => {
 	defaultStandardArkenv = standard.default;
 	namedStandardArkenv = standard.arkenv;
 
-	ArkEnvError = index.ArkEnvError;
-	standardArkEnvError = standard.ArkEnvError;
+	ArkEnvValidationError = index.ArkEnvValidationError;
+	standardArkEnvValidationError = standard.ArkEnvValidationError;
 });
 
 describe("Distribution Built Outputs", () => {
 	describe("Core Tier (arkenv/core)", () => {
-		it("should export ArkEnvError and format validation issues correctly", () => {
-			const error = new ArkEnvError([
+		it("should export ArkEnvValidationError and format validation issues correctly", () => {
+			const error = new ArkEnvValidationError([
 				{ path: "PORT", message: "must be a valid port number" },
 			]);
-			expect(error.name).toBe("ArkEnvError");
+			expect(error.name).toBe("ArkEnvValidationError");
 			expect(error.message).toContain("PORT");
 			expect(error.message).toContain("must be a valid port number");
 		});
@@ -106,7 +106,7 @@ describe("Distribution Built Outputs", () => {
 			expect(env.HOST).toBe("localhost");
 		});
 
-		it("should throw ArkEnvError when validation fails", () => {
+		it("should throw ArkEnvValidationError when validation fails", () => {
 			vi.stubEnv("PORT", "invalid-port");
 
 			const portValidator = {
@@ -126,7 +126,7 @@ describe("Distribution Built Outputs", () => {
 				namedStandardArkenv({
 					PORT: portValidator as any,
 				});
-			}).toThrow(standardArkEnvError);
+			}).toThrow(standardArkEnvValidationError);
 		});
 	});
 
@@ -150,14 +150,14 @@ describe("Distribution Built Outputs", () => {
 			expect(env.HOST).toBe("127.0.0.1");
 		});
 
-		it("should throw ArkEnvError for invalid environment inputs", () => {
+		it("should throw ArkEnvValidationError for invalid environment inputs", () => {
 			vi.stubEnv("PORT", "99999"); // Out of range for a port
 
 			expect(() => {
 				defaultArkenv({
 					PORT: "number.port",
 				});
-			}).toThrow(ArkEnvError);
+			}).toThrow(ArkEnvValidationError);
 		});
 	});
 });

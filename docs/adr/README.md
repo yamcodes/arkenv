@@ -33,7 +33,7 @@ These groups share a theme. They remain separate ADRs (no nesting or history rew
 
 | Cluster                            | Slugs                                                                                                                                                                                               |
 | :--------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Framework server/client boundaries | `nextjs-runtime-env`, `nextjs-conditional-exports-boundary`, `nuxt-vite-compile-time-boundary`, `flat-layout-codegen-type-strategy`, `framework-subpath-exports`, `strict-layout-complexity-budget` |
+| Framework server/client boundaries | `nextjs-runtime-env`, `nextjs-conditional-exports-boundary`, `nuxt-vite-compile-time-boundary`, `flat-layout-codegen-type-strategy`, `framework-subpath-exports`, `strict-layout-complexity-budget`, `sibling-error-names` |
 | Packaging & module graph           | `export-surface-tiers`, `standard-mode-packaging-strategy`, `bundle-isolation-over-dryness`, `runtime-shared-logic-strategy`, `shared-build-package`                                                |
 | CLI / scaffold IR                  | `cli-hosting-preset-field-metadata`, `dotenv-linter-custom-parser-strategy`                                                                                                                         |
 | www docs chrome                    | `drill-in-sidebar`, `site-nav-glass-chrome`                                                                                                                                                         |

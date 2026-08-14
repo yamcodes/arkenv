@@ -1,7 +1,7 @@
 import { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
 import {
-	ArkEnvError,
+	ArkEnvValidationError,
 	buildEnvIssue,
 	coerceEnvironment,
 	type EnvIssue,
@@ -102,7 +102,7 @@ export type { distill };
 
 /**
  * Convert ArkType's `ArkErrors` (keyed by path) into a flat `EnvIssue[]`
- * suitable for `ArkEnvError`.
+ * suitable for `ArkEnvValidationError`.
  *
  * @param errors The ArkType errors object to convert
  * @param config Optional ArkEnvConfig to read debugSecrets options
@@ -160,7 +160,7 @@ function arkErrorsToIssues(
  * - undeclared key handling
  *
  * On success, returns the validated environment object.
- * On failure, throws an {@link ArkEnvError}.
+ * On failure, throws an {@link ArkEnvValidationError}.
  *
  * This is a low-level utility used internally by ArkEnv.
  * Most users should prefer the default `arkenv()` export.
@@ -168,7 +168,7 @@ function arkErrorsToIssues(
  * @param def The ArkType schema definition to validate against
  * @param config The configuration object for parsing and coercion
  * @returns The parsed and validated environment variables
- * @throws {@link ArkEnvError} if validation fails
+ * @throws {@link ArkEnvValidationError} if validation fails
  *
  * @internal
  */
@@ -212,7 +212,7 @@ export function parse<const T extends SchemaShape>(
 
 	// In ArkType 2.x, calling a type as a function returns the validated data or ArkErrors.
 	if (validatedEnv instanceof ArkErrors) {
-		throw new ArkEnvError(arkErrorsToIssues(validatedEnv, config));
+		throw new ArkEnvValidationError(arkErrorsToIssues(validatedEnv, config));
 	}
 
 	return validatedEnv;

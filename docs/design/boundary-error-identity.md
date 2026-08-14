@@ -1,8 +1,6 @@
 # Boundary vs validation errors: identity options
 
-Status: **exploring** (not an ADR). Written against [#1558](https://github.com/yamcodes/arkenv/issues/1558) and PR #1567, after poking the “client bundles cannot import a class” assumption.
-
-This is a ranking of designs, not a decision. An ADR belongs here only after one option is picked.
+Status: **decided** — sibling names. See [ADR 0024](../adr/0024-sibling-error-names.md). The catalog below is the evaluation that led there.
 
 ## The problem
 
@@ -276,10 +274,6 @@ Ranked for the problem as stated above (brand + catch trap + isolation + attribu
 
 ---
 
-## Recommendation (not a decision)
+## Recommendation
 
-Ship **O4**: rename the validation class to `ArkEnvValidationError`; set boundary `error.name = "ArkEnvAccessError"` on the existing native `Error`; keep the unified unprefixed message and import-free Vite/Bun getters. Do not keep an `ArkEnvError` export unless a deprecation alias is proven necessary.
-
-Do not add `.code` or an access class. There is no switch use case.
-
-The playground should `console.error` the throw (so the access brand is visible) and must not teach `instanceof ArkEnvValidationError` on that button.
+**Done.** ADR 0024 records the choice: `ArkEnvValidationError` (class) and `ArkEnvAccessError` (`error.name` on a native `Error`). No alias, no helper, no access class.

@@ -51,10 +51,10 @@ export default function Page() {
 
 ### Client Components
 
-You can access client and shared variables. Reading a server-only key throws a native `Error` branded as `ArkEnvError` (so the stack matches validation) that is **not** an `ArkEnvError` instance:
+You can access client and shared variables. Reading a server-only key throws a native `Error` named `ArkEnvAccessError` that is **not** an `ArkEnvValidationError` instance:
 
 ```txt
-ArkEnvError: Attempted to access server environment variable 'DATABASE_URL' on the client.
+ArkEnvAccessError: Attempted to access server environment variable 'DATABASE_URL' on the client.
 ```
 
 ```tsx title="app/client-component.tsx"
@@ -69,7 +69,7 @@ export default function ClientComponent() {
 }
 ```
 
-Run `pnpm dev`, open the app, and click **Try accessing DATABASE_URL (Secret)**. The panel inspects `error.name`, `error.constructor.name`, and `instanceof ArkEnvError`; the same throw is logged to the browser console.
+Run `pnpm dev`, open the app, and click **Try accessing DATABASE_URL (Secret)**. The panel inspects `error.name`, `error.constructor.name`, and `instanceof ArkEnvValidationError`; the same throw is logged to the browser console.
 
 ## Running the Example
 

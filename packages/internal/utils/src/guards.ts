@@ -1,4 +1,4 @@
-import { ArkEnvError } from "./core";
+import { ArkEnvValidationError } from "./core";
 
 /**
  * Throws if the given value is a string (ArkType DSL) in standard mode.
@@ -6,7 +6,7 @@ import { ArkEnvError } from "./core";
  */
 export function assertNotArkTypeDsl(key: string, value: unknown): void {
 	if (typeof value === "string") {
-		throw new ArkEnvError([
+		throw new ArkEnvValidationError([
 			{
 				path: key,
 				message:
@@ -35,7 +35,7 @@ export function assertStandardSchema(key: string, value: unknown): void {
 		!("validate" in std) ||
 		typeof (std as Record<string, unknown>).validate !== "function"
 	) {
-		throw new ArkEnvError([
+		throw new ArkEnvValidationError([
 			{
 				path: key,
 				message:
@@ -54,7 +54,7 @@ export function assertStandardSchemaMap(
 	def: unknown,
 ): asserts def is Record<string, unknown> {
 	if (!def || typeof def !== "object" || Array.isArray(def)) {
-		throw new ArkEnvError([
+		throw new ArkEnvValidationError([
 			{
 				path: "",
 				message:
