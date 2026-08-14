@@ -1,111 +1,73 @@
-# Changeset scenarios & examples
+# Changeset scenarios
 
-## Bug fix
+Copy these shapes. Swap the package name and snippet for the change in front of you.
 
-```markdown
----
-"arkenv": patch
----
-
-#### Fix category parent reference not being set during deployment
-
-Categories with parent slugs now correctly link to their parent categories during the deploy operation.
-```
-
-## New feature (non-breaking, v0)
+## Bug fix (`patch`)
 
 ````markdown
 ---
-"arkenv": patch
+"@arkenv/nuxt": patch
 ---
 
-#### Add `arkenv` for type-safe environment variables
+#### Prefer coerced env values in the Nuxt security proxy
 
-The new `arkenv` function allows you to define your environment schema using ArkType.
+The proxy returned raw `process.env` strings after validation had already coerced them.
 
-Usage:
+```diff
+  export const env = arkenv({
+    PORT: "number",
+  });
 
-```ts
-import arkenv from "arkenv"
-import { type } from "arktype"
-
-const env = arkenv({
-  schema: {
-    PORT: type.number.parseable()
-  }
-})
-
-console.log(env.PORT) // number
+- env.PORT; // "3000"
++ env.PORT; // 3000
 ```
 ````
 
-## Breaking change (v0)
+## New feature (`minor`)
 
 ````markdown
 ---
-"arkenv": minor
+"@arkenv/core": minor
 ---
 
-#### Change configuration format for validators
+#### Add `emptyAsUndefined` so blank env keys take schema defaults
 
-**BREAKING CHANGE**: Validator options are now passed as a second argument to `arkenv`.
+Treat `PORT=` as missing. Schema defaults then apply.
 
-Before:
 ```ts
-arkenv({ schema, strict: true })
-```
+import arkenv from "@arkenv/core";
 
-After:
-```ts
-arkenv({ schema }, { strict: true })
-```
+export const env = arkenv(
+  { PORT: "number.port = 3000" },
+  { emptyAsUndefined: true, env: { PORT: "" } },
+);
 
-Migration: Update your `arkenv` calls to separate the options from the schema configuration.
+env.PORT; // 3000
+```
 ````
 
-## Multiple related changes
+## Breaking change (`major`)
 
-```markdown
+````markdown
 ---
-"arkenv": minor
+"@arkenv/core": major
 ---
 
-#### Improve deployment reliability and progress reporting
+#### Pass `arkenv()` options as the second argument
 
-- Add retry logic for failed operations
-- Display progress bar during bulk operations
-- Report partial failures at the end
-- Add `--continue-on-error` flag to proceed despite failures
+**BREAKING CHANGE:** Move `env`, `coerce`, and related flags out of the schema object and into the second argument.
+
+```diff
+- arkenv({ PORT: "number.port", env: process.env, coerce: true });
++ arkenv({ PORT: "number.port" }, { env: process.env, coerce: true });
 ```
+````
 
-## Analyzing changes for bump type
+## Skip a changeset
 
-### Check Git diff
+No file when the diff is only:
 
-```bash
-# See what changed since last release
-git log --oneline dev..HEAD
-
-# See detailed changes
-git diff dev..HEAD -- src/
-```
-
-### Key questions (v0 context)
-
-1. **Did the public API change?**
-   - CLI commands modified → patch (if backward-compatible), minor (if breaking)
-   - Configuration schema changed → patch (additive/non-breaking), minor (breaking)
-   - New features added → patch (non-breaking), minor (breaking)
-
-2. **Could this break existing users?**
-   - Yes → minor (Breaking changes in v0 are minor bumps)
-   - No → patch
-
-3. **Is this user-facing?**
-   - Yes, new capability → patch (non-breaking), minor (breaking)
-   - Yes, improved existing → patch
-   - No, internal only → patch
-
-## Pre-release versions
-
-For details on the `alpha` ➔ `beta` ➔ `rc` progression, branching strategies, and npm tag publishing commands, see the [Contributing Guide](file:///Users/yamcodes/code/arkenv/docs/CONTRIBUTING.md#use-case-4-coordinating-a-major-version-eg-v1).
+- Internal types, refactors, or tests
+- Docs site copy (`www` is ignored)
+- Size-limit or lockfile churn
+- Listing `@arkenv/core` only because `@arkenv/standard` changed (the `fixed` group already versions both)
