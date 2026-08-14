@@ -17,7 +17,7 @@ export const env = arkenv(
   { PORT: v.number(), DEBUG: v.boolean() },
   {
     toJsonSchema: (schema) =>
-      toJsonSchema(schema, {
+      toJsonSchema(schema as v.GenericSchema, {
         typeMode: "input",
         target: "draft-07",
       }),

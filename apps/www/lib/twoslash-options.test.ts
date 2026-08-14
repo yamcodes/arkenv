@@ -146,12 +146,12 @@ export const env = arkenv(
     toJsonSchema: (schema) => {
       switch (schema["~standard"].vendor) {
         case "valibot":
-          return toJsonSchema(schema, {
+          return toJsonSchema(schema as v.GenericSchema, {
             typeMode: "input",
             target: "draft-07",
           });
         case "zod":
-          return z.toJSONSchema(schema, {
+          return z.toJSONSchema(schema as z.ZodMiniType, {
             io: "input",
             target: "draft-07",
           });

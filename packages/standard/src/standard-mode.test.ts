@@ -1,4 +1,5 @@
 import { toJsonSchema } from "@valibot/to-json-schema";
+import type { GenericSchema } from "valibot";
 import * as v from "valibot";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { z } from "zod";
@@ -367,7 +368,7 @@ describe("Standard Mode toJsonSchema", () => {
 			},
 			{
 				toJsonSchema: (schema) =>
-					toJsonSchema(schema, {
+					toJsonSchema(schema as GenericSchema, {
 						typeMode: "input",
 						target: "draft-07",
 					}),
@@ -389,7 +390,7 @@ describe("Standard Mode toJsonSchema", () => {
 			},
 			{
 				toJsonSchema: (schema) =>
-					toJsonSchema(schema, {
+					toJsonSchema(schema as GenericSchema, {
 						typeMode: "input",
 						target: "draft-07",
 					}),
@@ -411,7 +412,7 @@ describe("Standard Mode toJsonSchema", () => {
 			},
 			{
 				toJsonSchema: (schema) =>
-					zMini.toJSONSchema(schema, {
+					zMini.toJSONSchema(schema as zMini.ZodMiniType, {
 						io: "input",
 						target: "draft-07",
 					}),
@@ -443,12 +444,12 @@ describe("Standard Mode toJsonSchema", () => {
 				toJsonSchema: (schema) => {
 					switch (schema["~standard"].vendor) {
 						case "valibot":
-							return toJsonSchema(schema, {
+							return toJsonSchema(schema as GenericSchema, {
 								typeMode: "input",
 								target: "draft-07",
 							});
 						case "zod":
-							return zMini.toJSONSchema(schema, {
+							return zMini.toJSONSchema(schema as zMini.ZodMiniType, {
 								io: "input",
 								target: "draft-07",
 							});

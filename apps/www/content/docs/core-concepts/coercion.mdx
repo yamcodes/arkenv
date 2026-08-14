@@ -109,7 +109,7 @@ export const env = arkenv(
   { PORT: v.number(), DEBUG: v.boolean() },
   {
     toJsonSchema: (schema) =>
-      toJsonSchema(schema, {
+      toJsonSchema(schema as v.GenericSchema, {
         typeMode: "input",
         target: "draft-07",
       }),
@@ -119,12 +119,13 @@ export const env = arkenv(
 
 - `target: "draft-07"` matches the JSON Schema draft ArkEnv expects.
 - `typeMode: "input"` coerces env strings toward the schema's input type. A bare `{ toJsonSchema }` function reference uses Valibot's default `typeMode: "ignore"`.
+- Valibot's converter does not accept Standard Schema, so the argument is asserted as `v.GenericSchema`.
 - Install `@valibot/to-json-schema` yourself. `@arkenv/standard` does not depend on it.
 - Recipe: [Valibot](/docs/guides/validators/valibot).
 
 ### Mixing with Zod Mini
 
-Zod Mini also keeps conversion off the value (`z.toJSONSchema`). Mini has no `~standard.jsonSchema` and no instance `.toJSONSchema()`. When both libraries miss JSON Schema, switch on `schema["~standard"].vendor` and return `undefined` for anything else. Mini reports vendor `"zod"`. Classic Zod keys never reach the callback.
+Zod Mini also keeps conversion off the value (`z.toJSONSchema`). Mini has no `~standard.jsonSchema` and no instance `.toJSONSchema()`. When both libraries miss JSON Schema, switch on `schema["~standard"].vendor` and return `undefined` for anything else. Mini reports vendor `"zod"`. Classic Zod keys never reach the callback. The assertions are for the host converters: ArkEnv passes a Standard Schema, and `vendor` does not narrow those types.
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/standard";
@@ -141,12 +142,12 @@ export const env = arkenv(
     toJsonSchema: (schema) => {
       switch (schema["~standard"].vendor) {
         case "valibot":
-          return toJsonSchema(schema, {
+          return toJsonSchema(schema as v.GenericSchema, {
             typeMode: "input",
             target: "draft-07",
           });
         case "zod":
-          return z.toJSONSchema(schema, {
+          return z.toJSONSchema(schema as z.ZodMiniType, {
             io: "input",
             target: "draft-07",
           });
