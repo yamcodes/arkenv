@@ -1,5 +1,6 @@
 "use client";
 
+import { useTOCItems } from "fumadocs-ui/components/toc";
 import { CircleArrowUp, Pencil } from "lucide-react";
 import { useState } from "react";
 import { DocsFeedbackButton } from "~/components/docs/docs-feedback";
@@ -18,6 +19,7 @@ export function DocsTocLinks({
 	pageTitle: string;
 	editHref: string;
 }) {
+	const tocItems = useTOCItems();
 	const [starSpotlight, setStarSpotlight] = useState(false);
 
 	const handleEmotionSelect = (emotion: DocsFeedbackEmotion) => {
@@ -62,6 +64,7 @@ export function DocsTocLinks({
 				<DocsFeedbackButton
 					pageTitle={pageTitle}
 					onEmotionSelect={handleEmotionSelect}
+					popoverSide={tocItems.length === 0 ? "bottom" : "top"}
 				/>
 			</nav>
 

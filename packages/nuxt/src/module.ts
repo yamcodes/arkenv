@@ -29,9 +29,6 @@ import {
  *
  * Provide these under the `arkenv` key in your `nuxt.config.ts`.
  *
- * Aliased to {@link ArkEnvConfigOptions} so the documented options remain the
- * single source of truth (field-level JSDoc, `@default` tags, and so on).
- *
  * @example
  * ```ts
  * export default defineNuxtConfig({

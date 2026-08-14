@@ -53,11 +53,9 @@ export function normalizeLayout(
 }
 
 /**
- * Configuration options for ArkEnv's build-time integration.
+ * Configuration options for the ArkEnv Nuxt module.
  *
- * This is the single source of truth for the options exposed under the `arkenv`
- * key in framework configs (e.g. `nuxt.config.ts`), which is why the field-level
- * JSDoc and `@default` tags live here.
+ * Provide these under the `arkenv` key in `nuxt.config.ts`.
  */
 export type ArkEnvConfigOptions = {
 	/**

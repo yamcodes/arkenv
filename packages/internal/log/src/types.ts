@@ -5,8 +5,6 @@ export type LogLevel = "debug" | "info" | "warn" | "error" | "silent";
 
 /**
  * Shared logger interface for ArkEnv packages.
- *
- * CLI-specific features (spinners, JSON reporters, `flush`) stay outside this type.
  */
 export type Logger = {
 	debug: (message: string, ...optionalParams: unknown[]) => void;

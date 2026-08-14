@@ -23,10 +23,6 @@ const { arkenv: arkenvFn, hybrid: hybridObj } = createBunPlugin(
  *
  * @param options Transform options (`schemaPath`, `clientPrefix`) plus ArkEnv/logging config
  * @returns The Bun plugin instance
- *
- * @remarks
- * ADR 0021: env.ts is the canonical surface. Do not add `env.gen.ts` codegen or
- * client-side re-validation on this host.
  */
 export function arkenv(options?: BunPluginFactoryConfig): BunPlugin;
 /**

@@ -5,7 +5,6 @@ export * from "./cli-command";
 export * from "./copy-button";
 export * from "./dot-grid";
 export * from "./hero-faq";
-export * from "./hero-motion";
 export * from "./install-panel";
 export * from "./logo";
 export * from "./quickstart-button";
