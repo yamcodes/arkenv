@@ -142,15 +142,15 @@ C5 does **not** replace A6 or the B-layer choice. Under B5, generated Valibot-on
 
 **B6 Always-`as`** — Same types as B3; policy is “cast at every host-converter call.” One sentence of docs: *ArkEnv passes a Standard Schema; Valibot/Mini converters do not accept that type; assert at the call.* Metrics:
 
-| Metric | Score vs B5 |
-| --- | --- |
-| Honesty | Equal at ArkEnv boundary (`StandardSchemaV1`). Cast is honest about the converter boundary. Does not pretend the callback param is already `GenericSchema`. |
-| Tax fairness | **Reframe, not a loss.** Tax is for *calling that converter*, not for sibling keys. Adding Zod does **not** change the Valibot wrapper (cast was already there). The old bad feeling was B4’s *delta*; B6 has no delta. |
-| Simplicity / teachability | **Wins.** No branching: Valibot-only, Zod+Valibot, Mini-only all show `as`. Mix still needs a vendor switch, but that is “two converters,” not “ArkEnv typing phase of the moon.” |
-| Elegance | Feels like a downgrade next to B5’s no-cast Valibot-only. Gains elegance of *one model*. |
-| Composability | Equal for A6. Slightly less clever type plumbing to maintain. |
-| Footguns | Same as B3: `as` can lie if you assert the wrong vendor. Mix still needs care. No `any`. |
-| Maintenance hell | **Better than B5.** Drop `ToJsonSchemaInput`, probe-mirroring types, and most plugin generic threading for the callback. |
+| Metric                    | Score vs B5                                                                                                                                                                                                             |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Honesty                   | Equal at ArkEnv boundary (`StandardSchemaV1`). Cast is honest about the converter boundary. Does not pretend the callback param is already `GenericSchema`.                                                             |
+| Tax fairness              | **Reframe, not a loss.** Tax is for *calling that converter*, not for sibling keys. Adding Zod does **not** change the Valibot wrapper (cast was already there). The old bad feeling was B4’s *delta*; B6 has no delta. |
+| Simplicity / teachability | **Wins.** No branching: Valibot-only, Zod+Valibot, Mini-only all show `as`. Mix still needs a vendor switch, but that is “two converters,” not “ArkEnv typing phase of the moon.”                                       |
+| Elegance                  | Feels like a downgrade next to B5’s no-cast Valibot-only. Gains elegance of *one model*.                                                                                                                                |
+| Composability             | Equal for A6. Slightly less clever type plumbing to maintain.                                                                                                                                                           |
+| Footguns                  | Same as B3: `as` can lie if you assert the wrong vendor. Mix still needs care. No `any`.                                                                                                                                |
+| Maintenance hell          | **Better than B5.** Drop `ToJsonSchemaInput`, probe-mirroring types, and most plugin generic threading for the callback.                                                                                                |
 
 The remaining “wait but…” under B6 is only Valibot+Mini (vendor switch + two casts). That case exists under B5 too. B6 does not invent it; B5’s special case for single-library maps invents the *other* branch.
 

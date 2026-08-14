@@ -1,6 +1,6 @@
 # Two ways to wire Valibot into ArkEnv
 
-A tiny deck for comparing the two “S-tier” options.  
+A tiny deck for comparing the two “S-tier” options.\
 Same feature either way — only the **typing story** differs.
 
 Each example is a full file you’d put in a real app (e.g. `src/env.ts`).
@@ -149,7 +149,7 @@ export const env = arkenv(
 );
 ```
 
-**Shared win:** neither contender suddenly “taxes” you for adding Zod.  
+**Shared win:** neither contender suddenly “taxes” you for adding Zod.\
 **Difference:** A never had the cast; B always did.
 
 ---
@@ -238,22 +238,22 @@ export const env = arkenv(
 
 ## Side by side
 
-| | Smart types (A) | Always assert (B) |
-| --- | --- | --- |
-| File | always `src/env.ts` | always `src/env.ts` |
-| Valibot only | no `as` | `as` |
-| Add Zod later | still no `as` | still `as` (unchanged) |
-| Mix Valibot + Mini | `as` appears | `as` (already expected) |
-| Mental model | “Cast when the map needs it” | “Cast when you call that converter” |
+|                    | Smart types (A)              | Always assert (B)                   |
+| ------------------ | ---------------------------- | ----------------------------------- |
+| File               | always `src/env.ts`          | always `src/env.ts`                 |
+| Valibot only       | no `as`                      | `as`                                |
+| Add Zod later      | still no `as`                | still `as` (unchanged)              |
+| Mix Valibot + Mini | `as` appears                 | `as` (already expected)             |
+| Mental model       | “Cast when the map needs it” | “Cast when you call that converter” |
 
 ---
 
 ## The key difference (one line)
 
-**A** optimizes for fewer casts.  
+**A** optimizes for fewer casts.\
 **B** optimizes for **never surprising** the person reading `src/env.ts`.
 
-The painful case both want to avoid is not “having an `as`” —  
+The painful case both want to avoid is not “having an `as`” —\
 it’s “I added Zod and suddenly TypeScript made me cast Valibot.”
 
 - **A** avoids that by being clever about which schemas reach the callback.
@@ -265,7 +265,7 @@ it’s “I added Zod and suddenly TypeScript made me cast Valibot.”
 
 Same product. Same file path. Same runtime.
 
-| | |
-| --- | --- |
-| **A — Smart** | `src/env.ts` stays cast-free until a weird mix. |
+|                       |                                                      |
+| --------------------- | ---------------------------------------------------- |
+| **A — Smart**         | `src/env.ts` stays cast-free until a weird mix.      |
 | **B — Always assert** | `src/env.ts` always names the converter at the door. |
