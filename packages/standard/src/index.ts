@@ -65,7 +65,7 @@ export function arkenv<
 ): [Safe] extends [true]
 	? SafeArkEnvResult<StandardEnvOutput<T>>
 	: StandardEnvOutput<T> {
-	const resolved = (config ?? {}) as StandardEnvConfig;
+	const resolved = (config ?? {}) as unknown as StandardEnvConfig;
 	assertStandardSchemaMap(def);
 
 	for (const key in def) {

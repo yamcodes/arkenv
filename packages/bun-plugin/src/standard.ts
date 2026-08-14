@@ -42,9 +42,9 @@ export function arkenv<const T extends Record<string, StandardSchemaV1>>(
 	options: T,
 	config?: BunPluginConfig<T>,
 ): BunPlugin;
-export function arkenv<const T extends Record<string, StandardSchemaV1>>(
-	options?: T | BunPluginFactoryConfig,
-	config?: BunPluginConfig<T>,
+export function arkenv(
+	options?: Record<string, StandardSchemaV1> | BunPluginFactoryConfig,
+	config?: BunPluginConfig,
 ): BunPlugin {
 	return arkenvFn(options, config);
 }
