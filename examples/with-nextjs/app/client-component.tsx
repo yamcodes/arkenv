@@ -134,7 +134,9 @@ export default function ClientComponent() {
 								<td style={cellStyle}>{String(inspection.isNativeError)}</td>
 							</tr>
 							<tr style={rowStyle}>
-								<th style={cellStyle}>error instanceof ArkEnvValidationError</th>
+								<th style={cellStyle}>
+									error instanceof ArkEnvValidationError
+								</th>
 								<td style={cellStyle}>
 									{String(inspection.isArkEnvValidationErrorInstance)}
 								</td>

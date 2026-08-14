@@ -20,7 +20,8 @@ export default function Home() {
 				The client panel can read <code>NEXT_PUBLIC_*</code> and{" "}
 				<code>NODE_ENV</code>. Click the red button to read{" "}
 				<code>DATABASE_URL</code> instead — the throw is a native{" "}
-				<code>Error</code> with <code>name = &quot;ArkEnvAccessError&quot;</code>.
+				<code>Error</code> with{" "}
+				<code>name = &quot;ArkEnvAccessError&quot;</code>.
 			</p>
 
 			<div
