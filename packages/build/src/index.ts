@@ -5,3 +5,4 @@
 // standard, or the integrations depends on them.
 export type { Logger, LogLevel } from "@repo/log";
 export * from "./core";
+export { generateClientEnvModule } from "./generate-client-env-module";

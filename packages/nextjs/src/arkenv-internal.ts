@@ -1,5 +1,6 @@
 import { logBuildWarning } from "@repo/log";
 import type { Dict, SchemaShape } from "@repo/types";
+import { createBoundaryAccessError } from "@repo/utils";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
@@ -296,11 +297,7 @@ export function arkenvInternal(
 
 			if (typeof prop === "string") {
 				if (serverOnlyKeys.has(prop) && !isServer) {
-					const error = new Error(
-						`Attempted to access server environment variable '${prop}' on the client.`,
-					);
-					error.name = "ArkEnvError";
-					throw error;
+					throw createBoundaryAccessError(prop);
 				}
 
 				// Allow schema keys and standard Object prototype properties

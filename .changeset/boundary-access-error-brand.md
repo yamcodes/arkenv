@@ -1,4 +1,5 @@
 ---
+"@arkenv/build": patch
 "@arkenv/nextjs": major
 "@arkenv/nuxt": major
 "@arkenv/vite-plugin": major

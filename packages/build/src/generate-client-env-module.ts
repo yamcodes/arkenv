@@ -1,7 +1,9 @@
+import { ARKENV_ERROR_NAME, boundaryAccessErrorMessage } from "@repo/utils";
+
 /**
  * Build the client-graph replacement module: inlined coerced literals + server-key guards.
  *
- * No validator import is emitted. See ADR 0015 (env-object canonical surface) —
+ * No validator import is emitted. See ADR 0021 (env-object canonical surface) —
  * contributors must not reintroduce `env.gen.ts`, client-side re-validation, or
  * `runtimeEnv` wiring on hosts that own their transform.
  *
@@ -20,11 +22,11 @@ export function generateClientEnvModule(
 	}
 
 	for (const key of serverKeys) {
-		const message = `Attempted to access server environment variable '${key}' on the client.`;
+		const message = boundaryAccessErrorMessage(key);
 		lines.push(
 			`  get [${JSON.stringify(key)}]() {`,
 			`    const error = new Error(${JSON.stringify(message)});`,
-			`    error.name = "ArkEnvError";`,
+			`    error.name = ${JSON.stringify(ARKENV_ERROR_NAME)};`,
 			"    throw error;",
 			"  },",
 		);

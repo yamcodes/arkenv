@@ -1,3 +1,4 @@
+import { ARKENV_ERROR_NAME } from "./utils/boundary-access-error";
 import { indent } from "./utils/indent";
 import { styleText } from "./utils/style-text";
 
@@ -108,12 +109,12 @@ export class ArkEnvError extends Error {
 	) {
 		const formattedIssues = formatIssues(issues);
 		super(`${styleText("red", message)}\n${indent(formattedIssues)}\n`);
-		this.name = "ArkEnvError";
+		this.name = ARKENV_ERROR_NAME;
 		this.issues = issues;
 	}
 }
 
-Object.defineProperty(ArkEnvError, "name", { value: "ArkEnvError" });
+Object.defineProperty(ArkEnvError, "name", { value: ARKENV_ERROR_NAME });
 
 /**
  * Result of a non-throwing arkenv parse operation.

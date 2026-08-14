@@ -6,6 +6,6 @@ export default defineConfig({
 	minify: true,
 	fixedExtension: false,
 	deps: {
-		alwaysBundle: ["@repo/log"],
+		alwaysBundle: ["@repo/log", "@repo/utils"],
 	},
 });

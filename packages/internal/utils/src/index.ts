@@ -15,6 +15,11 @@ export {
 export { type ParseStandardConfig, parseStandard } from "./parse-standard";
 export { getSchemaKeys } from "./schema";
 export {
+	ARKENV_ERROR_NAME,
+	boundaryAccessErrorMessage,
+	createBoundaryAccessError,
+} from "./utils/boundary-access-error";
+export {
 	buildEnvIssue,
 	formatStandardIssueMessage,
 	getStandardMeta,
