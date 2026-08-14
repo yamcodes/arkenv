@@ -138,8 +138,10 @@ export const env = arkenv(
     DEBUG: z.boolean(),
   },
   {
-    toJsonSchema: (schema) => {
-      switch (schema["~standard"].vendor) {
+    toJsonSchema: (schema: unknown) => {
+      const vendor = (schema as { "~standard": { vendor: string } })["~standard"]
+        .vendor;
+      switch (vendor) {
         case "valibot":
           return toJsonSchema(schema as v.GenericSchema, {
             typeMode: "input",

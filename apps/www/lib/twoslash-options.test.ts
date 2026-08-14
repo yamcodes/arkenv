@@ -129,4 +129,45 @@ const db = env.DATABASE_URL;
 		expect(nuxtErrors).toContain(2339);
 		expect(nuxtErrors).not.toContain(2307);
 	});
+
+	it("typechecks the Valibot + Zod Mini toJsonSchema mix without implicit any", () => {
+		const result = twoslasher(
+			`import arkenv from "@arkenv/standard";
+import { toJsonSchema } from "@valibot/to-json-schema";
+import * as v from "valibot";
+import * as z from "zod/mini";
+
+export const env = arkenv(
+  {
+    PORT: v.number(),
+    DEBUG: z.boolean(),
+  },
+  {
+    toJsonSchema: (schema: unknown) => {
+      const vendor = (schema as { "~standard": { vendor: string } })["~standard"]
+        .vendor;
+      switch (vendor) {
+        case "valibot":
+          return toJsonSchema(schema as v.GenericSchema, {
+            typeMode: "input",
+            target: "draft-07",
+          });
+        case "zod":
+          return z.toJSONSchema(schema as z.ZodMiniType, {
+            io: "input",
+            target: "draft-07",
+          });
+        default:
+          return undefined;
+      }
+    },
+  },
+);
+`,
+			"ts",
+			arktypeTwoslashOptions.twoslashOptions,
+		);
+
+		expect(result.errors).toEqual([]);
+	});
 });
