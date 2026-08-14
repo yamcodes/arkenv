@@ -1,6 +1,5 @@
 import type { Dict, SchemaShape } from "@repo/types";
-import { getSchemaKeys } from "@repo/utils";
-import { boundaryAccessErrorMessage } from "@repo/utils/boundary-access-error";
+import { boundaryAccessErrorMessage, getSchemaKeys } from "@repo/utils";
 import { getBootGateResult } from "./boot-gate-state";
 import { createCaptureStub, isCapturing, recordCapture } from "./capture";
 import { isForceServer } from "./validate-context";

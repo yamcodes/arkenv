@@ -21,7 +21,10 @@ export default defineConfig({
 		"src/standard/config.ts",
 	],
 	format: ["esm", "cjs"],
-	minify: true,
+	// Unminified: alwaysBundle of @repo/utils (index + boundary-access-error) then
+	// minify produced a chunk Vite/Rollup rejects ("Identifier h has already been
+	// declared") when Nuxt playgrounds rebundle the published ESM.
+	minify: false,
 	fixedExtension: false,
 	sourcemap: true,
 	deps: {

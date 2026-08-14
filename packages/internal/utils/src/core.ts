@@ -123,9 +123,6 @@ export function formatIssues(issues: EnvIssue[]): string {
  *
  * @example
  * ```ts
- * import arkenv from 'arkenv';
- * import { ArkEnvError } from '@arkenv/core';
- *
  * try {
  *   const env = arkenv({
  *     PORT: 'number.port',
