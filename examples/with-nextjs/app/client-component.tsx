@@ -55,6 +55,7 @@ export default function ClientComponent() {
 			alert(`Secret accessed successfully: ${dbUrl}`);
 		} catch (error: unknown) {
 			setInspection(inspectBoundaryThrow(error));
+			console.error(error);
 		}
 	};
 
@@ -141,10 +142,10 @@ export default function ClientComponent() {
 						</tbody>
 					</table>
 					<p style={{ margin: "12px 0 0 0", fontSize: "13px" }}>
-						The stack looks like a validation error.{" "}
-						<code>instanceof ArkEnvError</code> is false because this is a
-						native <code>Error</code> with a branded name — not a schema
-						failure, and there are no <code>.issues</code>.
+						The same throw is in the browser console. The stack looks like a
+						validation error. <code>instanceof ArkEnvError</code> is false
+						because this is a native <code>Error</code> with a branded name —
+						not a schema failure, and there are no <code>.issues</code>.
 					</p>
 				</div>
 			)}

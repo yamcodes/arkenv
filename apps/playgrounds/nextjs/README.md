@@ -69,7 +69,7 @@ export default function ClientComponent() {
 }
 ```
 
-Run `pnpm dev`, open the app, and click **Try accessing DATABASE_URL (Secret)** to inspect `error.name`, `error.constructor.name`, and `instanceof ArkEnvError`.
+Run `pnpm dev`, open the app, and click **Try accessing DATABASE_URL (Secret)**. The panel inspects `error.name`, `error.constructor.name`, and `instanceof ArkEnvError`; the same throw is logged to the browser console.
 
 ## Running the Example
 
