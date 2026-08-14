@@ -5,11 +5,7 @@ import type {
 	SchemaShape,
 	StandardSchemaV1,
 } from "@repo/types";
-import {
-	ArkEnvError,
-	type SafeArkEnvResult,
-	safeExecute,
-} from "@repo/utils";
+import { ArkEnvError, type SafeArkEnvResult, safeExecute } from "@repo/utils";
 import type { type as at, distill } from "arktype";
 import { parse } from "./arktype";
 

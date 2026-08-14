@@ -27,18 +27,18 @@ export const env = arkenv({
 
 ## Exports
 
-| Export                  | Kind                       | Role                                                       |
-| ----------------------- | -------------------------- | ---------------------------------------------------------- |
-| `arkenv`                | function (default + named) | Validate and return a typed env object                     |
-| `type`                  | function                   | ArkType `type` with [`keywords`](/docs/reference/keywords) |
-| `ArkEnvError` | class                      | Thrown on validation failure                               |
-| `formatIssues`          | function                   | Format `EnvIssue[]` for display                            |
-| `getSchemaKeys`         | function                   | List keys declared on a schema                             |
-| `ArkEnvConfig`          | type                       | [Options](/docs/reference/options) object                  |
-| `EnvSchema`             | type                       | Declarative schema map                                     |
-| `Infer`                 | type                       | Infer output from a schema                                 |
-| `SafeArkEnvResult`      | type                       | Result shape when `safe: true`                             |
-| `EnvIssue`              | type                       | Structured validation issue                                |
+| Export             | Kind                       | Role                                                       |
+| ------------------ | -------------------------- | ---------------------------------------------------------- |
+| `arkenv`           | function (default + named) | Validate and return a typed env object                     |
+| `type`             | function                   | ArkType `type` with [`keywords`](/docs/reference/keywords) |
+| `ArkEnvError`      | class                      | Thrown on validation failure                               |
+| `formatIssues`     | function                   | Format `EnvIssue[]` for display                            |
+| `getSchemaKeys`    | function                   | List keys declared on a schema                             |
+| `ArkEnvConfig`     | type                       | [Options](/docs/reference/options) object                  |
+| `EnvSchema`        | type                       | Declarative schema map                                     |
+| `Infer`            | type                       | Infer output from a schema                                 |
+| `SafeArkEnvResult` | type                       | Result shape when `safe: true`                             |
+| `EnvIssue`         | type                       | Structured validation issue                                |
 
 Package export surface: `"."` only.
 
