@@ -9,6 +9,7 @@ import {
 	getSchemaKeys,
 	type ParseStandardConfig,
 	parseStandard,
+	type ToJsonSchemaInput,
 	type SafeArkEnvResult,
 	safeExecute,
 } from "@repo/utils";
@@ -19,12 +20,15 @@ export {
 	formatIssues,
 	getSchemaKeys,
 	type SafeArkEnvResult,
+	type ToJsonSchemaInput,
 };
 
 /**
  * Configuration options for the `arkenv/standard` entry's `arkenv`.
  */
-export type StandardEnvConfig = ParseStandardConfig;
+export type StandardEnvConfig<
+	T extends Record<string, StandardSchemaV1> = Record<string, StandardSchemaV1>,
+> = ParseStandardConfig<T>;
 
 type StandardEnvOutput<T extends Record<string, StandardSchemaV1>> = {
 	[K in keyof T]: StandardSchemaV1.InferOutput<T[K]>;
@@ -57,7 +61,7 @@ export function arkenv<
 	const Safe extends boolean | undefined = undefined,
 >(
 	def: T,
-	config?: Omit<StandardEnvConfig, "safe"> & { safe?: Safe },
+	config?: Omit<StandardEnvConfig<T>, "safe"> & { safe?: Safe },
 ): [Safe] extends [true]
 	? SafeArkEnvResult<StandardEnvOutput<T>>
 	: StandardEnvOutput<T> {

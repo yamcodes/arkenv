@@ -11,7 +11,9 @@ import {
 
 export type { ViteTransformOptions };
 
-type VitePluginConfig = Omit<StandardEnvConfig, "safe"> & ArkEnvLogOptions;
+type VitePluginConfig<
+	T extends Record<string, StandardSchemaV1> = Record<string, StandardSchemaV1>,
+> = Omit<StandardEnvConfig<T>, "safe"> & ArkEnvLogOptions;
 
 const arkenvCreator = createVitePlugin(
 	coreArkenv,
@@ -38,9 +40,9 @@ export default function arkenv(options?: VitePluginFactoryConfig): Plugin;
  */
 export default function arkenv<
 	const T extends Record<string, StandardSchemaV1>,
->(options: T, config?: VitePluginConfig): Plugin;
+>(options: T, config?: VitePluginConfig<T>): Plugin;
 export default function arkenv<
 	const T extends Record<string, StandardSchemaV1>,
->(options?: T | VitePluginFactoryConfig, config?: VitePluginConfig): Plugin {
+>(options?: T | VitePluginFactoryConfig, config?: VitePluginConfig<T>): Plugin {
 	return arkenvCreator(options, config);
 }

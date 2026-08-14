@@ -12,7 +12,11 @@ export {
 	assertStandardSchema,
 	assertStandardSchemaMap,
 } from "./guards";
-export { type ParseStandardConfig, parseStandard } from "./parse-standard";
+export {
+	type ParseStandardConfig,
+	parseStandard,
+	type ToJsonSchemaInput,
+} from "./parse-standard";
 export { getSchemaKeys } from "./schema";
 export {
 	buildEnvIssue,

@@ -32,10 +32,40 @@ import {
  * Prioritize strict module boundaries and tree-shaking over DRYness.
  */
 
+type JsonSchemaCallable = (...args: never) => unknown;
+
+/**
+ * Whether `S` already exposes JSON Schema on the value (same probes
+ * {@link extractJsonSchema} uses before calling {@link ParseStandardConfig.toJsonSchema}).
+ */
+type HasOnValueJsonSchema<S> = S extends
+	| { toJSONSchema: JsonSchemaCallable }
+	| { "~standard": { jsonSchema: { input: JsonSchemaCallable } } }
+	| { jsonSchema: { input: JsonSchemaCallable } }
+	| { toStandardJSONSchema: { v1: JsonSchemaCallable } }
+	? true
+	: false;
+
+/**
+ * Select schema values from `T` that do not already expose JSON Schema on the
+ * value. {@link ParseStandardConfig.toJsonSchema} receives this subset: classic
+ * Zod keys never appear, even in a mixed map.
+ */
+export type ToJsonSchemaInput<
+	T extends Record<string, StandardSchemaV1> = Record<string, StandardSchemaV1>,
+> = Exclude<
+	{
+		[K in keyof T]: HasOnValueJsonSchema<T[K]> extends true ? never : T[K];
+	}[keyof T],
+	undefined
+>;
+
 /**
  * Configuration options for {@link parseStandard}.
  */
-export type ParseStandardConfig = {
+export type ParseStandardConfig<
+	T extends Record<string, StandardSchemaV1> = Record<string, StandardSchemaV1>,
+> = {
 	/**
 	 * The environment variables to parse. Defaults to `process.env`.
 	 *
@@ -85,6 +115,11 @@ export type ParseStandardConfig = {
 	 * - Throwing or returning a non-plain object fails the parse with
 	 *   {@link ArkEnvError} for that key (`INVALID_SCHEMA`).
 	 *
+	 * Typed as {@link ToJsonSchemaInput}: keys that already expose JSON Schema
+	 * on the value (classic Zod) are excluded, even in a mixed map. Adding Zod
+	 * does not force a Valibot assertion. Two off-value libraries in one map
+	 * still need host-converter assertions (`vendor` does not narrow them).
+	 *
 	 * @example Valibot wiring
 	 * ```ts
 	 * import { toJsonSchema } from "@valibot/to-json-schema";
@@ -94,7 +129,7 @@ export type ParseStandardConfig = {
 	 *   { PORT: v.number() },
 	 *   {
 	 *     toJsonSchema: (schema) =>
-	 *       toJsonSchema(schema as v.GenericSchema, {
+	 *       toJsonSchema(schema, {
 	 *         typeMode: "input",
 	 *         target: "draft-07",
 	 *       }),
@@ -102,7 +137,7 @@ export type ParseStandardConfig = {
 	 * );
 	 * ```
 	 */
-	toJsonSchema?: (schema: StandardSchemaV1) => object | undefined;
+	toJsonSchema?: (schema: ToJsonSchemaInput<T>) => object | undefined;
 
 	/**
 	 * The format to use for array parsing when coercion is enabled.
@@ -170,7 +205,9 @@ export function parseStandard(
 			? () => {
 					const { jsonSchema, hasJsonSchema, missingKeys } = extractJsonSchema(
 						def,
-						toJsonSchema,
+						toJsonSchema as
+							| ((schema: StandardSchemaV1) => object | undefined)
+							| undefined,
 					);
 					return {
 						schema: jsonSchema,

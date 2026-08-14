@@ -130,6 +130,55 @@ const db = env.DATABASE_URL;
 		expect(nuxtErrors).not.toContain(2307);
 	});
 
+	it("typechecks Valibot toJsonSchema without a GenericSchema assertion", () => {
+		const result = twoslasher(
+			`import arkenv from "@arkenv/standard";
+import { toJsonSchema } from "@valibot/to-json-schema";
+import * as v from "valibot";
+
+export const env = arkenv(
+  { PORT: v.number(), DEBUG: v.boolean() },
+  {
+    toJsonSchema: (schema) =>
+      toJsonSchema(schema, {
+        typeMode: "input",
+        target: "draft-07",
+      }),
+  },
+);
+`,
+			"ts",
+			arktypeTwoslashOptions.twoslashOptions,
+		);
+
+		expect(result.errors).toEqual([]);
+	});
+
+	it("typechecks Zod + Valibot toJsonSchema without a GenericSchema assertion", () => {
+		const result = twoslasher(
+			`import arkenv from "@arkenv/standard";
+import { toJsonSchema } from "@valibot/to-json-schema";
+import * as v from "valibot";
+import { z } from "zod";
+
+export const env = arkenv(
+  { PORT: z.number(), DEBUG: v.boolean() },
+  {
+    toJsonSchema: (schema) =>
+      toJsonSchema(schema, {
+        typeMode: "input",
+        target: "draft-07",
+      }),
+  },
+);
+`,
+			"ts",
+			arktypeTwoslashOptions.twoslashOptions,
+		);
+
+		expect(result.errors).toEqual([]);
+	});
+
 	it("typechecks the Valibot + Zod Mini toJsonSchema mix without implicit any", () => {
 		const result = twoslasher(
 			`import arkenv from "@arkenv/standard";

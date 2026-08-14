@@ -17,7 +17,7 @@ export const env = arkenv(
   { PORT: v.number(), DEBUG: v.boolean() },
   {
     toJsonSchema: (schema) =>
-      toJsonSchema(schema as v.GenericSchema, {
+      toJsonSchema(schema, {
         typeMode: "input",
         target: "draft-07",
       }),
@@ -27,4 +27,4 @@ export const env = arkenv(
 
 Return a plain object to coerce that key, or `undefined` to skip it. If the callback throws or returns a non-plain object, ArkEnv fails that key with `ArkEnvError` (`INVALID_SCHEMA`).
 
-Keys that already expose JSON Schema (Zod 4.2+) coerce without the callback.
+Keys that already expose JSON Schema (Zod 4.2+) coerce without the callback. Those keys are also excluded from the callback type, so a Zod + Valibot map still types `schema` as Valibot.
