@@ -11,9 +11,7 @@ import type { BunTransformOptions } from "./env-module";
 
 export type { BunTransformOptions };
 
-type BunPluginConfig<
-	T extends Record<string, StandardSchemaV1> = Record<string, StandardSchemaV1>,
-> = Omit<StandardEnvConfig<T>, "safe"> & ArkEnvLogOptions;
+type BunPluginConfig = Omit<StandardEnvConfig, "safe"> & ArkEnvLogOptions;
 
 const { arkenv: arkenvFn, hybrid: hybridObj } = createBunPlugin(
 	coreArkenv,
@@ -40,10 +38,10 @@ export function arkenv(options?: BunPluginFactoryConfig): BunPlugin;
  */
 export function arkenv<const T extends Record<string, StandardSchemaV1>>(
 	options: T,
-	config?: BunPluginConfig<T>,
+	config?: BunPluginConfig,
 ): BunPlugin;
-export function arkenv(
-	options?: Record<string, StandardSchemaV1> | BunPluginFactoryConfig,
+export function arkenv<const T extends Record<string, StandardSchemaV1>>(
+	options?: T | BunPluginFactoryConfig,
 	config?: BunPluginConfig,
 ): BunPlugin {
 	return arkenvFn(options, config);

@@ -4,7 +4,7 @@ import * as v from "valibot";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { z } from "zod";
 import * as zMini from "zod/mini";
-import { ArkEnvError, arkenv, type ToJsonSchemaInput } from "./index";
+import { ArkEnvError, arkenv } from "./index";
 
 // Mock Standard Schema validators for testing
 const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({
@@ -368,7 +368,7 @@ describe("Standard Mode toJsonSchema", () => {
 			},
 			{
 				toJsonSchema: (schema) =>
-					toJsonSchema(schema, {
+					toJsonSchema(schema as GenericSchema, {
 						typeMode: "input",
 						target: "draft-07",
 					}),
@@ -390,7 +390,7 @@ describe("Standard Mode toJsonSchema", () => {
 			},
 			{
 				toJsonSchema: (schema) =>
-					toJsonSchema(schema, {
+					toJsonSchema(schema as GenericSchema, {
 						typeMode: "input",
 						target: "draft-07",
 					}),
@@ -399,30 +399,6 @@ describe("Standard Mode toJsonSchema", () => {
 
 		expect(env.ZOD_PORT).toBe(8080);
 		expect(env.VALIBOT_DEBUG).toBe(false);
-	});
-
-	it("types toJsonSchema as off-value schemas only", () => {
-		type ZodOnly = ToJsonSchemaInput<{
-			PORT: ReturnType<typeof z.number>;
-		}>;
-		type ValibotOnly = ToJsonSchemaInput<{
-			PORT: ReturnType<typeof v.number>;
-			DEBUG: ReturnType<typeof v.boolean>;
-		}>;
-		type ZodAndValibot = ToJsonSchemaInput<{
-			PORT: ReturnType<typeof z.number>;
-			DEBUG: ReturnType<typeof v.boolean>;
-		}>;
-		type MiniOnly = ToJsonSchemaInput<{
-			PORT: ReturnType<typeof zMini.number>;
-		}>;
-
-		expectTypeOf<ZodOnly>().toBeNever();
-		expectTypeOf<ValibotOnly>().toEqualTypeOf<
-			ReturnType<typeof v.number> | ReturnType<typeof v.boolean>
-		>();
-		expectTypeOf<ZodAndValibot>().toEqualTypeOf<ReturnType<typeof v.boolean>>();
-		expectTypeOf<MiniOnly>().toEqualTypeOf<ReturnType<typeof zMini.number>>();
 	});
 
 	it("coerces Zod Mini number/boolean fields via z.toJSONSchema", () => {
@@ -436,7 +412,7 @@ describe("Standard Mode toJsonSchema", () => {
 			},
 			{
 				toJsonSchema: (schema) =>
-					zMini.toJSONSchema(schema, {
+					zMini.toJSONSchema(schema as zMini.ZodMiniType, {
 						io: "input",
 						target: "draft-07",
 					}),

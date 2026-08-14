@@ -130,7 +130,7 @@ const db = env.DATABASE_URL;
 		expect(nuxtErrors).not.toContain(2307);
 	});
 
-	it("typechecks Valibot toJsonSchema without a GenericSchema assertion", () => {
+	it("typechecks Valibot toJsonSchema with a GenericSchema assertion", () => {
 		const result = twoslasher(
 			`import arkenv from "@arkenv/standard";
 import { toJsonSchema } from "@valibot/to-json-schema";
@@ -140,7 +140,7 @@ export const env = arkenv(
   { PORT: v.number(), DEBUG: v.boolean() },
   {
     toJsonSchema: (schema) =>
-      toJsonSchema(schema, {
+      toJsonSchema(schema as v.GenericSchema, {
         typeMode: "input",
         target: "draft-07",
       }),
@@ -154,7 +154,7 @@ export const env = arkenv(
 		expect(result.errors).toEqual([]);
 	});
 
-	it("typechecks Zod + Valibot toJsonSchema without a GenericSchema assertion", () => {
+	it("typechecks Zod + Valibot toJsonSchema with the same GenericSchema assertion", () => {
 		const result = twoslasher(
 			`import arkenv from "@arkenv/standard";
 import { toJsonSchema } from "@valibot/to-json-schema";
@@ -165,7 +165,7 @@ export const env = arkenv(
   { PORT: z.number(), DEBUG: v.boolean() },
   {
     toJsonSchema: (schema) =>
-      toJsonSchema(schema, {
+      toJsonSchema(schema as v.GenericSchema, {
         typeMode: "input",
         target: "draft-07",
       }),

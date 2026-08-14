@@ -6,7 +6,7 @@
 
 Pass a converter when a Standard Schema field has no JSON Schema on the value. ArkEnv calls it per key then, so number and boolean env strings coerce.
 
-Valibot is one such library (`@valibot/to-json-schema`):
+Valibot is one such library (`@valibot/to-json-schema`). Assert at the converter call — host converters do not accept Standard Schema:
 
 ```ts
 import arkenv from "@arkenv/standard";
@@ -17,7 +17,7 @@ export const env = arkenv(
   { PORT: v.number(), DEBUG: v.boolean() },
   {
     toJsonSchema: (schema) =>
-      toJsonSchema(schema, {
+      toJsonSchema(schema as v.GenericSchema, {
         typeMode: "input",
         target: "draft-07",
       }),
@@ -27,4 +27,4 @@ export const env = arkenv(
 
 Return a plain object to coerce that key, or `undefined` to skip it. If the callback throws or returns a non-plain object, ArkEnv fails that key with `ArkEnvError` (`INVALID_SCHEMA`).
 
-Keys that already expose JSON Schema (Zod 4.2+) coerce without the callback. Those keys are also excluded from the callback type, so a Zod + Valibot map still types `schema` as Valibot.
+Keys that already expose JSON Schema (Zod 4.2+) coerce without the callback. Classic Zod never reaches the callback at runtime; adding Zod does not change the Valibot wrapper above.

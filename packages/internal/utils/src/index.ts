@@ -15,7 +15,6 @@ export {
 export {
 	type ParseStandardConfig,
 	parseStandard,
-	type ToJsonSchemaInput,
 } from "./parse-standard";
 export { getSchemaKeys } from "./schema";
 export {

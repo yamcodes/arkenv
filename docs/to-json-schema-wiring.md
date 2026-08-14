@@ -2,7 +2,7 @@
 
 Living evaluation, not an ADR. Update this file as options enter or leave the hat. Promoted decisions belong in `docs/adr/` (related: [0002](./adr/0002-coercion-schema-transformer.md), [0007](./adr/0007-standard-mode-packaging-strategy.md), [0018](./adr/0018-cli-hosting-preset-field-metadata.md)).
 
-**Status:** working note for `#1564` / PR `#1570`. Default public story on the branch is **S** below (`ToJsonSchemaInput<T>` + inline wrapper). Everything else is still in the hat.
+**Status:** working note for `#1564` / PR `#1570`. **Chosen public story: B6 (always-`as`)** — callback is `StandardSchemaV1`; assert at every host-converter call. B5 (`ToJsonSchemaInput`) was evaluated and declined for teachability.
 
 ## Problem
 
@@ -63,12 +63,13 @@ A6 is the product. The rest of this note is how to type and place it.
 | B3 | `StandardSchemaV1`                                    | Always `as GenericSchema`           | Same tax                          | Casts + vendor switch                                   |
 | B4 | `T[keyof T]`                                          | No cast                             | **Cast appears when you add Zod** | Casts + vendor switch                                   |
 | B5 | `ToJsonSchemaInput<T>` (exclude on-value JSON Schema) | No cast                             | **No cast**                       | Casts + vendor switch (honest: both reach the callback) |
+| B6 | Always-`as` policy (B3 + teach casts as required)     | Always `as GenericSchema`           | Same cast (does not change)       | Casts + vendor switch (same as Valibot-only + Mini)     |
 
-B5 is what is on the branch now.
+B5 was on the branch briefly. **B6 won** as the public story: docs and examples always assert at the host-converter call, even for Valibot-only / Mini-only. Not a new TypeScript kind — B3 chosen *on purpose*.
 
 ### C. Where the wrapper lives (tuck-away)
 
-These assume A6 + a decent B (ideally B5).
+These assume A6 + either B5 or B6.
 
 | #  | Solution                                                                                                            |
 | -- | ------------------------------------------------------------------------------------------------------------------- |
@@ -113,7 +114,7 @@ What does **not** carry over cleanly:
 - Valibot vs Mini vs mix are different snippets (and Mini’s options are `{ io, target }`, not `{ typeMode, target }`). Host IR has two field kinds; converter recipes are source text.
 - Copied options can go stale relative to `@valibot/to-json-schema` until the user re-runs the CLI. That staleness is the *point* of not owning a runtime package; it is also the cost.
 
-C5 does **not** replace B5. Generated Valibot-only / Zod+Valibot snippets can stay assertion-free because of B5. The mix snippet still carries host-converter assertions, tucked in the generated file.
+C5 does **not** replace A6 or the B-layer choice. Under B5, generated Valibot-only / Zod+Valibot snippets can stay assertion-free; under B6, generated snippets always include `as`. The mix snippet carries host-converter assertions either way.
 
 ## Evaluation
 
@@ -133,11 +134,25 @@ C5 does **not** replace B5. Generated Valibot-only / Zod+Valibot snippets can st
 
 **B2 `unknown`** — Honest at the ArkEnv boundary, noisy at every call site. Twoslash bait (`schema: unknown`).
 
-**B3 `StandardSchemaV1`** — Honest *for ArkEnv*, dishonest *for the converter*. Forces `as GenericSchema` even when every field is Valibot.
+**B3 `StandardSchemaV1`** — Honest *for ArkEnv*, mismatch *for the converter*. Forces `as GenericSchema` even when every field is Valibot. As a *fallback* if clever typing fails: B-tier. As an *intentional* public story: see B6.
 
-**B4 `T[keyof T]`** — Almost. Valibot-only is nice. Adding Zod pollutes the callback with a type that never arrives. Tax unfairness is the bad feeling.
+**B4 `T[keyof T]`** — Almost. Valibot-only is nice. Adding Zod pollutes the callback with a type that never arrives. Tax unfairness is the bad feeling (“I asserted Valibot so I could use Zod”).
 
-**B5 `ToJsonSchemaInput<T>`** — Best honesty/tax-fairness. Types follow the probes. Mix of two off-value libs still needs casts; those casts are for a real union, not for Zod-that-isn’t-there.
+**B5 `ToJsonSchemaInput<T>`** — Best honesty/tax-fairness *when it works*. Types follow the probes. Zod + Valibot stays assertion-free. Cost: a second rule for Valibot + Mini (casts appear). Users can hit a “wait but…” when the map gains a second off-value library, or when reading why Zod+Valibot needs no `as` but Mini+Valibot does. Implementation cost: `HasOnValueJsonSchema`, generic `ParseStandardConfig<T>`, plugin `T` threading, `as unknown` at runtime boundaries.
+
+**B6 Always-`as`** — Same types as B3; policy is “cast at every host-converter call.” One sentence of docs: *ArkEnv passes a Standard Schema; Valibot/Mini converters do not accept that type; assert at the call.* Metrics:
+
+| Metric | Score vs B5 |
+| --- | --- |
+| Honesty | Equal at ArkEnv boundary (`StandardSchemaV1`). Cast is honest about the converter boundary. Does not pretend the callback param is already `GenericSchema`. |
+| Tax fairness | **Reframe, not a loss.** Tax is for *calling that converter*, not for sibling keys. Adding Zod does **not** change the Valibot wrapper (cast was already there). The old bad feeling was B4’s *delta*; B6 has no delta. |
+| Simplicity / teachability | **Wins.** No branching: Valibot-only, Zod+Valibot, Mini-only all show `as`. Mix still needs a vendor switch, but that is “two converters,” not “ArkEnv typing phase of the moon.” |
+| Elegance | Feels like a downgrade next to B5’s no-cast Valibot-only. Gains elegance of *one model*. |
+| Composability | Equal for A6. Slightly less clever type plumbing to maintain. |
+| Footguns | Same as B3: `as` can lie if you assert the wrong vendor. Mix still needs care. No `any`. |
+| Maintenance hell | **Better than B5.** Drop `ToJsonSchemaInput`, probe-mirroring types, and most plugin generic threading for the callback. |
+
+The remaining “wait but…” under B6 is only Valibot+Mini (vendor switch + two casts). That case exists under B5 too. B6 does not invent it; B5’s special case for single-library maps invents the *other* branch.
 
 **C1 Inline** — Best simplicity and teachability. With B5, Valibot-only and Zod+Valibot are assertion-free. Converter sits next to `arkenv()`, not in the field map. Not DRY across many files; most apps have one `env.ts`.
 
@@ -149,11 +164,39 @@ C5 does **not** replace B5. Generated Valibot-only / Zod+Valibot snippets can st
 
 **C5 CLI recipe (host-preset analogue)** — Same DX as C2, distributed the way we already distribute host fields: copy into user source, evolve the template in the CLI, `npx arkenv@latest …` to pick up changes, no `@arkenv/valibot` to semver. Scores well on vendor neutrality and maintenance hell. Costs CLI surface, AST-splice complexity, and stale-copy semantics. Complements S; does not replace it. Init-time emission when the validator is Valibot is the cheap end of this spectrum; `add` for existing projects is the expensive end.
 
-## S and A usage by use case
+## Always-`as` usage (B6)
 
-**S** is C1 (inline wrapper) on B5. **A** is the same typing with the wrapper tucked away: C2 (named helper), C3 (`createEnv` factory), C5 (CLI emits C2 into the project). C5 is shown as a hypothetical command; the file it would write is the C2 snippet.
+Public callback type: `(schema: StandardSchemaV1) => object | undefined`. Docs always assert at the converter.
 
-Classic Zod never needs a callback. Off-value maps do. Zod + Valibot reuses the Valibot helper unchanged.
+**Valibot only / Zod + Valibot** (same wrapper either way):
+
+```ts
+toJsonSchema: (schema) =>
+  toJsonSchema(schema as v.GenericSchema, {
+    typeMode: "input",
+    target: "draft-07",
+  }),
+```
+
+**Zod Mini only:**
+
+```ts
+toJsonSchema: (schema) =>
+  z.toJSONSchema(schema as z.ZodMiniType, {
+    io: "input",
+    target: "draft-07",
+  }),
+```
+
+**Valibot + Zod Mini:** same vendor switch as today; both branches keep `as`. No special “only when mixing” rule — mixing is just two of the always-`as` calls behind a switch.
+
+C2 under B6 can still tuck the cast into a named helper typed as `GenericSchema` / `ZodMiniType` (wider param than `StandardSchemaV1` is assignable). The cast (or the wide param) lives once; `env.ts` stays a field map.
+
+## S and A usage by use case (B5 branch)
+
+**S** below is C1 on **B5** (what the branch teaches today). **A** is the same typing tucked away: C2 / C3 / C5. If B6 wins, swap the S snippets for the Always-`as` section above; A-tier placement (C2–C5) still applies.
+
+Classic Zod never needs a callback. Off-value maps do. Under B5, Zod + Valibot reuses the Valibot helper with no `as`.
 
 ### 1. Classic Zod only
 
@@ -451,20 +494,21 @@ Emits the C2 mix helper. This is the only recipe that still contains `as` casts.
 
 Solutions ranked as **answers to the whole problem** (coercion + types + call-site + who owns the snippet). Some are complete; some are pieces.
 
-**S**
+**S (chosen)**
 
-- **A6 + B5 + C1** — Callback, typed as off-value schemas only, inline wrapper. Default story. One `env.ts`, no Valibot tax for Zod, no `any`, no new exports, no CLI.
+- **A6 + B6 + C1** — Always-`as`. One rule. Cast is the converter boundary, not a map-shape tax. Shipped / shipping on `#1570`.
 
 **A**
 
-- **C2 on top of S** — Named helper when you want the schema map alone. User-land. Mix assertions stay in the helper.
-- **C5 on top of S** — How we would *ship* C2 without C4’s package. Same maintenance story as host presets. Worth it if init/add already need a Valibot dialect path; not required to close `#1564`.
-- **C3** — Same idea as C2 if you already own a `createEnv`. Not worth teaching as the happy path.
+- **A6 + B5 + C1** — Off-value-only typing. Best tax fairness and no-cast Valibot-only. Declined: map-dependent “when do I need `as`?” branch.
+- **C2 on top of S** — Named helper. Helper’s wide param (`GenericSchema`) absorbs the cast once.
+- **C5 on top of S** — CLI emits C2. Not required to close `#1564`.
+- **C3** — `createEnv` factory. Placement only.
 
 **B**
 
-- **C4 library helpers** — Correct instinct, wrong package. Revisit only with a vendor subpath or `@arkenv/valibot` — a different product decision, not a typing fix. Host presets exist specifically so we do not do this.
-- **B3 (`StandardSchemaV1`)** — Honest ArkEnv boundary, bad converter boundary. Acceptable fallback if B5 ever proves too clever.
+- **C4 library helpers** — Correct instinct, wrong package.
+- **B3 without B6 framing** — Same types as B6, but taught as “unfortunate cast” rather than “the rule.”
 
 **C**
 
@@ -474,7 +518,7 @@ Solutions ranked as **answers to the whole problem** (coercion + types + call-si
 
 **D**
 
-- **B1 (`any`)**
+- **B1 (`any`)** — Opposite of always-`as`: removes casts by lying.
 - **A3 bare `{ toJsonSchema }`**
 - **A4 auto-detect**
 - **A2 transforms as the documented path**
@@ -485,9 +529,11 @@ Solutions ranked as **answers to the whole problem** (coercion + types + call-si
 
 ## Current lean
 
-Keep **S** as the public API and docs default. Mention **C2** as optional tuck-away. Treat **C5** as the way to bless C2 later without taking C4’s maintenance hell: emit source from the CLI (especially Valibot init), do not export `valibotJsonSchema` from `@arkenv/standard`. Do not block `#1564` on C5.
+**B6 shipped as the public story.** Placement lean unchanged: C1 default, C2 optional tuck-away, C5 later without C4, do not block `#1564` on C5/C4.
 
 ## Changelog of this note
 
 - 2026-08-14: First write-up (layers A/B/C, metrics, tier list). Added C5 (CLI recipes / host-preset analogue).
 - 2026-08-14: S and A usage examples across Zod, Valibot, Mini, Zod+Valibot, Valibot+Mini.
+- 2026-08-14: Added B6 (always-`as`); re-ranked S-tier as B5 vs B6 contenders.
+- 2026-08-14: **Decision: B6.** Reverted `ToJsonSchemaInput`; public callback is `StandardSchemaV1` with documented `as` at converter calls.
