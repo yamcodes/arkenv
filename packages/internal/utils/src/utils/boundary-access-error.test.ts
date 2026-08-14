@@ -9,10 +9,10 @@ describe("boundaryAccessErrorMessage", () => {
 		expect(error).not.toBeInstanceOf(ArkEnvValidationError);
 		expect(error.name).toBe("Error");
 		expect(error.message).toBe(
-			"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data",
+			"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)",
 		);
-		expect(String(error)).toMatch(
-			/^Error: Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data$/,
+		expect(String(error)).toBe(
+			"Error: Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)",
 		);
 		expect(error.stack).toMatch(/^Error:/);
 	});

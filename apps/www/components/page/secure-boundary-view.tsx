@@ -141,7 +141,8 @@ export function SecureBoundaryView({
 							</div>
 							<div className="font-semibold text-rose-100 text-sm sm:text-base leading-snug">
 								Do not access server-only key &apos;DATABASE_URL&apos; on the
-								client since it will leak sensitive data
+								client since it will leak sensitive data (prevented by
+								ArkEnv)
 							</div>
 						</div>
 						<div className="text-zinc-400 text-xs leading-relaxed border-l-2 border-rose-500/50 pl-3 py-2 bg-black/30 rounded-r space-y-1">

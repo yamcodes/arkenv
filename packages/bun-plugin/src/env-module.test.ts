@@ -53,7 +53,7 @@ describe("transform mode helpers", () => {
 		expect(code).toContain('"BUN_PUBLIC_PORT": 8080');
 		expect(code).toContain('get ["DATABASE_URL"]()');
 		expect(code).toContain(
-			"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data",
+			"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)",
 		);
 		expect(code).not.toContain("error.name");
 		expect(code).not.toContain("ArkEnvAccessError");
@@ -152,7 +152,7 @@ describe("transform mode plugin", () => {
 			expect(code).toContain("8080");
 			expect(code).toContain("BUN_PUBLIC_DEBUG");
 			expect(code).toContain(
-				"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data",
+				"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)",
 			);
 			expect(code).not.toContain("error.name");
 			expect(code).not.toContain("ArkEnvAccessError");
@@ -261,11 +261,11 @@ describe("transform mode plugin", () => {
 				expect(error).toBeInstanceOf(Error);
 				expect(error).not.toBeInstanceOf(ArkEnvValidationError);
 				expect((error as Error).name).toBe("Error");
-				expect((error as Error).message).toMatch(
-					/Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data/,
+				expect((error as Error).message).toBe(
+					"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)",
 				);
-				expect(String(error)).toMatch(
-					/^Error: Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data/,
+				expect(String(error)).toBe(
+					"Error: Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)",
 				);
 			}
 		} finally {

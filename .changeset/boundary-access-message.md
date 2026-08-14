@@ -11,7 +11,7 @@
 If a Client Component (or browser bundle) reads a server-only key, the overlay now says:
 
 ```txt
-Error: Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data
+Error: Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)
 ```
 
 Do not catch this error. Move the read to the server.

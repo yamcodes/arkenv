@@ -276,4 +276,4 @@ Ranked for the problem as stated above (brand + catch trap + isolation + attribu
 
 ## Recommendation
 
-**Done.** ADR 0024 records the choice: `ArkEnvValidationError` (class) for schema failures, and a native `Error` in Next.js taint voice (`Do not … since it will leak sensitive data`) for boundary access. No `error.name` brand, no alias, no helper, no access class.
+**Done.** ADR 0024 records the choice: `ArkEnvValidationError` (class) for schema failures, and a native `Error` in Next.js taint voice (`Do not … since it will leak sensitive data (prevented by ArkEnv)`) for boundary access. No `error.name` brand, no alias, no helper, no access class.

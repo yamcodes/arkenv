@@ -54,7 +54,7 @@ export default function Page() {
 You can access client and shared variables. Reading a server-only key throws a native `Error` that is **not** an `ArkEnvValidationError` instance:
 
 ```txt
-Error: Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data
+Error: Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)
 ```
 
 ```tsx title="app/components/connection-status.tsx"
