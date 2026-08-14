@@ -2,13 +2,9 @@
 "@arkenv/standard": minor
 ---
 
-#### Add optional `toJsonSchema` for pre-coercion without Standard JSON Schema
+#### Add optional `toJsonSchema` coercion callback
 
-Some Standard Schema libraries validate env values but do not attach JSON Schema to each field. Without that metadata, ArkEnv cannot turn `"3000"` into `3000` or `"true"` into `true` before validation — so `v.number()`, Zod Mini `z.number()`, and Zod v3 `z.number()` fail on ordinary env strings.
-
-Pass `toJsonSchema` on the config object once. ArkEnv calls it only for keys that have no JSON Schema on the value. Return a plain JSON Schema object to coerce that key, or `undefined` to skip coercion for that key. If the callback throws or returns something that is not a plain object, that key fails with `ArkEnvError` (`INVALID_SCHEMA`).
-
-**Valibot** — install `@valibot/to-json-schema` and wrap the converter. Use `typeMode: "input"` and `target: "draft-07"` (a bare function reference uses Valibot's default `typeMode: "ignore"`, which mis-coerces piped schemas). Assert `as v.GenericSchema` at the call — host converters do not accept Standard Schema:
+Add an optional `toJsonSchema` coercion callback to the config object. This is needed to enable coercion for Standard Schema validators that omit per-field JSON Schema (Valibot and Zod Mini omit it to save space; Zod v3 never exposes Standard JSON Schema on the value).
 
 ```ts
 import arkenv from "@arkenv/standard";
@@ -16,10 +12,7 @@ import * as v from "valibot";
 import { toJsonSchema } from "@valibot/to-json-schema";
 
 export const env = arkenv(
-  {
-    PORT: v.number(),
-    DEBUG: v.boolean(),
-  },
+  { PORT: v.number(), DEBUG: v.boolean() },
   {
     toJsonSchema: (schema) =>
       toJsonSchema(schema as v.GenericSchema, {
@@ -28,46 +21,6 @@ export const env = arkenv(
       }),
   },
 );
-
-// PORT=3000 DEBUG=true → env.PORT is number, env.DEBUG is boolean
 ```
 
-**Zod 4.2+** — classic Zod already exposes JSON Schema on the value. Those keys coerce without `toJsonSchema`, and classic Zod never reaches the callback at runtime. You can keep the same Valibot wrapper in a mixed Valibot + Zod map.
-
-**Zod Mini** — conversion lives on `z.toJSONSchema`, not on the value. Assert `as z.ZodMiniType`:
-
-```ts
-import arkenv from "@arkenv/standard";
-import * as z from "zod/mini";
-
-export const env = arkenv(
-  { PORT: z.number(), DEBUG: z.boolean() },
-  {
-    toJsonSchema: (schema) =>
-      z.toJSONSchema(schema as z.ZodMiniType, {
-        io: "input",
-        target: "draft-07",
-      }),
-  },
-);
-```
-
-**Zod v3** — Standard Schema validation without Standard JSON Schema on the value (including `import { z } from "zod/v3"` on Zod 4). Convert with `zod-to-json-schema`:
-
-```ts
-import arkenv from "@arkenv/standard";
-import { z } from "zod/v3";
-import { zodToJsonSchema } from "zod-to-json-schema";
-
-export const env = arkenv(
-  { PORT: z.number(), DEBUG: z.boolean() },
-  {
-    toJsonSchema: (schema) =>
-      zodToJsonSchema(schema as z.ZodTypeAny, {
-        $refStrategy: "none",
-      }),
-  },
-);
-```
-
-The same `toJsonSchema` option is available on `@arkenv/standard` and on each framework `/standard` integration config.
+Note: ArkType and Zod v4.2+ do not need this — they already expose JSON Schema and never reach the callback. For Zod Mini, use `z.toJSONSchema(schema as z.ZodMiniType, { io: "input", target: "draft-07" })`. For Zod v3 (`zod` / `zod/v3`), use `zodToJsonSchema(schema as z.ZodTypeAny, { $refStrategy: "none" })` from `zod-to-json-schema`.
