@@ -59,14 +59,16 @@
 	}
 }
 
-/* Override search bar and keyboard shortcuts to use minimal radius */
+/* Override search bar and keyboard shortcuts to use minimal radius.
+ * Copy page menu is excluded — it needs a visible radius (see
+ * [data-docs-ai-menu-popover] below). */
 button[data-search-full],
 button[data-search],
 [data-search-full],
 [data-search],
 [data-card],
 .prose .rounded-xl,
-[data-radix-popper-content-wrapper] [role="dialog"],
+[data-radix-popper-content-wrapper] [role="dialog"]:not([data-docs-ai-menu-popover]),
 kbd {
 	border-radius: 0.125rem !important;
 }
@@ -491,6 +493,8 @@ button:has(+ #nd-sidebar-mobile) {
 [data-docs-ai-menu-popover] {
 	width: max-content !important;
 	max-width: min(24rem, 98vw);
+	border-radius: 0.5rem;
+	overflow: hidden;
 }
 
 [data-docs-ai-menu] {
