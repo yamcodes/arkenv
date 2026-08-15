@@ -536,6 +536,58 @@ main:has(.site-nav) {
 	}
 }
 
+/*
+ * Docs header: two modes, split at 1040px (same cutoff as center links).
+ * Compact: wordmark + search icon + menu (sidebar trigger still <960).
+ * Full: wordmark + links + Search ⌘K + utils.
+ */
+@media (max-width: 1039px) {
+	#nd-docs-layout .site-nav__links {
+		display: none;
+	}
+
+	#nd-docs-layout .site-nav__menu-toggle {
+		display: inline-flex;
+	}
+
+	#nd-docs-layout .site-nav__menu-panel {
+		display: flex;
+	}
+
+	#nd-docs-layout .site-nav__theme,
+	#nd-docs-layout .site-nav__github,
+	#nd-docs-layout .site-nav__action-label,
+	#nd-docs-layout .site-nav__action-keys {
+		display: none;
+	}
+
+	#nd-docs-layout .site-nav__action--search {
+		justify-content: center;
+		width: 2rem;
+		min-width: 2rem;
+		max-width: 2rem;
+		height: 2rem;
+		padding: 0;
+		background: transparent;
+		color: var(--foreground);
+		border-color: transparent;
+	}
+
+	#nd-docs-layout .site-nav__action--search .site-nav__action-icon {
+		width: 1.25rem;
+		height: 1.25rem;
+	}
+
+	#nd-docs-layout .site-nav__action--search:hover {
+		background: color-mix(
+			in oklch,
+			var(--secondary, var(--color-paper-3, #222)) 70%,
+			transparent
+		);
+		border-color: transparent;
+	}
+}
+
 .site-nav__menu-links {
 	flex: 1;
 	display: flex;
