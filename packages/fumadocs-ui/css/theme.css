@@ -324,6 +324,25 @@ aside .theme-toggle {
 }
 
 /*
+ * Copy page vs Copy for LLM — same 48rem cutoff as #nd-sidebar
+ * (`max-md:hidden`). Theme CSS (not Tailwind in dist) so the switch
+ * cannot drift from a stale package build.
+ */
+[data-docs-ai-actions="desktop"] {
+	display: none;
+}
+
+@media (min-width: 48rem) {
+	[data-docs-ai-actions="desktop"] {
+		display: block;
+	}
+
+	[data-docs-ai-actions="mobile"] {
+		display: none;
+	}
+}
+
+/*
  * Geistdocs/Turbo: hide the page tagline under ~960px. The mobile docs
  * chrome (Site Nav + title) carries orientation; the crumb is desktop-only.
  */

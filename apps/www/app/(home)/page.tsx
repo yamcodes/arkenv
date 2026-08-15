@@ -103,7 +103,7 @@ export default function HomePage() {
 					style={{ ["--reveal-delay" as string]: "80ms" }}
 				>
 					<InstallPanel />
-					<a href="/docs/getting-started" className="home-aurora__outro-docs">
+					<a href="/docs" className="home-aurora__outro-docs">
 						Read the docs
 						<span className="home-aurora__outro-docs-arrow" aria-hidden="true">
 							→

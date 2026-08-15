@@ -163,9 +163,9 @@ export type AIActionsProps = {
 	 */
 	pageUrl?: string;
 	/**
-	 * Which variant to render. Omit to render both, with CSS hiding the
-	 * inactive breakpoint. Use `"desktop"` beside the title and `"mobile"`
-	 * below the description.
+	 * Which variant to render. Omit to render both; CSS at 48rem (same as
+	 * the docs sidebar) hides the inactive one. Use `"desktop"` beside the
+	 * title and `"mobile"` below the description.
 	 */
 	only?: Viewport;
 	className?: string;
@@ -261,7 +261,7 @@ export function AIActions({
 	return (
 		<>
 			{only !== "mobile" ? (
-				<div className={cn("hidden lg:block", className)}>
+				<div data-docs-ai-actions="desktop" className={className}>
 					<div className="flex">
 						<button
 							type="button"
@@ -359,8 +359,9 @@ export function AIActions({
 			) : null}
 			{only !== "desktop" ? (
 				<div
+					data-docs-ai-actions="mobile"
 					className={cn(
-						"flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-fd-border pb-3 lg:hidden",
+						"flex flex-wrap items-center gap-x-3 gap-y-2",
 						className,
 					)}
 				>

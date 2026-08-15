@@ -3,7 +3,7 @@
 export function QuickstartButton() {
 	return (
 		<a
-			href="/docs/getting-started"
+			href="/docs"
 			className="home-aurora__mobile-cta home-aurora__docs-cta"
 		>
 			Read the docs

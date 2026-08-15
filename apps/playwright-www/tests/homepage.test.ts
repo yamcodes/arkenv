@@ -54,16 +54,16 @@ test.describe("Homepage Interactivity", () => {
 		expect(starts).toBeLessThanOrEqual(expected * 2);
 	});
 
-	test("should have functional 'Quickstart' button", async ({ page }) => {
+	test("should have functional 'Read the docs' button", async ({ page }) => {
 		await page.goto("/");
-		const sailButton = page.locator("a[href='/docs/getting-started']").first();
-		await expect(sailButton).toBeVisible();
+		const docsButton = page.getByRole("link", { name: "Read the docs" }).first();
+		await expect(docsButton).toBeVisible();
 
 		await Promise.all([
-			page.waitForURL("**/docs/getting-started", { timeout: 30000 }),
-			sailButton.click(),
+			page.waitForURL("**/docs", { timeout: 30000 }),
+			docsButton.click(),
 		]);
-		await expect(page).toHaveURL("/docs/getting-started");
+		await expect(page).toHaveURL("/docs");
 	});
 
 	test("should have GitHub star link with correct security attributes", async ({
