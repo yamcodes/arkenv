@@ -1,251 +1,419 @@
 "use client";
+
+import {
+	SiClaude,
+	SiCursor,
+	SiGithub,
+	SiMarkdown,
+} from "@icons-pack/react-simple-icons";
 import { buttonVariants } from "fumadocs-ui/components/ui/button";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from "fumadocs-ui/components/ui/popover";
-import { useCopyButton } from "fumadocs-ui/utils/use-copy-button";
+import { ArrowUpRight, Check, ChevronDown, Copy } from "lucide-react";
 import {
-	Check,
-	ChevronDown,
-	Copy,
-	ExternalLinkIcon,
-	MessageCircleIcon,
-} from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+	type MouseEventHandler,
+	type ReactNode,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 import { cn } from "@/utils/cn";
 
-const cache = new Map<string, string>();
+const pageTextCache = new Map<string, string>();
 
+const controlClassName = cn(
+	buttonVariants({
+		color: "secondary",
+		size: "sm",
+	}),
+	"border border-fd-border bg-fd-secondary/40 hover:bg-fd-accent",
+);
+
+const compactLinkClassName =
+	"inline-flex items-center gap-1.5 whitespace-nowrap text-xs font-medium text-fd-muted-foreground transition-colors hover:text-fd-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-ring [&_svg]:size-3.5 [&_svg]:shrink-0";
+
+const menuRowClassName =
+	"flex w-full items-center gap-3 rounded-md p-2 text-left text-sm transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-ring";
+
+type Viewport = "desktop" | "mobile";
+
+type ChatLink = {
+	id: string;
+	label: string;
+	description: string;
+	icon: ReactNode;
+	href: (prompt: string) => string;
+};
+
+/**
+ * ChatGPT mark. Simple Icons does not ship OpenAI / ChatGPT brand icons.
+ */
+function ChatGptMark({ className }: { className?: string }) {
+	return (
+		<svg
+			aria-hidden="true"
+			className={className}
+			fill="currentColor"
+			viewBox="0 0 24 24"
+		>
+			<path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.182a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.046 6.046 0 0 0 6.505 2.9 5.985 5.985 0 0 0 5.226 2.965 6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.778-2.758a.795.795 0 0 0 .393-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.814 3.354-2.02 1.168a.076.076 0 0 1-.071.006l-4.776-2.758A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071-.006l4.776 2.758a4.494 4.494 0 0 1-.676 8.104v-5.677a.79.79 0 0 0-.407-.668zm2.01-3.023-.142-.085-4.773-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.77-2.757a4.5 4.5 0 0 1 6.68 4.66zM8.306 12.863l-2.02-1.164a.08.08 0 0 1-.038-.057V6.074a4.5 4.5 0 0 1 7.376-3.454l-.142.08L8.704 5.459a.795.795 0 0 0-.393.681zm1.098-2.365 2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z" />
+		</svg>
+	);
+}
+
+const brandIconProps = {
+	"aria-hidden": true,
+	className: "size-4 shrink-0",
+	size: 16,
+	title: "",
+} as const;
+
+const chatLinks: ChatLink[] = [
+	{
+		id: "chatgpt",
+		label: "Open in ChatGPT",
+		description: "Ask ChatGPT about this page",
+		icon: <ChatGptMark className="size-4 shrink-0" />,
+		href: (prompt) =>
+			`https://chatgpt.com/?${new URLSearchParams({
+				hints: "search",
+				q: prompt,
+			}).toString()}`,
+	},
+	{
+		id: "claude",
+		label: "Open in Claude",
+		description: "Ask Claude about this page",
+		icon: <SiClaude {...brandIconProps} />,
+		href: (prompt) =>
+			`https://claude.ai/new?${new URLSearchParams({ q: prompt }).toString()}`,
+	},
+	{
+		id: "cursor",
+		label: "Open in Cursor",
+		description: "Ask Cursor about this page",
+		icon: <SiCursor {...brandIconProps} />,
+		href: (prompt) => {
+			const url = new URL("https://cursor.com/link/prompt");
+			url.searchParams.set("text", prompt);
+			return url.toString();
+		},
+	},
+];
+
+/**
+ * Resolve a docs path against the current origin for chat prompts.
+ *
+ * @param href Page URL, absolute or site-relative
+ * @param origin Optional origin used to resolve relative URLs
+ * @returns Absolute URL when an origin is available
+ */
+function resolvePageHref(href: string, origin?: string): string {
+	return origin ? new URL(href, origin).toString() : href;
+}
+
+function ExternalMark() {
+	return (
+		<ArrowUpRight aria-hidden="true" className="size-3.5 shrink-0 opacity-50" />
+	);
+}
+
+function MenuRow({
+	description,
+	external,
+	icon,
+	label,
+}: {
+	description?: string;
+	external?: boolean;
+	icon: ReactNode;
+	label: string;
+}) {
+	return (
+		<>
+			<span className="text-fd-muted-foreground">{icon}</span>
+			<span className="flex min-w-0 flex-1 flex-col gap-0.5 whitespace-nowrap">
+				<span className="text-fd-foreground">{label}</span>
+				{description ? (
+					<span className="text-xs text-fd-muted-foreground">
+						{description}
+					</span>
+				) : null}
+			</span>
+			<span
+				aria-hidden="true"
+				className="flex size-3.5 shrink-0 items-center justify-center"
+			>
+				{external ? <ExternalMark /> : null}
+			</span>
+		</>
+	);
+}
+
+export type AIActionsProps = {
+	markdownUrl: string;
+	githubUrl: string;
+	/**
+	 * Canonical docs page URL used in "open in chat" prompts.
+	 * Defaults to `markdownUrl` with a trailing `.md` / `.mdx` stripped.
+	 */
+	pageUrl?: string;
+	/**
+	 * Which variant to render. Omit to render both, with CSS hiding the
+	 * inactive breakpoint. Use `"desktop"` beside the title and `"mobile"`
+	 * below the description.
+	 */
+	only?: Viewport;
+	className?: string;
+};
+
+/**
+ * Copy the current docs page and offer Markdown, chat, and GitHub shortcuts.
+ *
+ * @param markdownUrl URL that returns the page Markdown
+ * @param githubUrl Edit-on-GitHub URL for this page
+ * @param pageUrl Canonical docs page URL used in chat prompts
+ * @param only Optional viewport variant to render
+ * @param className Optional class name for the root element
+ */
 export function AIActions({
 	markdownUrl,
 	githubUrl,
-}: {
-	markdownUrl: string;
-	githubUrl: string;
-}) {
-	const [isLoading, setLoading] = useState(false);
+	pageUrl,
+	only,
+	className,
+}: AIActionsProps) {
 	const [origin, setOrigin] = useState<string | null>(null);
+	const [menuOpen, setMenuOpen] = useState(false);
+	const [copied, setCopied] = useState(false);
 	const [copyError, setCopyError] = useState<string | null>(null);
 
 	useEffect(() => {
 		setOrigin(window.location.origin);
 	}, []);
 
-	const [checked, onClick] = useCopyButton(async () => {
-		setCopyError(null);
-		const cached = cache.get(markdownUrl);
-		if (cached) return navigator.clipboard.writeText(cached);
+	useEffect(() => {
+		if (!copied && !copyError) return;
+		const id = window.setTimeout(() => {
+			setCopied(false);
+			setCopyError(null);
+		}, 1500);
+		return () => window.clearTimeout(id);
+	}, [copied, copyError]);
 
-		setLoading(true);
+	const loadPageText = useCallback(async () => {
+		const cached = pageTextCache.get(markdownUrl);
+		if (cached) return cached;
 
-		try {
-			await navigator.clipboard.write([
-				new ClipboardItem({
-					"text/plain": fetch(markdownUrl).then(async (res) => {
-						if (!res.ok) {
-							throw new Error(`Failed to fetch markdown: ${res.statusText}`);
-						}
-						const content = await res.text();
-						cache.set(markdownUrl, content);
-
-						return content;
-					}),
-				}),
-			]);
-		} catch (err: any) {
-			console.error("Clipboard error:", err);
-			setCopyError(err.message || "Failed to copy");
-			setTimeout(() => setCopyError(null), 5000);
-		} finally {
-			setLoading(false);
+		const response = await fetch(markdownUrl);
+		if (!response.ok) {
+			throw new Error(`Failed to load page text: ${response.statusText}`);
 		}
-	});
+		const content = await response.text();
+		pageTextCache.set(markdownUrl, content);
+		return content;
+	}, [markdownUrl]);
 
-	const items = useMemo(() => {
-		if (!origin) return [];
+	const copyPage = useCallback(async () => {
+		try {
+			await navigator.clipboard.writeText(await loadPageText());
+			setCopyError(null);
+			setCopied(true);
+		} catch (error) {
+			console.error("Failed to copy page", error);
+			setCopied(false);
+			setCopyError("Couldn't copy page");
+		}
+	}, [loadPageText]);
 
-		const fullMarkdownUrl = new URL(markdownUrl, origin);
-		const q = `Read ${fullMarkdownUrl}, I want to ask questions about it.`;
+	const openMarkdown = useCallback(() => {
+		window.open(markdownUrl, "_blank", "noopener,noreferrer");
+		setMenuOpen(false);
+	}, [markdownUrl]);
 
-		return [
-			{
-				title: "Open in GitHub",
-				href: githubUrl,
-				icon: (
-					<svg
-						fill="currentColor"
-						role="img"
-						viewBox="0 0 24 24"
-						className="size-4"
-					>
-						<title>GitHub</title>
-						<path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-					</svg>
-				),
-			},
-			{
-				title: "Open in Scira AI",
-				href: `https://scira.ai/?${new URLSearchParams({
-					q,
-				})}`,
-				icon: (
-					<svg
-						width="910"
-						height="934"
-						viewBox="0 0 910 934"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg"
-						className="size-4"
-					>
-						<title>Scira AI</title>
-						<path
-							d="M647.664 197.775C569.13 189.049 525.5 145.419 516.774 66.8849C508.048 145.419 464.418 189.049 385.884 197.775C464.418 206.501 508.048 250.131 516.774 328.665C525.5 250.131 569.13 206.501 647.664 197.775Z"
-							fill="currentColor"
-							stroke="currentColor"
-							strokeWidth="8"
-							strokeLinejoin="round"
-						/>
-						<path
-							d="M516.774 304.217C510.299 275.491 498.208 252.087 480.335 234.214C462.462 216.341 439.058 204.251 410.333 197.775C439.059 191.3 462.462 179.209 480.335 161.336C498.208 143.463 510.299 120.06 516.774 91.334C523.25 120.059 535.34 143.463 553.213 161.336C571.086 179.209 594.49 191.3 623.216 197.775C594.49 204.251 571.086 216.341 553.213 234.214C535.34 252.087 523.25 275.491 516.774 304.217Z"
-							fill="currentColor"
-							stroke="currentColor"
-							strokeWidth="8"
-							strokeLinejoin="round"
-						/>
-						<path
-							d="M857.5 508.116C763.259 497.644 710.903 445.288 700.432 351.047C689.961 445.288 637.605 497.644 543.364 508.116C637.605 518.587 689.961 570.943 700.432 665.184C710.903 570.943 763.259 518.587 857.5 508.116Z"
-							stroke="currentColor"
-							strokeWidth="20"
-							strokeLinejoin="round"
-						/>
-						<path
-							d="M700.432 615.957C691.848 589.05 678.575 566.357 660.383 548.165C642.191 529.973 619.499 516.7 592.593 508.116C619.499 499.533 642.191 486.258 660.383 468.066C678.575 449.874 691.848 427.181 700.432 400.274C709.015 427.181 722.289 449.874 740.481 468.066C758.673 486.258 781.365 499.533 808.271 508.116C781.365 516.7 758.673 529.973 740.481 548.165C722.289 566.357 709.015 589.05 700.432 615.957Z"
-							stroke="currentColor"
-							strokeWidth="20"
-							strokeLinejoin="round"
-						/>
-						<path
-							d="M889.949 121.237C831.049 114.692 798.326 81.9698 791.782 23.0692C785.237 81.9698 752.515 114.692 693.614 121.237C752.515 127.781 785.237 160.504 791.782 219.404C798.326 160.504 831.049 127.781 889.949 121.237Z"
-							fill="currentColor"
-							stroke="currentColor"
-							strokeWidth="8"
-							strokeLinejoin="round"
-						/>
-						<path
-							d="M791.782 196.795C786.697 176.937 777.869 160.567 765.16 147.858C752.452 135.15 736.082 126.322 716.226 121.237C736.082 116.152 752.452 107.324 765.16 94.6152C777.869 81.9065 786.697 65.5368 791.782 45.6797C796.867 65.5367 805.695 81.9066 818.403 94.6152C831.112 107.324 847.481 116.152 867.338 121.237C847.481 126.322 831.112 135.15 818.403 147.858C805.694 160.567 796.867 176.937 791.782 196.795Z"
-							fill="currentColor"
-							stroke="currentColor"
-							strokeWidth="8"
-							strokeLinejoin="round"
-						/>
-					</svg>
-				),
-			},
-			{
-				title: "Open in ChatGPT",
-				href: `https://chatgpt.com/?${new URLSearchParams({
-					hints: "search",
-					q,
-				})}`,
-				icon: (
-					<svg
-						role="img"
-						viewBox="0 0 24 24"
-						fill="currentColor"
-						xmlns="http://www.w3.org/2000/svg"
-						className="size-4"
-					>
-						<title>OpenAI</title>
-						<path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
-					</svg>
-				),
-			},
-			{
-				title: "Open in Claude",
-				href: `https://claude.ai/new?${new URLSearchParams({
-					q,
-				})}`,
-				icon: (
-					<svg
-						fill="currentColor"
-						role="img"
-						viewBox="0 0 24 24"
-						xmlns="http://www.w3.org/2000/svg"
-						className="size-4"
-					>
-						<title>Anthropic</title>
-						<path d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z" />
-					</svg>
-				),
-			},
-			{
-				title: "Open in T3 Chat",
-				href: `https://t3.chat/new?${new URLSearchParams({
-					q,
-				})}`,
-				icon: <MessageCircleIcon className="size-4" />,
-			},
-		];
-	}, [githubUrl, markdownUrl, origin]);
+	const copyAndClose: MouseEventHandler = useCallback(() => {
+		void copyPage();
+		setMenuOpen(false);
+	}, [copyPage]);
+
+	const canonicalUrl = pageUrl ?? markdownUrl.replace(/\.mdx?$/, "");
+	const chatPrompt = useMemo(() => {
+		const href = resolvePageHref(canonicalUrl, origin ?? undefined);
+		return `Read this page, I want to ask questions about it. ${href}`;
+	}, [canonicalUrl, origin]);
+
+	const CopyIcon = copied ? Check : Copy;
+	const copyLabel = copyError
+		? "Couldn't copy"
+		: copied
+			? "Copied"
+			: "Copy page";
+	const copyStatus = copied
+		? "Page copied"
+		: copyError
+			? "Couldn't copy page"
+			: "";
 
 	return (
-		<div className="flex items-center gap-2">
-			<button
-				type="button"
-				disabled={isLoading}
-				className={cn(
-					buttonVariants({
-						color: "secondary",
-						size: "sm",
-						className:
-							"gap-2 [&_svg]:size-3.5 [&_svg]:text-fd-muted-foreground",
-					}),
-				)}
-				onClick={onClick}
-			>
-				{checked ? <Check /> : <Copy />}
-				Copy Markdown
-			</button>
-			{copyError && (
-				<span
-					className="text-xs text-red-500 max-w-[200px] truncate"
-					title={copyError}
-				>
-					{copyError}
-				</span>
-			)}
-
-			<Popover>
-				<PopoverTrigger
+		<>
+			{only !== "mobile" ? (
+				<div className={cn("hidden lg:block", className)}>
+					<div className="flex">
+						<button
+							type="button"
+							className={cn(
+								controlClassName,
+								"rounded-l-md rounded-r-none gap-2",
+							)}
+							onClick={copyAndClose}
+						>
+							<CopyIcon className="size-4" />
+							{copyLabel}
+						</button>
+						<Popover open={menuOpen} onOpenChange={setMenuOpen}>
+							<PopoverTrigger
+								aria-label="More page actions"
+								className={cn(
+									controlClassName,
+									"rounded-l-none rounded-r-md border-l-0 px-2",
+								)}
+							>
+								<ChevronDown className="size-4" />
+							</PopoverTrigger>
+							<PopoverContent
+								align="end"
+								className="p-1"
+								sideOffset={8}
+								style={{ width: "max-content" }}
+							>
+								<div className="flex flex-col">
+									<button
+										type="button"
+										className={menuRowClassName}
+										onClick={copyAndClose}
+									>
+										<MenuRow
+											description="Copy page as Markdown for LLMs"
+											icon={<CopyIcon className="size-4" />}
+											label={copyLabel}
+										/>
+									</button>
+									<button
+										type="button"
+										className={menuRowClassName}
+										onClick={openMarkdown}
+									>
+										<MenuRow
+											description="Open this page as plain text"
+											external
+											icon={<SiMarkdown {...brandIconProps} />}
+											label="View as Markdown"
+										/>
+									</button>
+									{chatLinks.map((link) => (
+										<a
+											key={link.id}
+											href={link.href(chatPrompt)}
+											rel="noreferrer noopener"
+											target="_blank"
+											data-no-underline
+											data-no-arrow
+											className={menuRowClassName}
+											onClick={() => setMenuOpen(false)}
+										>
+											<MenuRow
+												description={link.description}
+												external
+												icon={link.icon}
+												label={link.label}
+											/>
+										</a>
+									))}
+									{githubUrl ? (
+										<a
+											href={githubUrl}
+											rel="noreferrer noopener"
+											target="_blank"
+											data-no-underline
+											data-no-arrow
+											className={menuRowClassName}
+											onClick={() => setMenuOpen(false)}
+										>
+											<MenuRow
+												description="Suggest changes to this page"
+												external
+												icon={<SiGithub {...brandIconProps} />}
+												label="Edit this page on GitHub"
+											/>
+										</a>
+									) : null}
+								</div>
+							</PopoverContent>
+						</Popover>
+					</div>
+				</div>
+			) : null}
+			{only !== "desktop" ? (
+				<div
 					className={cn(
-						buttonVariants({
-							color: "secondary",
-							size: "sm",
-							className: "gap-2",
-						}),
+						"flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-fd-border pb-3 lg:hidden",
+						className,
 					)}
 				>
-					Open
-					<ChevronDown className="size-3.5 text-fd-muted-foreground" />
-				</PopoverTrigger>
-				<PopoverContent className="flex flex-col p-1">
-					{items.map((item: any) => (
-						<a
-							key={item.href}
-							href={item.href}
-							rel="noreferrer noopener"
-							target="_blank"
-							className="text-sm p-2 rounded-lg inline-flex items-center gap-2 hover:text-fd-accent-foreground hover:bg-fd-accent [&_svg]:size-4"
-						>
-							{item.icon}
-							{item.title}
-							<ExternalLinkIcon className="text-fd-muted-foreground size-3.5 ms-auto" />
-						</a>
-					))}
-				</PopoverContent>
-			</Popover>
-		</div>
+					<button
+						type="button"
+						className={compactLinkClassName}
+						onClick={() => {
+							void copyPage();
+						}}
+					>
+						<CopyIcon />
+						<span>
+							{copied ? "Copied" : copyError ? "Couldn't copy" : "Copy for LLM"}
+						</span>
+					</button>
+					<span
+						aria-hidden="true"
+						className="hidden h-4 w-px shrink-0 bg-fd-border sm:block"
+					/>
+					<button
+						type="button"
+						className={cn(compactLinkClassName, "max-sm:hidden")}
+						onClick={openMarkdown}
+					>
+						<SiMarkdown aria-hidden="true" size={14} title="" />
+						<span>View Markdown</span>
+						<ExternalMark />
+					</button>
+					{githubUrl ? (
+						<>
+							<span
+								aria-hidden="true"
+								className="h-4 w-px shrink-0 bg-fd-border"
+							/>
+							<a
+								href={githubUrl}
+								rel="noreferrer noopener"
+								target="_blank"
+								data-no-underline
+								data-no-arrow
+								className={compactLinkClassName}
+							>
+								<SiGithub aria-hidden="true" size={14} title="" />
+								<span>Edit on GitHub</span>
+								<ExternalMark />
+							</a>
+						</>
+					) : null}
+				</div>
+			) : null}
+			<span aria-live="polite" className="sr-only">
+				{copyStatus}
+			</span>
+		</>
 	);
 }

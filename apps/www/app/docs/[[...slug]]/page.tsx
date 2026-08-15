@@ -53,14 +53,28 @@ export default async function Page(props: {
 			slots={{ breadcrumb: DocsBreadcrumb, toc: docsTocSlots }}
 		>
 			<div className="grow">
-				<DocsTitle className="mb-4 text-[2.125em] font-medium">
-					{page.data.title}
-				</DocsTitle>
-				<DocsDescription>{page.data.description}</DocsDescription>
-				<div className="flex flex-row gap-2 items-center border-b pt-2 pb-6 mb-8 mt-4">
-					<AIActions markdownUrl={`${page.url}.mdx`} githubUrl={editHref} />
+				<div className="flex flex-col-reverse gap-3 lg:flex-row lg:items-center lg:justify-between">
+					<DocsTitle className="mb-0 min-w-0 text-[2.125em] font-medium">
+						{page.data.title}
+					</DocsTitle>
+					<AIActions
+						only="desktop"
+						markdownUrl={`${page.url}.mdx`}
+						pageUrl={page.url}
+						githubUrl={editHref}
+					/>
 				</div>
-				<DocsBody>
+				<DocsDescription className="mb-0 mt-1">
+					{page.data.description}
+				</DocsDescription>
+				<AIActions
+					only="mobile"
+					className="mt-3 mb-6"
+					markdownUrl={`${page.url}.mdx`}
+					pageUrl={page.url}
+					githubUrl={editHref}
+				/>
+				<DocsBody className="lg:mt-6">
 					<MDX
 						components={getMDXComponents({
 							// this allows you to link to other pages with relative file paths
