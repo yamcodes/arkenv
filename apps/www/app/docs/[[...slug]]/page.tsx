@@ -39,7 +39,7 @@ export default async function Page(props: {
 		<DocsTocLinks pageTitle={page.data.title} editHref={editHref} />
 	);
 
-	// Floating Site Nav conflicts with the sticky TOC popover below xl; keep the desktop TOC rail only.
+	// Floating Site Nav conflicts with the sticky TOC popover below 1200px; keep the desktop TOC rail only.
 	// Re-enable via FeatureFlags.DOCS_TOC_POPOVER / NEXT_PUBLIC_DOCS_TOC_POPOVER=true.
 	return (
 		<DocsPage

@@ -365,6 +365,34 @@ aside .theme-toggle {
 }
 
 /*
+ * TOC rail — geistdocs/Turbo `--breakpoint-xl: 1200px` (`hidden` + `xl:flex`).
+ * Stock fumadocs uses Tailwind xl (1280px), so the rail vanished 80px earlier.
+ */
+@media (width < 1200px) {
+	#nd-docs-layout {
+		--fd-toc-width: 0px;
+	}
+
+	#nd-toc {
+		display: none;
+	}
+}
+
+@media (min-width: 1200px) {
+	#nd-docs-layout:has(#nd-toc) {
+		--fd-toc-width: 268px;
+	}
+
+	#nd-toc {
+		display: flex;
+	}
+
+	#nd-tocnav {
+		display: none;
+	}
+}
+
+/*
  * Article top inset — just above sidebar / TOC content start (pt-12).
  * Header spacer already clears the Site Nav; small screens use py-6
  * (1.5rem) like geistdocs/Turbo.

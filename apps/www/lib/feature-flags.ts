@@ -12,7 +12,7 @@ export const FeatureFlags = {
 	 */
 	DISCORD_LINK: process.env.NEXT_PUBLIC_DISCORD_LINK === "true",
 	/**
-	 * Show Fumadocs sticky “On this page” TOC popover below xl.
+	 * Show Fumadocs sticky “On this page” TOC popover below 1200px.
 	 * Off by default — conflicts with the floating Site Nav (gap under the docs bar).
 	 */
 	DOCS_TOC_POPOVER: process.env.NEXT_PUBLIC_DOCS_TOC_POPOVER === "true",

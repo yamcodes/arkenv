@@ -9,7 +9,7 @@ import {
 import type { ComponentProps } from "react";
 
 const tocColumnClassName =
-	"sticky top-(--fd-docs-row-1) h-[calc(var(--fd-docs-height)-var(--fd-docs-row-1))] flex flex-col [grid-area:toc] w-(--fd-toc-width) pt-12 pe-4 pb-2 xl:layout:[--fd-toc-width:268px] max-xl:hidden";
+	"sticky top-(--fd-docs-row-1) h-[calc(var(--fd-docs-height)-var(--fd-docs-row-1))] flex flex-col [grid-area:toc] w-(--fd-toc-width) pt-12 pe-4 pb-2 min-[1200px]:layout:[--fd-toc-width:268px] max-[1199px]:hidden";
 
 /**
  * TOC rail: keep the layout column when a footer exists, but hide the
@@ -25,7 +25,7 @@ function DocsTOCMain(props: ComponentProps<typeof TOC>) {
 				<div
 					id="nd-toc"
 					aria-hidden="true"
-					className="sticky top-(--fd-docs-row-1) h-[calc(var(--fd-docs-height)-var(--fd-docs-row-1))] [grid-area:toc] w-(--fd-toc-width) xl:layout:[--fd-toc-width:268px] max-xl:hidden"
+					className="sticky top-(--fd-docs-row-1) h-[calc(var(--fd-docs-height)-var(--fd-docs-row-1))] [grid-area:toc] w-(--fd-toc-width) min-[1200px]:layout:[--fd-toc-width:268px] max-[1199px]:hidden"
 				/>
 			);
 		}
