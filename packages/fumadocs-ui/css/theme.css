@@ -330,13 +330,6 @@ aside .theme-toggle {
 	display: none;
 }
 
-[data-docs-ai-actions="mobile"] {
-	flex-wrap: nowrap;
-	overflow: hidden;
-	min-width: 0;
-	width: 100%;
-}
-
 @media (min-width: 960px) {
 	[data-docs-ai-actions="desktop"] {
 		display: block;

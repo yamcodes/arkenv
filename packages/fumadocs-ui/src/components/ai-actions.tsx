@@ -80,14 +80,15 @@ function OverflowActionsRow({
 
 	return (
 		<div
-			ref={ref}
 			data-docs-ai-actions="mobile"
-			className={cn(
-				"flex w-full min-w-0 flex-nowrap items-center gap-x-3 overflow-hidden",
-				className,
-			)}
+			className={cn("border-b border-fd-border pb-3", className)}
 		>
-			{children}
+			<div
+				ref={ref}
+				className="flex w-full min-w-0 flex-nowrap items-center gap-x-3 overflow-hidden"
+			>
+				{children}
+			</div>
 		</div>
 	);
 }
