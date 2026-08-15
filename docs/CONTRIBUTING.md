@@ -36,6 +36,14 @@ Don't let the label names give you the wrong impression: `ready for agent` simpl
    pnpm install
    ```
 
+4. ### Run the docs site
+
+   ```sh
+   pnpm www
+   ```
+
+   This starts a single `next dev` server at [http://localhost:3000](http://localhost:3000). Docs videos use [next-video](https://github.com/muxinc/next-video): add files to `apps/www/videos/`, then run a one-shot `next-video sync` (`pnpm --filter www video:sync`, or restart `pnpm www` so `predev` runs it). Commit the generated `videos/*.json` files. Do not run `next-video sync -w` beside `next dev` — that races Next.js 16.2's lock.
+
 ## Making changes
 
 1. Fork the repository and create your branch from `dev`
