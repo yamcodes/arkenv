@@ -12,7 +12,6 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "fumadocs-ui/components/ui/popover";
-import { useCopyButton } from "fumadocs-ui/utils/use-copy-button";
 import { ArrowUpRight, Check, ChevronDown, Copy } from "lucide-react";
 import {
 	type MouseEventHandler,
@@ -190,10 +189,21 @@ export function AIActions({
 }: AIActionsProps) {
 	const [origin, setOrigin] = useState<string | null>(null);
 	const [menuOpen, setMenuOpen] = useState(false);
+	const [copied, setCopied] = useState(false);
+	const [copyError, setCopyError] = useState<string | null>(null);
 
 	useEffect(() => {
 		setOrigin(window.location.origin);
 	}, []);
+
+	useEffect(() => {
+		if (!copied && !copyError) return;
+		const id = window.setTimeout(() => {
+			setCopied(false);
+			setCopyError(null);
+		}, 1500);
+		return () => window.clearTimeout(id);
+	}, [copied, copyError]);
 
 	const loadPageText = useCallback(async () => {
 		const cached = pageTextCache.get(markdownUrl);
@@ -208,22 +218,27 @@ export function AIActions({
 		return content;
 	}, [markdownUrl]);
 
-	const [copied, onCopy] = useCopyButton(async () => {
-		await navigator.clipboard.writeText(await loadPageText());
-	});
+	const copyPage = useCallback(async () => {
+		try {
+			await navigator.clipboard.writeText(await loadPageText());
+			setCopyError(null);
+			setCopied(true);
+		} catch (error) {
+			console.error("Failed to copy page", error);
+			setCopied(false);
+			setCopyError("Couldn't copy page");
+		}
+	}, [loadPageText]);
 
 	const openMarkdown = useCallback(() => {
 		window.open(markdownUrl, "_blank", "noopener,noreferrer");
 		setMenuOpen(false);
 	}, [markdownUrl]);
 
-	const copyAndClose: MouseEventHandler = useCallback(
-		(event) => {
-			onCopy(event);
-			setMenuOpen(false);
-		},
-		[onCopy],
-	);
+	const copyAndClose: MouseEventHandler = useCallback(() => {
+		void copyPage();
+		setMenuOpen(false);
+	}, [copyPage]);
 
 	const canonicalUrl = pageUrl ?? markdownUrl.replace(/\.mdx?$/, "");
 	const chatPrompt = useMemo(() => {
@@ -232,7 +247,12 @@ export function AIActions({
 	}, [canonicalUrl, origin]);
 
 	const CopyIcon = copied ? Check : Copy;
-	const copyLabel = copied ? "Copied" : "Copy page";
+	const copyLabel = copyError ? "Couldn't copy" : copied ? "Copied" : "Copy page";
+	const copyStatus = copied
+		? "Page copied"
+		: copyError
+			? "Couldn't copy page"
+			: "";
 
 	return (
 		<>
@@ -241,7 +261,6 @@ export function AIActions({
 					<div className="flex">
 						<button
 							type="button"
-							aria-label="Copy page"
 							className={cn(
 								controlClassName,
 								"rounded-l-md rounded-r-none gap-2",
@@ -263,7 +282,7 @@ export function AIActions({
 							</PopoverTrigger>
 							<PopoverContent
 								align="end"
-								className="w-max min-w-max p-1"
+								className="p-1"
 								sideOffset={8}
 								style={{ width: "max-content" }}
 							>
@@ -318,6 +337,7 @@ export function AIActions({
 											data-no-underline
 											data-no-arrow
 											className={menuRowClassName}
+											onClick={() => setMenuOpen(false)}
 										>
 											<MenuRow
 												description="Suggest changes to this page"
@@ -343,10 +363,12 @@ export function AIActions({
 					<button
 						type="button"
 						className={compactLinkClassName}
-						onClick={onCopy}
+						onClick={() => {
+							void copyPage();
+						}}
 					>
 						<CopyIcon />
-						<span>{copied ? "Copied" : "Copy for LLM"}</span>
+						<span>{copied ? "Copied" : copyError ? "Couldn't copy" : "Copy for LLM"}</span>
 					</button>
 					<span
 						aria-hidden="true"
@@ -384,7 +406,7 @@ export function AIActions({
 				</div>
 			) : null}
 			<span aria-live="polite" className="sr-only">
-				{copied ? "Page copied" : ""}
+				{copyStatus}
 			</span>
 		</>
 	);

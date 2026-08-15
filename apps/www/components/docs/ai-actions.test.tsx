@@ -105,4 +105,55 @@ describe("AIActions", () => {
 			screen.getByRole("link", { name: /Edit this page on GitHub/i }),
 		).toHaveAttribute("href", "https://github.com/yamcodes/arkenv");
 	});
+
+	it("closes the desktop menu after choosing Edit this page on GitHub", async () => {
+		const user = userEvent.setup();
+		render(
+			<AIActions
+				only="desktop"
+				markdownUrl="/docs/getting-started.mdx"
+				pageUrl="/docs/getting-started"
+				githubUrl="https://github.com/yamcodes/arkenv"
+			/>,
+		);
+
+		await user.click(screen.getByRole("button", { name: "More page actions" }));
+		await user.click(
+			screen.getByRole("link", { name: /Edit this page on GitHub/i }),
+		);
+
+		await waitFor(() => {
+			expect(
+				screen.queryByRole("link", { name: /Edit this page on GitHub/i }),
+			).not.toBeInTheDocument();
+		});
+	});
+
+	it("announces when copying the page fails", async () => {
+		const user = userEvent.setup();
+		vi.spyOn(console, "error").mockImplementation(() => {});
+		vi.stubGlobal(
+			"fetch",
+			vi.fn().mockResolvedValue({
+				ok: false,
+				statusText: "Not Found",
+			}),
+		);
+
+		render(
+			<AIActions
+				only="desktop"
+				markdownUrl="/docs/missing.mdx"
+				pageUrl="/docs/missing"
+				githubUrl="https://github.com/yamcodes/arkenv"
+			/>,
+		);
+
+		await user.click(screen.getByRole("button", { name: "Copy page" }));
+
+		await waitFor(() => {
+			expect(screen.getByText("Couldn't copy")).toBeInTheDocument();
+		});
+		expect(screen.getByText("Couldn't copy page")).toBeInTheDocument();
+	});
 });
