@@ -247,7 +247,11 @@ export function AIActions({
 	}, [canonicalUrl, origin]);
 
 	const CopyIcon = copied ? Check : Copy;
-	const copyLabel = copyError ? "Couldn't copy" : copied ? "Copied" : "Copy page";
+	const copyLabel = copyError
+		? "Couldn't copy"
+		: copied
+			? "Copied"
+			: "Copy page";
 	const copyStatus = copied
 		? "Page copied"
 		: copyError
@@ -368,7 +372,9 @@ export function AIActions({
 						}}
 					>
 						<CopyIcon />
-						<span>{copied ? "Copied" : copyError ? "Couldn't copy" : "Copy for LLM"}</span>
+						<span>
+							{copied ? "Copied" : copyError ? "Couldn't copy" : "Copy for LLM"}
+						</span>
 					</button>
 					<span
 						aria-hidden="true"
