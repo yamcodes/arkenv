@@ -148,7 +148,12 @@ function MenuRow({
 					</span>
 				) : null}
 			</span>
-			{external ? <ExternalMark /> : null}
+			<span
+				aria-hidden="true"
+				className="flex size-3.5 shrink-0 items-center justify-center"
+			>
+				{external ? <ExternalMark /> : null}
+			</span>
 		</>
 	);
 }
