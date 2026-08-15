@@ -376,13 +376,10 @@ export function AIActions({
 							{copied ? "Copied" : copyError ? "Couldn't copy" : "Copy for LLM"}
 						</span>
 					</button>
-					<span
-						aria-hidden="true"
-						className="hidden h-4 w-px shrink-0 bg-fd-border sm:block"
-					/>
+					<span aria-hidden="true" className="h-4 w-px shrink-0 bg-fd-border" />
 					<button
 						type="button"
-						className={cn(compactLinkClassName, "max-sm:hidden")}
+						className={compactLinkClassName}
 						onClick={openMarkdown}
 					>
 						<SiMarkdown aria-hidden="true" size={14} title="" />

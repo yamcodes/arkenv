@@ -12,6 +12,6 @@ export * from "./scroll-reveal";
 export * from "./secure-boundary";
 export * from "./social-proof";
 export * from "./star-us-button";
-export * from "./type-safety-showcase";
+export * from "./typesafety-showcase";
 export * from "./video-demo";
 export * from "./window-chrome";

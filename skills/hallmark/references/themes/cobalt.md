@@ -87,7 +87,7 @@ Declarative, technical, specific. Name the X concretely. No hype adjectives.
 - *"Turn any website into clean Markdown for LLMs."*
 - *"One API. Every page."*
 - *"From idea to production in an afternoon."*
-- *"Type-safe by default. Fast by design."*
+- *"Typesafe by default. Fast by design."*
 - *"Built to ship - `200 OK` in under 200 ms."*
 
 Never any of: *seamless, robust, cutting-edge, leverage, synergy, revolutionary, unlock, supercharge*. Never "click here." Name the endpoint, the command, the number.
@@ -105,7 +105,7 @@ Never any of: *seamless, robust, cutting-edge, leverage, synergy, revolutionary,
 
 Cobalt should be a candidate when the brief mentions:
 
-- *API · SDK · CLI · dev tool · developer platform · docs · documentation · infrastructure · backend · database · observability · webhooks · type-safe · open-source tool · ship · deploy · developer experience · B2B developer*
+- *API · SDK · CLI · dev tool · developer platform · docs · documentation · infrastructure · backend · database · observability · webhooks · typesafe · open-source tool · ship · deploy · developer experience · B2B developer*
 - Product categories: *API · developer tool · dev platform · docs site · infra · SaaS-for-engineers*
 - Emotional tone: *precise · engineered · fast · technical · instrument-panel · calm-confident · cool*
 

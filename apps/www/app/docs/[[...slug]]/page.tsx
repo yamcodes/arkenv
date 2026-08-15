@@ -54,7 +54,7 @@ export default async function Page(props: {
 		>
 			<div className="grow">
 				<div className="flex flex-col-reverse gap-3 lg:flex-row lg:items-center lg:justify-between">
-					<DocsTitle className="mb-0 min-w-0 text-[2.125em] font-medium">
+					<DocsTitle className="mb-0 min-w-0 text-balance text-4xl font-medium tracking-tight">
 						{page.data.title}
 					</DocsTitle>
 					<AIActions
@@ -64,17 +64,17 @@ export default async function Page(props: {
 						githubUrl={editHref}
 					/>
 				</div>
-				<DocsDescription className="mb-0 mt-1">
+				<DocsDescription className="mb-0 mt-2 text-lg">
 					{page.data.description}
 				</DocsDescription>
 				<AIActions
 					only="mobile"
-					className="mt-3 mb-6"
+					className="mt-4"
 					markdownUrl={`${page.url}.mdx`}
 					pageUrl={page.url}
 					githubUrl={editHref}
 				/>
-				<DocsBody className="lg:mt-6">
+				<DocsBody className="mt-6">
 					<MDX
 						components={getMDXComponents({
 							// this allows you to link to other pages with relative file paths

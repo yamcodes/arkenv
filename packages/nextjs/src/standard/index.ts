@@ -17,7 +17,7 @@ type ClientVisibleKeys<
 }[keyof TSchema];
 
 /**
- * Create a validated, type-safe environment configuration for Next.js applications in Standard Mode.
+ * Create a validated, typesafe environment configuration for Next.js applications in Standard Mode.
  *
  * @param schema A flat schema of environment variable Standard Schema validators
  * @param options Optional configuration including client-side variables and extends
@@ -45,7 +45,7 @@ export function arkenv<
 >;
 
 /**
- * Create a validated, type-safe environment configuration for Next.js applications in Standard Mode.
+ * Create a validated, typesafe environment configuration for Next.js applications in Standard Mode.
  *
  * @deprecated Use the unified flat layout signature instead: `arkenv(schema, options)`
  * @param options The environment validation configuration options

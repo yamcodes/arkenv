@@ -66,7 +66,7 @@ Reference these guidelines when:
    - 4.6 [Avoid Referencing Index Files in Import Paths](references/module-avoid-index-in-imports.md) - HIGH (prevents redundant imports and ensures cleaner import syntax)
    - 4.7 [Prefer Relative Imports for Local Directory Files](references/module-prefer-relative-imports.md) - HIGH (ensures local module encapsulation and clean dependencies)
    - 4.8 [Use Standard Comments for Internal Developer Notes](references/module-hide-internal-comments.md) - HIGH (prevents internal repository warnings from leaking into consumer `.d.ts` IntelliSense)
-5. [Type Safety Patterns](references/_sections.md#5-type-safety-patterns-safety) - **MEDIUM-HIGH**
+5. [Type Safety Patterns](references/_sections.md#5-typesafety-patterns-safety) - **MEDIUM-HIGH**
    - 5.1 [Enable noUncheckedIndexedAccess](references/safety-no-unchecked-indexed-access.md) - MEDIUM-HIGH (prevents 100% of unchecked index access errors at compile time)
    - 5.2 [Enable strictNullChecks](references/safety-strict-null-checks.md) - MEDIUM-HIGH (prevents null/undefined runtime errors)
    - 5.3 [Prefer unknown Over any](references/safety-prefer-unknown-over-any.md) - MEDIUM-HIGH (forces type narrowing, prevents runtime errors)
@@ -88,7 +88,7 @@ Reference these guidelines when:
    - 7.5 [Use Modern String Methods](references/runtime-use-string-methods.md) - LOW-MEDIUM (2-5× faster than regex for simple patterns)
    - 7.6 [Use Set/Map for O(1) Lookups](references/runtime-use-set-for-lookups.md) - LOW-MEDIUM (O(n) to O(1) per lookup)
 8. [Advanced Patterns](references/_sections.md#8-advanced-patterns-advanced) - **LOW**
-   - 8.1 [Use Branded Types for Type-Safe IDs](references/advanced-branded-types.md) - LOW (prevents mixing incompatible ID types)
+   - 8.1 [Use Branded Types for Typesafe IDs](references/advanced-branded-types.md) - LOW (prevents mixing incompatible ID types)
    - 8.2 [Use satisfies for Type Validation with Inference](references/advanced-satisfies-operator.md) - LOW (prevents property access errors, enables 100% autocomplete accuracy)
    - 8.3 [Use Template Literal Types for String Patterns](references/advanced-template-literal-types.md) - LOW (prevents 100% of string format errors at compile time)
 

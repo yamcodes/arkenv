@@ -26,7 +26,7 @@ type ClientVisibleKeys<
 }[keyof TSchema];
 
 /**
- * Create a validated, type-safe environment configuration for Next.js applications (Client-side / SSR entry point).
+ * Create a validated, typesafe environment configuration for Next.js applications (Client-side / SSR entry point).
  */
 export function arkenv<
 	const TSchema extends SchemaShape & { runtimeEnv?: never } = {},

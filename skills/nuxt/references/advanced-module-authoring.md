@@ -27,7 +27,7 @@ my-nuxt-module/
 
 ## Module Definition
 
-### Basic Module with Type-safe Options
+### Basic Module with Typesafe Options
 
 ```ts
 // src/module.ts
@@ -534,7 +534,7 @@ export default defineNuxtConfig({
 
 - Use `createResolver(import.meta.url)` for all path resolution
 - Prefix components to avoid naming conflicts
-- Make options type-safe with `ModuleOptions` interface
+- Make options typesafe with `ModuleOptions` interface
 - Use `moduleDependencies` instead of `installModule`
 - Provide sensible defaults for all options
 - Add compatibility requirements in `meta.compatibility`

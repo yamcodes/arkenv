@@ -73,6 +73,6 @@ function setCoordinates(coords: readonly [number, number]): void { }
 - Configuration objects that shouldn't change
 - Enum-like objects with string values
 - Array/tuple literals passed to functions expecting specific types
-- Creating type-safe lookup tables
+- Creating typesafe lookup tables
 
 Reference: [TypeScript 3.4 Const Assertions](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions)

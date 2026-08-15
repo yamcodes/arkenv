@@ -37,9 +37,12 @@
  * Shared chrome gutter (matches Site Nav / home shell):
  * 1rem → 1.5rem @ 40rem. Stock fumadocs uses px-4 / md:px-6 / xl:px-8, so
  * between 40rem–md the article escapes past the floating bar.
+ *
+ * padding-top matches geistdocs/Turbo stock py-6 on small screens.
  */
 #nd-page {
 	padding-inline: 1rem;
+	padding-top: 1.5rem;
 }
 
 #nd-toc {
@@ -321,8 +324,19 @@ aside .theme-toggle {
 }
 
 /*
+ * Geistdocs/Turbo: hide the page tagline under ~960px. The mobile docs
+ * chrome (Site Nav + title) carries orientation; the crumb is desktop-only.
+ */
+@media (max-width: 959px) {
+	#nd-page > [data-docs-breadcrumb] {
+		display: none;
+	}
+}
+
+/*
  * Article top inset — just above sidebar / TOC content start (pt-12).
- * Header spacer already clears the Site Nav.
+ * Header spacer already clears the Site Nav; small screens use py-6
+ * (1.5rem) like geistdocs/Turbo.
  */
 @media (min-width: 48rem) {
 	#nd-page {
@@ -330,25 +344,21 @@ aside .theme-toggle {
 	}
 }
 
-/* Hide the built-in close-button row at the top of the mobile sidebar drawer */
-#nd-sidebar-mobile > div:first-child > div:first-child {
-	display: none;
-}
-
-/* Mobile sidebar drawer: position left, slide from left, above header */
+/* Mobile sidebar drawer: below Site Nav (geistdocs `#nd-sidebar-mobile { mt-16 }`) */
 #nd-sidebar-mobile {
 	inset-inline-end: auto;
 	inset-inline-start: 0;
+	inset-block-start: var(--fd-nav-height);
 	border-inline-start: none;
 	border-inline-end: 1px solid var(--color-fd-border);
 	--fd-sidebar-drawer-offset: -100%;
-	z-index: 60;
+	z-index: 40;
 }
 
-/* Backdrop overlay: raise above the header (z-50) so tapping the header area
-   also dismisses the drawer, and the blur covers the full viewport */
+/* Backdrop: keep Site Nav tappable; cover the page below it */
 div:has(+ #nd-sidebar-mobile) {
-	z-index: 55;
+	top: var(--fd-nav-height);
+	z-index: 35;
 }
 
 /* Radix popper portals (workspace switcher dropdown, etc.) render at the body

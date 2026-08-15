@@ -641,7 +641,6 @@ export function DrillInSidebar({
 				<DrillInNav />
 			</DocsSidebarShell>
 			<SidebarDrawer>
-				<div className="flex flex-col gap-3 p-4 pb-2" />
 				<DrillInNav className="min-h-0 flex-1 overflow-y-auto overscroll-contain pt-4" />
 			</SidebarDrawer>
 		</>

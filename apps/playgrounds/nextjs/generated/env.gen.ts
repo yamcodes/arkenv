@@ -23,9 +23,6 @@ export function arkenv<
 		extends?: [...TExtends];
 	},
 ): Readonly<distill.Out<at.infer<TSchema>>> {
-	// Types expose the full schema for a great DX on the server; the runtime
-	// Proxy from `@arkenv/nextjs` enforces the security boundary by throwing
-	// when a server-only variable is accessed on the client.
 	const env = coreArkenv(schema as any, {
 		...options,
 		runtimeEnv: {

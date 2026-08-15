@@ -83,7 +83,7 @@ Reference named catalogs:
 1. **Single source of truth**: Update version in one place
 2. **Consistency**: All packages use the same version
 3. **Easy upgrades**: Change version once, affects entire workspace
-4. **Type-safe**: TypeScript support in pnpm-workspace.yaml
+4. **Typesafe**: TypeScript support in pnpm-workspace.yaml
 
 ## Catalog vs overrides
 
