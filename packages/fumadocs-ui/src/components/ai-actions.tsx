@@ -119,10 +119,7 @@ function resolvePageHref(href: string, origin?: string): string {
 
 function ExternalMark() {
 	return (
-		<ArrowUpRight
-			aria-hidden="true"
-			className="size-3.5 shrink-0 opacity-50"
-		/>
+		<ArrowUpRight aria-hidden="true" className="size-3.5 shrink-0 opacity-50" />
 	);
 }
 
