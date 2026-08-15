@@ -18,7 +18,9 @@ import {
 	type ReactNode,
 	useCallback,
 	useEffect,
+	useLayoutEffect,
 	useMemo,
+	useRef,
 	useState,
 } from "react";
 import { cn } from "@/utils/cn";
@@ -38,6 +40,57 @@ const compactLinkClassName =
 
 const menuRowClassName =
 	"flex w-full items-center gap-3 rounded-md p-2 text-left text-sm transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-ring";
+
+/**
+ * Hide overflow clusters from the end until the row fits on one line.
+ * Clusters must be marked `[data-docs-ai-overflow]` in hide-first order last.
+ */
+function hideOverflowingActions(row: HTMLElement): void {
+	const clusters = [
+		...row.querySelectorAll<HTMLElement>("[data-docs-ai-overflow]"),
+	];
+	for (const cluster of clusters) {
+		cluster.hidden = false;
+	}
+	for (let i = clusters.length - 1; i >= 0; i--) {
+		if (row.scrollWidth <= row.clientWidth) break;
+		clusters[i].hidden = true;
+	}
+}
+
+function OverflowActionsRow({
+	className,
+	children,
+}: {
+	className?: string;
+	children: ReactNode;
+}) {
+	const ref = useRef<HTMLDivElement>(null);
+
+	useLayoutEffect(() => {
+		const row = ref.current;
+		if (!row) return;
+		const fit = () => hideOverflowingActions(row);
+		fit();
+		if (typeof ResizeObserver === "undefined") return;
+		const observer = new ResizeObserver(fit);
+		observer.observe(row);
+		return () => observer.disconnect();
+	});
+
+	return (
+		<div
+			ref={ref}
+			data-docs-ai-actions="mobile"
+			className={cn(
+				"flex w-full min-w-0 flex-nowrap items-center gap-x-3 overflow-hidden",
+				className,
+			)}
+		>
+			{children}
+		</div>
+	);
+}
 
 type Viewport = "desktop" | "mobile";
 
@@ -358,16 +411,10 @@ export function AIActions({
 				</div>
 			) : null}
 			{only !== "desktop" ? (
-				<div
-					data-docs-ai-actions="mobile"
-					className={cn(
-						"flex flex-wrap items-center gap-x-3 gap-y-2",
-						className,
-					)}
-				>
+				<OverflowActionsRow className={className}>
 					<button
 						type="button"
-						className={compactLinkClassName}
+						className={cn(compactLinkClassName, "shrink-0")}
 						onClick={() => {
 							void copyPage();
 						}}
@@ -377,18 +424,11 @@ export function AIActions({
 							{copied ? "Copied" : copyError ? "Couldn't copy" : "Copy for LLM"}
 						</span>
 					</button>
-					<span aria-hidden="true" className="h-4 w-px shrink-0 bg-fd-border" />
-					<button
-						type="button"
-						className={compactLinkClassName}
-						onClick={openMarkdown}
-					>
-						<SiMarkdown aria-hidden="true" size={14} title="" />
-						<span>View Markdown</span>
-						<ExternalMark />
-					</button>
 					{githubUrl ? (
-						<>
+						<span
+							data-docs-ai-overflow="github"
+							className="flex shrink-0 items-center gap-x-3"
+						>
 							<span
 								aria-hidden="true"
 								className="h-4 w-px shrink-0 bg-fd-border"
@@ -405,9 +445,27 @@ export function AIActions({
 								<span>Edit on GitHub</span>
 								<ExternalMark />
 							</a>
-						</>
+						</span>
 					) : null}
-				</div>
+					<span
+						data-docs-ai-overflow="markdown"
+						className="flex shrink-0 items-center gap-x-3"
+					>
+						<span
+							aria-hidden="true"
+							className="h-4 w-px shrink-0 bg-fd-border"
+						/>
+						<button
+							type="button"
+							className={compactLinkClassName}
+							onClick={openMarkdown}
+						>
+							<SiMarkdown aria-hidden="true" size={14} title="" />
+							<span>View Markdown</span>
+							<ExternalMark />
+						</button>
+					</span>
+				</OverflowActionsRow>
 			) : null}
 			<span aria-live="polite" className="sr-only">
 				{copyStatus}

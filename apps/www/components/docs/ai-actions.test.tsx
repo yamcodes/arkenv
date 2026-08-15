@@ -49,11 +49,25 @@ describe("AIActions", () => {
 			screen.getByRole("button", { name: "Copy for LLM" }),
 		).toBeInTheDocument();
 		expect(
+			screen.getByRole("link", { name: "Edit on GitHub" }),
+		).toBeInTheDocument();
+		expect(
 			screen.getByRole("button", { name: "View Markdown" }),
 		).toBeInTheDocument();
 		expect(
-			screen.getByRole("link", { name: "Edit on GitHub" }),
-		).toBeInTheDocument();
+			screen
+				.getByRole("button", { name: "Copy for LLM" })
+				.compareDocumentPosition(
+					screen.getByRole("link", { name: "Edit on GitHub" }),
+				) & Node.DOCUMENT_POSITION_FOLLOWING,
+		).toBeTruthy();
+		expect(
+			screen
+				.getByRole("link", { name: "Edit on GitHub" })
+				.compareDocumentPosition(
+					screen.getByRole("button", { name: "View Markdown" }),
+				) & Node.DOCUMENT_POSITION_FOLLOWING,
+		).toBeTruthy();
 	});
 
 	it("copies page markdown to the clipboard", async () => {
