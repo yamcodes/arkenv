@@ -39,7 +39,26 @@ const compactLinkClassName =
 	"inline-flex items-center gap-1.5 whitespace-nowrap text-xs font-medium text-fd-muted-foreground transition-colors hover:text-fd-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-ring [&_svg]:size-3.5 [&_svg]:shrink-0";
 
 const menuRowClassName =
-	"flex w-full items-center gap-3 rounded-md p-2 text-left text-sm transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-ring";
+	"rounded-md text-left text-sm no-underline transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-ring";
+
+/**
+ * Three columns on `<button>` and `<a>`: icon | text | trailing.
+ * `table-row` is blockified on buttons, so this has to be grid.
+ */
+const menuRowStyle = {
+	display: "grid",
+	gridTemplateColumns: "auto minmax(0, 1fr) auto",
+	alignItems: "center",
+	columnGap: "0.75rem",
+	width: "100%",
+	padding: "0.5rem",
+} as const;
+
+const menuRowProps = {
+	className: menuRowClassName,
+	"data-docs-ai-menu-row": "",
+	style: menuRowStyle,
+};
 
 /**
  * Hide overflow clusters from the end until the row fits on one line.
@@ -189,20 +208,27 @@ function MenuRow({
 }) {
 	return (
 		<>
-			<span className="text-fd-muted-foreground">{icon}</span>
-			<span className="flex min-w-0 flex-1 flex-col gap-0.5 whitespace-nowrap">
-				<span className="text-fd-foreground">{label}</span>
+			<span className="text-fd-muted-foreground" data-docs-ai-menu-icon="">
+				{icon}
+			</span>
+			<span
+				className="min-w-0 whitespace-nowrap text-fd-foreground"
+				data-docs-ai-menu-label=""
+			>
+				<span className="block">{label}</span>
 				{description ? (
-					<span className="text-xs text-fd-muted-foreground">
+					<span className="mt-0.5 block text-xs text-fd-muted-foreground">
 						{description}
 					</span>
 				) : null}
 			</span>
 			<span
 				aria-hidden="true"
-				className="flex size-3.5 shrink-0 items-center justify-center"
+				className="flex size-3.5 items-center justify-center"
+				data-docs-ai-menu-trailing=""
+				style={{ visibility: external ? "visible" : "hidden" }}
 			>
-				{external ? <ExternalMark /> : null}
+				<ExternalMark />
 			</span>
 		</>
 	);
@@ -342,12 +368,13 @@ export function AIActions({
 								align="end"
 								className="p-1"
 								sideOffset={8}
+								data-docs-ai-menu-popover=""
 								style={{ width: "max-content" }}
 							>
-								<div className="flex flex-col">
+								<div data-docs-ai-menu="" className="flex w-max flex-col">
 									<button
 										type="button"
-										className={menuRowClassName}
+										{...menuRowProps}
 										onClick={copyAndClose}
 									>
 										<MenuRow
@@ -358,7 +385,7 @@ export function AIActions({
 									</button>
 									<button
 										type="button"
-										className={menuRowClassName}
+										{...menuRowProps}
 										onClick={openMarkdown}
 									>
 										<MenuRow
@@ -376,7 +403,7 @@ export function AIActions({
 											target="_blank"
 											data-no-underline
 											data-no-arrow
-											className={menuRowClassName}
+											{...menuRowProps}
 											onClick={() => setMenuOpen(false)}
 										>
 											<MenuRow
@@ -394,7 +421,7 @@ export function AIActions({
 											target="_blank"
 											data-no-underline
 											data-no-arrow
-											className={menuRowClassName}
+											{...menuRowProps}
 											onClick={() => setMenuOpen(false)}
 										>
 											<MenuRow

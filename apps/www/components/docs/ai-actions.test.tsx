@@ -120,6 +120,44 @@ describe("AIActions", () => {
 		).toHaveAttribute("href", "https://github.com/yamcodes/arkenv");
 	});
 
+	it("lays each desktop menu row out as icon, text, and trailing columns", async () => {
+		const user = userEvent.setup();
+		render(
+			<AIActions
+				only="desktop"
+				markdownUrl="/docs/getting-started.mdx"
+				pageUrl="/docs/getting-started"
+				githubUrl="https://github.com/yamcodes/arkenv"
+			/>,
+		);
+
+		await user.click(screen.getByRole("button", { name: "More page actions" }));
+
+		const copyRow = screen.getByRole("button", {
+			name: /Copy page as Markdown for LLMs/i,
+		});
+		expect(copyRow).toHaveAttribute("data-docs-ai-menu-row");
+		expect(copyRow).toHaveStyle({
+			display: "grid",
+			gridTemplateColumns: "auto minmax(0, 1fr) auto",
+		});
+		expect(copyRow.children).toHaveLength(3);
+		expect(copyRow.lastElementChild).toHaveAttribute(
+			"data-docs-ai-menu-trailing",
+		);
+		expect(copyRow.lastElementChild).toHaveAttribute("aria-hidden", "true");
+		expect(copyRow.lastElementChild).toHaveStyle({ visibility: "hidden" });
+		expect(
+			screen.getByRole("button", { name: /View as Markdown/i }).lastElementChild,
+		).toHaveStyle({ visibility: "visible" });
+		expect(
+			screen.getByRole("link", { name: /Open in ChatGPT/i }),
+		).toHaveStyle({
+			display: "grid",
+			gridTemplateColumns: "auto minmax(0, 1fr) auto",
+		});
+	});
+
 	it("closes the desktop menu after choosing Edit this page on GitHub", async () => {
 		const user = userEvent.setup();
 		render(

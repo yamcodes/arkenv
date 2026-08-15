@@ -434,26 +434,29 @@ button:has(+ #nd-sidebar-mobile) {
  * Stock fumadocs uses w-[calc(100%-1rem)] + top below the nav on mobile.
  * max-w-screen-sm still caps + centers once the guttered width exceeds it;
  * from md up, fumadocs’ vertical centering takes over.
+ *
+ * Scoped to `.arkenv-search-dialog` — Radix popovers also use
+ * [role="dialog"][data-state] (Copy page menu, feedback).
  */
-[role="dialog"][data-state] {
+.arkenv-search-dialog {
 	z-index: 65 !important;
 	width: calc(100% - 2rem) !important;
 }
 
 @media (min-width: 40rem) {
-	[role="dialog"][data-state] {
+	.arkenv-search-dialog {
 		width: calc(100% - 3rem) !important;
 	}
 }
 
 @media (max-width: 767px) {
-	[role="dialog"][data-state] {
+	.arkenv-search-dialog {
 		/* Match .site-nav top: var(--site-nav-inset) */
 		top: 1rem !important;
 	}
 
 	@media (min-width: 40rem) {
-		[role="dialog"][data-state] {
+		.arkenv-search-dialog {
 			top: 1.5rem !important;
 		}
 	}
@@ -461,7 +464,7 @@ button:has(+ #nd-sidebar-mobile) {
 	/* Input row: Site Nav bar is border-box 3.5rem including its 1px
 	   border; dialog content also has a 1px border, so the inner bar
 	   must be 2px shorter or the capsule reads taller than the header. */
-	[role="dialog"][data-state] .arkenv-search-dialog__bar {
+	.arkenv-search-dialog .arkenv-search-dialog__bar {
 		box-sizing: border-box;
 		height: calc(3.5rem - 2px);
 		min-height: calc(3.5rem - 2px);
@@ -471,9 +474,46 @@ button:has(+ #nd-sidebar-mobile) {
 	}
 
 	/* No keyboard on mobile — hide the ESC affordance */
-	[role="dialog"][data-state] button.font-mono {
+	.arkenv-search-dialog button.font-mono {
 		display: none;
 	}
+}
+
+/*
+ * Copy page popover: hug the longest row. Search-dialog width used to
+ * leak onto every [role="dialog"] and stretch this menu to the article.
+ *
+ * Do not use `display: table` here. `table-row` is ignored on <button>,
+ * so Copy page sat beside View as Markdown and the <a> rows split into
+ * table columns (icon left, text right). Grid on each row is 3 columns:
+ * icon | text | trailing (external arrow or reserved empty slot).
+ */
+[data-docs-ai-menu-popover] {
+	width: max-content !important;
+	max-width: min(24rem, 98vw);
+}
+
+[data-docs-ai-menu] {
+	display: flex !important;
+	flex-direction: column;
+	width: max-content;
+	max-width: 100%;
+}
+
+[data-docs-ai-menu-row] {
+	display: grid !important;
+	grid-template-columns: auto minmax(0, 1fr) auto;
+	align-items: center;
+	column-gap: 0.75rem;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 0.5rem;
+	text-align: left;
+	text-decoration: none;
+}
+
+[data-docs-ai-menu-row] > :nth-child(3) {
+	justify-self: end;
 }
 
 /*
