@@ -148,11 +148,10 @@ describe("AIActions", () => {
 		expect(copyRow.lastElementChild).toHaveAttribute("aria-hidden", "true");
 		expect(copyRow.lastElementChild).toHaveStyle({ visibility: "hidden" });
 		expect(
-			screen.getByRole("button", { name: /View as Markdown/i }).lastElementChild,
+			screen.getByRole("button", { name: /View as Markdown/i })
+				.lastElementChild,
 		).toHaveStyle({ visibility: "visible" });
-		expect(
-			screen.getByRole("link", { name: /Open in ChatGPT/i }),
-		).toHaveStyle({
+		expect(screen.getByRole("link", { name: /Open in ChatGPT/i })).toHaveStyle({
 			display: "grid",
 			gridTemplateColumns: "auto minmax(0, 1fr) auto",
 		});
