@@ -1,11 +1,11 @@
 ---
-name: evaluate-solutions
-description: Compare design alternatives with a hat → metrics → tier-list loop, splitting composing layers and keeping a living note. Use when there are multiple ways to solve a design problem, the user says "throw it in the hat", asks for a tier list, design eval, or composing layers/dimensions, or when options look like they compose rather than compete — even if they have not named this skill.
+name: the-hat
+description: Compare design alternatives with a hat → metrics → tier-list loop, splitting composing layers and keeping a living note. Use when there are multiple ways to solve a design problem, the user says "throw it in the hat" or "/the-hat", asks for a tier list, design eval, or composing layers/dimensions, or when options look like they compose rather than compete — even if they have not named this skill.
 metadata:
   internal: true
 ---
 
-# Evaluate solutions
+# The hat
 
 When several ways exist to solve a design problem, do not vibe-rank in chat. Run this loop and leave the artifacts in a **living note** (repo file, not a premature ADR).
 

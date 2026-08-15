@@ -17,7 +17,7 @@ These skills are intended for users of ArkEnv to improve their development exper
 
   ### Design
 
-  - [**evaluate-solutions**](./evaluate-solutions/SKILL.md): Hat → metrics → tier-list loop for comparing design alternatives across composing layers.
+  - [**the-hat**](./the-hat/SKILL.md): Hat → metrics → tier-list loop for comparing design alternatives across composing layers.
 
   ### GitHub workflows
 
