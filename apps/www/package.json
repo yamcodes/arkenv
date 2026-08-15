@@ -5,10 +5,11 @@
 	"scripts": {
 		"mdx": "node ./bin/mdx",
 		"prebuild": "pnpm -w build --filter @arkenv/fumadocs-ui && pnpm run mdx",
-		"predev": "pnpm -w build --filter @arkenv/fumadocs-ui && pnpm run mdx && pnpm exec next-video sync",
+		"predev": "pnpm -w build --filter @arkenv/fumadocs-ui && pnpm run mdx && pnpm run video:sync",
 		"build": "node ./bin/build next build",
 		"dev": "next dev",
 		"start": "next start",
+		"video:sync": "next-video sync",
 		"clean": "rimraf node_modules .next .source",
 		"clear-cache": "rimraf .next .source",
 		"test": "vitest",

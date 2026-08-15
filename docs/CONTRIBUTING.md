@@ -42,7 +42,7 @@ Don't let the label names give you the wrong impression: `ready for agent` simpl
    pnpm www
    ```
 
-   This starts a single `next dev` server at [http://localhost:3000](http://localhost:3000). Mux video metadata is refreshed by a one-shot `next-video sync` in `predev`; there is no live `videos/` watcher. After adding or replacing a file in `apps/www/videos/`, restart `pnpm www` (or run `pnpm exec next-video sync` from `apps/www`).
+   This starts a single `next dev` server at [http://localhost:3000](http://localhost:3000). Docs videos use [next-video](https://github.com/muxinc/next-video): add files to `apps/www/videos/`, then run a one-shot `next-video sync` (`pnpm --filter www video:sync`, or restart `pnpm www` so `predev` runs it). Commit the generated `videos/*.json` files. Do not run `next-video sync -w` beside `next dev` — that races Next.js 16.2's lock.
 
 ## Making changes
 
