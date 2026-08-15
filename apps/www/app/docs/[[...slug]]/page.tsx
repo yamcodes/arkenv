@@ -65,7 +65,7 @@ export default async function Page(props: {
 						githubUrl={editHref}
 					/>
 				</div>
-				<DocsDescription className="mt-3 mb-4">
+				<DocsDescription className="mt-3 mb-4 min-[960px]:mb-12">
 					{page.data.description}
 				</DocsDescription>
 				<AIActions
