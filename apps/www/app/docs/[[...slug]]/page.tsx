@@ -45,7 +45,7 @@ export default async function Page(props: {
 		<DocsPage
 			toc={page.data.toc}
 			full={full}
-			tableOfContent={{ enabled: !full, footer: tocLinks }}
+			tableOfContent={{ enabled: !full, footer: tocLinks, single: true }}
 			tableOfContentPopover={{
 				enabled: FeatureFlags.DOCS_TOC_POPOVER,
 				footer: tocLinks,
