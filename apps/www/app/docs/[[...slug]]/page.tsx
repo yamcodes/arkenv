@@ -53,7 +53,7 @@ export default async function Page(props: {
 			slots={{ breadcrumb: DocsBreadcrumb, toc: docsTocSlots }}
 		>
 			<div className="grow">
-				<div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+				<div className="flex flex-col gap-4 min-[960px]:flex-row min-[960px]:items-end min-[960px]:justify-between">
 					<DocsTitle className="mb-0 min-w-0 text-balance text-4xl tracking-tight">
 						{page.data.title}
 					</DocsTitle>

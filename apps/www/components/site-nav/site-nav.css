@@ -138,7 +138,7 @@ main:has(.site-nav) {
 	align-items: center;
 }
 
-@media (min-width: 48rem) {
+@media (min-width: 960px) {
 	.site-nav__sidebar-trigger {
 		display: none;
 	}

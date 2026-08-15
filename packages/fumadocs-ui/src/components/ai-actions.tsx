@@ -163,7 +163,7 @@ export type AIActionsProps = {
 	 */
 	pageUrl?: string;
 	/**
-	 * Which variant to render. Omit to render both; CSS at 48rem (same as
+	 * Which variant to render. Omit to render both; CSS at 960px (same as
 	 * the docs sidebar) hides the inactive one. Use `"desktop"` beside the
 	 * title and `"mobile"` below the description.
 	 */

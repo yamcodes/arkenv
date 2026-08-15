@@ -324,15 +324,13 @@ aside .theme-toggle {
 }
 
 /*
- * Copy page vs Copy for LLM — same 48rem cutoff as #nd-sidebar
- * (`max-md:hidden`). Theme CSS (not Tailwind in dist) so the switch
- * cannot drift from a stale package build.
+ * Copy page vs Copy for LLM — same 960px cutoff as the docs sidebar.
  */
 [data-docs-ai-actions="desktop"] {
 	display: none;
 }
 
-@media (min-width: 48rem) {
+@media (min-width: 960px) {
 	[data-docs-ai-actions="desktop"] {
 		display: block;
 	}
@@ -343,12 +341,26 @@ aside .theme-toggle {
 }
 
 /*
- * Geistdocs/Turbo: hide the page tagline under ~960px. The mobile docs
- * chrome (Site Nav + title) carries orientation; the crumb is desktop-only.
+ * Docs desktop chrome — Turbo/geistdocs ~960px (iPad Air mobile, iPad Pro sidebar).
+ * Zero the grid column and hide the rail so `md:layout` at 768px cannot leave a gap.
  */
 @media (max-width: 959px) {
+	#nd-docs-layout {
+		--fd-sidebar-width: 0px !important;
+	}
+
+	[data-sidebar-placeholder] {
+		display: none !important;
+	}
+
 	#nd-page > [data-docs-breadcrumb] {
 		display: none;
+	}
+}
+
+@media (min-width: 960px) {
+	#nd-docs-layout:has([data-sidebar-placeholder]) {
+		--fd-sidebar-width: 300px;
 	}
 }
 
@@ -375,7 +387,8 @@ aside .theme-toggle {
 }
 
 /* Backdrop: keep Site Nav tappable; cover the page below it */
-div:has(+ #nd-sidebar-mobile) {
+div:has(+ #nd-sidebar-mobile),
+button:has(+ #nd-sidebar-mobile) {
 	top: var(--fd-nav-height);
 	z-index: 35;
 }

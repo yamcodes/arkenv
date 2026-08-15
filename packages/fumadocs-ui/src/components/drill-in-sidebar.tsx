@@ -1,17 +1,11 @@
 "use client";
 
 import type * as PageTree from "fumadocs-core/page-tree";
-import {
-	SidebarContent as SidebarContentPrimitive,
-	SidebarDrawerContent,
-	SidebarDrawerOverlay,
-} from "fumadocs-ui/components/sidebar/base";
+import { SidebarContent as SidebarContentPrimitive } from "fumadocs-ui/components/sidebar/base";
 import { useTreeContext } from "fumadocs-ui/contexts/tree";
-import type { SidebarProps } from "fumadocs-ui/layouts/docs/slots/sidebar";
 import {
-	SidebarProvider,
+	type SidebarProps,
 	SidebarTrigger,
-	useSidebar,
 } from "fumadocs-ui/layouts/docs/slots/sidebar";
 import {
 	ArrowUpRight,
@@ -29,6 +23,7 @@ import {
 	useState,
 } from "react";
 import { cn } from "@/utils/cn";
+import { DocsSidebarProvider, useDocsSidebar } from "./docs-sidebar-provider";
 
 type DrillOverride = "url" | "root" | PageTree.Folder;
 
@@ -545,19 +540,32 @@ function SidebarDrawer({
 	children: ReactNode;
 	className?: string | undefined;
 } & Omit<React.ComponentProps<"aside">, "children" | "className">) {
+	const { open, setOpen, mode } = useDocsSidebar();
+	if (mode !== "drawer") return null;
+	const state = open ? "open" : "closed";
 	return (
 		<>
-			<SidebarDrawerOverlay className="fixed z-40 inset-0 backdrop-blur-xs data-[state=open]:animate-fd-fade-in data-[state=closed]:animate-fd-fade-out" />
-			<SidebarDrawerContent
+			{open ? (
+				<button
+					type="button"
+					aria-label="Close sidebar"
+					data-state={state}
+					className="fixed z-40 inset-0 cursor-default appearance-none border-0 bg-transparent p-0 backdrop-blur-xs outline-none data-[state=open]:animate-fd-fade-in"
+					onClick={() => setOpen(false)}
+				/>
+			) : null}
+			<aside
 				id="nd-sidebar-mobile"
+				data-state={state}
 				className={cn(
 					"fixed z-40 inset-y-0 inset-s-0 flex w-[85%] max-w-[380px] flex-col border-e bg-fd-background text-[0.9375rem] shadow-lg data-[state=closed]:animate-fd-sidebar-out data-[state=open]:animate-fd-sidebar-in",
+					!open && "invisible pointer-events-none",
 					className,
 				)}
 				{...props}
 			>
 				{children}
-			</SidebarDrawerContent>
+			</aside>
 		</>
 	);
 }
@@ -581,7 +589,7 @@ function DocsSidebarShell({
 			{({ ref, collapsed, hovered, onPointerEnter, onPointerLeave }) => (
 				<div
 					data-sidebar-placeholder=""
-					className="sticky top-(--fd-docs-row-1) z-20 [grid-area:sidebar] pointer-events-none *:pointer-events-auto h-[calc(var(--fd-docs-height)-var(--fd-docs-row-1))] md:layout:[--fd-sidebar-width:300px] max-md:hidden"
+					className="sticky top-(--fd-docs-row-1) z-20 [grid-area:sidebar] pointer-events-none *:pointer-events-auto h-[calc(var(--fd-docs-height)-var(--fd-docs-row-1))] min-[960px]:layout:[--fd-sidebar-width:300px]"
 				>
 					<aside
 						id="nd-sidebar"
@@ -652,8 +660,8 @@ export function DrillInSidebar({
  * while swapping in {@link DrillInSidebar}.
  */
 export const drillInSidebarSlots = {
-	provider: SidebarProvider,
+	provider: DocsSidebarProvider,
 	root: DrillInSidebar,
 	trigger: SidebarTrigger,
-	useSidebar,
+	useSidebar: useDocsSidebar,
 };
