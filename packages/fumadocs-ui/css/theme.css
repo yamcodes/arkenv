@@ -60,8 +60,7 @@
 }
 
 /* Override search bar and keyboard shortcuts to use minimal radius.
- * Copy page menu is excluded — it needs a visible radius (see
- * [data-docs-ai-menu-popover] below). */
+ * Copy page menu is excluded so it can share the code-block radius. */
 button[data-search-full],
 button[data-search],
 [data-search-full],
@@ -493,7 +492,8 @@ button:has(+ #nd-sidebar-mobile) {
 [data-docs-ai-menu-popover] {
 	width: max-content !important;
 	max-width: min(24rem, 98vw);
-	border-radius: 0.5rem;
+	/* Same token as code-block `rounded-sm`. Must beat the flatten above. */
+	border-radius: var(--radius-sm) !important;
 	overflow: hidden;
 }
 
