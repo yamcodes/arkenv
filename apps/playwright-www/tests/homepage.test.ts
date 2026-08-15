@@ -56,7 +56,9 @@ test.describe("Homepage Interactivity", () => {
 
 	test("should have functional 'Read the docs' button", async ({ page }) => {
 		await page.goto("/");
-		const docsButton = page.getByRole("link", { name: "Read the docs" }).first();
+		const docsButton = page
+			.getByRole("link", { name: "Read the docs" })
+			.first();
 		await expect(docsButton).toBeVisible();
 
 		await Promise.all([

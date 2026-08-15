@@ -2,10 +2,7 @@
 
 export function QuickstartButton() {
 	return (
-		<a
-			href="/docs"
-			className="home-aurora__mobile-cta home-aurora__docs-cta"
-		>
+		<a href="/docs" className="home-aurora__mobile-cta home-aurora__docs-cta">
 			Read the docs
 			<span aria-hidden="true">→</span>
 		</a>

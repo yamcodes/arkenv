@@ -579,11 +579,7 @@ main:has(.site-nav) {
 	}
 
 	#nd-docs-layout .site-nav__action--search:hover {
-		background: color-mix(
-			in oklch,
-			var(--secondary, var(--color-paper-3, #222)) 70%,
-			transparent
-		);
+		background: color-mix(in oklch, var(--secondary, var(--color-paper-3, #222)) 70%, transparent);
 		border-color: transparent;
 	}
 }
