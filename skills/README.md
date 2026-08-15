@@ -15,6 +15,10 @@ These skills are intended for users of ArkEnv to improve their development exper
 
   Internal skills are automatically discovered by agents within this workspace via symlinks in `.agent/`, `.gemini/`, and `.github/`.
 
+  ### Design
+
+  - [**the-hat**](./the-hat/SKILL.md): Hat → metrics → tier-list loop for comparing design alternatives across composing layers.
+
   ### GitHub workflows
 
   - [**changeset**](./changeset/SKILL.md): Creates changesets for semantic versioning, version bumps, and package releases.
