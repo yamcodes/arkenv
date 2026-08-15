@@ -9,7 +9,7 @@ metadata:
 
 When several ways exist to solve a design problem, do not vibe-rank in chat. Run this loop and leave the artifacts in a **living note** (repo file, not a premature ADR).
 
-Worked example of the *shape* (not the product decision): [`docs/to-json-schema-wiring.md`](../../docs/to-json-schema-wiring.md). Copy headings from [NOTE-TEMPLATE.md](NOTE-TEMPLATE.md).
+Worked example of the *shape* (not the product decision): the living note from #1564 / #1570 (`docs/to-json-schema-wiring.md` on `simplify-docs` until that restructure lands on `dev`). Copy headings from [NOTE-TEMPLATE.md](NOTE-TEMPLATE.md).
 
 If the problem itself is still mushy, grill first (`grill-me` / `grill-with-docs`), then come back here to score options.
 
