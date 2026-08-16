@@ -74,6 +74,7 @@
 		"@icons-pack/react-simple-icons": "13.13.0",
 		"@radix-ui/react-collapsible": "1.1.12",
 		"@types/mdx": "2.0.13",
+		"@types/node": "catalog:",
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",
 		"fumadocs-core": "16.8.7",

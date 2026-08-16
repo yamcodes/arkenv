@@ -11,6 +11,25 @@ import {
 
 const config = {
 	outputFileTracingRoot: path.join(__dirname, "../../"),
+	// @arkenv/fumadocs-ui resolves fumadocs-* from its own node_modules.
+	// A second copy means RootProvider's FrameworkProvider is not the one
+	// DocsLayout / sidebar slots read — "wrap your application inside FrameworkProvider".
+	transpilePackages: ["@arkenv/fumadocs-ui"],
+	turbopack: {
+		resolveAlias: {
+			"fumadocs-ui": path.join(__dirname, "node_modules/fumadocs-ui"),
+			"fumadocs-core": path.join(__dirname, "node_modules/fumadocs-core"),
+		},
+	},
+	webpack: (webpackConfig) => {
+		webpackConfig.resolve ??= {};
+		webpackConfig.resolve.alias = {
+			...webpackConfig.resolve.alias,
+			"fumadocs-ui": path.join(__dirname, "node_modules/fumadocs-ui"),
+			"fumadocs-core": path.join(__dirname, "node_modules/fumadocs-core"),
+		};
+		return webpackConfig;
+	},
 	serverExternalPackages: [
 		"typescript",
 		"twoslash",

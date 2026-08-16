@@ -52,6 +52,8 @@ overrides:
   # Keep a single fumadocs peer graph so @arkenv/fumadocs-ui shares
   # RootProvider / FrameworkProvider context with apps/www (catalog zod).
   zod: 4.4.1
+  fumadocs-core: 16.8.7
+  fumadocs-ui: 16.8.7
 publicHoistPattern:
   - '*import-in-the-middle*'
   - '*require-in-the-middle*'
