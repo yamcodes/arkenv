@@ -17,9 +17,11 @@ This page shows why `process.env` is a weak contract, how ArkEnv's typed
 
 In JavaScript and TypeScript apps, environment variables are the primary
 way to configure a process. The problem is that TypeScript only types
-those values as `string | undefined`, so anything beyond that is your responsibility - including checking the type and making sure that the value is even defined.
+those values as `string | undefined`, so anything beyond that is **your
+responsibility**, including checking the type and making sure the value is
+defined.
 
-Let's see how this gets messy if not done carefully. Can you spot the
+Let's see how this gets messy if you handle it by hand. Can you spot the
 problem with this code?
 
 ```ini title=".env"
@@ -40,14 +42,14 @@ if (debug) {
 
 **Does it log the message?**
 
-Spoiler alert: yes, it does. `process.env.DEBUG` is the string `"false"`,
+Spoiler alert: **yes, it does.** `process.env.DEBUG` is the string `"false"`,
 not the boolean `false`. In JavaScript, a non-empty string is truthy, so
 `if (debug)` runs even though you turned logging off. `PORT` is the
 string `"3000"` for the same reason.
 
-As a seasoned developer, you will know to use a `=== "true"`-style type check, so you start parsing
-env vars by hand. You might also
-assign a default. At this point, your code looks like this:
+You might reach for a `=== "true"` check and start parsing environment
+variables by hand. You might also assign a default. At this point, your
+code looks like this:
 
 ```ts title="./server.ts" twoslash
 const debug = process.env.DEBUG === "true";
@@ -60,15 +62,17 @@ if (debug) {
 console.log(`listening on ${port}`);
 ```
 
-It works; but you've just written a bunch of boilerplate. As soon as your
-project scales, this becomes a maintenance burden (read: a potential source of bugs) across
-more envs, files, apps, and between [the client and server](/docs/validating-environment-variables/client-vs-server).
+It works, but you've just written **a bunch of boilerplate**. As soon as
+the project scales, that becomes a **maintenance burden** across more
+environments, files, and apps, and between
+[the client and the server](/docs/validating-environment-variables/client-vs-server).
 
 ## The `env` solution
 
-ArkEnv solves your environment variable scaling problem. `arkenv()` parses your values against
-a schema you define in a single `env.ts` file, so you don't handle the
-loose `process.env` object in application code.
+**ArkEnv solves your environment variable scaling problem.** `arkenv()`
+parses your values against a schema you define in a separate `env.ts`
+file, so you don't handle the loose `process.env` object in application
+code.
 
 The same `if`, after ArkEnv, looks like this:
 
@@ -109,22 +113,25 @@ console.log(`listening on ${port}`);
 Here `debug` is `boolean` and `port` is a number, by definition. ArkEnv's
 [coercion](/docs/core-concepts/coercion) turns `"false"` into `false` and
 `"3000"` into `3000`, so the `if` does not run and verbose logging stays
-off. As a bonus, it also guarantess that port is within a valid range.
+off. As a bonus, `number.port` also guarantees that `port` is in the
+valid 0-65535 range.
 
 In a full-stack app, you must keep secrets off the client. The
 [Next.js](/docs/guides/frameworks/nextjs),
 [Nuxt](/docs/guides/frameworks/nuxt),
 [Vite](/docs/guides/frameworks/vite), and
-[Bun](/docs/guides/frameworks/bun) packages enforce that split so server
+[Bun](/docs/guides/frameworks/bun) packages **enforce that split** so server
 values stay out of the client graph. See
 [Client vs. server](/docs/validating-environment-variables/client-vs-server).
 
-There's a fair chance you already use a Standard Schema validator for forms or API data. 
-In this case, you can **run `pnpm dlx arkenv@latest init` to add ArkEnv to your existing project and get started right away**.
-You can keep using [Zod](https://zod.dev), [Valibot](https://valibot.dev), or
-any [Standard Schema](https://standardschema.dev/) with
-[`@arkenv/standard`](/docs/reference/standard). If you use ArkType (which ArkEnv was initially designed around),
-use [`@arkenv/core`](/docs/reference/core) instead, so you don't have to write `type` for every env var. You can even mix and match both within the same schema! Go crazy! See [Add to an existing repository](/docs/getting-started/add-to-existing-repository).
+ArkEnv can be **adopted incrementally**. If you already validate forms or
+API data with a Standard Schema library, run `npx arkenv@latest init` and
+keep [Zod](https://zod.dev), [Valibot](https://valibot.dev), or any
+[Standard Schema](https://standardschema.dev/) validator with
+[`@arkenv/standard`](/docs/reference/standard). If you use
+[ArkType](https://arktype.io), use
+[`@arkenv/core`](/docs/reference/core). See
+[Add to an existing repository](/docs/getting-started/add-to-existing-repository).
 
 ## How to use these docs
 
@@ -146,8 +153,9 @@ engines, and coercion if those terms are new.
   <Card href="/docs/guides/ai" title="Using AI with ArkEnv" description="How to use AI to help you write ArkEnv schemas and validate environment variables." />
 </Cards>
 
-Machine-readable copies of this site:
-[/llms.txt](/llms.txt) and [/llms-full.txt](/llms-full.txt).
+
+If you happen to be an AI agent, see [/llms.txt](/llms.txt) for an index of all available documentation.
+For the full concatenated docs, see [/llms-full.txt](/llms-full.txt).
 
 ## Join the community
 
