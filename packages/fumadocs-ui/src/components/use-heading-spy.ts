@@ -17,7 +17,7 @@ type TocUrlItem = {
 
 function measureActiveId(items: readonly TocUrlItem[]): string | undefined {
 	const headings: HeadingPosition[] = [];
-	let spyOffset = 96; // fallback: --fd-nav-height (~5.5rem) + 0.5rem
+	let spyOffset = 128; // fallback: --fd-nav-height (~5.5rem) + --fd-page-pad-top (2.5rem)
 	let readOffset = false;
 	for (const item of items) {
 		const id = tocItemId(item.url);

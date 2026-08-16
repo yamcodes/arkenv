@@ -30,8 +30,8 @@ test.describe("Docs table of contents", () => {
 		const headingTop = await heading.evaluate(
 			(element) => element.getBoundingClientRect().top,
 		);
-		expect(headingTop).toBeGreaterThan(70);
-		expect(headingTop).toBeLessThan(120);
+		expect(headingTop).toBeGreaterThan(100);
+		expect(headingTop).toBeLessThan(150);
 
 		await expect(page.locator("#secret-redaction")).toBeInViewport();
 	});

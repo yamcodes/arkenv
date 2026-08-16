@@ -39,10 +39,12 @@
  * between 40rem–md the article escapes past the floating bar.
  *
  * padding-top matches geistdocs/Turbo stock py-6 on small screens.
+ * --fd-page-pad-top is also the heading hash offset (below Site Nav).
  */
 #nd-page {
+	--fd-page-pad-top: 1.5rem;
 	padding-inline: 1rem;
-	padding-top: 1.5rem;
+	padding-top: var(--fd-page-pad-top);
 }
 
 #nd-toc {
@@ -85,11 +87,13 @@ kbd {
 	height: var(--fd-nav-height) !important;
 }
 
-/* Heading anchors: avoid underlines, keep icons aligned, clear Site Nav */
+/* Heading anchors: avoid underlines, keep icons aligned */
 [data-arkenv-heading] {
 	overflow: visible;
-	/* --fd-nav-height is inset + bar + 0.5rem; extra 0.5rem is breathing room */
-	scroll-margin-top: calc(var(--fd-nav-height, 80px) + 0.5rem);
+	/* Same as the page title at rest: Site Nav spacer + article padding-top */
+	scroll-margin-top: calc(
+		var(--fd-nav-height, 80px) + var(--fd-page-pad-top, 1.5rem)
+	);
 }
 
 /*
@@ -475,7 +479,7 @@ aside .theme-toggle {
  */
 @media (min-width: 48rem) {
 	#nd-page {
-		padding-top: 2.5rem;
+		--fd-page-pad-top: 2.5rem;
 	}
 }
 
