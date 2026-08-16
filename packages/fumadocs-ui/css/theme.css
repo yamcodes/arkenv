@@ -85,9 +85,11 @@ kbd {
 	height: var(--fd-nav-height) !important;
 }
 
-/* Heading anchors: avoid underlines and keep icons aligned */
+/* Heading anchors: avoid underlines, keep icons aligned, clear Site Nav */
 [data-arkenv-heading] {
 	overflow: visible;
+	/* --fd-nav-height is inset + bar + 0.5rem; extra 0.5rem is breathing room */
+	scroll-margin-top: calc(var(--fd-nav-height, 80px) + 0.5rem);
 }
 
 /*

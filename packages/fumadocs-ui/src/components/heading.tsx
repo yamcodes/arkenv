@@ -27,10 +27,7 @@ export function Heading<T extends Types = "h1">({
 
 	return (
 		<As
-			className={cn(
-				"group relative scroll-m-32 font-[450]", // scroll-m clears the taller Site Nav
-				className,
-			)}
+			className={cn("group relative font-[450]", className)}
 			data-arkenv-heading
 			{...props}
 		>
