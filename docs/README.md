@@ -5,9 +5,11 @@ This directory contains internal contributor-facing documentation and architectu
 > [!IMPORTANT]
 > This directory is for **internal contributor documentation** and **community health only**.
 > The official documentation for ArkEnv is located at [arkenv.js.org/docs](https://arkenv.js.org/docs).
+> Edit those pages via the [`docs/`](./docs/) symlink (canonical files live in `apps/www/content/docs/`).
 
 ## Directory structure
 
+- [**`docs/`**](./docs/): Symlink to the user-facing documentation site content (`apps/www/content/docs`).
 - [**`CONTEXT.md`**](./CONTEXT.md): Domain glossary and definitions of core domain concepts and vocabulary.
 - [**`adr/`**](./adr/): Contains sequentially-numbered Architecture Decision Records (ADRs) documenting critical design choices and trade-offs. Start with [adr/README.md](./adr/README.md).
 - [**`design/`**](./design/): Exploratory design notes that are not yet ADRs. Start with [design/boundary-error-identity.md](./design/boundary-error-identity.md) for validation vs boundary-access error identity.
