@@ -14,12 +14,13 @@ Write your schema in [ArkType](https://arktype.io), [Zod](https://zod.dev), [Val
 Environment variables are how apps get configured - but **`process.env` is untyped**. Every key is `string | undefined`. `"false"` is truthy. `PORT` might be `"8080a"`. A single app might have **dozens of ad-hoc checks** that drift from the real contract.
 
 ```ts title="./server.ts" twoslash
-const host = process.env.HOST;
-//    ^?
-const port = process.env.PORT;
+// DEBUG=false
+const debug = process.env.DEBUG;
 //    ^?
 
-console.log(`Listening at http://${host}:${port}`);
+if (debug) {
+  console.log("verbose logging enabled");
+}
 ```
 
 These gaps show up late: a deploy that looked green, a secret that leaked into a client bundle, a boolean that never meant what you thought. Feedback loops need to be fast so you can ship with the configuration you intended.
@@ -32,8 +33,7 @@ These gaps show up late: a deploy that looked green, a secret that leaked into a
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
-  HOST: "string.host = 'localhost'",
-  PORT: "number.port = 3000",
+  DEBUG: "boolean = false",
 });
 ```
 
@@ -42,20 +42,19 @@ export const env = arkenv({
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
-  HOST: "string.host = 'localhost'",
-  PORT: "number.port = 3000",
+  DEBUG: "boolean = false",
 });
 
 // @filename: server.ts
 // ---cut---
 import { env } from "./env";
 
-const host = env.HOST;
-//    ^?
-const port = env.PORT;
+const debug = env.DEBUG;
 //    ^?
 
-console.log(`Listening at http://${host}:${port}`);
+if (debug) {
+  console.log("verbose logging enabled");
+}
 ```
 
 Additionally, fullstack apps have to keep secrets off the client. You may need a public prefix, *then* a runtime guard, *then* a bundler exclude...
