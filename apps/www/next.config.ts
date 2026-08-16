@@ -60,16 +60,6 @@ const config = {
 				destination: "/docs/core-concepts/standard-schema",
 				permanent: true,
 			},
-			{
-				source: "/docs/validating-environment-variables",
-				destination: "/docs/validating-your-environment",
-				permanent: true,
-			},
-			{
-				source: "/docs/validating-environment-variables/:path*",
-				destination: "/docs/validating-your-environment/:path*",
-				permanent: true,
-			},
 
 			// --- @arkenv/core (formerly /docs/arkenv) ---
 			// Never 301 back to `/docs`: browsers may still have cached the old
