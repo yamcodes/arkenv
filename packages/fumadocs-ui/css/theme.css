@@ -91,9 +91,7 @@ kbd {
 [data-arkenv-heading] {
 	overflow: visible;
 	/* Same as the page title at rest: Site Nav spacer + article padding-top */
-	scroll-margin-top: calc(
-		var(--fd-nav-height, 80px) + var(--fd-page-pad-top, 1.5rem)
-	);
+	scroll-margin-top: calc(var(--fd-nav-height, 80px) + var(--fd-page-pad-top, 1.5rem));
 }
 
 /*
