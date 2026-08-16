@@ -10,14 +10,17 @@ and TypeScript. You declare a schema once, `arkenv()` validates the
 process against that schema before application code runs, and TypeScript
 infers the types from the same declaration.
 
-This page shows why `process.env` is a weak contract, how ArkEnv's typed `env`
-object replaces it, and where to go next in these docs.
+This page shows why `process.env` is a weak contract, how ArkEnv's typed
+`env` object replaces it, and where to go next in these docs.
 
 ## The `process.env` problem
 
-In the JS community, environment variables are the primary way to configure an app. The problem is that TypeScript only defines these variables as `string | undefined`, so anything beyond that is up to you to handle manually. This includes checking if the value is a certain type or even defined at all.
+In JavaScript and TypeScript apps, environment variables are the primary
+way to configure a process. The problem is that TypeScript only types
+those values as `string | undefined`, so anything beyond that is your responsibility - including checking the type and making sure that the value is even defined.
 
-Let's see how this can get messy if not handled carefully. Can you spot the problem with this code?
+Let's see how this gets messy if not done carefully. Can you spot the
+problem with this code?
 
 ```ini title=".env"
 DEBUG=false
@@ -32,25 +35,38 @@ if (debug) {
 }
 ```
 
-Does it log the message?
+**Does it log the message?**
 
-Spoiler alert: yes, it does! This is because `process.env.DEBUG` is the string `"false"`, not the boolean `false`. In JavaScript, a non-empty string is truthy, so the `if (debug)` branch runs even though you explicitly turned it off!
+Spoiler alert: yes, it does. `process.env.DEBUG` is the string `"false"`,
+not the boolean `false`. In JavaScript, a non-empty string is truthy, so
+`if (debug)` runs even though you turned logging off.
 
-Now, a more seasoned developer might know to check `debug !== "false"`. But the next developer might not, they might expect `debug` to be a boolean.
+A more seasoned developer might know to check `debug !== "false"`. The
+next developer might not. They might expect `debug` to be a boolean.
 
-Soon you start parsing environment variable manually (with `Boolean(process.env.DEBUG)` in this case). You might also think of assigning a default value.
+Soon you start parsing environment variables by hand. You might also assign a
+default. To make the code safe, you add a type check and a null check.
+At that point, it looks like this:
 
-And to make this code safe, you want to add a type check and a null check. At this point, your code looks like this:
+```ts title="./server.ts"
+const raw = process.env.DEBUG;
+const debug: boolean = raw == null ? false : raw === "true";
 
-```ts title="./server.ts" twoslash
-
+if (debug) {
+  console.log("verbose logging enabled");
+}
 ```
 
-This becomes a maintaince burden as soon as your environment variabels usage starts scaling (over multiple files, for [client vs. server](/docs/validating-environment-variables/client-vs-server), and across apps).
+That becomes a maintenance burden as soon as usage scales: across
+multiple files, for
+[client vs. server](/docs/validating-environment-variables/client-vs-server),
+and across apps.
 
 ## The `env` solution
 
-ArkEnv solves your environment variable scaling problem. `arkenv()` parses your values against a schema you define in a single `env.ts` file, meaning you don't have to handle the loose `process.env` object in application code.
+ArkEnv solves that scaling problem. `arkenv()` parses your values against
+a schema you define in a single `env.ts` file, so you don't handle the
+loose `process.env` object in application code.
 
 The same `if`, after ArkEnv, looks like this:
 
@@ -82,17 +98,27 @@ if (debug) {
 }
 ```
 
-Here `debug` is `boolean` by definition. ArkEnv's [coercion](/docs/core-concepts/coercion) turns the string `"false"` into
-`false` by that same definition, so the `if` does not run and verbose logging stays off.
+Here `debug` is `boolean` by definition. ArkEnv's
+[coercion](/docs/core-concepts/coercion) turns the string `"false"` into
+`false` by that same definition, so the `if` does not run and verbose
+logging stays off.
 
-Additionally, in a full-stack app, you MUST keep secrets off the client. ArkEnv's [security model](/docs/core-concepts/security) ensures this by default. The
+In a full-stack app, you must keep secrets off the client. The
 [Next.js](/docs/guides/frameworks/nextjs),
 [Nuxt](/docs/guides/frameworks/nuxt),
 [Vite](/docs/guides/frameworks/vite), and
 [Bun](/docs/guides/frameworks/bun) packages enforce that split so server
-values stay out of the client graph.
+values stay out of the client graph. See
+[Client vs. server](/docs/validating-environment-variables/client-vs-server).
 
-There's a fair chance you already use a Standard Schema validator to handle dynamic data in your app (forms, API requests, etc.). In this case, you can **run `npx arkenv@latest init` to add ArkEnv to your existing project and get started right away**. You can use ArkEnv with any Standard Schema validator, like Zod, Valibot or Typia. Of course, you can also use ArkType, which ArkEnv was designed around in the first place.
+If you already use a Standard Schema validator for forms or API data,
+run `pnpm dlx arkenv@latest init` to add ArkEnv to an existing project.
+You can keep [Zod](https://zod.dev), [Valibot](https://valibot.dev), or
+any [Standard Schema](https://standardschema.dev/) validator with
+[`@arkenv/standard`](/docs/reference/standard), or use
+[ArkType](https://arktype.io) with [`@arkenv/core`](/docs/reference/core),
+which ArkEnv was designed around. See
+[Add to an existing repository](/docs/getting-started/add-to-existing-repository).
 
 ## How to use these docs
 
@@ -114,10 +140,11 @@ engines, and coercion if those terms are new.
   <Card href="/docs/guides/ai" title="Using AI with ArkEnv" description="How to use AI to help you write ArkEnv schemas and validate environment variables." />
 </Cards>
 
-(Unless you're an AI agent - in which case, The [/llms.txt](/llms.txt) index
-and [/llms-full.txt](/llms-full.txt) concatenated docs are machine-readable
-copies of this site.)
+Machine-readable copies of this site:
+[/llms.txt](/llms.txt) and [/llms-full.txt](/llms-full.txt).
 
-### Join the community
+## Join the community
 
-If you have questions about anything related to ArkEnv, you're always welcome to ask the community on [GitHub Discussions](https://github.com/yamcodes/arkenv/discussions), and [X](https://x.com/_yamcodes).
+If you have questions about ArkEnv, ask on
+[GitHub Discussions](https://github.com/yamcodes/arkenv/discussions) or
+[X](https://x.com/_yamcodes).
