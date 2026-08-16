@@ -1,7 +1,6 @@
 import {
 	rehypeCodeDefaultOptions,
 	remarkMdxFiles,
-	remarkNpm,
 } from "fumadocs-core/mdx-plugins";
 import { remarkSteps } from "fumadocs-core/mdx-plugins/remark-steps";
 import { defineConfig, defineDocs } from "fumadocs-mdx/config";
@@ -141,10 +140,14 @@ export const docs = defineDocs({
 export default defineConfig({
 	mdxOptions: {
 		rehypePlugins: [rehypeOptimizeInternalLinks],
+		remarkNpmOptions: {
+			persist: {
+				id: "package-manager",
+			},
+		},
 		remarkPlugins: [
 			remarkMdxFiles,
 			remarkGemoji,
-			remarkNpm,
 			remarkSteps,
 			remarkNormalizeCodeIndent,
 			remarkBunXToBunx,

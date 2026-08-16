@@ -3,16 +3,26 @@ title: Validating environment variables
 description: Design, parse, and secure environment variables with ArkEnv.
 ---
 
-Missing or malformed environment variables should fail as early as ArkEnv can see them: in `next build`, during Vite/Bun plugin runs, on server boot, and anywhere else you call `arkenv()`. These guides walk you through designing a schema, parsing values, and keeping secrets off the client.
+Missing or malformed environment variables fail as early as ArkEnv can see
+them: in `next build`, during Vite or Bun plugin runs, on server boot, and
+anywhere else you call `arkenv()`.
 
-Read them in order the first time. Skip ahead once you know which slice you need.
+These guides take you through designing a schema, parsing values, and keeping
+secrets off the client. They are meant to be read in order the first time, as
+they build on each other. Skip ahead once you know which slice you need.
+
+By the time you've read this section, you'll have a typed `env` object and a
+clear client/server split.
 
 <Callout type="info">
   ArkEnv validates and types your environment. Loading `.env` files is still
-  your runtime or framework's job. See [loaders and frameworks](/docs/validating-environment-variables/framework-integration).
+  your runtime or framework's job. See
+  [Framework integration](/docs/validating-environment-variables/framework-integration).
 </Callout>
 
-## From schema to deploy
+## From schema to `env`
+
+Start here if you're writing a schema for the first time.
 
 <Cards>
   <Card href="/docs/validating-environment-variables/structuring-your-schema" title="1. Structuring your schema" description="Put env.ts in the right place and export a typed env object." />
@@ -32,8 +42,7 @@ Read them in order the first time. Skip ahead once you know which slice you need
   <Card href="/docs/validating-environment-variables/hosting-presets" title="8. Hosting presets" description="Add Vercel, Netlify, Cloudflare, and other provider vars." />
 </Cards>
 
-## Next steps
+## More guides
 
-New project: run [`arkenv init`](/docs/reference/init) (or follow [Getting started](/docs/getting-started)), then open [structuring your schema](/docs/validating-environment-variables/structuring-your-schema).
-
-Validator cookbooks (ArkType, Zod, Valibot): [Validators](/docs/guides/validators).
+We also have recipes for
+[frameworks, validators, and other topics](/docs/guides).

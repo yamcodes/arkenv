@@ -1,13 +1,42 @@
 ---
 title: Getting started
-description: Getting started with ArkEnv.
+description: Get started with ArkEnv.
 ---
 
-ArkEnv provides typesafe environment variable validation for JavaScript and TypeScript projects.
+If you're new to ArkEnv, you can follow these steps to get started.
 
-## Quick start options
+<Steps>
+<Step>
 
-- [Installation](/docs/getting-started/installation): Install ArkEnv into your project.
-- [Start with an example](/docs/getting-started/examples): Explore playground templates and runnable examples.
-- [Add to an existing repository](/docs/getting-started/add-to-existing-repository): Setup environment validation step-by-step.
-- [Editor integration](/docs/getting-started/editor-integration): Configure your editor/IDE for auto-imports and validation tooltips.
+### Install ArkEnv
+
+Run `arkenv init` to detect your stack, write a schema, and wire the matching
+plugin.
+
+```package-install
+npx arkenv@latest init
+```
+
+To install packages by hand, see the
+[installation guide](/docs/getting-started/installation).
+
+</Step>
+
+<Step>
+
+### Choose your learning path
+
+Pick the path that matches where you are.
+
+<Cards>
+  <Card href="/docs/getting-started/installation" title="Use arkenv init" description="Install ArkEnv and framework integrations" />
+
+  <Card href="/docs/getting-started/examples" title="Use an example" description="Start with framework-specific examples" />
+
+  <Card href="/docs/validating-environment-variables" title="Follow the in-depth guides" description="From zero to deployment" />
+
+  <Card href="/docs/getting-started/add-to-existing-repository" title="Add to an existing repository" description="Validate your current environment variables" />
+</Cards>
+
+</Step>
+</Steps>

@@ -1,11 +1,13 @@
 ---
 title: API reference
-description: Configuration, CLI, and package APIs for ArkEnv.
+description: Learn about ArkEnv's APIs using the reference.
 ---
 
-Options, CLI commands, and package exports. For setup walkthroughs, open [Validating environment variables](/docs/validating-environment-variables).
+ArkEnv's API reference is broken up into the following sections:
 
 ## Configuration
+
+Options, keywords, schema shapes, and the `env` object.
 
 <Cards>
   <Card href="/docs/reference/options" title="options" description="Second-argument config for arkenv(): env, coerce, safe, and more." />
@@ -14,12 +16,13 @@ Options, CLI commands, and package exports. For setup walkthroughs, open [Valida
 
   <Card href="/docs/reference/schema" title="schema" description="Schema shapes: raw objects, type(), and Standard Schema maps." />
 
-  <Card href="/docs/reference/env" title="env" description="The validated env object, Infer, and framework Proxies." />
+  <Card href="/docs/reference/env" title="env" description="The validated env object, Infer, and framework proxies." />
 </Cards>
 
 ## Commands
 
-The `arkenv` npm package is the CLI. Import validation from `@arkenv/core` or `@arkenv/standard`.
+The `arkenv` package is the CLI. Import validation from `@arkenv/core` or
+`@arkenv/standard`.
 
 <Cards>
   <Card href="/docs/reference/init" title="init" description="Scaffold schemas, layouts, and hosting presets into a project." />
@@ -28,6 +31,8 @@ The `arkenv` npm package is the CLI. Import validation from `@arkenv/core` or `@
 </Cards>
 
 ## Packages
+
+Runtime engines and framework plugins.
 
 <Cards>
   <Card href="/docs/reference/core" title="@arkenv/core" description="ArkType-powered arkenv() and type()." />

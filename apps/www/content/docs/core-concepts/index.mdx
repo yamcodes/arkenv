@@ -1,18 +1,11 @@
 ---
 title: Core concepts
-description: Foundational ideas behind ArkEnv validation, coercion, and typesafety.
+description: Learn about the core concepts behind ArkEnv.
 ---
 
-These pages explain how ArkEnv thinks about environment variables: when validation runs, how strings become typed values, and why the imported `env` object is the surface you use everywhere.
-
-ArkEnv has two engines that share the same runtime pipeline. Shared [options](/docs/reference/options) apply to both; `toJsonSchema` is `@arkenv/standard` only:
-
-- [`@arkenv/core`](/docs/reference/core) with ArkType
-- [`@arkenv/standard`](/docs/reference/standard) with Zod, Valibot, or any [Standard Schema](https://standardschema.dev/) validator
-
-Concept pages treat both as first-class. Examples usually show ArkType and Zod side by side; engine-only details use callouts.
-
-For step-by-step setup, see [Validating environment variables](/docs/validating-environment-variables). For option and package lookups, see the [API reference](/docs/reference).
+Learn more about the core concepts of ArkEnv. Two engines share the same
+runtime pipeline: `@arkenv/core` with ArkType, and `@arkenv/standard` with
+Zod, Valibot, or any Standard Schema validator.
 
 <Cards>
   <Card href="/docs/core-concepts/validation" title="Validation" description="Boot and build-time checks with either engine." />
@@ -24,6 +17,4 @@ For step-by-step setup, see [Validating environment variables](/docs/validating-
   <Card href="/docs/core-concepts/typesafety" title="Typesafety" description="Infer types from the schema through to the env object." />
 
   <Card href="/docs/core-concepts/standard-schema" title="Choosing an engine" description="When to use @arkenv/core vs @arkenv/standard." />
-
-  <Card href="/docs/guides/validators" title="Validators" description="ArkType, Zod, and Valibot cookbooks." />
 </Cards>
