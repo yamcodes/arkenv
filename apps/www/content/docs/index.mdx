@@ -21,23 +21,24 @@ those values as `string | undefined`, so anything beyond that is **your
 responsibility**, including checking the type and making sure the value is
 defined.
 
-Let's see how this gets messy if you handle it by hand. Can you spot the
+Let's see how this can get messy if not done carefully. Can you spot the
 problem with this code?
 
 ```ini title=".env"
-DEBUG=false
 PORT=3000
+DEBUG=false
 ```
 
 ```ts title="./server.ts" twoslash
-const debug = process.env.DEBUG;
-//    ^?
 const port = process.env.PORT;
+const debug = process.env.DEBUG;
 //    ^?
 
 if (debug) {
   console.log("verbose logging enabled");
 }
+
+console.log(`listening on ${port}`);
 ```
 
 **Does it log the message?**
@@ -52,8 +53,8 @@ variables by hand. You might also assign a default. At this point, your
 code looks like this:
 
 ```ts title="./server.ts" twoslash
-const debug = process.env.DEBUG === "true";
 const port = Number(process.env.PORT ?? "3000");
+const debug = process.env.DEBUG === "true";
 
 if (debug) {
   console.log("verbose logging enabled");
@@ -78,29 +79,28 @@ code.
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
-  DEBUG: "boolean = false",
   PORT: "number.port = 3000",
+  DEBUG: "boolean = false",
 });
 ```
 
-The same `if`, after ArkEnv, looks like this:
+The same `if` as above, after ArkEnv, looks like this:
 
 ```ts title="./server.ts" twoslash
 // @filename: env.ts
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
-  DEBUG: "boolean = false",
   PORT: "number.port = 3000",
+  DEBUG: "boolean = false",
 });
 
 // @filename: server.ts
 // ---cut---
 import { env } from "./env";
 
-const debug = env.DEBUG;
-//    ^?
 const port = env.PORT;
+const debug = env.DEBUG;
 //    ^?
 
 if (debug) {
@@ -116,7 +116,7 @@ Here `debug` is `boolean` and `port` is a number, by definition. ArkEnv's
 off. As a bonus, `number.port` also guarantees that `port` is in the
 valid 0-65535 range.
 
-In a full-stack app, you must keep secrets off the client. The
+In a full-stack app, you **must keep secrets off the client**. The
 [Next.js](/docs/guides/frameworks/nextjs),
 [Nuxt](/docs/guides/frameworks/nuxt),
 [Vite](/docs/guides/frameworks/vite), and
@@ -125,12 +125,8 @@ values stay out of the client graph. See
 [Client vs. server](/docs/validating-environment-variables/client-vs-server).
 
 ArkEnv can be **adopted incrementally**. If you already validate forms or
-API data with a Standard Schema library, run `npx arkenv@latest init` and
-keep [Zod](https://zod.dev), [Valibot](https://valibot.dev), or any
-[Standard Schema](https://standardschema.dev/) validator with
-[`@arkenv/standard`](/docs/reference/standard). If you use
-[ArkType](https://arktype.io), use
-[`@arkenv/core`](/docs/reference/core). See
+API data with [ArkType](https://arktype.io), [Zod](https://zod.dev), [Valibot](https://valibot.dev), or any
+[Standard Schema](https://standardschema.dev/), run `npx arkenv@latest init` to **get started right away**. See
 [Add to an existing repository](/docs/getting-started/add-to-existing-repository).
 
 ## How to use these docs
