@@ -61,8 +61,9 @@ const menuRowProps = {
 };
 
 /**
- * Hide overflow clusters from the end until the row fits on one line.
- * Clusters must be marked `[data-docs-ai-overflow]` in hide-first order last.
+ * Hide overflow clusters from the start until the row fits on one line.
+ * Clusters must be marked `[data-docs-ai-overflow]` in hide-first order first
+ * so Copy for LLM + Edit on GitHub remain when only two items fit.
  */
 function hideOverflowingActions(row: HTMLElement): void {
 	const clusters = [
@@ -71,9 +72,9 @@ function hideOverflowingActions(row: HTMLElement): void {
 	for (const cluster of clusters) {
 		cluster.hidden = false;
 	}
-	for (let i = clusters.length - 1; i >= 0; i--) {
+	for (const cluster of clusters) {
 		if (row.scrollWidth <= row.clientWidth) break;
-		clusters[i].hidden = true;
+		cluster.hidden = true;
 	}
 }
 
@@ -452,6 +453,24 @@ export function AIActions({
 							{copied ? "Copied" : copyError ? "Couldn't copy" : "Copy for LLM"}
 						</span>
 					</button>
+					<span
+						data-docs-ai-overflow="markdown"
+						className="flex shrink-0 items-center gap-x-3"
+					>
+						<span
+							aria-hidden="true"
+							className="h-4 w-px shrink-0 bg-fd-border"
+						/>
+						<button
+							type="button"
+							className={compactLinkClassName}
+							onClick={openMarkdown}
+						>
+							<SiMarkdown aria-hidden="true" size={14} title="" />
+							<span>View Markdown</span>
+							<ExternalMark />
+						</button>
+					</span>
 					{githubUrl ? (
 						<span
 							data-docs-ai-overflow="github"
@@ -475,24 +494,6 @@ export function AIActions({
 							</a>
 						</span>
 					) : null}
-					<span
-						data-docs-ai-overflow="markdown"
-						className="flex shrink-0 items-center gap-x-3"
-					>
-						<span
-							aria-hidden="true"
-							className="h-4 w-px shrink-0 bg-fd-border"
-						/>
-						<button
-							type="button"
-							className={compactLinkClassName}
-							onClick={openMarkdown}
-						>
-							<SiMarkdown aria-hidden="true" size={14} title="" />
-							<span>View Markdown</span>
-							<ExternalMark />
-						</button>
-					</span>
 				</OverflowActionsRow>
 			) : null}
 			<span aria-live="polite" className="sr-only">

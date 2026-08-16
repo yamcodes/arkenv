@@ -25,6 +25,12 @@
 			"skillPath": "skills/engineering/diagnose/SKILL.md",
 			"computedHash": "15939a26f86edec2d4862042b8564e5a062cb81d04e047a0cea6305c8830b5f5"
 		},
+		"docs-writer": {
+			"source": "google-gemini/gemini-cli",
+			"sourceType": "github",
+			"skillPath": ".gemini/skills/docs-writer/SKILL.md",
+			"computedHash": "ddb3671168efa5f2fe481740a57ca147619ffffe2cf764ada6229bde01fed3df"
+		},
 		"excalidraw": {
 			"source": "github/awesome-copilot",
 			"sourceType": "github",

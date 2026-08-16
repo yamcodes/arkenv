@@ -58,14 +58,14 @@ describe("AIActions", () => {
 			screen
 				.getByRole("button", { name: "Copy for LLM" })
 				.compareDocumentPosition(
-					screen.getByRole("link", { name: "Edit on GitHub" }),
+					screen.getByRole("button", { name: "View Markdown" }),
 				) & Node.DOCUMENT_POSITION_FOLLOWING,
 		).toBeTruthy();
 		expect(
 			screen
-				.getByRole("link", { name: "Edit on GitHub" })
+				.getByRole("button", { name: "View Markdown" })
 				.compareDocumentPosition(
-					screen.getByRole("button", { name: "View Markdown" }),
+					screen.getByRole("link", { name: "Edit on GitHub" }),
 				) & Node.DOCUMENT_POSITION_FOLLOWING,
 		).toBeTruthy();
 	});

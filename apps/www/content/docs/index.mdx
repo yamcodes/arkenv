@@ -5,22 +5,87 @@ description: Welcome to the ArkEnv documentation!
 
 ## What is ArkEnv?
 
-ArkEnv is a modern, lightweight, and typesafe environment variable validation library for JavaScript and TypeScript apps.
+ArkEnv is a typesafe environment variable validation library for JavaScript and TypeScript apps. It is designed for fail-fast checks and inferred types, and it works the same way in a single app or a [monorepo that reuses one schema](/docs/validating-environment-variables/reusing-schemas).
 
-Powered by [ArkType](https://arktype.io) and [Standard Schema](https://github.com/standard-schema/standard-schema), ArkEnv lets you define, validate, and parse environment variables seamlessly across client, server, and monorepo environments.
+Write your schema in [ArkType](https://arktype.io), [Zod](https://zod.dev), [Valibot](https://valibot.dev), or any [Standard Schema](https://standardschema.dev/) validator. ArkEnv validates it, parses the values, and gives you a typed `env` object.
 
-## Why ArkEnv?
+## The `process.env` problem
 
-- **Zero bloat**: A tiny, dependency-free package that drops in right next to your existing validator.
-- **Typesafe by design**: Infer clean TypeScript types directly from your environment schema.
-- **Fail-fast validation**: Catch missing or invalid variables at dev, build, or boot time with beautiful console errors.
-- **Strict client/server isolation**: Guarantee server secrets never accidentally leak into your client bundles.
-- **First-class integrations**: Native plugins for Next.js, Nuxt, Vite, and Bun.
+Environment variables are how apps get configured - but **`process.env` is untyped**. Every key is `string | undefined`. `"false"` is truthy. `PORT` might be `"8080a"`. A single app might have **dozens of ad-hoc checks** that drift from the real contract.
 
-## Explore the Docs
+```ts title="./server.ts" twoslash
+const host = process.env.HOST;
+//    ^?
+const port = process.env.PORT;
+//    ^?
 
-- [Getting started](/docs/getting-started): Installation, examples, and quickstart setup.
-- [Validating environment variables](/docs/validating-environment-variables): Step-by-step guide to architecting and validating environment variables.
-- [API Reference](/docs/reference): Full API details for core, CLI, and framework packages.
-- [Core Concepts](/docs/core-concepts): Deep dive into security models, type coercion, and standard schema validation.
-- [Guides](/docs/guides): Tutorials and recipes for Next.js, Nuxt, Vite, Bun, and AI assistants.
+console.log(`Listening at http://${host}:${port}`);
+```
+
+These gaps show up late: a deploy that looked green, a secret that leaked into a client bundle, a boolean that never meant what you thought. Feedback loops need to be fast so you can ship with the configuration you intended.
+
+## The `env` solution
+
+**ArkEnv solves your untyped env problem.** You declare a schema once. Calling `arkenv()` proves the process has that configuration **before application code runs**.
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  HOST: "string.host = 'localhost'",
+  PORT: "number.port = 3000",
+});
+```
+
+```ts title="./server.ts" twoslash
+// @filename: env.ts
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  HOST: "string.host = 'localhost'",
+  PORT: "number.port = 3000",
+});
+
+// @filename: server.ts
+// ---cut---
+import { env } from "./env";
+
+const host = env.HOST;
+//    ^?
+const port = env.PORT;
+//    ^?
+
+console.log(`Listening at http://${host}:${port}`);
+```
+
+Additionally, fullstack apps have to keep secrets off the client. You may need a public prefix, *then* a runtime guard, *then* a bundler exclude...
+
+ArkEnv **enforces that split** in [Next.js](/docs/guides/frameworks/nextjs), [Nuxt](/docs/guides/frameworks/nuxt), [Vite](/docs/guides/frameworks/vite), and [Bun](/docs/guides/frameworks/bun). Server values stay out of the client graph.
+
+ArkEnv can be **adopted incrementally** and you can **add it to any repository in just a few minutes**. It uses the validator you've already written and a single `env.ts` file. [`@arkenv/core`](/docs/reference/core) accepts ArkType and Standard Schema validators; [`@arkenv/standard`](/docs/reference/standard) is there if you want to skip the `arktype` dependency.
+
+## How to use these docs
+
+We will do our best to keep jargon to a minimum - but there are some need-to-know words that will be important to understand as you read through the docs. [Core concepts](/docs/core-concepts) covers the `env` object, engines, and coercion if you're learning these terms.
+
+<Cards>
+  <Card href="/docs/getting-started" title="Getting started" description="Installation, examples, and adding ArkEnv to an existing repo." />
+
+  <Card href="/docs/validating-environment-variables" title="Validating environment variables" description="Design a schema, parse values, and keep secrets off the client." />
+
+  <Card href="/docs/core-concepts" title="Core concepts" description="When validation runs, how strings become types, and which engine to pick." />
+
+  <Card href="/docs/guides" title="Guides" description="Framework recipes, validators, AI assistants, and migrating from T3 Env." />
+
+  <Card href="/docs/reference" title="API reference" description="Options, CLI commands, and package APIs." />
+</Cards>
+
+## Join the community
+
+If you have questions about anything related to ArkEnv, you're always welcome to ask the community on [GitHub Discussions](https://github.com/yamcodes/arkenv/discussions) and [X](https://x.com/_yamcodes).
+
+For an index of all available documentation, see [/llms.txt](/llms.txt).
+
+For the full concatenated docs, see [/llms-full.txt](/llms-full.txt).
+
+For agent-facing setup, including the skill and `init --agent`, see [Using AI with ArkEnv](/docs/guides/ai).
