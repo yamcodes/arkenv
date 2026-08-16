@@ -9,7 +9,7 @@ A Fumadocs-ready component and theme package for ArkEnv documentation. It ships 
 - Anchorable headings with scroll margin for tall headers
 - Enhanced code blocks and AI actions (copy page as Markdown, open in AI chats)
 - Preconfigured `arkenvComponents` MDX map that layers our overrides onto `fumadocs-ui` defaults
-- Drill-in sidebar slots for Turborepo-like docs navigation
+- Drill-in sidebar slots for Turborepo-like docs navigation (desktop drill-in, mobile sidebar tree)
 
 ## Install
 

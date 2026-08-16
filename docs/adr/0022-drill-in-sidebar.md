@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Accepted — amended by [ADR 0026](./0026-mobile-sidebar-tree.md) (mobile drawer uses a **Sidebar Tree**, not drill-in).
 
 ## Context
 
@@ -38,3 +38,4 @@ We will implement a **Drill-in Sidebar** for the docs site via Fumadocs `DocsLay
 - Install CTA must live outside the sidebar if we still want it.
 - Page-header taglines (follow-up) must treat Nested Folder paths as `X > Y` and Separator-grouped paths as section-only `X`.
 - Site-wide top chrome is no longer this package’s `Header` — see ADR 0023 (**Site Nav** in `apps/www`).
+- Desktop-only: the mobile drawer does not drill. See ADR 0026.

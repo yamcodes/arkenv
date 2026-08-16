@@ -37,7 +37,7 @@ These groups share a theme. They remain separate ADRs (no nesting or history rew
 | Packaging & module graph           | `export-surface-tiers`, `standard-mode-packaging-strategy`, `bundle-isolation-over-dryness`, `runtime-shared-logic-strategy`, `shared-build-package`                                                                       |
 | Coercion / Standard Schema         | `coercion-schema-transformer`, `standard-mode-packaging-strategy`, `to-json-schema-escape-hatch`                                                                                                                           |
 | CLI / scaffold IR                  | `cli-hosting-preset-field-metadata`, `dotenv-linter-custom-parser-strategy`                                                                                                                                                |
-| www docs chrome                    | `drill-in-sidebar`, `site-nav-glass-chrome`                                                                                                                                                                                |
+| www docs chrome                    | `drill-in-sidebar`, `mobile-sidebar-tree`, `site-nav-glass-chrome`                                                                                                                                                         |
 
 ## Tooling & agent skills
 

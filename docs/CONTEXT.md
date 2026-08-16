@@ -377,30 +377,34 @@ Module setup / `nuxt build` may still run core validation against the build envi
 
 ### Docs site navigation
 
-Language for the documentation website (`apps/www`) nav chrome. See **ADR 0022**.
+Language for the documentation website (`apps/www`) nav chrome. See **ADR 0022** (desktop) and **ADR 0026** (mobile).
 
 **Drill-in Sidebar**:
-A docs sidebar where opening a **Section** replaces the current list with that section’s children, instead of expanding them inline.
-*Avoid*: Accordion sidebar (for the root↔section transition), paged sidebar (informal)
+The **desktop** docs sidebar: opening a **Section** replaces the current list with that section’s children, instead of expanding them inline.
+*Avoid*: Accordion / **Sidebar Tree** for the desktop root↔section transition; paged sidebar (informal)
+
+**Sidebar Tree**:
+The **mobile** docs drawer: every **Section** stays on one list and expands in place (title → **Overview**, chevron toggles children). No **Sidebar Page**, no Back.
+*Avoid*: Drill-in (in the mobile drawer); calling this a dropdown
 
 **Sidebar Page**:
-One full list view inside a **Drill-in Sidebar** (root index, or the contents of one **Section**).
+One full list view inside a **Drill-in Sidebar** (root index, or the contents of one **Section**). Desktop only.
 *Avoid*: Panel, screen, view (when referring to sidebar navigation state)
 
 **Section**:
-A root-level folder in the docs page tree that drills into its own **Sidebar Page** (trailing chevron on the root list). Drill-in is one level only.
+A root-level folder in the docs page tree. On desktop it drills into its own **Sidebar Page** (trailing chevron). On mobile it expands in the **Sidebar Tree**. Drill-in is one level only.
 *Avoid*: Category, group, accordion, folder (in UX copy)
 
 **Nested Folder**:
-A real folder under a **Section** (true URL depth n=2, e.g. `/docs/guides/frameworks/nextjs`). Stays on the current **Sidebar Page**; title navigates to the folder’s overview page; a separate chevron toggles **indented** child **Leaves** (starts expanded). Max one Nested Folder level inside a Section (no n=3).
-*Avoid*: Nested Group (retired — conflated with Separator), Section (root drill-in only), sub-section (vague)
+A real folder under a **Section** (true URL depth n=2, e.g. `/docs/guides/frameworks/nextjs`). Does not drill: title navigates to the folder’s overview page; a separate chevron toggles **indented** child **Leaves** (starts expanded). Max one Nested Folder level inside a Section (no n=3). Same on desktop **Sidebar Page** and mobile **Sidebar Tree**.
+*Avoid*: Nested Group (retired — conflated with Separator), Section (root only), sub-section (vague)
 
 **Leaf**:
-A sidebar item that navigates to a docs URL without changing **Sidebar Page**.
+A sidebar item that navigates to a docs URL without changing **Sidebar Page** (desktop) or expanding a folder (mobile).
 *Avoid*: Link item, page link (when contrasting with Section)
 
 **Overview**:
-The index page of a **Section**, listed first on that section’s **Sidebar Page**. Opening the **Section** navigates here so a **Leaf** is always selected.
+The index page of a **Section**. On desktop it is listed first on that section’s **Sidebar Page**. On mobile the **Section** title itself navigates here (no extra Overview row). Opening a **Section** on desktop navigates here so a **Leaf** is always selected.
 *Avoid*: Section landing (informal), index (when speaking in UX terms)
 
 **External Leaf**:
@@ -408,18 +412,18 @@ A **Leaf** that leaves the docs site (external URL), shown with an external-link
 *Avoid*: Outlink (unless needed in code)
 
 **Separator**:
-A non-interactive muted label that only **groups** sibling **Leaves** on a **Sidebar Page** (from meta `---Label---` entries). URLs stay flat under the **Section** (n=1), e.g. `/docs/reference/system-environment-variables` with a “Configuration” label above — not a Nested Folder. Page-header taglines treat these as Section-only (`X`), never `X > Y`.
+A non-interactive muted label that only **groups** sibling **Leaves** under a **Section** (from meta `---Label---` entries). URLs stay flat under the **Section** (n=1), e.g. `/docs/reference/system-environment-variables` with a “Configuration” label above — not a Nested Folder. Page-header taglines treat these as Section-only (`X`), never `X > Y`.
 *Avoid*: Nested Folder, divider, heading (when referring to nav chrome)
 
 **Relationships**:
 
-- A **Drill-in Sidebar** shows exactly one **Sidebar Page** at a time
-- Only **Sections** (root folders) open a child **Sidebar Page**; Back returns to the root **Sidebar Page**
-- Inside a **Section**, authors choose **Nested Folder** (true n=2 URL + collapsible indented children) or **Separator** (visual group only, flat URLs)
+- **Desktop** uses a **Drill-in Sidebar** (exactly one **Sidebar Page** at a time). **Mobile** uses a **Sidebar Tree** (all **Sections** on one list; expand in place)
+- Only **Sections** (root folders) open a child **Sidebar Page** on desktop; Back returns to the root **Sidebar Page**. Mobile has no Back
+- Inside a **Section**, authors choose **Nested Folder** (true n=2 URL + collapsible indented children) or **Separator** (visual group only, flat URLs) — same on both surfaces
 - **Nested Folders** are at most one level inside a **Section** (n=2 max); they collapse/expand and do not drill
 - **Sidebar Page** selection is **URL-driven** on load and when the docs URL changes
-- Every **Section** has an **Overview** index; clicking a **Section** opens that Overview (drill + navigate) so a **Leaf** is always selected on the section **Sidebar Page**
-- **Leaf** clicks change the URL; Back returns to the root **Sidebar Page** without changing the URL
+- Every **Section** has an **Overview** index. Desktop: clicking a **Section** opens that Overview (drill + navigate) so a **Leaf** is always selected. Mobile: the **Section** title is that Overview link
+- **Leaf** clicks change the URL. Desktop Back returns to the root **Sidebar Page** without changing the URL
 - **Changelog** is an **External Leaf** to GitHub Releases; no Glossary **External Leaf** until a glossary exists
 
 **Example dialogue**:
@@ -427,9 +431,13 @@ A non-interactive muted label that only **groups** sibling **Leaves** on a **Sid
 > **Dev:** "If Guides has a Continuous Integration folder under it, do we drill in again?"
 > **Domain expert:** "No. Guides is the **Section**. Continuous Integration is a **Nested Folder** — collapsible header, indented children, URL like `/docs/guides/ci-vendors/vercel`. API reference’s “Configuration” label is a **Separator** over flat pages — not the same thing."
 
+> **Dev:** "Should the mobile drawer drill into Guides the way desktop does?"
+> **Domain expert:** "No. Mobile is a **Sidebar Tree** — Guides expands in place. Drill-in is the desktop rail only (ADR 0026)."
+
 **Flagged ambiguities**:
 
-- "paged sidebar" → **Drill-in Sidebar** / **Sidebar Page**
+- "paged sidebar" → **Drill-in Sidebar** / **Sidebar Page** (desktop)
+- "accordion" / "dropdown" on mobile → **Sidebar Tree**
 - "n=2" / "Nested Group" → **Nested Folder** (URL depth) vs **Separator** (visual only)
 - Visual direction is **hybrid**: Turbo structure/motion/active-pill; ArkEnv color tokens
 - Sidebar Install banner removed; use **Separators** for flat reference groupings and **Nested Folders** only when the URL is truly nested

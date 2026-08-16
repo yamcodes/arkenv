@@ -191,18 +191,26 @@ function LeafItem({
 	);
 }
 
-function NestedFolder({
+/**
+ * Title → Overview (or folder index); chevron toggles children.
+ * `startOpen` is true for Nested Folders (desktop + mobile) and false for
+ * mobile root Sections (only the active path starts expanded).
+ */
+function CollapsibleFolder({
 	folder,
 	pathname,
+	startOpen,
+	children,
 }: {
 	folder: PageTree.Folder;
 	pathname: string;
+	startOpen: boolean;
+	children: ReactNode;
 }) {
 	const index = resolveFolderIndex(folder);
-	const children = nestedChildren(folder);
 	const containsActive = folderContainsPath(folder, pathname);
 	const indexActive = Boolean(index && isPathExact(index.url, pathname));
-	const [open, setOpen] = useState(true);
+	const [open, setOpen] = useState(startOpen || containsActive);
 
 	useEffect(() => {
 		if (containsActive) setOpen(true);
@@ -248,17 +256,29 @@ function NestedFolder({
 				</button>
 			</div>
 			{open ? (
-				<div className="flex flex-col gap-0.5 ps-3">
-					{children.map((child, childIndex) => (
-						<NestedChild
-							key={nodeKey(child, childIndex)}
-							node={child}
-							pathname={pathname}
-						/>
-					))}
-				</div>
+				<div className="flex flex-col gap-0.5 ps-3">{children}</div>
 			) : null}
 		</div>
+	);
+}
+
+function NestedFolder({
+	folder,
+	pathname,
+}: {
+	folder: PageTree.Folder;
+	pathname: string;
+}) {
+	return (
+		<CollapsibleFolder folder={folder} pathname={pathname} startOpen>
+			{nestedChildren(folder).map((child, childIndex) => (
+				<NestedChild
+					key={nodeKey(child, childIndex)}
+					node={child}
+					pathname={pathname}
+				/>
+			))}
+		</CollapsibleFolder>
 	);
 }
 
@@ -489,6 +509,7 @@ function DrillInTree() {
 			<nav
 				ref={rootRef}
 				aria-label="Documentation sections"
+				data-sidebar-mode="sections"
 				className={cn(
 					"flex w-full flex-col gap-0.5",
 					!reduceMotion && panelMotionClass,
@@ -528,6 +549,95 @@ function DrillInTree() {
 					<SectionPage section={section} pathname={pathname} onBack={goBack} />
 				) : null}
 			</nav>
+		</div>
+	);
+}
+
+/**
+ * Mobile Sidebar Tree: root Sections expand in place (ADR 0026).
+ * Title → Overview; chevron toggles; Nested Folder / Separator / Leaf unchanged.
+ */
+function AccordionSection({
+	folder,
+	pathname,
+}: {
+	folder: PageTree.Folder;
+	pathname: string;
+}) {
+	return (
+		<CollapsibleFolder folder={folder} pathname={pathname} startOpen={false}>
+			{nestedChildren(folder).map((child, childIndex) => (
+				<SectionChild
+					key={nodeKey(child, childIndex)}
+					node={child}
+					pathname={pathname}
+				/>
+			))}
+		</CollapsibleFolder>
+	);
+}
+
+function AccordionRootNode({
+	node,
+	pathname,
+}: {
+	node: PageTree.Node;
+	pathname: string;
+}) {
+	if (node.type === "separator") {
+		return <p className={groupLabelClassName()}>{node.name}</p>;
+	}
+	if (node.type === "folder") {
+		const index = resolveFolderIndex(node);
+		const children = nestedChildren(node);
+		if (children.length === 0) {
+			if (!index) return null;
+			return (
+				<LeafItem
+					item={{
+						...index,
+						name: node.name,
+						icon: node.icon ?? index.icon,
+					}}
+					pathname={pathname}
+				/>
+			);
+		}
+		return <AccordionSection folder={node} pathname={pathname} />;
+	}
+	return <LeafItem item={node} pathname={pathname} />;
+}
+
+function AccordionTree() {
+	const { root } = useTreeContext();
+	const pathname = usePathname();
+
+	return (
+		<nav
+			aria-label="Documentation"
+			className="flex w-full flex-col gap-0.5"
+			data-sidebar-mode="tree"
+		>
+			{root.children.map((node, index) => (
+				<AccordionRootNode
+					key={nodeKey(node, index)}
+					node={node}
+					pathname={pathname}
+				/>
+			))}
+		</nav>
+	);
+}
+
+function AccordionNav({ className }: { className?: string }) {
+	return (
+		<div
+			className={cn(
+				"flex w-full flex-col gap-0.5 ps-4 pe-2 pb-4 min-[40rem]:ps-6",
+				className,
+			)}
+		>
+			<AccordionTree />
 		</div>
 	);
 }
@@ -589,7 +699,7 @@ function DocsSidebarShell({
 			{({ ref, collapsed, hovered, onPointerEnter, onPointerLeave }) => (
 				<div
 					data-sidebar-placeholder=""
-					className="sticky top-(--fd-docs-row-1) z-20 [grid-area:sidebar] pointer-events-none *:pointer-events-auto h-[calc(var(--fd-docs-height)-var(--fd-docs-row-1))] min-[960px]:layout:[--fd-sidebar-width:300px]"
+					className="sticky top-(--fd-docs-row-1) z-20 [grid-area:sidebar] pointer-events-none *:pointer-events-auto h-[calc(var(--fd-docs-height)-var(--fd-docs-row-1))] max-[959px]:hidden min-[960px]:layout:[--fd-sidebar-width:300px]"
 				>
 					<aside
 						id="nd-sidebar"
@@ -634,6 +744,8 @@ function DrillInNav({ className }: { className?: string }) {
 }
 
 /**
+ * Desktop drill-in rail + mobile Sidebar Tree drawer (ADR 0022 / 0026).
+ *
  * @see drillInSidebarSlots
  */
 export function DrillInSidebar({
@@ -649,7 +761,7 @@ export function DrillInSidebar({
 				<DrillInNav />
 			</DocsSidebarShell>
 			<SidebarDrawer>
-				<DrillInNav className="min-h-0 flex-1 overflow-y-auto overscroll-contain pt-4" />
+				<AccordionNav className="min-h-0 flex-1 overflow-y-auto overscroll-contain pt-4" />
 			</SidebarDrawer>
 		</>
 	);
