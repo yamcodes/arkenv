@@ -1,7 +1,7 @@
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import type { CollectedState } from "./plan";
-import { createPlan, stripValuesFromEnvContent } from "./planner";
+import { createPlan } from "./planner";
 
 describe("Planner", () => {
 	const defaultState: CollectedState = {
@@ -562,16 +562,14 @@ describe("Planner", () => {
 			expect(envExampleFile).toBeUndefined();
 		});
 
-		it("copies .env to .env.example with values stripped in existing project mode if .env.example is missing", () => {
+		it("generates .env.example from detected keys when .env exists and .env.example is missing", () => {
 			const state: CollectedState = {
 				...defaultState,
 				existingFiles: ["/test/.env"],
 				options: {
 					...defaultState.options,
-					envContent: `# Database URL
-DATABASE_URL=postgres://user:pass@localhost:5432/db
-  export API_KEY = "xyz"
-UNRELATED=`,
+					envKeys: ["DATABASE_URL", "API_KEY"],
+					framework: "vanilla",
 				},
 			};
 			const plan = createPlan(state);
@@ -585,10 +583,8 @@ UNRELATED=`,
 
 			expect(envExampleFile).toBeDefined();
 			expect(envExampleFile?.action).toBe("create");
-			expect(envExampleFile?.content).toBe(`# Database URL
-DATABASE_URL=
-  export API_KEY=
-UNRELATED=`);
+			expect(envExampleFile?.content).toContain("DATABASE_URL=");
+			expect(envExampleFile?.content).toContain("API_KEY=");
 		});
 
 		describe("gitignore checks", () => {
@@ -674,33 +670,6 @@ UNRELATED=`);
 
 				expect(gitignoreFile).toBeUndefined();
 			});
-		});
-	});
-
-	describe("stripValuesFromEnvContent", () => {
-		it("strips standard environment values but leaves keys", () => {
-			const content =
-				"PORT=3000\nHOST=localhost\n# comment\n\nDB_URL=postgresql://user:pass@localhost:5432/db";
-			const result = stripValuesFromEnvContent(content);
-			expect(result).toBe("PORT=\nHOST=\n# comment\n\nDB_URL=");
-		});
-
-		it("strips multiline quoted values securely", () => {
-			const content = `PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----
-MIIEpQIBAAKCAQEA0y...
------END RSA PRIVATE KEY-----"
-PORT=3000`;
-			const result = stripValuesFromEnvContent(content);
-			expect(result).toBe("PRIVATE_KEY=\nPORT=");
-		});
-
-		it("strips single quoted multiline values securely", () => {
-			const content = `SECRET='foo
-bar
-baz'
-PORT=3000`;
-			const result = stripValuesFromEnvContent(content);
-			expect(result).toBe("SECRET=\nPORT=");
 		});
 	});
 

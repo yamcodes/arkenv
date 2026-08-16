@@ -78,7 +78,9 @@ Print help.
 Depending on the detected framework and flags:
 
 - Schema file(s): `env.ts` or the strict `env/` tree (often under `src/`)
-- `.env` / `.env.example` when missing
+- `.env` / `.env.example` when missing. Init never reads an existing
+  `.env`; a missing `.env.example` is filled from detected keys and
+  defaults. If `.env` is missing, init may copy `.env.example` into it.
 - Next.js: `withArkEnv` in `next.config.*`, optional `generated/env.gen.ts`
 - Vite / Bun: type augmentation files (`vite-env.d.ts`, `bun-env.d.ts`)
 - Dependency installs for the chosen dialect (`@arkenv/core`, plugins, Zod/Valibot)

@@ -90,9 +90,17 @@ Full flag list: [init](/docs/reference/init).
 
 The CLI treats `.env.example` as the onboarding contract:
 
-- **Init on an existing repo**: if `.env.example` exists, init can detect keys and offer them for the schema (see [structuring your schema](/docs/validating-environment-variables/structuring-your-schema)).
-- **Missing files**: init may create `.env` and `.env.example` with framework defaults, copy `.env.example` to `.env` when only the template exists, or strip values from `.env` into a new `.env.example` so secrets do not land in git.
-- **After schema changes**: add new keys to `.env.example` with empty or placeholder values. Commit the template; keep `.env` and `.env.local` gitignored.
+- **Init on an existing repo**: if `.env.example` exists, init can detect
+  keys and offer them for the schema (see
+  [structuring your schema](/docs/validating-environment-variables/structuring-your-schema)).
+  Init never reads `.env`.
+- **Missing files**: init may create `.env` and `.env.example` with
+  framework defaults, or copy `.env.example` to `.env` when only the
+  template exists. A missing `.env.example` is filled from detected keys
+  and defaults, not from `.env`.
+- **After schema changes**: add new keys to `.env.example` with empty or
+  placeholder values. Commit the template; keep `.env` and `.env.local`
+  gitignored.
 
 Tell assistants explicitly: **sync schema, `.env.example`, and docs together** when adding or renaming variables.
 

@@ -369,6 +369,29 @@ aside .theme-toggle {
 	transition:
 		color 150ms,
 		background-color 150ms;
+	/* Kill the UA outline (tinted by global `outline-ring/50`) — it is
+	   rectangular and gets clipped by the drill-in `overflow-hidden` pane. */
+	outline: none;
+}
+
+/*
+ * Keyboard focus: Turbo/geistdocs `--ds-focus-ring` — a page-colored inner
+ * ring (the gap) plus a 2px `--color-fd-ring` outer ring. box-shadow follows
+ * border-radius; outline:auto does not.
+ */
+#nd-sidebar a:focus-visible,
+#nd-sidebar button:focus-visible,
+#nd-sidebar-mobile a:focus-visible,
+#nd-sidebar-mobile button:focus-visible {
+	box-shadow:
+		0 0 0 2px var(--color-fd-background),
+		0 0 0 4px var(--color-fd-ring);
+}
+
+/* Inset the drill-in panes so the 4px ring is not clipped by overflow-hidden */
+#nd-sidebar [data-sidebar-mode],
+#nd-sidebar-mobile [data-sidebar-mode] {
+	padding: 0.25rem;
 }
 
 /* Legacy Fumadocs wrap-anywhere items: text-only hover (non drill-in) */

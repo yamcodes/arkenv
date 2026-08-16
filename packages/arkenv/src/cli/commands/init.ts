@@ -446,9 +446,9 @@ export class InitUseCase {
 		const envPath = path.join(targetDir, ".env");
 		const envExamplePath = path.join(targetDir, ".env.example");
 
+		// Never read `.env` contents. Existence is enough to skip creating it.
 		if (await this.workspace.exists(envPath)) {
 			existingFiles.push(envPath);
-			options.envContent = await this.workspace.readFile(envPath);
 		}
 		if (await this.workspace.exists(envExamplePath)) {
 			existingFiles.push(envExamplePath);

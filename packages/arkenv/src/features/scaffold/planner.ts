@@ -20,65 +20,6 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 	return createExistingProjectPlan(state);
 }
 
-/**
- * Strip values from env file content, preserving comments and key names.
- *
- * @param content Raw .env file content.
- * @returns Content with variable values removed.
- */
-export function stripValuesFromEnvContent(content: string): string {
-	const lines = content.split(/\r?\n/);
-	const resultLines: string[] = [];
-	let inQuote: string | null = null;
-
-	for (const line of lines) {
-		const unescapedLine = line.replace(/\\"/g, "").replace(/\\'/g, "");
-
-		if (inQuote) {
-			const quoteCount = (unescapedLine.match(new RegExp(inQuote, "g")) || [])
-				.length;
-			if (quoteCount % 2 !== 0) {
-				inQuote = null;
-			}
-			continue;
-		}
-
-		const trimmed = line.trim();
-		if (!trimmed || trimmed.startsWith("#")) {
-			resultLines.push(line);
-			continue;
-		}
-
-		const match = line.match(
-			/^(\s*(?:export\s+)?)([A-Z_][A-Z0-9_]*)\s*=\s*(.*)$/i,
-		);
-		if (match) {
-			const prefix = match[1];
-			const key = match[2];
-			const val = match[3].trim();
-
-			resultLines.push(`${prefix}${key}=`);
-
-			const unescapedVal = val.replace(/\\"/g, "").replace(/\\'/g, "");
-			if (val.startsWith('"')) {
-				const quoteCount = (unescapedVal.match(/"/g) || []).length;
-				if (quoteCount % 2 !== 0) {
-					inQuote = '"';
-				}
-			} else if (val.startsWith("'")) {
-				const quoteCount = (unescapedVal.match(/'/g) || []).length;
-				if (quoteCount % 2 !== 0) {
-					inQuote = "'";
-				}
-			}
-		} else {
-			resultLines.push(line);
-		}
-	}
-
-	return resultLines.join("\n");
-}
-
 function isIgnored(lines: string[], target: string): boolean {
 	return lines.some((line) => {
 		const commentIndex = line.indexOf("#");
@@ -154,13 +95,11 @@ export function planEnvFiles(
 	}
 
 	if (!hasEnvExample) {
-		const content =
-			options.envContent !== undefined
-				? stripValuesFromEnvContent(options.envContent)
-				: formatEnvContent(frameworkStrategy.getEnvDefaults(combinedEnvKeys));
 		plan.files.push({
 			path: envExamplePath,
-			content,
+			content: formatEnvContent(
+				frameworkStrategy.getEnvDefaults(combinedEnvKeys),
+			),
 			action: "create",
 			label: "environment variables template",
 		});

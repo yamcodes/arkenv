@@ -36,7 +36,6 @@ export type ProjectOptions = {
 	disableCodegen?: boolean;
 	wrapNextjsConfig?: boolean;
 	envExampleContent?: string;
-	envContent?: string;
 	gitignoreContent?: string;
 	/**
 	 * Hosting provider preset selected during init (`none` / Vercel / Netlify / Cloudflare / etc.).
