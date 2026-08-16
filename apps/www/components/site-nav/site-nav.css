@@ -568,11 +568,19 @@ main:has(.site-nav) {
 	display: block;
 	padding: 0.75rem 0.75rem;
 	border-radius: 0.375rem;
-	color: var(--foreground);
+	color: var(--muted-foreground, var(--color-ink-2, inherit));
 	font-size: 1.125rem;
 	font-weight: 400;
 	text-decoration: none;
 	outline: none;
+	transition:
+		color var(--dur-micro, 120ms) var(--ease-out, ease),
+		background-color var(--dur-micro, 120ms) var(--ease-out, ease);
+}
+
+.site-nav__menu-link:hover {
+	color: var(--foreground);
+	background: color-mix(in oklch, var(--secondary, var(--color-paper-3, #222)) 70%, transparent);
 }
 
 .site-nav__menu-link:focus-visible {
@@ -581,6 +589,10 @@ main:has(.site-nav) {
 }
 
 .site-nav__menu-link--active {
+	color: var(--primary, var(--color-fd-primary, var(--foreground)));
+}
+
+.site-nav__menu-link--active:hover {
 	color: var(--primary, var(--color-fd-primary, var(--foreground)));
 }
 
@@ -596,10 +608,40 @@ main:has(.site-nav) {
 	font-weight: 600;
 	text-decoration: none;
 	width: fit-content;
+	box-shadow:
+		0 0 0 1px oklch(90% 0.1 195 / 0.3) inset,
+		0 2px 10px oklch(74% 0.13 195 / 0.25);
+	transition:
+		transform 120ms ease,
+		box-shadow 220ms ease,
+		filter 220ms ease;
+}
+
+.site-nav__menu-cta:hover {
+	filter: brightness(1.08);
+	box-shadow:
+		0 0 0 1px oklch(95% 0.1 195 / 0.5) inset,
+		0 4px 18px oklch(74% 0.16 195 / 0.45);
+	transform: translateY(-1px);
+}
+
+.site-nav__menu-cta:hover span {
+	transform: translateX(3px);
+}
+
+.site-nav__menu-cta:active {
+	transform: translateY(1px);
+}
+
+.site-nav__menu-cta:focus-visible {
+	outline: 2px solid var(--ring, var(--color-focus, currentColor));
+	outline-offset: 2px;
 }
 
 .site-nav__menu-cta span {
+	display: inline-block;
 	margin-left: 0.25rem;
+	transition: transform 220ms ease;
 }
 
 .site-nav__menu-appearance {
@@ -623,9 +665,15 @@ main:has(.site-nav) {
 
 .site-nav__menu-github {
 	height: 2rem;
+	padding: 0 0.55rem 0 0.45rem;
+	border-radius: var(--radius-pill, 999px);
 	color: var(--muted-foreground);
+	transition:
+		color var(--dur-micro, 120ms) var(--ease-out, ease),
+		background-color var(--dur-micro, 120ms) var(--ease-out, ease);
 }
 
 .site-nav__menu-github:hover {
 	color: var(--foreground);
+	background: color-mix(in oklch, var(--secondary, var(--color-paper-3, #222)) 70%, transparent);
 }
