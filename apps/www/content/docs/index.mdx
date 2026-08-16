@@ -65,8 +65,7 @@ console.log(`listening on ${port}`);
 
 It works, but you've just written **a bunch of boilerplate**. As soon as
 the project scales, that becomes a **maintenance burden** across more
-environments, files, and apps, and between
-[the client and the server](/docs/validating-environment-variables/client-vs-server).
+environments, files, and apps, and between the client and the server.
 
 ## The `env` solution
 
@@ -111,36 +110,27 @@ console.log(`listening on ${port}`);
 ```
 
 Here `debug` is `boolean` and `port` is a number, by definition. ArkEnv's
-[coercion](/docs/core-concepts/coercion) turns `"false"` into `false` and
-`"3000"` into `3000`, so the `if` does not run and verbose logging stays
-off. As a bonus, `number.port` also guarantees that `port` is in the
-valid 0-65535 range.
+coercion turns `"false"` into `false` and `"3000"` into `3000`, so the
+`if` does not run and verbose logging stays off. As a bonus,
+`number.port` also guarantees that `port` is in the valid 0-65535 range.
 
 In a full-stack app, you **must keep secrets off the client**. The
-[Next.js](/docs/guides/frameworks/nextjs),
-[Nuxt](/docs/guides/frameworks/nuxt),
-[Vite](/docs/guides/frameworks/vite), and
-[Bun](/docs/guides/frameworks/bun) packages **enforce that split** so server
+Next.js, Nuxt, Vite, and Bun packages **enforce that split** so server
 values stay out of the client graph. See
 [Client vs. server](/docs/validating-environment-variables/client-vs-server).
 
 ArkEnv can be **adopted incrementally**. If you already validate forms or
-API data with [ArkType](https://arktype.io), [Zod](https://zod.dev), [Valibot](https://valibot.dev), or any
-[Standard Schema](https://standardschema.dev/), run `npx arkenv@latest init` to **get started right away**. See
-[Add to an existing repository](/docs/getting-started/add-to-existing-repository).
+API data with [ArkType](https://arktype.io), [Zod](https://zod.dev),
+[Valibot](https://valibot.dev), or any
+[Standard Schema](https://standardschema.dev/), run
+`npx arkenv@latest init` to **get started right away**.
 
 ## How to use these docs
 
-Start with [Getting started](/docs/getting-started) to install or scaffold
-a project. [Core concepts](/docs/core-concepts) covers the `env` object,
-engines, and coercion if those terms are new.
+Start with [Getting started](/docs/getting-started) to add ArkEnv to a new or existing project. [Core concepts](/docs/core-concepts) covers the `env` object, engines, and coercion if those concepts are new. Some other useful reads:
 
 <Cards>
-  <Card href="/docs/getting-started" title="Getting started" description="Installation, examples, and adding ArkEnv to an existing repo." />
-
   <Card href="/docs/validating-environment-variables" title="Validating environment variables" description="Design a schema, parse values, and keep secrets off the client." />
-
-  <Card href="/docs/core-concepts" title="Core concepts" description="When validation runs, how strings become types, and which engine to pick." />
 
   <Card href="/docs/guides" title="Guides" description="Framework recipes, validators, AI assistants, and migrating from T3 Env." />
 
@@ -148,6 +138,8 @@ engines, and coercion if those terms are new.
 
   <Card href="/docs/guides/ai" title="Using AI with ArkEnv" description="How to use AI to help you write ArkEnv schemas and validate environment variables." />
 </Cards>
+
+If you're a human, the search bar at the top will help you find your way around.
 
 If you happen to be an AI agent, see [/llms.txt](/llms.txt) for an index of all available documentation.
 For the full concatenated docs, see [/llms-full.txt](/llms-full.txt).
