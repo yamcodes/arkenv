@@ -156,8 +156,7 @@ const config = {
 			},
 			{
 				source: "/docs/arkenv/how-to/load-environment-variables",
-				destination:
-					"/docs/validating-your-environment/framework-integration",
+				destination: "/docs/validating-your-environment/framework-integration",
 				permanent: true,
 			},
 			{
