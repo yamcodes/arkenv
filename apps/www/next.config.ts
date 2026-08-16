@@ -60,6 +60,16 @@ const config = {
 				destination: "/docs/core-concepts/standard-schema",
 				permanent: true,
 			},
+			{
+				source: "/docs/validating-environment-variables",
+				destination: "/docs/validating-your-environment",
+				permanent: true,
+			},
+			{
+				source: "/docs/validating-environment-variables/:path*",
+				destination: "/docs/validating-your-environment/:path*",
+				permanent: true,
+			},
 
 			// --- @arkenv/core (formerly /docs/arkenv) ---
 			// Never 301 back to `/docs`: browsers may still have cached the old
@@ -151,18 +161,18 @@ const config = {
 			},
 			{
 				source: "/docs/arkenv/how-to/reuse-schemas",
-				destination: "/docs/validating-environment-variables/reusing-schemas",
+				destination: "/docs/validating-your-environment/reusing-schemas",
 				permanent: true,
 			},
 			{
 				source: "/docs/arkenv/how-to/load-environment-variables",
 				destination:
-					"/docs/validating-environment-variables/framework-integration",
+					"/docs/validating-your-environment/framework-integration",
 				permanent: true,
 			},
 			{
 				source: "/docs/arkenv/how-to/:path*",
-				destination: "/docs/validating-environment-variables",
+				destination: "/docs/validating-your-environment",
 				permanent: true,
 			},
 			{
@@ -267,7 +277,7 @@ const config = {
 			},
 			{
 				source: "/docs/cli/hosting-presets",
-				destination: "/docs/validating-environment-variables/hosting-presets",
+				destination: "/docs/validating-your-environment/hosting-presets",
 				permanent: true,
 			},
 			{

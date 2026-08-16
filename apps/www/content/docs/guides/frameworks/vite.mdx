@@ -3,7 +3,7 @@ title: Vite
 description: Validate Vite env vars with @arkenv/vite-plugin.
 ---
 
-Recipe for Vite. Overview: [Framework integration](/docs/validating-environment-variables/framework-integration).
+Recipe for Vite. Overview: [Framework integration](/docs/validating-your-environment/framework-integration).
 
 `@arkenv/vite-plugin` validates environment variables in Vite dev and build. The canonical setup is an `env.ts` module plus transform mode: the client graph only receives public keys (default `VITE_*`).
 
@@ -76,7 +76,7 @@ export default defineConfig(({ mode }) => {
 });
 ```
 
-See [Reusing schemas](/docs/validating-environment-variables/reusing-schemas).
+See [Reusing schemas](/docs/validating-your-environment/reusing-schemas).
 
 ## SPA accessor mode
 
@@ -85,4 +85,4 @@ Client-only apps can still augment `import.meta.env` with `ImportMetaEnvAugmente
 ## Next steps
 
 - Plugin modes and options: [`@arkenv/vite-plugin`](/docs/reference/vite-plugin)
-- [Client vs. server](/docs/validating-environment-variables/client-vs-server)
+- [Client vs. server](/docs/validating-your-environment/client-vs-server)

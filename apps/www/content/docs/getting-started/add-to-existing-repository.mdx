@@ -105,9 +105,9 @@ are missing. A missing `.env.example` is filled from detected keys and
 framework defaults, not from `.env`.
 
 <Callout type="info">
-  ArkEnv does not load `.env` files. Your framework, Bun, or a tool like
-  `tsx --env-file` must populate `process.env` before `arkenv()` runs. See
-  [Loading .env files](/docs/validating-environment-variables/framework-integration#loading-env-files).
+  ArkEnv does not load `.env` files. Your framework, Bun, or Nub must
+  populate `process.env` before `arkenv()` runs. See
+  [Loading .env files](/docs/validating-your-environment/framework-integration#loading-env-files).
 </Callout>
 
 </Step>
@@ -143,6 +143,6 @@ console.log(env.DATABASE_URL);
 
 ## Next steps
 
-Read [Client vs. server](/docs/validating-environment-variables/client-vs-server)
+Read [Client vs. server](/docs/validating-your-environment/client-vs-server)
 for public prefixes, then the
 [framework guides](/docs/guides/frameworks) for your stack.

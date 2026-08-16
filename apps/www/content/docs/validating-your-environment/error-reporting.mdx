@@ -96,8 +96,8 @@ Error: Do not access server-only key 'DATABASE_URL' on the client since it will 
 
 Do not catch this. Fix the access. `instanceof ArkEnvError` is for schema failures only — it is `false` here because there are no `issues`.
 
-Next.js, Nuxt, Vite, and Bun each enforce the boundary (runtime proxy, build-time import bans, or both). See [client vs. server](/docs/validating-environment-variables/client-vs-server).
+Next.js, Nuxt, Vite, and Bun each enforce the boundary (runtime proxy, build-time import bans, or both). See [client vs. server](/docs/validating-your-environment/client-vs-server).
 
 ## Next steps
 
-Reuse the schema across runtimes with [reusing schemas](/docs/validating-environment-variables/reusing-schemas).
+Reuse the schema across runtimes with [reusing schemas](/docs/validating-your-environment/reusing-schemas).

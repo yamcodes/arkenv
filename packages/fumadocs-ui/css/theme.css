@@ -383,15 +383,35 @@ aside .theme-toggle {
 #nd-sidebar button:focus-visible,
 #nd-sidebar-mobile a:focus-visible,
 #nd-sidebar-mobile button:focus-visible {
+	/* Above the next item's active/hover pill so the 4px ring is not covered */
+	position: relative;
+	z-index: 1;
 	box-shadow:
 		0 0 0 2px var(--color-fd-background),
 		0 0 0 4px var(--color-fd-ring);
 }
 
-/* Inset the drill-in panes so the 4px ring is not clipped by overflow-hidden */
+/*
+ * Items are `w-full` inside the drill pane, so a 4px outer ring is
+ * clipped. Shrink items horizontally (ID beats `w-full`). The pane uses
+ * overflow-hidden for the slide — override to clip only the inline axis
+ * so the ring can paint 8px above/below (negative clip-path inset).
+ */
+#nd-sidebar [data-drill-item],
+#nd-sidebar-mobile [data-drill-item] {
+	width: auto;
+	margin-inline: 0.5rem;
+}
+
+#nd-sidebar :has(> [data-sidebar-mode]),
+#nd-sidebar-mobile :has(> [data-sidebar-mode]) {
+	overflow: visible;
+	clip-path: inset(-0.5rem 0);
+}
+
 #nd-sidebar [data-sidebar-mode],
 #nd-sidebar-mobile [data-sidebar-mode] {
-	padding: 0.25rem;
+	padding-block: 0.5rem;
 }
 
 /* Legacy Fumadocs wrap-anywhere items: text-only hover (non drill-in) */
@@ -418,10 +438,11 @@ aside .theme-toggle {
 	color: var(--color-fd-muted-foreground);
 }
 
-/* Sidebar section header font weight */
+/* Sidebar section header font weight — same inline inset as drill items */
 #nd-sidebar p,
 #nd-sidebar-mobile p {
 	@apply font-medium;
+	margin-inline: 0.5rem;
 }
 
 /*

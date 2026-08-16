@@ -23,7 +23,7 @@ test.describe("Smoke Tests", () => {
 		"/docs",
 		"/docs/getting-started",
 		"/docs/getting-started/installation",
-		"/docs/validating-environment-variables",
+		"/docs/validating-your-environment",
 		"/docs/reference",
 		"/docs/core-concepts",
 		"/docs/guides",

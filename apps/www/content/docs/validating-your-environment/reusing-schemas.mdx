@@ -104,7 +104,7 @@ export const env = arkenv(
 );
 ```
 
-`extends` merges shared and client definitions into the server env object. Use `@arkenv/nextjs/standard/server` (and matching client entries) when the schema is Standard Schema. See [client vs. server](/docs/validating-environment-variables/client-vs-server#strict-layout).
+`extends` merges shared and client definitions into the server env object. Use `@arkenv/nextjs/standard/server` (and matching client entries) when the schema is Standard Schema. See [client vs. server](/docs/validating-your-environment/client-vs-server#strict-layout).
 
 ## Monorepo packages
 
@@ -152,4 +152,4 @@ Each app still owns its `env` export. Shared packages export schemas, not a proc
 
 ## Next steps
 
-Connect the schema to your bundler or framework with [framework integration](/docs/validating-environment-variables/framework-integration).
+Connect the schema to your bundler or framework with [framework integration](/docs/validating-your-environment/framework-integration).

@@ -53,15 +53,23 @@ Plain Node or Bun **as a runtime** (no browser bundle) can stay on `@arkenv/core
 
 ## Loading `.env` files
 
-ArkEnv does not read `.env` files. Something else must load them before `arkenv()` runs:
+ArkEnv does not read `.env` files. Something else must load them before
+`arkenv()` runs.
 
-- **Next.js / Nuxt**: built-in env loading
-- **Vite**: `loadEnv` / Vite's `.env*` convention
-- **Bun**: Bun's built-in `.env` loading when you run under Bun
-- **Node**: `dotenv`, your process manager, or an executor such as `tsx` that loads env files
+Next.js, Nuxt, Vite, and Bun already load `.env*` files. On plain Node,
+[Nub](https://nubjs.com/docs/runtime/env) is the recommended runner: it
+executes TypeScript and injects `.env` files before your process starts.
 
-After values are in `process.env` (or a custom record), `arkenv()` validates them.
+```bash title="Terminal"
+nub src/index.ts
+```
+
+Node's `node --env-file=.env` also works. You name each file yourself, and
+it does not run TypeScript.
+
+After values are in `process.env` (or a custom record), `arkenv()`
+validates them.
 
 ## Next steps
 
-Add provider system variables with [hosting presets](/docs/validating-environment-variables/hosting-presets), or jump to the framework guide for your stack.
+Add provider system variables with [hosting presets](/docs/validating-your-environment/hosting-presets), or jump to the framework guide for your stack.

@@ -49,7 +49,7 @@ Add DATABASE_URL to the ArkEnv schema with the right type, update .env.example w
 Add the Vercel hosting preset with `pnpm dlx arkenv@latest add host vercel --agent` and merge any new system vars into the schema.
 ```
 
-Point the assistant at this page and [Framework integration](/docs/validating-environment-variables/framework-integration) when it needs host context.
+Point the assistant at this page and [Framework integration](/docs/validating-your-environment/framework-integration) when it needs host context.
 
 ## Scaffold with `--agent`
 
@@ -92,7 +92,7 @@ The CLI treats `.env.example` as the onboarding contract:
 
 - **Init on an existing repo**: if `.env.example` exists, init can detect
   keys and offer them for the schema (see
-  [structuring your schema](/docs/validating-environment-variables/structuring-your-schema)).
+  [structuring your schema](/docs/validating-your-environment/structuring-your-schema)).
   Init never reads `.env`.
 - **Missing files**: init may create `.env` and `.env.example` with
   framework defaults, or copy `.env.example` to `.env` when only the
@@ -119,14 +119,14 @@ Treat these as hard rules unless a human overrides them:
 | Respect `--agent` refusals                                           | Dirty trees and requirement failures are intentional       |
 | Commit `.env.example`, not `.env`                                    | Local secrets stay local                                   |
 
-For layout and client/server tradeoffs, link assistants to [Client vs. server](/docs/validating-environment-variables/client-vs-server) instead of inventing a third layout.
+For layout and client/server tradeoffs, link assistants to [Client vs. server](/docs/validating-your-environment/client-vs-server) instead of inventing a third layout.
 
 ## Patterns the skill enforces
 
 - Export a single `env` object from `env.ts` (or the strict `env/` tree)
 - Prefer ArkType strings in `@arkenv/core` when the project already uses ArkType
 - Keep secrets out of client schemas; use framework public prefixes
-- Load `.env` via the framework or dotenv; ArkEnv only validates
+- Load `.env` via the framework or Nub; ArkEnv only validates
 
 ## Add a hosting preset later
 
@@ -137,5 +137,5 @@ pnpm dlx arkenv@latest add host vercel --agent
 ## Next steps
 
 - [Framework guides](/docs/guides/frameworks)
-- [Framework integration](/docs/validating-environment-variables/framework-integration)
+- [Framework integration](/docs/validating-your-environment/framework-integration)
 - [skills.sh](https://skills.sh)

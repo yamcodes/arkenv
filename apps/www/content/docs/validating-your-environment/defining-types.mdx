@@ -5,7 +5,7 @@ description: Declare string, number, boolean, enum, and keyword schemas for env 
 
 Your schema is a map from env key names to validators. `@arkenv/core` uses the ArkType DSL (and ArkEnv keywords). `@arkenv/standard` accepts Zod, Valibot, and other [Standard Schema](https://standardschema.dev/) validators. Pick one stack per project; both paths produce a typed `env` object. Cookbooks: [Validators](/docs/guides/validators).
 
-[Coercion and parsing](/docs/validating-environment-variables/coercion-and-parsing) covers how strings become numbers and booleans. This page is about declaring the shape.
+[Coercion and parsing](/docs/validating-your-environment/coercion-and-parsing) covers how strings become numbers and booleans. This page is about declaring the shape.
 
 ## Strings, numbers, booleans, enums
 
@@ -102,8 +102,8 @@ For transforms, function defaults, or reuse across files:
   </Tab>
 </Tabs>
 
-See [Transforms](/docs/core-concepts/transforms) for morph vs Zod `.transform`, and [reusing schemas](/docs/validating-environment-variables/reusing-schemas) when the whole schema should be shared.
+See [Transforms](/docs/core-concepts/transforms) for morph vs Zod `.transform`, and [reusing schemas](/docs/validating-your-environment/reusing-schemas) when the whole schema should be shared.
 
 ## Next steps
 
-If the app has a browser bundle, set [client vs. server boundaries](/docs/validating-environment-variables/client-vs-server) next.
+If the app has a browser bundle, set [client vs. server boundaries](/docs/validating-your-environment/client-vs-server) next.

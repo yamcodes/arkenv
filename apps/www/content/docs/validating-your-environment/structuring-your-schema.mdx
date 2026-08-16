@@ -70,11 +70,11 @@ Put every variable your process reads into the schema: secrets, public keys, tun
 - Framework public keys (`NEXT_PUBLIC_*`, `VITE_*`, `NUXT_PUBLIC_*`, `BUN_PUBLIC_*`)
 - Hosting provider system variables (`VERCEL_ENV`, `CONTEXT`, …) when you use them
 
-[`arkenv init`](/docs/reference/init) and [hosting presets](/docs/validating-environment-variables/hosting-presets) can inject the provider fields for you. You can still declare them by hand.
+[`arkenv init`](/docs/reference/init) and [hosting presets](/docs/validating-your-environment/hosting-presets) can inject the provider fields for you. You can still declare them by hand.
 
 ## Single-file layout
 
-A single `env.ts` is the default layout for ArkEnv (Node apps and [flat layout](/docs/validating-environment-variables/client-vs-server#flat-layout-recommended) frameworks):
+A single `env.ts` is the default layout for ArkEnv (Node apps and [flat layout](/docs/validating-your-environment/client-vs-server#flat-layout-recommended) frameworks):
 
 <Files>
   <Folder name="my-app" defaultOpen>
@@ -115,4 +115,4 @@ Framework plugins (Next.js, Nuxt, Vite, Bun) wire the usual sources for you. See
 
 ## Next steps
 
-Next: [define the types](/docs/validating-environment-variables/defining-types) for each key.
+Next: [define the types](/docs/validating-your-environment/defining-types) for each key.

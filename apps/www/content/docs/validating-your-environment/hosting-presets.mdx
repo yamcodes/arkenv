@@ -5,7 +5,7 @@ description: Pre-populate schemas with Vercel, Netlify, Cloudflare, Railway, Ren
 
 Hosting providers inject their own system environment variables at build and runtime. Presets teach `arkenv init` (and `arkenv add host`) which keys to add, already typed and optional, so you do not look them up by hand.
 
-Presets work with ArkType, Zod, and Valibot, and with both [flat and strict](/docs/validating-environment-variables/client-vs-server) layouts.
+Presets work with ArkType, Zod, and Valibot, and with both [flat and strict](/docs/validating-your-environment/client-vs-server) layouts.
 
 Not on this list? Choose **None** during init (or skip `add host`) and declare the provider's variables yourself in the schema the same way you declare `DATABASE_URL`. Presets are a convenience for common hosts, not a requirement.
 
@@ -132,4 +132,7 @@ Exact output varies by validator and framework. Re-run `add host` when you move 
 
 ## Next steps
 
-You finished the validating-environment-variables path. Dig into [API reference](/docs/reference) for options and packages, or [core concepts](/docs/core-concepts) for coercion, transforms, and Standard Schema.
+You finished this section. Dig into
+[API reference](/docs/reference) for options and packages, or
+[core concepts](/docs/core-concepts) for coercion, transforms, and
+Standard Schema.

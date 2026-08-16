@@ -117,7 +117,7 @@ coercion turns `"false"` into `false` and `"3000"` into `3000`, so the
 In a full-stack app, you **must keep secrets off the client**. The
 Next.js, Nuxt, Vite, and Bun packages **enforce that split** so server
 values stay out of the client graph. See
-[Client vs. server](/docs/validating-environment-variables/client-vs-server).
+[Client vs. server](/docs/validating-your-environment/client-vs-server).
 
 ArkEnv can be **adopted incrementally**. If you already validate forms or
 API data with [ArkType](https://arktype.io), [Zod](https://zod.dev),
@@ -134,7 +134,7 @@ npx arkenv@latest init
 Start with [Getting started](/docs/getting-started) to add ArkEnv to a new or existing project. [Core concepts](/docs/core-concepts) covers the `env` object, engines, and coercion if those concepts are new. Some other useful reads:
 
 <Cards>
-  <Card href="/docs/validating-environment-variables" title="Validating environment variables" description="Design a schema, parse values, and keep secrets off the client." />
+  <Card href="/docs/validating-your-environment" title="Validating your environment" description="Design a schema, parse values, and keep secrets off the client." />
 
   <Card href="/docs/guides" title="Guides" description="Framework recipes, validators, AI assistants, and migrating from T3 Env." />
 
