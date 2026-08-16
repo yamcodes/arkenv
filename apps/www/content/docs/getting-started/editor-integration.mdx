@@ -1,23 +1,29 @@
 ---
 title: Editor integration
-description: Configure your editor for ArkEnv auto-imports and validation tooltips.
+description: Configure your editor for ArkEnv autocomplete and validation tooltips.
 ---
 
-ArkEnv leans on TypeScript inference and the ArkType VS Code extension. There is no separate ArkEnv IDE plugin.
+ArkEnv leans on TypeScript inference and the ArkType VS Code extension.
+There is no separate ArkEnv IDE plugin.
 
 ## ArkType VS Code extension
 
-Install the [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark) (`arktypeio.arkdark`). It highlights ArkType schema strings when the import uses the default export name `arkenv`:
+Install the
+[ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark)
+(`arktypeio.arkdark`). It highlights ArkType schema strings when the
+import uses the default export name `arkenv`:
 
 ```ts title="./env.ts"
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
-  API_URL: "string.url",
+  PORT: "number.port = 3000",
+  DEBUG: "boolean = false",
 });
 ```
 
-Keep that import name. Auto-import then picks up highlighting without a rename. See [ADR 0008](https://github.com/yamcodes/arkenv/blob/main/docs/adr/0008-default-export-and-function-naming.md).
+Keep that import name. Auto-import then picks up highlighting without a
+rename.
 
 ## Autocomplete on `env.*`
 
@@ -33,11 +39,13 @@ export const env = arkenv({
 });
 ```
 
-Import `{ env }` in application code. `env.PORT` is a `number`; `process.env.PORT` stays an untyped string.
+Import `{ env }` in application code. `env.PORT` is a `number`;
+`process.env.PORT` stays an untyped string.
 
 ## Framework type augmentation
 
-Some hosts expose env through globals. `arkenv init` can scaffold these declaration files.
+Some hosts expose env through globals. `arkenv init` can scaffold these
+declaration files.
 
 ### Vite: `vite-env.d.ts`
 
@@ -52,7 +60,8 @@ type ImportMetaEnvAugmented =
 interface ImportMetaEnv extends ImportMetaEnvAugmented {}
 ```
 
-`import.meta.env.VITE_*` keys autocomplete in client code. Keys without the `VITE_` prefix error there.
+`import.meta.env.VITE_*` keys autocomplete in client code. Keys without
+the `VITE_` prefix error there.
 
 ### Bun fullstack: `bun-env.d.ts`
 
@@ -68,4 +77,6 @@ declare namespace NodeJS {
 }
 ```
 
-Next.js uses `withArkEnv` codegen (`env.gen.ts`) for the same kind of boundary typing. See [Client vs. server](/docs/validating-environment-variables/client-vs-server).
+Next.js uses `withArkEnv` codegen (`env.gen.ts`) for the same kind of
+boundary typing. See
+[Client vs. server](/docs/validating-environment-variables/client-vs-server).

@@ -1,36 +1,45 @@
 ---
 title: Installation
-description: Install ArkEnv core validation library and plugins.
+description: Learn how to get started with ArkEnv.
 ---
 
-Install the ArkEnv core package (`@arkenv/core`) using your package manager of choice:
+Get started with ArkEnv in a few moments using:
 
 ```package-install
-pnpm add @arkenv/core
+npx arkenv@latest init
 ```
 
-## CLI tooling (optional)
+Init detects your stack, installs the matching packages, and writes a
+schema. You can also [start with an example](/docs/getting-started/examples)
+or [add ArkEnv to an existing repository](/docs/getting-started/add-to-existing-repository).
 
-To scaffold environment schemas and manage hosting provider env variables:
+## Installing packages by hand
+
+`arkenv init` is the usual path. Install by hand when you want to pin
+packages yourself.
+
+### `@arkenv/core`
+
+This is the ArkType engine. `arktype` is a required peer.
 
 ```package-install
-pnpm add -D arkenv
+npm i @arkenv/core arktype
 ```
 
-## Framework plugins (optional)
+If you already validate with Zod or Valibot, install
+[`@arkenv/standard`](/docs/guides/validators) instead of `@arkenv/core`.
 
-If you are using Next.js, Nuxt, Vite, or Bun:
+### CLI
+
+Add the `arkenv` package when you want a project-local binary for `init`
+and `add host`.
 
 ```package-install
-# Next.js
-pnpm add @arkenv/nextjs
-
-# Nuxt
-pnpm add @arkenv/nuxt
-
-# Vite
-pnpm add -D @arkenv/vite-plugin
-
-# Bun
-pnpm add -D @arkenv/bun-plugin
+npm i -D arkenv
 ```
+
+### Framework plugins
+
+Next.js, Nuxt, Vite, and Bun have first-party packages. Init installs the
+matching one. To add them by hand, see the
+[framework guides](/docs/guides/frameworks).
