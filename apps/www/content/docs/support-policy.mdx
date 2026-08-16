@@ -4,8 +4,8 @@ description: Learn about ArkEnv's support policy.
 ---
 
 ArkEnv follows [semantic versioning](https://semver.org/) (semver). This
-page covers runtimes, release types, and what to expect from a version
-bump.
+page covers runtimes, frameworks, release types, and what to expect from
+a version bump.
 
 v1 is currently published as `1.0.0-alpha.x` under the `alpha` npm tag.
 **APIs can still change before 1.0.0.**
@@ -23,6 +23,25 @@ JavaScript. Framework plugins target a specific host.
 
 [Examples](/docs/getting-started/examples) are expected to work with
 these Node.js versions. CI runs on `lts/*` and `latest`.
+
+## Frameworks
+
+Each host has its own package. Version ranges below are the
+`peerDependencies` those packages declare.
+
+| Host | Package | Supported versions |
+| ---- | ------- | ------------------ |
+| [Next.js](/docs/guides/frameworks/nextjs) | [`@arkenv/nextjs`](/docs/reference/nextjs) | 13.4, 14, 15, and 16 |
+| [Nuxt](/docs/guides/frameworks/nuxt) | [`@arkenv/nuxt`](/docs/reference/nuxt) | 3 and 4 |
+| [Vite](/docs/guides/frameworks/vite) | [`@arkenv/vite-plugin`](/docs/reference/vite-plugin) | 4, 5, 6, 7, and 8 |
+| [Bun](/docs/guides/frameworks/bun) | [`@arkenv/bun-plugin`](/docs/reference/bun-plugin) | 1.0+ |
+
+Vite-based apps (for example SolidStart) use `@arkenv/vite-plugin`. Node
+and Deno apps that only need runtime validation can stay on
+`@arkenv/core` or `@arkenv/standard` with no plugin.
+
+Hosts have their own release schedules. **New major framework versions
+are not always supported on day one.**
 
 ## Release types
 
