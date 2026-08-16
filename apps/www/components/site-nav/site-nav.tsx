@@ -283,8 +283,8 @@ export function SiteNavHome() {
 }
 
 /**
- * Declared under DocsLayout (SidebarContext) but mounted on `#nd-docs-layout`
- * so sticky glass isn’t trapped in the short header grid cell.
+ * Declared under DocsLayout (SidebarContext) but mounted on `#docs-chrome-shell`
+ * so sticky glass isn’t a fumadocs grid item (and isn’t trapped in the header track).
  */
 export function SiteNavDocs({
 	sidebarTrigger,
@@ -294,7 +294,7 @@ export function SiteNavDocs({
 	const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
 
 	useEffect(() => {
-		setPortalTarget(document.getElementById("nd-docs-layout"));
+		setPortalTarget(document.getElementById("docs-chrome-shell"));
 	}, []);
 
 	const nav = <SiteNav showSearch sidebarTrigger={sidebarTrigger} />;

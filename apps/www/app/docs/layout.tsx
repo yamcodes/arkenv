@@ -16,34 +16,41 @@ export default function Layout({ children }: { children: ReactNode }) {
 				} as CSSProperties
 			}
 		>
-			<DocsLayout
-				tree={source.pageTree}
-				sidebar={{
-					collapsible: false,
-				}}
-				slots={{
-					sidebar: drillInSidebarSlots,
-				}}
-				themeSwitch={{ enabled: false }}
-				searchToggle={{ enabled: false }}
-				nav={{
-					title: <span className="sr-only">ArkEnv</span>,
-					component: (
-						<>
-							{/* Spacer so docs content clears the floating Site Nav; pointer-events-none so it can't steal clicks. */}
-							<div
-								className="pointer-events-none [grid-area:header]"
-								style={{ height: "var(--fd-nav-height)" }}
-								aria-hidden="true"
-							/>
-							{/* Must stay under DocsLayout for SidebarContext (mobile trigger) */}
-							<SiteNavDocs sidebarTrigger={<DocsSidebarTrigger />} />
-						</>
-					),
-				}}
-			>
-				{children}
-			</DocsLayout>
+			{/*
+			 * Stacking shell: Site Nav portals here so sticky chrome is not a
+			 * fumadocs grid item. That grid's sidebar/TOC tracks change on
+			 * resize and can leave sticky with a stale top offset.
+			 */}
+			<div id="docs-chrome-shell">
+				<DocsLayout
+					tree={source.pageTree}
+					sidebar={{
+						collapsible: false,
+					}}
+					slots={{
+						sidebar: drillInSidebarSlots,
+					}}
+					themeSwitch={{ enabled: false }}
+					searchToggle={{ enabled: false }}
+					nav={{
+						title: <span className="sr-only">ArkEnv</span>,
+						component: (
+							<>
+								{/* Spacer so docs content clears the floating Site Nav; pointer-events-none so it can't steal clicks. */}
+								<div
+									className="pointer-events-none [grid-area:header]"
+									style={{ height: "var(--fd-nav-height)" }}
+									aria-hidden="true"
+								/>
+								{/* Must stay under DocsLayout for SidebarContext (mobile trigger) */}
+								<SiteNavDocs sidebarTrigger={<DocsSidebarTrigger />} />
+							</>
+						),
+					}}
+				>
+					{children}
+				</DocsLayout>
+			</div>
 			<div className="site-footer-bleed">
 				<div className="site-footer-band">
 					<SiteFooter />

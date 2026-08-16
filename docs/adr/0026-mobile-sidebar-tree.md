@@ -12,7 +12,7 @@ Turborepo / Geistdocs do not. Desktop defaults to drill-in (`sidebarMode="sectio
 
 The two surfaces do different jobs:
 
-- **Desktop rail** — persistent ~300px column beside the article. Drill-in is a focus tool: hide sibling **Sections** so the column only shows the current section’s pages. Most clicks stay in-section. Back does not change the URL.
+- **Desktop rail** — persistent \~300px column beside the article. Drill-in is a focus tool: hide sibling **Sections** so the column only shows the current section’s pages. Most clicks stay in-section. Back does not change the URL.
 - **Mobile drawer** — transient overlay you open to *leave* the current page. It already closes on navigate. Stacking a second Back (pop a **Sidebar Page**) inside a sheet is nested modality (close vs. up). Switching **Sections** costs Back + tap every time the drawer opens on the URL’s section — the place the reader opened the menu to escape.
 
 Alternatives considered:

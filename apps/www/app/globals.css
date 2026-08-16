@@ -24,7 +24,7 @@
  * these clipped shells; position:fixed does not.
  */
 .home-aurora,
-#nd-docs-layout {
+#docs-chrome-shell {
 	overflow-x: clip;
 }
 

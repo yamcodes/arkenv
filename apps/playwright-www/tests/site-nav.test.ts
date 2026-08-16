@@ -38,4 +38,43 @@ test.describe("Site Nav", () => {
 		await expect(menu).toBeVisible();
 		await expect(menu.getByRole("link", { name: "Docs" })).toBeVisible();
 	});
+
+	test("docs header stays at inset after shrinking from desktop", async ({
+		page,
+	}) => {
+		await page.setViewportSize({ width: 1400, height: 900 });
+		await page.goto("/docs/validating-environment-variables/error-reporting");
+		await page.locator(".site-nav").waitFor();
+
+		await page.setViewportSize({ width: 529, height: 900 });
+
+		const metrics = await page.evaluate(() => {
+			const nav = document.querySelector(".site-nav");
+			const root = document.querySelector(".site-nav-root");
+			const title = document.querySelector("h1");
+			if (!nav || !root || !title) {
+				return { ok: false as const, reason: "missing nodes" };
+			}
+			const navRect = nav.getBoundingClientRect();
+			const titleRect = title.getBoundingClientRect();
+			const inset = Number.parseFloat(getComputedStyle(nav).top);
+			return {
+				ok: true as const,
+				navTop: navRect.top,
+				navBottom: navRect.bottom,
+				rootTop: root.getBoundingClientRect().top,
+				titleTop: titleRect.top,
+				inset,
+				parentId: root.parentElement?.id ?? "",
+			};
+		});
+
+		expect(metrics.ok, "reason" in metrics ? metrics.reason : "").toBe(true);
+		if (!metrics.ok) return;
+
+		expect(metrics.parentId).toBe("docs-chrome-shell");
+		expect(metrics.rootTop).toBeCloseTo(0, 0);
+		expect(metrics.navTop).toBeCloseTo(metrics.inset, 0);
+		expect(metrics.titleTop).toBeGreaterThan(metrics.navBottom);
+	});
 });
