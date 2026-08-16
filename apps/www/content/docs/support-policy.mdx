@@ -3,58 +3,63 @@ title: Support policy
 description: Learn about ArkEnv's support policy.
 ---
 
-ArkEnv follows [semantic versioning](https://semver.org/) (semver). This
-page covers runtimes, frameworks, release types, and what to expect from
-a version bump.
+v1 is published as `1.0.0-alpha.x` under the `alpha` npm tag. **APIs can
+still change before 1.0.0.** Use the latest version whenever you can.
 
-v1 is currently published as `1.0.0-alpha.x` under the `alpha` npm tag.
-**APIs can still change before 1.0.0.**
+## Package managers
 
-## Runtimes
+The [`arkenv` CLI](/docs/reference/init) detects the package manager in
+your repository. Published packages are plain npm packages.
 
-`@arkenv/core` and `@arkenv/standard` run anywhere you can run modern
-JavaScript. Framework plugins target a specific host.
-
-| Runtime | Support |
-| ------- | ------- |
-| Node.js | [Active and Maintenance LTS](https://nodejs.org/en/about/previous-releases) (Node 20, Node 22, Node 24) |
-| Bun | 1.0+, including bundler apps via [`@arkenv/bun-plugin`](/docs/reference/bun-plugin) |
-| Deno | Runtime validation with `@arkenv/core` or `@arkenv/standard` |
-
-[Examples](/docs/getting-started/examples) are expected to work with
-these Node.js versions. CI runs on `lts/*` and `latest`.
+| Package manager | Support |
+| --------------- | ------- |
+| pnpm            | Alpha   |
+| npm             | Alpha   |
+| yarn            | Alpha   |
+| bun             | Alpha   |
 
 ## Frameworks
 
-Each host has its own package. Version ranges below are the
-`peerDependencies` those packages declare.
+| Framework   | Support |
+| ----------- | ------- |
+| Next.js 13.4+ | Alpha via [`@arkenv/nextjs`](/docs/reference/nextjs) |
+| Nuxt 3+     | Alpha via [`@arkenv/nuxt`](/docs/reference/nuxt) |
+| Vite 4+     | Alpha via [`@arkenv/vite-plugin`](/docs/reference/vite-plugin) |
+| Bun 1.0+    | Alpha via [`@arkenv/bun-plugin`](/docs/reference/bun-plugin) |
 
-| Host | Package | Supported versions |
-| ---- | ------- | ------------------ |
-| [Next.js](/docs/guides/frameworks/nextjs) | [`@arkenv/nextjs`](/docs/reference/nextjs) | 13.4, 14, 15, and 16 |
-| [Nuxt](/docs/guides/frameworks/nuxt) | [`@arkenv/nuxt`](/docs/reference/nuxt) | 3 and 4 |
-| [Vite](/docs/guides/frameworks/vite) | [`@arkenv/vite-plugin`](/docs/reference/vite-plugin) | 4, 5, 6, 7, and 8 |
-| [Bun](/docs/guides/frameworks/bun) | [`@arkenv/bun-plugin`](/docs/reference/bun-plugin) | 1.0+ |
+Vite-based apps (e.g. SolidStart) use `@arkenv/vite-plugin`. Apps that only use Bun as a package manager or runtime (but not a Bundler or fullstack dev server) should stay on
+[`@arkenv/core`](/docs/reference/core) or
+[`@arkenv/standard`](/docs/reference/standard).
 
-Vite-based apps (for example SolidStart) use `@arkenv/vite-plugin`. Node
-and Deno apps that only need runtime validation can stay on
-`@arkenv/core` or `@arkenv/standard` with no plugin.
+<Callout type="info">
+  Frameworks have their own release schedules. New major versions are not always supported on day one.
+</Callout>
 
-Hosts have their own release schedules. **New major framework versions
-are not always supported on day one.**
+## Node.js
 
-## Release types
+ArkEnv intends to support the
+[Active and Maintenance LTS versions of Node.js](https://nodejs.org/en/about/previous-releases).
+The [CLI](/docs/reference/init), plugins, and
+[examples](/docs/getting-started/examples) depend on that. CI runs on
+`lts/*` and `latest`.
 
-Stable-style semver still applies on the alpha line: the number tells you
-how a change lands, even while the `alpha` tag marks the release as
-pre-1.0.
+## Deprecated
 
-| Type | What it includes |
-| ---- | ---------------- |
-| **Major** | Breaking API changes or a new minimum Node.js version |
-| **Minor** | New features, schema helpers, or framework support without breaking existing behavior |
-| **Patch** | Bug fixes, performance work, and documentation |
+These APIs still work on [`@arkenv/nextjs`](/docs/reference/nextjs) and
+[`@arkenv/nuxt`](/docs/reference/nuxt). They will be removed in a later
+release.
 
-Use the latest version whenever you can. The
-[changelog](https://github.com/yamcodes/arkenv/releases) lists what
+- Nested `arkenv({ server, client, shared, runtimeEnv })`. Use
+  `arkenv(schema, options)` instead. The `runtimeEnv` option on that
+  second argument is current, not deprecated.
+- Options `expose` and `shared`. Use `exposeToClient`. See
+  [Client vs. server](/docs/validating-environment-variables/client-vs-server).
+- Config `layout: "simple"`. Use `"flat"`.
+
+Importing the `arkenv` package as a library already throws. Use
+[`@arkenv/core`](/docs/reference/core) or
+[`@arkenv/standard`](/docs/reference/standard). `arkenv init --simple`
+is already rejected.
+
+The [changelog](https://github.com/yamcodes/arkenv/releases) lists what
 changed in each release.
