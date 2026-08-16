@@ -36,9 +36,9 @@
 }
 
 /*
- * Docs: portaled onto #docs-chrome-shell, a 1-cell stack around the fumadocs
- * grid. Sticky in that multi-track grid desyncs when sidebar/TOC columns
- * collapse on shrink (header pops down until reload).
+ * Docs: Site Nav is a direct child of #docs-chrome-shell, a 1-cell stack
+ * around the fumadocs grid. Sticky in that multi-track grid desyncs when
+ * sidebar/TOC columns collapse on shrink (header pops down until reload).
  */
 #docs-chrome-shell {
 	display: grid;
@@ -149,6 +149,9 @@ main:has(.site-nav) {
 .site-nav__sidebar-trigger {
 	display: flex;
 	align-items: center;
+	flex-shrink: 0;
+	min-width: 2rem;
+	min-height: 2rem;
 }
 
 @media (min-width: 960px) {

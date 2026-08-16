@@ -50,6 +50,7 @@
 		"build": "tsdown",
 		"clean": "rimraf dist",
 		"typecheck": "tsc --noEmit",
+		"test": "vitest",
 		"fix": "pnpm -w run fix"
 	},
 	"dependencies": {
@@ -85,7 +86,8 @@
 		"rollup-plugin-preserve-use-client": "3.0.1",
 		"tailwindcss": "4.2.4",
 		"tsdown": "catalog:",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	},
 	"publishConfig": {
 		"access": "public"

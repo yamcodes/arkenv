@@ -1,4 +1,5 @@
 import "./globals.css";
+import "~/components/site-nav/site-nav.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GeistMono } from "geist/font/mono";

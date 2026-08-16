@@ -5,7 +5,6 @@ import { ArrowUpRight, Menu, Search, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type ReactNode, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 import { HeaderGithubLink } from "~/components/page/header-github-link";
 import { Logo } from "~/components/page/logo";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
@@ -13,6 +12,9 @@ import { useFeatureFlag } from "~/hooks/use-feature-flag";
 import { FeatureFlag } from "~/lib/posthog/feature-flags";
 import { cn } from "~/lib/utils";
 import "./site-nav.css";
+
+/** Docs sidebar trigger portals here — must exist in SSR HTML. */
+export const SITE_NAV_SIDEBAR_SLOT_ID = "site-nav-sidebar-slot";
 
 type NavLink = {
 	text: string;
@@ -169,8 +171,11 @@ export function SiteNav({
 				<div className="site-nav__surface">
 					<div className="site-nav__inner">
 						<div className="site-nav__start">
-							{sidebarTrigger ? (
-								<div className="site-nav__sidebar-trigger">
+							{showSearch || sidebarTrigger ? (
+								<div
+									className="site-nav__sidebar-trigger"
+									id={showSearch ? SITE_NAV_SIDEBAR_SLOT_ID : undefined}
+								>
 									{sidebarTrigger}
 								</div>
 							) : null}
@@ -283,21 +288,9 @@ export function SiteNavHome() {
 }
 
 /**
- * Declared under DocsLayout (SidebarContext) but mounted on `#docs-chrome-shell`
- * so sticky glass isn’t a fumadocs grid item (and isn’t trapped in the header track).
+ * Docs chrome — a direct child of `#docs-chrome-shell` so sticky glass is not
+ * a fumadocs grid item. The sidebar trigger portals into the reserved slot.
  */
-export function SiteNavDocs({
-	sidebarTrigger,
-}: {
-	sidebarTrigger?: ReactNode;
-}) {
-	const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
-
-	useEffect(() => {
-		setPortalTarget(document.getElementById("docs-chrome-shell"));
-	}, []);
-
-	const nav = <SiteNav showSearch sidebarTrigger={sidebarTrigger} />;
-	if (!portalTarget) return nav;
-	return createPortal(nav, portalTarget);
+export function SiteNavDocs() {
+	return <SiteNav showSearch />;
 }

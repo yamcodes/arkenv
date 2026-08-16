@@ -17,11 +17,13 @@ export default function Layout({ children }: { children: ReactNode }) {
 			}
 		>
 			{/*
-			 * Stacking shell: Site Nav portals here so sticky chrome is not a
-			 * fumadocs grid item. That grid's sidebar/TOC tracks change on
-			 * resize and can leave sticky with a stale top offset.
+			 * Stacking shell: Site Nav is a direct child so sticky chrome is
+			 * not a fumadocs grid item. That grid's sidebar/TOC tracks change
+			 * on resize and can leave sticky with a stale top offset.
+			 * SSR it here — portaling after paint is what made the bar jump.
 			 */}
 			<div id="docs-chrome-shell">
+				<SiteNavDocs />
 				<DocsLayout
 					tree={source.pageTree}
 					sidebar={{
@@ -42,8 +44,8 @@ export default function Layout({ children }: { children: ReactNode }) {
 									style={{ height: "var(--fd-nav-height)" }}
 									aria-hidden="true"
 								/>
-								{/* Must stay under DocsLayout for SidebarContext (mobile trigger) */}
-								<SiteNavDocs sidebarTrigger={<DocsSidebarTrigger />} />
+								{/* Must stay under DocsLayout for SidebarContext; portals into Site Nav. */}
+								<DocsSidebarTrigger />
 							</>
 						),
 					}}
