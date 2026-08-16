@@ -102,8 +102,12 @@ function nestedChildren(folder: PageTree.Folder): PageTree.Node[] {
 }
 
 function itemClassName(_active: boolean): string {
-	return "group/item relative flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-sm font-medium text-start text-fd-foreground transition-colors";
+	return "group/item relative flex h-9 w-full items-center gap-2 rounded-md px-2.5 text-start text-fd-foreground transition-colors";
 }
+
+/** geistdocs `text-button-14`: 14px / 500 / 20px line-height */
+const itemLabelClassName =
+	"min-w-0 flex-1 truncate text-sm font-medium leading-5";
 
 /**
  * Turbo-style group labels: smaller, dimmer, not interactive.
@@ -145,9 +149,7 @@ function LeafItem({
 	const content = (
 		<>
 			{item.icon}
-			<span className="min-w-0 flex-1 text-pretty leading-snug">
-				{item.name}
-			</span>
+			<span className={itemLabelClassName}>{item.name}</span>
 			{external ? (
 				<ArrowUpRight
 					className="size-3.5 shrink-0 opacity-50"
@@ -207,9 +209,7 @@ function NestedFolder({
 	}, [containsActive]);
 
 	const title = (
-		<span className="min-w-0 flex-1 text-pretty text-start leading-snug">
-			{folder.name}
-		</span>
+		<span className={cn(itemLabelClassName, "text-start")}>{folder.name}</span>
 	);
 
 	return (
@@ -345,7 +345,7 @@ function RootNode({
 		const content = (
 			<>
 				{node.icon}
-				<span className="min-w-0 flex-1 text-pretty text-start leading-snug">
+				<span className={cn(itemLabelClassName, "text-start")}>
 					{node.name}
 				</span>
 				<ChevronRight
@@ -407,7 +407,7 @@ function SectionPage({
 				type="button"
 				onClick={onBack}
 				data-drill-item=""
-				className="relative mb-2 flex w-full items-center justify-center rounded-md px-2.5 py-2 text-sm text-fd-muted-foreground transition-colors"
+				className="relative mb-2 flex h-9 w-full items-center justify-center rounded-md px-2.5 text-sm text-fd-muted-foreground transition-colors"
 				aria-label="Back to all documentation sections"
 			>
 				<ChevronLeft
@@ -558,7 +558,7 @@ function SidebarDrawer({
 				id="nd-sidebar-mobile"
 				data-state={state}
 				className={cn(
-					"fixed z-40 inset-y-0 inset-s-0 flex w-[85%] max-w-[380px] flex-col border-e bg-fd-background text-[0.9375rem] shadow-lg data-[state=closed]:animate-fd-sidebar-out data-[state=open]:animate-fd-sidebar-in",
+					"fixed z-40 inset-y-0 inset-s-0 flex w-[85%] max-w-[380px] flex-col border-e bg-fd-background text-sm shadow-lg data-[state=closed]:animate-fd-sidebar-out data-[state=open]:animate-fd-sidebar-in",
 					!open && "invisible pointer-events-none",
 					className,
 				)}

@@ -90,25 +90,86 @@ kbd {
 	overflow: visible;
 }
 
-/* In-article titles — a step under page H1; medium weight (not bold) */
-.prose :is(h2, h3, h4),
-:is(h2, h3, h4)[data-arkenv-heading] {
-	font-weight: 500;
+/*
+ * Docs type scale — geistdocs / turborepo.dev.
+ * Geist 450 is the Vercel "book" weight: larger than regular, lighter than
+ * medium/semibold, so 40px titles stay refined instead of heavy.
+ *
+ * Rendering matches Turbo's html.antialiased + Geist defaults (ss11, calt
+ * off). Homepage keeps ss01; only the docs article and sidebar pick this up
+ * so the nav wordmark stays consistent with the marketing site.
+ */
+#nd-page,
+#nd-sidebar,
+#nd-sidebar-mobile {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+	font-feature-settings:
+		"calt" 0,
+		"rlig",
+		"ss11";
+}
+
+#nd-page h1:not(:where(.prose *)) {
+	font-size: 2.5rem;
+	font-weight: 450;
+	letter-spacing: -0.05em;
+	line-height: 3rem;
+}
+
+.prose h1,
+h1[data-arkenv-heading] {
+	font-size: 2rem;
+	font-weight: 450;
+	letter-spacing: -0.04em;
+	line-height: 2.5rem;
 }
 
 .prose h2,
 h2[data-arkenv-heading] {
-	font-size: 1.35em;
+	font-size: 1.5rem;
+	font-weight: 450;
+	letter-spacing: -0.04em;
+	line-height: 2rem;
 }
 
 .prose h3,
 h3[data-arkenv-heading] {
-	font-size: 1.2em;
+	font-size: 1.25rem;
+	font-weight: 450;
+	letter-spacing: -0.02em;
+	line-height: 1.625rem;
 }
 
 .prose h4,
 h4[data-arkenv-heading] {
-	font-size: 1.1em;
+	font-size: 1rem;
+	font-weight: 450;
+	letter-spacing: -0.02em;
+	line-height: 1.5rem;
+}
+
+.prose h5,
+.prose h6,
+h5[data-arkenv-heading],
+h6[data-arkenv-heading] {
+	font-size: 0.875rem;
+	font-weight: 450;
+	letter-spacing: -0.02em;
+	line-height: 1.25rem;
+}
+
+/*
+ * Heading text is wrapped in an <a> (hash target). Keep it a block so
+ * metrics match geistdocs `a.peer` (32px tall at 24px/1.5rem), and inherit
+ * the heading face so link styles cannot bump the weight.
+ */
+:is(h1, h2, h3, h4, h5, h6)[data-arkenv-heading] > a[data-arkenv-heading-link]:not([aria-label]) {
+	display: block;
+	font: inherit;
+	color: inherit;
+	letter-spacing: inherit;
 }
 
 [data-arkenv-heading-link] {
@@ -118,6 +179,18 @@ h4[data-arkenv-heading] {
 
 [data-arkenv-heading-link]:hover {
 	border-bottom: 0 !important;
+}
+
+/*
+ * Previous/next pager (Turbo/geistdocs): text links, not article underlines.
+ * Hover cue is the chevron shifting muted → foreground.
+ */
+[data-docs-footer] a {
+	border-bottom: 0 !important;
+	padding-bottom: 0 !important;
+	padding-right: 0 !important;
+	text-decoration: none !important;
+	background-image: none !important;
 }
 
 /* Icon floats to the left of the heading without taking space */

@@ -31,6 +31,10 @@ ArkType’s name for a **transform** (`.pipe` morphs; ArkType docs also say “t
 ArkEnv’s pre-validation step that turns raw env strings into numbers, booleans, arrays, and objects before the schema library runs. Distinct from a **transform**: coercion is ArkEnv-owned and schema-introspected; transforms are declared on the field schema. Applies to both `@arkenv/core` and `@arkenv/standard`.
 *Avoid*: calling coercion a morph/transform, or calling a Zod `.transform` “coercion” unless the library’s own coerce helpers are meant
 
+**toJsonSchema** (escape hatch):
+Optional `@arkenv/standard` config callback that supplies JSON Schema for **coercion** when a Standard Schema library keeps conversion off the value (Valibot, Zod Mini, Zod v3). Fallback after on-value probes. Parameter is `StandardSchemaV1`; assert at the host converter.
+*Avoid*: per-key wrappers as the happy path; Valibot/Mini helpers or peers on `@arkenv/standard`; auto-detect by `vendor`; a bare `{ toJsonSchema }` function reference as the documented Valibot path
+
 **Engine** (`@arkenv/core` / `@arkenv/standard`):
 The two first-class validation entry points. Same `arkenv()` runtime options, errors, and framework plugins; different schema authoring style and peers. Prefer dual examples (Tabs) in docs over core-first prose with a Standard Schema appendix.
 *Avoid*: framing Standard Schema as migration-only or second-class
@@ -85,6 +89,7 @@ A scroll-driven increase in **Glass material** opacity/blur so content sliding u
 - **Site Nav** is www-owned; package `Header` is removed when it ships
 - **Coercion** runs before schema validation; a **transform** (ArkType **morph**, Zod `.transform`, …) runs as part of the schema
 - Prefer **transform** in product language; reserve **morph** for ArkType-specific discussion
+- **toJsonSchema** is `@arkenv/standard` only; `@arkenv/core` introspects ArkType JSON Schema without that callback
 
 ## Flagged ambiguities
 

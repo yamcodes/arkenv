@@ -1,6 +1,7 @@
 import {
 	AIActions,
 	DocsBreadcrumb,
+	DocsFooter,
 	docsTocSlots,
 } from "@arkenv/fumadocs-ui/components";
 import { createRelativeLink } from "fumadocs-ui/mdx";
@@ -50,11 +51,15 @@ export default async function Page(props: {
 				enabled: FeatureFlags.DOCS_TOC_POPOVER,
 				footer: tocLinks,
 			}}
-			slots={{ breadcrumb: DocsBreadcrumb, toc: docsTocSlots }}
+			slots={{
+				breadcrumb: DocsBreadcrumb,
+				footer: DocsFooter,
+				toc: docsTocSlots,
+			}}
 		>
 			<div className="grow">
 				<div className="flex flex-col gap-4 min-[960px]:flex-row min-[960px]:items-end min-[960px]:justify-between">
-					<DocsTitle className="mb-0 min-w-0 text-balance text-4xl tracking-tight">
+					<DocsTitle className="mb-0 min-w-0 text-balance">
 						{page.data.title}
 					</DocsTitle>
 					<AIActions
@@ -65,7 +70,7 @@ export default async function Page(props: {
 						githubUrl={editHref}
 					/>
 				</div>
-				<DocsDescription className="mt-3 mb-4 min-[960px]:mb-12">
+				<DocsDescription className="mt-3 mb-8 min-[960px]:mb-12">
 					{page.data.description}
 				</DocsDescription>
 				<AIActions
