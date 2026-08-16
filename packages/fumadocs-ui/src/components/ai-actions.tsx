@@ -81,7 +81,7 @@ function OverflowActionsRow({
 	className,
 	children,
 }: {
-	className?: string;
+	className?: string | undefined;
 	children: ReactNode;
 }) {
 	const ref = useRef<HTMLDivElement>(null);
