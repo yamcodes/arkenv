@@ -24,10 +24,13 @@ problem with this code?
 
 ```ini title=".env"
 DEBUG=false
+PORT=3000
 ```
 
 ```ts title="./server.ts" twoslash
 const debug = process.env.DEBUG;
+//    ^?
+const port = process.env.PORT;
 //    ^?
 
 if (debug) {
@@ -39,32 +42,31 @@ if (debug) {
 
 Spoiler alert: yes, it does. `process.env.DEBUG` is the string `"false"`,
 not the boolean `false`. In JavaScript, a non-empty string is truthy, so
-`if (debug)` runs even though you turned logging off.
+`if (debug)` runs even though you turned logging off. `PORT` is the
+string `"3000"` for the same reason.
 
-A more seasoned developer might know to check `debug !== "false"`. The
-next developer might not. They might expect `debug` to be a boolean.
+As a seasoned developer, you will know to use a `=== "true"`-style type check, so you start parsing
+env vars by hand. You might also
+assign a default. At this point, your code looks like this:
 
-Soon you start parsing environment variables by hand. You might also assign a
-default. To make the code safe, you add a type check and a null check.
-At that point, it looks like this:
-
-```ts title="./server.ts"
-const raw = process.env.DEBUG;
-const debug: boolean = raw == null ? false : raw === "true";
+```ts title="./server.ts" twoslash
+const debug = process.env.DEBUG === "true";
+const port = Number(process.env.PORT ?? "3000");
 
 if (debug) {
   console.log("verbose logging enabled");
 }
+
+console.log(`listening on ${port}`);
 ```
 
-That becomes a maintenance burden as soon as usage scales: across
-multiple files, for
-[client vs. server](/docs/validating-environment-variables/client-vs-server),
-and across apps.
+It works; but you've just written a bunch of boilerplate. As soon as your
+project scales, this becomes a maintenance burden (read: a potential source of bugs) across
+more envs, files, apps, and between [the client and server](/docs/validating-environment-variables/client-vs-server).
 
 ## The `env` solution
 
-ArkEnv solves that scaling problem. `arkenv()` parses your values against
+ArkEnv solves your environment variable scaling problem. `arkenv()` parses your values against
 a schema you define in a single `env.ts` file, so you don't handle the
 loose `process.env` object in application code.
 
@@ -75,6 +77,7 @@ import arkenv from "@arkenv/core";
 
 export const env = arkenv({
   DEBUG: "boolean = false",
+  PORT: "number.port = 3000",
 });
 ```
 
@@ -84,6 +87,7 @@ import arkenv from "@arkenv/core";
 
 export const env = arkenv({
   DEBUG: "boolean = false",
+  PORT: "number.port = 3000",
 });
 
 // @filename: server.ts
@@ -92,16 +96,20 @@ import { env } from "./env";
 
 const debug = env.DEBUG;
 //    ^?
+const port = env.PORT;
+//    ^?
 
 if (debug) {
   console.log("verbose logging enabled");
 }
+
+console.log(`listening on ${port}`);
 ```
 
-Here `debug` is `boolean` by definition. ArkEnv's
-[coercion](/docs/core-concepts/coercion) turns the string `"false"` into
-`false` by that same definition, so the `if` does not run and verbose
-logging stays off.
+Here `debug` is `boolean` and `port` is a number, by definition. ArkEnv's
+[coercion](/docs/core-concepts/coercion) turns `"false"` into `false` and
+`"3000"` into `3000`, so the `if` does not run and verbose logging stays
+off. As a bonus, it also guarantess that port is within a valid range.
 
 In a full-stack app, you must keep secrets off the client. The
 [Next.js](/docs/guides/frameworks/nextjs),
@@ -111,14 +119,12 @@ In a full-stack app, you must keep secrets off the client. The
 values stay out of the client graph. See
 [Client vs. server](/docs/validating-environment-variables/client-vs-server).
 
-If you already use a Standard Schema validator for forms or API data,
-run `pnpm dlx arkenv@latest init` to add ArkEnv to an existing project.
-You can keep [Zod](https://zod.dev), [Valibot](https://valibot.dev), or
-any [Standard Schema](https://standardschema.dev/) validator with
-[`@arkenv/standard`](/docs/reference/standard), or use
-[ArkType](https://arktype.io) with [`@arkenv/core`](/docs/reference/core),
-which ArkEnv was designed around. See
-[Add to an existing repository](/docs/getting-started/add-to-existing-repository).
+There's a fair chance you already use a Standard Schema validator for forms or API data. 
+In this case, you can **run `pnpm dlx arkenv@latest init` to add ArkEnv to your existing project and get started right away**.
+You can keep using [Zod](https://zod.dev), [Valibot](https://valibot.dev), or
+any [Standard Schema](https://standardschema.dev/) with
+[`@arkenv/standard`](/docs/reference/standard). If you use ArkType (which ArkEnv was initially designed around),
+use [`@arkenv/core`](/docs/reference/core) instead, so you don't have to write `type` for every env var. You can even mix and match both within the same schema! Go crazy! See [Add to an existing repository](/docs/getting-started/add-to-existing-repository).
 
 ## How to use these docs
 
