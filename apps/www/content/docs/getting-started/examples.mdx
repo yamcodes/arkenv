@@ -3,15 +3,13 @@ title: Start with an example
 description: Start with an example ArkEnv project.
 ---
 
-Use `arkenv init --example` to bootstrap a project from a template:
+Use the interactive CLI to bootstrap an example with your favorite tooling:
 
 ```package-install
-npx arkenv@latest init --example with-vite-react
-npx arkenv@latest init --example basic
+npx arkenv@latest init --example <example-name>
 ```
 
-Run this in an empty directory, or pass `--force` to overwrite.
-`--example` always uses the new-project flow.
+Run it in an empty directory, or pass `--force` to overwrite.
 
 <Callout type="info">
   For a repo that already has application code, skip `--example` and follow
@@ -20,10 +18,7 @@ Run this in an empty directory, or pass `--force` to overwrite.
 
 ## Examples
 
-These names work with `--example`. Each folder under
-[`examples/`](https://github.com/yamcodes/arkenv/tree/main/examples) is a
-standalone project that installs published packages from npm. Open the
-README in the example for setup steps.
+The following examples can be bootstrapped with the CLI. Just use the `--example <example-name>` flag with the corresponding name.
 
 <Cards>
   <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/basic" title="basic" description="Minimal Node.js app with ArkType." />
@@ -45,24 +40,12 @@ README in the example for setup steps.
   <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-bun-react" title="with-bun-react" description="Bun fullstack + React with @arkenv/bun-plugin." />
 </Cards>
 
-Also on GitHub, not in the CLI registry:
-[`basic-js`](https://github.com/yamcodes/arkenv/tree/main/examples/basic-js),
-[`with-nuxt-strict`](https://github.com/yamcodes/arkenv/tree/main/examples/with-nuxt-strict),
-[`with-solid-start`](https://github.com/yamcodes/arkenv/tree/main/examples/with-solid-start),
-and
-[`with-standard-schema`](https://github.com/yamcodes/arkenv/tree/main/examples/with-standard-schema).
+For a more manual approach, you can clone an example and run it locally using `degit`:
 
-You can clone an example and run it locally:
-
-```bash title="Terminal"
-git clone https://github.com/yamcodes/arkenv.git
-cd arkenv/examples/basic
+```package-install
+npx degit yamcodes/arkenv/examples/<example-name> <project-name>
+cd <project-name>
 cp .env.example .env
+npm install
+npm run dev
 ```
-
-Then install dependencies and start the app from that example's README.
-
-Or try the
-[StackBlitz demo](https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/stackblitz?file=index.ts)
-in the browser. That template is adapted for WebContainer, so use a
-standalone example when you want the exact production stack.
