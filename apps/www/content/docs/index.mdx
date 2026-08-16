@@ -74,8 +74,6 @@ parses your values against a schema you define in a separate `env.ts`
 file, so you don't handle the loose `process.env` object in application
 code.
 
-The same `if`, after ArkEnv, looks like this:
-
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/core";
 
@@ -84,6 +82,8 @@ export const env = arkenv({
   PORT: "number.port = 3000",
 });
 ```
+
+The same `if`, after ArkEnv, looks like this:
 
 ```ts title="./server.ts" twoslash
 // @filename: env.ts
