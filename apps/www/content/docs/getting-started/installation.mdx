@@ -9,37 +9,29 @@ Get started with ArkEnv in a few moments using:
 npx arkenv@latest init
 ```
 
-Init detects your stack, installs the matching packages, and writes a
-schema. You can also [start with an example](/docs/getting-started/examples)
+The interactive CLI detects your stack, installs the matching packages, and writes a
+schema. Use it to [start with an example](/docs/getting-started/examples)
 or [add ArkEnv to an existing repository](/docs/getting-started/add-to-existing-repository).
 
-## Installing packages by hand
+## Manual installation
 
-`arkenv init` is the usual path. Install by hand when you want to pin
-packages yourself.
+ArkEnv can be installed manually if you prefer a more hands-on approach.
 
-### `@arkenv/core`
+### Validation engine
 
-This is the ArkType engine. `arktype` is a required peer.
+`@arkenv/core` is the core ArkType-powered validation engine. `arktype` is a required peer.
 
 ```package-install
 npm i @arkenv/core arktype
 ```
 
 If you already validate with Zod or Valibot, install
-[`@arkenv/standard`](/docs/guides/validators) instead of `@arkenv/core`.
+[`@arkenv/standard`](/docs/guides/validators) instead.
 
-### CLI
+<Callout type="info">
+  `@arkenv/core` can also be used with Zod or Valibot, since ArkType itself is a Standard Schema adapter. The decision is simple: if you have ArkType (or don't mind the dependency), use `@arkenv/core`. If you don't have ArkType and don't need it, use `@arkenv/standard`. The engines have feature parity.
+</Callout>
 
-Add the `arkenv` package when you want a project-local binary for `init`
-and `add host`.
+### Framework integrations
 
-```package-install
-npm i -D arkenv
-```
-
-### Framework plugins
-
-Next.js, Nuxt, Vite, and Bun have first-party packages. Init installs the
-matching one. To add them by hand, see the
-[framework guides](/docs/guides/frameworks).
+Next.js, Nuxt, Vite, and Bun have first-party integrations. The CLI detects your stack and installs the matching one. To add them manually, see the [framework guides](/docs/guides/frameworks).
