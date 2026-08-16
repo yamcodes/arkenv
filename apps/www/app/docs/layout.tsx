@@ -1,7 +1,10 @@
 import { drillInSidebarSlots } from "@arkenv/fumadocs-ui/components";
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import type { CSSProperties, ReactNode } from "react";
-import { DocsSidebarTrigger } from "~/components/docs/sidebar-trigger";
+import {
+	DocsSidebarSync,
+	DocsSidebarTrigger,
+} from "~/components/docs/sidebar-trigger";
 import { SiteFooter } from "~/components/site-footer";
 import "~/components/site-footer.css";
 import { SiteNavDocs } from "~/components/site-nav";
@@ -23,7 +26,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 			 * SSR it here — portaling after paint is what made the bar jump.
 			 */}
 			<div id="docs-chrome-shell">
-				<SiteNavDocs />
+				<SiteNavDocs sidebarTrigger={<DocsSidebarTrigger />} />
 				<DocsLayout
 					tree={source.pageTree}
 					sidebar={{
@@ -44,8 +47,8 @@ export default function Layout({ children }: { children: ReactNode }) {
 									style={{ height: "var(--fd-nav-height)" }}
 									aria-hidden="true"
 								/>
-								{/* Must stay under DocsLayout for SidebarContext; portals into Site Nav. */}
-								<DocsSidebarTrigger />
+								{/* Registers drawer state for the Site Nav trigger (outside this grid). */}
+								<DocsSidebarSync />
 							</>
 						),
 					}}

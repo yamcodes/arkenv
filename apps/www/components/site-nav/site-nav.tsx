@@ -13,9 +13,6 @@ import { FeatureFlag } from "~/lib/posthog/feature-flags";
 import { cn } from "~/lib/utils";
 import "./site-nav.css";
 
-/** Docs sidebar trigger portals here — must exist in SSR HTML. */
-export const SITE_NAV_SIDEBAR_SLOT_ID = "site-nav-sidebar-slot";
-
 type NavLink = {
 	text: string;
 	url: string;
@@ -171,11 +168,8 @@ export function SiteNav({
 				<div className="site-nav__surface">
 					<div className="site-nav__inner">
 						<div className="site-nav__start">
-							{showSearch || sidebarTrigger ? (
-								<div
-									className="site-nav__sidebar-trigger"
-									id={showSearch ? SITE_NAV_SIDEBAR_SLOT_ID : undefined}
-								>
+							{sidebarTrigger ? (
+								<div className="site-nav__sidebar-trigger">
 									{sidebarTrigger}
 								</div>
 							) : null}
@@ -289,8 +283,12 @@ export function SiteNavHome() {
 
 /**
  * Docs chrome — a direct child of `#docs-chrome-shell` so sticky glass is not
- * a fumadocs grid item. The sidebar trigger portals into the reserved slot.
+ * a fumadocs grid item. Pass the sidebar trigger so it SSRs with the bar.
  */
-export function SiteNavDocs() {
-	return <SiteNav showSearch />;
+export function SiteNavDocs({
+	sidebarTrigger,
+}: {
+	sidebarTrigger?: ReactNode;
+}) {
+	return <SiteNav showSearch sidebarTrigger={sidebarTrigger} />;
 }

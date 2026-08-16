@@ -13,6 +13,7 @@ test.describe("Site Nav", () => {
 		expect(html.indexOf("site-nav-root")).toBeLessThan(
 			html.indexOf('id="nd-docs-layout"'),
 		);
+		expect(html).toContain('aria-label="Open Sidebar"');
 	});
 
 	test("docs header controls are hit-testable at scroll top on mobile", async ({
