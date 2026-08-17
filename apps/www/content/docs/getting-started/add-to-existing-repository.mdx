@@ -4,8 +4,8 @@ description: Using ArkEnv with your existing repository.
 ---
 
 ArkEnv can be adopted incrementally in a repo that already has application
-code. When `arkenv init` finds a `package.json`, it detects your stack, generates schema files, and wires
-framework integrations.
+code. When the interactive CLI finds a `package.json`, it detects your
+stack, generates schema files, and wires framework integrations.
 
 ## Adding ArkEnv to your repository
 
@@ -13,25 +13,25 @@ framework integrations.
   <Step>
     ### Commit or stash first
 
-    By default, `arkenv init` refuses to run when the git working tree is
-    dirty. Pass `--force` only when you accept overwriting generated files
-    and skipping that check.
+    By default, the interactive CLI refuses to run when the git working
+    tree is dirty. Pass `--force` only when you accept overwriting
+    generated files and skipping that check.
 
     TypeScript with `strict: true` is the supported path. The wizard can
     enable strict mode when it is missing.
   </Step>
 
   <Step>
-    ### Run init
+    ### Run the interactive CLI
 
     ```package-install
     npx arkenv@latest init
     ```
 
     <Callout type="warn" title="Security">
-      `arkenv init` **never** reads your `.env` or `.env.local` files. Schema
-      key names come from `.env.example` if you have one, otherwise from
-      `process.env` / `import.meta.env` usage in source.
+      The interactive CLI **never** reads your `.env` or `.env.local`
+      files. Schema key names come from `.env.example` if you have one,
+      otherwise from `process.env` / `import.meta.env` usage in source.
     </Callout>
 
     | Situation                         | Flow                                 |
@@ -47,7 +47,7 @@ framework integrations.
   <Step>
     ### Answer the wizard
 
-    Init inspects the repo and asks about:
+    The CLI inspects the repo and asks about:
 
     1. Framework (Next.js, Nuxt, Vite, Bun fullstack, or vanilla)
     2. Layout (flat or strict for Next.js / Nuxt)
@@ -73,7 +73,7 @@ framework integrations.
   <Step>
     ### Review generated files
 
-    Typical Next.js flat layout:
+    Typical Next.js flat layout (no `src/` folder):
 
     <Files>
       <Folder name="my-app" defaultOpen>
@@ -87,11 +87,19 @@ framework integrations.
           <File name="env.gen.ts" />
         </Folder>
 
+        <Folder name="app">
+          <File name="page.tsx" />
+        </Folder>
+
         <File name="next.config.ts" />
       </Folder>
     </Files>
 
-    Init may also wrap `next.config.ts` with `withArkEnv`, scaffold
+    If the project already has a `src/` directory, the CLI defaults to
+    `src/env.ts` and `src/generated/env.gen.ts` instead. The wizard
+    always lets you pick a different path.
+
+    The CLI may also wrap `next.config.ts` with `withArkEnv`, scaffold
     `vite-env.d.ts` or `bun-env.d.ts`, append `.env` / `.env.local` to
     `.gitignore`, and write a `.env` or `.env.example` when those files
     are missing. A missing `.env.example` is filled from detected keys and
@@ -114,8 +122,8 @@ framework integrations.
     cp .env.example .env
     ```
 
-    ```ts title="./src/server.ts"
-    import { env } from "../env";
+    ```ts title="./app/page.tsx"
+    import { env } from "@/env";
 
     console.log(env.DATABASE_URL);
     ```

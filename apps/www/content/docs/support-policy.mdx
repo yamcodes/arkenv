@@ -8,8 +8,10 @@ still change before 1.0.0.** Use the latest version whenever you can.
 
 ## Package managers
 
-Packages are published as `@arkenv/<package-name>` to npm's public registry. [`arkenv init`](/docs/reference/init) detects the package manager in
-your repository so it can install dependencies as part of an automated process; this only works with npm, pnpm, Yarn and Bun.
+Packages are published as `@arkenv/<package-name>` to npm's public registry.
+The [ArkEnv CLI](/docs/reference/init) detects the package manager in
+your repository so it can install dependencies as part of an automated
+process. This only works with npm, pnpm, Yarn, and Bun.
 
 ## Frameworks
 
@@ -30,7 +32,11 @@ Vite-based apps (e.g. SolidStart) use `@arkenv/vite-plugin`. Apps that only use 
 
 ## Version control
 
-While ArkEnv itself has no opinion on version control, it's worth mentioning that the [`arkenv init`](/docs/reference/init) command refuses to run in a dirty working tree. This is to prevent accidentally overwriting important data. You can pass the `--force` flag to override this behavior, or commit/stash your changes before running the command.
+While ArkEnv itself has no opinion on version control, the
+[interactive CLI](/docs/reference/init) refuses to run in a dirty working
+tree. This is to prevent accidentally overwriting important data. You can
+pass the `--force` flag to override this behavior, or commit or stash your
+changes before running the command.
 
 ## Node.js
 

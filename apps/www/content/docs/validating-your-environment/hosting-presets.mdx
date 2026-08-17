@@ -3,17 +3,23 @@ title: Hosting presets
 description: Pre-populate schemas with Vercel, Netlify, Cloudflare, Railway, Render, or Fly.io variables.
 ---
 
-Hosting providers inject their own system environment variables at build and runtime. Presets teach `arkenv init` (and `arkenv add host`) which keys to add, already typed and optional, so you do not look them up by hand.
+Hosting providers inject their own system environment variables at build
+and runtime. Presets teach the ArkEnv CLI which keys to add, already typed
+and optional, so you do not look them up by hand.
 
 Presets work with ArkType, Zod, and Valibot, and with both [flat and strict](/docs/validating-your-environment/client-vs-server) layouts.
 
-Not on this list? Choose **None** during init (or skip `add host`) and declare the provider's variables yourself in the schema the same way you declare `DATABASE_URL`. Presets are a convenience for common hosts, not a requirement.
+Not on this list? Choose **None** in the interactive CLI (or skip adding a
+host later) and declare the provider's variables yourself in the schema
+the same way you declare `DATABASE_URL`. Presets are a convenience for
+common hosts, not a requirement.
 
 ## Select a preset during init
 
 ### Interactive prompt
 
-`arkenv init` asks for a hosting provider when you run it without flags:
+The interactive CLI asks for a hosting provider when you run it without
+flags:
 
 ```txt
 Select a hosting provider preset (optional):
@@ -111,7 +117,8 @@ Every preset field is **optional** (present only on that provider). Fields split
 
 ## Example: Vercel + ArkType flat schema
 
-After `arkenv init -H vercel` on a Next.js app, the generated schema includes the preset fields alongside your own:
+After `npx arkenv@latest init -H vercel` on a Next.js app, the generated
+schema includes the preset fields alongside your own:
 
 ```ts title="./env.ts"
 import arkenv from "@/generated/env.gen";
@@ -128,7 +135,9 @@ export const env = arkenv({
 });
 ```
 
-Exact output varies by validator and framework. Re-run `add host` when you move providers instead of copying keys by hand.
+Exact output varies by validator and framework. Re-run
+`npx arkenv@latest add host` when you move providers instead of copying
+keys by hand.
 
 ## Next steps
 

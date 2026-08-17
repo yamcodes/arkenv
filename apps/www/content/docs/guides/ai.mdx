@@ -28,7 +28,7 @@ Add ArkEnv to this repo. Run `pnpm dlx arkenv@latest init --agent`, parse the JS
 **Existing keys**
 
 ```text
-We already have a .env.example. Run `arkenv init --agent` and accept the detected keys for the schema. Keep .env.example values empty or placeholder-only; never copy secrets from .env into git.
+We already have a .env.example. Run `npx arkenv@latest init --agent` and accept the detected keys for the schema. Keep .env.example values empty or placeholder-only; never copy secrets from .env into git.
 ```
 
 **Migrate raw process.env usage**
@@ -110,7 +110,7 @@ Treat these as hard rules unless a human overrides them:
 
 | Rule                                                                 | Why                                                        |
 | -------------------------------------------------------------------- | ---------------------------------------------------------- |
-| Run `init --agent` (or `add host … --agent`) for setup               | Avoids drift from hand-scaffolded config                   |
+| Run the CLI with `--agent` for setup                                 | Avoids drift from hand-scaffolded config                   |
 | Validate through `arkenv()` from `@arkenv/core` or a framework entry | The `arkenv` npm package is the CLI, not the runtime       |
 | Use framework public prefixes for client-exposed keys                | `NEXT_PUBLIC_*`, `NUXT_PUBLIC_*`, `VITE_*`, `BUN_PUBLIC_*` |
 | Never put secrets in client-prefixed keys                            | Client bundles and flat layouts still leak key names       |

@@ -3,17 +3,22 @@ title: Editor integration
 description: Configure your editor for ArkEnv autocomplete and validation tooltips.
 ---
 
-ArkEnv leans on TypeScript inference and the ArkType VS Code extension.
-There is no separate ArkEnv IDE plugin.
+To get the best experience with `arkenv`, ArkEnv provides a few utilities for integrating with your editor.
 
-## ArkType VS Code extension
+## Syntax highlighting and inline type errors
 
-Install the
-[ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark)
-(`arktypeio.arkdark`). It highlights ArkType schema strings when the
-import uses the default export name `arkenv`:
+:::note
+Skip this if you're using ArkEnv without ArkType (i.e. [`@arkenv/standard`](/docs/reference/standard)).
+:::
 
-```ts title="./env.ts"
+Enable syntax highlighting and inline type errors with the 
+[VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark) or [JetBrains plugin](https://plugins.jetbrains.com/plugin/27099-arktype).
+
+If you use this extension, it is **not** recommended to use an alias like `createEnv`. It only works if the function contains the substring `ark`.
+
+
+
+```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
@@ -22,8 +27,15 @@ export const env = arkenv({
 });
 ```
 
-Keep that import name. Auto-import then picks up highlighting without a
-rename.
+## ArkThemes
+
+:::note
+Skip this if you're using ArkEnv without ArkType (i.e. [`@arkenv/standard`](/docs/reference/standard)).
+:::
+
+This theme for VS Code (or Cursor) is recommended to provide advanced syntax highlighting and colors that work well with ArkType since they make its [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) look like plain TypeScript. Available in light and dark modes.
+
+Visit the [VSCode Extension Marketplace](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkthemes) to install.
 
 ## Autocomplete on `env.*`
 
@@ -44,7 +56,7 @@ Import `{ env }` in application code. `env.PORT` is a `number`;
 
 ## Framework type augmentation
 
-Some hosts expose env through globals. `arkenv init` can scaffold these
+Some hosts expose env through globals. The ArkEnv CLI can scaffold these
 declaration files.
 
 ### Vite: `vite-env.d.ts`

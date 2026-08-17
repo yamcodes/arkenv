@@ -28,7 +28,9 @@ Keys without the prefix stay server-only. `NODE_ENV` is treated as shared on Nex
 
 ## Flat layout (recommended)
 
-Flat layout uses one `env.ts`. Prefixes decide which keys reach the client. This is the default when you run `arkenv init`, and the right choice for most apps.
+Flat layout uses one `env.ts`. Prefixes decide which keys reach the
+client. This is the default when you run the interactive CLI, and the
+right choice for most apps.
 
 ```ts title="./env.ts"
 import arkenv from "@/generated/env.gen";
