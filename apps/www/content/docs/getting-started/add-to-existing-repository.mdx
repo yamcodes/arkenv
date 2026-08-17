@@ -20,24 +20,23 @@ stack, generates schema files, and wires framework integrations.
     generated files.
 
     <Callout type="warn">
-      The CLI **never** reads your actual `.env` files! Suggested schema key names come
-      from `.env.example` if you have one, otherwise from `process.env`
-      / `import.meta.env` usage in source.
+      The CLI **never** reads your actual `.env` files! Suggested schema
+      key names come from `.env.example` if you have one, otherwise from
+      `process.env` / `import.meta.env` usage in source.
     </Callout>
   </Step>
 
   <Step>
     ### Answer the wizard
 
-    The CLI asks about framework, layout (flat or strict on Next.js /
-    Nuxt), validator, and hosting preset. If `compilerOptions.strict` is
-    off in `tsconfig.json`, the wizard will offer to enable it (recommended).
+    The CLI asks about framework, layout, validator, and hosting preset. If `compilerOptions.strict` is
+    off in `tsconfig.json`, the wizard offers to enable it (recommended).
   </Step>
 
   <Step>
     ### Review generated files
 
-    Here is an example of what your directory might look like after running the CLI in a Next.js project:
+    After the CLI, a Next.js app looks like this:
 
     <Files>
       <Folder name="my-app" defaultOpen>
@@ -64,15 +63,18 @@ stack, generates schema files, and wires framework integrations.
   </Step>
 
   <Step>
-    ### Use the validated `env` object
+    ### Import `env` in your app
 
-    Copy example values into `.env` so your framework can load them.
-    ArkEnv validates; it does not load `.env` files. Then import `env`
-    in application code.
+    Your framework loads `.env` into `process.env` (or `import.meta.env`), which ArkEnv validates. See
+    [Loading .env files](/docs/validating-your-environment/framework-integration#loading-env-files).
+
+    If you don't have a `.env` file yet, copy the example and fill in values:
 
     ```bash title="Terminal"
     cp .env.example .env
     ```
+
+    Import `env` instead of `process.env` (or `import.meta.env`):
 
     ```ts title="./app/page.tsx" twoslash
     // @filename: env.ts
@@ -93,6 +95,9 @@ stack, generates schema files, and wires framework integrations.
 
 ## Next steps
 
-Read [Client vs. server](/docs/validating-your-environment/client-vs-server)
-for public prefixes, then the
-[framework guides](/docs/guides/frameworks) for your stack.
+You're now up and running with ArkEnv! To get the most out of it, check out the following pages:
+
+- [Client vs. server](/docs/validating-your-environment/client-vs-server)
+- [Framework guides](/docs/guides/frameworks)
+- [Editor integration](/docs/getting-started/editor-integration)
+- [Defining types](/docs/validating-your-environment/defining-types)
