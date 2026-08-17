@@ -7,20 +7,7 @@ ArkEnv can be adopted incrementally in a repo that already has application
 code. When the interactive CLI finds a `package.json`, it detects your
 stack, generates schema files, and wires framework integrations.
 
-## Adding ArkEnv to your repository
-
 <Steps>
-  <Step>
-    ### Commit or stash first
-
-    By default, the interactive CLI refuses to run when the git working
-    tree is dirty. Pass `--force` only when you accept overwriting
-    generated files and skipping that check.
-
-    TypeScript with `strict: true` is the supported path. The wizard can
-    enable strict mode when it is missing.
-  </Step>
-
   <Step>
     ### Run the interactive CLI
 
@@ -28,52 +15,31 @@ stack, generates schema files, and wires framework integrations.
     npx arkenv@latest init
     ```
 
+    The CLI refuses a dirty git working tree. Commit or stash
+    (`git stash -u`) first, or pass `--force` if you accept overwriting
+    generated files.
+
     <Callout type="warn" title="Security">
-      The interactive CLI **never** reads your `.env` or `.env.local`
-      files. Schema key names come from `.env.example` if you have one,
-      otherwise from `process.env` / `import.meta.env` usage in source.
+      The CLI never reads `.env` or `.env.local`. Schema key names come
+      from `.env.example` if you have one, otherwise from `process.env`
+      / `import.meta.env` usage in source.
     </Callout>
-
-    | Situation                         | Flow                                 |
-    | --------------------------------- | ------------------------------------ |
-    | Directory contains `package.json` | Existing-project wizard (this guide) |
-    | Empty directory                   | New-project scaffold                 |
-    | `--example` flag                  | Always new-project                   |
-
-    Flags such as `--yes`, `--strict`, `--host-preset`, and `--agent` are
-    listed on the [init reference](/docs/reference/init).
   </Step>
 
   <Step>
     ### Answer the wizard
 
-    The CLI inspects the repo and asks about:
-
-    1. Framework (Next.js, Nuxt, Vite, Bun fullstack, or vanilla)
-    2. Layout (flat or strict for Next.js / Nuxt)
-    3. Overwriting an existing schema
-    4. Schema keys to suggest (names from `.env.example`, or from
-       `process.env` / `import.meta.env` / `env.*` usage in source)
-    5. Validator (ArkType, Zod, or Valibot)
-    6. Hosting preset
-
-    When `.env.example` exists:
-
-    ```txt
-    Detected .env.example with 12 keys. Use them for your schema?
-    ```
-
-    When only source usage is found:
-
-    ```txt
-    Detected 8 environment variables used in your project. Use them for your schema?
-    ```
+    The CLI asks about framework, layout (flat or strict on Next.js /
+    Nuxt), validator, and hosting preset. Schema keys come from
+    `.env.example` if you have one, otherwise from `process.env` /
+    `import.meta.env` usage in source. If `compilerOptions.strict` is
+    off in `tsconfig.json`, the wizard can enable it.
   </Step>
 
   <Step>
     ### Review generated files
 
-    Typical Next.js flat layout (no `src/` folder):
+    Typical Next.js flat layout:
 
     <Files>
       <Folder name="my-app" defaultOpen>
@@ -95,28 +61,17 @@ stack, generates schema files, and wires framework integrations.
       </Folder>
     </Files>
 
-    If the project already has a `src/` directory, the CLI defaults to
-    `src/env.ts` and `src/generated/env.gen.ts` instead. The wizard
-    always lets you pick a different path.
-
-    The CLI may also wrap `next.config.ts` with `withArkEnv`, scaffold
-    `vite-env.d.ts` or `bun-env.d.ts`, append `.env` / `.env.local` to
-    `.gitignore`, and write a `.env` or `.env.example` when those files
-    are missing. A missing `.env.example` is filled from detected keys and
-    framework defaults, not from `.env`.
-
-    <Callout type="info">
-      ArkEnv does not load `.env` files. Your framework, Bun, or Nub must
-      populate `process.env` before `arkenv()` runs. See
-      [Loading .env files](/docs/validating-your-environment/framework-integration#loading-env-files).
-    </Callout>
+    If the project has a `src/` directory, the schema lands at
+    `src/env.ts` instead. On Next.js, the CLI wraps `next.config.ts`
+    with `withArkEnv`.
   </Step>
 
   <Step>
     ### Use the validated `env` object
 
-    Copy example values into `.env` so your framework or process can load
-    them. Then import `env` in application code.
+    Copy example values into `.env` so your framework can load them.
+    ArkEnv validates; it does not load `.env` files. Then import `env`
+    in application code.
 
     ```bash title="Terminal"
     cp .env.example .env
@@ -138,24 +93,6 @@ stack, generates schema files, and wires framework integrations.
     ```
   </Step>
 </Steps>
-
-## Troubleshooting
-
-### Git working tree is not clean
-
-Commit or stash your changes (`git stash -u`) before running the CLI, or pass `--force`.
-
-### TypeScript strict mode is missing
-
-The supported path is TypeScript with `strict: true`. The wizard can
-enable it when it is missing.
-
-### Non-empty directory without `package.json`
-
-The CLI treats a directory with `package.json` as an existing project.
-If the directory is not empty and has no `package.json`, use a
-subdirectory, pass `--example` to scaffold a new project, or pass
-`--force`.
 
 ## Next steps
 
