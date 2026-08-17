@@ -3,9 +3,10 @@ title: Add to an existing repository
 description: Using ArkEnv with your existing repository.
 ---
 
-ArkEnv can be adopted incrementally in a repo that already has application
-code. When the interactive CLI finds a `package.json`, it detects your
-stack, generates schema files, and wires framework integrations.
+ArkEnv can be adopted incrementally in a repo that **already has
+application code**. When the interactive CLI finds a `package.json`, it
+detects your stack, generates schema files, and wires framework
+integrations.
 
 <Steps>
   <Step>
@@ -74,7 +75,7 @@ stack, generates schema files, and wires framework integrations.
     cp .env.example .env
     ```
 
-    Import `env` instead of `process.env` (or `import.meta.env`):
+    Import `env` **instead of** `process.env` (or `import.meta.env`):
 
     ```ts title="./app/page.tsx" twoslash
     // @filename: env.ts
@@ -95,7 +96,8 @@ stack, generates schema files, and wires framework integrations.
 
 ## Next steps
 
-You're now up and running with ArkEnv! To get the most out of it, check out the following pages:
+**You're now up and running with ArkEnv!** To get the most out of it, check
+out the following pages:
 
 - [Client vs. server](/docs/validating-your-environment/client-vs-server)
 - [Framework guides](/docs/guides/frameworks)

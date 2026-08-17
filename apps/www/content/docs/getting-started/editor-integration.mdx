@@ -12,8 +12,8 @@ The [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemN
 and [JetBrains plugin](https://plugins.jetbrains.com/plugin/27099-arktype)
 highlight ArkType schema strings and surface inline type errors.
 
-The extension highlights calls whose name contains `ark`. Keep the default
-import name `arkenv`:
+The extension highlights calls whose name contains `ark`. Keep the
+**default** import name `arkenv`:
 
 ```diff title="./env.ts"
 - import createEnv from "@arkenv/core";
@@ -28,9 +28,8 @@ import name `arkenv`:
 
 <Callout type="info" title="ArkType only">
   Skip this section and [ArkThemes](#arkthemes) if you validate with
-  [`@arkenv/standard`](/docs/reference/standard). ArkType editor tools do not apply to Zod, Valibot, etc.
+  [`@arkenv/standard`](/docs/reference/standard). ArkType editor tools do **not** apply to Zod, Valibot, etc.
 </Callout>
-
 
 ## ArkThemes
 
@@ -43,7 +42,7 @@ to install.
 
 ## Autocomplete on `env.*`
 
-TypeScript infers keys and types from the schema you pass to `arkenv()`.
+TypeScript infers **keys and types** from the schema you pass to `arkenv()`.
 Import `env` in application code.
 
 ```ts title="./server.ts" twoslash
