@@ -123,7 +123,7 @@ stack, generates schema files, and wires framework integrations.
     ```
 
     ```ts title="./app/page.tsx"
-    import { env } from "@/env";
+    import { env } from "../env";
 
     console.log(env.DATABASE_URL);
     ```
@@ -132,13 +132,9 @@ stack, generates schema files, and wires framework integrations.
 
 ## Troubleshooting
 
-The interactive CLI refuses in a few situations so it does not overwrite
-work you have not committed. Pass `--force` only when you accept skipping
-those checks.
-
 ### Git working tree is not clean
 
-Commit or stash your changes (`git stash -u`) before running the CLI.
+Commit or stash your changes (`git stash -u`) before running the CLI, or pass `--force`.
 
 ### TypeScript strict mode is missing
 

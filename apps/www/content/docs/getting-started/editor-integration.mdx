@@ -12,12 +12,6 @@ The [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemN
 and [JetBrains plugin](https://plugins.jetbrains.com/plugin/27099-arktype)
 highlight ArkType schema strings and surface inline type errors.
 
-<Callout type="info">
-  Skip this section and [ArkThemes](#arkthemes) if you validate with
-  [`@arkenv/standard`](/docs/reference/standard). Those schemas are Zod or
-  Valibot, so the ArkType editor tools do not apply.
-</Callout>
-
 The extension highlights calls whose name contains `ark`. Keep the default
 import name `arkenv`:
 
@@ -32,6 +26,12 @@ import name `arkenv`:
   });
 ```
 
+<Callout type="info" title="ArkType only">
+  Skip this section and [ArkThemes](#arkthemes) if you validate with
+  [`@arkenv/standard`](/docs/reference/standard). ArkType editor tools do not apply to Zod, Valibot, etc.
+</Callout>
+
+
 ## ArkThemes
 
 ArkThemes is a VS Code (and Cursor) color theme that makes ArkType schema
@@ -44,8 +44,7 @@ to install.
 ## Autocomplete on `env.*`
 
 TypeScript infers keys and types from the schema you pass to `arkenv()`.
-Import `{ env }` in application code. `env.PORT` is a `number`.
-`process.env.PORT` stays an untyped string.
+Import `env` in application code.
 
 ```ts title="./server.ts" twoslash
 // @filename: env.ts
@@ -60,15 +59,5 @@ export const env = arkenv({
 import { env } from "./env";
 
 console.log(`Server is running on port ${env.PORT}`);
+// @annotate: Always use env.PORT. process.env.PORT is string | undefined.
 ```
-
-## Framework type augmentation
-
-Vite and Bun can also autocomplete globals such as `import.meta.env`. The
-ArkEnv CLI scaffolds `vite-env.d.ts` or `bun-env.d.ts` for those hosts.
-Next.js uses `withArkEnv` codegen (`env.gen.ts`) instead.
-
-See the [Vite](/docs/guides/frameworks/vite) and
-[Bun](/docs/guides/frameworks/bun) guides, or
-[Client vs. server](/docs/validating-your-environment/client-vs-server)
-for Next.js.

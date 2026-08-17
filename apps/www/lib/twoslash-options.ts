@@ -40,6 +40,7 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 	explicitTrigger: true,
 	langs: ["ts", "tsx", "js", "jsx"],
 	twoslashOptions: {
+		customTags: ["annotate", "log", "warn", "error"],
 		vfsRoot: wwwRoot,
 		compilerOptions: {
 			module: ts.ModuleKind.ESNext,
