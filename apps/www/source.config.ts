@@ -166,7 +166,7 @@ export default defineConfig({
 			],
 		],
 		rehypeCodeOptions: {
-			langs: ["ts", "tsx", "js", "jsx", "json", "bash", "dotenv"],
+			langs: ["ts", "tsx", "js", "jsx", "json", "bash", "dotenv", "diff"],
 			themes: {
 				light: "github-light-high-contrast",
 				dark: "github-dark-high-contrast",

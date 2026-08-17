@@ -14,17 +14,18 @@ Skip this if you're using ArkEnv without ArkType (i.e. [`@arkenv/standard`](/doc
 Enable syntax highlighting and inline type errors with the 
 [VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark) or [JetBrains plugin](https://plugins.jetbrains.com/plugin/27099-arktype).
 
-If you use this extension, it is **not** recommended to use an alias like `createEnv`. It only works if the function contains the substring `ark`.
+If you use this extension, it is **not** recommended to use an alias like
+`createEnv`. It only works if the function contains the substring `ark`.
 
+```diff title="./env.ts"
+- import createEnv from "@arkenv/core";
++ import arkenv from "@arkenv/core";
 
-
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/core";
-
-export const env = arkenv({
-  PORT: "number.port = 3000",
-  DEBUG: "boolean = false",
-});
+- export const env = createEnv({
++ export const env = arkenv({
+    PORT: "number.port = 3000",
+    DEBUG: "boolean = false",
+  });
 ```
 
 ## ArkThemes
