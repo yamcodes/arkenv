@@ -83,11 +83,11 @@ stack, generates schema files, and wires framework integrations.
 
         <File name=".env" />
 
-        <Folder name="generated">
+        <Folder name="generated" defaultOpen>
           <File name="env.gen.ts" />
         </Folder>
 
-        <Folder name="app">
+        <Folder name="app" defaultOpen>
           <File name="page.tsx" />
         </Folder>
 
@@ -122,7 +122,16 @@ stack, generates schema files, and wires framework integrations.
     cp .env.example .env
     ```
 
-    ```ts title="./app/page.tsx"
+    ```ts title="./app/page.tsx" twoslash
+    // @filename: env.ts
+    import arkenv from "@arkenv/core";
+
+    export const env = arkenv({
+      DATABASE_URL: "string",
+    });
+
+    // @filename: app/page.tsx
+    // ---cut---
     import { env } from "../env";
 
     console.log(env.DATABASE_URL);
@@ -147,11 +156,6 @@ The CLI treats a directory with `package.json` as an existing project.
 If the directory is not empty and has no `package.json`, use a
 subdirectory, pass `--example` to scaffold a new project, or pass
 `--force`.
-
-### `--simple` flag
-
-`--simple` was removed. Flat layout is the default. Use `--strict` when
-you want the client/server split.
 
 ## Next steps
 
