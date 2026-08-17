@@ -19,8 +19,8 @@ stack, generates schema files, and wires framework integrations.
     (`git stash -u`) first, or pass `--force` if you accept overwriting
     generated files.
 
-    <Callout type="warn" title="Security">
-      The CLI never reads `.env` or `.env.local`. Schema key names come
+    <Callout type="warn">
+      The CLI **never** reads your actual `.env` files! Suggested schema key names come
       from `.env.example` if you have one, otherwise from `process.env`
       / `import.meta.env` usage in source.
     </Callout>
