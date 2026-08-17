@@ -1,21 +1,25 @@
 ---
 title: Editor integration
-description: Configure your editor for ArkEnv autocomplete and validation tooltips.
+description: Making the most of your editor with ArkEnv.
 ---
 
-To get the best experience with `arkenv`, ArkEnv provides a few utilities for integrating with your editor.
+To get the best experience with `arkenv()`, ArkEnv provides a few utilities
+for integrating with your editor.
 
 ## Syntax highlighting and inline type errors
 
-:::note
-Skip this if you're using ArkEnv without ArkType (i.e. [`@arkenv/standard`](/docs/reference/standard)).
-:::
+The [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark)
+and [JetBrains plugin](https://plugins.jetbrains.com/plugin/27099-arktype)
+highlight ArkType schema strings and surface inline type errors.
 
-Enable syntax highlighting and inline type errors with the 
-[VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark) or [JetBrains plugin](https://plugins.jetbrains.com/plugin/27099-arktype).
+<Callout type="info">
+  Skip this section and [ArkThemes](#arkthemes) if you validate with
+  [`@arkenv/standard`](/docs/reference/standard). Those schemas are Zod or
+  Valibot, so the ArkType editor tools do not apply.
+</Callout>
 
-If you use this extension, it is **not** recommended to use an alias like
-`createEnv`. It only works if the function contains the substring `ark`.
+The extension highlights calls whose name contains `ark`. Keep the default
+import name `arkenv`:
 
 ```diff title="./env.ts"
 - import createEnv from "@arkenv/core";
@@ -30,66 +34,41 @@ If you use this extension, it is **not** recommended to use an alias like
 
 ## ArkThemes
 
-:::note
-Skip this if you're using ArkEnv without ArkType (i.e. [`@arkenv/standard`](/docs/reference/standard)).
-:::
+ArkThemes is a VS Code (and Cursor) color theme that makes ArkType schema
+strings read like TypeScript, in light and dark modes.
 
-This theme for VS Code (or Cursor) is recommended to provide advanced syntax highlighting and colors that work well with ArkType since they make its [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) look like plain TypeScript. Available in light and dark modes.
-
-Visit the [VSCode Extension Marketplace](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkthemes) to install.
+Visit the
+[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkthemes)
+to install.
 
 ## Autocomplete on `env.*`
 
-TypeScript reads keys and types from the schema you pass to `arkenv()`:
+TypeScript infers keys and types from the schema you pass to `arkenv()`.
+Import `{ env }` in application code. `env.PORT` is a `number`.
+`process.env.PORT` stays an untyped string.
 
-```ts title="./env.ts" twoslash
+```ts title="./server.ts" twoslash
+// @filename: env.ts
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
-  HOST: "string.host = 'localhost'",
   PORT: "number.port = 3000",
-  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
-```
 
-Import `{ env }` in application code. `env.PORT` is a `number`;
-`process.env.PORT` stays an untyped string.
+// @filename: server.ts
+// ---cut---
+import { env } from "./env";
+
+console.log(`Server is running on port ${env.PORT}`);
+```
 
 ## Framework type augmentation
 
-Some hosts expose env through globals. The ArkEnv CLI can scaffold these
-declaration files.
+Vite and Bun can also autocomplete globals such as `import.meta.env`. The
+ArkEnv CLI scaffolds `vite-env.d.ts` or `bun-env.d.ts` for those hosts.
+Next.js uses `withArkEnv` codegen (`env.gen.ts`) instead.
 
-### Vite: `vite-env.d.ts`
-
-```ts title="./vite-env.d.ts"
-/// <reference types="vite/client" />
-
-type ImportMetaEnvAugmented =
-  import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
-    typeof import("./env").Env
-  >;
-
-interface ImportMetaEnv extends ImportMetaEnvAugmented {}
-```
-
-`import.meta.env.VITE_*` keys autocomplete in client code. Keys without
-the `VITE_` prefix error there.
-
-### Bun fullstack: `bun-env.d.ts`
-
-```ts title="./bun-env.d.ts"
-/// <reference types="bun-types" />
-
-type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<
-  typeof import("./env").Env
->;
-
-declare namespace NodeJS {
-  interface ProcessEnv extends ProcessEnvAugmented {}
-}
-```
-
-Next.js uses `withArkEnv` codegen (`env.gen.ts`) for the same kind of
-boundary typing. See
-[Client vs. server](/docs/validating-your-environment/client-vs-server).
+See the [Vite](/docs/guides/frameworks/vite) and
+[Bun](/docs/guides/frameworks/bun) guides, or
+[Client vs. server](/docs/validating-your-environment/client-vs-server)
+for Next.js.
