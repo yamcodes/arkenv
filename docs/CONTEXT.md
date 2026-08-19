@@ -108,6 +108,7 @@ The Vite plugin call shape `arkenv(schema)` that validates at build time and inl
   - `www` - Next.js documentation site
   - `playgrounds/*` - Test playgrounds for different runtimes
   - `playwright-www` - Playwright E2E tests for the www application
+  - `dash` - Optional maintainer Dashfy dashboard (GitHub + npm). Not in CI.
 - **Examples** (`examples/`) - Standalone example projects
 
 **Package Architecture:**

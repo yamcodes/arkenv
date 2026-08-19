@@ -1,0 +1,136 @@
+port: 5001
+apis:
+  pollInterval: 300000
+dashboards:
+  - title: ArkEnv repo
+    columns: 4
+    rows: 3
+    widgets:
+      - extension: github
+        widget: RepoBadge
+        x: 0
+        y: 0
+        columns: 1
+        rows: 1
+        repository: yamcodes/arkenv
+      - extension: github
+        widget: UserBadge
+        x: 1
+        y: 0
+        columns: 1
+        rows: 1
+        user: yamcodes
+      - extension: github
+        widget: Status
+        x: 2
+        y: 0
+        columns: 1
+        rows: 1
+      - extension: json
+        widget: JsonKeys
+        x: 3
+        y: 0
+        columns: 1
+        rows: 1
+        title: Latest Actions run
+        api: github-json
+        url: https://api.github.com/repos/yamcodes/arkenv/actions/runs?per_page=1
+        path: $.workflow_runs[0]
+        keys:
+          - name
+          - display_title
+          - status
+          - conclusion
+          - head_branch
+      - extension: github
+        widget: PullRequests
+        x: 0
+        y: 1
+        columns: 2
+        rows: 1
+        repository: yamcodes/arkenv
+        state: open
+      - extension: github
+        widget: Branches
+        x: 2
+        y: 1
+        columns: 2
+        rows: 1
+        repository: yamcodes/arkenv
+      - extension: github
+        widget: CommitActivityLine
+        x: 0
+        y: 2
+        columns: 4
+        rows: 1
+        repository: yamcodes/arkenv
+
+  - title: Release
+    columns: 3
+    rows: 2
+    widgets:
+      - extension: json
+        widget: JsonKeys
+        x: 0
+        y: 0
+        columns: 1
+        rows: 1
+        title: arkenv (CLI)
+        url: https://registry.npmjs.org/arkenv
+        keys:
+          - dist-tags.alpha
+          - dist-tags.latest
+      - extension: json
+        widget: JsonKeys
+        x: 1
+        y: 0
+        columns: 1
+        rows: 1
+        title: "@arkenv/core"
+        url: https://registry.npmjs.org/@arkenv/core
+        keys:
+          - dist-tags.alpha
+          - dist-tags.latest
+      - extension: json
+        widget: JsonStatus
+        x: 2
+        y: 0
+        columns: 1
+        rows: 1
+        title: npm registry
+        url: https://registry.npmjs.org/arkenv
+        statuses:
+          - assert: equals(name, arkenv)
+            status: success
+            label: arkenv on npm
+      - extension: json
+        widget: JsonKeys
+        x: 0
+        y: 1
+        columns: 1
+        rows: 1
+        title: arkenv weekly downloads
+        url: https://api.npmjs.org/downloads/point/last-week/arkenv
+        keys:
+          - downloads
+      - extension: json
+        widget: JsonKeys
+        x: 1
+        y: 1
+        columns: 1
+        rows: 1
+        title: "@arkenv/core weekly downloads"
+        url: https://api.npmjs.org/downloads/point/last-week/@arkenv/core
+        keys:
+          - downloads
+      - extension: json
+        widget: JsonKeys
+        x: 2
+        y: 1
+        columns: 1
+        rows: 1
+        title: "@arkenv/nextjs"
+        url: https://registry.npmjs.org/@arkenv/nextjs
+        keys:
+          - dist-tags.alpha
+          - dist-tags.latest
