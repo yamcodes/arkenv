@@ -3,11 +3,15 @@ title: keywords
 description: ArkEnv keywords that extend ArkType for common environment shapes.
 ---
 
-<Callout type="info" title="ArkType only">
-  Keywords work with [`@arkenv/core`](/docs/reference/core). [`@arkenv/standard`](/docs/reference/standard) has its own validator map.
-</Callout>
+ArkEnv adds two env-oriented keywords on top of
+[ArkType's keyword set](https://arktype.io/docs/primitives). Use them in
+`arkenv({ ... })` or `type()` from `@arkenv/core`.
 
-ArkEnv adds two env-oriented keywords on top of [ArkType's keyword set](https://arktype.io/docs/primitives). Use them in `arkenv({ ... })` or `type()` from `@arkenv/core`.
+<Callout type="info" title="ArkType only">
+  Keywords work with [`@arkenv/core`](/docs/reference/core).
+  [`@arkenv/standard`](/docs/reference/standard) has its own validator
+  map.
+</Callout>
 
 ## `string.host`
 
@@ -67,4 +71,13 @@ An integer port in the range `0`-`65535`.
 
 ## Everything else
 
-Other primitives (`string`, `number`, `boolean`, enums, morphs) come from ArkType. See [Defining types](/docs/validating-your-environment) for common patterns.
+Other primitives (`string`, `number`, `boolean`, enums, morphs) come from
+ArkType. See
+[Defining types](/docs/validating-your-environment/defining-types) for
+common patterns.
+
+## Next steps
+
+- [schema](/docs/reference/schema)
+- [options](/docs/reference/options)
+- [`@arkenv/core`](/docs/reference/core)

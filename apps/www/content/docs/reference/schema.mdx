@@ -3,11 +3,15 @@ title: schema
 description: Schema shapes accepted by arkenv() in core and standard modes.
 ---
 
-`arkenv()` accepts a schema that maps environment variable names to validators. Core uses the ArkType DSL (and compiled `type()` values). Standard mode accepts a map of Standard Schema validators.
+`arkenv()` accepts a schema that maps environment variable names to
+validators. Core uses the ArkType DSL (and compiled `type()` values).
+Standard mode accepts a map of Standard Schema validators.
 
-## Raw object (usual)
+## Declarative map
 
-Pass a declarative map of ArkType strings (or nested objects):
+Pass a map of ArkType strings (or nested objects). This is an
+`EnvSchema`: each value is validated against ArkEnv's ArkType scope
+before parsing.
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/core";
@@ -20,11 +24,10 @@ export const env = arkenv({
 });
 ```
 
-This is an `EnvSchema`: each value is validated against ArkEnv's ArkType scope before parsing.
-
 ## Compiled `type()`
 
-Build the schema once with `type()` when you reuse it across runtimes or packages:
+Build the schema once with `type()` when you reuse it across runtimes or
+packages.
 
 ```ts title="./env-schema.ts" twoslash
 import arkenv, { type } from "@arkenv/core";
@@ -37,11 +40,13 @@ export const Env = type({
 export const env = arkenv(Env);
 ```
 
-See [Reusing schemas](/docs/validating-your-environment).
+See [Reusing schemas](/docs/validating-your-environment/reusing-schemas).
 
 ## Standard Schema maps
 
-With [`@arkenv/standard`](/docs/reference/standard), every value must be a Standard Schema validator (Zod, Valibot, and others). ArkType DSL strings fail:
+With [`@arkenv/standard`](/docs/reference/standard), every value must be
+a Standard Schema validator (Zod, Valibot, and others). ArkType DSL
+strings fail.
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/standard";
@@ -55,6 +60,9 @@ export const env = arkenv({
 
 ## Inferring types
 
+`Infer<T>` works for declarative maps, compiled ArkType types, and
+Standard Schema values.
+
 ```ts title="./env.ts" twoslash
 import arkenv, { type Infer } from "@arkenv/core";
 
@@ -67,13 +75,20 @@ export const env = arkenv(schema);
 export type Env = Infer<typeof schema>;
 ```
 
-`Infer<T>` works for declarative maps, compiled ArkType types, and Standard Schema values.
-
 ## Client and server schemas
 
 Framework packages add layouts and prefixes:
 
-- Flat: one schema; public prefixes decide client exposure
-- Strict: separate client/server/shared modules with `extends`
+- **Flat:** one schema; public prefixes decide client exposure
+- **Strict:** separate client, server, and shared modules with `extends`
 
-Details: [Client vs. server](/docs/validating-your-environment), [`@arkenv/nextjs`](/docs/reference/nextjs), [`@arkenv/nuxt`](/docs/reference/nuxt).
+Details:
+[Client vs. server](/docs/validating-your-environment/client-vs-server),
+[`@arkenv/nextjs`](/docs/reference/nextjs),
+[`@arkenv/nuxt`](/docs/reference/nuxt).
+
+## Next steps
+
+- [options](/docs/reference/options)
+- [env](/docs/reference/env)
+- [keywords](/docs/reference/keywords)

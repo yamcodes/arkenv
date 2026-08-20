@@ -3,49 +3,48 @@ title: init
 description: Scaffold ArkEnv schemas, layouts, and hosting presets with the CLI.
 ---
 
-`arkenv` on npm is the CLI. It scaffolds schemas and wires framework config. Validation lives in `@arkenv/core` or `@arkenv/standard`.
+`arkenv` on npm is the CLI. It scaffolds schemas and wires framework
+config. Validation lives in `@arkenv/core` or `@arkenv/standard`.
 
-```bash title="Terminal"
-pnpm dlx arkenv@latest init
-pnpm dlx arkenv@latest init my-app --example with-vite-react -H vercel
-pnpm dlx arkenv@latest init --agent --flat
+```package-install
+npx arkenv@latest init
+```
+
+```package-install
+npx arkenv@latest init my-app --example with-vite-react -H vercel
+```
+
+```package-install
+npx arkenv@latest init --agent --flat
 ```
 
 Install locally when you want a project binary:
 
 ```package-install
-pnpm add -D arkenv
+npm i -D arkenv
 ```
 
 ## Usage
 
-```txt
+```txt title="Terminal"
 arkenv init [project-name] [options]
 ```
 
-Omit `project-name` to mutate the current directory. Pass a name to create a new folder (optionally from `--example`).
+Omit `project-name` to mutate the current directory. Pass a name to
+create a new folder (optionally from `--example`).
+
+[Global flags](/docs/reference#global-flags) (`--yes`, `--quiet`,
+`--json`, `--agent`, `--help`) apply here too.
 
 ## Options
 
-### `--yes` / `-y`
-
-Skip interactive prompts. Use this in scripts unless you pass `--agent`.
-
-### `--quiet` / `-q`
-
-Reduce log noise.
-
-### `--json` / `-j`
-
-Emit JSON on stdout.
-
-### `--agent`
-
-Implies `--yes --quiet --json`. Leaves `--force` off unless you pass it.
+These flags are specific to `init`.
 
 ### `--force` / `-f`
 
-Bypass dirty-git and other safety checks.
+Bypass dirty-git and other safety checks, then force scaffolding. The
+CLI refuses a dirty working tree unless you pass this flag. Commit or
+stash first if you don't want to overwrite generated files.
 
 ### `--flat`
 
@@ -53,7 +52,8 @@ Scaffold a single `env.ts`. This is the default layout.
 
 ### `--strict`
 
-Scaffold `env/client.ts`, `env/server.ts`, and `env/internal/shared.ts`.
+Scaffold `env/client.ts`, `env/server.ts`, and
+`env/internal/shared.ts`.
 
 ### `--no-codegen`
 
@@ -61,31 +61,43 @@ Skip Next.js `env.gen.ts` generation and related `withArkEnv` wiring.
 
 ### `--host-preset` / `-H`
 
-Pre-populate provider system variables. Values: `none`, `vercel`, `netlify`, `cloudflare`, `railway`, `render`, `fly`.
+Pre-populate provider system variables. Values: `none`, `vercel`,
+`netlify`, `cloudflare`, `railway`, `render`, `fly`.
 
-See [Hosting presets](/docs/validating-your-environment). To add a preset later, use [`add host`](/docs/reference/add-host).
+See [Hosting presets](/docs/validating-your-environment/hosting-presets).
+To add a preset later, use [`add host`](/docs/reference/add-host).
 
 ### `--example <name>`
 
-Scaffold from a named example when creating a new project. Short `-e` is reserved and rejected.
+Scaffold from a named example when creating a new project. Short `-e` is
+reserved and rejected.
 
-### `--help` / `-h`
+See [Start with an example](/docs/getting-started/examples).
 
-Print help.
+<Callout type="warn">
+  `--simple` is deprecated and no longer supported. The CLI errors if you
+  pass it. Use `--flat` (the default) instead.
+</Callout>
 
 ## Output
 
-Depending on the detected framework and flags:
+Depending on the detected framework and flags, `init` writes:
 
-- Schema file(s): `env.ts` or the strict `env/` tree (often under `src/`)
+- Schema file(s): `env.ts` or the strict `env/` tree (often under
+  `src/`)
 - `.env` / `.env.example` when missing. Init never reads an existing
   `.env`; a missing `.env.example` is filled from detected keys and
   defaults. If `.env` is missing, init may copy `.env.example` into it.
-- Next.js: `withArkEnv` in `next.config.*`, optional `generated/env.gen.ts`
+- Next.js: `withArkEnv` in `next.config.*`, optional
+  `generated/env.gen.ts`
 - Vite / Bun: type augmentation files (`vite-env.d.ts`, `bun-env.d.ts`)
-- Dependency installs for the chosen dialect (`@arkenv/core`, plugins, Zod/Valibot)
+- Dependency installs for the chosen dialect (`@arkenv/core`, plugins,
+  Zod/Valibot)
 
 ## Import the validator from core
+
+The CLI package is not the validation library. Import `arkenv()` from
+`@arkenv/core` (or `@arkenv/standard`).
 
 ```ts
 // Wrong: arkenv is the CLI package
@@ -96,3 +108,9 @@ import arkenv from "@arkenv/core";
 ```
 
 Importing `arkenv` as a library throws and points you at `@arkenv/core`.
+
+## Next steps
+
+- [Add to an existing repository](/docs/getting-started/add-to-existing-repository)
+- [`add host`](/docs/reference/add-host)
+- [options](/docs/reference/options)

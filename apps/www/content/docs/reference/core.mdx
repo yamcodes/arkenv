@@ -3,17 +3,19 @@ title: "@arkenv/core"
 description: ArkType-powered environment validation for TypeScript projects.
 ---
 
-`@arkenv/core` is the primary validation library. It exports `arkenv()` and an ArkType `type()` bound to ArkEnv keywords. No runtime dependencies; ArkType is a required peer.
+`@arkenv/core` is the primary validation library. It exports `arkenv()`
+and an ArkType `type()` bound to ArkEnv keywords. No runtime
+dependencies; ArkType is a required peer.
 
-## Install
+## Installation
 
 ```package-install
-pnpm add @arkenv/core arktype
+npm i @arkenv/core arktype
 ```
 
 Peer dependency: `arktype` (^2.1.22).
 
-## Quick start
+## Usage
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/core";
@@ -26,6 +28,8 @@ export const env = arkenv({
 ```
 
 ## Exports
+
+The package's export surface is `"."` only.
 
 | Export             | Kind                       | Role                                                       |
 | ------------------ | -------------------------- | ---------------------------------------------------------- |
@@ -40,11 +44,10 @@ export const env = arkenv({
 | `SafeArkEnvResult` | type                       | Result shape when `safe: true`                             |
 | `EnvIssue`         | type                       | Structured validation issue                                |
 
-Package export surface: `"."` only.
-
-## Related
+## Next steps
 
 - [options](/docs/reference/options)
 - [keywords](/docs/reference/keywords)
 - [schema](/docs/reference/schema)
-- [`@arkenv/standard`](/docs/reference/standard) for an ArkType-free entry
+- [`@arkenv/standard`](/docs/reference/standard) for an ArkType-free
+  entry

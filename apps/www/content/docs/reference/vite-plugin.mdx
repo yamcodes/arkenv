@@ -3,20 +3,25 @@ title: "@arkenv/vite-plugin"
 description: Vite plugin for build-time validation and client env isolation.
 ---
 
-`@arkenv/vite-plugin` validates environment variables during Vite dev and build. Only public keys (default `VITE_*`) reach the client.
+`@arkenv/vite-plugin` validates environment variables during Vite dev
+and build. Only public keys (default `VITE_*`) reach the client.
 
-## Install
+## Installation
 
 ```package-install
-pnpm add @arkenv/core arktype
-pnpm add -D @arkenv/vite-plugin
+npm i @arkenv/core arktype
+```
+
+```package-install
+npm i -D @arkenv/vite-plugin
 ```
 
 Standard Schema entry: `@arkenv/vite-plugin/standard`.
 
-## Transform mode (canonical)
+## Transform mode
 
-Point the plugin at your `env.ts`. The client graph is rewritten so server secrets never inline:
+Point the plugin at your `env.ts`. The client graph is rewritten so
+server secrets never inline.
 
 ```ts title="./vite.config.ts"
 import { defineConfig } from "vite";
@@ -38,7 +43,7 @@ export const env = arkenv({
 
 ### Transform options
 
-Pass a config object (a schema map belongs in schema/define mode):
+Pass a config object (a schema map belongs in schema/define mode).
 
 | Option                | Default                    | Meaning                                                            |
 | --------------------- | -------------------------- | ------------------------------------------------------------------ |
@@ -47,11 +52,14 @@ Pass a config object (a schema map belongs in schema/define mode):
 | Plus                  | (none)                     | All [`ArkEnvConfig`](/docs/reference/options) fields except `safe` |
 | `logger` / `logLevel` | (none)                     | Logging                                                            |
 
-Empty `arkenv({})` enters **schema/define** mode. Call `arkenv()` with no args, or an options object that includes transform fields, for transform mode.
+Empty `arkenv({})` enters **schema/define** mode. Call `arkenv()` with
+no args, or an options object that includes transform fields, for
+transform mode.
 
 ## Schema / `define` mode
 
-Pass a schema (or compiled `type()`) to validate and inline `import.meta.env`:
+Pass a schema (or compiled `type()`) to validate and inline
+`import.meta.env`.
 
 ```ts title="./vite.config.ts"
 import { defineConfig, loadEnv } from "vite";
@@ -74,13 +82,14 @@ export default defineConfig(({ mode }) => {
 
 ## Types
 
+Import the validated `env` object from your schema module. Treat
+`import.meta.env` as a secondary surface.
+
 ```ts
 import type { ImportMetaEnvAugmented } from "@arkenv/vite-plugin";
 ```
 
-Import the validated `env` object from your schema module. Treat `import.meta.env` as a secondary surface.
-
-## Related
+## Next steps
 
 - [Framework guide](/docs/guides/frameworks/vite)
-- [Reusing schemas](/docs/validating-your-environment)
+- [Reusing schemas](/docs/validating-your-environment/reusing-schemas)
