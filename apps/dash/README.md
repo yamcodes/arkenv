@@ -18,9 +18,11 @@ stays MIT.
 2. From the repo root, run `pnpm dash`.
 
 That builds `@arkenv/core` if needed, then starts the Dashfy server on
-[http://127.0.0.1:5001](http://127.0.0.1:5001) and the Vite client on
-[http://localhost:3001](http://localhost:3001). Open the client URL. The
-client is on **3001** so it does not collide with `pnpm www` on 3000.
+`HOST`:`PORT` from `.env` (defaults to
+[http://127.0.0.1:5001](http://127.0.0.1:5001)) and the Vite client on
+[http://localhost:3001](http://localhost:3001). The Vite `/config` proxy and
+dev `serverUrl` follow those values. Open the client URL. The client is on
+**3001** so it does not collide with `pnpm www` on 3000.
 
 Scripts are named `dash` / `dash:client` / `dash:server` on purpose: they are
 not `dev`, `build`, or `test`, so `pnpm dev` / `pnpm build` / `pnpm typecheck`

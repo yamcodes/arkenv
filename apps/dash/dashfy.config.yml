@@ -1,4 +1,3 @@
-port: 5001
 apis:
   pollInterval: 300000
 dashboards:

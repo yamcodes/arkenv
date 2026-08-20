@@ -1,7 +1,10 @@
+import arkenv from "@arkenv/core";
 import { createGitHubClient } from "@getdashfy/ext-github/client";
 import { createJsonClient } from "@getdashfy/ext-json/client";
 import { Dashfy } from "@getdashfy/server";
-import { env } from "./env";
+import { Env } from "./env";
+
+const env = arkenv(Env);
 
 process.env.HOST = env.HOST;
 process.env.PORT = String(env.PORT);

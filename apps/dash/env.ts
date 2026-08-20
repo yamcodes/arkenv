@@ -1,6 +1,6 @@
-import arkenv from "@arkenv/core";
+import { type } from "@arkenv/core";
 
-export const env = arkenv({
+export const Env = type({
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 	HOST: "string.host = '127.0.0.1'",
 	PORT: "number.port = 5001",
