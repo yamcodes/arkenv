@@ -74,7 +74,7 @@ export function BringYourOwnValidatorView({
 				</div>
 
 				<figure className="home-aurora__validator-frame">
-					<WindowChrome title="env.ts" />
+					<WindowChrome title="./env.ts" />
 					<div
 						role="tabpanel"
 						id={panelId}

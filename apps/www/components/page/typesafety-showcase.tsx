@@ -30,7 +30,7 @@ export function TypeSafetyShowcase() {
 					role="img"
 					aria-label="IDE showing env autocomplete"
 				>
-					<WindowChrome title="app.ts" />
+					<WindowChrome title="./app.ts" />
 					<pre className="home-aurora__ide-body">
 						<code>
 							<span className="home-aurora__tok-kw">import</span>

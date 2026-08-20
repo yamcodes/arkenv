@@ -5,7 +5,11 @@ import {
 	BeforeAfterCompare,
 	BringYourOwnValidator,
 	DotGrid,
+	HeroEnvHoverSlot,
 	HeroFaq,
+	HeroMvpExampleSlot,
+	HeroNameCycle,
+	HeroPlaygroundProvider,
 	InstallPanel,
 	QuickstartButton,
 	SecureBoundary,
@@ -13,60 +17,73 @@ import {
 	StarUsButton,
 	TypeSafetyShowcase,
 	VideoDemo,
+	WorksWith,
 } from "~/components/page";
 import { SiteFooter } from "~/components/site-footer";
 
 export const metadata: Metadata = {
-	title: "ArkEnv",
-	description: "The simple way to validate environment variables.",
+	title: "ArkEnv - TypeScript environment variables",
+	description:
+		"Typesafe environment variables for ArkType, Zod, Valibot, and any Standard Schema.",
 };
 
 export default function HomePage() {
 	return (
 		<div className="home-aurora__shell">
 			<section className="home-aurora__intro" aria-labelledby="home-hero">
-				<div
-					className="home-aurora__badge rise"
-					style={{ animationDelay: "40ms" }}
-				>
-					<AnnouncementBadge href="/docs/validating-your-environment" new>
-						Next.js, Netlify presets
-					</AnnouncementBadge>
-				</div>
-				<h1
-					id="home-hero"
-					className="home-aurora__tagline rise-blur"
-					style={{ animationDelay: "120ms" }}
-				>
-					<span className="home-aurora__lead">The simple way to validate</span>{" "}
-					<span className="home-aurora__digital home-aurora__digital-accent">
-						<span className="home-aurora__digital-word">
-							environment variables
-						</span>
-					</span>
-				</h1>
-				<p
-					className="home-aurora__summary rise-blur"
-					style={{ animationDelay: "240ms" }}
-				>
-					Define your <code>env</code> vars in ArkType, Zod, or any Standard
-					Schema.
-					<br />
-					ArkEnv validates, parses, and keeps them typesafe. Fail fast, ship
-					faster.
-				</p>
-				<div
-					className="home-aurora__install-row rise"
-					style={{ animationDelay: "320ms" }}
-				>
-					<InstallPanel />
-					<StarUsButton />
-					<QuickstartButton />
-				</div>
-				<div className="rise" style={{ animationDelay: "400ms" }}>
-					<SocialProof />
-				</div>
+				<HeroPlaygroundProvider>
+					<div className="home-aurora__hero-copy">
+						<div
+							className="home-aurora__badge rise"
+							style={{ animationDelay: "40ms" }}
+						>
+							<AnnouncementBadge href="/docs/validating-your-environment" new>
+								Next.js, Netlify presets
+							</AnnouncementBadge>
+						</div>
+						<h1 id="home-hero" className="home-aurora__tagline">
+							<span
+								className="home-aurora__lead rise-blur"
+								style={{ animationDelay: "120ms" }}
+							>
+								Typesafe environment variables
+								<span className="home-aurora__lead-with">
+									with <HeroNameCycle />
+								</span>
+							</span>
+						</h1>
+						<p
+							className="home-aurora__summary rise-blur"
+							style={{ animationDelay: "520ms" }}
+						>
+							Write a schema in your existing TypeScript validator. Get a
+							strictly typed <HeroEnvHoverSlot /> object. No boilerplate. Zero
+							runtime dependencies.
+						</p>
+					</div>
+					<div
+						className="home-aurora__hero-example rise"
+						style={{ animationDelay: "280ms" }}
+					>
+						<HeroMvpExampleSlot />
+					</div>
+					<div className="home-aurora__hero-ctas">
+						<div
+							className="home-aurora__install-row rise"
+							style={{ animationDelay: "640ms" }}
+						>
+							<InstallPanel />
+							<StarUsButton />
+							<QuickstartButton />
+						</div>
+						<div className="rise" style={{ animationDelay: "760ms" }}>
+							<SocialProof />
+						</div>
+					</div>
+				</HeroPlaygroundProvider>
 			</section>
+
+			<WorksWith />
 
 			<section
 				id="demo"

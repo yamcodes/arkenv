@@ -1,35 +1,57 @@
+import { SiTypescript } from "@icons-pack/react-simple-icons";
+import type { ReactNode } from "react";
+
+function isTypeScriptTitle(title: string) {
+	return /\.tsx?(?:\s|$)/.test(title) || title.endsWith(".ts");
+}
+
+function fileMark(title: string | undefined, icon: ReactNode | undefined) {
+	if (icon !== undefined) return icon;
+	if (title && isTypeScriptTitle(title)) {
+		return <SiTypescript aria-hidden="true" />;
+	}
+	return null;
+}
+
 /**
- * Shared faux-window traffic lights + optional title or URL address bar.
- * Used by CLI, IDE mock, before/after compare, and playground frame.
+ * Docs-style codeblock header: language icon, filename, optional actions.
  */
 export function WindowChrome({
 	title,
 	url,
+	icon,
 	className,
+	children,
 }: {
 	title?: string;
 	url?: string;
+	icon?: ReactNode;
 	className?: string;
+	children?: ReactNode;
 }) {
+	const caption = title ?? url;
+	const mark = fileMark(title, icon);
+	const tools = children != null;
+
 	return (
 		<div
-			className={["home-aurora__window-chrome", className]
+			className={[
+				"home-aurora__window-chrome",
+				tools ? "home-aurora__window-chrome--tools" : "",
+				className,
+			]
 				.filter(Boolean)
 				.join(" ")}
-			aria-hidden="true"
 		>
-			<span className="home-aurora__window-traffic">
-				<span data-tone="close" />
-				<span data-tone="min" />
-				<span data-tone="max" />
-			</span>
-			{url ? (
-				<div className="home-aurora__window-url-bar">
-					<span className="home-aurora__window-url">{url}</span>
-				</div>
-			) : title ? (
-				<span className="home-aurora__window-title">{title}</span>
+			{mark ? (
+				<span className="home-aurora__window-icon" aria-hidden="true">
+					{mark}
+				</span>
 			) : null}
+			{caption ? (
+				<span className="home-aurora__window-title">{caption}</span>
+			) : null}
+			{children}
 		</div>
 	);
 }

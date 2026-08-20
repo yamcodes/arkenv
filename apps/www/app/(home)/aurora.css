@@ -13,6 +13,8 @@
 .home-aurora
 :is(
 	.home-aurora__summary code,
+	.home-aurora__env-hover .twoslash-popup-code,
+	.home-aurora__env-hover-code .shiki,
 	.home-aurora__faq-panel-inner code,
 	.home-aurora__install-prompt-symbol,
 	.home-aurora__install-code,
@@ -21,9 +23,9 @@
 	.home-aurora__pitch-head code,
 	.home-aurora__compare .shiki,
 	.home-aurora__window-title,
-	.home-aurora__window-url,
 	.home-aurora__ide-body,
 	.home-aurora__ide-menu li,
+	.home-aurora__mvp .twoslash-popup-code,
 	.home-aurora__validator-note code,
 	.home-aurora__secure-chip,
 	.home-aurora__terminal pre,
@@ -151,7 +153,8 @@
 		animation: none;
 	}
 
-	.home-aurora__validator-body {
+	.home-aurora__validator-body,
+	.home-aurora__mvp-body {
 		animation: none;
 	}
 
@@ -160,6 +163,15 @@
 		opacity: 1;
 		transform: none;
 		filter: none;
+	}
+
+	.home-aurora__cycle-viewport,
+	.home-aurora__cycle-item {
+		transition: none;
+	}
+
+	.home-aurora__cycle-item {
+		transform: none;
 	}
 }
 
@@ -195,7 +207,7 @@
 /* Workbench · hanging intro */
 .home-aurora__intro {
 	display: grid;
-	gap: var(--space-md);
+	gap: 0;
 	width: 100%;
 	max-width: 100%;
 	min-width: 0;
@@ -214,10 +226,57 @@
 	}
 }
 
+.home-aurora__hero-copy,
+.home-aurora__hero-example,
+.home-aurora__hero-ctas {
+	min-width: 0;
+	max-width: 100%;
+}
+
+.home-aurora__hero-ctas {
+	display: grid;
+	gap: var(--space-lg);
+	margin-top: var(--space-md);
+}
+
+.home-aurora__hero-example {
+	margin-block: var(--space-md) var(--space-sm);
+}
+
+@media (min-width: 64rem) {
+	.home-aurora__intro {
+		grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.95fr);
+		column-gap: var(--space-xl);
+		align-items: stretch;
+	}
+
+	.home-aurora__hero-copy {
+		grid-column: 1;
+		grid-row: 1;
+	}
+
+	.home-aurora__hero-example {
+		grid-column: 2;
+		grid-row: 1 / span 2;
+		align-self: start;
+		margin-block: 0;
+	}
+
+	.home-aurora__hero-ctas {
+		grid-column: 1;
+		grid-row: 2;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: var(--space-xl);
+		margin-top: 0;
+		min-height: 0;
+	}
+}
+
 .home-aurora__badge {
 	justify-self: start;
-	/* Nudge the heading closer without shrinking later intro gaps */
-	margin-bottom: calc(-1 * var(--space-2xs));
+	margin-bottom: var(--space-sm);
 }
 
 .home-aurora__announce {
@@ -313,61 +372,92 @@
 
 .home-aurora__intro h1,
 .home-aurora__tagline {
-	margin: 0;
+	margin: 0 0 0.85rem;
 	max-width: 100%;
 	min-width: 0;
 	font-family: var(--font-display);
-	/* Mobile / tablet: a touch smaller; desktop keeps the full display size */
-	font-size: clamp(2.15rem, 7.25vw + 0.35rem, 4.75rem);
-	line-height: 1.05;
-	letter-spacing: -0.035em;
+	font-size: clamp(2rem, 4.2vw + 0.85rem, 3.25rem);
+	line-height: 1.08;
+	letter-spacing: -0.06em;
 	color: var(--color-ink);
-	font-weight: 500;
+	font-weight: 450;
+	font-style: normal;
+	font-feature-settings:
+		"calt" 0,
+		"rlig",
+		"ss11";
+	-webkit-font-smoothing: antialiased;
 	overflow-wrap: anywhere;
 }
 
-@media (min-width: 64rem) {
-	.home-aurora__intro h1,
-	.home-aurora__tagline {
-		font-size: clamp(2.5rem, 9.5vw + 0.5rem, 5.85rem);
-	}
+.home-aurora__lead {
+	display: block;
+	font: inherit;
+	letter-spacing: inherit;
 }
 
-/* Keep the Geist lead on one line once the viewport can host it */
-@media (min-width: 75rem) {
-	.home-aurora__lead {
-		white-space: nowrap;
-	}
+.home-aurora__lead-with {
+	display: block;
 }
 
-.home-aurora__digital {
-	font-family: var(--font-geist-pixel-grid), "Geist Pixel Grid", ui-monospace, monospace;
-	font-weight: 500;
-	letter-spacing: -0.06em;
-	color: inherit;
-}
-
-/* Allow wrapping between the two words when the viewport is too narrow for single line */
-.home-aurora__digital-accent {
-	color: var(--color-accent);
+.home-aurora__cycle {
 	display: inline;
-	white-space: normal;
+	position: relative;
+	white-space: nowrap;
+	overflow-wrap: normal;
+	color: var(--color-accent);
 }
 
-@media (min-width: 62rem) {
-	.home-aurora__digital-accent {
-		white-space: nowrap;
-	}
+.home-aurora__cycle-viewport {
+	display: inline-grid;
+	vertical-align: baseline;
+	overflow: hidden;
+	align-items: baseline;
+	justify-items: start;
+	/*
+	 * Overflow hidden clips the vertical slide. Tight tracking (-0.06em)
+	 * plus antialiased glyphs paint past the layout box, so without a
+	 * little end padding the last letter (the “e” in ArkType) gets shaved.
+	 */
+	padding-inline-end: 0.18em;
+}
+
+.home-aurora__cycle-item {
+	grid-area: 1 / 1;
+	white-space: nowrap;
+	line-height: inherit;
+	color: inherit;
+	font: inherit;
+	letter-spacing: inherit;
+	opacity: 0;
+	transform: translateY(0.35em);
+	transition:
+		opacity 400ms var(--ease-out),
+		transform 400ms var(--ease-out);
+}
+
+.home-aurora__cycle-item:not([data-pos="current"]) {
+	user-select: none;
+}
+
+.home-aurora__cycle-item[data-pos="current"] {
+	opacity: 1;
+	transform: none;
+}
+
+.home-aurora__cycle-item[data-pos="prev"] {
+	opacity: 0;
+	transform: translateY(-0.4em);
 }
 
 .home-aurora__summary {
 	margin: 0;
-	max-width: min(54ch, 100%);
+	max-width: min(40rem, 100%);
 	min-width: 0;
 	font-family: var(--font-body);
-	font-size: clamp(1.05rem, 1vw + 0.8rem, 1.25rem);
-	line-height: 1.5;
-	color: oklch(72% 0.02 200);
+	font-size: clamp(1rem, 0.25vw + 0.95rem, 1.125rem);
+	line-height: 1.55;
+	color: var(--color-muted);
 	font-weight: 400;
 	overflow-wrap: anywhere;
 }
@@ -383,6 +473,73 @@
 	border: var(--rule-hair) solid var(--color-rule);
 }
 
+.home-aurora__summary .twoslash {
+	display: inline;
+}
+
+.home-aurora__summary .twoslash-hover {
+	cursor: help;
+}
+
+.home-aurora__summary .twoslash-hover:focus-visible {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 2px;
+}
+
+.home-aurora__env-hover {
+	--color-fd-popover: var(--color-paper-2);
+	--color-fd-popover-foreground: var(--color-ink);
+	--color-fd-border: var(--color-rule);
+}
+
+.fd-twoslash-popover .twoslash-popup-code,
+.fd-twoslash-popover .shiki,
+.fd-twoslash-popover .shiki code {
+	margin: 0;
+	padding: 0;
+	background: transparent !important;
+}
+
+.fd-twoslash-popover .twoslash-popup-code {
+	display: block;
+	line-height: 1.5;
+	overflow-wrap: break-word;
+}
+
+/* Grid is only safe on classic `.line` rows — inline token spans stack if gridded. */
+.fd-twoslash-popover .shiki code {
+	display: grid;
+	line-height: 1.5;
+}
+
+.fd-twoslash-popover .twoslash-popup-code .line,
+.fd-twoslash-popover .shiki .line {
+	display: block;
+	white-space: pre;
+	padding: 0;
+}
+
+.fd-twoslash-popover .shiki .line:empty,
+.fd-twoslash-popover .twoslash-popup-code .line:empty {
+	height: 0;
+}
+
+.home-aurora__env-hover-code .shiki,
+.home-aurora__env-hover-code .twoslash-popup-code {
+	margin: 0;
+	padding: 0;
+	background: transparent !important;
+	font-family: var(--font-mono);
+	font-size: 13px;
+	line-height: 1.5;
+	font-feature-settings: var(--font-feature-mono);
+}
+
+.home-aurora__env-hover .twoslash-popup-code .line {
+	display: block;
+	white-space: pre;
+}
+
 .home-aurora__install-row {
 	display: grid;
 	gap: var(--space-sm);
@@ -391,10 +548,10 @@
 	max-width: 100%;
 }
 
-/* Hero: a touch more than title↔subtitle above; slightly tighter below */
+/* Hero: title → subcopy is tight; command pill sits further down, like Turbo */
 .home-aurora__intro .home-aurora__install-row {
-	margin-top: var(--space-xs);
-	margin-bottom: calc(-1 * var(--space-xs));
+	margin-top: var(--space-lg);
+	margin-bottom: 0;
 }
 
 @media (min-width: 40rem) {
@@ -404,15 +561,15 @@
 }
 
 /*
- * Outro: tabs on their own row; command pill + “Read the docs” share the
- * next row so the link centers on the pill (not the whole InstallPanel).
+ * Outro: command pill + “Read the docs” on one row; copy-prompt sits
+ * under the pill.
  */
 .home-aurora__install-row--outro {
 	display: grid;
 	grid-template-columns: max-content auto;
 	align-items: center;
 	column-gap: var(--space-md);
-	row-gap: var(--space-md);
+	row-gap: var(--space-2xs);
 	width: fit-content;
 	max-width: 100%;
 }
@@ -422,45 +579,27 @@
 		display: contents;
 	}
 
-	.home-aurora__install-row--outro .home-aurora__install-tabs {
-		grid-column: 1 / -1;
+	.home-aurora__install-row--outro .home-aurora__install-copy {
+		grid-column: 1;
+		grid-row: 1;
+	}
+
+	.home-aurora__install-row--outro .home-aurora__install-links {
+		grid-column: 1;
+		grid-row: 2;
 	}
 
 	.home-aurora__install-row--outro .home-aurora__outro-docs {
 		grid-column: 2;
-		grid-row: 2;
+		grid-row: 1;
 		align-self: center;
 	}
 }
 
 /* Hallmark · component: social-proof · genre: atmospheric · theme: Aurora
- * archetype: quote + Works with logos (static 6×3 or two-row marquee)
+ * archetype: quote (hero) + Works with ticker (below the hero)
  * states: default · reduced-motion(pause marquee via globals)
- * layout: stacked by default; side-by-side when logos fit beside the quote
  */
-.home-aurora__proof {
-	display: grid;
-	gap: var(--space-md);
-	width: 100%;
-	max-width: 100%;
-	min-width: 0;
-	margin: var(--space-md) 0 0;
-	padding: 0;
-	border: 0;
-	background: transparent;
-	overflow: hidden;
-}
-
-/* Side-by-side only when logos track can hold ~6×10rem tiles beside the quote. */
-@media (min-width: 80rem) {
-	.home-aurora__proof {
-		grid-template-columns: max-content minmax(0, 1fr);
-		align-items: center;
-		gap: var(--space-xl);
-		overflow: visible;
-	}
-}
-
 .home-aurora__proof-quote {
 	display: flex;
 	align-items: center;
@@ -527,99 +666,95 @@
 	color: var(--color-muted);
 }
 
-.home-aurora__proof-logos {
+.home-aurora__works {
 	display: grid;
-	gap: var(--space-xs);
+	gap: var(--space-sm);
+	width: 100%;
 	min-width: 0;
 	max-width: 100%;
+	margin: var(--space-md) 0 0;
+	padding-block: var(--space-lg) var(--space-xl);
+	border-top: var(--rule-hair) solid var(--color-rule);
 }
 
-.home-aurora__proof-logos-label {
+.home-aurora__works-label {
 	font-family: var(--font-display);
 	font-size: var(--text-sm);
 	font-weight: 500;
 	letter-spacing: -0.01em;
-	color: oklch(72% 0.02 200);
+	color: var(--color-muted);
 }
 
-/* Max-3-rows rule: static 6×3 only when 6 columns fit; otherwise marquee. */
-.home-aurora__proof-logos-list {
-	display: none;
-	margin: 0;
-	padding: 0;
-	list-style: none;
-	min-width: 0;
-	gap: 0.5rem;
-}
-
-.home-aurora__proof-marquee {
-	display: grid;
-	gap: 0.5rem;
+.home-aurora__works-marquee {
 	min-width: 0;
 	overflow: hidden;
 	mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
 	-webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
 }
 
-@media (min-width: 64rem) {
-	.home-aurora__proof-logos-list {
-		display: grid;
-		grid-template-columns: repeat(6, minmax(0, 1fr));
-	}
-
-	.home-aurora__proof-marquee {
-		display: none;
-	}
-}
-
-.home-aurora__proof-marquee-row {
-	overflow: hidden;
-}
-
-.home-aurora__proof-marquee-track {
+.home-aurora__works-track {
 	display: flex;
 	align-items: center;
 	width: max-content;
 }
 
-.home-aurora__proof-marquee-set {
+.home-aurora__works-set {
 	display: flex;
 	align-items: center;
-	gap: 0.5rem;
+	gap: var(--space-lg);
 	flex-shrink: 0;
-	padding-inline-end: 0.5rem;
+	padding-inline-end: var(--space-lg);
 }
 
-.home-aurora__proof-marquee .home-aurora__proof-logo {
-	flex-shrink: 0;
-}
-
-.home-aurora__proof-logo {
-	display: flex;
+.home-aurora__works-logo {
+	display: inline-flex;
 	align-items: center;
-	gap: 0.45rem;
-	min-width: 0;
-	padding: 0.6rem 0.65rem;
-	border: var(--rule-hair) solid var(--color-rule);
-	border-radius: 0.55rem;
-	background: var(--color-paper-2);
-	color: var(--color-ink);
-}
-
-.home-aurora__proof-logo-icon {
+	gap: 0.4rem;
 	flex-shrink: 0;
-	width: 1.25rem;
-	height: 1.25rem;
 	color: var(--color-ink-2);
 }
 
-.home-aurora__proof-logo-name {
+.home-aurora__works-logo-mark {
+	display: inline-flex;
+	flex: none;
+	line-height: 0;
+}
+
+.home-aurora__works-logo-icon {
+	width: 1.1rem;
+	height: 1.1rem;
+}
+
+.home-aurora__works-logo-name {
 	font-family: var(--font-display);
-	font-size: clamp(0.75rem, 0.15vw + 0.7rem, var(--text-sm));
+	font-size: var(--text-sm);
 	font-weight: 500;
 	letter-spacing: -0.015em;
 	line-height: 1.2;
 	white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.home-aurora__works-marquee {
+		mask-image: none;
+		-webkit-mask-image: none;
+		overflow: visible;
+	}
+
+	.home-aurora__works-track {
+		width: 100%;
+	}
+
+	.home-aurora__works-set {
+		flex-wrap: wrap;
+		justify-content: flex-start;
+		gap: var(--space-sm) var(--space-md);
+		padding-inline-end: 0;
+	}
+
+	.home-aurora__works-set[aria-hidden="true"] {
+		display: none;
+	}
 }
 
 /* FAQ - end-of-page accordion: +/− spin · panel expand · docs SoT */
@@ -930,10 +1065,10 @@
 	opacity: 0.9;
 }
 
-/* Install · Command / Prompt tabs - desktop/tablet only */
+/* Install · command pill + copy-prompt — desktop/tablet only */
 .home-aurora__install {
 	display: none;
-	gap: var(--space-md);
+	gap: var(--space-2xs);
 	width: fit-content;
 	max-width: 100%;
 }
@@ -941,6 +1076,7 @@
 @media (min-width: 40rem) {
 	.home-aurora__install {
 		display: grid;
+		justify-items: start;
 	}
 }
 
@@ -948,7 +1084,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	gap: var(--space-xs);
+	gap: 0.75rem;
 	width: 100%;
 	padding: 0;
 	border: 0;
@@ -959,33 +1095,37 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 0.25rem;
-	padding: 0.25rem 0.4rem;
+	padding: 0.15rem 0;
 	border: 0;
 	border-radius: 0;
 	background: transparent;
-	color: var(--color-ink-2);
-	font-family: var(--font-display);
+	color: var(--color-muted);
+	font-family: var(--font-body);
 	font-size: var(--text-sm);
-	font-weight: 600;
-	letter-spacing: 0.01em;
+	font-weight: 500;
+	letter-spacing: -0.01em;
 	cursor: pointer;
 	white-space: nowrap;
-	opacity: 0.7;
-	transition:
-		color var(--dur-micro) var(--ease-out),
-		opacity var(--dur-micro) var(--ease-out);
+	opacity: 1;
+	transition: color var(--dur-micro) var(--ease-out);
 }
 
-.home-aurora__install-tab:hover {
-	color: var(--color-ink);
-	opacity: 1;
+.home-aurora__install-tab + .home-aurora__install-tab {
+	padding-inline-start: 0.75rem;
+	border-inline-start: var(--rule-hair) solid var(--color-rule);
+}
+
+@media (hover: hover) {
+	.home-aurora__install-tab:hover {
+		color: var(--color-ink);
+	}
 }
 
 .home-aurora__install-tab[data-active="true"] {
 	background: transparent;
-	color: var(--color-accent);
+	color: var(--color-ink);
 	opacity: 1;
-	box-shadow: inset 0 -2px 0 var(--color-accent);
+	box-shadow: none;
 }
 
 .home-aurora__install-tab:focus-visible {
@@ -1014,9 +1154,15 @@
 		transform var(--dur-micro) var(--ease-out);
 }
 
-.home-aurora__install-copy:hover {
-	border-color: color-mix(in oklch, var(--color-accent) 45%, var(--color-rule));
-	background: var(--color-paper-3);
+@media (hover: hover) {
+	.home-aurora__install-copy:hover {
+		border-color: color-mix(in oklch, var(--color-accent) 45%, var(--color-rule));
+		background: var(--color-paper-3);
+	}
+
+	.home-aurora__install-copy:hover .home-aurora__install-copy-affordance {
+		color: var(--color-ink);
+	}
 }
 
 .home-aurora__install-copy:focus-visible {
@@ -1032,37 +1178,54 @@
 	border-color: var(--color-success);
 }
 
-/* Command ↔ Prompt: box stays put; only label/icon crossfade */
-.home-aurora__install-swap {
-	position: relative;
-	display: grid;
-	grid-template-areas: "swap";
-	flex: 0 1 auto;
-	min-width: 0;
-	align-items: center;
-}
-
-.home-aurora__install-swap-item {
-	grid-area: swap;
+.home-aurora__install-links {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
-	gap: var(--space-sm);
-	min-width: 0;
-	opacity: 0;
-	transform: translateY(0.25rem);
-	visibility: hidden;
-	pointer-events: none;
-	transition:
-		opacity var(--dur-short) var(--ease-out),
-		transform var(--dur-short) var(--ease-out),
-		visibility var(--dur-short) var(--ease-out);
+	gap: 0.15rem 1rem;
 }
 
-.home-aurora__install-swap-item[data-active="true"] {
-	opacity: 1;
-	transform: none;
-	visibility: visible;
-	pointer-events: auto;
+.home-aurora__install-prompt {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	margin: 0;
+	padding: 0.15rem 0;
+	border: 0;
+	background: transparent;
+	color: var(--color-muted);
+	font-family: var(--font-body);
+	font-size: var(--text-sm);
+	font-weight: 500;
+	letter-spacing: -0.01em;
+	line-height: 1.3;
+	text-decoration: none;
+	cursor: pointer;
+	white-space: nowrap;
+	transition: color var(--dur-micro) var(--ease-out);
+}
+
+.home-aurora__install-prompt:visited {
+	color: var(--color-muted);
+}
+
+@media (hover: hover) {
+	.home-aurora__install-prompt:hover {
+		color: var(--color-ink);
+	}
+}
+
+.home-aurora__install-prompt:focus-visible {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 2px;
+}
+
+.home-aurora__install-prompt:active {
+	opacity: 0.85;
+}
+
+.home-aurora__install-prompt[data-state="success"] {
+	color: var(--color-success);
 }
 
 .home-aurora__install-icon {
@@ -1096,16 +1259,6 @@
 	text-overflow: ellipsis;
 }
 
-.home-aurora__install-label {
-	flex: 1;
-	min-width: 0;
-	font-family: var(--font-display);
-	font-size: clamp(0.8125rem, 0.25vw + 0.8rem, 0.9375rem);
-	font-weight: 400;
-	line-height: 1.4;
-	white-space: nowrap;
-}
-
 .home-aurora__install-prompt-token {
 	color: var(--color-accent);
 }
@@ -1121,6 +1274,7 @@
 	border-left: var(--rule-hair) solid var(--color-rule);
 	color: var(--color-muted);
 	align-self: stretch;
+	transition: color var(--dur-micro) var(--ease-out);
 }
 
 /* C3 · Typographic primary CTA (nav / legacy) */
@@ -1611,80 +1765,39 @@
 	overflow: hidden;
 }
 
-/* Shared window chrome - CLI, IDE, playground */
+/* Shared codeblock chrome — filename bar like docs, no traffic lights */
 .home-aurora__window-chrome {
 	position: relative;
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
-	padding: 0.55rem 0.85rem;
+	height: 2.375rem;
+	padding: 0 1rem;
 	border-bottom: var(--rule-hair) solid var(--color-rule);
 	background: color-mix(in oklch, var(--color-paper-2) 78%, transparent);
+	color: var(--color-muted);
 	min-width: 0;
 }
 
-.home-aurora__window-traffic {
+.home-aurora__window-icon {
 	display: inline-flex;
-	align-items: center;
-	gap: 0.35rem;
-	flex-shrink: 0;
-	z-index: 1;
+	flex: none;
+	line-height: 0;
 }
 
-.home-aurora__window-traffic span {
-	width: 0.7rem;
-	height: 0.7rem;
-	border-radius: 999px;
-}
-
-.home-aurora__window-traffic [data-tone="close"] {
-	background: var(--color-traffic-close);
-}
-
-.home-aurora__window-traffic [data-tone="min"] {
-	background: var(--color-traffic-min);
-}
-
-.home-aurora__window-traffic [data-tone="max"] {
-	background: var(--color-traffic-max);
+.home-aurora__window-icon svg {
+	width: 0.875rem;
+	height: 0.875rem;
 }
 
 .home-aurora__window-title {
-	position: absolute;
-	inset: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding-inline: 0.85rem;
-	min-width: 0;
-	text-align: center;
-	font-family: var(--font-outlier);
-	font-size: var(--text-xs);
-	color: var(--color-muted);
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	user-select: none;
-	pointer-events: none;
-}
-
-.home-aurora__window-url-bar {
 	flex: 1;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	margin-left: 0.5rem;
-	padding: 0.2rem 0.75rem;
-	border-radius: var(--radius-pill);
-	background: color-mix(in oklch, var(--color-paper-3) 80%, transparent);
-	border: var(--rule-hair) solid var(--color-rule);
 	min-width: 0;
-}
-
-.home-aurora__window-url {
-	font-family: var(--font-mono);
-	font-size: 0.75rem;
-	color: var(--color-ink-2);
+	font-family: var(--font-body);
+	font-size: var(--text-sm);
+	font-weight: 400;
+	line-height: 1;
+	color: var(--color-muted);
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -1918,6 +2031,150 @@
 .home-aurora__validator-note a:focus-visible {
 	outline: 2px solid var(--color-focus);
 	outline-offset: 2px;
+}
+
+/* Hero MVP — validator tabs above the window */
+.home-aurora__mvp {
+	--color-fd-popover: var(--color-paper-2);
+	--color-fd-popover-foreground: var(--color-ink);
+	--color-fd-border: var(--color-rule);
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: var(--space-xs);
+	width: 100%;
+	min-width: 0;
+}
+
+.home-aurora__mvp-validators {
+	position: relative;
+	min-width: 0;
+}
+
+.home-aurora__mvp-validators-list {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.15rem var(--space-xs);
+	min-width: 0;
+}
+
+.home-aurora__mvp-tab {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	padding: 0.25rem 0.4rem;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	color: var(--color-ink-2);
+	font-family: var(--font-display);
+	font-size: var(--text-sm);
+	font-weight: 600;
+	letter-spacing: 0.01em;
+	cursor: pointer;
+	white-space: nowrap;
+	opacity: 0.7;
+	transition:
+		color 400ms var(--ease-out),
+		opacity 400ms var(--ease-out);
+}
+
+.home-aurora__mvp-tab:hover {
+	color: var(--color-ink);
+	opacity: 1;
+}
+
+.home-aurora__mvp-tab[data-active="true"] {
+	color: var(--color-accent);
+	opacity: 1;
+}
+
+.home-aurora__mvp[aria-hidden="true"] .home-aurora__mvp-tab[data-active="true"] {
+	box-shadow: inset 0 -2px 0 var(--color-accent);
+}
+
+.home-aurora__mvp-tab:focus-visible {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 2px;
+}
+
+.home-aurora__mvp-tab-ink {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 2px;
+	border-radius: 1px;
+	background: var(--color-accent);
+	pointer-events: none;
+	opacity: 0;
+}
+
+.home-aurora__mvp-tab-ink[data-ready="true"] {
+	opacity: 1;
+	transition:
+		transform 400ms var(--ease-out),
+		width 400ms var(--ease-out);
+}
+
+.home-aurora__mvp-tab-mark {
+	display: inline-flex;
+	flex: none;
+	line-height: 0;
+}
+
+.home-aurora__mvp-tab-icon {
+	width: 0.875rem;
+	height: 0.875rem;
+}
+
+.home-aurora__mvp-frame {
+	margin: 0;
+	padding: 0;
+	border: var(--rule-hair) solid var(--color-rule);
+	border-radius: var(--radius-sm, 0.125rem);
+	background: var(--color-paper-2);
+	display: grid;
+	grid-template-rows: auto auto;
+	overflow: visible;
+	min-width: 0;
+}
+
+.home-aurora__mvp-body {
+	display: grid;
+	position: relative;
+	min-width: 0;
+}
+
+.home-aurora__mvp-pane {
+	grid-area: 1 / 1;
+	min-width: 0;
+}
+
+.home-aurora__mvp-pane:not([data-active="true"]) {
+	visibility: hidden;
+	pointer-events: none;
+	position: absolute;
+	inset: 0;
+	height: fit-content;
+}
+
+.home-aurora__mvp-body--pending {
+	min-height: 9.25rem;
+}
+
+.home-aurora__mvp-shiki,
+.home-aurora__mvp-shiki .shiki {
+	overflow: visible;
+}
+
+.home-aurora__mvp-shiki .shiki {
+	padding: var(--space-sm) var(--space-md);
+	font-size: clamp(0.72rem, 0.15vw + 0.68rem, 0.84rem);
+}
+
+/* Inactive stacked panes keep CSS hover nodes for height; never show them. */
+.home-aurora__mvp .twoslash-popup-container {
+	display: none;
 }
 
 /* 05 · Secure — client / server schema boundary */
@@ -2230,7 +2487,7 @@
 	overflow-wrap: normal;
 }
 
-/* Quiet text link — same fill as inactive install tabs (“For your agent”) */
+/* Quiet text link — same mute as inactive install tabs */
 .home-aurora__outro-docs {
 	display: inline-flex;
 	align-items: center;
@@ -2282,15 +2539,20 @@
 	.site-nav__link,
 	.home-aurora__install-tab,
 	.home-aurora__install-copy,
+	.home-aurora__install-prompt,
 	.home-aurora__validator-tab,
+	.home-aurora__mvp-tab,
 	.home-aurora__ide-menu,
 	.home-aurora__faq-icon,
 	.home-aurora__faq-icon-h,
 	.home-aurora__faq-icon-v,
 	.home-aurora__faq-panel,
-	.home-aurora__faq-panel-inner p,
-	.home-aurora__install-swap-item {
+	.home-aurora__faq-panel-inner p {
 		transition: opacity 120ms linear;
+	}
+
+	.home-aurora__mvp-tab-ink {
+		transition: none;
 	}
 
 	.home-aurora__ide-menu {
@@ -2325,9 +2587,7 @@
 	}
 
 	.home-aurora__faq-panel-inner p,
-	.home-aurora__faq-item[data-open="true"] .home-aurora__faq-panel-inner p,
-	.home-aurora__install-swap-item,
-	.home-aurora__install-swap-item[data-active="true"] {
+	.home-aurora__faq-item[data-open="true"] .home-aurora__faq-panel-inner p {
 		transform: none;
 	}
 }

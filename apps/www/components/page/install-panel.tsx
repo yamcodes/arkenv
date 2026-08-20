@@ -1,23 +1,16 @@
 "use client";
 
-import { Check, Copy, Sparkles } from "lucide-react";
-import { useId, useState } from "react";
+import { SiGithub } from "@icons-pack/react-simple-icons";
+import { Check, Copy } from "lucide-react";
 import { useCopyCommand } from "~/hooks/use-copy-command";
+import { getGithubRepoUrl } from "~/lib/github-links";
 
 const INSTALL_COMMAND = "npx arkenv@latest init";
 
 const INSTALL_PROMPT =
 	"Set up ArkEnv with `npx arkenv@latest init --agent`. Install any missing dependencies, wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.";
 
-type Tab = "command" | "prompt";
-
 export function InstallPanel() {
-	const [tab, setTab] = useState<Tab>("command");
-	const baseId = useId();
-	const panelId = `${baseId}-panel`;
-	const commandTabId = `${baseId}-tab-command`;
-	const promptTabId = `${baseId}-tab-prompt`;
-
 	const commandCopy = useCopyCommand(INSTALL_COMMAND, {
 		successDescription: "Command copied to clipboard!",
 	});
@@ -25,104 +18,56 @@ export function InstallPanel() {
 		successDescription: "Prompt copied to clipboard!",
 	});
 
-	const active = tab === "command" ? commandCopy : promptCopy;
-	const ariaLabel =
-		tab === "command"
-			? active.copied
-				? "Copied"
-				: "Copy install command"
-			: active.copied
-				? "Copied"
-				: "Copy prompt";
-
 	return (
 		<div className="home-aurora__install">
-			<div
-				className="home-aurora__install-tabs"
-				role="tablist"
-				aria-label="Install method"
+			<button
+				type="button"
+				aria-label={commandCopy.copied ? "Copied" : "Copy install command"}
+				onClick={commandCopy.copy}
+				className="home-aurora__install-copy"
+				data-state={commandCopy.copied ? "success" : undefined}
 			>
+				<span className="home-aurora__install-prompt-symbol" aria-hidden="true">
+					$
+				</span>
+				<code className="home-aurora__install-code">
+					<span className="home-aurora__install-prompt-token">npx </span>
+					<span>arkenv@latest init</span>
+				</code>
+				<span
+					className="home-aurora__install-copy-affordance"
+					aria-hidden="true"
+				>
+					{commandCopy.copied ? (
+						<Check className="size-4 text-[var(--color-success)]" />
+					) : (
+						<Copy className="size-4" />
+					)}
+				</span>
+			</button>
+			<div className="home-aurora__install-links">
 				<button
 					type="button"
-					role="tab"
-					id={commandTabId}
-					aria-selected={tab === "command"}
-					aria-controls={panelId}
-					tabIndex={tab === "command" ? 0 : -1}
-					className="home-aurora__install-tab"
-					data-active={tab === "command" ? "true" : undefined}
-					onClick={() => setTab("command")}
+					className="home-aurora__install-prompt"
+					data-state={promptCopy.copied ? "success" : undefined}
+					onClick={promptCopy.copy}
 				>
-					For you
+					{promptCopy.copied ? (
+						<Check className="home-aurora__install-icon" aria-hidden="true" />
+					) : (
+						<Copy className="home-aurora__install-icon" aria-hidden="true" />
+					)}
+					{promptCopy.copied ? "Copied" : "Copy agent prompt"}
 				</button>
-				<button
-					type="button"
-					role="tab"
-					id={promptTabId}
-					aria-selected={tab === "prompt"}
-					aria-controls={panelId}
-					tabIndex={tab === "prompt" ? 0 : -1}
-					className="home-aurora__install-tab"
-					data-active={tab === "prompt" ? "true" : undefined}
-					onClick={() => setTab("prompt")}
+				<a
+					className="home-aurora__install-prompt"
+					href={getGithubRepoUrl()}
+					target="_blank"
+					rel="noopener noreferrer"
 				>
-					For your agent
-				</button>
-			</div>
-
-			<div
-				role="tabpanel"
-				id={panelId}
-				aria-labelledby={tab === "command" ? commandTabId : promptTabId}
-			>
-				<button
-					type="button"
-					aria-label={ariaLabel}
-					onClick={active.copy}
-					className="home-aurora__install-copy"
-					data-state={active.copied ? "success" : undefined}
-					data-tab={tab}
-				>
-					<span className="home-aurora__install-swap">
-						<span
-							className="home-aurora__install-swap-item"
-							data-active={tab === "command" ? "true" : undefined}
-							aria-hidden={tab !== "command"}
-						>
-							<span
-								className="home-aurora__install-prompt-symbol"
-								aria-hidden="true"
-							>
-								$
-							</span>
-							<code className="home-aurora__install-code">
-								<span className="home-aurora__install-prompt-token">npx </span>
-								<span>arkenv@latest init</span>
-							</code>
-						</span>
-						<span
-							className="home-aurora__install-swap-item"
-							data-active={tab === "prompt" ? "true" : undefined}
-							aria-hidden={tab !== "prompt"}
-						>
-							<Sparkles
-								className="home-aurora__install-icon"
-								aria-hidden="true"
-							/>
-							<span className="home-aurora__install-label">Copy prompt</span>
-						</span>
-					</span>
-					<span
-						className="home-aurora__install-copy-affordance"
-						aria-hidden="true"
-					>
-						{active.copied ? (
-							<Check className="size-5 text-[var(--color-success)]" />
-						) : (
-							<Copy className="size-5" />
-						)}
-					</span>
-				</button>
+					<SiGithub className="home-aurora__install-icon" aria-hidden="true" />
+					View repo
+				</a>
 			</div>
 		</div>
 	);

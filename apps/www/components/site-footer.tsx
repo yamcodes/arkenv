@@ -4,7 +4,7 @@ import { getGithubRepoUrl } from "~/lib/github-links";
 
 /**
  * Shared site footer used on the home page and docs.
- * Structure matches the home aurora footer (Ft5).
+ * Brand blurb + Resources, Validators, Frameworks, Elsewhere.
  */
 export function SiteFooter({
 	className,
@@ -32,7 +32,10 @@ export function SiteFooter({
 					>
 						<Logo />
 					</a>
-					<p>The simple way to validate environment variables.</p>
+					<p>
+						Typesafe environment variables for ArkType, Zod, Valibot, and any
+						Standard Schema.
+					</p>
 				</div>
 
 				<nav aria-labelledby="footer-resources">
@@ -48,6 +51,9 @@ export function SiteFooter({
 							</a>
 						</li>
 						<li>
+							<a href="/docs">Docs</a>
+						</li>
+						<li>
 							<a
 								href={`${githubRepoUrl}/releases`}
 								target="_blank"
@@ -57,34 +63,43 @@ export function SiteFooter({
 							</a>
 						</li>
 						<li>
-							<a href="/docs">Docs</a>
-						</li>
-						<li>
 							<a href="/#faq">FAQ</a>
 						</li>
 					</ul>
 				</nav>
 
-				<nav aria-labelledby="footer-integrations">
-					<h3 id="footer-integrations">Integrations</h3>
+				<nav aria-labelledby="footer-validators">
+					<h3 id="footer-validators">Validators</h3>
 					<ul>
 						<li>
-							<a href="/docs/getting-started/editor-integration">IDE</a>
+							<a href="/docs/guides/validators/arktype">ArkType</a>
 						</li>
 						<li>
-							<a href="/docs/reference/init">Terminal</a>
+							<a href="/docs/guides/validators/zod">Zod</a>
 						</li>
 						<li>
-							<a
-								href="https://arktype.io/docs/ecosystem#arkenv"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								ArkType
-							</a>
+							<a href="/docs/guides/validators/valibot">Valibot</a>
 						</li>
 						<li>
 							<a href="/docs/core-concepts/standard-schema">Standard Schema</a>
+						</li>
+					</ul>
+				</nav>
+
+				<nav aria-labelledby="footer-frameworks">
+					<h3 id="footer-frameworks">Frameworks</h3>
+					<ul>
+						<li>
+							<a href="/docs/guides/frameworks/nextjs">Next.js</a>
+						</li>
+						<li>
+							<a href="/docs/guides/frameworks/vite">Vite</a>
+						</li>
+						<li>
+							<a href="/docs/guides/frameworks/nuxt">Nuxt</a>
+						</li>
+						<li>
+							<a href="/docs/getting-started">Vanilla TS</a>
 						</li>
 					</ul>
 				</nav>

@@ -29,3 +29,21 @@ ArkEnv is a pnpm + Turborepo monorepo for a TypeScript env-var validation librar
 - E2E must be run the CI way (against a production server), not against `pnpm www`. The Playwright config uses `next start` when `CI` is set and `next dev` otherwise; the dev server emits console errors that the smoke test forbids and can be overwhelmed by parallel workers (`ERR_CONNECTION_REFUSED`). Build `www` first (`pnpm build --filter=www...`), then run e.g. `CI=1 pnpm exec playwright test --project=chromium` from `apps/playwright-www`. Playwright browsers must be installed once per VM: `pnpm exec playwright install --with-deps chromium firefox` (webkit is macOS-only).
 - The CLI tests print `fatal: not a git repository` / `Using 'master' as the name...` git hints while running — this is expected (they scaffold temp git repos) and does not indicate failure.
 - To run a package that consumes the local (workspace) build, use a workspace playground (e.g. `apps/playgrounds/node`, which depends on `@arkenv/core: workspace:*`). Copy `.env.example` to `.env` first, then `pnpm start`. The `examples/*` projects are standalone npm projects that resolve the published packages (e.g. `@arkenv/core`) from npm, not the local build.
+
+## Learned User Preferences
+
+- Spell public copy as "Typesafe" (one word), not "Type-safe".
+- Use the full phrase "environment variables" in headings and SEO-facing copy; "env vars" is fine in subheads and body.
+- Match docs voice to turborepo.dev plus the existing getting-started and root docs (index, support policy, community).
+- Match homepage hero typography to turborepo.dev (heading size, weight, and text style).
+- Nub (https://nubjs.com/) is a real Node runner the user likes; never treat "Nub" as a typo for Bun.
+- Do not claim "zero dependencies" without "runtime" unless talking only about core/standard.
+
+## Learned Workspace Facts
+
+- Homepage hero H1 is two lines: "Typesafe environment variables" / "with [cycling name]" (ArkType, then Zod, Valibot — the same three as the example tabs; not Standard Schema). H1 and example tabs share one validator; auto-rotation pauses permanently when the pointer or focus enters the example. The example window is vanilla `./env.ts` only — no Vanilla/Vite/Next.js switcher; the “Works with your stack” marquee answers frameworks.
+- Homepage hero subhead: "Write a schema in your existing TypeScript validator. Get a strictly typed `env` object. No boilerplate. Zero runtime dependencies."
+- Site tagline (footer and similar surfaces): "Typesafe environment variables for ArkType, Zod, Valibot, and any Standard Schema."
+- "Zero runtime dependencies" is true of `@arkenv/core` (peer arktype only) and `@arkenv/standard` (none). It is not true of the CLI or framework plugins (they depend on `@arkenv/build`, `jiti`, `chokidar`, etc.).
+- Docs treat Nub as a first-class way to populate env before `arkenv()`; it is the recommended runner for plain Node.
+- turborepo.dev is the visual and docs-voice reference; clone its docs into a gitignored folder when needed.

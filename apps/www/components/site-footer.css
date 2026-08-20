@@ -61,7 +61,7 @@
 
 @media (min-width: 64rem) {
 	.home-aurora__footer-grid {
-		grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
+		grid-template-columns: 1.4fr repeat(4, minmax(0, 1fr));
 		gap: var(--sf-space-xl);
 	}
 
@@ -70,7 +70,7 @@
 	}
 
 	.home-aurora__footer-brand p {
-		max-width: 28ch;
+		max-width: 42ch;
 	}
 }
 

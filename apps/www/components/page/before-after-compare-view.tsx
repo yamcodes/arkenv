@@ -134,7 +134,7 @@ export function BeforeAfterCompareView({
 				style={{ ["--reveal-delay" as string]: "180ms" }}
 			>
 				<WindowChrome
-					title={mobileView === "old" ? "env.ts · old" : "env.ts"}
+					title={mobileView === "old" ? "./env.ts · old" : "./env.ts"}
 				/>
 				<div
 					ref={compareRef}

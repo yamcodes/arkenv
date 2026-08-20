@@ -55,13 +55,8 @@ export function SecureBoundaryView({
 						data-side={activeTab}
 					>
 						<div className="home-aurora__window-chrome">
-							<span className="home-aurora__window-traffic" aria-hidden="true">
-								<span data-tone="close" />
-								<span data-tone="min" />
-								<span data-tone="max" />
-							</span>
 							<div
-								className="home-aurora__install-tabs ml-2"
+								className="home-aurora__install-tabs"
 								role="tablist"
 								aria-label="Schema and bundle view"
 							>
