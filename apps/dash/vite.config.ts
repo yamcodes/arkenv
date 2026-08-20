@@ -16,9 +16,6 @@ export default defineConfig(({ mode }) => {
 
 	return {
 		plugins: [react()],
-		define: {
-			"import.meta.env.VITE_DASHFY_SERVER": JSON.stringify(dashfyServer),
-		},
 		build: {
 			outDir: "build",
 			emptyOutDir: true,

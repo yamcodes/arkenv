@@ -34,10 +34,4 @@ WidgetRegistry.addExtension("json", {
 	JsonStatus,
 });
 
-export const App = () => {
-	const serverUrl = import.meta.env.PROD
-		? window.location.origin
-		: import.meta.env.VITE_DASHFY_SERVER;
-
-	return <Dashfy serverUrl={serverUrl} />;
-};
+export const App = () => <Dashfy serverUrl={window.location.origin} />;
