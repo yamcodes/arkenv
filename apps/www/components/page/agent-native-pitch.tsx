@@ -11,9 +11,6 @@ export function AgentNativePitch() {
 			id="agents"
 		>
 			<header className="home-aurora__pitch-head">
-				<p className="home-aurora__pitch-label" data-reveal="fade">
-					05 / AGENT-READY
-				</p>
 				<h2 id="home-agent" data-reveal="blur">
 					For humans.{" "}
 					<span className="home-aurora__digital">And their agents.</span>

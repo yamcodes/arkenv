@@ -18,7 +18,6 @@
 	.home-aurora__faq-panel-inner code,
 	.home-aurora__install-prompt-symbol,
 	.home-aurora__install-code,
-	.home-aurora__pitch-label,
 	.home-aurora__compare-stat,
 	.home-aurora__pitch-head code,
 	.home-aurora__compare .shiki,
@@ -196,12 +195,20 @@
 	 * Top: clear sticky nav (inset + bar ≈ 4.5rem) plus room before the badge.
 	 */
 	padding: calc(4.5rem + var(--space-lg)) 1rem var(--space-md);
+	--home-split-cols: minmax(0, 1fr) minmax(20rem, 0.95fr);
+	--home-split-gap: var(--space-xl);
 }
 
 @media (min-width: 40rem) {
 	.home-aurora__shell {
 		padding-top: calc(var(--space-3xl) + var(--space-sm));
 		padding-inline: 1.5rem;
+	}
+}
+
+@media (min-width: 64rem) {
+	.home-aurora__shell {
+		padding-top: calc(var(--space-3xl) + var(--space-xl));
 	}
 }
 
@@ -246,8 +253,8 @@
 
 @media (min-width: 64rem) {
 	.home-aurora__intro {
-		grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.95fr);
-		column-gap: var(--space-xl);
+		grid-template-columns: var(--home-split-cols);
+		column-gap: var(--home-split-gap);
 		align-items: stretch;
 	}
 
@@ -463,7 +470,7 @@
 
 .home-aurora__summary {
 	margin: 0;
-	max-width: min(40rem, 100%);
+	max-width: min(32rem, 100%);
 	min-width: 0;
 	font-family: var(--font-body);
 	font-size: var(--text-md);
@@ -582,7 +589,7 @@
 	gap: var(--space-md);
 	min-width: 0;
 	max-width: 100%;
-	margin-top: var(--space-md);
+	margin-top: var(--space-2xl);
 	padding-block: var(--space-md);
 	border-block: var(--rule-hair) solid var(--color-rule);
 }
@@ -592,7 +599,7 @@
 		flex-direction: row;
 		align-items: center;
 		gap: var(--space-md);
-		margin-top: var(--space-lg);
+		margin-top: var(--space-3xl);
 		padding-block: var(--space-md);
 	}
 
@@ -793,10 +800,14 @@
 
 .home-aurora__faq-head h2 {
 	margin: 0;
-	font-size: var(--text-display-s);
-	line-height: 1.1;
+	font-family: var(--font-display);
+	font-size: var(--text-heading);
+	font-weight: 450;
+	line-height: var(--text-heading-leading);
+	letter-spacing: var(--text-heading-tracking);
 	color: var(--color-ink);
 	font-style: normal;
+	-webkit-font-smoothing: antialiased;
 }
 
 .home-aurora__faq-head p {
@@ -1265,9 +1276,14 @@
 
 .home-aurora__bench-head h2 {
 	margin: 0;
-	font-size: var(--text-display-s);
-	line-height: 1.1;
+	font-family: var(--font-display);
+	font-size: var(--text-heading);
+	font-weight: 450;
+	line-height: var(--text-heading-leading);
+	letter-spacing: var(--text-heading-tracking);
 	color: var(--color-ink);
+	font-style: normal;
+	-webkit-font-smoothing: antialiased;
 }
 
 .home-aurora__bench-head p {
@@ -1289,55 +1305,57 @@
 	min-width: 0;
 }
 
+.home-aurora__intro + .home-aurora__pitch {
+	margin-top: var(--space-3xl);
+}
+
+@media (min-width: 64rem) {
+	.home-aurora__pitch {
+		grid-template-columns: var(--home-split-cols);
+		column-gap: var(--home-split-gap);
+		align-items: start;
+	}
+
+	.home-aurora__pitch > * {
+		min-width: 0;
+	}
+
+	.home-aurora__pitch-head {
+		max-width: none;
+	}
+
+	.home-aurora__compare-window,
+	.home-aurora__validator,
+	.home-aurora__typesafe-split,
+	.home-aurora__secure,
+	.home-aurora__agent-split {
+		max-width: none;
+		width: 100%;
+	}
+
+	.home-aurora__typesafe-split,
+	.home-aurora__secure,
+	.home-aurora__agent-split {
+		grid-template-columns: 1fr;
+	}
+}
+
 .home-aurora__pitch-head {
 	display: grid;
 	gap: var(--space-2xs);
 	max-width: 40rem;
 }
 
-.home-aurora__pitch-label {
-	margin: 0;
-	font-family: var(--font-outlier);
-	font-size: var(--text-xs);
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-	color: var(--color-muted);
-}
-
 .home-aurora__pitch-head h2 {
 	margin: 0;
-	font-size: var(--text-display-s);
-	line-height: 1.1;
+	font-family: var(--font-display);
+	font-size: var(--text-heading);
+	font-weight: 450;
+	line-height: var(--text-heading-leading);
+	letter-spacing: var(--text-heading-tracking);
 	color: var(--color-ink);
-}
-
-.home-aurora__pitch-head h2 a {
-	color: inherit;
-	text-decoration: none;
-	border-bottom: var(--rule-hair) solid color-mix(in oklch, var(--color-ink) 28%, transparent);
-	transition:
-		color var(--dur-micro) var(--ease-out),
-		border-color var(--dur-micro) var(--ease-out);
-}
-
-.home-aurora__pitch-head h2 a:hover {
-	border-color: var(--color-accent);
-}
-
-.home-aurora__pitch-head h2 a:focus-visible {
-	outline: 2px solid var(--color-focus);
-	outline-offset: 3px;
-	border-radius: 2px;
-}
-
-.home-aurora__pitch-struck {
-	color: color-mix(in oklch, var(--color-ink) 55%, transparent);
-}
-
-.home-aurora__pitch-struck s {
-	text-decoration-thickness: 1.5px;
-	text-decoration-color: color-mix(in oklch, var(--color-ink) 45%, transparent);
-	color: inherit;
+	font-style: normal;
+	-webkit-font-smoothing: antialiased;
 }
 
 .home-aurora__pitch-head p {
@@ -1435,7 +1453,7 @@
 	z-index: 1;
 }
 
-/* Shiki (github-*-high-contrast) — shared with 01 DECLARATIVE */
+/* Shiki (github-*-high-contrast) — shared with the compare window */
 .home-aurora__shiki {
 	min-width: 0;
 	overflow-x: auto;
@@ -1449,7 +1467,7 @@
 	overflow: auto;
 	background: transparent !important;
 	font-family: var(--font-outlier);
-	font-size: clamp(0.78rem, 0.2vw + 0.72rem, 0.9rem);
+	font-size: var(--text-code);
 	line-height: 1.55;
 	white-space: pre;
 	max-width: 100%;
@@ -1672,8 +1690,8 @@
 	margin: 0;
 	padding: var(--space-sm) var(--space-md);
 	font-family: var(--font-outlier);
-	font-size: clamp(0.8rem, 0.2vw + 0.75rem, 0.98rem);
-	line-height: 1.6;
+	font-size: var(--text-code);
+	line-height: 1.55;
 	color: var(--color-ink-2);
 	min-width: 0;
 	overflow-x: auto;
@@ -1798,7 +1816,7 @@ a.home-aurora__tok-cmd:hover,
 	}
 }
 
-/* 04 · Bring your own validator — tabbed schema window */
+/* 04 · Keep your existing validator — tabbed schema window */
 .home-aurora__validator {
 	display: grid;
 	gap: var(--space-xs);
@@ -1956,7 +1974,6 @@ a.home-aurora__tok-cmd:hover,
 
 .home-aurora__mvp-shiki .shiki {
 	padding: var(--space-sm) var(--space-md);
-	font-size: clamp(0.72rem, 0.15vw + 0.68rem, 0.84rem);
 }
 
 /* Inactive stacked panes keep CSS hover nodes for height; never show them. */
@@ -2078,7 +2095,7 @@ a.home-aurora__tok-cmd:hover,
 	margin: 0;
 	padding: var(--space-md);
 	font-family: var(--font-outlier);
-	font-size: clamp(0.8rem, 0.2vw + 0.75rem, 0.92rem);
+	font-size: var(--text-code);
 	line-height: 1.55;
 	color: var(--color-ink-2);
 	white-space: pre-wrap;

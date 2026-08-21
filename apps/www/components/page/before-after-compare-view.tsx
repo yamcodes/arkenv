@@ -71,24 +71,12 @@ export function BeforeAfterCompareView({
 			id="declarative"
 		>
 			<header className="home-aurora__pitch-head">
-				<p className="home-aurora__pitch-label" data-reveal="fade">
-					01 / DECLARATIVE
-				</p>
 				<h2 id="home-before-after" data-reveal="blur">
-					<a
-						href="https://blog.ramonvullings.com/post/77099512035/simplify-simplify-simplify-message-on-the-wall-of"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						<span className="home-aurora__pitch-struck">
-							<s>Simplify</s>, <s>simplify</s>,
-						</span>{" "}
-						simplify.
-					</a>
+					One schema replaces your manual checks.
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					Replace your manual <code>process.env</code> checks with one schema.
-					Skip the separate interfaces and error handling.
+					Drop the <code>if (!process.env.DATABASE_URL) throw</code> blocks. One
+					schema parses, validates, and types the result.
 				</p>
 				<p
 					className="home-aurora__compare-stat"

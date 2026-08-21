@@ -33,16 +33,14 @@ export function SecureBoundaryView({
 			id="secure"
 		>
 			<header className="home-aurora__pitch-head">
-				<p className="home-aurora__pitch-label" data-reveal="fade">
-					03 / SECURE
-				</p>
 				<h2 id="home-secure" data-reveal="blur">
-					Keep secrets off the client.
+					Prevent accidental client leaks.
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					Define a single{" "}
+					Server and client keys live in one{" "}
 					<a href="/docs/guides/frameworks/nextjs">flat schema</a>. Secrets are
-					stripped at build time; accidental client access throws during SSR.
+					stripped at build time; reading <code>DATABASE_URL</code> on the client
+					throws during SSR.
 				</p>
 			</header>
 

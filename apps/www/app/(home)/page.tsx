@@ -24,7 +24,7 @@ import { SiteFooter } from "~/components/site-footer";
 export const metadata: Metadata = {
 	title: "ArkEnv - Typesafe environment variables for TypeScript",
 	description:
-		"Typesafe environment variables with ArkType, Zod, Valibot, or any Standard Schema. Write a schema with your existing validator. Zero boilerplate.",
+		"Typesafe environment variables with ArkType, Zod, Valibot, or any Standard Schema. Get a strictly typed env object using your existing TypeScript validator. No boilerplate. Zero runtime dependencies.",
 };
 
 export default function HomePage() {
@@ -60,9 +60,9 @@ export default function HomePage() {
 							className="home-aurora__summary rise-blur"
 							style={{ animationDelay: "520ms" }}
 						>
-							Write a schema with your existing TypeScript validator. Get a
-							strictly typed <HeroEnvHoverSlot /> object. No boilerplate. Zero
-							runtime dependencies.
+							Get a strictly typed <HeroEnvHoverSlot /> object using your
+							existing TypeScript validator. No boilerplate. Zero runtime
+							dependencies.
 						</p>
 					</div>
 					<div

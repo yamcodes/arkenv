@@ -7,15 +7,12 @@ export function TypeSafetyShowcase() {
 	return (
 		<section className="home-aurora__pitch" aria-labelledby="home-dx" id="dx">
 			<header className="home-aurora__pitch-head">
-				<p className="home-aurora__pitch-label" data-reveal="fade">
-					02 / TYPESAFE
-				</p>
 				<h2 id="home-dx" data-reveal="blur">
-					Editor autocomplete with fail-fast at runtime.
+					Fail fast at boot. Autocomplete everywhere.
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					Your editor gets perfect types. ArkEnv rejects missing or invalid keys
-					at build or startup, before they reach production.
+					A typo in <code>.env.production</code> fails at startup, not in
+					production. Your editor autocompletes the same <code>env</code> object.
 				</p>
 			</header>
 

@@ -35,16 +35,13 @@ export function BringYourOwnValidatorView({
 			id="modular"
 		>
 			<header className="home-aurora__pitch-head">
-				<p className="home-aurora__pitch-label" data-reveal="fade">
-					04 / MODULAR
-				</p>
 				<h2 id="home-modular" data-reveal="blur">
-					Bring your own validator.
+					Keep your existing validator.
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					Use ArkType, Zod, Valibot, or any{" "}
-					<a href="/docs/core-concepts/standard-schema">Standard Schema</a>{" "}
-					library. Either way, you get the same <code>env</code> API.
+					Pass the ArkType, Zod, or Valibot schemas you already have.{" "}
+					<a href="/docs/core-concepts/standard-schema">Standard Schema</a> gives
+					you the same <code>env</code> API.
 				</p>
 			</header>
 
