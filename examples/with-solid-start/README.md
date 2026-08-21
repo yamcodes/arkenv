@@ -59,6 +59,5 @@ pnpm start
 ## Documentation
 
 - [Vite plugin docs](https://arkenv.js.org/docs/vite-plugin)
-- [Typing import.meta.env](https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env)
 
 ## this project was created with the [Solid CLI](https://github.com/solidjs-community/solid-cli)
