@@ -1,6 +1,11 @@
+import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import ts from "typescript";
+
+const require = createRequire(import.meta.url);
+const zodDts = require.resolve("zod").replace(/\.cjs$/, ".d.ts");
+const valibotDts = require.resolve("valibot").replace(/\.cjs$/, ".d.ts");
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 export const root = path.resolve(currentDir, "../../..");
@@ -89,6 +94,8 @@ export const arktypeTwoslashVfs = {
 			"@/env/server": ["env/server.ts"],
 			"~~/env/client": ["env/client.ts"],
 			"~~/env/server": ["env/server.ts"],
+			zod: [zodDts],
+			valibot: [valibotDts],
 		},
 		types: ["node"],
 	},
