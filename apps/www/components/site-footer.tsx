@@ -33,7 +33,7 @@ export function SiteFooter({
 						<Logo />
 					</a>
 					<p>
-						Typesafe environment variables for ArkType, Zod, Valibot, and any
+						Typesafe environment variables with ArkType, Zod, Valibot, or any
 						Standard Schema.
 					</p>
 				</div>

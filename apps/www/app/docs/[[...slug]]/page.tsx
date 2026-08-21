@@ -111,10 +111,10 @@ export async function generateMetadata(props: {
 	}
 
 	return {
-		title: `${page.data.title} · ArkEnv`,
+		title: `${page.data.title} | ArkEnv`,
 		description: page.data.description,
 		openGraph: {
-			title: `${page.data.title} · ArkEnv`,
+			title: `${page.data.title} | ArkEnv`,
 			description: page.data.description,
 			images: [
 				{
@@ -127,7 +127,7 @@ export async function generateMetadata(props: {
 		},
 		twitter: {
 			card: "summary_large_image",
-			title: `${page.data.title} · ArkEnv`,
+			title: `${page.data.title} | ArkEnv`,
 			description: page.data.description,
 			images: [ogUrl.toString()],
 		},
