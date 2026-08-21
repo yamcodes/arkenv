@@ -11,6 +11,7 @@ import {
 type HeroTwoslashHtmlProps = {
 	html: string;
 	active: boolean;
+	className?: string;
 };
 
 const VOID_TAGS = new Set(["br", "hr", "img", "input", "meta", "link"]);
@@ -18,10 +19,14 @@ const VOID_TAGS = new Set(["br", "hr", "img", "input", "meta", "link"]);
 /**
  * Shiki Twoslash HTML with the same portaled Fumadocs popovers as the docs.
  */
-export function HeroTwoslashHtml({ html, active }: HeroTwoslashHtmlProps) {
+export function HeroTwoslashHtml({
+	html,
+	active,
+	className = "home-aurora__shiki home-aurora__mvp-shiki",
+}: HeroTwoslashHtmlProps) {
 	const keyPrefix = useId();
 	return (
-		<div className="home-aurora__shiki home-aurora__mvp-shiki">
+		<div className={className}>
 			{parseShikiHtml(html, { enablePopups: active, keyPrefix })}
 		</div>
 	);

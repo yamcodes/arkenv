@@ -1,7 +1,7 @@
-import { highlightTs } from "./highlight-ts";
+import { highlightTwoslash } from "./highlight-hero-twoslash";
 import { SecureBoundaryView } from "./secure-boundary-view";
 
-const FLAT_ENV_CODE = `import arkenv from "@/generated/env.gen";
+export const FLAT_ENV_CODE = `import arkenv from "@/generated/env.gen";
 
 export const env = arkenv({
   NEXT_PUBLIC_API_URL: "string.url",
@@ -9,7 +9,7 @@ export const env = arkenv({
   STRIPE_SECRET_KEY: "string",
 });`;
 
-const COMPILED_BUNDLE_CODE = `export const env = {
+export const COMPILED_BUNDLE_CODE = `export const env = {
   NEXT_PUBLIC_API_URL: "https://api.acme.com",
   // 🔒 Secrets omitted from client bundle!
 };`;
@@ -19,8 +19,8 @@ const COMPILED_BUNDLE_CODE = `export const env = {
  */
 export async function SecureBoundary() {
 	const [envHtml, bundleHtml] = await Promise.all([
-		highlightTs(FLAT_ENV_CODE),
-		highlightTs(COMPILED_BUNDLE_CODE),
+		highlightTwoslash(FLAT_ENV_CODE, "arktype"),
+		highlightTwoslash(COMPILED_BUNDLE_CODE, "arktype"),
 	]);
 
 	return <SecureBoundaryView envHtml={envHtml} bundleHtml={bundleHtml} />;

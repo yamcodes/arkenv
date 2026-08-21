@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import BackgroundVideo from "next-video/background-video";
 import { useState } from "react";
@@ -31,8 +31,8 @@ export function VideoDemo() {
 	};
 
 	return (
-		<div className="flex flex-col items-center w-full gap-4">
-			<figure className="home-aurora__frame w-full">
+		<div className="home-aurora__demo">
+			<figure className="home-aurora__frame">
 				<button
 					type="button"
 					className="home-aurora__frame-button"
@@ -78,10 +78,12 @@ export function VideoDemo() {
 
 			<a
 				href="/docs/getting-started/examples"
-				className="group inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-[var(--color-ink-2)] hover:text-[var(--color-ink)] transition-colors rounded-full hover:bg-[color-mix(in_oklch,var(--color-accent)_10%,transparent)]"
+				className="home-aurora__text-link"
 			>
 				View more examples
-				<ArrowRight className="w-4 h-4 text-[var(--color-accent)] transition-transform group-hover:translate-x-1" />
+				<span className="home-aurora__outro-docs-arrow" aria-hidden="true">
+					→
+				</span>
 			</a>
 		</div>
 	);

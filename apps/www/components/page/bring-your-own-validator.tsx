@@ -1,7 +1,8 @@
 import { BringYourOwnValidatorView } from "./bring-your-own-validator-view";
-import { highlightTs } from "./highlight-ts";
+import type { HeroTwoslashEngine } from "./hero-mvp-twoslash-options";
+import { highlightTwoslash } from "./highlight-hero-twoslash";
 
-const EXAMPLES = [
+export const BYOV_EXAMPLES = [
 	{
 		id: "arktype" as const,
 		label: "ArkType",
@@ -9,8 +10,9 @@ const EXAMPLES = [
 		code: `import arkenv from "@arkenv/core";
 
 export const env = arkenv({
+  NODE_ENV: "'development' | 'test' | 'production' = 'development'",
   DATABASE_URL: "string.url",
-  PORT: "number.port",
+  LOG_LEVEL: "'debug' | 'info' | 'warn' | 'error' = 'info'",
 });`,
 	},
 	{
@@ -21,8 +23,9 @@ export const env = arkenv({
 import { z } from "zod";
 
 export const env = arkenv({
+  NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   DATABASE_URL: z.url(),
-  PORT: z.coerce.number().int().min(0).max(65535),
+  LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
 });`,
 	},
 	{
@@ -33,22 +36,29 @@ export const env = arkenv({
 import * as v from "valibot";
 
 export const env = arkenv({
+  NODE_ENV: v.optional(v.picklist(["development", "test", "production"]), "development"),
   DATABASE_URL: v.pipe(v.string(), v.url()),
-  PORT: v.pipe(v.string(), v.toNumber(), v.integer(), v.minValue(0), v.maxValue(65535)),
+  LOG_LEVEL: v.optional(v.picklist(["debug", "info", "warn", "error"]), "info"),
 });`,
 	},
 ];
+
+function twoslashEngine(
+	id: (typeof BYOV_EXAMPLES)[number]["id"],
+): HeroTwoslashEngine {
+	return id === "arktype" ? "arktype" : "standard";
+}
 
 /**
  * Pitch: same ArkEnv API across ArkType / Zod / Valibot via Standard Schema.
  */
 export async function BringYourOwnValidator() {
 	const examples = await Promise.all(
-		EXAMPLES.map(async (example) => ({
+		BYOV_EXAMPLES.map(async (example) => ({
 			id: example.id,
 			label: example.label,
 			importLine: example.importLine,
-			html: await highlightTs(example.code),
+			html: await highlightTwoslash(example.code, twoslashEngine(example.id)),
 		})),
 	);
 

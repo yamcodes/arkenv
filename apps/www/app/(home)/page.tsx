@@ -91,6 +91,11 @@ export default function HomePage() {
 				</HeroPlaygroundProvider>
 			</section>
 
+			<BeforeAfterCompare />
+			<TypeSafetyShowcase />
+			<SecureBoundary />
+			<BringYourOwnValidator />
+
 			<section
 				id="demo"
 				className="home-aurora__bench"
@@ -101,10 +106,6 @@ export default function HomePage() {
 				</div>
 			</section>
 
-			<BeforeAfterCompare />
-			<TypeSafetyShowcase />
-			<SecureBoundary />
-			<BringYourOwnValidator />
 			<AgentNativePitch />
 
 			<HeroFaq />

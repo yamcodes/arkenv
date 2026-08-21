@@ -20,13 +20,8 @@ export function AgentNativePitch() {
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
 					Run the interactive CLI, or point the{" "}
-					<a
-						href="/docs/guides/ai"
-						className="underline decoration-cyan-500/40 underline-offset-4 hover:decoration-cyan-400"
-					>
-						agent skill
-					</a>{" "}
-					at your <code>.env.example</code> in Cursor, Claude Code, or Codex.
+					<a href="/docs/guides/ai">agent skill</a> at your{" "}
+					<code>.env.example</code> in Cursor, Claude Code, or Codex.
 				</p>
 			</header>
 
@@ -35,7 +30,7 @@ export function AgentNativePitch() {
 				data-reveal
 				style={{ ["--reveal-delay" as string]: "140ms" }}
 			>
-				<figure className="home-aurora__terminal">
+				<figure className="home-aurora__code-window home-aurora__terminal">
 					<WindowChrome title="zsh - arkenv" />
 					<pre>
 						<code>
@@ -63,10 +58,7 @@ export function AgentNativePitch() {
 				<div className="home-aurora__transcript">
 					<p className="home-aurora__transcript-prompt">
 						Set up{" "}
-						<a
-							href="/docs/guides/ai"
-							className="home-aurora__tok-cmd hover:underline"
-						>
+						<a href="/docs/guides/ai" className="home-aurora__tok-cmd">
 							/arkenv
 						</a>{" "}
 						for my .env.example

@@ -1,19 +1,25 @@
 import { SiZod } from "@icons-pack/react-simple-icons";
 import type { ReactNode } from "react";
 import { ArkTypeIcon } from "~/components/icons/arktype-icon";
+import { ValibotIcon } from "~/components/icons/valibot-icon";
 import type { HeroMvpValidatorId } from "./hero-mvp-snippets";
 
-const iconClass = "home-aurora__mvp-tab-icon";
+const iconClass = "home-aurora__tab-icon";
 
 function Mark({ children }: { children: ReactNode }) {
 	return (
-		<span className="home-aurora__mvp-tab-mark" aria-hidden="true">
+		<span className="home-aurora__tab-mark" aria-hidden="true">
 			{children}
 		</span>
 	);
 }
 
-export function HeroMvpValidatorMark({ id }: { id: HeroMvpValidatorId }) {
+export type ValidatorMarkId = HeroMvpValidatorId | "valibot";
+
+/**
+ * Monotone validator mark for homepage ink tabs.
+ */
+export function ValidatorMark({ id }: { id: ValidatorMarkId }) {
 	switch (id) {
 		case "arktype":
 			return (
@@ -32,5 +38,15 @@ export function HeroMvpValidatorMark({ id }: { id: HeroMvpValidatorId }) {
 					<SiZod className={iconClass} size={14} />
 				</Mark>
 			);
+		case "valibot":
+			return (
+				<Mark>
+					<ValibotIcon className={iconClass} width="1em" height="1em" />
+				</Mark>
+			);
 	}
+}
+
+export function HeroMvpValidatorMark({ id }: { id: HeroMvpValidatorId }) {
+	return <ValidatorMark id={id} />;
 }

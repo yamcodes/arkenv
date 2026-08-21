@@ -1,6 +1,8 @@
 "use client";
 
 import { type CSSProperties, useEffect, useId, useRef, useState } from "react";
+import { HeroTwoslashHtml } from "./hero-twoslash-html";
+import { InkTabList } from "./ink-tabs";
 import { WindowChrome } from "./window-chrome";
 
 type BeforeAfterCompareViewProps = {
@@ -27,7 +29,7 @@ export function BeforeAfterCompareView({
 	const [mobileView, setMobileView] = useState<MobileView>("arkenv");
 	const compareRef = useRef<HTMLDivElement>(null);
 	const labelId = useId();
-	const toggleId = useId();
+	const comparePanelId = useId();
 
 	useEffect(() => {
 		if (manual) return;
@@ -97,39 +99,26 @@ export function BeforeAfterCompareView({
 				</p>
 			</header>
 
-			{/* biome-ignore lint/a11y/useSemanticElements: toggle button group container */}
 			<div
 				className="home-aurora__compare-toggle"
-				role="group"
-				aria-labelledby={toggleId}
 				data-reveal
 				style={{ ["--reveal-delay" as string]: "160ms" }}
 			>
-				<p id={toggleId} className="sr-only">
-					Code sample
-				</p>
-				<button
-					type="button"
-					className="home-aurora__compare-toggle-btn"
-					aria-pressed={mobileView === "arkenv"}
-					data-active={mobileView === "arkenv" ? "true" : undefined}
-					onClick={() => setMobileView("arkenv")}
-				>
-					ArkEnv way
-				</button>
-				<button
-					type="button"
-					className="home-aurora__compare-toggle-btn"
-					aria-pressed={mobileView === "old"}
-					data-active={mobileView === "old" ? "true" : undefined}
-					onClick={() => setMobileView("old")}
-				>
-					Old way
-				</button>
+				<InkTabList
+					label="Code sample"
+					value={mobileView}
+					controls={comparePanelId}
+					onChange={setMobileView}
+					items={[
+						{ id: "arkenv" as const, label: "ArkEnv way" },
+						{ id: "old" as const, label: "Old way" },
+					]}
+				/>
 			</div>
 
 			<div
-				className="home-aurora__compare-window"
+				id={comparePanelId}
+				className="home-aurora__code-window home-aurora__compare-window"
 				data-reveal
 				style={{ ["--reveal-delay" as string]: "180ms" }}
 			>
@@ -172,16 +161,24 @@ export function BeforeAfterCompareView({
 						className="home-aurora__compare-pane home-aurora__compare-pane--after"
 						aria-hidden={mobileView === "old" ? true : undefined}
 						inert={mobileView === "old" ? true : undefined}
-						// biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server
-						dangerouslySetInnerHTML={{ __html: afterHtml }}
-					/>
+					>
+						<HeroTwoslashHtml
+							html={afterHtml}
+							active={mobileView !== "old"}
+							className="home-aurora__shiki"
+						/>
+					</div>
 					<div
 						className="home-aurora__compare-pane home-aurora__compare-pane--before"
 						aria-hidden={mobileView !== "old" ? true : undefined}
 						inert={mobileView !== "old" ? true : undefined}
-						// biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server
-						dangerouslySetInnerHTML={{ __html: beforeHtml }}
-					/>
+					>
+						<HeroTwoslashHtml
+							html={beforeHtml}
+							active={mobileView === "old"}
+							className="home-aurora__shiki"
+						/>
+					</div>
 					<div className="home-aurora__compare-handle" aria-hidden="true">
 						<span className="home-aurora__compare-grip" />
 					</div>

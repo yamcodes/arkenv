@@ -1,6 +1,8 @@
 "use client";
 
 import { useId, useState } from "react";
+import { HeroTwoslashHtml } from "./hero-twoslash-html";
+import { InkTabList } from "./ink-tabs";
 import { WindowChrome } from "./window-chrome";
 
 type SecureBoundaryViewProps = {
@@ -10,12 +12,19 @@ type SecureBoundaryViewProps = {
 
 type Tab = "schema" | "bundle";
 
+const TABS = [
+	{ id: "schema" as const, label: "src/env.ts" },
+	{ id: "bundle" as const, label: "app-client.js" },
+];
+
 export function SecureBoundaryView({
 	envHtml,
 	bundleHtml,
 }: SecureBoundaryViewProps) {
 	const [activeTab, setActiveTab] = useState<Tab>("schema");
 	const baseId = useId();
+	const panelId = `${baseId}-panel`;
+	const chromeTitle = activeTab === "schema" ? "src/env.ts" : "app-client.js";
 
 	return (
 		<section
@@ -32,14 +41,8 @@ export function SecureBoundaryView({
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
 					Define a single{" "}
-					<a
-						href="/docs/guides/frameworks/nextjs"
-						className="underline decoration-cyan-500/40 underline-offset-4 hover:decoration-cyan-400"
-					>
-						flat schema
-					</a>
-					. Secrets are stripped at build time; accidental client access throws
-					during SSR.
+					<a href="/docs/guides/frameworks/nextjs">flat schema</a>. Secrets are
+					stripped at build time; accidental client access throws during SSR.
 				</p>
 			</header>
 
@@ -48,112 +51,86 @@ export function SecureBoundaryView({
 				data-reveal
 				style={{ ["--reveal-delay" as string]: "140ms" }}
 			>
-				{/* Left Column: Window with integrated tab switcher */}
-				<div className="flex flex-col gap-3 min-w-0">
-					<figure
-						className="home-aurora__secure-pane h-full"
-						data-side={activeTab}
-					>
-						<div className="home-aurora__window-chrome">
+				<div className="home-aurora__secure-col">
+					<InkTabList
+						label="Schema and bundle view"
+						value={activeTab}
+						controls={panelId}
+						onChange={setActiveTab}
+						items={TABS}
+					/>
+					<figure className="home-aurora__code-window home-aurora__secure-pane">
+						<WindowChrome title={chromeTitle} />
+						<div
+							className="home-aurora__secure-body"
+							id={panelId}
+							role="tabpanel"
+						>
 							<div
-								className="home-aurora__install-tabs"
-								role="tablist"
-								aria-label="Schema and bundle view"
+								data-active={activeTab === "schema" ? "true" : undefined}
+								hidden={activeTab !== "schema"}
 							>
-								<button
-									type="button"
-									role="tab"
-									id={`${baseId}-tab-schema`}
-									aria-selected={activeTab === "schema"}
-									tabIndex={activeTab === "schema" ? 0 : -1}
-									className="home-aurora__install-tab text-xs py-0.5"
-									data-active={activeTab === "schema" ? "true" : undefined}
-									onClick={() => setActiveTab("schema")}
-								>
-									src/env.ts
-								</button>
-								<button
-									type="button"
-									role="tab"
-									id={`${baseId}-tab-bundle`}
-									aria-selected={activeTab === "bundle"}
-									tabIndex={activeTab === "bundle" ? 0 : -1}
-									className="home-aurora__install-tab text-xs py-0.5"
-									data-active={activeTab === "bundle" ? "true" : undefined}
-									onClick={() => setActiveTab("bundle")}
-								>
-									app-client.js
-								</button>
+								<HeroTwoslashHtml
+									html={envHtml}
+									active={activeTab === "schema"}
+									className="home-aurora__shiki"
+								/>
 							</div>
-						</div>
-						<div className="relative">
 							<div
-								className={`home-aurora__shiki ${activeTab === "schema" ? "block" : "invisible opacity-0"}`}
-								// biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server
-								dangerouslySetInnerHTML={{ __html: envHtml }}
-							/>
-							<div
-								className={`home-aurora__shiki absolute inset-0 ${activeTab === "bundle" ? "block" : "invisible opacity-0"}`}
-								// biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server
-								dangerouslySetInnerHTML={{ __html: bundleHtml }}
-							/>
+								data-active={activeTab === "bundle" ? "true" : undefined}
+								hidden={activeTab !== "bundle"}
+							>
+								<HeroTwoslashHtml
+									html={bundleHtml}
+									active={activeTab === "bundle"}
+									className="home-aurora__shiki"
+								/>
+							</div>
 						</div>
 					</figure>
-
-					<div className="relative">
-						<p
-							className={`text-xs text-[var(--color-muted)] leading-relaxed px-1 font-sans ${activeTab === "schema" ? "block" : "invisible opacity-0 absolute inset-0"}`}
-						>
-							Define server & client variables in one flat schema. Non-
-							<code>NEXT_PUBLIC_</code> keys are automatically identified.
-						</p>
-						<p
-							className={`text-xs text-[var(--color-muted)] leading-relaxed px-1 font-sans ${activeTab === "bundle" ? "block" : "invisible opacity-0 absolute inset-0"}`}
-						>
-							Secret values like <code>DATABASE_URL</code>{" "}
-							(&quot;postgresql://db...&quot;) are stripped at build time. Only
-							public values reach the client.
-						</p>
-					</div>
+					<p className="home-aurora__validator-note">
+						{activeTab === "schema" ? (
+							<>
+								Define server & client variables in one flat schema. Non-
+								<code>NEXT_PUBLIC_</code> keys are automatically identified.
+							</>
+						) : (
+							<>
+								Secret values like <code>DATABASE_URL</code>{" "}
+								(&quot;postgresql://db...&quot;) are stripped at build time.
+								Only public values reach the client.
+							</>
+						)}
+					</p>
 				</div>
 
-				{/* Right Column: Anchored SSR Error Overlay */}
-				<figure
-					className="home-aurora__secure-pane h-full flex flex-col"
-					data-side="error"
-				>
+				<figure className="home-aurora__code-window home-aurora__secure-pane">
 					<WindowChrome url="http://localhost:3000" />
-					<div className="p-5 font-mono text-xs space-y-4 bg-red-950/20 text-rose-200 flex-1">
-						<div className="flex items-center justify-between gap-2 border-b border-rose-900/40 pb-3">
-							<span className="bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded text-[11px] font-semibold tracking-wide uppercase">
+					<div className="home-aurora__fail">
+						<div className="home-aurora__fail-banner">
+							<span className="home-aurora__fail-chip">
 								Unhandled Runtime Error
 							</span>
-							<span className="text-[11px] text-zinc-500">SSR Exception</span>
+							<span className="home-aurora__fail-meta">SSR Exception</span>
 						</div>
-						<div className="space-y-1">
-							<div className="text-zinc-400 text-[11px] font-sans">
-								Uncaught Error:
-							</div>
-							<div className="font-semibold text-rose-100 text-sm sm:text-base leading-snug">
-								Do not access server-only key &apos;DATABASE_URL&apos; on the
-								client since it will leak sensitive data (prevented by ArkEnv)
-							</div>
-						</div>
-						<div className="text-zinc-400 text-xs leading-relaxed border-l-2 border-rose-500/50 pl-3 py-2 bg-black/30 rounded-r space-y-1">
-							<div className="text-zinc-500 text-[10px] uppercase tracking-wider font-semibold">
-								Call Stack
-							</div>
-							<div>
+						<p className="home-aurora__fail-kicker">Uncaught Error:</p>
+						<p className="home-aurora__fail-title">
+							Do not access server-only key &apos;DATABASE_URL&apos; on the
+							client since it will leak sensitive data (prevented by ArkEnv)
+						</p>
+						<div className="home-aurora__fail-stack">
+							<p className="home-aurora__fail-stack-label">Call Stack</p>
+							<p>
 								at{" "}
-								<span className="text-rose-200 font-semibold">
+								<span className="home-aurora__fail-key">
 									Proxy.&lt;anonymous&gt;
 								</span>{" "}
 								(src/env.ts:14)
-							</div>
-							<div>
-								at <span className="text-rose-200 font-semibold">Header</span>{" "}
+							</p>
+							<p>
+								at <span className="home-aurora__fail-key">Header</span>{" "}
 								(app/components/header.tsx:5)
-							</div>
+							</p>
 						</div>
 					</div>
 				</figure>

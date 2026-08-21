@@ -24,9 +24,8 @@ export function TypeSafetyShowcase() {
 				data-reveal
 				style={{ ["--reveal-delay" as string]: "140ms" }}
 			>
-				{/* Left Window: IDE Autocomplete */}
 				<figure
-					className="home-aurora__ide"
+					className="home-aurora__code-window home-aurora__ide"
 					role="img"
 					aria-label="IDE showing env autocomplete"
 				>
@@ -63,36 +62,26 @@ export function TypeSafetyShowcase() {
 					</ul>
 				</figure>
 
-				{/* Right Window: Terminal Fail-Fast Runtime Output */}
-				<figure
-					className="home-aurora__terminal h-full flex flex-col"
-					data-side="error"
-				>
+				<figure className="home-aurora__code-window home-aurora__terminal">
 					<WindowChrome title="node server.js" />
-					<div className="p-4 font-mono text-xs space-y-3 bg-red-950/20 text-rose-200 flex-1">
-						<div className="flex items-center gap-2 border-b border-rose-900/40 pb-2.5">
-							<span className="bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide uppercase">
-								Runtime Error
-							</span>
-							<span className="text-[11px] text-zinc-500 font-mono">
-								Process Exited (1)
-							</span>
+					<div className="home-aurora__fail">
+						<div className="home-aurora__fail-banner">
+							<span className="home-aurora__fail-chip">Runtime Error</span>
+							<span className="home-aurora__fail-meta">Process Exited (1)</span>
 						</div>
-						<div className="font-semibold text-rose-100 text-xs sm:text-sm">
+						<p className="home-aurora__fail-title">
 							ArkEnvError: Errors found while validating environment variables
-						</div>
-						<div className="text-zinc-300 text-xs leading-relaxed space-y-1.5 pl-2 border-l-2 border-rose-500/40">
-							<div>
-								<span className="text-amber-300 font-semibold">
-									DATABASE_URL
-								</span>{" "}
-								must be a valid URL starting with postgresql:// or mysql:// (was
+						</p>
+						<div className="home-aurora__fail-stack">
+							<p>
+								<span className="home-aurora__fail-key">DATABASE_URL</span> must
+								be a valid URL starting with postgresql:// or mysql:// (was
 								&quot;localhost/db&quot;)
-							</div>
-							<div>
-								<span className="text-amber-300 font-semibold">PORT</span>{" "}
-								must be an integer between 0 and 65535 (was &quot;8080a&quot;)
-							</div>
+							</p>
+							<p>
+								<span className="home-aurora__fail-key">PORT</span> must be an
+								integer between 0 and 65535 (was &quot;8080a&quot;)
+							</p>
 						</div>
 					</div>
 				</figure>

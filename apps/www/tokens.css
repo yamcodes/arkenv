@@ -66,6 +66,7 @@
 
 	--rule-hair: 1px;
 	--radius-pill: 999px;
+	--radius-sm: 0.125rem;
 	--radius-frame: 0.75rem;
 	--shadow-frame: 0 24px 60px -28px oklch(0% 0 0 / 0.55);
 	--shadow-nav: 0 8px 24px -12px oklch(0% 0 0 / 0.35);

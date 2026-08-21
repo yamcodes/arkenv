@@ -8,12 +8,12 @@ import { WindowChrome } from "./window-chrome";
 function HeroMvpExampleFallback() {
 	return (
 		<div className="home-aurora__mvp" aria-hidden="true">
-			<div className="home-aurora__mvp-validators">
-				<div className="home-aurora__mvp-validators-list">
+			<div className="home-aurora__tabs">
+				<div className="home-aurora__tabs-list">
 					{HERO_MVP_VALIDATORS.map((item) => (
 						<span
 							key={item.id}
-							className="home-aurora__mvp-tab"
+							className="home-aurora__tab"
 							data-active={item.id === "arktype" ? "true" : undefined}
 						>
 							<HeroMvpValidatorMark id={item.id} />
@@ -22,7 +22,7 @@ function HeroMvpExampleFallback() {
 					))}
 				</div>
 			</div>
-			<figure className="home-aurora__mvp-frame">
+			<figure className="home-aurora__code-window home-aurora__mvp-frame">
 				<WindowChrome title="./env.ts" />
 				<div className="home-aurora__mvp-body home-aurora__mvp-body--pending" />
 			</figure>

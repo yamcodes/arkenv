@@ -129,15 +129,13 @@
 }
 
 .home-aurora__footer-meta a {
-	color: var(--sf-ink);
+	color: var(--sf-ink-2);
 	text-decoration: none;
 	transition: color var(--sf-dur) var(--sf-ease);
 }
 
 .home-aurora__footer-meta a:hover {
 	color: var(--sf-ink);
-	text-decoration: underline;
-	text-underline-offset: 0.15em;
 }
 
 .home-aurora__footer-meta a:focus-visible {
@@ -193,10 +191,11 @@
 
 .site-footer-band .home-aurora__footer-grid h3,
 .site-footer-band .home-aurora__footer-grid a:hover,
-.site-footer-band .home-aurora__footer-meta a {
+.site-footer-band .home-aurora__footer-meta a:hover {
 	color: var(--color-fd-foreground);
 }
 
-.site-footer-band .home-aurora__footer-grid a {
+.site-footer-band .home-aurora__footer-grid a,
+.site-footer-band .home-aurora__footer-meta a {
 	color: var(--color-fd-muted-foreground);
 }

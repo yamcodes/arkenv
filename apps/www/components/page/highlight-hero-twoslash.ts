@@ -30,8 +30,11 @@ function heroTransformer(engine: HeroTwoslashEngine) {
 	return created;
 }
 
-export async function highlightHeroTwoslash(snippet: HeroMvpSnippet) {
-	return codeToHtml(normalizeFenceBodyIndent(snippet.code), {
+export async function highlightTwoslash(
+	code: string,
+	engine: HeroTwoslashEngine,
+) {
+	return codeToHtml(normalizeFenceBodyIndent(code), {
 		lang: "ts",
 		themes: {
 			light: "github-light-high-contrast",
@@ -39,10 +42,15 @@ export async function highlightHeroTwoslash(snippet: HeroMvpSnippet) {
 		},
 		defaultColor: false,
 		meta: { __raw: "twoslash" },
-		transformers: [
-			heroTransformer(heroMvpEngine(snippet.host, snippet.validator)),
-		],
+		transformers: [heroTransformer(engine)],
 	});
+}
+
+export async function highlightHeroTwoslash(snippet: HeroMvpSnippet) {
+	return highlightTwoslash(
+		snippet.code,
+		heroMvpEngine(snippet.host, snippet.validator),
+	);
 }
 
 export const highlightHeroMvpExamples = cache(async () =>

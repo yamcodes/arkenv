@@ -1,6 +1,9 @@
 "use client";
 
 import { useId, useState } from "react";
+import { ValidatorMark } from "./hero-mvp-marks";
+import { HeroTwoslashHtml } from "./hero-twoslash-html";
+import { InkTabList } from "./ink-tabs";
 import { WindowChrome } from "./window-chrome";
 
 type ValidatorExample = {
@@ -50,42 +53,34 @@ export function BringYourOwnValidatorView({
 				data-reveal
 				style={{ ["--reveal-delay" as string]: "140ms" }}
 			>
-				<div
-					className="home-aurora__validator-tabs"
-					role="tablist"
-					aria-label="Validator examples"
-				>
-					{examples.map((item) => (
-						<button
-							key={item.id}
-							type="button"
-							role="tab"
-							id={`${baseId}-tab-${item.id}`}
-							aria-selected={active === item.id}
-							aria-controls={panelId}
-							tabIndex={active === item.id ? 0 : -1}
-							className="home-aurora__validator-tab"
-							data-active={active === item.id ? "true" : undefined}
-							onClick={() => setActive(item.id)}
-						>
-							{item.label}
-						</button>
-					))}
-				</div>
+				<InkTabList
+					label="Validator examples"
+					value={active}
+					controls={panelId}
+					onChange={setActive}
+					items={examples.map((item) => ({
+						id: item.id,
+						label: (
+							<>
+								<ValidatorMark id={item.id} />
+								{item.label}
+							</>
+						),
+					}))}
+				/>
 
-				<figure className="home-aurora__validator-frame">
+				<figure className="home-aurora__code-window">
 					<WindowChrome title="./env.ts" />
 					<div
 						role="tabpanel"
 						id={panelId}
-						aria-labelledby={`${baseId}-tab-${example.id}`}
 						className="home-aurora__validator-body"
 						key={example.id}
 					>
-						<div
+						<HeroTwoslashHtml
+							html={example.html}
+							active
 							className="home-aurora__shiki"
-							// biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server
-							dangerouslySetInnerHTML={{ __html: example.html }}
 						/>
 					</div>
 				</figure>

@@ -1,7 +1,7 @@
 import { BeforeAfterCompareView } from "./before-after-compare-view";
-import { highlightTs } from "./highlight-ts";
+import { highlightTwoslash } from "./highlight-hero-twoslash";
 
-const BEFORE = `// The old way
+export const BEFORE = `// The old way
 const DATABASE_URL = process.env.DATABASE_URL;
 if (!DATABASE_URL) throw new Error("DATABASE_URL missing");
 if (!/^https?:\\/\\//.test(DATABASE_URL)) {
@@ -22,7 +22,7 @@ if (!["development", "production"].includes(NODE_ENV)) {
 
 export const env = { DATABASE_URL, PORT, NODE_ENV };`;
 
-const AFTER = `// The ArkEnv way
+export const AFTER = `// The ArkEnv way
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
@@ -36,13 +36,13 @@ function countLines(source: string) {
 }
 
 /**
- * Server entry: Shiki-highlights the snippets, then hands off to the
+ * Server entry: Twoslash-highlights the snippets, then hands off to the
  * interactive client reveal.
  */
 export async function BeforeAfterCompare() {
 	const [beforeHtml, afterHtml] = await Promise.all([
-		highlightTs(BEFORE),
-		highlightTs(AFTER),
+		highlightTwoslash(BEFORE, "arktype"),
+		highlightTwoslash(AFTER, "arktype"),
 	]);
 
 	const reduction = Math.round(
