@@ -1,0 +1,9 @@
+{
+	"$schema": "https://dashfy.dev/schema.json",
+	"paths": {
+		"app": "src/app.tsx",
+		"server": "dashfy-server.ts",
+		"config": "dashfy.config.yml",
+		"env": ".env"
+	}
+}

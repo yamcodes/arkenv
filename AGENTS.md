@@ -2,14 +2,15 @@
 
 ## Cursor Cloud specific instructions
 
-ArkEnv is a pnpm + Turborepo monorepo for a TypeScript env-var validation library. There are no databases or external services; the only long-running process is the `www` docs site (Next.js). Standard commands live in `package.json`, `docs/CONTRIBUTING.md`, and `docs/TESTING.md` — prefer those.
+ArkEnv is a pnpm + Turborepo monorepo for a TypeScript env-var validation library. There are no databases or external services; the product long-running process is the `www` docs site (Next.js). `apps/dash` is an optional maintainer dashboard and is not started by `pnpm dev` / `pnpm www`. Standard commands live in `package.json`, `docs/CONTRIBUTING.md`, and `docs/TESTING.md` — prefer those.
 
 > This is the `v1` branch. Its package layout differs from `dev` (v0): here `packages/arkenv` is the **CLI** (published as `arkenv`) and the **core runtime** lives in `packages/core` (published as `@arkenv/core`). There is no `packages/cli` on `v1`. `v1` publishes pre-release versions (`1.0.0-alpha.x`) under the `alpha` npm tag.
 
 ### Services / apps
 
 - `packages/*` — the publishable library packages: `arkenv` (the CLI, in `packages/arkenv/`), `@arkenv/core` (core runtime, in `packages/core/`), `@arkenv/standard` (in `packages/standard/`), plus `@arkenv/nextjs`, `@arkenv/nuxt`, `@arkenv/vite-plugin`, `@arkenv/bun-plugin`, `@arkenv/build`, and `@arkenv/fumadocs-ui` (which live in the `nextjs/`, `nuxt/`, `vite-plugin/`, `bun-plugin/`, `build/`, and `fumadocs-ui/` directories), plus internal helpers under `packages/internal/*`. These are the core product.
-- `apps/www` — the documentation website (Next.js 16 + Fumadocs). This is the only runnable app.
+- `apps/www` — the documentation website (Next.js 16 + Fumadocs). This is the product app.
+- `apps/dash` — optional maintainer Dashfy dashboard (GitHub + npm). Not in CI. Run with `pnpm dash` (Vite on [http://localhost:3001](http://localhost:3001), Dashfy server on [http://127.0.0.1:5001](http://127.0.0.1:5001)). Copy `apps/dash/.env.example` to `apps/dash/.env` first.
 - `apps/playwright-www` — Playwright e2e suite targeting `www`.
 - `apps/playgrounds/*` and `examples/*` — framework sandboxes / fixtures (optional).
 
@@ -17,6 +18,7 @@ ArkEnv is a pnpm + Turborepo monorepo for a TypeScript env-var validation librar
 
 - Build everything: `pnpm build` · packages only: `pnpm build:packages`
 - Run docs site (dev): `pnpm www` (serves on `http://localhost:3000`)
+- Maintainer dashboard: `pnpm dash` (Vite on `http://localhost:3001`; copy `apps/dash/.env.example` to `apps/dash/.env` first)
 - Lint/format + workspace validation: `pnpm check`
 - Typecheck: `pnpm typecheck`
 - Unit/integration tests: `pnpm test -- --run` (Vitest)

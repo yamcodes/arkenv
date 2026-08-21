@@ -187,6 +187,7 @@ A scroll-driven increase in **Glass material** opacity/blur so content sliding u
   - `www` - Next.js documentation site
   - `playgrounds/*` - Test playgrounds for different runtimes
   - `playwright-www` - Playwright E2E tests for the www application
+  - `dash` - Optional maintainer Dashfy dashboard (GitHub + npm). Not in CI.
 - **Examples** (`examples/`) - Standalone example projects
 
 **Package Architecture:**

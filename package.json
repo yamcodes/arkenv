@@ -10,6 +10,7 @@
 		"typecheck:packages": "turbo run typecheck --filter=./packages/*",
 		"docs": "turbo run dev --filter=www",
 		"www": "turbo run dev --filter=www",
+		"dash": "pnpm run build --filter=@arkenv/core && pnpm --filter @repo/dash dash",
 		"release": "pnpm run build:packages && changeset publish",
 		"fix": "node scripts/fix.js",
 		"fix:unsafe": "node scripts/fix.js --unsafe",
