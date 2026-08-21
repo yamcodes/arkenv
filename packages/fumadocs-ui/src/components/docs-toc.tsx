@@ -22,7 +22,7 @@ import { tocItemId } from "./heading-spy";
 import { useHeadingSpy } from "./use-heading-spy";
 
 const tocColumnClassName =
-	"sticky top-(--fd-docs-row-1) h-[calc(var(--fd-docs-height)-var(--fd-docs-row-1))] flex flex-col [grid-area:toc] w-(--fd-toc-width) pt-12 pe-4 pb-2 min-[1200px]:layout:[--fd-toc-width:268px] max-[1199px]:hidden";
+	"sticky top-(--fd-docs-row-1) h-[calc(var(--fd-docs-height)-var(--fd-docs-row-1))] flex flex-col [grid-area:toc] w-(--fd-toc-width) pt-12 pb-2 min-[1200px]:layout:[--fd-toc-width:268px] max-[1199px]:hidden";
 
 function scrollChildIntoContainer(container: HTMLElement, child: HTMLElement) {
 	const containerRect = container.getBoundingClientRect();
@@ -44,7 +44,8 @@ function DocsTOCItems({ className, ...props }: ComponentProps<"div">) {
 
 	const updateTrack = useCallback(() => {
 		const list = listRef.current;
-		if (!list || !activeId) {
+		const toc = list?.closest<HTMLElement>("#nd-toc");
+		if (!list || !toc || !activeId) {
 			setTrack(null);
 			return;
 		}
@@ -54,11 +55,18 @@ function DocsTOCItems({ className, ...props }: ComponentProps<"div">) {
 			return;
 		}
 		const styles = getComputedStyle(link);
-		const top = link.offsetTop + Number.parseFloat(styles.paddingTop);
+		const padTop = Number.parseFloat(styles.paddingTop);
+		const padBottom = Number.parseFloat(styles.paddingBottom);
+		const tocRect = toc.getBoundingClientRect();
+		const listRect = list.getBoundingClientRect();
+		const linkRect = link.getBoundingClientRect();
+		const top = Math.max(linkRect.top + padTop, listRect.top) - tocRect.top;
 		const bottom =
-			link.offsetTop +
-			link.clientHeight -
-			Number.parseFloat(styles.paddingBottom);
+			Math.min(linkRect.bottom - padBottom, listRect.bottom) - tocRect.top;
+		if (bottom <= top) {
+			setTrack(null);
+			return;
+		}
 		setTrack({ top: `${top}px`, bottom: `${bottom}px` });
 	}, [activeId]);
 
@@ -79,25 +87,31 @@ function DocsTOCItems({ className, ...props }: ComponentProps<"div">) {
 		if (link) scrollChildIntoContainer(list, link);
 	}, [activeId]);
 
+	useEffect(() => {
+		const list = listRef.current;
+		if (!list) return;
+		const onScroll = () => updateTrack();
+		list.addEventListener("scroll", onScroll, { passive: true });
+		return () => list.removeEventListener("scroll", onScroll);
+	}, [updateTrack]);
+
 	return (
-		<div className="relative min-h-0 text-sm ms-px overflow-auto [scrollbar-width:none] mask-[linear-gradient(to_bottom,transparent,white_16px,white_calc(100%-16px),transparent)] py-3">
-			<div className="relative">
-				{track && (
-					<div
-						className="absolute inset-y-0 inset-s-0 bg-fd-primary w-px transition-[clip-path]"
-						style={{
-							clipPath: `polygon(0 ${track.top}, 100% ${track.top}, 100% ${track.bottom}, 0 ${track.bottom})`,
-						}}
-					/>
-				)}
+		<>
+			{track ? (
 				<div
-					{...props}
-					ref={listRef}
-					className={cn(
-						"flex flex-col border-s border-fd-foreground/10",
-						className,
-					)}
-				>
+					aria-hidden="true"
+					data-docs-toc-spy=""
+					className="docs-toc-spy"
+					style={{
+						clipPath: `polygon(0 ${track.top}, 100% ${track.top}, 100% ${track.bottom}, 0 ${track.bottom})`,
+					}}
+				/>
+			) : null}
+			<div
+				ref={listRef}
+				className="relative min-h-0 text-sm overflow-auto [scrollbar-width:none] px-(--docs-toc-gutter) pt-3 pb-0"
+			>
+				<div {...props} className={cn("flex flex-col", className)}>
 					{items.map((item) => (
 						<DocsTOCLink
 							key={item.url}
@@ -108,7 +122,7 @@ function DocsTOCItems({ className, ...props }: ComponentProps<"div">) {
 					))}
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }
 
@@ -144,7 +158,9 @@ function DocsTOCLink({
 /**
  * TOC rail: keep the layout column when a footer exists, but hide the
  * "On this page" / "No Headings" chrome when the page has no headings.
- * End padding is set in theme.css to match the Site Nav gutter.
+ * Inline gutter lives on the title, list, and footer — not the column — so
+ * the active spy can sit on the article↔TOC rail (Vite `left: -1px`) and the
+ * feedback hairline can span rail to rail.
  *
  * Active heading uses a spy line at each heading's scroll-margin (Site Nav
  * offset), not Fumadocs' 90% IntersectionObserver — that skipped the heading
@@ -181,7 +197,7 @@ function DocsTOCMain({ container, header, footer, list }: TOCProps) {
 			{header}
 			<h3
 				id="toc-title"
-				className="inline-flex items-center gap-1.5 text-sm text-fd-muted-foreground"
+				className="inline-flex items-center gap-1.5 px-(--docs-toc-gutter) text-sm text-fd-muted-foreground"
 			>
 				<Text className="size-4" />
 				<I18nLabel label="toc" />

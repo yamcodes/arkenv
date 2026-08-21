@@ -21,7 +21,9 @@
 	--accent-foreground: oklch(22% 0.02 200);
 	--destructive: oklch(55% 0.2 25);
 	--destructive-foreground: oklch(98% 0.01 200);
-	--border: oklch(90% 0.015 200);
+	--color-rule: oklch(93.5% 0.012 200);
+	--color-rule-y: oklch(95.5% 0.01 200);
+	--border: oklch(88% 0.015 200);
 	--input: oklch(90% 0.015 200);
 	--ring: oklch(48% 0.11 195);
 
@@ -34,7 +36,7 @@
 	--color-fd-popover-foreground: oklch(18% 0.02 200);
 	--color-fd-card: oklch(100% 0 0);
 	--color-fd-card-foreground: oklch(18% 0.02 200);
-	--color-fd-border: oklch(90% 0.015 200);
+	--color-fd-border: oklch(88% 0.015 200);
 	--color-fd-secondary: oklch(96% 0.01 200);
 	--color-fd-secondary-foreground: oklch(22% 0.02 200);
 	--color-fd-accent: oklch(96% 0.01 200);

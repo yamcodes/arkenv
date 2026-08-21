@@ -57,11 +57,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 					{children}
 				</DocsLayout>
 			</div>
-			<div className="site-footer-bleed">
-				<div className="site-footer-band">
-					<SiteFooter />
-				</div>
-			</div>
+			<SiteFooter rails />
 		</main>
 	);
 }

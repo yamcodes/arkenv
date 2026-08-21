@@ -2,6 +2,8 @@
 
 :root {
 	--radius: 0.125rem;
+	/* Chrome / frames — same as www `--radius-control` / `--site-nav-radius` */
+	--radius-control: 0.375rem;
 	--fd-nav-height: 80px !important;
 	--fd-header-height: 80px !important;
 	/* WCAG AA compliant: 6.13:1 contrast on white background */
@@ -43,21 +45,23 @@
  */
 #nd-page {
 	--fd-page-pad-top: 1.5rem;
-	padding-inline: 1rem;
+	--docs-page-gutter: 1rem;
+	padding-inline: var(--docs-page-gutter);
 	padding-top: var(--fd-page-pad-top);
 }
 
 #nd-toc {
-	padding-inline-end: 1rem;
+	--docs-toc-gutter: 1rem;
 }
 
 @media (min-width: 40rem) {
 	#nd-page {
-		padding-inline: 1.5rem;
+		--docs-page-gutter: 1.5rem;
+		padding-inline: var(--docs-page-gutter);
 	}
 
 	#nd-toc {
-		padding-inline-end: 1.5rem;
+		--docs-toc-gutter: 1.5rem;
 	}
 }
 
@@ -357,7 +361,22 @@ aside .theme-toggle {
 /* Desktop sidebar: no card fill; 1px IDE rail (docs chrome glue, not a bento) */
 #nd-sidebar {
 	background-color: transparent;
-	border-inline-end: 1px solid var(--color-fd-border);
+	border-inline-end: 1px solid var(--color-rule-y, var(--color-fd-border));
+}
+
+/*
+ * Vite outline marker: 2px ink bar at left: -1px, sitting on the 1px rail.
+ * Vertical clip is set in JS from the active heading's box.
+ */
+.docs-toc-spy {
+	position: absolute;
+	inset-inline-start: -1px;
+	inset-block: 0;
+	z-index: 1;
+	width: 2px;
+	pointer-events: none;
+	background-color: var(--color-fd-foreground);
+	transition: clip-path 150ms;
 }
 
 /* Sidebar item base styles */
@@ -393,21 +412,27 @@ aside .theme-toggle {
 
 /*
  * Items are `w-full` inside the drill pane, so a 4px outer ring is
- * clipped. Shrink items horizontally (ID beats `w-full`). The pane uses
- * overflow-hidden for the slide — override to clip only the inline axis
- * so the ring can paint 8px above/below (negative clip-path inset).
+ * clipped. Column gutters live on the tree (docs-chrome.css); items stay
+ * full-measure inside that pad so left/right rail gaps match. The pane
+ * clip expands so the ring can paint into the gutter.
  */
 #nd-sidebar [data-drill-item],
 #nd-sidebar-mobile [data-drill-item] {
 	width: auto;
-	margin-inline: 0.5rem;
+	margin-inline: 0;
 	border-radius: 0.25rem;
 }
 
-#nd-sidebar :has(> [data-sidebar-mode]),
-#nd-sidebar-mobile :has(> [data-sidebar-mode]) {
-	overflow: visible;
-	clip-path: inset(-0.5rem 0);
+/*
+ * Drill-in slide pane. Clip (not overflow:visible) so the parked panel
+ * (translateX ±100%) cannot paint to #nd-sidebar's scrollport — that leaked
+ * a jagged highlight sliver onto the outer rail. overflow-clip-margin lets
+ * the 0.25rem pill radius and focus ring paint into the column gutter
+ * without changing the 24px rail insets.
+ */
+#nd-sidebar [data-docs-sidebar-slide],
+#nd-sidebar-mobile [data-docs-sidebar-slide] {
+	overflow: hidden;
 }
 
 #nd-sidebar [data-sidebar-mode],
@@ -443,7 +468,7 @@ aside .theme-toggle {
 #nd-sidebar p,
 #nd-sidebar-mobile p {
 	@apply font-medium;
-	margin-inline: 0.5rem;
+	margin-inline: 0;
 }
 
 /*
@@ -532,7 +557,7 @@ aside .theme-toggle {
 	inset-inline-start: 0;
 	inset-block-start: var(--fd-nav-height);
 	border-inline-start: none;
-	border-inline-end: 1px solid var(--color-fd-border);
+	border-inline-end: 1px solid var(--color-rule-y, var(--color-fd-border));
 	--fd-sidebar-drawer-offset: -100%;
 	z-index: 40;
 }
@@ -551,12 +576,15 @@ button:has(+ #nd-sidebar-mobile) {
 }
 
 /*
- * Search dialog: sit on top of Site Nav (same inset / gutter / bar height)
- * so the capsule visually replaces the floating header. Header stays in the
- * DOM underneath; z-65 clears header (50) and mobile sidebar (60).
- * Stock fumadocs uses w-[calc(100%-1rem)] + top below the nav on mobile.
- * max-w-screen-sm still caps + centers once the guttered width exceeds it;
- * from md up, fumadocs’ vertical centering takes over.
+ * Search dialog: sit on top of Site Nav (same inset / gutter / bar height).
+ * Header stays in the DOM underneath; z-65 clears header (50) and mobile
+ * sidebar (60). Stock fumadocs uses w-[calc(100%-1rem)] + top below the nav
+ * on mobile. max-w-screen-sm still caps + centers once the guttered width
+ * exceeds it; from md up, fumadocs’ vertical centering takes over.
+ *
+ * Radius matches the navbar search trigger (`--radius-control`), not a
+ * pill. Beats fumadocs `rounded-xl` and `overflow-hidden` clips the list
+ * to the same corner — no separate expanded-state radius.
  *
  * Scoped to `.arkenv-search-dialog` — Radix popovers also use
  * [role="dialog"][data-state] (Copy page menu, feedback).
@@ -564,6 +592,7 @@ button:has(+ #nd-sidebar-mobile) {
 .arkenv-search-dialog {
 	z-index: 65 !important;
 	width: calc(100% - 2rem) !important;
+	border-radius: var(--radius-control, 0.375rem) !important;
 }
 
 @media (min-width: 40rem) {
@@ -586,7 +615,7 @@ button:has(+ #nd-sidebar-mobile) {
 
 	/* Input row: Site Nav bar is border-box 3.5rem including its 1px
 	   border; dialog content also has a 1px border, so the inner bar
-	   must be 2px shorter or the capsule reads taller than the header. */
+	   must be 2px shorter or the overlay reads taller than the header. */
 	.arkenv-search-dialog .arkenv-search-dialog__bar {
 		box-sizing: border-box;
 		height: calc(3.5rem - 2px);
@@ -614,8 +643,7 @@ button:has(+ #nd-sidebar-mobile) {
 [data-docs-ai-menu-popover] {
 	width: max-content !important;
 	max-width: min(24rem, 98vw);
-	/* Same token as code-block `rounded-sm`. Must beat the flatten above. */
-	border-radius: var(--radius-sm) !important;
+	border-radius: var(--radius-control, 0.375rem) !important;
 	overflow: hidden;
 }
 
@@ -640,15 +668,4 @@ button:has(+ #nd-sidebar-mobile) {
 
 [data-docs-ai-menu-row] > :nth-child(3) {
 	justify-self: end;
-}
-
-/*
- * Expanded results (all viewports): modest radius so fumadocs’
- * overflow-hidden does not clip the list into a pill/circle. Applies
- * wherever the panel is tall — desktop had the same clip. Fumadocs
- * SearchDialogList sets data-empty=false once a query has result data
- * (including “no matches”). Input-only overlay keeps rounded-full.
- */
-.arkenv-search-dialog:has([data-empty="false"]) {
-	border-radius: 1.25rem !important;
 }

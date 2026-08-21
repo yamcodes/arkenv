@@ -8,6 +8,7 @@ import {
 	HERO_MVP_VALIDATORS,
 	type HeroMvpHostId,
 	type HeroMvpValidatorId,
+	heroMvpSnippet,
 } from "./hero-mvp-snippets";
 import {
 	HERO_CYCLE_MS,
@@ -57,6 +58,7 @@ const examples = HERO_MVP_HOSTS.flatMap((host) =>
 					? "@arkenv/core"
 					: "@arkenv/standard",
 		html: htmlFor(host.id, validator.id),
+		code: heroMvpSnippet(host.id, validator.id).code,
 	})),
 );
 
@@ -146,7 +148,7 @@ describe("hero playground sync", () => {
 		).not.toBeInTheDocument();
 	});
 
-	it("pauses the H1 when the pointer enters the example", () => {
+	it("does not pause the H1 when the pointer enters the example", () => {
 		vi.useFakeTimers();
 		renderPlayground();
 
@@ -155,11 +157,11 @@ describe("hero playground sync", () => {
 		fireEvent.pointerEnter(example);
 
 		act(() => {
-			vi.advanceTimersByTime(HERO_FIRST_DWELL_MS + 100);
+			vi.advanceTimersByTime(HERO_FIRST_DWELL_MS);
 		});
 
 		expect(document.querySelector("[data-pos='current']")?.textContent).toBe(
-			"ArkType",
+			"Zod",
 		);
 		expect(screen.getByRole("tab", { name: "ArkType" })).toHaveAttribute(
 			"aria-selected",

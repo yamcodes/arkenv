@@ -66,6 +66,7 @@ main:has(.site-nav) {
 }
 
 .site-nav {
+	position: relative;
 	z-index: 50;
 	pointer-events: none;
 	width: 100%;
@@ -90,7 +91,7 @@ main:has(.site-nav) {
 	-webkit-backdrop-filter: blur(8px);
 	backdrop-filter: blur(8px);
 	border: none;
-	border-bottom: 1px solid var(--border, var(--color-rule, oklch(30% 0.02 200)));
+	border-bottom: 1px solid var(--color-rule, oklch(25% 0.017 200));
 	box-shadow: none;
 	transition: background-color 220ms ease;
 }
@@ -166,7 +167,7 @@ main:has(.site-nav) {
 
 .site-nav__wordmark span {
 	font-size: var(--site-nav-wordmark-size);
-	font-weight: 600;
+	font-weight: 500;
 	line-height: 1;
 	letter-spacing: -0.01em;
 	font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
@@ -209,7 +210,7 @@ main:has(.site-nav) {
 	color: var(--muted-foreground, var(--color-ink-2, inherit));
 	font-family: var(--font-display, var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif);
 	font-size: var(--text-sm, 0.875rem);
-	font-weight: 500;
+	font-weight: 450;
 	text-decoration: none;
 	white-space: nowrap;
 	transition:
@@ -317,7 +318,7 @@ main:has(.site-nav) {
 	overflow: hidden;
 	font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 	font-size: 0.875rem;
-	font-weight: 600;
+	font-weight: 500;
 	line-height: 1;
 	text-decoration: none;
 	white-space: nowrap;
@@ -376,7 +377,7 @@ main:has(.site-nav) {
 	height: 1.15rem;
 	padding: 0 0.25rem;
 	border-radius: 0.3rem;
-	border: 1px solid color-mix(in oklch, var(--border) 80%, transparent);
+	border: 1px solid var(--border);
 	background: color-mix(in oklch, var(--background) 70%, transparent);
 	font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 	font-size: 0.65rem;
@@ -387,9 +388,9 @@ main:has(.site-nav) {
 
 .site-nav__action--cta {
 	border-color: transparent;
-	background: linear-gradient(135deg, oklch(82% 0.14 190) 0%, oklch(70% 0.15 205) 100%);
-	color: oklch(12% 0.02 200);
-	box-shadow: 0 0 0 1px oklch(90% 0.1 195 / 0.3) inset;
+	background: var(--color-ink, var(--foreground));
+	color: var(--color-paper, var(--background));
+	box-shadow: 0 0 0 1px color-mix(in oklch, var(--color-ink, var(--foreground)) 30%, transparent) inset;
 	transition:
 		box-shadow 220ms ease,
 		filter 220ms ease;
@@ -397,7 +398,7 @@ main:has(.site-nav) {
 
 .site-nav__action--cta:hover {
 	filter: brightness(1.08);
-	box-shadow: 0 0 0 1px oklch(95% 0.1 195 / 0.5) inset;
+	box-shadow: 0 0 0 1px color-mix(in oklch, var(--color-ink, var(--foreground)) 50%, transparent) inset;
 }
 
 .site-nav__action--cta:hover .site-nav__action-label > span {
@@ -442,7 +443,7 @@ main:has(.site-nav) {
 		padding: 0 var(--site-nav-action-pad-x);
 		background: color-mix(in oklch, var(--secondary, var(--color-paper-3, #222)) 55%, transparent);
 		color: var(--muted-foreground);
-		border-color: color-mix(in oklch, var(--border) 70%, transparent);
+		border-color: var(--border);
 	}
 
 	.site-nav__action--search .site-nav__action-icon {
@@ -459,13 +460,13 @@ main:has(.site-nav) {
 @media (min-width: 1040px) {
 	.site-nav__action--search:hover {
 		background: color-mix(in oklch, var(--secondary, var(--color-paper-3, #222)) 75%, transparent);
-		border-color: color-mix(in oklch, var(--border) 90%, transparent);
+		border-color: color-mix(in oklch, var(--color-accent, oklch(74% 0.13 195)) 30%, var(--border));
 	}
 }
 
 .site-nav__action--search:focus-visible {
-	outline: 2px solid var(--ring, var(--color-focus, currentColor));
-	outline-offset: 2px;
+	outline: 2px solid color-mix(in oklch, var(--color-accent, oklch(74% 0.13 195)) 45%, transparent);
+	outline-offset: 1px;
 }
 
 .site-nav__menu-toggle {
@@ -574,13 +575,13 @@ main:has(.site-nav) {
 	margin-top: 0.75rem;
 	padding: 0.65rem 1rem;
 	border-radius: var(--site-nav-radius);
-	background: linear-gradient(135deg, oklch(82% 0.14 190) 0%, oklch(70% 0.15 205) 100%);
-	color: oklch(12% 0.02 200);
+	background: var(--color-ink, var(--foreground));
+	color: var(--color-paper, var(--background));
 	font-size: 1rem;
-	font-weight: 600;
+	font-weight: 500;
 	text-decoration: none;
 	width: fit-content;
-	box-shadow: 0 0 0 1px oklch(90% 0.1 195 / 0.3) inset;
+	box-shadow: 0 0 0 1px color-mix(in oklch, var(--color-ink, var(--foreground)) 30%, transparent) inset;
 	transition:
 		box-shadow 220ms ease,
 		filter 220ms ease;
@@ -588,7 +589,7 @@ main:has(.site-nav) {
 
 .site-nav__menu-cta:hover {
 	filter: brightness(1.08);
-	box-shadow: 0 0 0 1px oklch(95% 0.1 195 / 0.5) inset;
+	box-shadow: 0 0 0 1px color-mix(in oklch, var(--color-ink, var(--foreground)) 50%, transparent) inset;
 }
 
 .site-nav__menu-cta:hover span {

@@ -25,14 +25,6 @@ function nextIndex(current: number) {
 	return (current + 1) % HERO_HEADLINE_NAMES.length;
 }
 
-function pauseRegions() {
-	return [
-		document.getElementById("home-hero"),
-		document.querySelector(".home-aurora__hero-example"),
-		document.querySelector(".home-aurora__mvp"),
-	].filter((node): node is Element => node != null);
-}
-
 /**
  * Static “with” plus a cycling accent name. The name is the only thing that
  * slides; both stay inline so copy is “with ArkType” on one line.
@@ -63,22 +55,6 @@ export function HeroNameCycle() {
 	}, []);
 
 	useEffect(() => {
-		const enter = () => setPaused(true);
-		const leave = () => setPaused(false);
-		const regions = pauseRegions();
-		for (const el of regions) {
-			el.addEventListener("pointerenter", enter);
-			el.addEventListener("pointerleave", leave);
-		}
-		return () => {
-			for (const el of regions) {
-				el.removeEventListener("pointerenter", enter);
-				el.removeEventListener("pointerleave", leave);
-			}
-		};
-	}, []);
-
-	useEffect(() => {
 		if (reduceMotion || paused) return;
 
 		const tick = () => {
@@ -91,7 +67,11 @@ export function HeroNameCycle() {
 	}, [reduceMotion, paused]);
 
 	return (
-		<span className="home-aurora__cycle">
+		<span
+			className="home-aurora__cycle"
+			onPointerEnter={() => setPaused(true)}
+			onPointerLeave={() => setPaused(false)}
+		>
 			<span className="home-aurora__cycle-with">with{"\u00a0"}</span>
 			<span className="home-aurora__cycle-viewport">
 				{HERO_HEADLINE_NAMES.map((name, nameIndex) => {

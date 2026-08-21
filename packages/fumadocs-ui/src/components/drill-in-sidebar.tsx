@@ -504,6 +504,7 @@ function DrillInTree() {
 	return (
 		<div
 			className="relative overflow-hidden"
+			data-docs-sidebar-slide=""
 			style={height != null ? { height } : undefined}
 		>
 			<nav
@@ -516,9 +517,7 @@ function DrillInTree() {
 					drilled ? "absolute inset-x-0 top-0" : "relative",
 					drilled && "pointer-events-none",
 				)}
-				style={{
-					transform: drilled ? "translateX(-100%)" : "translateX(0)",
-				}}
+				style={drilled ? { transform: "translateX(-120%)" } : undefined}
 				aria-hidden={drilled}
 				{...(drilled ? { inert: true as const } : {})}
 			>
@@ -539,9 +538,7 @@ function DrillInTree() {
 					!reduceMotion && panelMotionClass,
 					!drilled && "pointer-events-none",
 				)}
-				style={{
-					transform: drilled ? "translateX(0)" : "translateX(100%)",
-				}}
+				style={drilled ? undefined : { transform: "translateX(120%)" }}
 				aria-hidden={!drilled}
 				{...(!drilled ? { inert: true as const } : {})}
 			>
@@ -632,10 +629,8 @@ function AccordionTree() {
 function AccordionNav({ className }: { className?: string }) {
 	return (
 		<div
-			className={cn(
-				"flex w-full flex-col gap-0.5 ps-4 pe-2 pb-4 min-[40rem]:ps-6",
-				className,
-			)}
+			data-docs-sidebar-tree=""
+			className={cn("flex w-full flex-col gap-0.5 pb-4", className)}
 		>
 			<AccordionTree />
 		</div>
@@ -732,9 +727,11 @@ function DocsSidebarShell({
 function DrillInNav({ className }: { className?: string }) {
 	return (
 		<div
+			data-docs-sidebar-tree=""
 			className={cn(
-				/* ps matches Site Nav / home shell gutter (1rem → 1.5rem @ 40rem) */
-				"flex w-full flex-col gap-0.5 ps-4 pe-2 pt-12 pb-4 min-[40rem]:ps-6",
+				/* Inline pad is --site-nav-gutter in docs-chrome.css (equal
+				 * gutters; pill left stays on the helm). Do not add Tailwind ps-*. */
+				"flex w-full flex-col gap-0.5 pt-12 pb-4",
 				className,
 			)}
 		>

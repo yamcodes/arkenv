@@ -31,8 +31,8 @@ describe("AIActions", () => {
 		const more = screen.getByRole("button", { name: "More page actions" });
 		expect(copy).toBeInTheDocument();
 		expect(more).toBeInTheDocument();
-		expect(copy.className).toContain("rounded-l-[0.375rem]");
-		expect(more.className).toContain("rounded-r-[0.375rem]");
+		expect(copy.className).toContain("rounded-l-sm");
+		expect(more.className).toContain("rounded-r-sm");
 	});
 
 	it("renders the inline Copy for LLM row on mobile", () => {

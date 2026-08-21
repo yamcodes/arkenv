@@ -130,7 +130,7 @@ export function WorksWith() {
 			<div className="home-aurora__works-marquee pause-on-hover">
 				<div
 					className="home-aurora__works-track animate-marquee"
-					style={{ ["--marquee-duration" as string]: "50s" }}
+					style={{ ["--marquee-duration" as string]: "60s" }}
 				>
 					<div className="home-aurora__works-set">
 						{worksWith.map((item) => (

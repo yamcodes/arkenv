@@ -1,5 +1,5 @@
 /**
- * Boot-time safety: terminal with a real ArkEnvError dump.
+ * Boot-time safety: terminal with a compact ArkEnvError dump.
  */
 export function FailFastShowcase() {
 	return (
@@ -10,11 +10,11 @@ export function FailFastShowcase() {
 		>
 			<header className="home-aurora__pitch-head">
 				<h2 id="home-boot" data-reveal="blur">
-					Fail fast at boot.
+					Fail-fast at boot
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					A missing variable shouldn&apos;t cause a silent production crash.
-					Catch configuration errors before the server even starts.
+					Missing or malformed variables shouldn&apos;t silently crash
+					production. ArkEnv fails loudly and early.
 				</p>
 			</header>
 
@@ -25,30 +25,28 @@ export function FailFastShowcase() {
 				role="img"
 				aria-label="Terminal running npm run dev, then an ArkEnvError dump"
 			>
-				<div className="home-aurora__tty-chrome">
-					<span className="home-aurora__tty-pill">
-						<span className="home-aurora__tty-glyph" aria-hidden="true">
-							{">_"}
-						</span>
-						npm run dev
-					</span>
-				</div>
 				<pre className="home-aurora__tty">
 					<code>
-						<span className="home-aurora__tty-ok">ready</span>
-						{" - started server on 0.0.0.0:3000, url: http://localhost:3000\n"}
-						<span className="home-aurora__tty-info">info</span>
-						{"  - loaded env from .env\n\n"}
-						<span className="home-aurora__tty-err">ArkEnvError</span>
-						{": Errors found while validating environment variables\n"}
-						{"  "}
+						<span
+							className="home-aurora__install-prompt-symbol"
+							aria-hidden="true"
+						>
+							{"$"}
+						</span>
+						{" npm run dev\n\n"}
+						{"ArkEnvError: "}
+						<span className="home-aurora__tty-err">
+							Errors found while validating environment variables
+						</span>
+						{"\n  "}
 						<span className="home-aurora__tty-key">DATABASE_URL</span>
 						{" must be a URL string (was "}
 						<span className="home-aurora__tty-val">[REDACTED]</span>
-						{")\n"}
-						{"  "}
+						{")\n  "}
 						<span className="home-aurora__tty-key">PORT</span>
-						{" must be a number (was a string)"}
+						{" must be a number (was "}
+						<span className="home-aurora__tty-val">a string</span>
+						{")"}
 					</code>
 				</pre>
 			</figure>

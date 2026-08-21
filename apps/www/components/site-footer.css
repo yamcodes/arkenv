@@ -1,13 +1,16 @@
+@import "../tokens.css";
+
 /* Shared site footer (home Ft5 + docs).
  * Default to fumadocs tokens — Tailwind's `--color-muted` is a *surface*,
  * so using it for text makes titles/meta invisible on dark docs chrome.
- * Aurora ink tokens are applied only under `.home-aurora`. */
+ * Aurora ink tokens are applied only under `.home-aurora`.
+ * Footer surface is `--color-paper-2`, same as the homepage trust bar. */
 
 .home-aurora__footer {
 	--sf-ink: var(--color-fd-foreground);
 	--sf-ink-2: var(--color-fd-muted-foreground);
 	--sf-muted: var(--color-fd-muted-foreground);
-	--sf-rule: var(--color-fd-border);
+	--sf-rule: var(--color-rule, var(--color-fd-border));
 	--sf-focus: var(--color-fd-ring);
 	--sf-font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 	--sf-font-outlier: var(--font-geist-mono), ui-monospace, monospace;
@@ -25,6 +28,7 @@
 	padding: var(--sf-space-xl) var(--home-gutter, var(--sf-space-sm)) 0;
 	display: grid;
 	gap: var(--sf-space-lg);
+	background: var(--color-paper-2);
 }
 
 .home-aurora .home-aurora__footer {
@@ -162,7 +166,8 @@
 .site-footer-bleed {
 	width: 100%;
 	margin-top: 0;
-	border-top: 1px solid var(--color-fd-border);
+	border-top: 1px solid var(--color-rule, var(--color-fd-border));
+	background: var(--color-paper-2);
 }
 
 /* Space page nav cards off the footer rule (not the old orphaned bleed margin) */
@@ -171,12 +176,13 @@
 }
 
 .site-footer-band {
+	position: relative;
 	width: 100%;
 	max-width: var(--fd-layout-width, 1400px);
 	margin-inline: auto;
-	/* Match Site Nav / home shell gutter */
+	/* Match Site Nav / home shell gutter. No extra pad below copyright. */
 	padding-inline: 1rem;
-	padding-bottom: 2rem;
+	background: var(--color-paper-2);
 }
 
 @media (min-width: 40rem) {
@@ -195,7 +201,8 @@
 
 .site-footer-band .home-aurora__footer {
 	margin-top: 0;
-	padding-top: 2rem;
+	padding-inline: 0;
+	padding-bottom: 0;
 }
 
 /* Pin docs footer text to fumadocs tokens (avoid Tailwind surface vars). */

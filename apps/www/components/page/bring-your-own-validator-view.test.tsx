@@ -5,19 +5,26 @@ import { BringYourOwnValidatorView } from "./bring-your-own-validator-view";
 describe("BringYourOwnValidatorView", () => {
 	it("shows one mixed snippet with no validator tabs", () => {
 		render(
-			<BringYourOwnValidatorView html='<pre class="shiki twoslash"><code>z.url()</code></pre>' />,
+			<BringYourOwnValidatorView
+				html='<pre class="shiki twoslash"><code>z.url()</code></pre>'
+				copyText={`export const env = arkenv({
+  DEBUG: z.boolean(),
+});`}
+			/>,
 		);
 
 		expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
 		expect(screen.queryByRole("tab")).not.toBeInTheDocument();
 		expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(
-			"Keep your existing validator.",
+			"Bring your own validator",
 		);
 		expect(screen.getByText(/mix and match/i).closest("p")).toHaveTextContent(
-			"Pass the ArkType, Zod, Valibot, or any Standard Schema you already have, or mix and match for incremental migration.",
+			"Use ArkType, Zod, Valibot, or any Standard Schema you already have. Mix and match for incremental migration.",
 		);
 		expect(
 			screen.getByRole("link", { name: "Standard Schema" }),
 		).toHaveAttribute("href", "/docs/core-concepts/standard-schema");
+		expect(screen.getByRole("button", { name: "Copy" })).toBeInTheDocument();
+		expect(document.querySelector(".home-aurora__mvp-shiki")).toBeTruthy();
 	});
 });

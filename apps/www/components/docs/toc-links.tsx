@@ -37,7 +37,10 @@ export function DocsTocLinks({
 	};
 
 	return (
-		<div className="mt-6 flex flex-col gap-3 border-t border-fd-border pt-4 first:mt-0 first:border-t-0 first:pt-0">
+		<div
+			data-docs-toc-footer=""
+			className="flex flex-col gap-3 border-t border-fd-border px-(--docs-toc-gutter) pt-5 mt-5 first:border-t-0 first:pt-0 first:mt-0"
+		>
 			<nav
 				aria-label="Page actions"
 				className="flex flex-col gap-2 text-sm text-fd-muted-foreground"

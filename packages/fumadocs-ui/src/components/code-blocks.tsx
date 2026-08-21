@@ -144,14 +144,16 @@ export function CodeBlock({
 					<figcaption className="flex-1 truncate">{title}</figcaption>
 					{Actions({
 						className: "-me-2",
-						children: allowCopy && <CopyButton containerRef={areaRef} />,
+						children: allowCopy && (
+							<CodeBlockCopyButton containerRef={areaRef} />
+						),
 					})}
 				</div>
 			) : (
 				Actions({
 					className:
 						"absolute top-3 right-2 z-2 backdrop-blur-lg rounded-lg text-fd-muted-foreground",
-					children: allowCopy && <CopyButton containerRef={areaRef} />,
+					children: allowCopy && <CodeBlockCopyButton containerRef={areaRef} />,
 				})
 			)}
 			<section
@@ -178,15 +180,22 @@ export function CodeBlock({
 	);
 }
 
-function CopyButton({
+export function CodeBlockCopyButton({
 	className,
 	containerRef,
+	text,
 	...props
 }: ComponentProps<"button"> & {
-	containerRef: RefObject<HTMLElement | null>;
+	containerRef?: RefObject<HTMLElement | null>;
+	text?: string;
 }) {
 	const [checked, onClick] = useCopyButton(() => {
-		const pre = containerRef.current?.getElementsByTagName("pre").item(0);
+		if (text !== undefined) {
+			void navigator.clipboard.writeText(text);
+			return;
+		}
+
+		const pre = containerRef?.current?.getElementsByTagName("pre").item(0);
 		if (!pre) return;
 
 		const clone = pre.cloneNode(true) as HTMLElement;
@@ -201,6 +210,7 @@ function CopyButton({
 		<button
 			type="button"
 			data-checked={checked || undefined}
+			data-codeblock-copy=""
 			className={cn(
 				buttonVariants({
 					className:
@@ -209,7 +219,7 @@ function CopyButton({
 				}),
 				className,
 			)}
-			aria-label={checked ? "Copied Text" : "Copy Text"}
+			aria-label={checked ? "Copied" : "Copy"}
 			onClick={onClick}
 			{...props}
 		>

@@ -11,10 +11,16 @@ export const env = arkenv({
   DEBUG: z.boolean(),
 });`;
 
+const cut = "// ---cut---\n";
+
+export const BYOV_VISIBLE = BYOV_CODE.includes(cut)
+	? BYOV_CODE.slice(BYOV_CODE.indexOf(cut) + cut.length)
+	: BYOV_CODE;
+
 /**
  * Pitch: same ArkEnv API across ArkType, Zod, and Valibot — mixed in one schema.
  */
 export async function BringYourOwnValidator() {
 	const html = await highlightTwoslash(BYOV_CODE, "arktype");
-	return <BringYourOwnValidatorView html={html} />;
+	return <BringYourOwnValidatorView html={html} copyText={BYOV_VISIBLE} />;
 }

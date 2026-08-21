@@ -105,6 +105,7 @@ export const highlightHeroMvpExamples = cache(async () =>
 				validator: snippet.validator,
 				importLine: snippet.importLine,
 				html: await highlightHeroTwoslash(snippet),
+				code: snippet.code,
 			}),
 		),
 	),

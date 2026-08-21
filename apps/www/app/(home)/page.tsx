@@ -63,12 +63,6 @@ export default function HomePage() {
 							dependencies.
 						</p>
 					</div>
-					<div
-						className="home-aurora__hero-example rise"
-						style={{ animationDelay: "280ms" }}
-					>
-						<HeroMvpExampleSlot />
-					</div>
 					<div className="home-aurora__hero-ctas">
 						<div
 							className="home-aurora__install-row rise"
@@ -78,6 +72,12 @@ export default function HomePage() {
 							<StarUsButton />
 							<QuickstartButton />
 						</div>
+					</div>
+					<div
+						className="home-aurora__hero-example rise"
+						style={{ animationDelay: "280ms" }}
+					>
+						<HeroMvpExampleSlot />
 					</div>
 					<div
 						className="home-aurora__trust rise"

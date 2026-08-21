@@ -74,12 +74,12 @@ describe("ArkenvSearchDialog", () => {
 		searchState.query = { isLoading: false, data: "empty" };
 	});
 
-	it("keeps the capsule class and collapsed list while the query is empty", () => {
+	it("keeps the overlay class and collapsed list while the query is empty", () => {
 		render(<ArkenvSearchDialog open onOpenChange={vi.fn()} />);
 
 		const dialog = screen.getByRole("dialog");
 		expect(dialog).toHaveClass("arkenv-search-dialog");
-		expect(dialog).toHaveClass("rounded-full");
+		expect(dialog).not.toHaveClass("rounded-full");
 		expect(dialog.querySelector("[data-empty='true']")).toBeTruthy();
 	});
 
@@ -100,7 +100,7 @@ describe("ArkenvSearchDialog", () => {
 
 		const dialog = screen.getByRole("dialog");
 		expect(dialog).toHaveClass("arkenv-search-dialog");
-		expect(dialog).toHaveClass("rounded-full");
+		expect(dialog).not.toHaveClass("rounded-full");
 		expect(dialog.querySelector("[data-empty='false']")).toBeTruthy();
 		expect(screen.getByText("Getting started")).toBeInTheDocument();
 	});
@@ -112,7 +112,7 @@ describe("ArkenvSearchDialog", () => {
 		render(<ArkenvSearchDialog open onOpenChange={vi.fn()} />);
 
 		const dialog = screen.getByRole("dialog");
-		expect(dialog).toHaveClass("rounded-full");
+		expect(dialog).not.toHaveClass("rounded-full");
 		expect(dialog.querySelector("[data-empty='false']")).toBeTruthy();
 	});
 });

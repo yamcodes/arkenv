@@ -19,11 +19,7 @@ export function ScrollReveal() {
 		const els = Array.from(
 			document.querySelectorAll<HTMLElement>("[data-reveal]"),
 		);
-		const foldLine = window.innerHeight * 0.92;
-		const pending = els.filter((el) => {
-			if (el.dataset.revealShown === "1") return false;
-			return el.getBoundingClientRect().top > foldLine;
-		});
+		const pending = els.filter((el) => el.dataset.revealShown !== "1");
 		if (pending.length === 0) return;
 
 		for (const el of pending) el.classList.add("reveal-hidden");
@@ -39,7 +35,7 @@ export function ScrollReveal() {
 					observer.unobserve(el);
 				}
 			},
-			{ rootMargin: "0px 0px -8% 0px" },
+			{ rootMargin: "0px 0px -24px 0px" },
 		);
 
 		for (const el of pending) observer.observe(el);

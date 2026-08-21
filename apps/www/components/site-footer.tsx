@@ -10,16 +10,22 @@ import { STACKBLITZ_PLAYGROUND_URL } from "~/lib/stackblitz";
 export function SiteFooter({
 	className,
 	reveal = false,
+	rails = false,
 }: {
 	className?: string;
 	/**
 	 * Enable home-page scroll-reveal attribute.
 	 */
 	reveal?: boolean;
+	/**
+	 * Docs cage: outer verticals continue through the footer. Home omits this —
+	 * its rails already live on `.home-aurora__shell`.
+	 */
+	rails?: boolean;
 }) {
 	const githubRepoUrl = getGithubRepoUrl();
 
-	return (
+	const footer = (
 		<footer
 			className={className ?? "home-aurora__footer"}
 			{...(reveal ? { "data-reveal": "fade" as const } : {})}
@@ -164,5 +170,14 @@ export function SiteFooter({
 				</span>
 			</div>
 		</footer>
+	);
+
+	if (!rails) return footer;
+
+	return (
+		<div className="site-footer-bleed">
+			<div className="docs-outer-rails" aria-hidden="true" />
+			<div className="site-footer-band">{footer}</div>
+		</div>
 	);
 }

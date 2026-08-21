@@ -1,3 +1,4 @@
+import { CodeBlockCopyButton } from "@arkenv/fumadocs-ui/components";
 import { SiTypescript } from "@icons-pack/react-simple-icons";
 import type { ReactNode } from "react";
 
@@ -13,25 +14,29 @@ function fileMark(title: string | undefined, icon: ReactNode | undefined) {
 	return null;
 }
 
+type WindowChromeProps = {
+	title?: string;
+	url?: string;
+	icon?: ReactNode;
+	className?: string;
+	copyText?: string;
+	children?: ReactNode;
+};
+
 /**
- * Docs-style codeblock header: language icon, filename, optional actions.
+ * Docs-style codeblock header: language icon, filename, optional copy.
  */
 export function WindowChrome({
 	title,
 	url,
 	icon,
 	className,
+	copyText,
 	children,
-}: {
-	title?: string;
-	url?: string;
-	icon?: ReactNode;
-	className?: string;
-	children?: ReactNode;
-}) {
+}: WindowChromeProps) {
 	const caption = title ?? url;
 	const mark = fileMark(title, icon);
-	const tools = children != null;
+	const tools = children != null || copyText !== undefined;
 
 	return (
 		<div
@@ -51,6 +56,7 @@ export function WindowChrome({
 			{caption ? (
 				<span className="home-aurora__window-title">{caption}</span>
 			) : null}
+			{copyText !== undefined ? <CodeBlockCopyButton text={copyText} /> : null}
 			{children}
 		</div>
 	);

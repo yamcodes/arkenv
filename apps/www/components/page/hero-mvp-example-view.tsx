@@ -17,6 +17,7 @@ export type HeroMvpExample = {
 	validator: HeroMvpValidatorId;
 	importLine: string;
 	html: string;
+	code: string;
 };
 
 type HeroMvpExampleViewProps = {
@@ -32,6 +33,7 @@ export function HeroMvpExampleView({ examples }: HeroMvpExampleViewProps) {
 	const panes = examples.filter((item) => item.host === "vanilla");
 	if (panes.length === 0) return null;
 	const panelId = `${baseId}-panel`;
+	const active = panes.find((item) => item.validator === validator) ?? panes[0];
 
 	return (
 		<div className="home-aurora__mvp">
@@ -52,7 +54,7 @@ export function HeroMvpExampleView({ examples }: HeroMvpExampleViewProps) {
 			/>
 
 			<figure className="home-aurora__code-window home-aurora__mvp-frame">
-				<WindowChrome title="./env.ts" />
+				<WindowChrome title="./env.ts" copyText={active.code} />
 				<div role="tabpanel" id={panelId} className="home-aurora__mvp-body">
 					{panes.map((item) => {
 						const active = item.validator === validator;

@@ -83,23 +83,41 @@ describe("HeroNameCycle", () => {
 		expect(currentHeadline()?.textContent).toBe("ArkType");
 	});
 
-	it("pauses while the pointer is over the headline", () => {
+	it("pauses while the pointer is over the cycling name", () => {
 		vi.useFakeTimers();
 		render(
 			<h1 id="home-hero">
+				Typesafe environment variables
+				<HeroNameCycle />
+			</h1>,
+		);
+
+		const cycle = document.querySelector(".home-aurora__cycle")!;
+		fireEvent.pointerEnter(cycle);
+		act(() => {
+			vi.advanceTimersByTime(HERO_FIRST_DWELL_MS + HERO_CYCLE_MS);
+		});
+		expect(currentHeadline()?.textContent).toBe("ArkType");
+
+		fireEvent.pointerLeave(cycle);
+		act(() => {
+			vi.advanceTimersByTime(HERO_DWELL_MS);
+		});
+		expect(currentHeadline()?.textContent).toBe("Zod");
+	});
+
+	it("does not pause when the pointer is over the rest of the headline", () => {
+		vi.useFakeTimers();
+		render(
+			<h1 id="home-hero">
+				Typesafe environment variables
 				<HeroNameCycle />
 			</h1>,
 		);
 
 		fireEvent.pointerEnter(document.getElementById("home-hero")!);
 		act(() => {
-			vi.advanceTimersByTime(HERO_FIRST_DWELL_MS + HERO_CYCLE_MS);
-		});
-		expect(currentHeadline()?.textContent).toBe("ArkType");
-
-		fireEvent.pointerLeave(document.getElementById("home-hero")!);
-		act(() => {
-			vi.advanceTimersByTime(HERO_DWELL_MS);
+			vi.advanceTimersByTime(HERO_FIRST_DWELL_MS);
 		});
 		expect(currentHeadline()?.textContent).toBe("Zod");
 	});

@@ -348,7 +348,7 @@ export function AIActions({
 							type="button"
 							className={cn(
 								controlClassName,
-								"rounded-l-[0.375rem] rounded-r-none gap-2",
+								"rounded-l-sm rounded-r-none gap-2",
 							)}
 							onClick={copyAndClose}
 						>
@@ -360,14 +360,14 @@ export function AIActions({
 								aria-label="More page actions"
 								className={cn(
 									controlClassName,
-									"rounded-l-none rounded-r-[0.375rem] border-l-0 px-2",
+									"rounded-l-none rounded-r-sm border-l-0 px-2",
 								)}
 							>
 								<ChevronDown className="size-4" />
 							</PopoverTrigger>
 							<PopoverContent
 								align="end"
-								className="p-1"
+								className="p-1 rounded-md"
 								sideOffset={8}
 								data-docs-ai-menu-popover=""
 								style={{ width: "max-content" }}

@@ -13,6 +13,33 @@ function firstRadiusPx(value: string): number {
 }
 
 test.describe("Docs search dialog", () => {
+	test("collapsed overlay matches the navbar search control radius", async ({
+		page,
+	}) => {
+		await page.setViewportSize({ width: 1280, height: 800 });
+		await page.goto("/docs");
+
+		const trigger = page.getByRole("button", { name: "Open Search" });
+		const triggerRadius = await trigger.evaluate(
+			(el) => getComputedStyle(el).borderRadius,
+		);
+
+		await trigger.click();
+		const dialog = page.getByRole("dialog");
+		await expect(dialog).toBeVisible();
+
+		const dialogRadius = await dialog.evaluate(
+			(el) => getComputedStyle(el).borderRadius,
+		);
+		expect(
+			firstRadiusPx(dialogRadius),
+			`collapsed dialog should match search trigger (dialog ${dialogRadius}, trigger ${triggerRadius})`,
+		).toBe(firstRadiusPx(triggerRadius));
+
+		await page.keyboard.press("Escape");
+		await expect(dialog).toBeHidden();
+	});
+
 	test("mobile results are not pill-clipped", async ({ page }) => {
 		await page.setViewportSize({ width: 375, height: 667 });
 		await page.goto("/docs");

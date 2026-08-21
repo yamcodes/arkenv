@@ -3,6 +3,7 @@ import { WindowChrome } from "./window-chrome";
 
 type BringYourOwnValidatorViewProps = {
 	html: string;
+	copyText: string;
 };
 
 /**
@@ -10,6 +11,7 @@ type BringYourOwnValidatorViewProps = {
  */
 export function BringYourOwnValidatorView({
 	html,
+	copyText,
 }: BringYourOwnValidatorViewProps) {
 	return (
 		<section
@@ -19,12 +21,12 @@ export function BringYourOwnValidatorView({
 		>
 			<header className="home-aurora__pitch-head">
 				<h2 id="home-modular" data-reveal="blur">
-					Keep your existing validator.
+					Bring your own validator
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					Pass the ArkType, Zod, Valibot, or any{" "}
+					Use ArkType, Zod, Valibot, or any{" "}
 					<a href="/docs/core-concepts/standard-schema">Standard Schema</a> you
-					already have, or mix and match for incremental migration.
+					already have. Mix and match for incremental migration.
 				</p>
 			</header>
 
@@ -33,8 +35,8 @@ export function BringYourOwnValidatorView({
 				data-reveal
 				style={{ ["--reveal-delay" as string]: "140ms" }}
 			>
-				<WindowChrome title="./env.ts" />
-				<HeroTwoslashHtml html={html} active className="home-aurora__shiki" />
+				<WindowChrome title="./env.ts" copyText={copyText} />
+				<HeroTwoslashHtml html={html} active />
 			</figure>
 		</section>
 	);

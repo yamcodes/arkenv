@@ -21,12 +21,12 @@ type Props = SharedProps & {
 };
 
 /**
- * Fumadocs fetch search dialog — capsule overlays Site Nav on mobile
- * (same inset / gutter / bar height; see theme.css).
+ * Fumadocs fetch search dialog — overlays Site Nav on mobile (same inset /
+ * gutter / bar height; see theme.css).
  *
- * `rounded-full` is the collapsed (input-only) overlay. Expanded radius is
- * owned by `.arkenv-search-dialog:has([data-empty="false"])` in theme.css so
- * Fumadocs `overflow-hidden` does not clip the list into a pill mask.
+ * Radius is `--radius-control` on `.arkenv-search-dialog` in theme.css so
+ * the overlay matches the navbar search trigger, not a pill.
+ * Fumadocs `overflow-hidden` clips the list to that same radius.
  */
 export default function ArkenvSearchDialog({
 	api,
@@ -50,8 +50,7 @@ export default function ArkenvSearchDialog({
 			{...props}
 		>
 			<SearchDialogOverlay />
-			{/* Capsule overlays Site Nav on mobile — expanded radius is theme.css */}
-			<SearchDialogContent className="arkenv-search-dialog rounded-full">
+			<SearchDialogContent className="arkenv-search-dialog">
 				<SearchDialogHeader className="arkenv-search-dialog__bar">
 					<SearchDialogIcon />
 					<SearchDialogInput />
