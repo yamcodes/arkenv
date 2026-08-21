@@ -4,8 +4,11 @@ import { fileURLToPath } from "node:url";
 import ts from "typescript";
 
 const require = createRequire(import.meta.url);
-const zodDts = require.resolve("zod").replace(/\.cjs$/, ".d.ts");
-const valibotDts = require.resolve("valibot").replace(/\.cjs$/, ".d.ts");
+const zodDir = path.dirname(require.resolve("zod"));
+const zodDts = path.join(zodDir, "index.d.ts");
+
+const valibotDir = path.dirname(require.resolve("valibot"));
+const valibotDts = path.join(valibotDir, "index.d.mts");
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 export const root = path.resolve(currentDir, "../../..");
@@ -94,8 +97,8 @@ export const arktypeTwoslashVfs = {
 			"@/env/server": ["env/server.ts"],
 			"~~/env/client": ["env/client.ts"],
 			"~~/env/server": ["env/server.ts"],
-			zod: [zodDts],
-			valibot: [valibotDts],
+			zod: [zodDts, path.join(zodDir, "index.d.cts")],
+			valibot: [valibotDts, path.join(valibotDir, "index.d.cts")],
 		},
 		types: ["node"],
 	},
