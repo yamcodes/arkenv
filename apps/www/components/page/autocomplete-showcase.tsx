@@ -30,7 +30,6 @@ export function AutocompleteShowcase() {
 				className="home-aurora__pitch-visual home-aurora__code-window home-aurora__ide"
 				data-reveal
 				style={{ ["--reveal-delay" as string]: "140ms" }}
-				role="img"
 				aria-label="VS Code autocomplete on env, suggesting DATABASE_URL as a string"
 			>
 				<WindowChrome title="./app.ts" copyText={AUTOCOMPLETE_COPY} />

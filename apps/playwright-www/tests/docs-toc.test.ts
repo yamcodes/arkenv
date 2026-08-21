@@ -59,11 +59,12 @@ test.describe("Docs table of contents", () => {
 
 		const heading = page.locator("#issue-codes");
 		await expect(heading).toBeInViewport();
-		const headingTop = await heading.evaluate(
-			(element) => element.getBoundingClientRect().top,
-		);
-		expect(headingTop).toBeGreaterThan(100);
-		expect(headingTop).toBeLessThan(150);
+		await expect
+			.poll(async () => heading.evaluate((el) => el.getBoundingClientRect().top))
+			.toBeGreaterThan(100);
+		await expect
+			.poll(async () => heading.evaluate((el) => el.getBoundingClientRect().top))
+			.toBeLessThan(150);
 
 		await expect(page.locator("#secret-redaction")).toBeInViewport();
 	});
