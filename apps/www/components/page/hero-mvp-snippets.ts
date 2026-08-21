@@ -27,7 +27,7 @@ function publicUrlKey(host: HeroMvpHostId) {
 
 export type HeroMvpEnvField = {
 	name: string;
-	type: "string" | "number";
+	type: "string" | "number" | "boolean";
 };
 
 /**
@@ -41,6 +41,7 @@ export function heroMvpEnvType(
 	const publicKey = publicUrlKey(host);
 	if (publicKey) fields.push({ name: publicKey, type: "string" });
 	fields.push({ name: "PORT", type: "number" });
+	fields.push({ name: "CI", type: "boolean" });
 	return fields;
 }
 
@@ -65,11 +66,13 @@ function schemaFields(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
 		const fields = [`  DATABASE_URL: "string.url",`];
 		if (publicKey) fields.push(`  ${publicKey}: "string.url",`);
 		fields.push(`  PORT: "0 <= number.integer <= 65535 = 3000",`);
+		fields.push(`  CI: "boolean = false",`);
 		return fields.join("\n");
 	}
 	const fields = ["  DATABASE_URL: z.url(),"];
 	if (publicKey) fields.push(`  ${publicKey}: z.url(),`);
 	fields.push("  PORT: z.number().int().min(0).max(65535).default(3000),");
+	fields.push("  CI: z.boolean().default(false),");
 	return fields.join("\n");
 }
 

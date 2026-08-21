@@ -22,9 +22,9 @@ import {
 import { SiteFooter } from "~/components/site-footer";
 
 export const metadata: Metadata = {
-	title: "ArkEnv - TypeScript environment variables",
+	title: "ArkEnv – Typesafe environment variables for TypeScript",
 	description:
-		"Typesafe environment variables for ArkType, Zod, Valibot, and any Standard Schema.",
+		"Typesafe environment variables for ArkType, Zod, Valibot, and any Standard Schema. Write a schema in your existing validator with zero boilerplate.",
 };
 
 export default function HomePage() {
@@ -32,15 +32,15 @@ export default function HomePage() {
 		<div className="home-aurora__shell">
 			<section className="home-aurora__intro" aria-labelledby="home-hero">
 				<HeroPlaygroundProvider>
+					<div
+						className="home-aurora__badge rise"
+						style={{ animationDelay: "40ms" }}
+					>
+						<AnnouncementBadge href="/docs/validating-your-environment" new>
+							Next.js, Netlify presets
+						</AnnouncementBadge>
+					</div>
 					<div className="home-aurora__hero-copy">
-						<div
-							className="home-aurora__badge rise"
-							style={{ animationDelay: "40ms" }}
-						>
-							<AnnouncementBadge href="/docs/validating-your-environment" new>
-								Next.js, Netlify presets
-							</AnnouncementBadge>
-						</div>
 						<h1 id="home-hero" className="home-aurora__tagline">
 							<span
 								className="home-aurora__lead rise-blur"

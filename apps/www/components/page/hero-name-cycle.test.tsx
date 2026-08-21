@@ -1,7 +1,8 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
 	HERO_CYCLE_MS,
+	HERO_DWELL_MS,
 	HERO_FIRST_DWELL_MS,
 	HERO_HEADLINE_NAMES,
 	HeroNameCycle,
@@ -80,6 +81,27 @@ describe("HeroNameCycle", () => {
 			vi.advanceTimersByTime(HERO_CYCLE_MS);
 		});
 		expect(currentHeadline()?.textContent).toBe("ArkType");
+	});
+
+	it("pauses while the pointer is over the headline", () => {
+		vi.useFakeTimers();
+		render(
+			<h1 id="home-hero">
+				<HeroNameCycle />
+			</h1>,
+		);
+
+		fireEvent.pointerEnter(document.getElementById("home-hero")!);
+		act(() => {
+			vi.advanceTimersByTime(HERO_FIRST_DWELL_MS + HERO_CYCLE_MS);
+		});
+		expect(currentHeadline()?.textContent).toBe("ArkType");
+
+		fireEvent.pointerLeave(document.getElementById("home-hero")!);
+		act(() => {
+			vi.advanceTimersByTime(HERO_DWELL_MS);
+		});
+		expect(currentHeadline()?.textContent).toBe("Zod");
 	});
 
 	it("stays on ArkType when the user prefers reduced motion", () => {

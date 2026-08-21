@@ -146,7 +146,7 @@ describe("hero playground sync", () => {
 		).not.toBeInTheDocument();
 	});
 
-	it("keeps cycling the H1 when the pointer enters the example", () => {
+	it("pauses the H1 when the pointer enters the example", () => {
 		vi.useFakeTimers();
 		renderPlayground();
 
@@ -159,7 +159,7 @@ describe("hero playground sync", () => {
 		});
 
 		expect(document.querySelector("[data-pos='current']")?.textContent).toBe(
-			"Zod",
+			"ArkType",
 		);
 		expect(screen.getByRole("tab", { name: "ArkType" })).toHaveAttribute(
 			"aria-selected",

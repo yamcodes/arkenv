@@ -250,21 +250,26 @@
 		align-items: stretch;
 	}
 
-	.home-aurora__hero-copy {
+	.home-aurora__badge {
 		grid-column: 1;
 		grid-row: 1;
 	}
 
+	.home-aurora__hero-copy {
+		grid-column: 1;
+		grid-row: 2;
+	}
+
 	.home-aurora__hero-example {
 		grid-column: 2;
-		grid-row: 1 / span 2;
+		grid-row: 2 / span 2;
 		align-self: start;
 		margin-block: 0;
 	}
 
 	.home-aurora__hero-ctas {
 		grid-column: 1;
-		grid-row: 2;
+		grid-row: 3;
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-xl);
@@ -274,7 +279,7 @@
 
 	.home-aurora__trust {
 		grid-column: 1 / -1;
-		grid-row: 3;
+		grid-row: 4;
 	}
 }
 
@@ -434,8 +439,8 @@
 	opacity: 0;
 	transform: translateY(0.35em);
 	transition:
-		opacity 400ms var(--ease-out),
-		transform 400ms var(--ease-out);
+		opacity 375ms var(--ease-out),
+		transform 375ms var(--ease-out);
 }
 
 .home-aurora__cycle-item:not([data-pos="current"]) {
@@ -460,11 +465,12 @@
 	max-width: min(40rem, 100%);
 	min-width: 0;
 	font-family: var(--font-body);
-	font-size: clamp(1rem, 0.25vw + 0.95rem, 1.125rem);
-	line-height: 1.55;
-	color: var(--color-muted);
+	font-size: var(--text-md);
+	line-height: 1.75rem;
 	font-weight: 400;
+	color: var(--color-muted);
 	overflow-wrap: anywhere;
+	-webkit-font-smoothing: antialiased;
 }
 
 .home-aurora__summary code {
@@ -692,9 +698,10 @@
 	white-space: nowrap;
 	font-family: var(--font-display);
 	font-size: var(--text-sm);
-	font-weight: 500;
-	letter-spacing: -0.01em;
-	color: var(--color-muted);
+	font-weight: 400;
+	letter-spacing: -0.015em;
+	line-height: 1.2;
+	color: var(--color-ink-2);
 }
 
 .home-aurora__works-marquee {
@@ -1219,12 +1226,12 @@
 	padding: 0.15rem 0;
 	border: 0;
 	background: transparent;
-	color: var(--color-muted);
-	font-family: var(--font-body);
+	color: var(--color-ink-2);
+	font-family: var(--font-display);
 	font-size: var(--text-sm);
 	font-weight: 400;
-	letter-spacing: -0.01em;
-	line-height: 1.3;
+	letter-spacing: -0.015em;
+	line-height: 1.2;
 	text-decoration: none;
 	cursor: pointer;
 	white-space: nowrap;
@@ -1232,7 +1239,7 @@
 }
 
 .home-aurora__install-prompt:visited {
-	color: var(--color-muted);
+	color: var(--color-ink-2);
 }
 
 @media (hover: hover) {
@@ -2524,10 +2531,11 @@
 	margin: 0;
 	max-width: 34rem;
 	font-family: var(--font-body);
-	font-size: clamp(1rem, 0.2vw + 0.95rem, 1.125rem);
+	font-size: var(--text-md);
 	font-weight: 400;
-	line-height: 1.5;
+	line-height: 1.75rem;
 	color: var(--color-muted);
+	-webkit-font-smoothing: antialiased;
 }
 
 .home-aurora__outro-cta {

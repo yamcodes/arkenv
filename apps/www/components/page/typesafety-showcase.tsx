@@ -57,10 +57,8 @@ export function TypeSafetyShowcase() {
 							<span className="home-aurora__ide-type">number</span>
 						</li>
 						<li>
-							<span className="home-aurora__ide-name">NODE_ENV</span>
-							<span className="home-aurora__ide-type">
-								&quot;development&quot; | &quot;production&quot;
-							</span>
+							<span className="home-aurora__ide-name">CI</span>
+							<span className="home-aurora__ide-type">boolean</span>
 						</li>
 					</ul>
 				</figure>

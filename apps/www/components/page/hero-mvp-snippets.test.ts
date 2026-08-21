@@ -30,16 +30,19 @@ describe("hero MVP snippets", () => {
 		expect(heroMvpEnvType("vanilla", "arktype")).toEqual([
 			{ name: "DATABASE_URL", type: "string" },
 			{ name: "PORT", type: "number" },
+			{ name: "CI", type: "boolean" },
 		]);
 		expect(heroMvpEnvType("vite", "arktype")).toEqual([
 			{ name: "DATABASE_URL", type: "string" },
 			{ name: "VITE_API_URL", type: "string" },
 			{ name: "PORT", type: "number" },
+			{ name: "CI", type: "boolean" },
 		]);
 		expect(heroMvpEnvType("next", "zod")).toEqual([
 			{ name: "DATABASE_URL", type: "string" },
 			{ name: "NEXT_PUBLIC_API_URL", type: "string" },
 			{ name: "PORT", type: "number" },
+			{ name: "CI", type: "boolean" },
 		]);
 	});
 
@@ -54,7 +57,7 @@ describe("hero MVP snippets", () => {
 		}
 	});
 
-	it("mirrors DATABASE_URL and PORT with ArkType bounds, not number.port", () => {
+	it("mirrors DATABASE_URL, PORT, and CI with ArkType bounds, not number.port", () => {
 		const vanilla = HERO_MVP_SNIPPETS.filter(
 			(snippet) => snippet.host === "vanilla",
 		);
@@ -65,10 +68,16 @@ describe("hero MVP snippets", () => {
 		expect(arktype?.code).toContain(
 			'PORT: "0 <= number.integer <= 65535 = 3000"',
 		);
+		expect(arktype?.code).toContain('CI: "boolean = false"');
 		expect(arktype?.code).not.toContain("number.port");
+		expect(arktype?.code).not.toContain("NODE_ENV");
+		expect(arktype?.code).not.toContain("LOG_LEVEL");
 		expect(zod?.code).toContain("DATABASE_URL: z.url()");
 		expect(zod?.code).toContain(
 			"PORT: z.number().int().min(0).max(65535).default(3000)",
 		);
+		expect(zod?.code).toContain("CI: z.boolean().default(false)");
+		expect(zod?.code).not.toContain("NODE_ENV");
+		expect(zod?.code).not.toContain("LOG_LEVEL");
 	});
 });
