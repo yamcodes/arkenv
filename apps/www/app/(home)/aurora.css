@@ -267,10 +267,14 @@
 		grid-row: 2;
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
 		gap: var(--space-xl);
 		margin-top: 0;
 		min-height: 0;
+	}
+
+	.home-aurora__trust {
+		grid-column: 1 / -1;
+		grid-row: 3;
 	}
 }
 
@@ -562,8 +566,8 @@
 }
 
 /*
- * Outro: command pill + “Read the docs” on one row; copy-prompt sits
- * under the pill.
+ * Outro: command pill + “Read the docs” on one row; audience tabs
+ * sit over the pill.
  */
 .home-aurora__install-row--outro {
 	display: grid;
@@ -580,27 +584,69 @@
 		display: contents;
 	}
 
-	.home-aurora__install-row--outro .home-aurora__install-copy {
+	.home-aurora__install-row--outro .home-aurora__install-tabs {
 		grid-column: 1;
 		grid-row: 1;
 	}
 
-	.home-aurora__install-row--outro .home-aurora__install-links {
+	.home-aurora__install-row--outro .home-aurora__install-copy {
 		grid-column: 1;
 		grid-row: 2;
 	}
 
 	.home-aurora__install-row--outro .home-aurora__outro-docs {
 		grid-column: 2;
-		grid-row: 1;
+		grid-row: 2;
 		align-self: center;
 	}
 }
 
 /* Hallmark · component: social-proof · genre: atmospheric · theme: Aurora
- * archetype: quote (hero) + Works with ticker (below the hero)
+ * archetype: trust bar (quote + stack marquee)
  * states: default · reduced-motion(pause marquee via globals)
  */
+.home-aurora__trust {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-md);
+	min-width: 0;
+	max-width: 100%;
+	margin-top: var(--space-md);
+	padding-block: var(--space-md);
+	border-block: var(--rule-hair) solid var(--color-rule);
+}
+
+@media (min-width: 64rem) {
+	.home-aurora__trust {
+		flex-direction: row;
+		align-items: center;
+		gap: var(--space-md);
+		margin-top: var(--space-lg);
+		padding-block: var(--space-md);
+	}
+
+	.home-aurora__trust .home-aurora__proof-quote {
+		flex: 0 1 auto;
+		width: max-content;
+		max-width: 42%;
+		padding-inline-end: 0;
+	}
+
+	.home-aurora__trust .home-aurora__works {
+		flex: 1 1 0;
+		min-width: 0;
+		margin: 0;
+		padding: 0 0 0 var(--space-md);
+		border-block-start: 0;
+		border-inline-start: var(--rule-hair) solid
+			color-mix(in oklch, var(--color-ink) 10%, transparent);
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: var(--space-md);
+	}
+}
+
 .home-aurora__proof-quote {
 	display: flex;
 	align-items: center;
@@ -673,12 +719,13 @@
 	width: 100%;
 	min-width: 0;
 	max-width: 100%;
-	margin: var(--space-md) 0 0;
-	padding-block: var(--space-lg) var(--space-xl);
-	border-top: var(--rule-hair) solid var(--color-rule);
+	margin: 0;
+	padding: 0;
 }
 
 .home-aurora__works-label {
+	flex-shrink: 0;
+	white-space: nowrap;
 	font-family: var(--font-display);
 	font-size: var(--text-sm);
 	font-weight: 500;
@@ -687,10 +734,23 @@
 }
 
 .home-aurora__works-marquee {
+	flex: 1 1 0;
 	min-width: 0;
 	overflow: hidden;
-	mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
-	-webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+	mask-image: linear-gradient(
+		to right,
+		transparent,
+		#000 15%,
+		#000 85%,
+		transparent
+	);
+	-webkit-mask-image: linear-gradient(
+		to right,
+		transparent,
+		#000 15%,
+		#000 85%,
+		transparent
+	);
 }
 
 .home-aurora__works-track {
@@ -722,8 +782,8 @@
 }
 
 .home-aurora__works-logo-icon {
-	width: 1.1rem;
-	height: 1.1rem;
+	width: 1.75rem;
+	height: 1.75rem;
 }
 
 .home-aurora__works-logo-name {
@@ -1260,8 +1320,15 @@
 	text-overflow: ellipsis;
 }
 
-.home-aurora__install-prompt-token {
-	color: var(--color-accent);
+.home-aurora__install-copy-label {
+	flex: 1;
+	min-width: 0;
+	font-family: var(--font-display);
+	font-size: clamp(0.875rem, 0.2vw + 0.85rem, 0.95rem);
+	font-weight: 500;
+	letter-spacing: -0.01em;
+	line-height: 1.4;
+	white-space: nowrap;
 }
 
 .home-aurora__install-copy-affordance {

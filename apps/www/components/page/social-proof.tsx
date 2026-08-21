@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 /**
- * Colin McDonnell quote — the hero’s social proof, on its own so it can breathe.
+ * Colin McDonnell quote — authority half of the hero trust bar.
  */
 export function SocialProof() {
 	return (

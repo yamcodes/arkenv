@@ -121,12 +121,12 @@ function LogoTile({ item }: { item: LogoItem }) {
 }
 
 /**
- * Full-width “Works with your stack” ticker under the hero.
+ * “Works with your stack” ticker — ecosystem half of the hero trust bar.
  */
 export function WorksWith() {
 	return (
 		<section className="home-aurora__works" aria-label="Works with your stack">
-			<span className="home-aurora__works-label">Works with your stack</span>
+			<span className="home-aurora__works-label">Works with</span>
 			<div className="home-aurora__works-marquee pause-on-hover">
 				<div
 					className="home-aurora__works-track animate-marquee"

@@ -1,21 +1,49 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
-import { getGithubRepoUrl } from "~/lib/github-links";
 import { InstallPanel } from "./install-panel";
 
 describe("InstallPanel", () => {
-	it("shows the command pill, copy-prompt, and view-repo actions", () => {
+	it("starts on For humans with the install command", () => {
 		render(<InstallPanel />);
 
+		expect(screen.getByRole("tab", { name: "For humans" })).toHaveAttribute(
+			"aria-selected",
+			"true",
+		);
+		expect(screen.getByRole("tab", { name: "For agents" })).toHaveAttribute(
+			"aria-selected",
+			"false",
+		);
 		expect(
 			screen.getByRole("button", { name: "Copy install command" }),
-		).toBeVisible();
+		).toHaveTextContent("npx arkenv@latest init");
 		expect(
-			screen.getByRole("button", { name: "Copy agent prompt" }),
-		).toBeVisible();
-		const repo = screen.getByRole("link", { name: "View repo" });
-		expect(repo).toBeVisible();
-		expect(repo).toHaveAttribute("href", getGithubRepoUrl());
-		expect(screen.queryByRole("tab")).not.toBeInTheDocument();
+			screen.getByRole("button", { name: "Copy install command" }),
+		).not.toHaveTextContent("--agent");
+		expect(
+			screen.queryByRole("button", { name: "Copy prompt" }),
+		).not.toBeInTheDocument();
+		expect(
+			screen.queryByRole("link", { name: "View repo" }),
+		).not.toBeInTheDocument();
+	});
+
+	it("switches the pill to Copy prompt", async () => {
+		const user = userEvent.setup();
+		render(<InstallPanel />);
+
+		await user.click(screen.getByRole("tab", { name: "For agents" }));
+
+		expect(screen.getByRole("tab", { name: "For agents" })).toHaveAttribute(
+			"aria-selected",
+			"true",
+		);
+		expect(screen.getByRole("button", { name: "Copy prompt" })).toHaveTextContent(
+			"Copy prompt",
+		);
+		expect(
+			screen.getByRole("button", { name: "Copy prompt" }),
+		).not.toHaveTextContent("npx");
 	});
 });

@@ -77,14 +77,16 @@ export default function HomePage() {
 							<StarUsButton />
 							<QuickstartButton />
 						</div>
-						<div className="rise" style={{ animationDelay: "760ms" }}>
-							<SocialProof />
-						</div>
+					</div>
+					<div
+						className="home-aurora__trust rise"
+						style={{ animationDelay: "760ms" }}
+					>
+						<SocialProof />
+						<WorksWith />
 					</div>
 				</HeroPlaygroundProvider>
 			</section>
-
-			<WorksWith />
 
 			<section
 				id="demo"
