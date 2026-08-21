@@ -18,7 +18,7 @@
 <div align="center">
   <a href="https://arkenv-v1.vercel.app/docs">Docs</a>
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
-  <a href="https://arkenv-v1.vercel.app/#faq">FAQ</a>
+  <a href="https://arkenv-v1.vercel.app/docs/faq">FAQ</a>
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
   <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/v1/examples/stackblitz?file=index.ts">Try on StackBlitz</a>
   <br />

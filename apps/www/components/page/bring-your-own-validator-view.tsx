@@ -1,33 +1,16 @@
-"use client";
-
-import { useId, useState } from "react";
-import { ValidatorMark } from "./hero-mvp-marks";
 import { HeroTwoslashHtml } from "./hero-twoslash-html";
-import { InkTabList } from "./ink-tabs";
 import { WindowChrome } from "./window-chrome";
 
-type ValidatorExample = {
-	id: "arktype" | "zod" | "valibot";
-	label: string;
-	importLine: string;
+type BringYourOwnValidatorViewProps = {
 	html: string;
 };
 
-type BringYourOwnValidatorViewProps = {
-	examples: ValidatorExample[];
-};
-
 /**
- * Client tabs over server-highlighted validator snippets.
+ * One mixed ArkType / Zod / Valibot schema. No validator tabs.
  */
 export function BringYourOwnValidatorView({
-	examples,
+	html,
 }: BringYourOwnValidatorViewProps) {
-	const [active, setActive] = useState<ValidatorExample["id"]>("arktype");
-	const baseId = useId();
-	const example = examples.find((item) => item.id === active) ?? examples[0];
-	const panelId = `${baseId}-panel`;
-
 	return (
 		<section
 			className="home-aurora__pitch"
@@ -39,58 +22,20 @@ export function BringYourOwnValidatorView({
 					Keep your existing validator.
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					Pass the ArkType, Zod, or Valibot schemas you already have.{" "}
-					<a href="/docs/core-concepts/standard-schema">Standard Schema</a> gives
-					you the same <code>env</code> API.
+					Pass the ArkType, Zod, Valibot, or any{" "}
+					<a href="/docs/core-concepts/standard-schema">Standard Schema</a> you
+					already have, or mix and match for incremental migration.
 				</p>
 			</header>
 
-			<div
-				className="home-aurora__validator"
+			<figure
+				className="home-aurora__pitch-visual home-aurora__code-window"
 				data-reveal
 				style={{ ["--reveal-delay" as string]: "140ms" }}
 			>
-				<InkTabList
-					label="Validator examples"
-					value={active}
-					controls={panelId}
-					onChange={setActive}
-					items={examples.map((item) => ({
-						id: item.id,
-						label: (
-							<>
-								<ValidatorMark id={item.id} />
-								{item.label}
-							</>
-						),
-					}))}
-				/>
-
-				<figure className="home-aurora__code-window">
-					<WindowChrome title="./env.ts" />
-					<div
-						role="tabpanel"
-						id={panelId}
-						className="home-aurora__validator-body"
-						key={example.id}
-					>
-						<HeroTwoslashHtml
-							html={example.html}
-							active
-							className="home-aurora__shiki"
-						/>
-					</div>
-				</figure>
-
-				<p className="home-aurora__validator-note">
-					<span className="home-aurora__tok-muted">via</span>{" "}
-					<code>{example.importLine}</code>
-					{" · "}
-					<a href="/docs/core-concepts/standard-schema">
-						See Standard Schema docs →
-					</a>
-				</p>
-			</div>
+				<WindowChrome title="./env.ts" />
+				<HeroTwoslashHtml html={html} active className="home-aurora__shiki" />
+			</figure>
 		</section>
 	);
 }

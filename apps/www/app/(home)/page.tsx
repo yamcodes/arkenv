@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { AnnouncementBadge } from "~/components/announcement-badge";
 import {
-	AgentNativePitch,
-	BeforeAfterCompare,
+	AutocompleteShowcase,
 	BringYourOwnValidator,
 	DotGrid,
+	FailFastShowcase,
 	HeroEnvHoverSlot,
-	HeroFaq,
 	HeroMvpExampleSlot,
 	HeroNameCycle,
 	HeroPlaygroundProvider,
@@ -15,8 +14,6 @@ import {
 	SecureBoundary,
 	SocialProof,
 	StarUsButton,
-	TypeSafetyShowcase,
-	VideoDemo,
 	WorksWith,
 } from "~/components/page";
 import { SiteFooter } from "~/components/site-footer";
@@ -30,6 +27,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
 	return (
 		<div className="home-aurora__shell">
+			<div className="home-aurora__rails" aria-hidden="true" />
 			<section className="home-aurora__intro" aria-labelledby="home-hero">
 				<HeroPlaygroundProvider>
 					<div
@@ -91,45 +89,37 @@ export default function HomePage() {
 				</HeroPlaygroundProvider>
 			</section>
 
-			<BeforeAfterCompare />
-			<TypeSafetyShowcase />
-			<SecureBoundary />
-			<BringYourOwnValidator />
+			<div className="home-aurora__bento">
+				<FailFastShowcase />
+				<AutocompleteShowcase />
+				<SecureBoundary />
+				<BringYourOwnValidator />
+			</div>
 
-			<section
-				id="demo"
-				className="home-aurora__bench"
-				aria-label="Interactive Demo"
-			>
-				<div data-reveal style={{ ["--reveal-delay" as string]: "160ms" }}>
-					<VideoDemo />
-				</div>
-			</section>
+			<div className="home-aurora__stripe" aria-hidden="true" />
 
-			<AgentNativePitch />
-
-			<HeroFaq />
-
-			<section className="home-aurora__outro" aria-labelledby="home-outro">
-				<div className="home-aurora__outro-atmosphere" aria-hidden="true">
-					<DotGrid />
-				</div>
-				<div className="home-aurora__outro-copy" data-reveal="blur">
-					<h2 id="home-outro" className="home-aurora__outro-title">
-						Try ArkEnv now.
-					</h2>
-					<p className="home-aurora__outro-sub">
-						Get strictly typed environment variables in seconds.
-					</p>
-				</div>
-				<div
-					className="home-aurora__outro-cta"
-					data-reveal
-					style={{ ["--reveal-delay" as string]: "80ms" }}
+			<div className="home-aurora__bento home-aurora__bento--solo">
+				<section
+					className="home-aurora__pitch home-aurora__pitch--span home-aurora__outro"
+					aria-labelledby="home-outro"
 				>
-					<InstallPanel variant="outro" />
-				</div>
-			</section>
+					<div className="home-aurora__outro-atmosphere" aria-hidden="true">
+						<DotGrid />
+					</div>
+					<div className="home-aurora__outro-copy" data-reveal="blur">
+						<h2 id="home-outro" className="home-aurora__outro-title">
+							Try ArkEnv now.
+						</h2>
+					</div>
+					<div
+						className="home-aurora__outro-cta"
+						data-reveal
+						style={{ ["--reveal-delay" as string]: "80ms" }}
+					>
+						<InstallPanel variant="outro" />
+					</div>
+				</section>
+			</div>
 
 			<SiteFooter reveal />
 		</div>

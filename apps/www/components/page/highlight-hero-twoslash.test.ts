@@ -1,13 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { AFTER, BEFORE } from "./before-after-compare";
-import { BYOV_EXAMPLES } from "./bring-your-own-validator";
+import { BYOV_CODE } from "./bring-your-own-validator";
 import { extractEnvHoverHtml } from "./extract-hero-env-hover";
 import { HERO_MVP_SNIPPETS, heroMvpSnippet } from "./hero-mvp-snippets";
 import {
 	highlightHeroTwoslash,
+	highlightTs,
 	highlightTwoslash,
 } from "./highlight-hero-twoslash";
-import { COMPILED_BUNDLE_CODE, FLAT_ENV_CODE } from "./secure-boundary";
 
 describe("highlightHeroTwoslash", () => {
 	it("emits CSS hover markup for the Vanilla ArkType MVP", {
@@ -47,17 +46,7 @@ describe("highlightTwoslash", () => {
 		timeout: 60_000,
 	}, async () => {
 		const cases: Array<[string, "arktype" | "standard"]> = [
-			[BEFORE, "arktype"],
-			[AFTER, "arktype"],
-			[FLAT_ENV_CODE, "arktype"],
-			[COMPILED_BUNDLE_CODE, "arktype"],
-			...BYOV_EXAMPLES.map(
-				(example) =>
-					[
-						example.code,
-						example.id === "arktype" ? "arktype" : "standard",
-					] as const,
-			),
+			[BYOV_CODE, "arktype"],
 		];
 
 		for (const [code, engine] of cases) {
@@ -65,5 +54,13 @@ describe("highlightTwoslash", () => {
 			expect(html).toContain("twoslash-hover");
 			expect(html).not.toContain("twoslash-error");
 		}
+	});
+});
+
+describe("highlightTs", () => {
+	it("highlights TypeScript without Twoslash", async () => {
+		const html = await highlightTs(`const url = "https://example.com";`);
+		expect(html).toContain("example.com");
+		expect(html).not.toContain("twoslash-error");
 	});
 });

@@ -10,6 +10,7 @@ test.describe("Docs table of contents", () => {
 
 		const toc = page.locator("#nd-toc");
 		await expect(toc).toBeVisible();
+		await expect(toc).toHaveCSS("border-left-width", "1px");
 
 		await toc.getByRole("link", { name: "Issue codes", exact: true }).click();
 

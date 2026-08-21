@@ -9,6 +9,7 @@ import { SiteFooter } from "~/components/site-footer";
 import "~/components/site-footer.css";
 import { SiteNavDocs } from "~/components/site-nav";
 import { source } from "~/lib/source";
+import "./docs-chrome.css";
 
 export default function Layout({ children }: { children: ReactNode }) {
 	return (
@@ -41,7 +42,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 						title: <span className="sr-only">ArkEnv</span>,
 						component: (
 							<>
-								{/* Spacer so docs content clears the floating Site Nav; pointer-events-none so it can't steal clicks. */}
+								{/* Spacer so docs content clears the full-bleed Site Nav; pointer-events-none so it can't steal clicks. */}
 								<div
 									className="pointer-events-none [grid-area:header]"
 									style={{ height: "var(--fd-nav-height)" }}

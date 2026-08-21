@@ -10,6 +10,7 @@ import { Logo } from "~/components/page/logo";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
 import { useFeatureFlag } from "~/hooks/use-feature-flag";
 import { FeatureFlag } from "~/lib/posthog/feature-flags";
+import { STACKBLITZ_PLAYGROUND_URL } from "~/lib/stackblitz";
 import { cn } from "~/lib/utils";
 import "./site-nav.css";
 
@@ -22,7 +23,11 @@ type NavLink = {
 
 const NAV_CORE_LINKS: NavLink[] = [
 	{ text: "Docs", url: "/docs", activeMatch: "/docs" },
-	{ text: "Demo", url: "/#demo" },
+	{
+		text: "Playground",
+		url: STACKBLITZ_PLAYGROUND_URL,
+		external: true,
+	},
 	{
 		text: "Roadmap",
 		url: "https://github.com/yamcodes/arkenv/issues/683",
@@ -282,7 +287,7 @@ export function SiteNavHome() {
 }
 
 /**
- * Docs chrome — a direct child of `#docs-chrome-shell` so sticky glass is not
+ * Docs chrome — a direct child of `#docs-chrome-shell` so sticky header is not
  * a fumadocs grid item. Pass the sidebar trigger so it SSRs with the bar.
  */
 export function SiteNavDocs({

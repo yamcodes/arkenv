@@ -85,21 +85,16 @@ test.describe("Homepage Interactivity", () => {
 		expect(rel).toContain("noreferrer");
 	});
 
-	test("should have clickable video demo that opens StackBlitz", async ({
-		page,
-	}) => {
+	test("Playground nav link opens StackBlitz", async ({ page }) => {
 		await page.goto("/");
-		const videoButton = page.locator(
-			"button[aria-label='Open interactive demo in a new tab']",
-		);
-		await expect(videoButton).toBeVisible();
-
-		const [newPage] = await Promise.all([
-			page.context().waitForEvent("page", { timeout: 10000 }),
-			videoButton.click(),
-		]);
-
-		await expect(newPage.url()).toContain("stackblitz.com");
-		await newPage.close();
+		const playground = page
+			.locator("nav.site-nav__links")
+			.getByRole("link", { name: "Playground" });
+		await expect(playground).toBeVisible();
+		await expect(playground).toHaveAttribute("href", /stackblitz\.com/);
+		await expect(playground).toHaveAttribute("target", "_blank");
+		const rel = await playground.getAttribute("rel");
+		expect(rel).toContain("noopener");
+		expect(rel).toContain("noreferrer");
 	});
 });

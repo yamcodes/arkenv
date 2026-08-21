@@ -1,6 +1,7 @@
 import { DiscordListItem } from "~/components/discord-list-item";
 import { Logo } from "~/components/page/logo";
 import { getGithubRepoUrl } from "~/lib/github-links";
+import { STACKBLITZ_PLAYGROUND_URL } from "~/lib/stackblitz";
 
 /**
  * Shared site footer used on the home page and docs.
@@ -43,11 +44,11 @@ export function SiteFooter({
 					<ul>
 						<li>
 							<a
-								href="https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/stackblitz?file=index.ts"
+								href={STACKBLITZ_PLAYGROUND_URL}
 								target="_blank"
 								rel="noopener noreferrer"
 							>
-								Live demo
+								Playground
 							</a>
 						</li>
 						<li>
@@ -63,7 +64,7 @@ export function SiteFooter({
 							</a>
 						</li>
 						<li>
-							<a href="/#faq">FAQ</a>
+							<a href="/docs/faq">FAQ</a>
 						</li>
 					</ul>
 				</nav>

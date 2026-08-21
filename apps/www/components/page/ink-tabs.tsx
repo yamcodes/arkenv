@@ -67,7 +67,7 @@ type InkTabListProps<Id extends string> = {
 };
 
 /**
- * Sliding-ink tablist used on the homepage (hero, Modular, compare, secure).
+ * Sliding-ink tablist used on the homepage (hero, Modular).
  */
 export function InkTabList<Id extends string>({
 	label,

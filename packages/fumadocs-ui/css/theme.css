@@ -354,10 +354,10 @@ aside .theme-toggle {
 	background-color: transparent !important;
 }
 
-/* Desktop sidebar: seamless with page (no card fill, no end divider) */
+/* Desktop sidebar: no card fill; 1px IDE rail (docs chrome glue, not a bento) */
 #nd-sidebar {
 	background-color: transparent;
-	border-inline-end: none;
+	border-inline-end: 1px solid var(--color-fd-border);
 }
 
 /* Sidebar item base styles */
@@ -401,6 +401,7 @@ aside .theme-toggle {
 #nd-sidebar-mobile [data-drill-item] {
 	width: auto;
 	margin-inline: 0.5rem;
+	border-radius: 0.25rem;
 }
 
 #nd-sidebar :has(> [data-sidebar-mode]),

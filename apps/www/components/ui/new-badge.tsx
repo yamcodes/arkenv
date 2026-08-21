@@ -5,7 +5,7 @@ export function NewBadge({ className }: { className?: string }) {
 	return (
 		<Badge
 			className={cn(
-				"h-4.5 text-xs px-1.5 font-medium rounded-full sm:px-1.5 max-sm:w-2 max-sm:h-2 max-sm:p-0 max-sm:ml-1.5 max-sm:bg-current max-sm:border-none",
+				"h-4.5 text-xs px-1.5 font-medium rounded-md sm:px-1.5 max-sm:w-2 max-sm:h-2 max-sm:p-0 max-sm:ml-1.5 max-sm:bg-current max-sm:border-none",
 				className,
 			)}
 		>
@@ -18,7 +18,7 @@ export function UpdatedBadge({ className }: { className?: string }) {
 	return (
 		<Badge
 			className={cn(
-				"h-4.5 text-xs px-1.5 font-semibold rounded-full",
+				"h-4.5 text-xs px-1.5 font-semibold rounded-md",
 				className,
 			)}
 		>

@@ -2,6 +2,7 @@
 	"pages": [
 		"index",
 		"getting-started",
+		"faq",
 		"validating-your-environment",
 		"reference",
 		"core-concepts",

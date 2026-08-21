@@ -1,0 +1,56 @@
+---
+title: FAQ
+description: Common questions about typesafe environment variables with ArkEnv.
+---
+
+Short answers to questions people ask before they install ArkEnv. For
+setup, start at [Getting started](/docs/getting-started).
+
+## Why do I need ArkEnv?
+
+When environment variables fail, the results can be silent, unexpected,
+and catastrophic. CI deployments miss required keys, stringified
+booleans like `"false"` evaluate as truthy, and schema updates break
+downstream code.
+
+ArkEnv validates the environment against your schema before a single
+line of application code runs. See [Introduction](/docs) for the
+`process.env` problem and the typed `env` object.
+
+## Does ArkEnv load my `.env` files?
+
+No. ArkEnv validates the env your framework already loaded. It does not
+read `.env` files itself.
+
+Next.js, Nuxt, Vite, and Bun load `.env*` files for you. On plain Node,
+[Nub](https://nubjs.com/docs/runtime/env) is the recommended runner. See
+[Loading `.env` files](/docs/validating-your-environment/framework-integration#loading-env-files).
+
+## Do I have to use ArkType?
+
+No. Use any Standard Schema validator: Zod, Valibot, Typia, and others.
+Pick an engine in
+[Choosing an engine](/docs/core-concepts/standard-schema) or follow a
+[validator cookbook](/docs/guides/validators).
+
+## Does ArkEnv work with Zod?
+
+Yes. Zod has a first-class example, and the CLI can scaffold ArkEnv +
+Zod for you. See [Using ArkEnv with Zod](/docs/guides/validators/zod)
+and [Start with an example](/docs/getting-started/examples).
+
+## Does ArkEnv support AI development tools like Claude Code or Cursor?
+
+Yes. Point the agent skill at your `.env.example` to set up validation
+and guide your assistant through schema maintenance. See
+[Using AI with ArkEnv](/docs/guides/ai).
+
+## Next steps
+
+Install ArkEnv, or keep reading from Getting started.
+
+```package-install
+npx arkenv@latest init
+```
+
+Then follow [Getting started](/docs/getting-started).

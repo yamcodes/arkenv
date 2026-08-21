@@ -17,18 +17,18 @@ describe("InstallPanel", () => {
 		expect(repo).toBeVisible();
 		expect(repo).toHaveAttribute("href", getGithubRepoUrl());
 		expect(
-			screen.queryByRole("link", { name: "Read docs" }),
+			screen.queryByRole("link", { name: "Read the docs" }),
 		).not.toBeInTheDocument();
 		expect(screen.queryByRole("tab")).not.toBeInTheDocument();
 	});
 
-	it("puts Copy prompt and Read docs on the outro sub-row", () => {
+	it("puts Copy prompt and Read the docs on the outro sub-row", () => {
 		render(<InstallPanel variant="outro" />);
 
 		expect(
 			screen.getByRole("button", { name: "Copy prompt" }),
 		).toBeVisible();
-		expect(screen.getByRole("link", { name: "Read docs" })).toHaveAttribute(
+		expect(screen.getByRole("link", { name: "Read the docs" })).toHaveAttribute(
 			"href",
 			"/docs",
 		);

@@ -70,10 +70,7 @@ export function InstallPanel({ variant = "hero" }: InstallPanelProps) {
 							className="home-aurora__install-icon"
 							aria-hidden="true"
 						/>
-						Read docs
-						<span className="home-aurora__outro-docs-arrow" aria-hidden="true">
-							→
-						</span>
+						Read the docs
 					</a>
 				) : (
 					<a

@@ -1,0 +1,59 @@
+/* Docs structural glue — same hairline language as the landing page, not a bento.
+ * Row 0 is Site Nav (full-bleed + border-bottom). Matching 1px rails on the
+ * sidebar (end) and TOC (start) trap the reading column. */
+
+#docs-chrome-shell,
+#nd-sidebar-mobile {
+	--docs-chrome-radius: 0.25rem;
+	--docs-control-radius: 0.375rem;
+	--docs-dot: color-mix(in oklch, var(--color-fd-foreground) 12%, transparent);
+}
+
+#docs-chrome-shell {
+	background-color: var(--color-fd-background);
+	background-image: radial-gradient(var(--docs-dot) 1px, transparent 1.5px);
+	background-size: 24px 24px;
+}
+
+/* Solid paper over the dots so the reading column stays a quiet channel. */
+#nd-page {
+	background-color: var(--color-fd-background);
+	min-height: 100%;
+}
+
+#nd-toc {
+	border-inline-start: 1px solid var(--color-fd-border);
+	padding-inline-start: 1rem;
+}
+
+@media (min-width: 40rem) {
+	#nd-toc {
+		padding-inline-start: 1.5rem;
+	}
+}
+
+/* Copy page split — same 0.375rem as Get started / Search, not --radius 0.6rem. */
+[data-docs-ai-actions="desktop"] > .flex > button:first-child {
+	border-start-start-radius: var(--docs-control-radius, 0.375rem);
+	border-end-start-radius: var(--docs-control-radius, 0.375rem);
+	border-start-end-radius: 0;
+	border-end-end-radius: 0;
+}
+
+[data-docs-ai-actions="desktop"] > .flex > button:last-of-type {
+	border-start-start-radius: 0;
+	border-end-start-radius: 0;
+	border-start-end-radius: var(--docs-control-radius, 0.375rem);
+	border-end-end-radius: var(--docs-control-radius, 0.375rem);
+}
+
+#nd-sidebar [data-drill-item],
+#nd-sidebar-mobile [data-drill-item] {
+	border-radius: var(--docs-chrome-radius);
+}
+
+#nd-sidebar-mobile {
+	background-color: var(--color-fd-background);
+	background-image: radial-gradient(var(--docs-dot) 1px, transparent 1.5px);
+	background-size: 24px 24px;
+}

@@ -140,7 +140,7 @@ export function DocsFeedbackButton({
 				// shrinks this widget into a scrollbar when the TOC rail sits near the
 				// top. 80vh is large enough to avoid that, but still lets the form
 				// scroll on short viewports instead of clipping off-screen.
-				className="w-72 max-h-[80vh] rounded-xl border-fd-border bg-fd-popover p-0 text-fd-popover-foreground shadow-md backdrop-blur-none"
+				className="w-72 max-h-[80vh] rounded-md border-fd-border bg-fd-popover p-0 text-fd-popover-foreground shadow-md backdrop-blur-none"
 			>
 				<div className="overflow-visible">
 					{submitted ? (

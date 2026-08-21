@@ -2,7 +2,6 @@ import path from "node:path";
 import { type SentryBuildOptions, withSentryConfig } from "@sentry/nextjs";
 import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
-import { withNextVideo } from "next-video/process";
 import {
 	POSTHOG_API_ENDPOINT,
 	POSTHOG_ASSETS_HOST,
@@ -56,6 +55,11 @@ const config = {
 				permanent: true,
 			},
 			{
+				source: "/faq",
+				destination: "/docs/faq",
+				permanent: true,
+			},
+			{
 				source: "/docs/standard-schema",
 				destination: "/docs/core-concepts/standard-schema",
 				permanent: true,
@@ -86,7 +90,7 @@ const config = {
 			},
 			{
 				source: "/docs/arkenv/faq",
-				destination: "/docs/getting-started",
+				destination: "/docs/faq",
 				permanent: true,
 			},
 			{
@@ -372,6 +376,4 @@ const sentryConfig = {
 	},
 } as const satisfies SentryBuildOptions;
 
-export default withNextVideo(
-	withSentryConfig(createMDX()(config), sentryConfig),
-);
+export default withSentryConfig(createMDX()(config), sentryConfig);

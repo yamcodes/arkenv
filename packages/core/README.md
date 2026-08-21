@@ -15,7 +15,7 @@
 <div align="center">
   <a href="https://arkenv.js.org/docs">Docs</a>
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
-  <a href="https://arkenv.js.org/#faq">FAQ</a>
+  <a href="https://arkenv.js.org/docs/faq">FAQ</a>
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
   <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/stackblitz?file=index.ts">Try on StackBlitz</a>
   <br />

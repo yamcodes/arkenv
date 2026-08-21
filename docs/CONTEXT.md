@@ -58,8 +58,8 @@ The primary site-wide navigation chrome for [www](http://www). One header everyw
 *Avoid*: Header (when meaning the whole site chrome); separate home vs docs chrome families; centered content-sized pill; publishing Site Nav as `@arkenv/fumadocs-ui` API; search on home
 
 **Nav core**:
-The shared **Site Nav** contents on every surface and breakpoint: primary links **Docs**, **Demo** (home `#demo`), and **Roadmap** (external, with an up-right icon), centered in the bar; plus theme and GitHub on the right. On small screens the primary links live in a hamburger menu.
-*Avoid*: Why ArkEnv? / Presets as core links; Get started or Search as core links; “Documentation” as a separate label from **Docs**; Roadmap without an external-link affordance
+The shared **Site Nav** contents on every surface and breakpoint: primary links **Docs**, **Playground** (StackBlitz, external, with an up-right icon), and **Roadmap** (external, with an up-right icon), centered in the bar; plus theme and GitHub on the right. On small screens the primary links live in a hamburger menu.
+*Avoid*: Demo as an in-page `#demo` section; Why ArkEnv? / Presets as core links; Get started or Search as core links; “Documentation” as a separate label from **Docs**; Roadmap or Playground without an external-link affordance
 
 **Action pill**:
 The shared rightmost control slot in **Site Nav** — identical height, min-width, padding, and capsule radius. Home/orphan fills it with **Get started**; docs fills it with **Search**. Not both.

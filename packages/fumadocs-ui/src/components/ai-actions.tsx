@@ -348,7 +348,7 @@ export function AIActions({
 							type="button"
 							className={cn(
 								controlClassName,
-								"rounded-l-md rounded-r-none gap-2",
+								"rounded-l-[0.375rem] rounded-r-none gap-2",
 							)}
 							onClick={copyAndClose}
 						>
@@ -360,7 +360,7 @@ export function AIActions({
 								aria-label="More page actions"
 								className={cn(
 									controlClassName,
-									"rounded-l-none rounded-r-md border-l-0 px-2",
+									"rounded-l-none rounded-r-[0.375rem] border-l-0 px-2",
 								)}
 							>
 								<ChevronDown className="size-4" />
