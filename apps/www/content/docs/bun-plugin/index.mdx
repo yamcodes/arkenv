@@ -102,6 +102,8 @@ npx arkenv@latest init
 
 If your schema is at a custom path, pass `schemaPath` to the plugin:
 
+### For Bun.build
+
 ```ts title="build.ts"
 import arkenv from "@arkenv/bun-plugin";
 
@@ -110,6 +112,24 @@ await Bun.build({
   outdir: "./dist",
   plugins: [arkenv({ schemaPath: "custom/env.ts", clientPrefix: "BUN_PUBLIC_" })],
 });
+```
+
+### For Bun.serve
+
+Create a plugin wrapper file and reference it in `bunfig.toml`:
+
+```ts title="plugins/arkenv.ts"
+import arkenv from "@arkenv/bun-plugin";
+
+export default arkenv({
+  schemaPath: "custom/env.ts",
+  clientPrefix: "BUN_PUBLIC_",
+});
+```
+
+```toml title="bunfig.toml"
+[serve.static]
+plugins = ["./plugins/arkenv.ts"]
 ```
 
 ## Using Standard Schema validators (Zod, Valibot, etc.)
