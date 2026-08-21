@@ -14,7 +14,7 @@ describe("AutocompleteShowcase", () => {
 		).toHaveTextContent(
 			"Strict type inference without glue code. Your schema is the single source of truth.",
 		);
-		const workbench = screen.getByRole("img", {
+		const workbench = screen.getByRole("figure", {
 			name: /vs code autocomplete on env/i,
 		});
 		expect(workbench).toHaveTextContent('import { env } from "./env"');
