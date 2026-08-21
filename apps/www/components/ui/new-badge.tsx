@@ -17,10 +17,7 @@ export function NewBadge({ className }: { className?: string }) {
 export function UpdatedBadge({ className }: { className?: string }) {
 	return (
 		<Badge
-			className={cn(
-				"h-4.5 text-xs px-1.5 font-semibold rounded-md",
-				className,
-			)}
+			className={cn("h-4.5 text-xs px-1.5 font-semibold rounded-md", className)}
 		>
 			Updated
 		</Badge>

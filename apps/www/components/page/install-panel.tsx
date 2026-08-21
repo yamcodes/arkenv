@@ -36,7 +36,9 @@ export function InstallPanel({ variant = "hero" }: InstallPanelProps) {
 				<span className="home-aurora__install-prompt-symbol" aria-hidden="true">
 					$
 				</span>
-				<code className="home-aurora__install-code">npx arkenv@latest init</code>
+				<code className="home-aurora__install-code">
+					npx arkenv@latest init
+				</code>
 				<span
 					className="home-aurora__install-copy-affordance"
 					aria-hidden="true"
@@ -79,7 +81,10 @@ export function InstallPanel({ variant = "hero" }: InstallPanelProps) {
 						target="_blank"
 						rel="noopener noreferrer"
 					>
-						<SiGithub className="home-aurora__install-icon" aria-hidden="true" />
+						<SiGithub
+							className="home-aurora__install-icon"
+							aria-hidden="true"
+						/>
 						View repo
 						<ArrowUpRight
 							className="site-nav__external-icon"

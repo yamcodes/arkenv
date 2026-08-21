@@ -41,9 +41,9 @@ describe("HeroNameCycle", () => {
 	it("exposes the current name, not the full list", () => {
 		render(<HeroNameCycle />);
 
-		expect(document.querySelector(".home-aurora__cycle-with")?.textContent).toBe(
-			"with\u00a0",
-		);
+		expect(
+			document.querySelector(".home-aurora__cycle-with")?.textContent,
+		).toBe("with\u00a0");
 		expect(currentHeadline()?.textContent).toBe("ArkType");
 		expect(
 			`${document.querySelector(".home-aurora__cycle-with")?.textContent}${currentHeadline()?.textContent}`,
@@ -58,9 +58,9 @@ describe("HeroNameCycle", () => {
 		render(<HeroNameCycle />);
 
 		expect(currentHeadline()?.textContent).toBe("ArkType");
-		expect(document.querySelector(".home-aurora__cycle-with")?.textContent).toBe(
-			"with\u00a0",
-		);
+		expect(
+			document.querySelector(".home-aurora__cycle-with")?.textContent,
+		).toBe("with\u00a0");
 
 		act(() => {
 			vi.advanceTimersByTime(HERO_FIRST_DWELL_MS - 1);

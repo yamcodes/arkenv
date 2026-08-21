@@ -13,14 +13,11 @@ describe("BringYourOwnValidatorView", () => {
 		expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(
 			"Keep your existing validator.",
 		);
-		expect(
-			screen.getByText(/mix and match/i).closest("p"),
-		).toHaveTextContent(
+		expect(screen.getByText(/mix and match/i).closest("p")).toHaveTextContent(
 			"Pass the ArkType, Zod, Valibot, or any Standard Schema you already have, or mix and match for incremental migration.",
 		);
-		expect(screen.getByRole("link", { name: "Standard Schema" })).toHaveAttribute(
-			"href",
-			"/docs/core-concepts/standard-schema",
-		);
+		expect(
+			screen.getByRole("link", { name: "Standard Schema" }),
+		).toHaveAttribute("href", "/docs/core-concepts/standard-schema");
 	});
 });

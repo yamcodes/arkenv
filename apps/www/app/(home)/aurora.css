@@ -134,11 +134,7 @@
 	pointer-events: none;
 	overflow: hidden;
 	/* 2.5% white — depth, not a light source. No teal bloom. */
-	background-image: radial-gradient(
-		ellipse 72% 58% at 50% 32%,
-		var(--color-spotlight),
-		transparent 72%
-	);
+	background-image: radial-gradient(ellipse 72% 58% at 50% 32%, var(--color-spotlight), transparent 72%);
 	/* Strong near the header, gone by the workbench */
 	mask-image: linear-gradient(to bottom, #000 0%, #000 28%, rgb(0 0 0 / 0.55) 48%, transparent 100%);
 	-webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 28%, rgb(0 0 0 / 0.55) 48%, transparent 100%);
@@ -226,10 +222,10 @@
 	inset: 0;
 	z-index: 4;
 	pointer-events: none;
-	background-image:
-		linear-gradient(var(--color-rule), var(--color-rule)),
-		linear-gradient(var(--color-rule), var(--color-rule));
-	background-size: var(--rule-hair) 100%, var(--rule-hair) 100%;
+	background-image: linear-gradient(var(--color-rule), var(--color-rule)), linear-gradient(var(--color-rule), var(--color-rule));
+	background-size:
+		var(--rule-hair) 100%,
+		var(--rule-hair) 100%;
 	background-position:
 		var(--home-rail-inset) 0,
 		calc(100% - var(--home-rail-inset) - var(--rule-hair)) 0;
@@ -481,9 +477,9 @@
 .home-aurora__cycle-item {
 	display: inline;
 	white-space: nowrap;
+	font: inherit;
 	line-height: inherit;
 	color: var(--color-accent);
-	font: inherit;
 	letter-spacing: inherit;
 	opacity: 0;
 	transform: translateY(0.35em);
