@@ -565,42 +565,6 @@
 	}
 }
 
-/*
- * Outro: command pill + “Read the docs” on one row; audience tabs
- * sit over the pill.
- */
-.home-aurora__install-row--outro {
-	display: grid;
-	grid-template-columns: max-content auto;
-	align-items: center;
-	column-gap: var(--space-md);
-	row-gap: var(--space-2xs);
-	width: fit-content;
-	max-width: 100%;
-}
-
-@media (min-width: 40rem) {
-	.home-aurora__install-row--outro .home-aurora__install {
-		display: contents;
-	}
-
-	.home-aurora__install-row--outro .home-aurora__install-tabs {
-		grid-column: 1;
-		grid-row: 1;
-	}
-
-	.home-aurora__install-row--outro .home-aurora__install-copy {
-		grid-column: 1;
-		grid-row: 2;
-	}
-
-	.home-aurora__install-row--outro .home-aurora__outro-docs {
-		grid-column: 2;
-		grid-row: 2;
-		align-self: center;
-	}
-}
-
 /* Hallmark · component: social-proof · genre: atmospheric · theme: Aurora
  * archetype: trust bar (quote + stack marquee)
  * states: default · reduced-motion(pause marquee via globals)
@@ -1129,7 +1093,7 @@
 /* Install · command pill + copy-prompt — desktop/tablet only */
 .home-aurora__install {
 	display: none;
-	gap: var(--space-2xs);
+	gap: 0.625rem;
 	width: fit-content;
 	max-width: 100%;
 }
@@ -1243,7 +1207,8 @@
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	gap: 0.15rem 1rem;
+	gap: 0.15rem 1.1rem;
+	padding-inline-start: 0.25rem;
 }
 
 .home-aurora__install-prompt {
@@ -1257,7 +1222,7 @@
 	color: var(--color-muted);
 	font-family: var(--font-body);
 	font-size: var(--text-sm);
-	font-weight: 500;
+	font-weight: 400;
 	letter-spacing: -0.01em;
 	line-height: 1.3;
 	text-decoration: none;
@@ -1285,10 +1250,6 @@
 	opacity: 0.85;
 }
 
-.home-aurora__install-prompt[data-state="success"] {
-	color: var(--color-success);
-}
-
 .home-aurora__install-icon {
 	width: 0.9rem;
 	height: 0.9rem;
@@ -1296,6 +1257,11 @@
 	color: var(--color-accent);
 	opacity: 0.75;
 	stroke-width: 1.5px;
+}
+
+.home-aurora__install-icon--success {
+	color: var(--color-success);
+	opacity: 1;
 }
 
 .home-aurora__install-prompt-symbol {
@@ -1318,17 +1284,6 @@
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-}
-
-.home-aurora__install-copy-label {
-	flex: 1;
-	min-width: 0;
-	font-family: var(--font-display);
-	font-size: clamp(0.875rem, 0.2vw + 0.85rem, 0.95rem);
-	font-weight: 500;
-	letter-spacing: -0.01em;
-	line-height: 1.4;
-	white-space: nowrap;
 }
 
 .home-aurora__install-copy-affordance {
@@ -2506,22 +2461,25 @@
 	box-shadow: var(--shadow-nav);
 }
 
-/* Bookend · callback to the hero promise + install CTAs (desktop only) */
+/* Bookend · centered finish-line CTA */
 .home-aurora__outro {
-	display: none;
+	position: relative;
+	isolation: isolate;
+	overflow: hidden;
+	margin-top: var(--space-xl);
+	padding: var(--space-xl) var(--space-md);
+	display: grid;
+	justify-items: center;
+	text-align: center;
+	gap: var(--space-lg);
+	border: var(--rule-hair) solid var(--color-rule);
+	border-radius: var(--radius-frame);
 }
 
 @media (min-width: 40rem) {
 	.home-aurora__outro {
-		position: relative;
-		isolation: isolate;
-		overflow: hidden;
 		margin-top: var(--space-2xl);
-		padding: var(--space-2xl) var(--space-xl) var(--space-xl);
-		display: grid;
-		gap: var(--space-sm);
-		border: var(--rule-hair) solid var(--color-rule);
-		border-radius: var(--radius-frame);
+		padding: var(--space-2xl) var(--space-xl);
 	}
 }
 
@@ -2552,48 +2510,58 @@
 	font-weight: 500;
 	font-style: normal;
 	color: var(--color-ink);
+	text-align: center;
 	overflow-wrap: normal;
 }
 
-/* Quiet text link — same mute as inactive install tabs */
-.home-aurora__outro-docs {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.45rem;
-	padding: 0.25rem 0.4rem;
-	border: 0;
-	background: transparent;
-	color: var(--color-ink-2);
-	font-family: var(--font-display);
-	font-size: var(--text-sm);
-	font-weight: 600;
-	letter-spacing: 0.01em;
-	text-decoration: none;
-	white-space: nowrap;
-	opacity: 0.7;
-	transition:
-		color var(--dur-micro) var(--ease-out),
-		opacity var(--dur-micro) var(--ease-out);
+.home-aurora__outro-copy {
+	display: grid;
+	gap: var(--space-sm);
+	justify-items: center;
+}
+
+.home-aurora__outro-sub {
+	margin: 0;
+	max-width: 34rem;
+	font-family: var(--font-body);
+	font-size: clamp(1rem, 0.2vw + 0.95rem, 1.125rem);
+	font-weight: 400;
+	line-height: 1.5;
+	color: var(--color-muted);
+}
+
+.home-aurora__outro-cta {
+	display: grid;
+	justify-items: center;
+	width: 100%;
+}
+
+.home-aurora__outro .home-aurora__install {
+	display: grid;
+	justify-items: center;
+	width: fit-content;
+	max-width: 100%;
+}
+
+.home-aurora__outro .home-aurora__install-links {
+	justify-content: center;
+	padding-inline-start: 0;
 }
 
 .home-aurora__outro-docs-arrow {
 	display: inline-block;
-	transition: transform var(--dur-micro) var(--ease-out);
+	margin-inline-start: -0.12rem;
+	opacity: 0.55;
+	transition:
+		transform var(--dur-micro) var(--ease-out),
+		opacity var(--dur-micro) var(--ease-out);
 }
 
-.home-aurora__outro-docs:hover {
-	color: var(--color-ink);
-	opacity: 1;
-	text-decoration: none;
-}
-
-.home-aurora__outro-docs:hover .home-aurora__outro-docs-arrow {
-	transform: translateX(0.2rem);
-}
-
-.home-aurora__outro-docs:focus-visible {
-	outline: 2px solid var(--color-focus);
-	outline-offset: 2px;
+@media (hover: hover) {
+	.home-aurora__install-prompt:hover .home-aurora__outro-docs-arrow {
+		opacity: 0.85;
+		transform: translateX(0.15rem);
+	}
 }
 
 /* Footer styles: components/site-footer.css */
@@ -2602,7 +2570,6 @@
 	.home-aurora__frame-hint,
 	.home-aurora__cta,
 	.home-aurora__mobile-cta,
-	.home-aurora__outro-docs,
 	.site-nav__action,
 	.site-nav__link,
 	.home-aurora__install-tab,
@@ -2631,7 +2598,7 @@
 		transform: none;
 	}
 
-	.home-aurora__outro-docs:hover .home-aurora__outro-docs-arrow {
+	.home-aurora__install-prompt:hover .home-aurora__outro-docs-arrow {
 		transform: none;
 	}
 

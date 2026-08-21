@@ -110,25 +110,20 @@ export default function HomePage() {
 				<div className="home-aurora__outro-atmosphere" aria-hidden="true">
 					<DotGrid />
 				</div>
-				<h2
-					id="home-outro"
-					className="home-aurora__outro-title"
-					data-reveal="blur"
-				>
-					Try ArkEnv now.
-				</h2>
+				<div className="home-aurora__outro-copy" data-reveal="blur">
+					<h2 id="home-outro" className="home-aurora__outro-title">
+						Try ArkEnv now.
+					</h2>
+					<p className="home-aurora__outro-sub">
+						Get strictly typed environment variables in seconds.
+					</p>
+				</div>
 				<div
-					className="home-aurora__install-row home-aurora__install-row--outro"
+					className="home-aurora__outro-cta"
 					data-reveal
 					style={{ ["--reveal-delay" as string]: "80ms" }}
 				>
-					<InstallPanel />
-					<a href="/docs" className="home-aurora__outro-docs">
-						Read the docs
-						<span className="home-aurora__outro-docs-arrow" aria-hidden="true">
-							→
-						</span>
-					</a>
+					<InstallPanel variant="outro" />
 				</div>
 			</section>
 
