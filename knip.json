@@ -7,6 +7,7 @@
 		"examples/**",
 		"apps/playgrounds/**",
 		"apps/playwright-www/**",
+		"apps/dash/**",
 		"packages/vite-plugin/src/__fixtures__/**",
 		"packages/core/test/setup-attest.ts",
 		"packages/core/src/arktype/coercion/index.ts"

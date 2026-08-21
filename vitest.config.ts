@@ -9,6 +9,7 @@ export default defineConfig({
 			"apps/*",
 			"!packages/cli",
 			"!apps/playwright-www",
+			"!apps/dash",
 			"!**/*.md",
 			{
 				test: {

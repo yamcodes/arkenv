@@ -99,7 +99,7 @@
 	},
 	"overrides": [
 		{
-			"includes": ["**/examples/**/*", "**/playgrounds/**/*"],
+			"includes": ["**/examples/**/*", "**/playgrounds/**/*", "apps/dash/**/*"],
 			"linter": {
 				"rules": {
 					"suspicious": {
