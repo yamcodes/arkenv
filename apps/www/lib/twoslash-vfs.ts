@@ -3,16 +3,24 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import ts from "typescript";
 
-const require = createRequire(import.meta.url);
-const zodDir = path.dirname(require.resolve("zod"));
-const zodDts = path.join(zodDir, "index.d.ts");
-
-const valibotDir = path.dirname(require.resolve("valibot"));
-const valibotDts = path.join(valibotDir, "index.d.mts");
-
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 export const root = path.resolve(currentDir, "../../..");
 export const wwwRoot = path.join(root, "apps/www");
+
+function resolveDts(pkg: string, ...dtsNames: string[]): string[] {
+	try {
+		const req = createRequire(import.meta.url);
+		const resolved = req.resolve(pkg);
+		if (typeof resolved !== "string") return [];
+		const dir = path.dirname(resolved);
+		return dtsNames.map((name) => path.join(dir, name));
+	} catch {
+		return [];
+	}
+}
+
+const zodPaths = resolveDts("zod", "index.d.ts", "index.d.cts");
+const valibotPaths = resolveDts("valibot", "index.d.mts", "index.d.cts");
 
 /** Compiler VFS for Twoslash — no arkdark, safe to import from RSC. */
 export const arktypeTwoslashVfs = {
@@ -97,8 +105,8 @@ export const arktypeTwoslashVfs = {
 			"@/env/server": ["env/server.ts"],
 			"~~/env/client": ["env/client.ts"],
 			"~~/env/server": ["env/server.ts"],
-			zod: [zodDts, path.join(zodDir, "index.d.cts")],
-			valibot: [valibotDts, path.join(valibotDir, "index.d.cts")],
+			zod: zodPaths,
+			valibot: valibotPaths,
 		},
 		types: ["node"],
 	},
