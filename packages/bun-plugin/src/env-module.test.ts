@@ -19,7 +19,7 @@ describe("transform mode helpers", () => {
 		expect(
 			isTransformModeCall({ clientPrefix: "BUN_PUBLIC_" }, undefined),
 		).toBe(true);
-		expect(isTransformModeCall({}, undefined)).toBe(false);
+		expect(isTransformModeCall({}, undefined)).toBe(true);
 		expect(isTransformModeCall({ BUN_PUBLIC_FOO: "string" }, undefined)).toBe(
 			false,
 		);
@@ -87,15 +87,6 @@ describe("transform mode plugin", () => {
 		expect(hybrid).toHaveProperty("name", "@arkenv/bun-plugin");
 		expect(hybrid).toHaveProperty("target", "browser");
 		expect(hybrid).toHaveProperty("setup");
-	});
-
-	it("keeps schema/SPA path working alongside transform helpers", () => {
-		process.env.BUN_PUBLIC_TEST = "test-value";
-		const plugin = arkenv({ BUN_PUBLIC_TEST: "string" });
-		expect(plugin).toHaveProperty("name", "@arkenv/bun-plugin");
-		expect(plugin).not.toHaveProperty("target");
-		expect(plugin).toHaveProperty("setup");
-		delete process.env.BUN_PUBLIC_TEST;
 	});
 
 	it("rewrites the env module via onLoad with coerced literals", async () => {
@@ -289,12 +280,11 @@ export default env;
 	});
 });
 
-describe("SPA mode regression", () => {
-	it("still rewrites process.env for schema calls", () => {
-		process.env.BUN_PUBLIC_TEST = "test-value";
-		const plugin = arkenv({ BUN_PUBLIC_TEST: "string" });
-		expect(plugin.target).toBeUndefined();
-		delete process.env.BUN_PUBLIC_TEST;
+describe("schema/define removal", () => {
+	it("rejects schema calls", () => {
+		expect(() =>
+			(arkenv as (a?: unknown) => unknown)({ BUN_PUBLIC_TEST: "string" }),
+		).toThrow(/schema\/define plugin API was removed/);
 	});
 });
 

@@ -3,10 +3,5 @@
 	"description": "Plugin for Vite",
 	"root": true,
 	"icon": "Vite",
-	"pages": [
-		"---Guide---",
-		"index",
-		"typing-import-meta-env",
-		"arkenv-in-viteconfig"
-	]
+	"pages": ["---Guide---", "index", "arkenv-in-viteconfig"]
 }

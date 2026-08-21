@@ -9,6 +9,8 @@ export {
 export { generateClientEnvModule } from "./generate-client-env-module";
 export { loadValidatedEnv } from "./load-validated-env";
 export {
+	assertTransformModeCall,
 	isTransformModeCall,
+	SCHEMA_DEFINE_REMOVED,
 	type ViteTransformOptions,
 } from "./transform-options";
