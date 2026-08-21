@@ -34,6 +34,7 @@ describe("hero MVP snippets", () => {
 		expect(heroMvpEnvType("vite", "arktype")).toEqual([
 			{ name: "DATABASE_URL", type: "string" },
 			{ name: "VITE_API_URL", type: "string" },
+			{ name: "PORT", type: "number" },
 		]);
 		expect(heroMvpEnvType("next", "zod")).toEqual([
 			{ name: "DATABASE_URL", type: "string" },
@@ -42,22 +43,32 @@ describe("hero MVP snippets", () => {
 		]);
 	});
 
-	it("uses ArkEnv coercion for Zod and Valibot", () => {
+	it("uses ArkEnv coercion for Zod", () => {
 		const zod = HERO_MVP_SNIPPETS.filter(
 			(snippet) => snippet.validator === "zod",
-		);
-		const valibot = HERO_MVP_SNIPPETS.filter(
-			(snippet) => snippet.validator === "valibot",
 		);
 
 		for (const snippet of zod) {
 			expect(snippet.code).toContain("z.number()");
 			expect(snippet.code).not.toContain("z.coerce");
 		}
-		for (const snippet of valibot) {
-			expect(snippet.code).toContain("v.optional(v.number(), 3000)");
-			expect(snippet.code).toContain("toJsonSchema");
-			expect(snippet.code).not.toContain("v.toNumber");
-		}
+	});
+
+	it("mirrors DATABASE_URL and PORT with ArkType bounds, not number.port", () => {
+		const vanilla = HERO_MVP_SNIPPETS.filter(
+			(snippet) => snippet.host === "vanilla",
+		);
+		const arktype = vanilla.find((snippet) => snippet.validator === "arktype");
+		const zod = vanilla.find((snippet) => snippet.validator === "zod");
+
+		expect(arktype?.code).toContain('DATABASE_URL: "string.url"');
+		expect(arktype?.code).toContain(
+			'PORT: "0 <= number.integer <= 65535 = 3000"',
+		);
+		expect(arktype?.code).not.toContain("number.port");
+		expect(zod?.code).toContain("DATABASE_URL: z.url()");
+		expect(zod?.code).toContain(
+			"PORT: z.number().int().min(0).max(65535).default(3000)",
+		);
 	});
 });

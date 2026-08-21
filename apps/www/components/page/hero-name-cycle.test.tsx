@@ -3,10 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
 	HERO_CYCLE_MS,
 	HERO_FIRST_DWELL_MS,
-	HERO_VALIDATOR_NAMES,
+	HERO_HEADLINE_NAMES,
 	HeroNameCycle,
 } from "./hero-name-cycle";
-import { HeroPlaygroundProvider } from "./hero-playground";
 
 function mockMatchMedia(matches: boolean) {
 	Object.defineProperty(window, "matchMedia", {
@@ -24,12 +23,8 @@ function mockMatchMedia(matches: boolean) {
 	});
 }
 
-function renderCycle() {
-	return render(
-		<HeroPlaygroundProvider>
-			<HeroNameCycle />
-		</HeroPlaygroundProvider>,
-	);
+function currentHeadline() {
+	return document.querySelector("[data-pos='current']");
 }
 
 describe("HeroNameCycle", () => {
@@ -42,12 +37,16 @@ describe("HeroNameCycle", () => {
 		mockMatchMedia(false);
 	});
 
-	it("exposes the current validator name, not the full list", () => {
-		renderCycle();
+	it("exposes the current name, not the full list", () => {
+		render(<HeroNameCycle />);
 
+		expect(document.querySelector(".home-aurora__cycle-with")?.textContent).toBe(
+			"with\u00a0",
+		);
+		expect(currentHeadline()?.textContent).toBe("ArkType");
 		expect(
-			screen.getByText("ArkType", { selector: "[data-pos='current']" }),
-		).toBeInTheDocument();
+			`${document.querySelector(".home-aurora__cycle-with")?.textContent}${currentHeadline()?.textContent}`,
+		).toBe("with\u00a0ArkType");
 		expect(
 			screen.queryByText("ArkType, Zod, and Valibot"),
 		).not.toBeInTheDocument();
@@ -55,41 +54,46 @@ describe("HeroNameCycle", () => {
 
 	it("starts on ArkType and cycles through each name", () => {
 		vi.useFakeTimers();
-		renderCycle();
+		render(<HeroNameCycle />);
 
-		expect(
-			screen.getByText("ArkType", { selector: "[data-pos]" }),
-		).toHaveAttribute("data-pos", "current");
+		expect(currentHeadline()?.textContent).toBe("ArkType");
+		expect(document.querySelector(".home-aurora__cycle-with")?.textContent).toBe(
+			"with\u00a0",
+		);
 
 		act(() => {
 			vi.advanceTimersByTime(HERO_FIRST_DWELL_MS - 1);
 		});
-		expect(
-			screen.getByText("ArkType", { selector: "[data-pos]" }),
-		).toHaveAttribute("data-pos", "current");
+		expect(currentHeadline()?.textContent).toBe("ArkType");
 
-		for (const name of HERO_VALIDATOR_NAMES.slice(1)) {
+		for (const name of HERO_HEADLINE_NAMES.slice(1)) {
 			act(() => {
 				vi.advanceTimersByTime(name === "Zod" ? 1 : HERO_CYCLE_MS);
 			});
+			expect(currentHeadline()?.textContent).toBe(name);
 			expect(
-				screen.getByText(name, { selector: "[data-pos]" }),
-			).toHaveAttribute("data-pos", "current");
+				document.querySelector(".home-aurora__cycle-with")?.textContent,
+			).toBe("with\u00a0");
 		}
+
+		act(() => {
+			vi.advanceTimersByTime(HERO_CYCLE_MS);
+		});
+		expect(currentHeadline()?.textContent).toBe("ArkType");
 	});
 
 	it("stays on ArkType when the user prefers reduced motion", () => {
 		vi.useFakeTimers();
 		mockMatchMedia(true);
-		renderCycle();
+		render(<HeroNameCycle />);
 
 		act(() => {
 			vi.advanceTimersByTime(7800);
 		});
 
+		expect(currentHeadline()?.textContent).toBe("ArkType");
 		expect(
-			screen.getByText("ArkType", { selector: "[data-pos]" }),
-		).toHaveAttribute("data-pos", "current");
-		expect(screen.queryByText("Zod", { selector: "[data-pos]" })).toBeNull();
+			document.querySelector("[data-pos]:not([data-pos='current'])"),
+		).toBeNull();
 	});
 });

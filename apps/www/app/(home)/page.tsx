@@ -47,8 +47,9 @@ export default function HomePage() {
 								style={{ animationDelay: "120ms" }}
 							>
 								Typesafe environment variables
+								<br />
 								<span className="home-aurora__lead-with">
-									with <HeroNameCycle />
+									<HeroNameCycle />
 								</span>
 							</span>
 						</h1>

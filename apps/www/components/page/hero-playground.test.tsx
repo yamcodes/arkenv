@@ -9,7 +9,11 @@ import {
 	type HeroMvpHostId,
 	type HeroMvpValidatorId,
 } from "./hero-mvp-snippets";
-import { HERO_FIRST_DWELL_MS, HeroNameCycle } from "./hero-name-cycle";
+import {
+	HERO_CYCLE_MS,
+	HERO_FIRST_DWELL_MS,
+	HeroNameCycle,
+} from "./hero-name-cycle";
 import { HeroPlaygroundProvider } from "./hero-playground";
 
 function mockMatchMedia(matches: boolean) {
@@ -38,7 +42,7 @@ function htmlFor(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
 					? "NEXT_PUBLIC_API_URL"
 					: validator === "zod"
 						? "z.url()"
-						: "v.pipe";
+						: "@arkenv/standard";
 	return `<pre class="shiki twoslash"><code>${token}</code></pre>`;
 }
 
@@ -71,9 +75,7 @@ function renderPlayground() {
 						html:
 							example.validator === "zod"
 								? "<span>z.url()</span>"
-								: example.validator === "valibot"
-									? "<span>v.pipe</span>"
-									: "<span>DATABASE_URL PORT</span>",
+								: "<span>DATABASE_URL PORT</span>",
 					}))}
 				/>{" "}
 				object
@@ -93,7 +95,7 @@ describe("hero playground sync", () => {
 		mockMatchMedia(false);
 	});
 
-	it("cycles the H1 and the active tab together", () => {
+	it("cycles the H1 without changing the example tab", () => {
 		vi.useFakeTimers();
 		renderPlayground();
 
@@ -109,20 +111,42 @@ describe("hero playground sync", () => {
 			vi.advanceTimersByTime(HERO_FIRST_DWELL_MS);
 		});
 
-		expect(screen.getByText("Zod", { selector: "[data-pos]" })).toHaveAttribute(
-			"data-pos",
-			"current",
+		expect(document.querySelector("[data-pos='current']")?.textContent).toBe(
+			"Zod",
 		);
-		expect(screen.getByRole("tab", { name: "Zod" })).toHaveAttribute(
+		expect(screen.getByRole("tab", { name: "ArkType" })).toHaveAttribute(
 			"aria-selected",
 			"true",
 		);
 		expect(
 			screen.getByRole("tabpanel").querySelector("[data-active='true']"),
-		).toHaveTextContent("z.url()");
+		).toHaveTextContent("@arkenv/core");
+
+		act(() => {
+			vi.advanceTimersByTime(HERO_CYCLE_MS);
+		});
+
+		expect(document.querySelector("[data-pos='current']")?.textContent).toBe(
+			"Valibot",
+		);
+		expect(screen.getByRole("tab", { name: "ArkType" })).toHaveAttribute(
+			"aria-selected",
+			"true",
+		);
+
+		act(() => {
+			vi.advanceTimersByTime(HERO_CYCLE_MS);
+		});
+
+		expect(document.querySelector("[data-pos='current']")?.textContent).toBe(
+			"Standard Schema",
+		);
+		expect(
+			screen.queryByRole("tab", { name: "Standard Schema" }),
+		).not.toBeInTheDocument();
 	});
 
-	it("stops cycling when the pointer enters the example", () => {
+	it("keeps cycling the H1 when the pointer enters the example", () => {
 		vi.useFakeTimers();
 		renderPlayground();
 
@@ -134,31 +158,31 @@ describe("hero playground sync", () => {
 			vi.advanceTimersByTime(HERO_FIRST_DWELL_MS + 100);
 		});
 
-		expect(
-			screen.getByText("ArkType", { selector: "[data-pos]" }),
-		).toHaveAttribute("data-pos", "current");
+		expect(document.querySelector("[data-pos='current']")?.textContent).toBe(
+			"Zod",
+		);
 		expect(screen.getByRole("tab", { name: "ArkType" })).toHaveAttribute(
 			"aria-selected",
 			"true",
 		);
 	});
 
-	it("jumps the H1 when the user picks a tab", async () => {
+	it("does not jump the H1 when the user picks a tab", async () => {
 		const user = userEvent.setup();
 		renderPlayground();
 
-		await user.click(screen.getByRole("tab", { name: "Valibot" }));
+		await user.click(screen.getByRole("tab", { name: "Zod" }));
 
-		expect(
-			screen.getByText("Valibot", { selector: "[data-pos]" }),
-		).toHaveAttribute("data-pos", "current");
-		expect(screen.getByRole("tab", { name: "Valibot" })).toHaveAttribute(
+		expect(document.querySelector("[data-pos='current']")?.textContent).toBe(
+			"ArkType",
+		);
+		expect(screen.getByRole("tab", { name: "Zod" })).toHaveAttribute(
 			"aria-selected",
 			"true",
 		);
 		expect(
 			screen.getByRole("tabpanel").querySelector("[data-active='true']"),
-		).toHaveTextContent("v.pipe");
+		).toHaveTextContent("z.url()");
 	});
 
 	it("updates the slogan env hover when the validator changes", async () => {

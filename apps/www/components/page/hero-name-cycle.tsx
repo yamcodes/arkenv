@@ -1,26 +1,35 @@
 "use client";
 
-import { useRef } from "react";
-import { HERO_MVP_VALIDATORS } from "./hero-mvp-snippets";
-import { useHeroPlayground } from "./hero-playground";
+import { useEffect, useRef, useState } from "react";
 
-export const HERO_VALIDATOR_NAMES = HERO_MVP_VALIDATORS.map(
-	(item) => item.label,
-);
-export {
-	HERO_CYCLE_MS,
-	HERO_FIRST_DWELL_MS,
-} from "./hero-playground";
+export const HERO_HEADLINE_NAMES = [
+	"ArkType",
+	"Zod",
+	"Valibot",
+	"Standard Schema",
+] as const;
+
+export const HERO_FIRST_DWELL_MS = 3000;
+export const HERO_CYCLE_MS = 2500;
+
+function prefersReducedMotion() {
+	return (
+		typeof window.matchMedia === "function" &&
+		window.matchMedia("(prefers-reduced-motion: reduce)").matches
+	);
+}
+
+function nextIndex(current: number) {
+	return (current + 1) % HERO_HEADLINE_NAMES.length;
+}
 
 /**
- * Accent-colored H1 name. Reads the shared hero validator so tabs and copy stay in sync.
+ * Static “with” plus a cycling accent name. The name is the only thing that
+ * slides; both stay inline so copy is “with ArkType” on one line.
  */
 export function HeroNameCycle() {
-	const { validator } = useHeroPlayground();
-	const index = Math.max(
-		0,
-		HERO_MVP_VALIDATORS.findIndex((item) => item.id === validator),
-	);
+	const [index, setIndex] = useState(0);
+	const [reduceMotion, setReduceMotion] = useState(false);
 	const currentRef = useRef(index);
 	const prevRef = useRef(index);
 	if (currentRef.current !== index) {
@@ -29,20 +38,54 @@ export function HeroNameCycle() {
 	}
 	const previous = prevRef.current;
 
+	useEffect(() => {
+		if (typeof window.matchMedia !== "function") return;
+		const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+		const sync = () => {
+			const reduce = mq.matches;
+			setReduceMotion(reduce);
+			if (reduce) setIndex(0);
+		};
+		sync();
+		mq.addEventListener("change", sync);
+		return () => mq.removeEventListener("change", sync);
+	}, []);
+
+	useEffect(() => {
+		if (reduceMotion) return;
+
+		const tick = () => {
+			if (document.hidden || prefersReducedMotion()) return;
+			setIndex(nextIndex);
+		};
+
+		let intervalId: number | undefined;
+		const timeoutId = window.setTimeout(() => {
+			tick();
+			intervalId = window.setInterval(tick, HERO_CYCLE_MS);
+		}, HERO_FIRST_DWELL_MS);
+
+		return () => {
+			window.clearTimeout(timeoutId);
+			if (intervalId !== undefined) window.clearInterval(intervalId);
+		};
+	}, [reduceMotion]);
+
 	return (
 		<span className="home-aurora__cycle">
+			<span className="home-aurora__cycle-with">with{"\u00a0"}</span>
 			<span className="home-aurora__cycle-viewport">
-				{HERO_MVP_VALIDATORS.map((item, nameIndex) => {
+				{HERO_HEADLINE_NAMES.map((name, nameIndex) => {
 					if (nameIndex !== index && nameIndex !== previous) return null;
 					const pos = nameIndex === index ? "current" : "prev";
 					return (
 						<span
-							key={item.id}
+							key={name}
 							className="home-aurora__cycle-item"
 							data-pos={pos}
 							aria-hidden={pos === "current" ? undefined : true}
 						>
-							{item.label}
+							{name}
 						</span>
 					);
 				})}

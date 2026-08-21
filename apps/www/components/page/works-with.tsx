@@ -1,3 +1,5 @@
+"use client";
+
 import {
 	SiBun,
 	SiClaude,
@@ -11,10 +13,13 @@ import {
 	SiTypescript,
 	SiVercel,
 	SiVite,
+	SiZod,
 } from "@icons-pack/react-simple-icons";
 import type { JSX } from "react";
+import { ArkTypeIcon } from "~/components/icons/arktype-icon";
 import { SolidStartIcon } from "~/components/icons/solid-start-icon";
 import { TypiaIcon } from "~/components/icons/typia-icon";
+import { ValibotIcon } from "~/components/icons/valibot-icon";
 import { VsCodeIcon } from "~/components/icons/vscode-icon";
 
 type LogoItem = {
@@ -24,9 +29,24 @@ type LogoItem = {
 
 /**
  * Ecosystem logos for the full-width ticker.
- * ArkType / Zod / Valibot stay on the hero tabs, not here.
+ * Compatibility list — not a map of the hero tabs. Tabs preview ArkType / Zod;
+ * this list includes those plus Valibot, Typia, runtimes, editors, and hosts.
  */
 const worksWith: LogoItem[] = [
+	{
+		name: "ArkType",
+		icon: ({ className }) => (
+			<ArkTypeIcon className={className} variant="monotone" />
+		),
+	},
+	{
+		name: "Zod",
+		icon: ({ className }) => <SiZod className={className} />,
+	},
+	{
+		name: "Valibot",
+		icon: ({ className }) => <ValibotIcon className={className} />,
+	},
 	{
 		name: "Typia",
 		icon: ({ className }) => <TypiaIcon className={className} />,

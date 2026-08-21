@@ -7,7 +7,6 @@ export const HERO_MVP_HOSTS = [
 export const HERO_MVP_VALIDATORS = [
 	{ id: "arktype", label: "ArkType" },
 	{ id: "zod", label: "Zod" },
-	{ id: "valibot", label: "Valibot" },
 ] as const;
 
 export type HeroMvpHostId = (typeof HERO_MVP_HOSTS)[number]["id"];
@@ -36,23 +35,16 @@ export type HeroMvpEnvField = {
  */
 export function heroMvpEnvType(
 	host: HeroMvpHostId,
-	validator: HeroMvpValidatorId,
+	_validator: HeroMvpValidatorId,
 ): HeroMvpEnvField[] {
 	const fields: HeroMvpEnvField[] = [{ name: "DATABASE_URL", type: "string" }];
 	const publicKey = publicUrlKey(host);
 	if (publicKey) fields.push({ name: publicKey, type: "string" });
-	if (validator !== "arktype" || host === "vanilla") {
-		fields.push({ name: "PORT", type: "number" });
-	}
+	fields.push({ name: "PORT", type: "number" });
 	return fields;
 }
 
 function importBlock(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
-	if (validator === "valibot") {
-		return `import arkenv from "@arkenv/standard";
-import * as v from "valibot";
-import { toJsonSchema } from "@valibot/to-json-schema";`;
-	}
 	if (host === "next") {
 		if (validator === "zod") {
 			return `import arkenv from "@/generated/env.gen";
@@ -72,48 +64,24 @@ function schemaFields(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
 	if (validator === "arktype") {
 		const fields = [`  DATABASE_URL: "string.url",`];
 		if (publicKey) fields.push(`  ${publicKey}: "string.url",`);
-		if (host === "vanilla") fields.push(`  PORT: "number.port = 3000",`);
+		fields.push(`  PORT: "0 <= number.integer <= 65535 = 3000",`);
 		return fields.join("\n");
 	}
-	if (validator === "zod") {
-		const fields = ["  DATABASE_URL: z.url(),"];
-		if (publicKey) fields.push(`  ${publicKey}: z.url(),`);
-		fields.push("  PORT: z.number().int().min(0).max(65535).default(3000),");
-		return fields.join("\n");
-	}
-	const fields = ["    DATABASE_URL: v.pipe(v.string(), v.url()),"];
-	if (publicKey) {
-		fields.push(`    ${publicKey}: v.pipe(v.string(), v.url()),`);
-	}
-	fields.push("    PORT: v.optional(v.number(), 3000),");
+	const fields = ["  DATABASE_URL: z.url(),"];
+	if (publicKey) fields.push(`  ${publicKey}: z.url(),`);
+	fields.push("  PORT: z.number().int().min(0).max(65535).default(3000),");
 	return fields.join("\n");
 }
 
 function importLine(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
-	if (validator === "valibot") return "@arkenv/standard";
 	if (host === "next") return "@/generated/env.gen";
 	if (validator === "arktype") return "@arkenv/core";
 	return "@arkenv/standard";
 }
 
 function snippetBody(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
-	const fields = schemaFields(host, validator);
-	if (validator === "valibot") {
-		return `export const env = arkenv(
-  {
-${fields}
-  },
-  {
-    toJsonSchema: (schema) =>
-      toJsonSchema(schema as v.GenericSchema, {
-        typeMode: "input",
-        target: "draft-07",
-      }),
-  },
-);`;
-	}
 	return `export const env = arkenv({
-${fields}
+${schemaFields(host, validator)}
 });`;
 }
 

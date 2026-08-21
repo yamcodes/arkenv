@@ -397,7 +397,7 @@
 }
 
 .home-aurora__lead-with {
-	display: block;
+	white-space: nowrap;
 }
 
 .home-aurora__cycle {
@@ -405,28 +405,26 @@
 	position: relative;
 	white-space: nowrap;
 	overflow-wrap: normal;
-	color: var(--color-accent);
 }
 
 .home-aurora__cycle-viewport {
-	display: inline-grid;
-	vertical-align: baseline;
-	overflow: hidden;
-	align-items: baseline;
-	justify-items: start;
-	/*
-	 * Overflow hidden clips the vertical slide. Tight tracking (-0.06em)
-	 * plus antialiased glyphs paint past the layout box, so without a
-	 * little end padding the last letter (the “e” in ArkType) gets shaved.
-	 */
-	padding-inline-end: 0.18em;
+	display: inline;
+	position: relative;
+	white-space: nowrap;
+	line-height: inherit;
+	overflow: visible;
+	clip-path: inset(0 -0.18em 0 0);
+}
+
+.home-aurora__cycle-with {
+	color: var(--color-ink);
 }
 
 .home-aurora__cycle-item {
-	grid-area: 1 / 1;
+	display: inline;
 	white-space: nowrap;
 	line-height: inherit;
-	color: inherit;
+	color: var(--color-accent);
 	font: inherit;
 	letter-spacing: inherit;
 	opacity: 0;
@@ -446,6 +444,9 @@
 }
 
 .home-aurora__cycle-item[data-pos="prev"] {
+	position: absolute;
+	inset-inline-start: 0;
+	top: 0;
 	opacity: 0;
 	transform: translateY(-0.4em);
 }

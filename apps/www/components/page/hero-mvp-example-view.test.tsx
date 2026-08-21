@@ -20,7 +20,7 @@ function htmlFor(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
 					? "NEXT_PUBLIC_API_URL"
 					: validator === "zod"
 						? "z.url()"
-						: "v.pipe";
+						: "@arkenv/standard";
 	return `<pre class="shiki twoslash"><code>${token}</code></pre>`;
 }
 
@@ -65,6 +65,9 @@ describe("HeroMvpExampleView", () => {
 			screen.queryByRole("tab", { name: "Vanilla" }),
 		).not.toBeInTheDocument();
 		expect(
+			screen.queryByRole("tab", { name: "Valibot" }),
+		).not.toBeInTheDocument();
+		expect(
 			screen.getByRole("tabpanel").querySelector("[data-active='true']"),
 		).toHaveTextContent("@arkenv/core");
 		expect(
@@ -83,13 +86,5 @@ describe("HeroMvpExampleView", () => {
 		expect(
 			screen.getByRole("tabpanel").querySelector("[data-active='true']"),
 		).not.toHaveTextContent("VITE_API_URL");
-
-		await user.click(screen.getByRole("tab", { name: "Valibot" }));
-		expect(
-			screen.getByRole("tabpanel").querySelector("[data-active='true']"),
-		).toHaveTextContent("v.pipe");
-		expect(
-			screen.getByRole("tabpanel").querySelector("[data-active='true']"),
-		).not.toHaveTextContent("NEXT_PUBLIC_API_URL");
 	});
 });

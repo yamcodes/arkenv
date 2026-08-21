@@ -69,7 +69,7 @@ function useTabInk(validator: HeroMvpValidatorId) {
  * Validator tabs over a vanilla env.ts window. Hosts live in the ticker, not here.
  */
 export function HeroMvpExampleView({ examples }: HeroMvpExampleViewProps) {
-	const { validator, setValidator, pause } = useHeroPlayground();
+	const { validator, setValidator } = useHeroPlayground();
 	const { listRef, ink } = useTabInk(validator);
 	const baseId = useId();
 	const panes = examples.filter((item) => item.host === "vanilla");
@@ -78,11 +78,7 @@ export function HeroMvpExampleView({ examples }: HeroMvpExampleViewProps) {
 	const validatorTabId = `${baseId}-validator-${validator}`;
 
 	return (
-		<div
-			className="home-aurora__mvp"
-			onPointerEnter={pause}
-			onFocusCapture={pause}
-		>
+		<div className="home-aurora__mvp">
 			<div className="home-aurora__mvp-validators" ref={listRef}>
 				<div
 					className="home-aurora__mvp-validators-list"

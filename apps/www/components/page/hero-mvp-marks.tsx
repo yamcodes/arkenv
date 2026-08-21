@@ -1,7 +1,6 @@
 import { SiZod } from "@icons-pack/react-simple-icons";
 import type { ReactNode } from "react";
 import { ArkTypeIcon } from "~/components/icons/arktype-icon";
-import { ValibotIcon } from "~/components/icons/valibot-icon";
 import type { HeroMvpValidatorId } from "./hero-mvp-snippets";
 
 const iconClass = "home-aurora__mvp-tab-icon";
@@ -31,12 +30,6 @@ export function HeroMvpValidatorMark({ id }: { id: HeroMvpValidatorId }) {
 			return (
 				<Mark>
 					<SiZod className={iconClass} size={14} />
-				</Mark>
-			);
-		case "valibot":
-			return (
-				<Mark>
-					<ValibotIcon className={iconClass} width="1em" height="1em" />
 				</Mark>
 			);
 	}
