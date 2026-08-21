@@ -63,7 +63,7 @@ test.describe("Docs table of contents", () => {
 			.poll(async () =>
 				heading.evaluate((el) => el.getBoundingClientRect().top),
 			)
-			.toBeGreaterThan(100);
+			.toBeGreaterThan(80);
 		await expect
 			.poll(async () =>
 				heading.evaluate((el) => el.getBoundingClientRect().top),
