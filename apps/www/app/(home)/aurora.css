@@ -133,7 +133,12 @@
 	z-index: 0;
 	pointer-events: none;
 	overflow: hidden;
-	background-image: radial-gradient(ellipse 42% 36% at 12% 18%, var(--color-bloom-a), transparent 70%), radial-gradient(ellipse 38% 32% at 88% 8%, var(--color-bloom-b), transparent 72%);
+	/* 2.5% white — depth, not a light source. No teal bloom. */
+	background-image: radial-gradient(
+		ellipse 72% 58% at 50% 32%,
+		var(--color-spotlight),
+		transparent 72%
+	);
 	/* Strong near the header, gone by the workbench */
 	mask-image: linear-gradient(to bottom, #000 0%, #000 28%, rgb(0 0 0 / 0.55) 48%, transparent 100%);
 	-webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 28%, rgb(0 0 0 / 0.55) 48%, transparent 100%);
@@ -1155,9 +1160,8 @@
 }
 
 /* Pitch sections — Vite-style bento. Copy packs from the top; widgets dock
-   to the bottom hairline. At ≥64rem, half-cells subgrid so heading rows
-   share a track; leftover widget-track space is paper above the window,
-   not empty dark inside it. */
+   to the bottom hairline via margin-top: auto. Leftover cell height is paper
+   above the window, not empty dark inside it. */
 .home-aurora__bento {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr);
@@ -1186,7 +1190,15 @@
 	padding-block-end: 0;
 }
 
+.home-aurora__pitch:not(.home-aurora__pitch--span) > .home-aurora__pitch-head {
+	flex: 0 0 auto;
+}
+
 .home-aurora__pitch:not(.home-aurora__pitch--span) > .home-aurora__pitch-visual {
+	flex: 0 0 auto;
+	align-self: stretch;
+	margin-block-start: auto;
+	margin-block-end: 0;
 	border-block-end: 0;
 	border-end-start-radius: 0;
 	border-end-end-radius: 0;
@@ -1196,6 +1208,10 @@
 	.home-aurora__pitch {
 		padding-block: var(--space-lg);
 	}
+
+	.home-aurora__pitch:not(.home-aurora__pitch--span) {
+		padding-block-end: 0;
+	}
 }
 
 @media (min-width: 64rem) {
@@ -1203,32 +1219,16 @@
 		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 	}
 
-	.home-aurora__bento:not(.home-aurora__bento--solo) {
-		grid-template-rows: auto minmax(0, 1fr) auto minmax(0, 1fr);
-	}
-
 	.home-aurora__pitch:not(.home-aurora__pitch--span):nth-child(odd) {
 		border-inline-end: var(--rule-hair) solid var(--color-rule);
 	}
 
-	.home-aurora__pitch:not(.home-aurora__pitch--span) {
-		display: grid;
-		grid-template-rows: subgrid;
-		grid-row: span 2;
-	}
-
 	.home-aurora__pitch:not(.home-aurora__pitch--span) > .home-aurora__pitch-head {
-		align-self: start;
 		max-width: none;
 	}
 
 	.home-aurora__pitch:not(.home-aurora__pitch--span) > .home-aurora__pitch-head p {
 		max-width: 70%;
-	}
-
-	.home-aurora__pitch:not(.home-aurora__pitch--span) > .home-aurora__pitch-visual {
-		align-self: end;
-		min-height: 0;
 	}
 
 	.home-aurora__pitch--span {
@@ -1404,12 +1404,17 @@
 	overflow: hidden;
 }
 
-/* IDE autocomplete mock — window hugs the snippet; IntelliSense sits in the well */
+/* IDE autocomplete mock — dropdown hangs off the caret and is sliced
+   by the cell’s overflow:hidden at the bottom hairline. */
 .home-aurora__ide {
 	position: relative;
-	z-index: 2;
+	z-index: 1;
 	gap: 0;
-	overflow: hidden;
+	overflow: visible;
+}
+
+.home-aurora__code-window.home-aurora__ide {
+	overflow: visible;
 }
 
 .home-aurora__ide .home-aurora__ide-body {
@@ -1420,12 +1425,11 @@
 	position: relative;
 	width: fit-content;
 	max-width: 100%;
-	padding-bottom: 7.5rem;
 }
 
 .home-aurora__ide .home-aurora__ide-menu {
 	position: absolute;
-	z-index: 3;
+	z-index: 2;
 	top: calc(100% - 0.4rem);
 	left: var(--space-md);
 	width: max-content;
@@ -2014,14 +2018,13 @@
 	}
 }
 
-/* Mirrored hero atmosphere: blooms + interactive dots, soft edge fade */
+/* Mirrored hero atmosphere: dots only, no teal bloom */
 .home-aurora__outro-atmosphere {
 	position: absolute;
 	inset: 0;
 	z-index: 0;
 	pointer-events: none;
 	overflow: hidden;
-	background-image: radial-gradient(ellipse 42% 48% at 88% 70%, var(--color-bloom-a), transparent 70%), radial-gradient(ellipse 38% 42% at 14% 30%, var(--color-bloom-b), transparent 72%);
 	mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
 	-webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
 }
