@@ -5,16 +5,20 @@ import {
 	findSchemaPath,
 	formatMissingSchemaError,
 	getDefaultSchemaFileCandidates,
-} from "@arkenv/build";
+} from "./core";
 
 /**
- * Strip query suffixes from a module path.
+ * Strip virtual-module and query suffixes from a module id or file path,
+ * normalizing path separators across platforms.
  *
- * @param id The raw module path
+ * @param id The raw module id or path
  * @returns A filesystem path suitable for comparison
  */
 export function normalizeModuleId(id: string): string {
 	let normalized = id;
+	if (normalized.startsWith("\0")) {
+		normalized = normalized.slice(1);
+	}
 	const queryIndex = normalized.indexOf("?");
 	if (queryIndex !== -1) {
 		normalized = normalized.slice(0, queryIndex);
@@ -23,9 +27,9 @@ export function normalizeModuleId(id: string): string {
 }
 
 /**
- * Check whether a module path refers to the resolved env module.
+ * Check whether a module id or path refers to the resolved env module.
  *
- * @param id The module path (may include query strings)
+ * @param id The module id or path (may include query strings or virtual prefixes)
  * @param schemaPath The absolute path to the env module
  * @returns Whether `id` identifies the same module as `schemaPath`
  */
@@ -40,51 +44,70 @@ export function isEnvModuleId(id: string, schemaPath: string): boolean {
 }
 
 /**
- * Resolve the absolute env-module path from plugin options and the project root.
+ * Resolve the absolute env-module path from options and a project root.
  *
- * @param root The project root (typically `process.cwd()`)
- * @param schemaPath An optional relative or absolute schema path from plugin config
+ * @param root The project root directory
+ * @param schemaPath An optional relative or absolute schema path from config
+ * @param prefix Brand prefix for diagnostics (e.g. `"[ArkEnv]"`, `"ArkEnv Vite plugin:"`, `"ArkEnv Bun plugin:"`)
  * @returns The absolute path to the env module
- * @throws If no env module can be found
+ * @throws If no env module can be found or if it points to a directory
  */
 export function resolveEnvModulePath(
 	root: string,
 	schemaPath?: string,
+	prefix = "[ArkEnv]",
 ): string {
+	const cleanPrefix = prefix.trim().endsWith(":")
+		? prefix.trim()
+		: `${prefix.trim()}:`;
 	if (schemaPath) {
 		const resolved = path.isAbsolute(schemaPath)
 			? schemaPath
 			: path.resolve(root, schemaPath);
 		if (!fs.existsSync(resolved)) {
 			throw new Error(
-				`ArkEnv Bun plugin: schemaPath "${schemaPath}" does not exist (resolved to "${resolved}").`,
+				`${cleanPrefix} schemaPath "${schemaPath}" does not exist (resolved to "${resolved}").`,
 			);
 		}
-		return assertFlatSchemaFile(resolved, "ArkEnv Bun plugin:");
+		return assertFlatSchemaFile(resolved, cleanPrefix);
 	}
 
 	const discovered = findSchemaPath(root);
 	if (!discovered) {
 		throw new Error(
 			formatMissingSchemaError({
-				prefix: "ArkEnv Bun plugin:",
+				prefix: cleanPrefix,
 				optionsHint: "plugin options",
 				checkedPaths: getDefaultSchemaFileCandidates(root),
 			}),
 		);
 	}
-	return assertFlatSchemaFile(discovered, "ArkEnv Bun plugin:");
+	return assertFlatSchemaFile(discovered, cleanPrefix);
 }
 
 /**
  * Normalize a `clientPrefix` value to a string array.
  *
  * @param prefix A string prefix, list of prefixes, or undefined
- * @returns A non-empty list of prefixes (defaults to `["BUN_PUBLIC_"]`)
+ * @param defaultPrefix Fallback prefix(es) to use when `prefix` is undefined
+ * @returns A list of prefixes
  */
 export function normalizePrefixes(
 	prefix: string | string[] | undefined,
+	defaultPrefix: string | string[] = [],
 ): string[] {
-	if (prefix === undefined) return ["BUN_PUBLIC_"];
+	if (prefix === undefined) {
+		return Array.isArray(defaultPrefix) ? defaultPrefix : [defaultPrefix];
+	}
 	return Array.isArray(prefix) ? prefix : [prefix];
+}
+
+/**
+ * Check whether a changed file is a dotenv file.
+ *
+ * @param file Absolute path or filename of the changed file
+ * @returns Whether the file looks like a `.env` / `.env.*` file
+ */
+export function isDotEnvFile(file: string): boolean {
+	return /^\.env(?:\..+)?$/.test(path.basename(file));
 }

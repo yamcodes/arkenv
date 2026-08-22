@@ -1,3 +1,4 @@
+import { filterEnvByPrefix, normalizePrefixes } from "@arkenv/build";
 import {
 	type ArkEnvLogOptions,
 	resolveBuildLog,
@@ -6,7 +7,6 @@ import {
 import type { CompiledEnvSchema, SchemaShape } from "@repo/types";
 import type { ParseStandardConfig as ArkEnvConfig } from "@repo/utils";
 import { loadEnv, type Plugin } from "vite";
-import { normalizePrefixes } from "./env-module-path";
 
 /**
  * Build the legacy schema → Vite `define` plugin (import.meta.env inlining).
@@ -35,7 +35,7 @@ export function createDefinePlugin(
 		name: pluginName,
 		config(viteConfig, { mode }) {
 			const envPrefix = viteConfig.envPrefix ?? "VITE_";
-			const prefixes = normalizePrefixes(envPrefix);
+			const prefixes = normalizePrefixes(envPrefix, ["VITE_"]);
 
 			const envDir =
 				typeof viteConfig.envDir === "string"
@@ -48,11 +48,7 @@ export function createDefinePlugin(
 					safe: false,
 				});
 
-				const filteredEnv = Object.fromEntries(
-					Object.entries(env).filter(([key]) =>
-						prefixes.some((prefix) => key.startsWith(prefix)),
-					),
-				);
+				const filteredEnv = filterEnvByPrefix(env, prefixes);
 
 				const define = Object.fromEntries(
 					Object.entries(filteredEnv).map(([key, value]) => [

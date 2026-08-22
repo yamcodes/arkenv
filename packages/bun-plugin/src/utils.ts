@@ -1,3 +1,4 @@
+import { filterEnvByPrefix } from "@arkenv/build";
 import type { SchemaShape } from "@repo/types";
 import type { ParseStandardConfig as ArkEnvConfig } from "@repo/utils";
 import type { Loader, PluginBuilder } from "bun";
@@ -16,13 +17,7 @@ export function processEnvSchema<T extends SchemaShape>(
 		env: config?.env ?? process.env,
 		safe: false,
 	});
-	const prefix = "BUN_PUBLIC_";
-	const allowed = new Set(["NODE_ENV"]);
-	const filteredEnv = Object.fromEntries(
-		Object.entries(env).filter(
-			([key]) => allowed.has(key) || key.startsWith(prefix),
-		),
-	);
+	const filteredEnv = filterEnvByPrefix(env, "BUN_PUBLIC_", ["NODE_ENV"]);
 	const envMap = new Map<string, string>();
 	for (const [key, value] of Object.entries(filteredEnv)) {
 		envMap.set(key, JSON.stringify(value));

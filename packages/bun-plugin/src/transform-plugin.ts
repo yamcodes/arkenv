@@ -1,18 +1,18 @@
 import fs from "node:fs";
-import { generateClientEnvModule } from "@arkenv/build";
+import {
+	classifyEnvKeys,
+	generateClientEnvModule,
+	isEnvModuleId,
+	loadValidatedEnv,
+	normalizePrefixes,
+	resolveEnvModulePath,
+} from "@arkenv/build";
 import {
 	type ArkEnvLogOptions,
 	resolveBuildLog,
 	splitPluginConfig,
 } from "@repo/log";
 import type { BunPlugin } from "bun";
-import { classifyEnvKeys } from "./classify-env-keys";
-import {
-	isEnvModuleId,
-	normalizePrefixes,
-	resolveEnvModulePath,
-} from "./env-module-path";
-import { loadValidatedEnv } from "./load-validated-env";
 import type { BunPluginFactoryConfig } from "./plugin-config";
 
 /**
@@ -48,7 +48,7 @@ export function createTransformPlugin(
 		serverKeys: string[];
 		transformedSource?: string;
 	} = {
-		prefixes: normalizePrefixes(clientPrefixOption),
+		prefixes: normalizePrefixes(clientPrefixOption, ["BUN_PUBLIC_"]),
 		clientValues: {},
 		serverKeys: [],
 	};
@@ -64,7 +64,9 @@ export function createTransformPlugin(
 			...(pluginConfig.env as Record<string, string | undefined> | undefined),
 		};
 
-		const validated = loadValidatedEnv(state.schemaPath, loaded);
+		const validated = loadValidatedEnv(state.schemaPath, loaded, {
+			prefix: "ArkEnv Bun plugin:",
+		});
 		const content = fs.readFileSync(state.schemaPath, "utf8");
 		const { clientKeys, sharedKeys, serverKeys } = classifyEnvKeys(
 			content,
@@ -110,8 +112,11 @@ export function createTransformPlugin(
 					state.schemaPath = resolveEnvModulePath(
 						process.cwd(),
 						schemaPathOption,
+						"ArkEnv Bun plugin:",
 					);
-					state.prefixes = normalizePrefixes(clientPrefixOption);
+					state.prefixes = normalizePrefixes(clientPrefixOption, [
+						"BUN_PUBLIC_",
+					]);
 					refreshTransformState();
 				} catch (error: unknown) {
 					buildLog.logBuildErrorWithCause(

@@ -1,19 +1,19 @@
 import fs from "node:fs";
-import { generateClientEnvModule } from "@arkenv/build";
+import {
+	classifyEnvKeys,
+	generateClientEnvModule,
+	isDotEnvFile,
+	isEnvModuleId,
+	loadValidatedEnv,
+	normalizePrefixes,
+	resolveEnvModulePath,
+} from "@arkenv/build";
 import {
 	type ArkEnvLogOptions,
 	resolveBuildLog,
 	splitPluginConfig,
 } from "@repo/log";
 import { loadEnv, type Plugin } from "vite";
-import { classifyEnvKeys } from "./classify-env-keys";
-import {
-	isDotEnvFile,
-	isEnvModuleId,
-	normalizePrefixes,
-	resolveEnvModulePath,
-} from "./env-module-path";
-import { loadValidatedEnv } from "./load-validated-env";
 import type { VitePluginFactoryConfig } from "./plugin-config";
 
 /**
@@ -67,7 +67,9 @@ export function createTransformPlugin(
 			...(pluginConfig.env as Record<string, string | undefined> | undefined),
 		};
 
-		const validated = loadValidatedEnv(state.schemaPath, loaded);
+		const validated = loadValidatedEnv(state.schemaPath, loaded, {
+			prefix: "ArkEnv Vite plugin:",
+		});
 		const content = fs.readFileSync(state.schemaPath, "utf8");
 		const { clientKeys, sharedKeys, serverKeys } = classifyEnvKeys(
 			content,
@@ -98,6 +100,7 @@ export function createTransformPlugin(
 			state.root = viteConfig.root ?? process.cwd();
 			state.prefixes = normalizePrefixes(
 				clientPrefixOption ?? viteConfig.envPrefix ?? "VITE_",
+				["VITE_"],
 			);
 		},
 		configResolved(resolved) {
@@ -106,12 +109,14 @@ export function createTransformPlugin(
 				typeof resolved.envDir === "string" ? resolved.envDir : resolved.root;
 			state.prefixes = normalizePrefixes(
 				clientPrefixOption ?? resolved.envPrefix ?? "VITE_",
+				["VITE_"],
 			);
 
 			try {
 				state.schemaPath = resolveEnvModulePath(
 					resolved.root,
 					schemaPathOption,
+					"ArkEnv Vite plugin:",
 				);
 				refreshTransformState();
 			} catch (error: unknown) {
