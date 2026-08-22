@@ -105,7 +105,12 @@ const config = {
 			},
 			{
 				source: "/docs/core-concepts/morphs",
-				destination: "/docs/core-concepts/transforms",
+				destination: "/docs/core-concepts/transformation",
+				permanent: true,
+			},
+			{
+				source: "/docs/core-concepts/transforms",
+				destination: "/docs/core-concepts/transformation",
 				permanent: true,
 			},
 			{

@@ -1,33 +1,58 @@
 ---
 title: Bun
-description: Validate Bun bundler env vars with @arkenv/bun-plugin.
+description: Validate Bun environment variables with @arkenv/bun-plugin.
 ---
 
-Recipe for Bun bundler / fullstack apps. Overview: [Framework integration](/docs/validating-your-environment/framework-integration).
+Use `@arkenv/bun-plugin` when Bun builds or serves a client bundle that inlines
+public environment variables (prefixed with `BUN_PUBLIC_` by default). Plain Bun
+backend services do not need the plugin and can call `@arkenv/core` directly.
 
-Use `@arkenv/bun-plugin` when Bun builds or serves a client bundle that inlines public env (`BUN_PUBLIC_*` by default). Plain Bun **backends** can call [`@arkenv/core`](/docs/reference/core) directly without the plugin.
+For high-level architectural trade-offs, see
+[Framework integration](/docs/validating-your-environment/framework-integration).
 
 ## Quickstart
 
-```bash title="Terminal"
-pnpm dlx arkenv@latest init
+Scaffold Bun integration in an existing project using the CLI:
+
+```package-install
+npx arkenv@latest init
 ```
 
-## Manual install
+The CLI installs `@arkenv/bun-plugin` and creates your initial `env.ts` schema file.
+
+## Manual installation
+
+If you prefer manual setup, install `@arkenv/bun-plugin` alongside your chosen
+validation engine.
+
+### ArkType engine
+
+Install `@arkenv/core`, `arktype`, and the Bun plugin:
 
 ```package-install
 pnpm add @arkenv/core arktype
 pnpm add -D @arkenv/bun-plugin
 ```
 
+### Standard Schema engine
+
+If you aren't using ArkType, install `@arkenv/standard`:
+
 ```package-install
-pnpm add @arkenv/standard zod
+pnpm add @arkenv/standard
 pnpm add -D @arkenv/bun-plugin
 ```
 
-Standard Schema plugin entry: `@arkenv/bun-plugin/standard`.
+If you aren't using ArkType, import the plugin from `@arkenv/bun-plugin/standard`.
 
-### Schema module
+## Full-stack setup
+
+When building a full-stack Bun application with client bundling, configure the
+plugin across your schema, dev server, and build script.
+
+### Define your schema
+
+Create your schema in `src/env.ts`:
 
 ```ts title="./src/env.ts" twoslash
 import arkenv from "@arkenv/core";
@@ -39,14 +64,18 @@ export const env = arkenv({
 });
 ```
 
-### Bun.serve (dev)
+### Configure dev server
+
+Enable the plugin for development in `bunfig.toml`:
 
 ```toml title="./bunfig.toml"
 [serve.static]
 plugins = ["@arkenv/bun-plugin"]
 ```
 
-### Bun.build
+### Configure production build
+
+Pass the plugin to `Bun.build` in your build script:
 
 ```ts title="./build.ts" twoslash
 import arkenv from "@arkenv/bun-plugin";
@@ -58,11 +87,13 @@ await Bun.build({
 });
 ```
 
-Import `{ env } from "./env"` in application code. Transform mode rewrites the client graph the same way the Vite plugin does.
+Import `{ env } from "./env"` in application code. Transform mode inlines public
+`BUN_PUBLIC_` keys into the client bundle and protects server secrets.
 
 ## Backend-only Bun
 
-Skip the plugin:
+If your project runs exclusively on the server with no client bundling, skip the
+plugin and call `@arkenv/core` directly:
 
 ```ts title="./src/env.ts" twoslash
 import arkenv from "@arkenv/core";
@@ -75,9 +106,18 @@ export const env = arkenv({
 
 ## Client access
 
-Import the validated `env` object from your schema module. Do not read `process.env` for schema keys in fullstack apps — the plugin rewrites the client copy of `env.ts` so public keys stay typed and coerced. See [`@arkenv/bun-plugin`](/docs/reference/bun-plugin).
+Import the validated `env` object from your schema module. Do not read `process.env`
+for schema keys in full-stack apps — the plugin rewrites the client copy of `env.ts`
+so public keys stay typed and coerced. For full-stack applications, prefer exporting
+the typed `env` object so validation runs reliably at process boot. See
+[`@arkenv/bun-plugin`](/docs/reference/bun-plugin).
 
 ## Next steps
 
-- [Client vs. server](/docs/validating-your-environment/client-vs-server)
-- [Bun fullstack bundler](https://bun.sh/docs/bundler/fullstack) docs
+<Cards>
+  <Card href="/docs/reference/bun-plugin" title="@arkenv/bun-plugin reference" description="Plugin options, bundler settings, and subpath exports." />
+
+  <Card href="/docs/validating-your-environment/hosting-presets" title="Hosting presets" description="Inject hosting provider system variables into your Bun schema." />
+
+  <Card href="/docs/validating-your-environment/client-vs-server" title="Client vs. server" description="Understand client versus server security boundaries." />
+</Cards>

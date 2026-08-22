@@ -1,17 +1,12 @@
 ---
-title: Transforms
-description: Reshape validated env values during schema validation.
+title: Transformation
+description: Transform and normalize validated environment variables during schema parsing.
 ---
 
-A **transform** reshapes a value as part of validation: trim a string, clamp a number, map an enum. ArkEnv uses that word for the idea across engines. Your schema library may call it something else:
-
-| Library | Their word                                                      | Typical API                      |
-| ------- | --------------------------------------------------------------- | -------------------------------- |
-| ArkType | [Morph](https://arktype.io/docs/morphs) (also “transformation”) | `type("string").pipe(...)`       |
-| Zod     | Transform                                                       | `.transform(...)` / `.pipe(...)` |
-| Valibot | Transform / pipe                                                | `pipe(...)`, `transform(...)`    |
-
-Everyday string-to-number and string-to-boolean conversion is [coercion](/docs/core-concepts/coercion). Coercion runs first on a copy of the input. Transforms run during schema validation after that.
+Transformation is the process of changing a value, like trimming a string or
+parsing a number. Your schema library may have one or more ways to do this,
+often called "transforms", "morphs", or "pipes". ArkEnv supports these out of
+the box.
 
 ## Basic transform
 
@@ -93,7 +88,7 @@ With `{ coerce: false }`, `"3"` never becomes a number unless the transform acce
 | Trim, normalize, clamp, map enums         | Transform on the field schema                                              |
 | Multi-step pipelines                      | ArkType `.pipe` chains / Zod `.pipe` / Valibot `pipe`                      |
 
-## Related
+## Next steps
 
 <Cards>
   <Card href="/docs/validating-your-environment/defining-types" title="Defining types" description="Strings, numbers, booleans, enums, and keywords." />

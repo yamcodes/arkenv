@@ -69,8 +69,8 @@ export default function HomePage() {
 							style={{ animationDelay: "640ms" }}
 						>
 							<InstallPanel />
-							<StarUsButton />
 							<QuickstartButton />
+							<StarUsButton />
 						</div>
 					</div>
 					<div
@@ -108,7 +108,7 @@ export default function HomePage() {
 					</div>
 					<div className="home-aurora__outro-copy" data-reveal="blur">
 						<h2 id="home-outro" className="home-aurora__outro-title">
-							Try ArkEnv now.
+							Start validating with ArkEnv
 						</h2>
 					</div>
 					<div

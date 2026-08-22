@@ -1,31 +1,51 @@
 ---
 title: Nuxt
-description: Validate Nuxt env vars with @arkenv/nuxt.
+description: Validate Nuxt environment variables with @arkenv/nuxt.
 ---
 
-Recipe for Nuxt. Overview: [Framework integration](/docs/validating-your-environment/framework-integration).
+Use `@arkenv/nuxt` to validate environment variables across your server and client
+routes, synchronize public keys with Nuxt runtime config, and keep server secrets
+off the browser.
 
-`@arkenv/nuxt` validates environment variables for server and browser, maps public keys through Nuxt runtime config, and keeps server secrets off the client.
+For high-level architectural trade-offs, see
+[Framework integration](/docs/validating-your-environment/framework-integration).
 
 ## Quickstart
 
-```bash title="Terminal"
-pnpm dlx arkenv@latest init
+Scaffold Nuxt integration in an existing project using the CLI:
+
+```package-install
+npx arkenv@latest init
 ```
 
-The CLI registers `@arkenv/nuxt/module` and scaffolds a flat `env.ts` (or `--strict` files).
+The CLI registers `@arkenv/nuxt/module` in your Nuxt config and creates your initial
+schema file.
 
-## Manual install
+## Manual installation
+
+If you prefer manual setup, install `@arkenv/nuxt` alongside your chosen
+validation engine.
+
+### ArkType engine
+
+Install `@arkenv/core` and its peer dependency `arktype`:
 
 ```package-install
 pnpm add @arkenv/core @arkenv/nuxt arktype
 ```
 
+### Standard Schema engine
+
+If you aren't using ArkType, install `@arkenv/standard`:
+
 ```package-install
-pnpm add @arkenv/standard @arkenv/nuxt zod
+pnpm add @arkenv/standard @arkenv/nuxt
 ```
 
-### Register the module
+## Module configuration
+
+Register the module in your `nuxt.config.ts`. The module automatically injects
+runtime configuration and validates variables during build and development.
 
 ```ts title="./nuxt.config.ts"
 export default defineNuxtConfig({
@@ -36,7 +56,14 @@ export default defineNuxtConfig({
 });
 ```
 
-### Flat schema
+## Schema layout
+
+ArkEnv supports two schema layouts depending on your team's isolation needs.
+
+### Flat layout (default)
+
+The default flat layout uses a single `env.ts` file. Public keys must use the
+`NUXT_PUBLIC_` prefix:
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/nuxt";
@@ -48,22 +75,51 @@ export const env = arkenv({
 });
 ```
 
-Public keys use the `NUXT_PUBLIC_` prefix. Nuxt does not emit `env.gen.ts`; this module is the surface.
+Unlike Next.js, Nuxt does not emit an `env.gen.ts` file; `@arkenv/nuxt` acts as
+the primary entrypoint.
 
 ### Strict layout
 
-```bash title="Terminal"
-pnpm dlx arkenv@latest init --strict
+For compile-time separation between client and server code, scaffold a strict
+structure:
+
+```package-install
+npx arkenv@latest init --strict
 ```
 
-Use `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. Shared/client schemas can auto-merge via Nuxt virtual aliases when you omit `extends`. See [Client vs. server](/docs/validating-your-environment/client-vs-server).
+This configuration uses `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. Nuxt virtual
+aliases automatically merge shared schemas when you omit `extends`. Learn more in
+[Client vs. server](/docs/validating-your-environment/client-vs-server).
 
 ## Standard Schema
 
-Point the module at a Standard Schema entry and import from `@arkenv/nuxt/standard` (or the `/standard/module` path). Package map: [`@arkenv/nuxt`](/docs/reference/nuxt).
+If you aren't using ArkType, point the module at the standard module path and
+import from `@arkenv/nuxt/standard`:
+
+```ts title="./nuxt.config.ts"
+export default defineNuxtConfig({
+  modules: ["@arkenv/nuxt/standard/module"],
+});
+```
+
+Then define your schema in `env.ts` using your validator:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/nuxt/standard";
+import { z } from "zod";
+
+export const env = arkenv({
+  DATABASE_URL: z.string().url(),
+  NUXT_PUBLIC_API_URL: z.string().url().default("https://api.example.com"),
+});
+```
 
 ## Next steps
 
-- Module options under [`@arkenv/nuxt`](/docs/reference/nuxt)
-- [Hosting presets](/docs/validating-your-environment/hosting-presets)
-- Official [Nuxt configuration](https://nuxt.com/docs/getting-started/configuration) docs
+<Cards>
+  <Card href="/docs/reference/nuxt" title="@arkenv/nuxt reference" description="Module options, virtual aliases, and subpath exports." />
+
+  <Card href="/docs/validating-your-environment/hosting-presets" title="Hosting presets" description="Inject hosting provider system variables into your Nuxt schema." />
+
+  <Card href="/docs/validating-your-environment/client-vs-server" title="Client vs. server" description="Understand flat versus strict client/server isolation." />
+</Cards>

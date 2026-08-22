@@ -9,6 +9,12 @@ export const HERO_HEADLINE_NAMES = [
 	"Standard Schema",
 ] as const;
 
+export const HERO_MOBILE_HEADLINE_NAMES = [
+	"ArkType",
+	"Zod",
+	"Valibot",
+] as const;
+
 /** Dwell on each name. Cycle is independent of the example tabs, so 3s not 3.5s. */
 export const HERO_DWELL_MS = 3000;
 export const HERO_FIRST_DWELL_MS = HERO_DWELL_MS;
@@ -21,10 +27,6 @@ function prefersReducedMotion() {
 	);
 }
 
-function nextIndex(current: number) {
-	return (current + 1) % HERO_HEADLINE_NAMES.length;
-}
-
 /**
  * Static “with” plus a cycling accent name. The name is the only thing that
  * slides; both stay inline so copy is “with ArkType” on one line.
@@ -32,6 +34,7 @@ function nextIndex(current: number) {
 export function HeroNameCycle() {
 	const [index, setIndex] = useState(0);
 	const [reduceMotion, setReduceMotion] = useState(false);
+	const [isMobile, setIsMobile] = useState(false);
 	const [paused, setPaused] = useState(false);
 	const currentRef = useRef(index);
 	const prevRef = useRef(index);
@@ -43,28 +46,41 @@ export function HeroNameCycle() {
 
 	useEffect(() => {
 		if (typeof window.matchMedia !== "function") return;
-		const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-		const sync = () => {
-			const reduce = mq.matches;
+		const mqMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+		const syncMotion = () => {
+			const reduce = mqMotion.matches;
 			setReduceMotion(reduce);
 			if (reduce) setIndex(0);
 		};
-		sync();
-		mq.addEventListener("change", sync);
-		return () => mq.removeEventListener("change", sync);
+		syncMotion();
+		mqMotion.addEventListener("change", syncMotion);
+
+		const mqMobile = window.matchMedia("(max-width: 39.99rem)");
+		const syncMobile = () => {
+			setIsMobile(mqMobile.matches);
+		};
+		syncMobile();
+		mqMobile.addEventListener("change", syncMobile);
+
+		return () => {
+			mqMotion.removeEventListener("change", syncMotion);
+			mqMobile.removeEventListener("change", syncMobile);
+		};
 	}, []);
+
+	const names = isMobile ? HERO_MOBILE_HEADLINE_NAMES : HERO_HEADLINE_NAMES;
 
 	useEffect(() => {
 		if (reduceMotion || paused) return;
 
 		const tick = () => {
 			if (document.hidden || prefersReducedMotion()) return;
-			setIndex(nextIndex);
+			setIndex((current) => (current + 1) % names.length);
 		};
 
 		const intervalId = window.setInterval(tick, HERO_DWELL_MS);
 		return () => window.clearInterval(intervalId);
-	}, [reduceMotion, paused]);
+	}, [reduceMotion, paused, names.length]);
 
 	return (
 		<span
@@ -74,7 +90,7 @@ export function HeroNameCycle() {
 		>
 			<span className="home-aurora__cycle-with">with{"\u00a0"}</span>
 			<span className="home-aurora__cycle-viewport">
-				{HERO_HEADLINE_NAMES.map((name, nameIndex) => {
+				{names.map((name, nameIndex) => {
 					if (nameIndex !== index && nameIndex !== previous) return null;
 					const pos = nameIndex === index ? "current" : "prev";
 					return (

@@ -1,6 +1,6 @@
 ---
 title: Choosing an engine
-description: Pick @arkenv/core (ArkType) or @arkenv/standard (Zod, Valibot, and friends).
+description: Choose between the ArkType core engine and the Standard Schema adapter.
 ---
 
 ArkEnv ships two engines. Both call `arkenv()`, share fail-fast errors, the coercion pipeline, and framework plugins. Shared [options](/docs/reference/options) (`env`, `coerce`, `safe`, …) apply to both. `toJsonSchema` is on `@arkenv/standard` only; ArkType already exposes JSON Schema. The engines also differ in schema style and peer dependencies.
@@ -54,8 +54,8 @@ Install either stack the same way you would any env schema: one validation packa
 # ArkType engine
 pnpm add @arkenv/core arktype
 
-# Standard Schema engine (Zod shown)
-pnpm add @arkenv/standard zod
+# Standard Schema engine
+pnpm add @arkenv/standard
 ```
 
 ## When each fits

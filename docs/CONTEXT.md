@@ -24,7 +24,7 @@ Schema-agnostic reshape of a validated env value (trim, clamp, map, normalize) d
 *Avoid*: using **morph** as the default product term for this idea; treating `@arkenv/standard` / Zod as an afterthought section
 
 **Morph**:
-ArkType’s name for a **transform** (`.pipe` morphs; ArkType docs also say “transformation”). Use when talking about ArkType APIs or linking to [ArkType morphs](https://arktype.io/docs/morphs). Zod’s parallel is `.transform`; Valibot uses pipe/transform helpers.
+ArkType’s name for a **transform** (`.pipe` morphs; ArkType docs also say “transformation”). Use when talking about ArkType APIs or linking to [ArkType morphs](https://arktype.io/docs/intro/morphs-and-more). Zod’s parallel is `.transform`; Valibot uses pipe/transform helpers.
 *Avoid*: treating Morph as ArkEnv’s cross-validator vocabulary
 
 **Coercion**:

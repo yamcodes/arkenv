@@ -1,15 +1,18 @@
 ---
 title: Frameworks
-description: Integrate your favorite framework with ArkEnv.
+description: Validate environment variables in Next.js, Nuxt, Vite, and Bun with ArkEnv.
 ---
 
-ArkEnv works in any JavaScript or TypeScript app. The packages below
-**enforce the client/server split** for the stacks that need it.
+ArkEnv works in any JavaScript or TypeScript project. When you build full-stack
+applications, client bundles must never receive server secrets. The framework
+packages below enforce that boundary during development and production builds.
+
+Choose your framework to get started:
 
 <Cards>
-  <Card href="/docs/guides/frameworks/nextjs" title="Next.js" description="@arkenv/nextjs, withArkEnv, and env.gen codegen." />
+  <Card href="/docs/guides/frameworks/nextjs" title="Next.js" description="@arkenv/nextjs, withArkEnv, and build-time validation." />
 
-  <Card href="/docs/guides/frameworks/nuxt" title="Nuxt" description="@arkenv/nuxt module and NUXT_PUBLIC_ keys." />
+  <Card href="/docs/guides/frameworks/nuxt" title="Nuxt" description="@arkenv/nuxt module, runtime config, and NUXT_PUBLIC_ keys." />
 
   <Card href="/docs/guides/frameworks/vite" title="Vite" description="@arkenv/vite-plugin transform mode and VITE_ keys." />
 

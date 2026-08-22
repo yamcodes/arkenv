@@ -337,6 +337,8 @@
 .home-aurora__badge {
 	justify-self: start;
 	margin-bottom: var(--space-sm);
+	max-width: 100%;
+	min-width: 0;
 }
 
 .home-aurora__announce {
@@ -353,6 +355,10 @@
 	font-weight: 500;
 	text-decoration: none;
 	backdrop-filter: blur(8px);
+	max-width: 100%;
+	min-width: 0;
+	white-space: nowrap;
+	box-sizing: border-box;
 	transition:
 		background-color var(--dur-micro) var(--ease-out),
 		border-color var(--dur-micro) var(--ease-out);
@@ -378,6 +384,7 @@
 	font-size: var(--text-xs);
 	font-weight: 600;
 	box-shadow: none;
+	flex-shrink: 0;
 }
 
 @media (max-width: 40rem) {
@@ -391,6 +398,7 @@
 		background: var(--color-accent);
 		border-radius: 50%;
 		box-shadow: 0 0 8px color-mix(in oklch, var(--color-accent) 60%, transparent);
+		flex-shrink: 0;
 	}
 
 	.home-aurora__announce-label {
@@ -407,15 +415,26 @@
 	align-items: center;
 	gap: 0.25rem;
 	margin-inline-end: 0.35rem;
+	min-width: 0;
+	max-width: 100%;
+	white-space: nowrap;
 }
 
 .home-aurora__announce-label--solo {
 	margin-inline-start: 0.5rem;
 }
 
+.home-aurora__announce-text {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	min-width: 0;
+}
+
 .home-aurora__announce-arrow {
 	width: 1rem;
 	height: 1rem;
+	flex-shrink: 0;
 	opacity: 0.45;
 	transition:
 		opacity var(--dur-micro) var(--ease-out),

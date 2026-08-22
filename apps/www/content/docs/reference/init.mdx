@@ -67,6 +67,29 @@ Pre-populate provider system variables. Values: `none`, `vercel`,
 See [Hosting presets](/docs/validating-your-environment/hosting-presets).
 To add a preset later, use [`add host`](/docs/reference/add-host).
 
+### `--agent`
+
+Scaffold non-interactively for AI agents and automated scripts. This flag
+combines `--yes --quiet --json` into a single command:
+
+- **Token efficiency**: Suppresses terminal formatting and outputs compact JSON
+  on standard output (logs go to standard error), conserving context tokens in
+  automated sessions.
+- **Safety checks**: Performs validation before modifying files. If safety
+  checks fail (such as a dirty git working tree), the CLI emits a structured
+  refusal payload on standard output with non-zero exit code:
+
+```json
+{
+  "status": "error",
+  "code": "GIT_TREE_DIRTY",
+  "message": "Git working tree is not clean.",
+  "retryWith": ["--force"]
+}
+```
+
+Only rerun with flags listed in `retryWith` when you confirm the bypass is safe.
+
 ### `--example <name>`
 
 Scaffold from a named example when creating a new project. Short `-e` is
@@ -111,6 +134,10 @@ Importing `arkenv` as a library throws and points you at `@arkenv/core`.
 
 ## Next steps
 
-- [Add to an existing repository](/docs/getting-started/add-to-existing-repository)
-- [`add host`](/docs/reference/add-host)
-- [options](/docs/reference/options)
+<Cards>
+  <Card href="/docs/getting-started/add-to-existing-repository" title="Add to an existing repository" description="Adopt ArkEnv incrementally in an existing project." />
+
+  <Card href="/docs/reference/add-host" title="add host" description="CLI reference for adding provider presets to an existing schema." />
+
+  <Card href="/docs/reference/options" title="options" description="Configuration options passed to arkenv()." />
+</Cards>
