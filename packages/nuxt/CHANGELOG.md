@@ -1,5 +1,33 @@
 # @arkenv/nuxt
 
+## 1.0.0-alpha.12
+
+### Major Changes
+
+- #### Stop re-exporting `type` and `Infer` from framework integrations _[`#1594`](https://github.com/yamcodes/arkenv/pull/1594) [`9ab8f48`](https://github.com/yamcodes/arkenv/commit/9ab8f483da826de0eeb034692265efaa138b3d3f) [@yamcodes](https://github.com/yamcodes)_
+
+  Removed redundant `type` and `Infer` re-exports from `@arkenv/nextjs` (root, `/client`, `/server`, `/react-server`) and `@arkenv/nuxt` (root). Next.js codegen templates (`env.gen.ts`) also stopped emitting `export { type }`.
+
+  Schema definition helpers (`type`, `Infer`) are now imported directly from `@arkenv/core`:
+
+  ```ts
+  // Before
+  import { type, Infer } from "@arkenv/nextjs";
+  // or
+  import { type } from "@arkenv/nextjs/client";
+
+  // After
+  import { type, type Infer } from "@arkenv/core";
+  ```
+
+  **BREAKING CHANGE:** Removed `type` and `Infer` re-exports from `@arkenv/nextjs` and `@arkenv/nuxt`. Import schema helpers directly from `@arkenv/core`.
+
+### Patch Changes
+
+- #### Deepen Nuxt boot gate and thin accessor locality _[`#1592`](https://github.com/yamcodes/arkenv/pull/1592) [`d39b57b`](https://github.com/yamcodes/arkenv/commit/d39b57b25616e9f79fed5cf8f3f48f3cf0412e2c) [@yamcodes](https://github.com/yamcodes)_
+
+  Consolidated legacy and flat schema-shape detection into a single cycle-safe helper shared between schema capture and runtime accessors. Schema loading and boot-gate coercion/application are now separable modules, and flat `arkenv()` entries share dispatch locality with strict client/server entries.
+
 ## 1.0.0-alpha.11
 
 ### Patch Changes
