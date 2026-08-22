@@ -1,4 +1,5 @@
 export {
+	assertTransformModeCall,
 	classifyEnvKeys,
 	filterEnvByPrefix,
 	generateClientEnvModule,
@@ -9,5 +10,6 @@ export {
 	normalizeModuleId,
 	normalizePrefixes,
 	resolveEnvModulePath,
+	SCHEMA_DEFINE_REMOVED,
 	type TransformOptions as ViteTransformOptions,
 } from "@arkenv/build";

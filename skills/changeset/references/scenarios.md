@@ -72,10 +72,10 @@ Migration: Update your `arkenv` calls to separate the options from the schema co
 
 #### Improve deployment reliability and progress reporting
 
-- Add retry logic for failed operations
-- Display progress bar during bulk operations
-- Report partial failures at the end
-- Add `--continue-on-error` flag to proceed despite failures
+- Retry logic was added for failed operations
+- A progress bar now displays during bulk operations
+- Partial failures are reported at the end
+- A `--continue-on-error` flag proceeds despite failures
 ```
 
 ## Analyzing changes for bump type

@@ -27,7 +27,7 @@ describe("transform mode helpers", () => {
 		expect(isTransformModeCall({ clientPrefix: "PUBLIC_" }, undefined)).toBe(
 			true,
 		);
-		expect(isTransformModeCall({}, undefined)).toBe(false);
+		expect(isTransformModeCall({}, undefined)).toBe(true);
 		expect(isTransformModeCall({ VITE_FOO: "string" }, undefined)).toBe(false);
 		expect(isTransformModeCall({ VITE_FOO: "string" }, { coerce: true })).toBe(
 			false,
@@ -215,10 +215,10 @@ describe("transform mode plugin", () => {
 		expect(result).toBeNull();
 	});
 
-	it("keeps schema/define path working alongside transform helpers", async () => {
-		const plugin = arkenvPlugin({ VITE_TEST: "string" });
-		expect(plugin).toHaveProperty("config");
-		expect(plugin).not.toHaveProperty("transform");
+	it("rejects the schema/define path", () => {
+		expect(() =>
+			(arkenvPlugin as (a?: unknown) => unknown)({ VITE_TEST: "string" }),
+		).toThrow(/schema\/define plugin API was removed/);
 	});
 
 	it("resolves schemaPath relative to the project root", async () => {

@@ -20,7 +20,10 @@ export {
 	loadValidatedEnv,
 } from "./load-validated-env";
 export {
+	assertTransformModeCall,
 	isTransformModeCall,
+	SCHEMA_DEFINE_REMOVED,
 	TRANSFORM_OPTION_KEYS,
 	type TransformOptions,
 } from "./transform-options";
+

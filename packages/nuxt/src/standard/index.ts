@@ -1,6 +1,6 @@
 import type { StandardSchemaV1 } from "@repo/types";
 import { ensureBootGate } from "#arkenv/server-boot";
-import { arkenvInternal } from "@/arkenv-internal";
+import { dispatchFlatThinArkenv } from "@/thin-accessor";
 import type { MergeExtends } from "../types";
 
 type ClientVisibleKeys<
@@ -73,27 +73,9 @@ export function arkenv<
 }>;
 
 export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
-	const isLegacy =
-		schemaOrOptions &&
-		typeof schemaOrOptions === "object" &&
-		("runtimeEnv" in schemaOrOptions ||
-			"server" in schemaOrOptions ||
-			"client" in schemaOrOptions ||
-			"shared" in schemaOrOptions);
-
-	const isServer = typeof window === "undefined";
-	const hooks = isServer ? { ensureBootGate } : undefined;
-
-	if (isLegacy) {
-		return arkenvInternal(schemaOrOptions, isServer, undefined, hooks);
-	}
-
-	return arkenvInternal(
-		schemaOrOptions,
-		optionsOrIsServer,
-		{ isServer },
-		hooks,
-	);
+	return dispatchFlatThinArkenv(schemaOrOptions, optionsOrIsServer, {
+		ensureBootGate,
+	});
 }
 
 export default arkenv;
