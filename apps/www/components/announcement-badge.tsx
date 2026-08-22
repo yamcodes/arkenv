@@ -31,7 +31,7 @@ export function AnnouncementBadge({
 			<span
 				className={`home-aurora__announce-label${!newBadge ? " home-aurora__announce-label--solo" : ""}`}
 			>
-				{children}
+				<span className="home-aurora__announce-text">{children}</span>
 				{arrow &&
 					href &&
 					(isExternalUrl(href) ? (
