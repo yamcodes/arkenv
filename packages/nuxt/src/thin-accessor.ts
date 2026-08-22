@@ -1,7 +1,45 @@
 import { type ArkenvInternalHooks, arkenvInternal } from "./arkenv-internal";
 import { withAutoExtend } from "./auto-extend";
+import { isLegacyNestedSchema } from "./schema-shape";
 
 export type ThinStrictLayout = "client" | "server";
+
+/**
+ * Dispatch a flat-layout thin `arkenv()` call into {@link arkenvInternal}.
+ *
+ * Shared by ArkType and Standard flat entries so legacy detection, server hooks,
+ * and context construction stay unified.
+ *
+ * @param schemaOrOptions Schema or nested options object
+ * @param optionsOrIsServer Flat options, legacy boolean, or undefined
+ * @param options Optional server hooks (e.g. ensureBootGate)
+ * @returns The thin env proxy from {@link arkenvInternal}
+ */
+export function dispatchFlatThinArkenv(
+	schemaOrOptions: unknown,
+	optionsOrIsServer: unknown,
+	options?: {
+		ensureBootGate?: () => void;
+	},
+): unknown {
+	const isServer = typeof window === "undefined";
+	const hooks: ArkenvInternalHooks | undefined =
+		isServer && options?.ensureBootGate
+			? { ensureBootGate: options.ensureBootGate }
+			: undefined;
+
+	const isLegacy = isLegacyNestedSchema(schemaOrOptions, optionsOrIsServer);
+	if (isLegacy) {
+		return arkenvInternal(schemaOrOptions as never, isServer, undefined, hooks);
+	}
+
+	return arkenvInternal(
+		schemaOrOptions as never,
+		optionsOrIsServer as never,
+		{ isServer },
+		hooks,
+	);
+}
 
 /**
  * Dispatch a strict-layout thin `arkenv()` call into {@link arkenvInternal}.
@@ -30,27 +68,30 @@ export function dispatchStrictThinArkenv(
 		? { ensureBootGate: options.ensureBootGate }
 		: undefined;
 
-	const isLegacy =
-		schemaOrOptions &&
-		typeof schemaOrOptions === "object" &&
-		(isServer
-			? "runtimeEnv" in schemaOrOptions ||
-				"server" in schemaOrOptions ||
-				"shared" in schemaOrOptions
-			: "client" in schemaOrOptions || "shared" in schemaOrOptions);
+	const isLegacy = isLegacyNestedSchema(schemaOrOptions, optionsOrIsServer);
 
 	if (isLegacy) {
-		if (isServer && "client" in schemaOrOptions) {
+		if (
+			isServer &&
+			typeof schemaOrOptions === "object" &&
+			schemaOrOptions !== null &&
+			"client" in schemaOrOptions
+		) {
 			throw new Error(
 				"server entry point only accepts 'server' and 'shared' schemas.",
 			);
 		}
-		if (!isServer && "server" in schemaOrOptions) {
+		if (
+			!isServer &&
+			typeof schemaOrOptions === "object" &&
+			schemaOrOptions !== null &&
+			"server" in schemaOrOptions
+		) {
 			throw new Error(
 				"client entry point only accepts 'client' and 'shared' schemas.",
 			);
 		}
-		return arkenvInternal(schemaOrOptions, isServer, undefined, hooks);
+		return arkenvInternal(schemaOrOptions as never, isServer, undefined, hooks);
 	}
 
 	return arkenvInternal(
