@@ -5,22 +5,27 @@ import { describe, expectTypeOf, it } from "vitest";
 // was accidentally re-introduced.
 // @ts-expect-error `type` is not exported from @arkenv/nextjs/client — import from @arkenv/core
 import { type as typeFromClient } from "./client";
-import { arkenv } from "./index";
+// @ts-expect-error `Infer` is not exported from @arkenv/nextjs root — import from @arkenv/core
+import type { Infer as InferFromRoot } from "./index";
+// @ts-expect-error `type` is not exported from @arkenv/nextjs root — import from @arkenv/core
+import { arkenv, type as typeFromRoot } from "./index";
+// @ts-expect-error `Infer` is not exported from @arkenv/nextjs/react-server — import from @arkenv/core
+import type { Infer as InferFromReactServer } from "./react-server";
+// @ts-expect-error `type` is not exported from @arkenv/nextjs/react-server — import from @arkenv/core
+import { type as typeFromReactServer } from "./react-server";
+// @ts-expect-error `type` is not exported from @arkenv/nextjs/server — import from @arkenv/core
+import { type as typeFromServer } from "./server";
 import arkenvStandard from "./standard";
 
 void typeFromClient;
-
-// @ts-expect-error `type` is not exported from @arkenv/nextjs root — import from @arkenv/core
-import { type as typeFromRoot } from "./index";
-
 void typeFromRoot;
-
-// @ts-expect-error `Infer` is not exported from @arkenv/nextjs root — import from @arkenv/core
-import type { Infer as InferFromRoot } from "./index";
+void typeFromServer;
+void typeFromReactServer;
 
 type _InferFromRootGuard = InferFromRoot<Record<string, never>>;
+type _InferFromReactServerGuard = InferFromReactServer<Record<string, never>>;
 
-export type { _InferFromRootGuard };
+export type { _InferFromReactServerGuard, _InferFromRootGuard };
 
 const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({
 	"~standard": {

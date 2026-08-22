@@ -5,9 +5,9 @@
 
 #### Stop re-exporting `type` and `Infer` from framework integrations
 
-Redundant `type` and `Infer` re-exports have been removed from `@arkenv/nextjs` (root, `/client`, `/server`, `/react-server`) and `@arkenv/nuxt` (root). Next.js codegen templates (`env.gen.ts`) also no longer emit `export { type }`.
+Removed redundant `type` and `Infer` re-exports from `@arkenv/nextjs` (root, `/client`, `/server`, `/react-server`) and `@arkenv/nuxt` (root). Next.js codegen templates (`env.gen.ts`) also stopped emitting `export { type }`.
 
-Import schema definition helpers (`type`, `Infer`) directly from `@arkenv/core` instead:
+Schema definition helpers (`type`, `Infer`) are now imported directly from `@arkenv/core`:
 
 ```ts
 // Before
@@ -19,4 +19,4 @@ import { type } from "@arkenv/nextjs/client";
 import { type, type Infer } from "@arkenv/core";
 ```
 
-**BREAKING CHANGE:** `type` and `Infer` are no longer re-exported from `@arkenv/nextjs` or `@arkenv/nuxt`. Import them from `@arkenv/core`.
+**BREAKING CHANGE:** Removed `type` and `Infer` re-exports from `@arkenv/nextjs` and `@arkenv/nuxt`. Import schema helpers directly from `@arkenv/core`.
