@@ -1,76 +1,44 @@
 # ArkEnv + Vite Example
 
-This example demonstrates how to use [@arkenv/vite-plugin](https://arkenv.js.org/docs/vite-plugin) with Vite and React. It showcases:
+This playground uses [@arkenv/vite-plugin](https://arkenv.js.org/docs/vite-plugin) with the canonical `env` object: `import { env } from "./env"`.
 
-- **Environment variable validation** at build-time with ArkEnv
-- **Typesafe `import.meta.env`** with full TypeScript support
-- **Using environment variables in Vite config** (like `server.port`)
-- **Client-side environment variables** with automatic filtering of `VITE_*` prefixed variables
+- **`src/env.ts`** is the typed source of truth (boot-time validation on the server graph)
+- The Vite plugin rewrites that module in the **client** graph: `VITE_*` keys become inlined coerced literals; server-only keys throw if read
+- No `import.meta.env` augmentation and no schema/`define` plugin call
 
 ## Setup
 
-The example uses a single schema definition that's reused for both server-side config variables and client-exposed variables:
+```ts title="src/env.ts"
+import arkenv from "@arkenv/core";
 
-```ts title="vite.config.ts"
-import arkenvVitePlugin from "@arkenv/vite-plugin";
-import arkenv, { type } from "arkenv";
-import { defineConfig, loadEnv } from "vite";
-
-// Define the schema once
-export const Env = type({
-  PORT: "number.port", // Server-only (used in vite.config)
-  VITE_MY_VAR: "string", // Client-exposed
+export const env = arkenv({
+  PORT: "number.port",
+  VITE_MY_VAR: "unknown",
   VITE_MY_NUMBER: "number",
   VITE_MY_BOOLEAN: "boolean",
 });
+```
 
-export default defineConfig(({ mode }) => {
-  // Validate server-side variables (PORT) using loadEnv
-  const env = arkenv(Env, { env: loadEnv(mode, process.cwd(), "") });
+```ts title="vite.config.ts"
+import arkenvVitePlugin from "@arkenv/vite-plugin";
+import reactPlugin from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
 
-  return {
-    plugins: [
-      arkenvVitePlugin(Env), // Validates VITE_* variables
-    ],
-    server: {
-      port: env.PORT, // Use validated PORT
-    },
-  };
+export default defineConfig({
+  plugins: [reactPlugin(), arkenvVitePlugin()],
 });
 ```
 
-## Typesafe `import.meta.env`
-
-The example includes type augmentation for `import.meta.env`:
-
-```ts title="src/vite-env.d.ts"
-/// <reference types="vite/client" />
-
-type ImportMetaEnvAugmented =
-  import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
-    typeof import("../vite.config").Env
-  >;
-
-interface ViteTypeOptions {
-  strictImportMetaEnv: unknown;
-}
-
-interface ImportMetaEnv extends ImportMetaEnvAugmented {}
-```
-
-This makes `import.meta.env` fully typesafe in your React components:
-
 ```tsx title="src/app.tsx"
-// All of these are typesafe!
-const myVar = import.meta.env.VITE_MY_VAR; // ✅ string
-const myNumber = import.meta.env.VITE_MY_NUMBER; // ✅ number
-const myBoolean = import.meta.env.VITE_MY_BOOLEAN; // ✅ boolean
-const port = import.meta.env.PORT; // ❌ Error: PORT is server-only
+import { env } from "./env";
+
+env.VITE_MY_VAR; // string
+env.VITE_MY_NUMBER; // number
+env.VITE_MY_BOOLEAN; // boolean
+env.PORT; // throws on the client — server-only
 ```
 
 ## Environment Variables
-
-Create a `.env` file in the root directory:
 
 ```env
 PORT=3000
@@ -79,42 +47,11 @@ VITE_MY_NUMBER=42
 VITE_MY_BOOLEAN=true
 ```
 
-The plugin automatically:
-
-- Validates all variables at build-time
-- Filters to only expose `VITE_*` variables to the client
-- Excludes server-only variables (like `PORT`) from the client bundle
-
-## Running the Example
+## Running
 
 ```bash
-# Install dependencies
 pnpm install
-
-# Start dev server
 pnpm dev
-
-# Build for production
 pnpm build
-
-# Preview production build
 pnpm preview
 ```
-
-## Documentation
-
-For more information, see the [@arkenv/vite-plugin documentation](https://arkenv.js.org/docs/vite-plugin):
-
-- [Introduction](https://arkenv.js.org/docs/vite-plugin)
-- [Typing import.meta.env](https://arkenv.js.org/docs/vite-plugin/typing-import-meta-env)
-- [Using ArkEnv in Vite config](https://arkenv.js.org/docs/vite-plugin/arkenv-in-viteconfig)
-
-## Key Features Demonstrated
-
-1. **Single Schema Definition**: The `Env` schema is defined once and reused for both server-side validation (via `loadEnv`) and client-side validation (via the plugin).
-
-2. **Automatic Filtering**: The plugin automatically filters the schema to only expose `VITE_*` prefixed variables to the client, preventing server-only variables from leaking into the bundle.
-
-3. **Typesafety**: With the `vite-env.d.ts` setup, `import.meta.env` is fully typesafe with autocomplete and type checking.
-
-4. **Build-Time Validation**: Missing or invalid environment variables will cause the dev server to fail to start and production builds to fail with clear error messages.

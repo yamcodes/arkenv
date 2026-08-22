@@ -1,87 +1,38 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
-// Mock the arkenv module with a spy that calls the real implementation by default
-vi.mock("@arkenv/core", async (importActual) => {
-	const actual = await importActual<typeof import("@arkenv/core")>();
-	return {
-		...actual,
-		arkenv: vi.fn(actual.arkenv),
-	};
-});
-
-import { arkenv } from "./plugin";
-
-const { arkenv: mockArkenv } = vi.mocked(await import("@arkenv/core"));
+import { describe, expect, it } from "vitest";
+import { SCHEMA_DEFINE_REMOVED } from "./env-module.js";
+import { arkenv, hybrid } from "./plugin";
 
 describe("Bun Plugin", () => {
-	let originalEnv: NodeJS.ProcessEnv;
-
-	beforeEach(() => {
-		originalEnv = { ...process.env };
-		mockArkenv.mockClear();
-	});
-
-	afterEach(() => {
-		process.env = originalEnv;
-		mockArkenv.mockClear();
-	});
-
 	it("should create a plugin function", () => {
 		expect(typeof arkenv).toBe("function");
 	});
 
-	it("should return a Bun plugin object", () => {
-		// Set up a valid environment variable
-		process.env.BUN_PUBLIC_TEST = "test-value";
-
-		const pluginInstance = arkenv({ BUN_PUBLIC_TEST: "string" });
-
+	it("returns a browser transform plugin", () => {
+		const pluginInstance = arkenv();
 		expect(pluginInstance).toHaveProperty("name", "@arkenv/bun-plugin");
 		expect(pluginInstance).toHaveProperty("setup");
+		expect(pluginInstance).toHaveProperty("target", "browser");
 		expect(typeof pluginInstance.setup).toBe("function");
 	});
 
-	it("should validate environment variables at plugin creation", () => {
-		// Set up a valid environment variable
-		process.env.BUN_PUBLIC_TEST = "test-value";
-
-		expect(() => {
-			arkenv({ BUN_PUBLIC_TEST: "string" });
-		}).not.toThrow();
+	it("treats an empty options object as transform mode", () => {
+		const pluginInstance = arkenv({});
+		expect(pluginInstance).toHaveProperty("target", "browser");
 	});
 
-	it("should throw if environment variable validation fails", () => {
-		// Don't set the required environment variable
-		delete process.env.BUN_PUBLIC_REQUIRED;
-
-		expect(() => {
-			arkenv({ BUN_PUBLIC_REQUIRED: "string" });
-		}).toThrow();
+	it("exposes a hybrid plugin for bunfig.toml default import", () => {
+		expect(hybrid).toHaveProperty("name", "@arkenv/bun-plugin");
+		expect(hybrid).toHaveProperty("target", "browser");
+		expect(typeof hybrid.setup).toBe("function");
 	});
 
-	it("should pass arkenvConfig to arkenv", () => {
-		process.env.BUN_PUBLIC_TEST = "test-value";
-
-		arkenv({ BUN_PUBLIC_TEST: "string" }, { coerce: false });
-
-		expect(mockArkenv).toHaveBeenCalledWith(
-			{ BUN_PUBLIC_TEST: "string" },
-			expect.objectContaining({
-				coerce: false,
-				env: expect.any(Object),
-			}),
+	it("rejects the removed schema/define signature", () => {
+		const plugin = arkenv as (a?: unknown, b?: unknown) => unknown;
+		expect(() => plugin({ BUN_PUBLIC_TEST: "string" })).toThrow(
+			SCHEMA_DEFINE_REMOVED,
 		);
-	});
-
-	it("should respect logLevel when validation fails", () => {
-		delete process.env.BUN_PUBLIC_REQUIRED;
-		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-
-		expect(() => {
-			arkenv({ BUN_PUBLIC_REQUIRED: "string" }, { logLevel: "silent" });
-		}).toThrow();
-
-		expect(errorSpy).not.toHaveBeenCalled();
-		errorSpy.mockRestore();
+		expect(() =>
+			plugin({ BUN_PUBLIC_TEST: "string" }, { coerce: false }),
+		).toThrow(SCHEMA_DEFINE_REMOVED);
 	});
 });

@@ -5,7 +5,7 @@ metadata:
   author: Yam C Borodetsky
   original_author: Ollie Shop
   origin: github.com/ollieshop/creating-changesets
-  version: 1.0.0
+  version: 1.1.0
   internal: true
 ---
 
@@ -98,10 +98,27 @@ For packages in **v1+** (e.g. active `v1` branch):
 
 ## Creating a changeset
 
-### Title convention
+### Title and body voice
 
 - **Format**: All changeset descriptions MUST start with a `####` header.
-- **Mood**: You MUST use the **imperative mood** for all headers, change summaries, and actions. Write changesets as commands to the codebase (e.g. "Add helper...", "Fix issue...", "Drop support..." instead of "Adds...", "Fixed...", "Drops..."). Any changeset using indicative ("Adds/fixes") or past tense ("Added/fixed") is strictly invalid.
+- **Title mood**: The `####` header MUST use the **imperative mood** — a command to the codebase (e.g. "Add helper...", "Fix missing-schema errors...", "Remove the schema/define plugin API"). Indicative titles ("Adds...", "Removes...") and past-tense titles ("Added...", "Removed...") are invalid.
+- **Body mood**: The paragraphs under the title are **changelog copy for users**, not commit-message commands. Prefer past tense or a present "now" statement (e.g. "The `arkenv(schema)` pattern has been dropped", "Removed the ambient helpers...", "Plugins now only accept transform options"). Do **not** write the body as imperative commands ("Drop X", "Replace Y", "Make Z"). Match the voice in existing `CHANGELOG.md` files.
+
+  Good:
+
+  ```markdown
+  #### Remove the schema/define plugin API
+
+  The `arkenv(schema)` pattern has been dropped. Plugins now only accept transform options.
+  ```
+
+  Bad (imperative body):
+
+  ```markdown
+  #### Remove the schema/define plugin API
+
+  Drop `arkenv(schema)` and replace native-accessor reads with the env object.
+  ```
 
 ### Usage examples
 
@@ -117,7 +134,7 @@ Follow the prompts:
 
 1. Select affected packages (space to select)
 2. Choose bump type for each package
-3. Write a summary of changes (remember to start with `####`)
+3. Write a summary of changes (imperative `####` title; user-friendly past-tense / "now" body)
 
 ### Manual method
 
@@ -129,6 +146,8 @@ Create a file in `.changeset/` with a random name:
 ---
 
 #### Add `arkenv` helper for improved type inference
+
+The `arkenv` helper now infers types from your schema without extra annotation.
 
 Usage:
 
@@ -152,17 +171,17 @@ export const env = arkenv({
 "package-name": patch|minor|major
 ---
 
-#### Imperative title of the change (e.g., "Add helper" - MUST be imperative mood)
+#### Imperative title of the change (e.g., "Add helper" — MUST be imperative mood)
 
-A concise, technical description of the change (using the imperative mood for action summaries). Keep it brief, avoid long prose or bullet points, and provide code snippets/usage examples where helpful.
+A concise, user-facing description of what changed (past tense or present "now", not imperative). Keep it brief, avoid long prose, and provide code snippets/usage examples where helpful.
 
 Include:
 - **Usage examples** (code blocks)
-- Bullet points for details
+- Bullet points for details (same body voice: "Added…", "The plugin now…")
 - Migration instructions for breaking changes (using `major` bump and you MUST include a `**BREAKING CHANGE**:` note at the bottom)
 
 **Note**: Do NOT reference GitHub issues (e.g., #123) directly in the changeset. Changesets will automatically be linked to the PR and commits during the release process.
-**BREAKING CHANGE**: Place migration instructions or descriptions of breaking changes (using the `**BREAKING CHANGE**:` label) at the **end** of the changeset. Keep it concise - 1-2 lines max, 3 lines absolute maximum. Prefer using ```diff blocks to visually demonstrate syntax/behavior changes.
+**BREAKING CHANGE**: Place migration instructions or descriptions of breaking changes (using the `**BREAKING CHANGE**:` label) at the **end** of the changeset. Keep it concise - 1-2 lines max, 3 lines absolute maximum. Prefer using ```diff blocks to visually demonstrate syntax/behavior changes. Write this note for users too (e.g. "The `arkenv(schema)` pattern has been dropped" rather than "Drop the `arkenv(schema)` pattern").
 ```
 
 
@@ -171,7 +190,7 @@ Include:
 ### When to modify
 
 - The bump type is wrong (e.g., used `minor` for a patch-level change)
-- The description uses past or indicative tense instead of imperative mood
+- The title is not imperative, or the body is written as imperative commands instead of changelog prose
 - Usage examples are missing or incorrect
 - The changeset references GitHub issues directly
 - A change is documented that should be excluded (internal-only refactoring with no consumer value)
@@ -187,8 +206,8 @@ Include:
 ### Validation checklist after modification
 
 - [ ] Bump type matches the decision guide (patch/minor for non-breaking, major for breaking)
-- [ ] Title starts with `####` header
-- [ ] All descriptions use imperative mood (no past tense, no indicative)
+- [ ] Title starts with `####` header and uses imperative mood
+- [ ] Body is user-facing changelog prose (past tense or "now"), not imperative commands
 - [ ] Usage examples present for user-facing changes
 - [ ] No GitHub issue references (# numbers)
 - [ ] Breaking changes use `major` bump and include a `**BREAKING CHANGE**:` note at the bottom
@@ -243,15 +262,16 @@ ls .changeset/*.md
 
 ## Common mistakes
 
-| Mistake               | Issue               | Fix                                              |
-| --------------------- | ------------------- | ------------------------------------------------ |
-| Wrong bump type       | Unexpected version  | Review decision guide above                      |
-| Vague description     | Poor CHANGELOG      | Be specific about changes                        |
-| Missing changeset     | No release notes    | Always add before PR                             |
-| Past tense in body    | Style violation     | Rewrite in imperative mood                       |
-| Not including context | Hard to understand  | Explain *why* not just *what*                    |
-| Meaningless changes   | Cluttered CHANGELOG | Only document changes with consumer value        |
-| Including issue links | Redundant data      | Remove # references; PR links them automatically |
+| Mistake | Issue | Fix |
+| --- | --- | --- |
+| Wrong bump type | Unexpected version | Review decision guide above |
+| Vague description | Poor CHANGELOG | Be specific about changes |
+| Missing changeset | No release notes | Always add before PR |
+| Imperative body ("Drop X") | Reads like a commit, not a changelog | Rewrite in past tense / "now" for users |
+| Past-tense title ("Removed…") | Title should be a command | Use imperative ("Remove…") |
+| Not including context | Hard to understand | Explain *why* not just *what* |
+| Meaningless changes | Cluttered CHANGELOG | Only document changes with consumer value |
+| Including issue links | Redundant data | Remove # references; PR links them automatically |
 
 ## Common scenarios
 

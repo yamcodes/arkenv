@@ -8,6 +8,8 @@ export {
 } from "./env-module-path";
 export { loadValidatedEnv } from "./load-validated-env";
 export {
+	assertTransformModeCall,
 	type BunTransformOptions,
 	isTransformModeCall,
+	SCHEMA_DEFINE_REMOVED,
 } from "./transform-options";

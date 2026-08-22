@@ -36,5 +36,3 @@ import { env } from "./env";
 env.VITE_API_URL; // available on client and server
 env.DATABASE_URL; // server only — throws if read in the browser
 ```
-
-Passing a schema to `arkenv(schema)` (the previous `import.meta.env` define API) continues to work unchanged.

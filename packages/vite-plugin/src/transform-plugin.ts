@@ -123,7 +123,7 @@ export function createTransformPlugin(
 		 * Rewrite the env module in the client graph only.
 		 *
 		 * @remarks
-		 * ADR 0015 (canonical env object surface): do not reintroduce `env.gen.ts`
+		 * ADR 0021 (canonical env object surface): do not reintroduce `env.gen.ts`
 		 * codegen, client-side re-validation, or `runtimeEnv` wiring here.
 		 */
 		transform(_code, id, options) {

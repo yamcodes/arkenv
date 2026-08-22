@@ -1,6 +1,7 @@
 import { useState } from "react";
 import viteLogo from "/vite.svg";
 import reactLogo from "./assets/react.svg";
+import { env } from "./env";
 import "./app.css";
 
 function App() {
@@ -30,16 +31,15 @@ function App() {
 			</p>
 			<h1>My env vars</h1>
 			<p>
-				My var: {String(import.meta.env.VITE_MY_VAR)} (of type{" "}
-				{typeof import.meta.env.VITE_MY_VAR})
+				My var: {String(env.VITE_MY_VAR)} (of type {typeof env.VITE_MY_VAR})
 			</p>
 			<p>
-				My number: {String(import.meta.env.VITE_MY_NUMBER)} (of type{" "}
-				{typeof import.meta.env.VITE_MY_NUMBER})
+				My number: {String(env.VITE_MY_NUMBER)} (of type{" "}
+				{typeof env.VITE_MY_NUMBER})
 			</p>
 			<p>
-				My boolean: {String(import.meta.env.VITE_MY_BOOLEAN)} (of type{" "}
-				{typeof import.meta.env.VITE_MY_BOOLEAN})
+				My boolean: {String(env.VITE_MY_BOOLEAN)} (of type{" "}
+				{typeof env.VITE_MY_BOOLEAN})
 			</p>
 		</>
 	);

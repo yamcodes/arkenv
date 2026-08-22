@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { resetBootGateForTests, runBootGate } from "./boot-gate";
+import { applyBootGate, resetBootGateForTests, runBootGate } from "./boot-gate";
 import {
 	getBootGateResult,
 	resetBootGateResultForTests,
@@ -12,7 +12,106 @@ afterEach(() => {
 	resetBootGateResultForTests();
 });
 
-describe("Nuxt boot gate", () => {
+describe("Nuxt boot gate - applyBootGate (pure transformation)", () => {
+	it("coerces values and populates public and server runtimeConfig keys", () => {
+		const schema = {
+			PORT: "number",
+			NUXT_PUBLIC_HOST: "string",
+			NUXT_PUBLIC_ENABLED: "boolean",
+		};
+		const publicKeys = new Set(["NUXT_PUBLIC_HOST", "NUXT_PUBLIC_ENABLED"]);
+
+		const runtimeConfig = {
+			public: {
+				NUXT_PUBLIC_HOST: "localhost",
+				NUXT_PUBLIC_ENABLED: "true",
+			},
+			PORT: "3000",
+		};
+
+		const result = applyBootGate(
+			schema as any,
+			publicKeys,
+			"arktype",
+			runtimeConfig,
+		);
+
+		expect(runtimeConfig.PORT).toBe(3000);
+		expect(typeof runtimeConfig.PORT).toBe("number");
+		expect(runtimeConfig.public.NUXT_PUBLIC_HOST).toBe("localhost");
+		expect(runtimeConfig.public.NUXT_PUBLIC_ENABLED).toBe(true);
+		expect(typeof runtimeConfig.public.NUXT_PUBLIC_ENABLED).toBe("boolean");
+
+		expect(result.PORT).toBe(3000);
+		expect(result.NUXT_PUBLIC_ENABLED).toBe(true);
+		expect(getBootGateResult()?.PORT).toBe(3000);
+	});
+
+	it("returns flattened runtimeConfig when schema is empty", () => {
+		const runtimeConfig = {
+			public: { FOO: "bar" },
+			SECRET: "123",
+		};
+
+		const result = applyBootGate({}, new Set(), "arktype", runtimeConfig);
+		expect(result).toEqual({ FOO: "bar", SECRET: "123" });
+		expect(getBootGateResult()).toEqual({ FOO: "bar", SECRET: "123" });
+	});
+
+	it("fails fast when validation fails on invalid string value", () => {
+		const schema = {
+			PORT: "number",
+		};
+
+		const runtimeConfig = {
+			PORT: "not-a-number",
+		};
+
+		expect(() =>
+			applyBootGate(schema as any, new Set(), "arktype", runtimeConfig),
+		).toThrow();
+	});
+
+	it("coerces values using standard engine", () => {
+		const numberSchema = {
+			"~standard": {
+				version: 1,
+				vendor: "mock",
+				validate: (value: unknown) => {
+					const n = Number(value);
+					if (value === undefined || value === "" || Number.isNaN(n)) {
+						return { issues: [{ message: "expected number" }] };
+					}
+					return { value: n };
+				},
+			},
+		};
+
+		const schema = {
+			NUXT_PUBLIC_PORT: numberSchema,
+		};
+		const publicKeys = new Set(["NUXT_PUBLIC_PORT"]);
+
+		const runtimeConfig = {
+			public: {
+				NUXT_PUBLIC_PORT: "9000",
+			},
+		};
+
+		const result = applyBootGate(
+			schema as any,
+			publicKeys,
+			"standard",
+			runtimeConfig,
+		);
+
+		expect(runtimeConfig.public.NUXT_PUBLIC_PORT).toBe(9000);
+		expect(typeof runtimeConfig.public.NUXT_PUBLIC_PORT).toBe("number");
+		expect(result.NUXT_PUBLIC_PORT).toBe(9000);
+	});
+});
+
+describe("Nuxt boot gate - runBootGate (capture + apply integration)", () => {
 	it("coerces NUXT_PUBLIC_* string overrides into runtimeConfig.public", () => {
 		const tempDir = path.resolve(__dirname, "temp-boot-gate-coerce");
 		fs.mkdirSync(tempDir, { recursive: true });
@@ -161,7 +260,7 @@ describe("Nuxt boot gate", () => {
 				"~standard": {
 					version: 1,
 					vendor: "mock",
-					validate: (value) => {
+					validate: (value: unknown) => {
 						const n = Number(value);
 						if (value === undefined || value === "" || Number.isNaN(n)) {
 							return { issues: [{ message: "expected number" }] };

@@ -1,63 +1,42 @@
 import type { ArkEnvLogOptions } from "@repo/log";
-import type { CompiledEnvSchema, SchemaShape } from "@repo/types";
-import type { ParseStandardConfig as ArkEnvConfig } from "@repo/utils";
 import type { BunPlugin } from "bun";
-import { createDefinePlugin } from "./define-plugin";
-import { type BunTransformOptions, isTransformModeCall } from "./env-module";
+import { assertTransformModeCall } from "./env-module";
 import type { BunPluginFactoryConfig } from "./plugin-config";
 import { createTransformPlugin } from "./transform-plugin";
 
+export type { BunTransformOptions } from "./env-module";
 export type { BunPluginFactoryConfig } from "./plugin-config";
-export type { BunTransformOptions };
 
 /**
- * Create a Bun plugin factory bound to a specific ArkEnv runtime (`core` or `standard`).
+ * Create a Bun plugin factory bound to a plugin name (default or `/standard`).
  *
- * - **Transform** — `arkenv()` / `arkenv({ schemaPath, clientPrefix })`: rewrite the user's
- *   `env.ts` in browser bundles (ADR 0021). Server graphs execute `env.ts` as-is.
- * - **Schema/SPA** — `arkenv(schema, config?)`: build-time validation + `process.env`
- *   rewriting (existing API, unchanged).
+ * Always uses the env-module transform: `arkenv()` / `arkenv({ schemaPath, clientPrefix })`.
+ * The schema/`define` signature is rejected.
  *
  * The returned `hybrid` is the factory with transform `setup`/`target` attached so
  * `bunfig.toml` / default-import usage (`plugins = ["@arkenv/bun-plugin"]`) enables
  * zero-config transform mode.
  *
- * @param coreArkenv The ArkEnv runtime function used for schema/SPA validation
  * @param pluginName The Bun plugin name
  * @param factoryLogOptions Optional default logging options for the factory
  * @returns An object containing the configured arkenv factory and the hybrid plugin
  */
 export function createBunPlugin(
-	coreArkenv: any,
 	pluginName: string,
 	factoryLogOptions?: ArkEnvLogOptions,
 ) {
 	/**
-	 * Create a Bun plugin in transform or SPA mode based on the call shape.
+	 * Create a Bun plugin that rewrites `env.ts` in browser bundles.
 	 *
-	 * @param schemaOrOptions Transform options, or a schema for SPA mode
-	 * @param config Optional ArkEnv config (SPA mode only)
+	 * @param options Transform options (`schemaPath`, `clientPrefix`) plus ArkEnv/logging config
 	 * @returns A configured Bun plugin
 	 */
 	function arkenv(
-		schemaOrOptions?: CompiledEnvSchema | SchemaShape | BunPluginFactoryConfig,
-		config?: Omit<ArkEnvConfig, "safe"> & ArkEnvLogOptions,
+		options?: BunPluginFactoryConfig,
+		unexpected?: unknown,
 	): BunPlugin {
-		if (isTransformModeCall(schemaOrOptions, config)) {
-			return createTransformPlugin(
-				pluginName,
-				(schemaOrOptions ?? {}) as BunPluginFactoryConfig,
-				factoryLogOptions,
-			);
-		}
-
-		return createDefinePlugin(
-			coreArkenv,
-			pluginName,
-			schemaOrOptions as Record<string, unknown>,
-			config,
-			factoryLogOptions,
-		);
+		assertTransformModeCall(options, unexpected);
+		return createTransformPlugin(pluginName, options ?? {}, factoryLogOptions);
 	}
 
 	const zeroConfigTransform = createTransformPlugin(
