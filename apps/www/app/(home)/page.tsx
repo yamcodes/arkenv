@@ -69,8 +69,8 @@ export default function HomePage() {
 							style={{ animationDelay: "640ms" }}
 						>
 							<InstallPanel />
-							<StarUsButton />
 							<QuickstartButton />
+							<StarUsButton />
 						</div>
 					</div>
 					<div
