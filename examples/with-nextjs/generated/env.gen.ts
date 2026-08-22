@@ -5,8 +5,6 @@
 import { arkenv as coreArkenv } from "@arkenv/nextjs";
 import type { type as at, distill } from "arktype";
 
-export { type } from "@arkenv/nextjs";
-
 export function arkenv<
 	const TSchema extends Record<string, unknown> & { runtimeEnv?: never } = {},
 	const TExpose extends keyof TSchema = never,

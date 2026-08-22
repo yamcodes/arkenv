@@ -28,14 +28,11 @@ export function generateFactoryCode(
 	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
 	const importPath = isStandard ? "@arkenv/nextjs/standard" : "@arkenv/nextjs";
 	const coreName = "arkenv";
-	const typeExport = isStandard
-		? ""
-		: '\nexport { type } from "@arkenv/nextjs";\n';
 	const callPrefix = "coreArkenv";
 
 	return `${GENERATED_HEADER}
 import { ${coreName} as coreArkenv } from "${importPath}";
-${typeExport}
+
 export function arkenv<
 	const TServer extends Record<string, any> = {},
 	const TClient extends Record<string, any> = {},
@@ -65,9 +62,6 @@ export function generateFlatFactoryCode(
 	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
 	const importPath = isStandard ? "@arkenv/nextjs/standard" : "@arkenv/nextjs";
 	const coreName = "arkenv";
-	const typeExport = isStandard
-		? ""
-		: '\nexport { type } from "@arkenv/nextjs";\n';
 	const typeImport = isStandard
 		? ""
 		: '\nimport type { type as at, distill } from "arktype";';
@@ -81,7 +75,7 @@ export function generateFlatFactoryCode(
 
 	return `${GENERATED_HEADER}
 import { ${coreName} as coreArkenv } from "${importPath}";${typeImport}
-${typeExport}
+
 export function arkenv<
 	const TSchema extends Record<string, unknown> & { runtimeEnv?: never } = {},
 	const TExpose extends keyof TSchema = never,
@@ -119,9 +113,6 @@ export function generateClientFactoryCode(
 		? "@arkenv/nextjs/standard/client"
 		: "@arkenv/nextjs/client";
 	const coreName = "arkenv";
-	const typeExport = isStandard
-		? ""
-		: '\nexport { type } from "@arkenv/nextjs/client";\n';
 	const typeImport = isStandard
 		? ""
 		: '\nimport type { Infer } from "@arkenv/core";';
@@ -132,7 +123,7 @@ export function generateClientFactoryCode(
 
 	return `${GENERATED_HEADER}
 import { ${coreName} as coreArkenv } from "${importPath}";${typeImport}
-${typeExport}
+
 type ResolveExtend<T> = [Infer<T>] extends [never] ? T : Infer<T>;
 
 type UnionToIntersection<U> = (
