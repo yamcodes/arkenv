@@ -3,7 +3,7 @@
 	"pages": [
 		"index",
 		"validation",
-		"transforms",
+		"transformation",
 		"coercion",
 		"typesafety",
 		"standard-schema"

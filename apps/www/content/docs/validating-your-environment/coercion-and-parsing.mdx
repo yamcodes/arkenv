@@ -49,7 +49,7 @@ env.DEBUG;
 // ^?
 ```
 
-Need a wider truthy set? Normalize with a [transform](/docs/core-concepts/transforms) (ArkType morph or Zod/Valibot `.transform`), or keep the field as `string` and map it in application code.
+Need a wider truthy set? Normalize with a [transform](/docs/core-concepts/transformation) (ArkType morph or Zod/Valibot `.transform`), or keep the field as `string` and map it in application code.
 
 ## Arrays
 
@@ -121,7 +121,7 @@ env.DATABASE;
 
 ## Transforms
 
-Custom transforms reshape values during validation. Both engines support them; each library has its own API name (ArkType [morph](https://arktype.io/docs/morphs), Zod `.transform`, Valibot pipe/transform).
+Custom transforms reshape values during validation. Both engines support them; each library has its own API name (ArkType [morph](https://arktype.io/docs/intro/morphs-and-more), Zod `.transform`, Valibot pipe/transform).
 
 <Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
   <Tab value="ArkType (@arkenv/core)">
@@ -160,7 +160,7 @@ Custom transforms reshape values during validation. Both engines support them; e
   </Tab>
 </Tabs>
 
-ArkEnv's built-in coercion still handles the common string-to-number and string-to-boolean cases before schema transforms run. See [Transforms](/docs/core-concepts/transforms).
+ArkEnv's built-in coercion still handles the common string-to-number and string-to-boolean cases before schema transforms run. See [Transformation](/docs/core-concepts/transformation).
 
 ## Coercion with Standard Schema validators
 
@@ -204,4 +204,8 @@ With `coerce: false`, a schema of `"number"` rejects `"3000"` unless you transfo
 
 ## Next steps
 
-See what happens when a value fails validation under [error reporting](/docs/validating-your-environment/error-reporting).
+<Cards>
+  <Card href="/docs/validating-your-environment/error-reporting" title="Error reporting" description="Understand fail-fast boot errors and structured failure output." />
+
+  <Card href="/docs/validating-your-environment/reusing-schemas" title="Reusing schemas" description="Share validation schemas across multiple applications and packages." />
+</Cards>

@@ -1,37 +1,49 @@
 ---
 title: Migrating from T3 Env
-description: Move a T3 Env project to ArkEnv without keeping runtimeEnv sync.
+description: Migrate a T3 Env project to ArkEnv without maintaining manual runtimeEnv mappings.
 ---
 
-[T3 Env](https://env.t3.gg) inspired ArkEnv's Next.js security model. Migration drops the manual `runtimeEnv` map and the required `server` / `client` blocks for most apps.
+T3 Env inspired ArkEnv's approach to Next.js environment variable security.
+Migrating to ArkEnv removes the need to manually maintain a `runtimeEnv` mapping
+and simplifies your schema into a single flat definition.
 
 ## What changes
 
-| T3 Env                                             | ArkEnv                                                    |
-| -------------------------------------------------- | --------------------------------------------------------- |
-| `createEnv` from `@t3-oss/env-nextjs` (or `/core`) | `arkenv` from `@arkenv/nextjs` codegen or `@arkenv/core`  |
-| Nested `{ server, client, runtimeEnv }`            | Flat schema (default) or strict file split                |
-| Hand-maintained `runtimeEnv` inlining              | `withArkEnv` codegen writes the mapping                   |
-| Zod (usual)                                        | Zod via `@arkenv/standard`, or ArkType via `@arkenv/core` |
+| Feature | T3 Env | ArkEnv |
+| :--- | :--- | :--- |
+| Core function | `createEnv` from `@t3-oss/env-nextjs` | `arkenv` from `@arkenv/nextjs` or `@arkenv/core` |
+| Schema structure | Nested `{ server, client, runtimeEnv }` | Flat schema (default) or strict file split |
+| Client inlining | Manual `runtimeEnv` object | `withArkEnv` build plugin handles inlining |
+| Validator engine | Zod only | ArkType via `@arkenv/core` or Zod via `@arkenv/standard` |
 
-Flat ArkEnv matches T3 Env single-file security: full inference plus a runtime Proxy that throws on server-key access in the client. Schema **names** still ship to the client in flat mode; use `--strict` if names must stay out of the client graph.
+ArkEnv provides the same single-file security guarantees as T3 Env: full TypeScript
+inference and a runtime proxy that blocks server keys from being accessed on the
+client. If you need compile-time guarantee that secret key names never enter client
+code, scaffold a `--strict` layout instead.
 
-## Next.js migration
+## Next.js migration steps
+
+Follow these steps to migrate an existing Next.js application from T3 Env to ArkEnv.
 
 ### 1. Install ArkEnv
 
-```package-install
-pnpm add @arkenv/core @arkenv/nextjs arktype
-```
-
-Or keep Zod:
+Install `@arkenv/nextjs` with your preferred validation engine, and remove T3 Env:
 
 ```package-install
-pnpm add @arkenv/standard @arkenv/nextjs zod
-pnpm remove @t3-oss/env-nextjs
+npm i @arkenv/core @arkenv/nextjs arktype
+npm rm @t3-oss/env-nextjs
 ```
 
-### 2. Wrap the config
+If you prefer to continue using Zod:
+
+```package-install
+npm i @arkenv/standard @arkenv/nextjs zod
+npm rm @t3-oss/env-nextjs
+```
+
+### 2. Wrap Next.js configuration
+
+Wrap your configuration with `withArkEnv` in `next.config.ts`:
 
 ```ts title="./next.config.ts" twoslash
 import type { NextConfig } from "next";
@@ -42,11 +54,13 @@ const nextConfig: NextConfig = {};
 export default withArkEnv(nextConfig);
 ```
 
-For Zod, import `withArkEnv` from `@arkenv/nextjs/standard/config`.
+If you aren't using ArkType, import `withArkEnv` from `@arkenv/nextjs/standard/config`.
 
-### 3. Replace the schema
+### 3. Replace schema definition
 
-Before (T3 Env sketch):
+Replace your existing T3 Env definition with a flat ArkEnv schema:
+
+**Before (T3 Env):**
 
 ```ts title="./src/env.js"
 import { createEnv } from "@t3-oss/env-nextjs";
@@ -66,7 +80,7 @@ export const env = createEnv({
 });
 ```
 
-After (ArkEnv flat + ArkType):
+**After (ArkEnv with ArkType):**
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@/generated/env.gen";
@@ -77,7 +91,7 @@ export const env = arkenv({
 });
 ```
 
-After (ArkEnv flat + Zod):
+**After (ArkEnv with Zod):**
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@/generated/env.gen";
@@ -89,28 +103,33 @@ export const env = arkenv({
 });
 ```
 
-Delete `runtimeEnv`. Prefixes (`NEXT_PUBLIC_*`) decide the client bucket.
+The manual `runtimeEnv` block is no longer needed. The `NEXT_PUBLIC_` prefix
+automatically designates client variables.
 
-### 4. Update imports
+### 4. Update import paths
 
-Point every `import { env } from "~/env"` (or similar) at the new module. Remove `@t3-oss/env-*` packages when nothing imports them.
+Point all existing `import { env } from "~/env"` imports to your new `./env`
+module.
 
-### 5. Optional: strict layout
+### 5. Optional: strict file split
 
-If you relied on separate server/client modules for compile-time isolation:
+If your application requires separate client and server module graphs, scaffold
+a strict layout:
 
-```bash title="Terminal"
-pnpm dlx arkenv@latest init --strict
+```package-install
+npx arkenv@latest init --strict
 ```
 
-Then move keys into `env/server.ts` and `env/client.ts` as in [Client vs. server](/docs/validating-your-environment/client-vs-server).
-
-## Nuxt and other hosts
-
-Same idea: flat schema, framework public prefix, no `runtimeEnv`. Use [`@arkenv/nuxt`](/docs/guides/frameworks/nuxt) or the matching Vite/Bun guide.
+Then organize keys into `env/server.ts` and `env/client.ts` as described in
+[Client vs. server](/docs/validating-your-environment/client-vs-server).
 
 ## Next steps
 
-- [Next.js guide](/docs/guides/frameworks/nextjs)
-- [`@arkenv/standard`](/docs/reference/standard) if you stay on Zod
-- [Hosting presets](/docs/validating-your-environment/hosting-presets)
+<Cards>
+  <Card href="/docs/guides/frameworks/nextjs" title="Next.js guide" description="Detailed @arkenv/nextjs configuration options and codegen details." />
+
+  <Card href="/docs/guides/validators/zod" title="Using ArkEnv with Zod" description="Learn how to use Zod 4.2+, Mini, and v3 with @arkenv/standard." />
+
+  <Card href="/docs/validating-your-environment/hosting-presets" title="Hosting presets" description="Inject hosting provider system variables into your schema." />
+</Cards>
+

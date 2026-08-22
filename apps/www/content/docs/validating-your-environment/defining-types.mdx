@@ -102,8 +102,12 @@ For transforms, function defaults, or reuse across files:
   </Tab>
 </Tabs>
 
-See [Transforms](/docs/core-concepts/transforms) for morph vs Zod `.transform`, and [reusing schemas](/docs/validating-your-environment/reusing-schemas) when the whole schema should be shared.
+See [Transformation](/docs/core-concepts/transformation) for morph vs Zod `.transform`, and [reusing schemas](/docs/validating-your-environment/reusing-schemas) when the whole schema should be shared.
 
 ## Next steps
 
-If the app has a browser bundle, set [client vs. server boundaries](/docs/validating-your-environment/client-vs-server) next.
+<Cards>
+  <Card href="/docs/validating-your-environment/client-vs-server" title="Client vs. server" description="Set up security boundaries between public and private keys." />
+
+  <Card href="/docs/validating-your-environment/coercion-and-parsing" title="Coercion and parsing" description="Handle numbers, booleans, arrays, and objects from environment strings." />
+</Cards>

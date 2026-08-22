@@ -129,12 +129,16 @@ export const env = arkenv(
 
 Scaffold with:
 
-```bash title="Terminal"
-pnpm dlx arkenv@latest init --strict
+```package-install
+npx arkenv@latest init --strict
 ```
 
 Nuxt strict layout uses `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. Omitting `extends` can auto-merge shared and client schemas via Nuxt virtual aliases. Details live in the [Next.js](/docs/guides/frameworks/nextjs) and [Nuxt](/docs/guides/frameworks/nuxt) guides.
 
 ## Next steps
 
-With boundaries set, configure [coercion and parsing](/docs/validating-your-environment/coercion-and-parsing) for non-string values.
+<Cards>
+  <Card href="/docs/validating-your-environment/coercion-and-parsing" title="Coercion and parsing" description="Handle numbers, booleans, arrays, and objects from environment strings." />
+
+  <Card href="/docs/validating-your-environment/error-reporting" title="Error reporting" description="Understand fail-fast boot errors and structured failure output." />
+</Cards>

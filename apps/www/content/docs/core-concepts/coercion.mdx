@@ -1,6 +1,6 @@
 ---
 title: Coercion
-description: How ArkEnv turns string environment values into typed outputs.
+description: Automatically parse string environment variables into numbers, booleans, and arrays.
 ---
 
 Environment variables arrive as strings. Coercion is ArkEnv's built-in step that converts those strings toward the types your schema declares so `PORT` is a `number` and `DEBUG` is a `boolean` in application code.
@@ -75,7 +75,7 @@ ArkEnv does not wrap your schema in a coercion pipe. It uses a shared pre-coerci
 3. **Copy** the input record and coerce only those paths on the copy
 4. **Validate** the copy with the original, unmodified schema
 
-`process.env` is never mutated. Schema [transforms](/docs/core-concepts/transforms) and refinements still see the coerced values.
+`process.env` is never mutated. Schema [transforms](/docs/core-concepts/transformation) and refinements still see the coerced values.
 
 ## Arrays and objects
 
@@ -213,12 +213,12 @@ export const env = arkenv(
   </Tab>
 </Tabs>
 
-With `coerce: false`, a numeric schema rejects `"3000"` unless you [transform](/docs/core-concepts/transforms) the string yourself (or use `z.coerce.number()` and similar).
+With `coerce: false`, a numeric schema rejects `"3000"` unless you [transform](/docs/core-concepts/transformation) the string yourself (or use `z.coerce.number()` and similar).
 
 ## Related
 
 <Cards>
-  <Card href="/docs/core-concepts/transforms" title="Transforms" description="Reshape values after coercion with morphs or Zod transforms." />
+  <Card href="/docs/core-concepts/transformation" title="Transformation" description="Reshape values after coercion with morphs or Zod transforms." />
 
   <Card href="/docs/reference/options#coerce" title="options.coerce" description="Toggle ArkEnv’s built-in string coercion." />
 

@@ -30,14 +30,13 @@ pnpm add @arkenv/core @arkenv/nextjs arktype
 
 ```package-install
 # Or Standard Schema + Next.js
-pnpm add @arkenv/standard @arkenv/nextjs zod
+pnpm add @arkenv/standard @arkenv/nextjs
 ```
 
 Scaffold with the CLI when you want files generated for you:
 
-```bash title="Terminal"
-pnpm dlx arkenv@latest init
-pnpm dlx arkenv@latest init --strict
+```package-install
+npx arkenv@latest init
 ```
 
 ## What each integration adds
@@ -72,4 +71,8 @@ validates them.
 
 ## Next steps
 
-Add provider system variables with [hosting presets](/docs/validating-your-environment/hosting-presets), or jump to the framework guide for your stack.
+<Cards>
+  <Card href="/docs/validating-your-environment/hosting-presets" title="Hosting presets" description="Pre-populate schemas with provider system environment variables." />
+
+  <Card href="/docs/guides/frameworks" title="Framework guides" description="Step-by-step recipes for Next.js, Nuxt, Vite, and Bun." />
+</Cards>

@@ -38,18 +38,16 @@ Select a hosting provider preset (optional):
 
 Skip the prompt in scripts or agent mode:
 
-```bash title="Terminal"
-pnpm dlx arkenv@latest init --host-preset vercel
-pnpm dlx arkenv@latest init -H netlify --agent
+```package-install
+npx arkenv@latest init --host-preset vercel
 ```
 
 Accepted values: `none`, `vercel`, `netlify`, `cloudflare`, `railway`, `render`, `fly`.
 
 ## Add a host to an existing schema
 
-```bash title="Terminal"
-pnpm dlx arkenv@latest add host vercel
-pnpm dlx arkenv@latest add host
+```package-install
+npx arkenv@latest add host vercel
 ```
 
 Omit the provider to pick interactively. The command detects layout, framework prefix, and validator, then merges missing keys. Existing keys stay unchanged. If the schema cannot be parsed, the CLI prints the proposed fields for manual paste.
@@ -141,7 +139,8 @@ keys by hand.
 
 ## Next steps
 
-You finished this section. Dig into
-[API reference](/docs/reference) for options and packages, or
-[core concepts](/docs/core-concepts) for coercion, transforms, and
-Standard Schema.
+<Cards>
+  <Card href="/docs/reference" title="API reference" description="Comprehensive API, CLI, and package export reference." />
+
+  <Card href="/docs/core-concepts" title="Core concepts" description="Understand coercion, transforms, and Standard Schema validation." />
+</Cards>

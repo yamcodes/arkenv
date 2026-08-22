@@ -1,19 +1,29 @@
 ---
 title: Valibot
-description: Validate env vars with @arkenv/standard and Valibot.
+description: Validate environment variables with @arkenv/standard and Valibot.
 ---
 
-Valibot via [`@arkenv/standard`](/docs/reference/standard). Engine choice: [Choosing an engine](/docs/core-concepts/standard-schema).
+Use `@arkenv/standard` to validate environment variables with Valibot. Valibot
+implements the Standard Schema specification. By providing the
+[`@valibot/to-json-schema`](https://valibot.dev/guides/json-schema/) converter
+through ArkEnv's `toJsonSchema` option, ArkEnv can inspect your schema and
+automatically coerce raw strings into numbers, booleans, and arrays.
 
-Valibot implements Standard Schema validation. JSON Schema conversion lives in [`@valibot/to-json-schema`](https://valibot.dev/guides/json-schema/), not on each schema value. Pass ArkEnv's optional `toJsonSchema` callback once so `v.number()` and `v.boolean()` pre-coerce the way Zod fields do.
+For an overview of engine options, see
+[Choosing an engine](/docs/core-concepts/standard-schema).
 
-## Install
+## Installation
+
+Install `@arkenv/standard`, `valibot`, and the JSON Schema converter:
 
 ```package-install
-pnpm add @arkenv/standard valibot @valibot/to-json-schema
+npm i @arkenv/standard valibot @valibot/to-json-schema
 ```
 
-## Minimal `env.ts`
+## Define your schema
+
+Declare environment variables in an `env.ts` file using Valibot schemas and
+configure `toJsonSchema`:
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/standard";
@@ -25,6 +35,7 @@ export const env = arkenv(
     DATABASE_URL: v.pipe(v.string(), v.url()),
     PORT: v.optional(v.number(), 3000),
     DEBUG: v.optional(v.boolean(), false),
+    TAGS: v.optional(v.array(v.string()), []),
     NODE_ENV: v.optional(
       v.picklist(["development", "production", "test"]),
       "development",
@@ -40,61 +51,36 @@ export const env = arkenv(
 );
 ```
 
-Use `v.number()` / `v.boolean()` with this callback. Skip `v.transform(Number)` for env strings.
+## JSON Schema configuration
 
-## Coercion (`toJsonSchema`)
+Because Valibot does not embed JSON Schema metadata directly on schema instances,
+the `toJsonSchema` callback converts schemas on demand:
 
-Pass an explicit wrapper. A bare `{ toJsonSchema }` function reference uses Valibot's default `typeMode: "ignore"`, which mis-coerces piped schemas.
+- `typeMode: "input"` ensures piped and transformed schemas are evaluated
+  according to their input types so strings can be properly coerced.
+- `target: "draft-07"` formats output to match the JSON Schema draft expected
+  by ArkEnv.
 
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/standard";
-import * as v from "valibot";
-import { toJsonSchema } from "@valibot/to-json-schema";
-
-export const env = arkenv(
-  { PORT: v.number(), DEBUG: v.boolean() },
-  {
-    toJsonSchema: (schema) =>
-      toJsonSchema(schema as v.GenericSchema, {
-        typeMode: "input",
-        target: "draft-07",
-      }),
-  },
-);
-```
-
-- `target: "draft-07"` matches the JSON Schema draft ArkEnv expects.
-- `typeMode: "input"` coerces env strings toward the schema's input type.
-- Valibot's converter does not accept Standard Schema, so assert `as v.GenericSchema` at the call. Same wrapper for Valibot-only and Zod + Valibot (classic Zod never reaches the callback at runtime).
-- Return `undefined` to skip one key. A throw or non-plain object fails the parse with `ArkEnvError` for that key.
-
-Configure `toJsonSchema` once on `arkenv()`. Per-key `toStandardJsonSchema(...)` wrappers are not the intended path.
-
-When a second library also omits JSON Schema on the value, switch on `schema["~standard"].vendor`. Zod Mini is that second case (`z.toJSONSchema`, vendor `"zod"`). Assert at each host-converter call — `vendor` does not narrow Mini vs Valibot. Example: [Mixing with Zod Mini](/docs/core-concepts/coercion#mixing-with-zod-mini).
+With `toJsonSchema` configured, use `v.number()` and `v.boolean()` directly.
+Manual `v.transform(Number)` steps are not required.
 
 ## Defaults and optionals
 
-| Pattern                   | Meaning                         |
-| ------------------------- | ------------------------------- |
-| `v.optional(schema, def)` | Default when the key is missing |
-| `v.optional(schema)`      | Optional key                    |
-| `emptyAsUndefined: true`  | Treat empty strings as missing  |
+Valibot functions for fallback values and optional fields work seamlessly:
 
-## Frameworks
-
-Use each host's `/standard` entry and pass the same `toJsonSchema` option (plugin configs alias `ParseStandardConfig` / `StandardEnvConfig`):
-
-- [Next.js](/docs/guides/frameworks/nextjs) (`@arkenv/nextjs/standard`)
-- [Nuxt](/docs/guides/frameworks/nuxt)
-- [Vite](/docs/guides/frameworks/vite) (`@arkenv/vite-plugin/standard`)
-- [Bun](/docs/guides/frameworks/bun) (`@arkenv/bun-plugin/standard`)
+| Pattern | Behavior |
+| :--- | :--- |
+| `v.optional(schema, defaultValue)` | Fallback value used when the variable is undefined |
+| `v.optional(schema)` | Allows the variable to remain undefined |
+| `emptyAsUndefined: true` | Converts empty strings (`""`) to `undefined` so optional defaults trigger |
 
 ## Next steps
 
 <Cards>
-  <Card href="/docs/core-concepts/coercion#valibot-tojsonschema" title="Coercion: Valibot" description="Wire toJsonSchema for Valibot number and boolean fields." />
+  <Card href="/docs/reference/standard" title="@arkenv/standard reference" description="Standard Schema engine package reference and options." />
 
-  <Card href="/docs/reference/standard" title="@arkenv/standard" description="Standard Schema engine package reference." />
+  <Card href="/docs/core-concepts/coercion#valibot-tojsonschema" title="Coercion with Valibot" description="Advanced JSON Schema wiring and custom converters." />
 
-  <Card href="https://github.com/yamcodes/arkenv/tree/main/examples/with-valibot" title="examples/with-valibot" description="Node.js with @arkenv/standard and Valibot." />
+  <Card href="/docs/guides/frameworks" title="Framework guides" description="Integrate your Valibot schema with Next.js, Nuxt, Vite, or Bun." />
 </Cards>
+
