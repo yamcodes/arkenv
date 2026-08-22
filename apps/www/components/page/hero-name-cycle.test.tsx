@@ -43,11 +43,11 @@ describe("HeroNameCycle", () => {
 
 		expect(
 			document.querySelector(".home-aurora__cycle-with")?.textContent,
-		).toBe("with\u00a0");
+		).toBe("with ");
 		expect(currentHeadline()?.textContent).toBe("ArkType");
 		expect(
 			`${document.querySelector(".home-aurora__cycle-with")?.textContent}${currentHeadline()?.textContent}`,
-		).toBe("with\u00a0ArkType");
+		).toBe("with ArkType");
 		expect(
 			screen.queryByText("ArkType, Zod, and Valibot"),
 		).not.toBeInTheDocument();
@@ -60,7 +60,7 @@ describe("HeroNameCycle", () => {
 		expect(currentHeadline()?.textContent).toBe("ArkType");
 		expect(
 			document.querySelector(".home-aurora__cycle-with")?.textContent,
-		).toBe("with\u00a0");
+		).toBe("with ");
 
 		act(() => {
 			vi.advanceTimersByTime(HERO_FIRST_DWELL_MS - 1);
@@ -74,7 +74,7 @@ describe("HeroNameCycle", () => {
 			expect(currentHeadline()?.textContent).toBe(name);
 			expect(
 				document.querySelector(".home-aurora__cycle-with")?.textContent,
-			).toBe("with\u00a0");
+			).toBe("with ");
 		}
 
 		act(() => {

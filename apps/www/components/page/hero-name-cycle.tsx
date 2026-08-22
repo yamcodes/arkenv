@@ -72,7 +72,7 @@ export function HeroNameCycle() {
 			onPointerEnter={() => setPaused(true)}
 			onPointerLeave={() => setPaused(false)}
 		>
-			<span className="home-aurora__cycle-with">with{"\u00a0"}</span>
+			<span className="home-aurora__cycle-with">with </span>
 			<span className="home-aurora__cycle-viewport">
 				{HERO_HEADLINE_NAMES.map((name, nameIndex) => {
 					if (nameIndex !== index && nameIndex !== previous) return null;
