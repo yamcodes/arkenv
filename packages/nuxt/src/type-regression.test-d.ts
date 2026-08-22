@@ -1,14 +1,13 @@
 import type { NuxtConfig, NuxtOptions } from "@nuxt/schema";
 import { describe, expectTypeOf, it } from "vitest";
 import type { ArkEnvConfigOptions } from "./config";
-import { arkenv } from "./index";
-import type { ModuleOptions } from "./module";
-import arkenvStandard from "./standard";
-
 // Regression guard: `Infer` must NOT be re-exported from @arkenv/nuxt
 // If this line ever stops being an error, the re-export was accidentally re-introduced.
 // @ts-expect-error `Infer` is not exported from @arkenv/nuxt root — import from @arkenv/core
 import type { Infer } from "./index";
+import { arkenv } from "./index";
+import type { ModuleOptions } from "./module";
+import arkenvStandard from "./standard";
 
 const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({
 	"~standard": {
