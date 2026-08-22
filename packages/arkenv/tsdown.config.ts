@@ -1,11 +1,11 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-	entry: "src/index.ts",
-	format: "cjs",
+	entry: ["src/index.ts", "src/bin.ts"],
+	format: ["esm", "cjs"],
 	platform: "node",
 	minify: true,
-	fixedExtension: true,
+	fixedExtension: false,
 	shims: true,
 	deps: {
 		alwaysBundle: ["@repo/log", "@clack/prompts", "@repo/utils", "picocolors"],
