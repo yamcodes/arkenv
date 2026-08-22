@@ -137,11 +137,7 @@ export function parseSchemaShape(
 	}
 
 	const declaredKeys = isLegacy
-		? [
-				...Object.keys(server),
-				...Object.keys(client),
-				...Object.keys(shared),
-			]
+		? [...Object.keys(server), ...Object.keys(client), ...Object.keys(shared)]
 		: Object.keys((schemaOrOptions || {}) as SchemaShape);
 
 	const publicKeys = isLegacy

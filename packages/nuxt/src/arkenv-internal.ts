@@ -13,8 +13,8 @@ import {
 } from "./schema-shape";
 import { isForceServer } from "./validate-context";
 
-export { ENV_KEYS, EXTENDED_ENV, SERVER_ONLY_KEYS };
 export type { FlatSchemaOptions, LegacyNestedSchema, SchemaLayoutContext };
+export { ENV_KEYS, EXTENDED_ENV, SERVER_ONLY_KEYS };
 
 /**
  * Optional server hooks for the thin Nuxt accessor path.
@@ -64,13 +64,7 @@ export function arkenvInternal(
 					optionsOrIsServer),
 		);
 
-	const {
-		server,
-		client,
-		shared,
-		extendsList,
-		runtimeEnv,
-	} = parsed;
+	const { server, client, shared, extendsList, runtimeEnv } = parsed;
 
 	if (isServer) {
 		hooks?.ensureBootGate?.();
