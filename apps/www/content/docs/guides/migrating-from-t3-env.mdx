@@ -9,12 +9,12 @@ and simplifies your schema into a single flat definition.
 
 ## What changes
 
-| Feature | T3 Env | ArkEnv |
-| :--- | :--- | :--- |
-| Core function | `createEnv` from `@t3-oss/env-nextjs` | `arkenv` from `@arkenv/nextjs` or `@arkenv/core` |
-| Schema structure | Nested `{ server, client, runtimeEnv }` | Flat schema (default) or strict file split |
-| Client inlining | Manual `runtimeEnv` object | `withArkEnv` build plugin handles inlining |
-| Validator engine | Zod only | ArkType via `@arkenv/core` or Zod via `@arkenv/standard` |
+| Feature          | T3 Env                                  | ArkEnv                                                   |
+| :--------------- | :-------------------------------------- | :------------------------------------------------------- |
+| Core function    | `createEnv` from `@t3-oss/env-nextjs`   | `arkenv` from `@arkenv/nextjs` or `@arkenv/core`         |
+| Schema structure | Nested `{ server, client, runtimeEnv }` | Flat schema (default) or strict file split               |
+| Client inlining  | Manual `runtimeEnv` object              | `withArkEnv` build plugin handles inlining               |
+| Validator engine | Zod only                                | ArkType via `@arkenv/core` or Zod via `@arkenv/standard` |
 
 ArkEnv provides the same single-file security guarantees as T3 Env: full TypeScript
 inference and a runtime proxy that blocks server keys from being accessed on the
@@ -132,4 +132,3 @@ Then organize keys into `env/server.ts` and `env/client.ts` as described in
 
   <Card href="/docs/validating-your-environment/hosting-presets" title="Hosting presets" description="Inject hosting provider system variables into your schema." />
 </Cards>
-

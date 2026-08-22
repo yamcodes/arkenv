@@ -73,11 +73,11 @@ pass `{ coerce: false }`. Learn more in [Coercion](/docs/core-concepts/coercion)
 
 ArkType syntax supports inline default values and optional properties:
 
-| Pattern | Behavior |
-| :--- | :--- |
-| `= 'value'` / `= 3000` | Fallback value when the variable is undefined |
-| `string \| undefined` or `string?` | Optional environment variable |
-| `emptyAsUndefined: true` | Converts empty strings (`""`) to `undefined` so defaults trigger |
+| Pattern                            | Behavior                                                         |
+| :--------------------------------- | :--------------------------------------------------------------- |
+| `= 'value'` / `= 3000`             | Fallback value when the variable is undefined                    |
+| `string \| undefined` or `string?` | Optional environment variable                                    |
+| `emptyAsUndefined: true`           | Converts empty strings (`""`) to `undefined` so defaults trigger |
 
 For specialized validators like `string.host` and `number.port`, see
 [Keywords](/docs/reference/keywords). To build complex custom schemas or morphs,
@@ -92,4 +92,3 @@ see [Defining types](/docs/validating-your-environment/defining-types).
 
   <Card href="/docs/guides/frameworks" title="Framework guides" description="Integrate your ArkType schema with Next.js, Nuxt, Vite, or Bun." />
 </Cards>
-
