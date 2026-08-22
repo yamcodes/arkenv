@@ -85,8 +85,10 @@ guards private server keys.
 
 ## Reuse the schema in Vite config
 
-When your `vite.config.ts` requires validated values (for example `server.port`),
-compile a reusable schema with `type()`:
+Vite does not load `.env*` files while evaluating `vite.config.ts`. When the config
+needs typed values (for example `server.port`), compile a reusable schema with
+`type()` and validate it with core `arkenv()` and `loadEnv`. Register the plugin
+with no schema argument — it still rewrites `env.ts` in the client graph.
 
 ```ts title="./vite.config.ts" twoslash
 import { defineConfig, loadEnv } from "vite";
@@ -102,7 +104,8 @@ export const Env = type({
 export default defineConfig(({ mode }) => {
   const env = arkenv(Env, { env: loadEnv(mode, process.cwd(), "") });
   return {
-    plugins: [arkenvPlugin(Env)],
+    // Plugin is transform-only — no schema argument
+    plugins: [arkenvPlugin()],
     server: { port: env.PORT },
   };
 });
@@ -110,12 +113,11 @@ export default defineConfig(({ mode }) => {
 
 Learn more in [Reusing schemas](/docs/validating-your-environment/reusing-schemas).
 
-## SPA accessor mode
+## Client access
 
-Client-only single-page applications can augment `import.meta.env` with
-`ImportMetaEnvAugmented` if you prefer native property access. For full-stack
-applications, export a typed `env` object so server secrets validate at process boot.
-Find type definitions in [`@arkenv/vite-plugin`](/docs/reference/vite-plugin).
+Import the validated `env` object from your schema module. Prefer that over reading
+`import.meta.env` for schema keys so server secrets still validate at boot. Types
+and options: [`@arkenv/vite-plugin`](/docs/reference/vite-plugin).
 
 ## Next steps
 

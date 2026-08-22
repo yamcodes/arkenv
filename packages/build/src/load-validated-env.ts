@@ -1,17 +1,36 @@
 import { createJiti } from "jiti";
 
+export type LoadValidatedEnvOptions = {
+	/**
+	 * Brand prefix or host label for errors (e.g. `"ArkEnv Vite plugin:"` or `"ArkEnv Bun plugin:"`).
+	 * Defaults to `"[ArkEnv]"`.
+	 */
+	prefix?: string;
+	/**
+	 * Optional internal aliases for jiti (e.g. during monorepo testing).
+	 */
+	jitiAliases?: Record<string, string>;
+};
+
 /**
  * Load the env module via Jiti with `process.env` seeded from the build environment.
  *
  * @param schemaPath Absolute path to the env module
- * @param loadedEnv Env values from `process.env` (and optional plugin overrides)
+ * @param loadedEnv Env values from the build/runtime environment and plugin overrides
+ * @param options Optional options including error prefix and jiti aliases
  * @returns The validated `env` export (named or default)
  * @throws If the module cannot be loaded or does not export `env`
  */
 export function loadValidatedEnv(
 	schemaPath: string,
 	loadedEnv: Record<string, string | undefined>,
+	options?: LoadValidatedEnvOptions,
 ): Record<string, unknown> {
+	const prefix = options?.prefix ?? "[ArkEnv]";
+	const cleanPrefix = prefix.trim().endsWith(":")
+		? prefix.trim()
+		: `${prefix.trim()}:`;
+
 	const previousEnv = { ...process.env };
 	Object.assign(process.env, loadedEnv);
 
@@ -20,6 +39,7 @@ export function loadValidatedEnv(
 			moduleCache: false,
 			fsCache: false,
 			tsconfigPaths: true,
+			...(options?.jitiAliases ? { alias: options.jitiAliases } : {}),
 		} as const;
 
 		/**
@@ -62,7 +82,7 @@ export function loadValidatedEnv(
 
 		if (!exported || typeof exported !== "object") {
 			throw new Error(
-				`ArkEnv Bun plugin: "${schemaPath}" must export an \`env\` object (named or default).`,
+				`${cleanPrefix} "${schemaPath}" must export an \`env\` object (named or default).`,
 			);
 		}
 

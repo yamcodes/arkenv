@@ -104,26 +104,13 @@ export const env = arkenv({
 });
 ```
 
-## TypeScript augmentation
+## Client access
 
-If you are building an accessor-style single-page app and want type safety on
-`process.env`, augment the global `NodeJS.ProcessEnv` interface:
-
-```ts title="./src/env.d.ts" twoslash
-import type { ProcessEnvAugmented } from "@arkenv/bun-plugin";
-import { type } from "@arkenv/core";
-
-export const Env = type({
-  BUN_PUBLIC_API_URL: "string",
-});
-
-declare namespace NodeJS {
-  interface ProcessEnv extends ProcessEnvAugmented<typeof Env> {}
-}
-```
-
-For full-stack applications, prefer exporting the typed `env` object so validation
-runs reliably at process boot.
+Import the validated `env` object from your schema module. Do not read `process.env`
+for schema keys in full-stack apps — the plugin rewrites the client copy of `env.ts`
+so public keys stay typed and coerced. For full-stack applications, prefer exporting
+the typed `env` object so validation runs reliably at process boot. See
+[`@arkenv/bun-plugin`](/docs/reference/bun-plugin).
 
 ## Next steps
 

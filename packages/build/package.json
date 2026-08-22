@@ -22,7 +22,8 @@
 		"dist"
 	],
 	"dependencies": {
-		"chokidar": "^4.0.3"
+		"chokidar": "^4.0.3",
+		"jiti": "catalog:"
 	},
 	"devDependencies": {
 		"@repo/log": "workspace:*",

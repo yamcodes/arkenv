@@ -317,7 +317,7 @@ describe("missing-schema errors", () => {
 	});
 
 	it("throws a short discovery error without an env.ts starter", async () => {
-		const { resolveEnvModulePath } = await import("./env-module-path.js");
+		const { resolveEnvModulePath } = await import("./env-module.js");
 		const root = mkdtempSync(join(tmpdir(), "arkenv-bun-missing-schema-"));
 		temps.push(root);
 
@@ -338,7 +338,7 @@ describe("missing-schema errors", () => {
 	});
 
 	it("rejects a discovered strict layout directory", async () => {
-		const { resolveEnvModulePath } = await import("./env-module-path.js");
+		const { resolveEnvModulePath } = await import("./env-module.js");
 		const root = mkdtempSync(join(tmpdir(), "arkenv-bun-strict-dir-"));
 		temps.push(root);
 		const envDir = join(root, "env");

@@ -1,21 +1,21 @@
-import { extractKeys } from "@arkenv/build";
+import { extractKeys } from "./core";
 
 /**
  * Classify schema keys into client, shared, and server-only sets.
  *
  * @param content The source of the env module
- * @param prefixes Client-exposed prefixes (e.g. `["BUN_PUBLIC_"]`)
- * @returns Key classification for the transform
+ * @param prefixes Client-exposed prefixes (e.g. `["VITE_"]` or `["BUN_PUBLIC_"]`)
+ * @returns Key classification for client-side transforms
  */
 export function classifyEnvKeys(
 	content: string,
-	prefixes: string[],
+	prefixes: string[] = [],
 ): {
 	clientKeys: string[];
 	sharedKeys: string[];
 	serverKeys: string[];
 } {
-	const primary = prefixes[0] ?? "BUN_PUBLIC_";
+	const primary = prefixes[0] ?? "";
 	const { clientKeys, sharedKeys, serverKeys } = extractKeys(content, primary);
 
 	if (prefixes.length <= 1) {
@@ -33,7 +33,7 @@ export function classifyEnvKeys(
 	}
 
 	return {
-		clientKeys: [...clientSet] as string[],
+		clientKeys: [...clientSet],
 		sharedKeys,
 		serverKeys: remainingServer,
 	};

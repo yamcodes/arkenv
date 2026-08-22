@@ -1,7 +1,7 @@
 /**
  * Known plugin option keys used to discriminate transform-mode calls from schemas.
  */
-const TRANSFORM_OPTION_KEYS = new Set([
+export const TRANSFORM_OPTION_KEYS = new Set([
 	"schemaPath",
 	"clientPrefix",
 	"logger",
@@ -15,13 +15,13 @@ const TRANSFORM_OPTION_KEYS = new Set([
 ]);
 
 /**
- * Options for the Vite plugin's env-module transform mode.
+ * Options for the env-module transform mode.
  *
  * @see docs/adr/0021-env-object-canonical-surface.md — transform design
  */
-export type ViteTransformOptions = {
+export type TransformOptions = {
 	/**
-	 * Path to the env module (`env.ts`), relative to the Vite project root.
+	 * Path to the env module (`env.ts`), relative to the project root.
 	 *
 	 * When omitted, ArkEnv auto-discovers `src/env.ts` or `env.ts`.
 	 */
@@ -29,7 +29,7 @@ export type ViteTransformOptions = {
 	/**
 	 * Prefix(es) that mark client-exposed environment variables.
 	 *
-	 * Defaults to Vite's `envPrefix` (typically `"VITE_"`).
+	 * Defaults to framework-specific prefix (e.g. `"VITE_"` or `"BUN_PUBLIC_"`).
 	 */
 	clientPrefix?: string | string[];
 };
@@ -51,7 +51,7 @@ export const SCHEMA_DEFINE_REMOVED =
 export function isTransformModeCall(
 	first: unknown,
 	second: unknown,
-): first is ViteTransformOptions | undefined {
+): first is TransformOptions | undefined {
 	if (second !== undefined) return false;
 	if (first === undefined) return true;
 	if (typeof first !== "object" || first === null) return false;
@@ -70,7 +70,7 @@ export function isTransformModeCall(
 export function assertTransformModeCall(
 	first: unknown,
 	second: unknown,
-): asserts first is ViteTransformOptions | undefined {
+): asserts first is TransformOptions | undefined {
 	if (!isTransformModeCall(first, second)) {
 		throw new Error(SCHEMA_DEFINE_REMOVED);
 	}
