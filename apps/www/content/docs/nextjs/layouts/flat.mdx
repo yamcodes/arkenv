@@ -43,7 +43,6 @@ By default, ArkEnv for Next.js uses an automatic code generation wrapper (`withA
 // @filename: /generated/env.gen.ts
 import { arkenv as coreArkenv } from "@arkenv/nextjs";
 import type { type as at, distill } from "arktype";
-export { type } from "@arkenv/nextjs";
 
 export default function arkenv<const T extends {}>(
 	schema: T,
@@ -76,7 +75,6 @@ If you have custom variables that do not follow the prefix convention but must b
 // @filename: /generated/env.gen.ts
 import { arkenv as coreArkenv } from "@arkenv/nextjs";
 import type { type as at, distill } from "arktype";
-export { type } from "@arkenv/nextjs";
 
 export default function arkenv<const T extends {}>(
 	schema: T,
@@ -120,7 +118,6 @@ export const env = arkenv({
     // @filename: /generated/env.gen.ts
     import { arkenv as coreArkenv } from "@arkenv/nextjs";
     import type { type as at, distill } from "arktype";
-    export { type } from "@arkenv/nextjs";
 
     export default function arkenv<const T extends {}>(
     	schema: T,
@@ -186,7 +183,6 @@ export const env = arkenv({
     // @filename: /generated/env.gen.ts
     import { arkenv as coreArkenv } from "@arkenv/nextjs";
     import type { type as at, distill } from "arktype";
-    export { type } from "@arkenv/nextjs";
     export default function arkenv<const T extends {}>(
     	schema: T,
     	options?: any
@@ -216,7 +212,6 @@ export const env = arkenv({
     // @filename: /generated/env.gen.ts
     import { arkenv as coreArkenv } from "@arkenv/nextjs";
     import type { type as at, distill } from "arktype";
-    export { type } from "@arkenv/nextjs";
     export default function arkenv<const T extends {}>(
     	schema: T,
     	options?: any

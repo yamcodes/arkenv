@@ -1,9 +1,19 @@
 import type { NuxtConfig, NuxtOptions } from "@nuxt/schema";
 import { describe, expectTypeOf, it } from "vitest";
 import type { ArkEnvConfigOptions } from "./config";
+// Regression guard: `Infer` must NOT be re-exported from @arkenv/nuxt.
+// The type binding is referenced so @ts-expect-error is only satisfied by a missing
+// export (not by noUnusedLocals / TS6133). If the directive ever becomes unused, the
+// re-export was accidentally re-introduced.
+// @ts-expect-error `Infer` is not exported from @arkenv/nuxt root — import from @arkenv/core
+import type { Infer as InferFromRoot } from "./index";
 import { arkenv } from "./index";
 import type { ModuleOptions } from "./module";
 import arkenvStandard from "./standard";
+
+type _InferFromRootGuard = InferFromRoot<Record<string, never>>;
+
+export type { _InferFromRootGuard };
 
 const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({
 	"~standard": {

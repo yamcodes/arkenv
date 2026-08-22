@@ -48,6 +48,6 @@ export function arkenv(
 	});
 }
 
-export type { EnvSchema, Infer } from "@arkenv/core";
+export type { EnvSchema } from "@arkenv/core";
 
 export default arkenv;
