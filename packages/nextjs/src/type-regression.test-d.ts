@@ -2,6 +2,15 @@ import { describe, expectTypeOf, it } from "vitest";
 import { arkenv } from "./index";
 import arkenvStandard from "./standard";
 
+// Regression guard: `type` and `Infer` must NOT be re-exported from @arkenv/nextjs
+// If these lines ever stop being errors, the re-export was accidentally re-introduced.
+// @ts-expect-error `type` is not exported from @arkenv/nextjs root — import from @arkenv/core
+import { type } from "./index";
+// @ts-expect-error `Infer` is not exported from @arkenv/nextjs root — import from @arkenv/core
+import type { Infer } from "./index";
+// @ts-expect-error `type` is not exported from @arkenv/nextjs/client — import from @arkenv/core
+import { type as typeFromClient } from "./client";
+
 const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({
 	"~standard": {
 		version: 1 as const,
