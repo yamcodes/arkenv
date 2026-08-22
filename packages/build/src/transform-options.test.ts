@@ -2,11 +2,9 @@ import { describe, expect, it } from "vitest";
 import { isTransformModeCall } from "./transform-options";
 
 describe("isTransformModeCall", () => {
-	it("detects no-args call as transform mode", () => {
+	it("detects transform-mode calls", () => {
 		expect(isTransformModeCall(undefined, undefined)).toBe(true);
-	});
-
-	it("detects option bags as transform mode", () => {
+		expect(isTransformModeCall({}, undefined)).toBe(true);
 		expect(isTransformModeCall({ schemaPath: "src/env.ts" }, undefined)).toBe(
 			true,
 		);
@@ -22,7 +20,6 @@ describe("isTransformModeCall", () => {
 	});
 
 	it("returns false for schema definitions or two-argument calls", () => {
-		expect(isTransformModeCall({}, undefined)).toBe(false);
 		expect(isTransformModeCall({ VITE_API_URL: "string" }, undefined)).toBe(
 			false,
 		);

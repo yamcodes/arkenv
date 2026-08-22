@@ -9,7 +9,6 @@ import {
 	SERVER_ONLY_KEYS,
 } from "./schema-shape";
 
-
 const CAPTURE_STATE_KEY = "__ARKENV_SCHEMA_CAPTURE__";
 
 type CaptureState = {
