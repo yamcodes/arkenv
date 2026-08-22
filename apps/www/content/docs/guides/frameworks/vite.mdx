@@ -52,25 +52,26 @@ export default defineConfig({
 
 Import `{ env } from "./env"` in app code. Server code runs the real module (boot-time validation). The client bundle gets a rewritten module with public keys inlined and server keys guarded.
 
-### Reuse the schema in `vite.config.ts`
+### Values inside `vite.config.ts`
 
-When the config file needs typed values (for example `server.port`), share a compiled `type()`:
+Vite does not load `.env*` files while evaluating `vite.config.ts`. When the config needs typed values (for example `server.port`), validate them with core `arkenv()` and `loadEnv`. Register the plugin with no schema argument — it still rewrites `env.ts` in the client graph.
 
 ```ts title="./vite.config.ts" twoslash
 import { defineConfig, loadEnv } from "vite";
 import arkenvPlugin from "@arkenv/vite-plugin";
-import arkenv, { type } from "@arkenv/core";
-
-export const Env = type({
-  PORT: "number.port = 5173",
-  VITE_API_URL: "string",
-  DATABASE_URL: "string",
-});
+import arkenv from "@arkenv/core";
 
 export default defineConfig(({ mode }) => {
-  const env = arkenv(Env, { env: loadEnv(mode, process.cwd(), "") });
+  const env = arkenv(
+    {
+      PORT: "number.port = 5173",
+      VITE_API_URL: "string",
+      DATABASE_URL: "string",
+    },
+    { env: loadEnv(mode, process.cwd(), "") },
+  );
   return {
-    plugins: [arkenvPlugin(Env)],
+    plugins: [arkenvPlugin()],
     server: { port: env.PORT },
   };
 });
@@ -78,9 +79,9 @@ export default defineConfig(({ mode }) => {
 
 See [Reusing schemas](/docs/validating-your-environment/reusing-schemas).
 
-## SPA accessor mode
+## Client access
 
-Client-only apps can still augment `import.meta.env` with `ImportMetaEnvAugmented` and rely on static access. Prefer the `env` object for fullstack apps so server secrets validate at boot. Types: [`@arkenv/vite-plugin`](/docs/reference/vite-plugin).
+Import the validated `env` object from your schema module. Prefer that over reading `import.meta.env` for schema keys so server secrets still validate at boot. Types and options: [`@arkenv/vite-plugin`](/docs/reference/vite-plugin).
 
 ## Next steps
 

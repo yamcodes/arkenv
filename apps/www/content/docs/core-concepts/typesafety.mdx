@@ -60,7 +60,7 @@ Hovering `env` in the editor shows the coerced output types when coercion is ena
 
 - **Next.js:** generated `env.gen.ts` factory plus full schema inference; a Proxy enforces server/client access at runtime
 - **Nuxt:** same object model with module wiring
-- **Vite / Bun:** transform mode rewrites the client copy of `env.ts` so public keys stay typed and coerced; optional ambient helpers (`ImportMetaEnvAugmented`, `ProcessEnvAugmented`) support SPA-only accessor mode
+- **Vite / Bun:** transform mode rewrites the client copy of `env.ts` so public keys stay typed and coerced; import `{ env }` from that module instead of reading native accessors for schema keys
 
 Flat layouts may expose server **key names** to client TypeScript while blocking values. Strict layouts keep server modules out of the client graph. See [Client vs. server](/docs/validating-your-environment/client-vs-server).
 

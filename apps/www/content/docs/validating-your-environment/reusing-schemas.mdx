@@ -43,7 +43,8 @@ Export the schema once, then call `arkenv()` (or the framework/plugin entry) whe
     });
 
     export default defineConfig({
-    	plugins: [arkenvPlugin(Env)],
+    	// Plugin is transform-only — no schema argument
+    	plugins: [arkenvPlugin()],
     	server: { port: rootEnv.PORT },
     });
     ```
@@ -81,7 +82,8 @@ Export the schema once, then call `arkenv()` (or the framework/plugin entry) whe
     });
 
     export default defineConfig({
-    	plugins: [arkenvPlugin(schema)],
+    	// Plugin is transform-only — no schema argument
+    	plugins: [arkenvPlugin()],
     	server: { port: rootEnv.PORT },
     });
     ```
