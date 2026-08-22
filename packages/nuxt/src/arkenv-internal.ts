@@ -3,20 +3,17 @@ import { getSchemaKeys } from "@repo/utils";
 import { getBootGateResult } from "./boot-gate-state";
 import { createCaptureStub, isCapturing, recordCapture } from "./capture";
 import {
+	ENV_KEYS,
+	EXTENDED_ENV,
 	type FlatSchemaOptions,
 	type LegacyNestedSchema,
 	parseSchemaShape,
 	type SchemaLayoutContext,
+	SERVER_ONLY_KEYS,
 } from "./schema-shape";
 import { isForceServer } from "./validate-context";
 
-/** Symbol key for the raw extended env values object on an env proxy. */
-export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
-/** Symbol key for the set of declared schema keys on an env proxy. */
-export const ENV_KEYS = Symbol.for("arkenv.keys");
-/** Symbol key for server-only keys that must not be readable on the client. */
-export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
-
+export { ENV_KEYS, EXTENDED_ENV, SERVER_ONLY_KEYS };
 export type { FlatSchemaOptions, LegacyNestedSchema, SchemaLayoutContext };
 
 /**
@@ -67,7 +64,13 @@ export function arkenvInternal(
 					optionsOrIsServer),
 		);
 
-	const { server, client, shared, extendsList, runtimeEnv } = parsed;
+	const {
+		server,
+		client,
+		shared,
+		extendsList,
+		runtimeEnv,
+	} = parsed;
 
 	if (isServer) {
 		hooks?.ensureBootGate?.();

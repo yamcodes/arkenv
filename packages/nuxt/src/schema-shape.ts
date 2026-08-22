@@ -1,5 +1,12 @@
 import type { Dict, SchemaShape } from "@repo/types";
 
+/** Symbol key for the raw extended env values object on an env proxy. */
+export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
+/** Symbol key for the set of declared schema keys on an env proxy. */
+export const ENV_KEYS = Symbol.for("arkenv.keys");
+/** Symbol key for server-only keys that must not be readable on the client. */
+export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
+
 /**
  * Legacy nested schema shape (`server` / `client` / `shared` buckets).
  */
@@ -130,7 +137,11 @@ export function parseSchemaShape(
 	}
 
 	const declaredKeys = isLegacy
-		? [...Object.keys(server), ...Object.keys(client), ...Object.keys(shared)]
+		? [
+				...Object.keys(server),
+				...Object.keys(client),
+				...Object.keys(shared),
+			]
 		: Object.keys((schemaOrOptions || {}) as SchemaShape);
 
 	const publicKeys = isLegacy

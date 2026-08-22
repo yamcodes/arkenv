@@ -1,17 +1,13 @@
 import type { Dict, SchemaShape } from "@repo/types";
 import {
+	ENV_KEYS,
+	EXTENDED_ENV,
 	type FlatSchemaOptions,
 	type LegacyNestedSchema,
 	parseSchemaShape,
 	type SchemaLayoutContext,
+	SERVER_ONLY_KEYS,
 } from "./schema-shape";
-
-/** Matches {@link EXTENDED_ENV} in arkenv-internal without importing it (avoid cycles). */
-const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
-/** Matches {@link ENV_KEYS} in arkenv-internal without importing it (avoid cycles). */
-const ENV_KEYS = Symbol.for("arkenv.keys");
-/** Matches {@link SERVER_ONLY_KEYS} in arkenv-internal without importing it (avoid cycles). */
-const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
 
 const CAPTURE_STATE_KEY = "__ARKENV_SCHEMA_CAPTURE__";
 
