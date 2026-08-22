@@ -5,8 +5,6 @@
 import { arkenv as coreArkenv } from "@arkenv/nextjs/client";
 import type { Infer } from "@arkenv/core";
 
-export { type } from "@arkenv/nextjs/client";
-
 type ResolveExtend<T> = [Infer<T>] extends [never] ? T : Infer<T>;
 
 type UnionToIntersection<U> = (

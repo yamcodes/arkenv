@@ -69,6 +69,4 @@ export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 	);
 }
 
-export { type } from "@arkenv/core";
-
 export default arkenv;
