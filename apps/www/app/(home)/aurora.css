@@ -456,18 +456,22 @@
 	letter-spacing: inherit;
 }
 
+.home-aurora__lead-with {
+	white-space: nowrap;
+}
+
 .home-aurora__cycle {
 	display: inline;
 	position: relative;
+	white-space: nowrap;
 	overflow-wrap: normal;
 }
 
 .home-aurora__cycle-viewport {
-	display: inline-block;
+	display: inline;
 	position: relative;
 	white-space: nowrap;
 	line-height: inherit;
-	vertical-align: baseline;
 	overflow: visible;
 	clip-path: inset(0 -0.18em 0 0);
 }
