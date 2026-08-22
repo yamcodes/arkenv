@@ -1,7 +1,13 @@
-import type { Dict, SchemaShape } from "@repo/types";
+import type { SchemaShape } from "@repo/types";
 import { getSchemaKeys } from "@repo/utils";
 import { getBootGateResult } from "./boot-gate-state";
 import { createCaptureStub, isCapturing, recordCapture } from "./capture";
+import {
+	type FlatSchemaOptions,
+	type LegacyNestedSchema,
+	parseSchemaShape,
+	type SchemaLayoutContext,
+} from "./schema-shape";
 import { isForceServer } from "./validate-context";
 
 /** Symbol key for the raw extended env values object on an env proxy. */
@@ -11,29 +17,7 @@ export const ENV_KEYS = Symbol.for("arkenv.keys");
 /** Symbol key for server-only keys that must not be readable on the client. */
 export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
 
-/**
- * Legacy nested schema shape (`server` / `client` / `shared` buckets).
- */
-export type LegacyNestedSchema = {
-	server?: SchemaShape;
-	client?: SchemaShape;
-	shared?: SchemaShape;
-	extends?: readonly unknown[];
-	runtimeEnv?: Dict<string>;
-};
-
-/**
- * Options for the flat (unified) schema form of {@link arkenvInternal}.
- */
-export type FlatSchemaOptions = {
-	extends?: readonly unknown[];
-	runtimeEnv?: Dict<string>;
-	/** @deprecated Use `exposeToClient` instead. */
-	expose?: readonly string[];
-	/** @deprecated Use `exposeToClient` instead. */
-	shared?: readonly string[];
-	exposeToClient?: readonly string[];
-};
+export type { FlatSchemaOptions, LegacyNestedSchema, SchemaLayoutContext };
 
 /**
  * Optional server hooks for the thin Nuxt accessor path.
@@ -64,70 +48,26 @@ export type ArkenvInternalHooks = {
 export function arkenvInternal(
 	schemaOrOptions: SchemaShape | LegacyNestedSchema | null | undefined,
 	optionsOrIsServer: FlatSchemaOptions | boolean | null | undefined,
-	context:
-		| {
-				isServer: boolean;
-				isShared?: boolean;
-				strictLayout?: "client" | "server";
-		  }
-		| undefined,
+	context: SchemaLayoutContext | undefined,
 	hooks?: ArkenvInternalHooks,
 ): unknown {
+	const parsed = parseSchemaShape(schemaOrOptions, optionsOrIsServer, context);
+
 	if (isCapturing()) {
 		recordCapture(schemaOrOptions, optionsOrIsServer, context);
-		const keys = collectDeclaredKeys(
-			schemaOrOptions,
-			optionsOrIsServer,
-			context,
+		return createCaptureStub(parsed.declaredKeys);
+	}
+
+	const isServer =
+		isForceServer() ||
+		Boolean(
+			context?.isServer ||
+				(parsed.isLegacy &&
+					typeof optionsOrIsServer === "boolean" &&
+					optionsOrIsServer),
 		);
-		return createCaptureStub(keys);
-	}
 
-	let server: SchemaShape = {};
-	let client: Record<string, unknown> = {};
-	let shared: SchemaShape = {};
-	let extendsList: readonly unknown[] = [];
-	let runtimeEnv: Dict<string> = {};
-	let isServer = false;
-
-	if (typeof optionsOrIsServer === "boolean") {
-		const legacySchema = schemaOrOptions as
-			| LegacyNestedSchema
-			| null
-			| undefined;
-		server = (legacySchema?.server || {}) as SchemaShape;
-		client = (legacySchema?.client || {}) as Record<string, unknown>;
-		shared = (legacySchema?.shared || {}) as SchemaShape;
-		extendsList = legacySchema?.extends || [];
-		runtimeEnv = (legacySchema?.runtimeEnv || {}) as Dict<string>;
-		isServer = optionsOrIsServer;
-	} else {
-		const flatSchema = (schemaOrOptions || {}) as SchemaShape;
-		const options = optionsOrIsServer || {};
-		extendsList = options.extends || [];
-		runtimeEnv = (options.runtimeEnv || {}) as Dict<string>;
-		isServer = isForceServer() || !!context?.isServer;
-
-		if (context?.isShared) {
-			shared = flatSchema;
-		} else if (context?.strictLayout === "client") {
-			client = flatSchema;
-		} else if (context?.strictLayout === "server") {
-			server = flatSchema;
-		} else {
-			const exposedKeys =
-				options.exposeToClient || options.expose || options.shared || [];
-			for (const key of Object.keys(flatSchema)) {
-				if (exposedKeys.includes(key) || key === "NODE_ENV") {
-					shared[key] = flatSchema[key];
-				} else if (key.startsWith("NUXT_PUBLIC_")) {
-					client[key] = flatSchema[key];
-				} else {
-					server[key] = flatSchema[key];
-				}
-			}
-		}
-	}
+	const { server, client, shared, extendsList, runtimeEnv } = parsed;
 
 	if (isServer) {
 		hooks?.ensureBootGate?.();
@@ -268,54 +208,6 @@ function readThinSourceEnv(isServer: boolean): Record<string, unknown> {
 	}
 
 	return (typeof process !== "undefined" ? process.env : undefined) || {};
-}
-
-/**
- * Collect declared schema key names for capture stubs.
- *
- * @param schemaOrOptions Schema or nested options
- * @param optionsOrIsServer Flat options or legacy boolean
- * @param context Optional layout context
- * @returns Declared key names
- */
-function collectDeclaredKeys(
-	schemaOrOptions: SchemaShape | LegacyNestedSchema | null | undefined,
-	optionsOrIsServer: FlatSchemaOptions | boolean | null | undefined,
-	_context:
-		| {
-				isServer: boolean;
-				isShared?: boolean;
-				strictLayout?: "client" | "server";
-		  }
-		| undefined,
-): string[] {
-	if (typeof optionsOrIsServer === "boolean") {
-		const legacy = schemaOrOptions as LegacyNestedSchema;
-		return [
-			...Object.keys(legacy?.server || {}),
-			...Object.keys(legacy?.client || {}),
-			...Object.keys(legacy?.shared || {}),
-		];
-	}
-
-	const isLegacy =
-		schemaOrOptions &&
-		typeof schemaOrOptions === "object" &&
-		("runtimeEnv" in schemaOrOptions ||
-			"server" in schemaOrOptions ||
-			"client" in schemaOrOptions ||
-			"shared" in schemaOrOptions);
-
-	if (isLegacy) {
-		const legacy = schemaOrOptions as LegacyNestedSchema;
-		return [
-			...Object.keys(legacy.server || {}),
-			...Object.keys(legacy.client || {}),
-			...Object.keys(legacy.shared || {}),
-		];
-	}
-
-	return Object.keys((schemaOrOptions || {}) as SchemaShape);
 }
 
 /**

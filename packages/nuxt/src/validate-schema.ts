@@ -1,6 +1,5 @@
 import type { Dict } from "@repo/types";
-import type { BootGateEngine } from "./boot-gate";
-import { loadSchemaViaCapture } from "./boot-gate";
+import { type BootGateEngine, loadSchemaViaCapture } from "./boot-gate-load";
 import { resolveCoreArkenv } from "./resolve-core-arkenv";
 
 /**

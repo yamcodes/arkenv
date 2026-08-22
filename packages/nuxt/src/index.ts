@@ -2,7 +2,8 @@ import type { EnvSchema, Infer } from "@arkenv/core";
 import type { SchemaShape } from "@repo/types";
 // Virtual: empty on client, real ensureBootGate on server (see module aliases).
 import { ensureBootGate } from "#arkenv/server-boot";
-import { arkenvInternal, type FlatSchemaOptions } from "./arkenv-internal";
+import type { FlatSchemaOptions } from "./schema-shape";
+import { dispatchFlatThinArkenv } from "./thin-accessor";
 
 /**
  * Create a typesafe environment configuration for Nuxt (flat / unified entry).
@@ -42,28 +43,9 @@ export function arkenv(
 	schemaOrOptions: SchemaShape | Record<string, unknown>,
 	optionsOrIsServer?: FlatSchemaOptions | boolean,
 ): unknown {
-	const isLegacy =
-		schemaOrOptions &&
-		typeof schemaOrOptions === "object" &&
-		("runtimeEnv" in schemaOrOptions ||
-			"server" in schemaOrOptions ||
-			"client" in schemaOrOptions ||
-			"shared" in schemaOrOptions);
-
-	const isServer = typeof window === "undefined";
-
-	const hooks = isServer ? { ensureBootGate } : undefined;
-
-	if (isLegacy) {
-		return arkenvInternal(schemaOrOptions, isServer, undefined, hooks);
-	}
-
-	return arkenvInternal(
-		schemaOrOptions,
-		optionsOrIsServer as FlatSchemaOptions | undefined,
-		{ isServer },
-		hooks,
-	);
+	return dispatchFlatThinArkenv(schemaOrOptions, optionsOrIsServer, {
+		ensureBootGate,
+	});
 }
 
 export type { EnvSchema, Infer } from "@arkenv/core";

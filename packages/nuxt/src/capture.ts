@@ -1,4 +1,10 @@
 import type { Dict, SchemaShape } from "@repo/types";
+import {
+	type FlatSchemaOptions,
+	type LegacyNestedSchema,
+	parseSchemaShape,
+	type SchemaLayoutContext,
+} from "./schema-shape";
 
 /** Matches {@link EXTENDED_ENV} in arkenv-internal without importing it (avoid cycles). */
 const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
@@ -14,32 +20,14 @@ type CaptureState = {
 	captures: CapturedSchemaCall[];
 };
 
-export type CaptureLegacyNested = {
-	server?: SchemaShape;
-	client?: SchemaShape;
-	shared?: SchemaShape;
-	extends?: readonly unknown[];
-	runtimeEnv?: Dict<string>;
-};
+export type CaptureLegacyNested = LegacyNestedSchema;
 
-export type CaptureFlatOptions = {
-	extends?: readonly unknown[];
-	runtimeEnv?: Dict<string>;
-	expose?: readonly string[];
-	shared?: readonly string[];
-	exposeToClient?: readonly string[];
-};
+export type CaptureFlatOptions = FlatSchemaOptions;
 
 export type CapturedSchemaCall = {
-	schemaOrOptions: SchemaShape | CaptureLegacyNested;
-	optionsOrIsServer: CaptureFlatOptions | boolean | null | undefined;
-	context:
-		| {
-				isServer: boolean;
-				isShared?: boolean;
-				strictLayout?: "client" | "server";
-		  }
-		| undefined;
+	schemaOrOptions: SchemaShape | LegacyNestedSchema;
+	optionsOrIsServer: FlatSchemaOptions | boolean | null | undefined;
+	context: SchemaLayoutContext | undefined;
 };
 
 /**
@@ -92,20 +80,14 @@ export function isCapturing(): boolean {
  * @param context Optional server/client/strict-layout context
  */
 export function recordCapture(
-	schemaOrOptions: SchemaShape | CaptureLegacyNested | null | undefined,
-	optionsOrIsServer: CaptureFlatOptions | boolean | null | undefined,
-	context:
-		| {
-				isServer: boolean;
-				isShared?: boolean;
-				strictLayout?: "client" | "server";
-		  }
-		| undefined,
+	schemaOrOptions: SchemaShape | LegacyNestedSchema | null | undefined,
+	optionsOrIsServer: FlatSchemaOptions | boolean | null | undefined,
+	context: SchemaLayoutContext | undefined,
 ): void {
 	getCaptureState().captures.push({
 		schemaOrOptions: (schemaOrOptions || {}) as
 			| SchemaShape
-			| CaptureLegacyNested,
+			| LegacyNestedSchema,
 		optionsOrIsServer,
 		context,
 	});
@@ -123,48 +105,15 @@ export function combineCapturedSchemas(
 	const combined: SchemaShape = {};
 
 	for (const call of calls) {
-		Object.assign(combined, schemaFromCapture(call));
+		const parsed = parseSchemaShape(
+			call.schemaOrOptions,
+			call.optionsOrIsServer,
+			call.context,
+		);
+		Object.assign(combined, parsed.server, parsed.client, parsed.shared);
 	}
 
 	return combined;
-}
-
-/**
- * Derive a flat schema shape from a single captured call.
- *
- * @param call The captured `arkenv()` invocation
- * @returns Schema keys contributed by that call
- */
-function schemaFromCapture(call: CapturedSchemaCall): SchemaShape {
-	const { schemaOrOptions, optionsOrIsServer } = call;
-
-	if (typeof optionsOrIsServer === "boolean") {
-		const legacy = schemaOrOptions as CaptureLegacyNested;
-		return {
-			...(legacy.server || {}),
-			...(legacy.client || {}),
-			...(legacy.shared || {}),
-		} as SchemaShape;
-	}
-
-	const isLegacy =
-		schemaOrOptions &&
-		typeof schemaOrOptions === "object" &&
-		("runtimeEnv" in schemaOrOptions ||
-			"server" in schemaOrOptions ||
-			"client" in schemaOrOptions ||
-			"shared" in schemaOrOptions);
-
-	if (isLegacy) {
-		const legacy = schemaOrOptions as CaptureLegacyNested;
-		return {
-			...(legacy.server || {}),
-			...(legacy.client || {}),
-			...(legacy.shared || {}),
-		} as SchemaShape;
-	}
-
-	return (schemaOrOptions || {}) as SchemaShape;
 }
 
 /**
@@ -179,51 +128,13 @@ export function publicKeysFromCaptures(
 	const publicKeys = new Set<string>();
 
 	for (const call of calls) {
-		const { schemaOrOptions, optionsOrIsServer, context } = call;
-
-		if (typeof optionsOrIsServer === "boolean") {
-			const legacy = schemaOrOptions as CaptureLegacyNested;
-			for (const key of Object.keys(legacy.client || {})) publicKeys.add(key);
-			for (const key of Object.keys(legacy.shared || {})) publicKeys.add(key);
-			continue;
-		}
-
-		const isLegacy =
-			schemaOrOptions &&
-			typeof schemaOrOptions === "object" &&
-			("server" in schemaOrOptions ||
-				"client" in schemaOrOptions ||
-				"shared" in schemaOrOptions);
-
-		if (isLegacy) {
-			const legacy = schemaOrOptions as CaptureLegacyNested;
-			for (const key of Object.keys(legacy.client || {})) publicKeys.add(key);
-			for (const key of Object.keys(legacy.shared || {})) publicKeys.add(key);
-			continue;
-		}
-
-		const flat = (schemaOrOptions || {}) as SchemaShape;
-		const options = (optionsOrIsServer || {}) as CaptureFlatOptions;
-
-		if (context?.isShared || context?.strictLayout === "client") {
-			for (const key of Object.keys(flat)) publicKeys.add(key);
-			continue;
-		}
-
-		if (context?.strictLayout === "server") {
-			continue;
-		}
-
-		const exposed =
-			options.exposeToClient || options.expose || options.shared || [];
-		for (const key of Object.keys(flat)) {
-			if (
-				exposed.includes(key) ||
-				key === "NODE_ENV" ||
-				key.startsWith("NUXT_PUBLIC_")
-			) {
-				publicKeys.add(key);
-			}
+		const parsed = parseSchemaShape(
+			call.schemaOrOptions,
+			call.optionsOrIsServer,
+			call.context,
+		);
+		for (const key of parsed.publicKeys) {
+			publicKeys.add(key);
 		}
 	}
 
