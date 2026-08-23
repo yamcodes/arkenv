@@ -116,13 +116,13 @@ export const env = arkenv({
 
 ## Nitro boot gate and runtimeConfig hydration
 
-Containerized deployments (such as Docker or Kubernetes) often follow the "build once, deploy anywhere" pattern. Environment variables are injected when containers start in staging or production rather than during build.
+Containers in staging and production inject environment variables at startup rather than at build time.
 
-While Vite and Bun rely on static compile-time AST transforms that inline literals during build, `@arkenv/nuxt` hooks into Nuxt's Nitro engine:
+Vite and Bun inline literals at build time through compile-time transforms. `@arkenv/nuxt` hooks into Nuxt's Nitro engine instead:
 
-1. **Server boot gate:** At server startup, an internal Nitro plugin runs before any route handler executes. It validates the environment against your schema and throws fail-fast errors on invalid secrets.
-2. **Runtime configuration hydration:** Validated public variables (`NUXT_PUBLIC_*`) are injected dynamically into Nuxt's `useRuntimeConfig().public`.
-3. **Client access:** When pages render and hydrate in the browser, client components access public values via runtime configuration rather than hardcoded build-time literals.
+1. **Server boot gate:** At server startup, an internal Nitro plugin runs before route handlers execute. It validates the environment against your schema and throws fail-fast errors on invalid secrets.
+2. **Runtime configuration hydration:** An internal Nitro plugin passes validated public variables (`NUXT_PUBLIC_*`) into `useRuntimeConfig().public`.
+3. **Client access:** Client components read public values from runtime configuration during browser rendering and hydration, avoiding hardcoded build-time literals.
 
 You can update environment variables across deployment stages without rebuilding client JavaScript bundles.
 

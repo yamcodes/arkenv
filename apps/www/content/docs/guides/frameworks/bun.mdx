@@ -116,8 +116,8 @@ the typed `env` object so validation runs reliably at process boot. See
 
 Full-stack Bun applications separate server runtime execution from client bundle generation:
 
-- **Server execution:** Server entrypoints and backend APIs execute real `@arkenv/core` validation at startup, ensuring database URLs and backend secrets are validated before serving traffic.
-- **Client bundling:** When `Bun.build` bundles browser entrypoints or `[serve.static]` serves assets, `@arkenv/bun-plugin` transforms `env.ts` imports in client code. It inlines `BUN_PUBLIC_*` values as static literals and replaces server keys with throwing runtime stubs, omitting the validator engine from browser bundles.
+- **Server execution:** Server entrypoints and backend APIs execute real `@arkenv/core` validation at startup, validating database URLs and backend secrets before serving traffic.
+- **Client bundling:** During `Bun.build` runs or `[serve.static]` requests, `@arkenv/bun-plugin` transforms `env.ts` imports in client code. It inlines `BUN_PUBLIC_*` values as static literals and replaces server keys with throwing runtime stubs. Browser bundles omit the validator engine.
 
 ## Next steps
 
