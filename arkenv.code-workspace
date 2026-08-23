@@ -104,8 +104,8 @@
 			"name": "🛝 vite-legacy"
 		},
 		{
-			"path": "apps/playgrounds/standard-schema",
-			"name": "🛝 standard-schema"
+			"path": "apps/playgrounds/mix-and-match",
+			"name": "🛝 mix-and-match"
 		},
 		{
 			"path": "apps/playgrounds/esbuild-cjs",
@@ -168,8 +168,8 @@
 			"name": "💡 with-valibot"
 		},
 		{
-			"path": "examples/with-standard-schema",
-			"name": "💡 with-standard-schema"
+			"path": "examples/mix-and-match",
+			"name": "💡 mix-and-match"
 		},
 		{
 			"path": "examples/stackblitz",

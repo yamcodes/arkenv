@@ -80,6 +80,13 @@ export class RegistryClient {
 						description: "ArkEnv with Valibot in Node.js",
 						framework: "vanilla",
 					},
+					{
+						id: "mix-and-match",
+						name: "Mix and Match",
+						description:
+							"ArkEnv with mixed ArkType, Zod, and Valibot in Node.js",
+						framework: "vanilla",
+					},
 				],
 			};
 		}

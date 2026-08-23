@@ -361,6 +361,28 @@ importers:
         specifier: 'catalog:'
         version: 2.2.0
 
+  apps/playgrounds/mix-and-match:
+    dependencies:
+      '@arkenv/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+      valibot:
+        specifier: 'catalog:'
+        version: 1.3.1(typescript@6.0.3)
+      zod:
+        specifier: 4.4.1
+        version: 4.4.1
+    devDependencies:
+      rimraf:
+        specifier: 'catalog:'
+        version: 6.1.3
+      tsx:
+        specifier: 'catalog:'
+        version: 4.21.0
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+
   apps/playgrounds/nextjs:
     dependencies:
       '@arkenv/core':
@@ -518,25 +540,6 @@ importers:
       vinxi:
         specifier: 0.5.11
         version: 0.5.11(@types/node@25.6.0)(@vercel/blob@2.3.3)(db0@0.3.4)(ioredis@5.10.1)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.9.0)
-
-  apps/playgrounds/standard-schema:
-    dependencies:
-      '@arkenv/standard':
-        specifier: workspace:*
-        version: link:../../../packages/standard
-      zod:
-        specifier: 4.4.1
-        version: 4.4.1
-    devDependencies:
-      rimraf:
-        specifier: 'catalog:'
-        version: 6.1.3
-      tsx:
-        specifier: 'catalog:'
-        version: 4.21.0
-      typescript:
-        specifier: 'catalog:'
-        version: 6.0.3
 
   apps/playgrounds/vite:
     dependencies:

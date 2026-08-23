@@ -66,10 +66,12 @@ export const exampleEnvDefaults: Record<string, Record<string, string>> = {
 		PORT: "3000",
 		NODE_ENV: "development",
 	},
-	"with-standard-schema": {
-		HOST: "localhost",
-		PORT: "3000",
+	"mix-and-match": {
+		DATABASE_URL: "https://postgres.example.com/db",
+		API_KEY: "12345678901234567890123456789012",
 		NODE_ENV: "development",
+		PORT: "3000",
+		DEBUG: "false",
 	},
 };
 
