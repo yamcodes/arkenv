@@ -39,14 +39,14 @@ export function isServerSchemaImport(
 	rootDir?: string,
 	srcDir?: string,
 ): boolean {
-	if (!id) return false;
+	if (!id || !id.includes("server")) return false;
 
 	const isKnownServerModule =
 		id === "@arkenv/nuxt/server" ||
 		id === "@arkenv/nuxt/standard/server" ||
 		id === "@arkenv/nextjs/server" ||
 		id === "@arkenv/nextjs/standard/server" ||
-		/[/\\]@arkenv[/\\](?:nuxt|nextjs)[/\\](?:src|dist)[/\\](?:standard[/\\])?server(?:\.(?:js|mjs|cjs|ts))?$/.test(
+		/[/\\]@arkenv[/\\](?:nuxt|nextjs)[/\\](?:src|dist)[/\\](?:standard[/\\])?server(?:\.[mc]?[jt]sx?)?$/.test(
 			id,
 		);
 
@@ -69,6 +69,38 @@ export function isServerSchemaImport(
 		cleanId = cleanId.slice(0, queryIndex);
 	}
 
+	const isTargetUnderBase = (target: string): boolean => {
+		if (!path.isAbsolute(target)) return false;
+
+		let realTarget = target;
+		let realBase = normalizedBaseDir;
+		try {
+			if (fs.existsSync(target)) realTarget = fs.realpathSync(target);
+			if (fs.existsSync(normalizedBaseDir))
+				realBase = fs.realpathSync(normalizedBaseDir);
+		} catch {
+			// ignore
+		}
+
+		for (const [base, candidate] of [
+			[normalizedBaseDir, target],
+			[realBase, realTarget],
+		]) {
+			const relativePath = path.relative(base, candidate);
+			const isUnderBaseDir =
+				!relativePath.startsWith("..") && !path.isAbsolute(relativePath);
+			const isServerFile = /(^|[/\\])server(?:\.[mc]?[jt]sx?|[/\\]|$)/.test(
+				relativePath,
+			);
+
+			if (isUnderBaseDir && isServerFile) {
+				return true;
+			}
+		}
+
+		return false;
+	};
+
 	let targetId = cleanId;
 	if ((cleanId.startsWith(".") || !path.isAbsolute(cleanId)) && importer) {
 		targetId = path.resolve(path.dirname(importer), cleanId);
@@ -77,69 +109,32 @@ export function isServerSchemaImport(
 			targetId = path.resolve(rootDir, cleanId.slice(3));
 		} else if (cleanId.startsWith("~/") || cleanId.startsWith("@/")) {
 			const subPath = cleanId.slice(2);
-			targetId = srcDir
-				? path.resolve(srcDir, subPath)
-				: path.resolve(rootDir, subPath);
+			if (isTargetUnderBase(path.resolve(rootDir, subPath))) return true;
+			if (isTargetUnderBase(path.resolve(rootDir, "src", subPath))) return true;
+			if (srcDir && isTargetUnderBase(path.resolve(srcDir, subPath)))
+				return true;
 		} else if (cleanId.startsWith("/")) {
 			targetId = path.resolve(rootDir, cleanId.slice(1));
 		}
 	}
 
-	if (path.isAbsolute(targetId)) {
-		let realTarget = targetId;
-		let realBase = normalizedBaseDir;
-		try {
-			if (fs.existsSync(targetId)) realTarget = fs.realpathSync(targetId);
-			if (fs.existsSync(normalizedBaseDir))
-				realBase = fs.realpathSync(normalizedBaseDir);
-		} catch {
-			// ignore
-		}
-
-		for (const [base, target] of [
-			[normalizedBaseDir, targetId],
-			[realBase, realTarget],
-		]) {
-			const relativePath = path.relative(base, target);
-			const isUnderBaseDir =
-				!relativePath.startsWith("..") && !path.isAbsolute(relativePath);
-			const isServerFile = /(^|[/\\])server(?:[/\\]|\.[^./\\]*|$)/.test(
-				relativePath,
-			);
-
-			if (isUnderBaseDir && isServerFile) {
-				return true;
-			}
-		}
-	}
-
-	const baseName = path.basename(normalizedBaseDir);
-	const normalizedTarget = path.normalize(cleanId);
-	if (
-		normalizedTarget === `${baseName}/server` ||
-		normalizedTarget.startsWith(`${baseName}/server.`) ||
-		normalizedTarget.endsWith(`/${baseName}/server`) ||
-		normalizedTarget.endsWith(`/${baseName}/server.ts`) ||
-		normalizedTarget.endsWith(`/${baseName}/server.js`) ||
-		normalizedTarget.endsWith(`/${baseName}/server.mjs`) ||
-		normalizedTarget.endsWith(`/${baseName}/server.cjs`)
-	) {
+	if (isTargetUnderBase(targetId)) {
 		return true;
 	}
 
-	// Also check if resolving under rootDir or srcDir targets baseDir server
+	// Also check bare specifiers resolved against candidate roots (e.g. rootDir, srcDir, parent of baseDir)
+	const candidateRoots: string[] = [];
 	if (rootDir) {
-		const candidates = [
-			path.resolve(rootDir, normalizedTarget),
-			path.resolve(rootDir, "src", normalizedTarget),
-		];
-		for (const cand of candidates) {
-			const rel = path.relative(normalizedBaseDir, cand);
-			const isUnder = !rel.startsWith("..") && !path.isAbsolute(rel);
-			const isServer = /(^|[/\\])server(?:[/\\]|\.[^./\\]*|$)/.test(rel);
-			if (isUnder && isServer) {
-				return true;
-			}
+		candidateRoots.push(rootDir, path.resolve(rootDir, "src"));
+		if (srcDir) candidateRoots.push(srcDir);
+	}
+	candidateRoots.push(path.dirname(normalizedBaseDir));
+
+	const normalizedTarget = path.normalize(cleanId);
+	for (const candRoot of candidateRoots) {
+		const candPath = path.resolve(candRoot, normalizedTarget);
+		if (isTargetUnderBase(candPath)) {
+			return true;
 		}
 	}
 

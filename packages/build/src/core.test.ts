@@ -179,7 +179,14 @@ describe("@arkenv/build layout resolution", () => {
 				isServerSchemaImport("env/server", undefined, baseDir, "/app"),
 			).toBe(true);
 
-			// Allowed imports
+			expect(
+				isServerSchemaImport("/app/src/env/server.mts", undefined, baseDir),
+			).toBe(true);
+			expect(
+				isServerSchemaImport("/app/src/env/server.tsx", undefined, baseDir),
+			).toBe(true);
+
+			// Allowed imports (including sibling packages and unrelated packages ending with /env/server)
 			expect(
 				isServerSchemaImport(
 					"./env/client",
@@ -194,6 +201,19 @@ describe("@arkenv/build layout resolution", () => {
 			expect(
 				isServerSchemaImport("other-pkg/server", undefined, baseDir, "/app"),
 			).toBe(false);
+			expect(
+				isServerSchemaImport(
+					"/other/pkgs/tool/env/server.ts",
+					undefined,
+					baseDir,
+				),
+			).toBe(false);
+			expect(
+				isServerSchemaImport("some-pkg/env/server", undefined, baseDir, "/app"),
+			).toBe(false);
+			expect(isServerSchemaImport("lodash", undefined, baseDir, "/app")).toBe(
+				false,
+			);
 		});
 	});
 

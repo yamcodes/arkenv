@@ -154,7 +154,7 @@ export function createTransformPlugin(
 			});
 
 			if (typeof build.onResolve === "function") {
-				build.onResolve({ filter: /.*/ }, (args) => {
+				build.onResolve({ filter: /server/ }, (args) => {
 					if (state.resolvedLayout === "strict" && state.baseDir) {
 						if (
 							isServerSchemaImport(
