@@ -135,6 +135,27 @@ npx arkenv@latest init --strict
 
 Nuxt strict layout uses `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. Omitting `extends` can auto-merge shared and client schemas via Nuxt virtual aliases. Details live in the [Next.js](/docs/guides/frameworks/nextjs) and [Nuxt](/docs/guides/frameworks/nuxt) guides.
 
+## Dead-code elimination and constant folding
+
+When bundlers (such as Next.js with Turbopack or webpack, Vite with Rollup or esbuild, and Bun) compile client bundles, they perform lexical search-and-replace on direct identifier expressions like `process.env.NEXT_PUBLIC_FEATURE_FLAG` or `import.meta.env.VITE_FEATURE_FLAG`. When an expression becomes a static literal like `if (false)` or `if ("")`, the minifier's dead-code elimination (DCE) pass can completely drop unreachable branches and omit modules imported exclusively within those blocks.
+
+Accessing properties on an imported `env` object (`if (env.NEXT_PUBLIC_FEATURE_FLAG)`) behaves as normal JavaScript object property access at runtime:
+
+```ts title="./src/feature.ts"
+import { env } from "./env";
+
+// Evaluated as runtime object property access
+if (env.NEXT_PUBLIC_ADMIN_PREVIEW) {
+  mountAdminPreview();
+}
+```
+
+Because `env` is an exported object reference across module boundaries, bundlers and minifiers cannot always guarantee that object properties are constant or side-effect-free without inter-module whole-program analysis. As a result, code inside the `if` branch might not be aggressively eliminated from the client bundle when the flag is disabled.
+
+<Callout type="warn">
+  If you have large, sensitive client chunks or internal admin tooling that **must** be guaranteed absent from production bundles when a flag is disabled, use direct bundler identifiers (such as `process.env.NEXT_PUBLIC_FEATURE_FLAG` or `import.meta.env.VITE_FEATURE_FLAG`) in the branching condition, or load heavy modules dynamically with `import()`. Use `env` for typesafe runtime validation and secure secret guarding.
+</Callout>
+
 ## Next steps
 
 <Cards>

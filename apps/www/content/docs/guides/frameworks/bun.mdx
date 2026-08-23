@@ -112,6 +112,13 @@ so public keys stay typed and coerced. For full-stack applications, prefer expor
 the typed `env` object so validation runs reliably at process boot. See
 [`@arkenv/bun-plugin`](/docs/reference/bun-plugin).
 
+## SSR and bundling execution
+
+Full-stack Bun applications separate server runtime execution from client bundle generation:
+
+- **Server execution:** Server entrypoints and backend APIs run in Bun's runtime environment and execute real `@arkenv/core` validation at startup, ensuring database URLs and backend secrets are validated before serving traffic.
+- **Client bundling:** When `Bun.build` bundles browser entrypoints or `[serve.static]` serves assets, `@arkenv/bun-plugin` transforms `env.ts` imports in client code. It inlines `BUN_PUBLIC_*` values as static literals and replaces server keys with throwing runtime stubs, omitting the validator engine from browser bundles.
+
 ## Next steps
 
 <Cards>
