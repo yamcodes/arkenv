@@ -119,6 +119,13 @@ Import the validated `env` object from your schema module. Prefer that over read
 `import.meta.env` for schema keys so server secrets still validate at boot. Types
 and options: [`@arkenv/vite-plugin`](/docs/reference/vite-plugin).
 
+## SSR and dual-graph execution
+
+Vite maintains two distinct module graphs when building and serving full-stack or SSR applications:
+
+- **Server graph:** During SSR execution and dev server requests, `env.ts` executes real `@arkenv/core` runtime validation at boot. It ensures private secrets (such as `DATABASE_URL`) and public configuration validate before handling requests.
+- **Client graph:** During client compilation, `@arkenv/vite-plugin` intercepts and transforms `env.ts`. It inlines public `VITE_*` values as static literals and replaces private server keys with throwing runtime stubs. Client bundles omit the validator engine.
+
 ## Next steps
 
 <Cards>

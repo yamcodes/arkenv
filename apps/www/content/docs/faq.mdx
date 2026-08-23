@@ -45,6 +45,18 @@ Yes. Point the agent skill at your `.env.example` to set up validation
 and guide your assistant through schema maintenance. See
 [Using AI with ArkEnv](/docs/guides/ai).
 
+## Why does `env.ts` import from `@arkenv/core` in Vite and Bun, but from framework packages in Next.js and Nuxt?
+
+Vite and Bun use build plugins (`@arkenv/vite-plugin` and `@arkenv/bun-plugin`) that transform `env.ts` during bundling. Application code imports `@arkenv/core` (or `@arkenv/standard`), and the bundler rewrites client-side imports to inline public values and guard secrets.
+
+Next.js and Nuxt use host runtime adapters (such as codegen with conditional exports or Nitro runtime configuration hooks) that require dedicated framework entrypoints (`@arkenv/nextjs` and `@arkenv/nuxt`). See [Framework integration](/docs/validating-your-environment/framework-integration).
+
+## Why are `@arkenv/core` and `@arkenv/standard` peer dependencies instead of bundled into framework packages?
+
+Separating the validation engine from host adapters keeps runtime overhead minimal and avoids duplicate validation engines in your dependency tree.
+
+Framework packages handle bundlers and host lifecycles. Declaring `@arkenv/core` and `@arkenv/standard` as peer dependencies lets you pair any framework adapter with your choice of validator (ArkType DSL or Standard Schema validators like Zod and Valibot) without shipping redundant packages.
+
 ## Next steps
 
 ```package-install
