@@ -54,12 +54,12 @@ Plain Node or Bun **as a runtime** (no browser bundle) can stay on `@arkenv/core
 
 Frameworks enforce client/server boundaries using two distinct strategies: **compile-time AST transforms** and **host runtime adapters**.
 
-| Framework | Integration strategy                         | Client bundle output                     | SSR and server validation          | Docker "build once, deploy anywhere" |
+| Framework | Integration strategy                         | Client bundle output                     | SSR and server validation          | Public env without rebuild (Docker)  |
 | --------- | -------------------------------------------- | ---------------------------------------- | ---------------------------------- | ------------------------------------ |
-| Next.js   | Host adapter + codegen (`@arkenv/nextjs`)    | Generated runtime proxy                  | Process boot (`process.env`)       | Yes                                  |
-| Nuxt      | Nitro plugin (`@arkenv/nuxt`)                | Dynamic `runtimeConfig` hydration        | Nitro server boot gate             | Yes (no build-time inlining)         |
-| Vite      | AST build transform (`@arkenv/vite-plugin`)  | Inlined public literals + throwing stubs | Full `@arkenv/core` at server boot | Requires rebuild or SSR runtime      |
-| Bun       | Bundler AST transform (`@arkenv/bun-plugin`) | Inlined public literals + throwing stubs | Full `@arkenv/core` at server boot | Requires rebuild or SSR runtime      |
+| Next.js   | Host adapter + codegen (`@arkenv/nextjs`)    | Generated runtime proxy                  | Process boot (`process.env`)       | Requires rebuild for `NEXT_PUBLIC_*` |
+| Nuxt      | Nitro plugin (`@arkenv/nuxt`)                | Dynamic `runtimeConfig` hydration        | Nitro server boot gate             | Yes (via Nitro `runtimeConfig`)      |
+| Vite      | AST build transform (`@arkenv/vite-plugin`)  | Inlined public literals + throwing stubs | Full `@arkenv/core` at server boot | Requires rebuild for `VITE_*`        |
+| Bun       | Bundler AST transform (`@arkenv/bun-plugin`) | Inlined public literals + throwing stubs | Full `@arkenv/core` at server boot | Requires rebuild for `BUN_PUBLIC_*`  |
 
 ### Dual-graph execution in Vite and Bun
 
