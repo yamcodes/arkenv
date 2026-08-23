@@ -65,22 +65,22 @@ Frameworks enforce client/server boundaries using two distinct strategies: **com
 
 Vite and Bun evaluate two separate module graphs in full-stack and SSR applications:
 
-1. **Server Graph:** Executes the real `@arkenv/core` runtime validator at server boot. It evaluates the entire schema against the real server environment, enforcing types, coercing values, and throwing fail-fast errors if secrets or required keys are invalid.
-2. **Client Graph:** Transformed at compile time by `@arkenv/vite-plugin` or `@arkenv/bun-plugin`. The plugin intercepts `env.ts` imports in browser bundles, replacing server secrets with throwing stubs and inlining public keys (`VITE_*` or `BUN_PUBLIC_*`) as static literals. The validator engine is omitted entirely from browser bundles.
+1. **Server graph:** Executes `@arkenv/core` runtime validation at server boot. It evaluates the entire schema against the environment, coercing values and throwing fail-fast errors on missing or invalid keys.
+2. **Client graph:** Transformed at compile time by `@arkenv/vite-plugin` or `@arkenv/bun-plugin`. The plugin intercepts `env.ts` imports in client bundles, replacing server secrets with throwing stubs and inlining public keys (`VITE_*` or `BUN_PUBLIC_*`) as static literals. The validator engine is omitted from client output.
 
 Because of this transform, `env.ts` in Vite and Bun projects imports directly from `@arkenv/core` (or `@arkenv/standard`).
 
 ### Dynamic hydration in Nuxt
 
-Nuxt takes a different approach designed for containerized deployments. Instead of inlining environment variables into client JavaScript chunks at build time, `@arkenv/nuxt` validates the environment during Nitro server boot and hydrates public variables dynamically into Nuxt's `runtimeConfig.public`. This preserves Docker "build once, deploy anywhere" workflows where environment variables change between environments without requiring a new client build.
+Nuxt takes an approach designed for containerized deployments. Instead of inlining environment variables into client JavaScript chunks at build time, `@arkenv/nuxt` validates the environment during Nitro server boot and hydrates public variables dynamically into Nuxt's `runtimeConfig.public`. This preserves Docker "build once, deploy anywhere" workflows where environment variables change between environments without requiring a new client build.
 
 ## Engine vs. host adapter architecture
 
-ArkEnv deliberately separates the **validation engine** (`@arkenv/core` and `@arkenv/standard`) from **framework adapters** (`@arkenv/nextjs`, `@arkenv/nuxt`, `@arkenv/vite-plugin`, `@arkenv/bun-plugin`).
+ArkEnv separates the **validation engine** (`@arkenv/core` and `@arkenv/standard`) from **framework adapters** (`@arkenv/nextjs`, `@arkenv/nuxt`, `@arkenv/vite-plugin`, `@arkenv/bun-plugin`).
 
 Framework adapters act as lightweight glue: they manage build plugins, virtual aliases, codegen, and security fences. Installing the validation engine as a peer dependency offers two major benefits:
 
-- **Zero redundant dependencies:** Framework packages do not bundle duplicate copies of validation libraries.
+- **Zero redundant dependencies:** Framework packages stay lean and avoid bundling redundant validation runtimes.
 - **Validator flexibility:** You can pair any framework adapter with either `@arkenv/core` (ArkType DSL) or `@arkenv/standard` (Zod, Valibot, Typia, or any Standard Schema library) using the exact same boundary guarantees.
 
 ## Loading `.env` files

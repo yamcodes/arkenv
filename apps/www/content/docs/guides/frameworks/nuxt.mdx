@@ -116,15 +116,15 @@ export const env = arkenv({
 
 ## Nitro boot gate and runtimeConfig hydration
 
-In many modern production environments (such as Docker containers or Kubernetes), applications follow the "build once, deploy anywhere" pattern. Environment variables are not known at build time; instead, they are provided when the container starts in staging or production.
+Containerized deployments (such as Docker or Kubernetes) often follow the "build once, deploy anywhere" pattern. Environment variables are injected when containers start in staging or production rather than during build.
 
-While Vite and Bun rely on static compile-time AST transforms that inline literals during build, `@arkenv/nuxt` integrates directly with Nuxt's Nitro engine:
+While Vite and Bun rely on static compile-time AST transforms that inline literals during build, `@arkenv/nuxt` hooks into Nuxt's Nitro engine:
 
-1. **Server boot gate:** At server startup, an internal Nitro plugin runs before any route handlers execute. It evaluates the process environment against your schema and throws fail-fast errors if required secrets or configurations are invalid.
+1. **Server boot gate:** At server startup, an internal Nitro plugin runs before any route handler executes. It validates the environment against your schema and throws fail-fast errors on invalid secrets.
 2. **Runtime configuration hydration:** Validated public variables (`NUXT_PUBLIC_*`) are injected dynamically into Nuxt's `useRuntimeConfig().public`.
-3. **Client access:** When pages render and hydrate in the browser, client components access the validated public values via runtime configuration rather than hardcoded build-time literals.
+3. **Client access:** When pages render and hydrate in the browser, client components access public values via runtime configuration rather than hardcoded build-time literals.
 
-This architecture ensures you never need to rebuild client JavaScript bundles just to update environment variables across deployment stages.
+You can update environment variables across deployment stages without rebuilding client JavaScript bundles.
 
 ## Next steps
 
