@@ -384,7 +384,7 @@ export const env = arkenv({ DATABASE_URL: "string" });
 		process.env.BUN_PUBLIC_API_URL = "https://api.example.com";
 
 		try {
-			const plugin = arkenv({ schemaPath: envDir });
+			const plugin = arkenvPlugin({ schemaPath: envDir });
 
 			let onStart: (() => void | Promise<void>) | undefined;
 			let onResolve:
@@ -443,7 +443,7 @@ export const env = arkenv({ DATABASE_URL: "string" });
 		process.env.BUN_PUBLIC_API_URL = "https://api.example.com";
 
 		try {
-			const plugin = arkenv({ schemaPath: envDir });
+			const plugin = arkenvPlugin({ schemaPath: envDir });
 
 			let onStart: (() => void | Promise<void>) | undefined;
 			let onResolve:
