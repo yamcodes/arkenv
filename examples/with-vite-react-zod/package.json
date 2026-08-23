@@ -1,5 +1,5 @@
 {
-	"name": "arkenv-example-with-vite-react-standard",
+	"name": "arkenv-example-with-vite-react-zod",
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",

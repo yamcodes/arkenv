@@ -40,8 +40,8 @@ export class RegistryClient {
 						framework: "nextjs",
 					},
 					{
-						id: "with-nextjs-standard",
-						name: "Next.js (Standard Schema)",
+						id: "with-nextjs-zod",
+						name: "Next.js (Zod)",
 						description: "Next.js with @arkenv/nextjs/standard and Zod",
 						framework: "nextjs",
 					},
@@ -51,8 +51,8 @@ export class RegistryClient {
 						framework: "vite",
 					},
 					{
-						id: "with-vite-react-standard",
-						name: "React + Vite (Standard Schema)",
+						id: "with-vite-react-zod",
+						name: "React + Vite (Zod)",
 						description:
 							"React + Vite with @arkenv/vite-plugin/standard and Zod",
 						framework: "vite",

@@ -132,8 +132,8 @@
 			"name": "💡 with-nextjs"
 		},
 		{
-			"path": "examples/with-nextjs-standard",
-			"name": "💡 with-nextjs-standard"
+			"path": "examples/with-nextjs-zod",
+			"name": "💡 with-nextjs-zod"
 		},
 		{
 			"path": "examples/with-nuxt",
@@ -144,8 +144,8 @@
 			"name": "💡 with-vite-react"
 		},
 		{
-			"path": "examples/with-vite-react-standard",
-			"name": "💡 with-vite-react-standard"
+			"path": "examples/with-vite-react-zod",
+			"name": "💡 with-vite-react-zod"
 		},
 		{
 			"path": "examples/with-bun",

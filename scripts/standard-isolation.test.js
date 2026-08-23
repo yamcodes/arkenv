@@ -51,10 +51,10 @@ describe("integration /standard isolation", () => {
 });
 
 describe("standard examples isolation", () => {
-	it("verifies with-nextjs-standard and with-vite-react-standard never depend on or import arktype / @arkenv/core", () => {
+	it("verifies with-nextjs-zod and with-vite-react-zod never depend on or import arktype / @arkenv/core", () => {
 		const standardExamples = [
-			"examples/with-nextjs-standard",
-			"examples/with-vite-react-standard",
+			"examples/with-nextjs-zod",
+			"examples/with-vite-react-zod",
 		];
 
 		for (const relDir of standardExamples) {

@@ -29,7 +29,7 @@ export const exampleEnvDefaults: Record<string, Record<string, string>> = {
 		NEXT_PUBLIC_API_URL: "https://api.example.com",
 		NODE_ENV: "development",
 	},
-	"with-nextjs-standard": {
+	"with-nextjs-zod": {
 		DATABASE_URL: "postgres://localhost:5432/mydb",
 		NEXT_PUBLIC_API_URL: "https://api.example.com",
 		NODE_ENV: "development",
@@ -45,7 +45,7 @@ export const exampleEnvDefaults: Record<string, Record<string, string>> = {
 		VITE_MY_NUMBER: "42",
 		VITE_MY_BOOLEAN: "true",
 	},
-	"with-vite-react-standard": {
+	"with-vite-react-zod": {
 		PORT: "3000",
 		VITE_MY_VAR: "hello",
 		VITE_MY_NUMBER: "42",
