@@ -93,7 +93,7 @@ A scroll-driven increase in **Glass material** opacity/blur so content sliding u
 
 ## Flagged ambiguities
 
-- **"SPA mode"** (#1105 / canonical env-object ADR): previously named the schema/define path as a permanent documented mode. Continuity-alone justification is rejected. Lasting stance (documented escape hatch vs time-boxed deprecate/remove) is **deferred** to **#1333** pending hands-on play with the transform DX. Current lean: teach **env object** only in docs/CLI defaults; keep schema/define working but unbranded until the call. The env-object ADR's soft-landing / "SPA mode" framing may need an amendment after that decision. (Ported to `v1` as **ADR 0021** / `0021-env-object-canonical-surface`; on `dev` it remains `0015-env-object-canonical-surface`. On `v1`, ADR **0015** is still Next.js conditional exports.)
+- **"SPA mode"** (#1105 / canonical env-object ADR) — **resolved** (#1333 / ADR 0021 amendment): Option 3 (Remove / don't offer) adopted for v1. Schema/define path and ambient `.d.ts` augmentations are dropped; `import { env } from "./env"` is the sole canonical surface across all frameworks. SPA mode is not a supported v1 path. (On `v1`, ADR **0021** is the canonical env object record; ADR **0015** is Next.js conditional exports. On `dev` the canonical env object remains `0015-env-object-canonical-surface`.)
 - **"Header"** / home vs docs chrome — resolved: one **Site Nav**; home/docs differ only by **action pill** contents (Get started vs Search).
 - **Package `Header` vs www chrome** — resolved: **Site Nav** lives in www; package `Header` removed (alpha; www was the only consumer).
 - **Centered home pill vs logo top-left** — resolved: shared **Floating bar**, logo top-left, links centered.

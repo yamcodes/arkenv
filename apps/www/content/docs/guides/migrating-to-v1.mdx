@@ -3,11 +3,11 @@ title: Migrating to v1
 description: Migrate your ArkEnv setup from v0 to the unified v1 architecture.
 ---
 
-ArkEnv v1 streamlines package names, standardizes on a **single canonical `env` object** across all frameworks, and introduces first-class `@arkenv/standard` support.
+ArkEnv v1 renames packages, standardizes on a **single canonical `env` object** across all frameworks, and adds first-class `@arkenv/standard` support.
 
 ## Package renames
 
-In v1, package names have been simplified:
+In v1, package names changed:
 
 | v0 Package            | v1 Package            | Purpose                                            |
 | :-------------------- | :-------------------- | :------------------------------------------------- |
@@ -25,7 +25,7 @@ In v1, package names have been simplified:
 
 In v0, Vite and Bun integrations used a dual-surface approach: the plugin accepted the schema directly (`arkenv(schema)`), rewrote native accessors (`import.meta.env.*` or `process.env.*`), and relied on manual ambient `.d.ts` declaration merging (`ImportMetaEnvAugmented` or `ProcessEnvAugmented`).
 
-In v1, **all frameworks share the identical, canonical surface**:
+In v1, **all frameworks share the canonical surface**:
 
 ```ts
 import { env } from "./env";
@@ -35,7 +35,7 @@ import { env } from "./env";
 
 1. **Fullstack consistency**: Fullstack frameworks (SolidStart, TanStack Start, React Router 7, `Bun.serve`) need boot-time validation on the server for private secrets (like `DATABASE_URL`). The ambient plugin approach could only validate on the build machine.
 2. **Honesty ceiling**: Static compiler macros only rewrite static reads (`import.meta.env.PORT`). Spreads, dynamic access (`import.meta.env[key]`), and aliasing read raw strings from `process.env`/`import.meta.env` while TypeScript claims they are parsed numbers or booleans.
-3. **True security boundary**: The canonical `env.ts` module allows the plugin to intercept client bundle imports, inlining public coerced literals while replacing private server keys with throwing runtime guard stubs.
+3. **True security boundary**: The canonical `env.ts` module lets the plugin intercept client bundle imports, inlining public coerced literals while replacing private server keys with throwing runtime guard stubs.
 
 ---
 
@@ -143,7 +143,7 @@ export function App() {
 
 With static ambient accessors (`if (import.meta.env.VITE_FLAG)`), bundlers can constant-fold boolean expressions and eliminate dead branches. With `if (env.VITE_FLAG)`, the property read on `env` does not constant-fold.
 
-This trade-off was intentionally accepted for v1:
+ArkEnv accepts this trade-off for v1:
 
-- **Negligible bundle impact**: Accessing properties on a plain JavaScript object takes negligible execution time, no validator library bytes are shipped to the browser, and the client stub is tiny (a few bytes per key).
-- **Guaranteed safety**: In exchange, you gain unified code across server and client, genuine boot-time validation, and reliable prevention of server secrets leaking into client bundles.
+- **Negligible bundle impact**: Accessing properties on a plain JavaScript object takes negligible execution time, no validator library bytes ship to the browser, and the client stub is tiny (a few bytes per key).
+- **Guaranteed safety**: You get unified code across server and client, genuine boot-time validation, and reliable prevention of server secrets leaking into client bundles.
