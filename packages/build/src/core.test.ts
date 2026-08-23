@@ -7,6 +7,7 @@ import {
 	extractKeys,
 	findSchemaPath,
 	formatMissingSchemaError,
+	isServerSchemaImport,
 	isStrictLayoutDir,
 	resolveLayout,
 } from "./core";
@@ -136,6 +137,63 @@ describe("@arkenv/build layout resolution", () => {
 			} finally {
 				fs.rmSync(tempDir, { recursive: true, force: true });
 			}
+		});
+
+		it("isServerSchemaImport correctly flags server schema imports", () => {
+			const baseDir = "/app/src/env";
+			expect(isServerSchemaImport("@arkenv/nuxt/server")).toBe(true);
+			expect(isServerSchemaImport("@arkenv/nuxt/standard/server")).toBe(true);
+			expect(isServerSchemaImport("@arkenv/nextjs/server")).toBe(true);
+			expect(
+				isServerSchemaImport(
+					"./env/server",
+					"/app/src/main.ts",
+					baseDir,
+					"/app",
+				),
+			).toBe(true);
+			expect(
+				isServerSchemaImport(
+					"./server.ts",
+					"/app/src/env/client.ts",
+					baseDir,
+					"/app",
+				),
+			).toBe(true);
+			expect(
+				isServerSchemaImport("/app/src/env/server.ts", undefined, baseDir),
+			).toBe(true);
+			expect(
+				isServerSchemaImport("@/env/server", undefined, baseDir, "/app"),
+			).toBe(true);
+			expect(
+				isServerSchemaImport(
+					"~/env/server",
+					undefined,
+					baseDir,
+					"/app",
+					"/app/src",
+				),
+			).toBe(true);
+			expect(
+				isServerSchemaImport("env/server", undefined, baseDir, "/app"),
+			).toBe(true);
+
+			// Allowed imports
+			expect(
+				isServerSchemaImport(
+					"./env/client",
+					"/app/src/main.ts",
+					baseDir,
+					"/app",
+				),
+			).toBe(false);
+			expect(
+				isServerSchemaImport("/app/src/env/client.ts", undefined, baseDir),
+			).toBe(false);
+			expect(
+				isServerSchemaImport("other-pkg/server", undefined, baseDir, "/app"),
+			).toBe(false);
 		});
 	});
 
