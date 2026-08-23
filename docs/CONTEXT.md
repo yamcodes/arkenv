@@ -40,8 +40,8 @@ The two first-class validation entry points. Same `arkenv()` runtime options, er
 *Avoid*: framing Standard Schema as migration-only or second-class
 
 **Schema/define path**:
-The Vite plugin call shape `arkenv(schema)` that validates at build time and inlines via Vite `define` into `import.meta.env.*`, with types from `ImportMetaEnvAugmented`. Still supported so existing apps keep working (#1328 acceptance). Lasting product stance is the open call on **#1333** (gates CLI #1332 and related SPA-mode work).
-*Avoid*: **SPA mode** as the product name in examples, changelogs, or new docs for this path until #1333 decides
+The legacy v0 pattern (`arkenv(schema)` plugin argument with native-accessor `define` rewriting and ambient `.d.ts` augmentations). Dropped in v1 (ADR 0021, #1333) in favor of the unified `import { env } from "./env"` object surface across all frameworks.
+*Avoid*: recommending schema/define or ambient `.d.ts` augmentations in v1 docs, CLI, or skills; framing SPA mode as a supported v1 path
 
 ### Site chrome (www)
 
