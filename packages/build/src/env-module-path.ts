@@ -34,23 +34,38 @@ export function normalizeModuleId(id: string): string {
  * @returns Whether `id` identifies the same module as `schemaPath`
  */
 export function isEnvModuleId(id: string, schemaPath: string): boolean {
+	const stripExt = (filePath: string) =>
+		filePath.replace(/\.(m|c)?[jt]sx?$/, "");
+
 	const normalizedId = path.resolve(normalizeModuleId(id));
 	const normalizedSchema = path.resolve(schemaPath);
 	if (normalizedId === normalizedSchema) return true;
+	if (stripExt(normalizedId) === stripExt(normalizedSchema)) return true;
 
-	const stripExt = (filePath: string) =>
-		filePath.replace(/\.(m|c)?[jt]sx?$/, "");
-	return stripExt(normalizedId) === stripExt(normalizedSchema);
+	try {
+		const realId = fs.existsSync(normalizedId)
+			? fs.realpathSync(normalizedId)
+			: normalizedId;
+		const realSchema = fs.existsSync(normalizedSchema)
+			? fs.realpathSync(normalizedSchema)
+			: normalizedSchema;
+		if (realId === realSchema) return true;
+		if (stripExt(realId) === stripExt(realSchema)) return true;
+	} catch {
+		// Ignore filesystem errors for virtual or missing files
+	}
+
+	return false;
 }
 
 /**
- * Resolve the absolute env-module path from options and a project root.
+ * Resolve the absolute env-module or layout path from options and a project root.
  *
  * @param root The project root directory
  * @param schemaPath An optional relative or absolute schema path from config
  * @param prefix Brand prefix for diagnostics (e.g. `"[ArkEnv]"`, `"ArkEnv Vite plugin:"`, `"ArkEnv Bun plugin:"`)
- * @returns The absolute path to the env module
- * @throws If no env module can be found or if it points to a directory
+ * @returns The absolute path to the env module or strict schema directory
+ * @throws If no env module can be found or if schemaPath does not exist
  */
 export function resolveEnvModulePath(
 	root: string,
@@ -69,7 +84,7 @@ export function resolveEnvModulePath(
 				`${cleanPrefix} schemaPath "${schemaPath}" does not exist (resolved to "${resolved}").`,
 			);
 		}
-		return assertFlatSchemaFile(resolved, cleanPrefix);
+		return resolved;
 	}
 
 	const discovered = findSchemaPath(root);
@@ -82,7 +97,7 @@ export function resolveEnvModulePath(
 			}),
 		);
 	}
-	return assertFlatSchemaFile(discovered, cleanPrefix);
+	return discovered;
 }
 
 /**

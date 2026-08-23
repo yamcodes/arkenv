@@ -74,4 +74,19 @@ describe("env-module-path utilities", () => {
 			/does not exist/,
 		);
 	});
+
+	it("resolveEnvModulePath discovers and resolves strict layout directories", () => {
+		const tmp = fs.mkdtempSync(
+			path.join(os.tmpdir(), "arkenv-resolve-strict-"),
+		);
+		tempDirs.push(tmp);
+
+		const envDir = path.join(tmp, "env");
+		fs.mkdirSync(envDir, { recursive: true });
+		fs.writeFileSync(path.join(envDir, "client.ts"), "export const env = {};");
+		fs.writeFileSync(path.join(envDir, "server.ts"), "export const env = {};");
+
+		expect(resolveEnvModulePath(tmp)).toBe(envDir);
+		expect(resolveEnvModulePath(tmp, "env")).toBe(envDir);
+	});
 });

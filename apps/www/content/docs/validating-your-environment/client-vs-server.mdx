@@ -135,6 +135,26 @@ npx arkenv@latest init --strict
 
 Nuxt strict layout uses `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. Omitting `extends` can auto-merge shared and client schemas via Nuxt virtual aliases. Details live in the [Next.js](/docs/guides/frameworks/nextjs) and [Nuxt](/docs/guides/frameworks/nuxt) guides.
 
+## Dead-code elimination and constant folding
+
+Bundlers (like Next.js, Vite, and Bun) replace direct identifier expressions such as `process.env.NEXT_PUBLIC_FEATURE_FLAG` or `import.meta.env.VITE_FEATURE_FLAG` with literal strings during compilation. If a condition evaluates to `if (false)` or `if ("")`, minifiers drop the dead branch and omit modules imported inside it.
+
+Accessing properties on an imported `env` object (`if (env.NEXT_PUBLIC_FEATURE_FLAG)`) behaves as normal JavaScript object property access at runtime:
+
+```ts title="./src/feature.ts"
+import { env } from "./env";
+
+if (env.NEXT_PUBLIC_ADMIN_PREVIEW) {
+  mountAdminPreview();
+}
+```
+
+Because `env` is an exported object reference, minifiers cannot guarantee that properties remain immutable across module boundaries without whole-program analysis. Code inside the `if` block may remain in the client bundle even when the flag is off.
+
+<Callout type="warn">
+  If you have client-only chunks or admin tools that must stay out of production bundles when a flag is off, use direct bundler identifiers (such as `process.env.NEXT_PUBLIC_FEATURE_FLAG` or `import.meta.env.VITE_FEATURE_FLAG`) in the condition, or load modules with dynamic `import()`. Use `env` for Typesafe runtime validation across your application.
+</Callout>
+
 ## Next steps
 
 <Cards>
