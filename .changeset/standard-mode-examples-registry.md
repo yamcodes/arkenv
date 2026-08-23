@@ -4,7 +4,7 @@
 
 #### Add `with-nextjs-standard` and `with-vite-react-standard` to example registry and scaffold defaults
 
-Registered the Next.js (`with-nextjs-standard`) and React + Vite (`with-vite-react-standard`) Standard Schema integration examples in the CLI example registry and scaffold defaults map:
+Added Standard Schema starter templates for Next.js (`with-nextjs-standard`) and React + Vite (`with-vite-react-standard`) to `arkenv init`:
 
 ```bash
 # Bootstrap Next.js with Standard Mode and Zod
