@@ -19,7 +19,7 @@ type GlobalStrictState = {
  *
  * Prefers the bundler `define` flag when present; falls back to the
  * `globalThis` marker set during Jiti build-time validation, then to
- * `process.env.__ARKENV_STRICT_LAYOUT__` injected via `nextConfig.env`
+ * `process.env.ARKENV_STRICT_LAYOUT` injected via `nextConfig.env`
  * (Turbopack and other non-DefinePlugin paths).
  *
  * @returns `true` when strict-layout auto-extend should run
@@ -34,7 +34,7 @@ export function isStrictLayoutActive(): boolean {
 	if ((globalThis as GlobalStrictState).__ARKENV_STRICT_LAYOUT__ === true) {
 		return true;
 	}
-	return process.env.__ARKENV_STRICT_LAYOUT__ === "true";
+	return process.env.ARKENV_STRICT_LAYOUT === "true";
 }
 
 /**

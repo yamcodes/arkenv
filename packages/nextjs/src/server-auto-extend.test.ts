@@ -34,7 +34,7 @@ describe("server auto-extend in strict layout", () => {
 			.__ARKENV_STRICT_LAYOUT__;
 		delete (globalThis as { __ARKENV_CLIENT_ENV__?: unknown })
 			.__ARKENV_CLIENT_ENV__;
-		delete process.env.__ARKENV_STRICT_LAYOUT__;
+		delete process.env.ARKENV_STRICT_LAYOUT;
 		delete process.env.DATABASE_URL;
 		delete process.env.NEXT_PUBLIC_API_URL;
 		delete process.env.NODE_ENV;
@@ -125,8 +125,8 @@ describe("server auto-extend in strict layout", () => {
 		).toThrow(/not defined in the schema/);
 	});
 
-	it("detects strict layout via process.env.__ARKENV_STRICT_LAYOUT__", () => {
-		process.env.__ARKENV_STRICT_LAYOUT__ = "true";
+	it("detects strict layout via process.env.ARKENV_STRICT_LAYOUT", () => {
+		process.env.ARKENV_STRICT_LAYOUT = "true";
 		(globalThis as { __ARKENV_CLIENT_ENV__?: unknown }).__ARKENV_CLIENT_ENV__ =
 			createMockClientEnv({
 				NEXT_PUBLIC_API_URL: "https://api.example.com",

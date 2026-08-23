@@ -400,7 +400,7 @@ describe("withArkEnv wrapper", () => {
 		expect(outputConfig).not.toBe(inputConfig);
 		expect(outputConfig.reactStrictMode).toBe(true);
 		expect(typeof outputConfig.webpack).toBe("function");
-		expect(outputConfig.env?.__ARKENV_STRICT_LAYOUT__).toBe("true");
+		expect(outputConfig.env?.ARKENV_STRICT_LAYOUT).toBe("true");
 		expect(outputConfig.turbopack?.resolveAlias?.["#arkenv/client-env"]).toBe(
 			path.join(strictBaseDir, "client.ts"),
 		);

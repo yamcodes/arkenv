@@ -128,9 +128,12 @@ export function applyStrictLayoutAliases<T extends NextConfigLike>(
 		...nextConfig,
 		webpack,
 		// Turbopack / non-webpack paths: surface the flag via Next env inlining.
+		// Note: Next.js forbids keys with __ prefix in nextConfig.env, so we use
+		// ARKENV_STRICT_LAYOUT (no underscores) here. The webpack DefinePlugin
+		// path uses __ARKENV_STRICT_LAYOUT__ as a compile-time literal, which is fine.
 		env: {
 			...(nextConfig.env ?? {}),
-			__ARKENV_STRICT_LAYOUT__: "true",
+			ARKENV_STRICT_LAYOUT: "true",
 		},
 		turbopack: {
 			...existingTurbopack,
