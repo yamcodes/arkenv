@@ -40,8 +40,8 @@ The two first-class validation entry points. Same `arkenv()` runtime options, er
 *Avoid*: framing Standard Schema as migration-only or second-class
 
 **Schema/define path**:
-The Vite plugin call shape `arkenv(schema)` that validates at build time and inlines via Vite `define` into `import.meta.env.*`, with types from `ImportMetaEnvAugmented`. Still supported so existing apps keep working (#1328 acceptance). Lasting product stance is the open call on **#1333** (gates CLI #1332 and related SPA-mode work).
-*Avoid*: **SPA mode** as the product name in examples, changelogs, or new docs for this path until #1333 decides
+The legacy v0 pattern (`arkenv(schema)` plugin argument with native-accessor `define` rewriting and ambient `.d.ts` augmentations). Dropped in v1 (ADR 0021, #1333) in favor of the unified `import { env } from "./env"` object surface across all frameworks.
+*Avoid*: recommending schema/define or ambient `.d.ts` augmentations in v1 docs, CLI, or skills; framing SPA mode as a supported v1 path
 
 ### Site chrome (www)
 
@@ -93,7 +93,7 @@ A scroll-driven increase in **Glass material** opacity/blur so content sliding u
 
 ## Flagged ambiguities
 
-- **"SPA mode"** (#1105 / canonical env-object ADR): previously named the schema/define path as a permanent documented mode. Continuity-alone justification is rejected. Lasting stance (documented escape hatch vs time-boxed deprecate/remove) is **deferred** to **#1333** pending hands-on play with the transform DX. Current lean: teach **env object** only in docs/CLI defaults; keep schema/define working but unbranded until the call. The env-object ADR's soft-landing / "SPA mode" framing may need an amendment after that decision. (Ported to `v1` as **ADR 0021** / `0021-env-object-canonical-surface`; on `dev` it remains `0015-env-object-canonical-surface`. On `v1`, ADR **0015** is still Next.js conditional exports.)
+- **"SPA mode"** (#1105 / canonical env-object ADR) — **resolved** (#1333 / ADR 0021 amendment): Option 3 (Remove / don't offer) adopted for v1. Schema/define path and ambient `.d.ts` augmentations are dropped; `import { env } from "./env"` is the sole canonical surface across all frameworks. SPA mode is not a supported v1 path. (On `v1`, ADR **0021** is the canonical env object record; ADR **0015** is Next.js conditional exports. On `dev` the canonical env object remains `0015-env-object-canonical-surface`.)
 - **"Header"** / home vs docs chrome — resolved: one **Site Nav**; home/docs differ only by **action pill** contents (Get started vs Search).
 - **Package `Header` vs www chrome** — resolved: **Site Nav** lives in www; package `Header` removed (alpha; www was the only consumer).
 - **Centered home pill vs logo top-left** — resolved: shared **Floating bar**, logo top-left, links centered.

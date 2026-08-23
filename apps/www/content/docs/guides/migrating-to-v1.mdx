@@ -1,0 +1,149 @@
+---
+title: Migrating to v1
+description: Migrate your ArkEnv setup from v0 to the unified v1 architecture.
+---
+
+ArkEnv v1 renames packages, standardizes on a **single canonical `env` object** across all frameworks, and adds first-class `@arkenv/standard` support.
+
+## Package renames
+
+In v1, package names changed:
+
+| v0 Package            | v1 Package            | Purpose                                            |
+| :-------------------- | :-------------------- | :------------------------------------------------- |
+| `@arkenv/cli`         | `arkenv`              | Primary CLI (`npx arkenv@latest init`, `add host`) |
+| `arkenv`              | `@arkenv/core`        | Core runtime & ArkType DSL engine                  |
+| *(new in v1)*         | `@arkenv/standard`    | Standard Schema engine (Zod, Valibot, etc.)        |
+| `@arkenv/vite-plugin` | `@arkenv/vite-plugin` | Vite plugin (transform mode)                       |
+| `@arkenv/bun-plugin`  | `@arkenv/bun-plugin`  | Bun plugin (transform mode)                        |
+| `@arkenv/nextjs`      | `@arkenv/nextjs`      | Next.js adapter                                    |
+| `@arkenv/nuxt`        | `@arkenv/nuxt`        | Nuxt module                                        |
+
+---
+
+## Canonical `env` object across all frameworks
+
+In v0, Vite and Bun integrations used a dual-surface approach: the plugin accepted the schema directly (`arkenv(schema)`), rewrote native accessors (`import.meta.env.*` or `process.env.*`), and relied on manual ambient `.d.ts` declaration merging (`ImportMetaEnvAugmented` or `ProcessEnvAugmented`).
+
+In v1, **all frameworks share the canonical surface**:
+
+```ts
+import { env } from "./env";
+```
+
+### Why schema/define was dropped
+
+1. **Fullstack consistency**: Fullstack frameworks (SolidStart, TanStack Start, React Router 7, `Bun.serve`) need boot-time validation on the server for private secrets (like `DATABASE_URL`). The ambient plugin approach could only validate on the build machine.
+2. **Honesty ceiling**: Static compiler macros only rewrite static reads (`import.meta.env.PORT`). Spreads, dynamic access (`import.meta.env[key]`), and aliasing read raw strings from `process.env`/`import.meta.env` while TypeScript claims they are parsed numbers or booleans.
+3. **True security boundary**: The canonical `env.ts` module lets the plugin intercept client bundle imports, inlining public coerced literals while replacing private server keys with throwing runtime guard stubs.
+
+---
+
+## Migrating Vite projects
+
+### 1. Update `env.ts`
+
+Create or update `src/env.ts` to export your validated `env` object:
+
+```ts title="src/env.ts"
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  PORT: "number.port = 3000",
+  VITE_API_URL: "string",
+  DATABASE_URL: "string",
+});
+```
+
+### 2. Update `vite.config.ts`
+
+Remove the schema argument from the plugin call. The plugin operates in transform mode, rewriting imports from `env.ts` in the client graph:
+
+```ts title="vite.config.ts"
+import { defineConfig } from "vite";
+import arkenv from "@arkenv/vite-plugin";
+
+export default defineConfig({
+  plugins: [arkenv()],
+});
+```
+
+### 3. Remove ambient `.d.ts` augmentations
+
+Delete `ImportMetaEnvAugmented` from your `src/vite-env.d.ts`:
+
+```diff title="src/vite-env.d.ts"
+/// <reference types="vite/client" />
+-
+-type ImportMetaEnvAugmented = import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
+-  typeof import("./env").Env
+->;
+-
+-interface ImportMetaEnv extends ImportMetaEnvAugmented {}
+```
+
+### 4. Update component imports
+
+Replace `import.meta.env` calls with the imported `env` object:
+
+```diff title="src/App.tsx"
++import { env } from "./env";
+
+function App() {
+-  const apiUrl = import.meta.env.VITE_API_URL;
++  const apiUrl = env.VITE_API_URL;
+   return <div>API: {apiUrl}</div>;
+}
+```
+
+---
+
+## Migrating Bun projects
+
+### 1. Update `src/env.ts`
+
+```ts title="src/env.ts"
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  BUN_PUBLIC_API_URL: "string.url",
+  DATABASE_URL: "string",
+});
+```
+
+### 2. Remove ambient `bun-env.d.ts` augmentations
+
+```diff title="bun-env.d.ts"
+/// <reference types="bun-types" />
+-
+-type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<
+-  typeof import("./src/env").default
+->;
+-
+-declare namespace NodeJS {
+-  interface ProcessEnv extends ProcessEnvAugmented {}
+-}
+```
+
+### 3. Update component imports
+
+```diff title="src/app.tsx"
++import { env } from "./env";
+
+export function App() {
+-  const apiUrl = process.env.BUN_PUBLIC_API_URL;
++  const apiUrl = env.BUN_PUBLIC_API_URL;
+   return <div>API: {apiUrl}</div>;
+}
+```
+
+---
+
+## Dead Code Elimination (DCE) trade-off
+
+With static ambient accessors (`if (import.meta.env.VITE_FLAG)`), bundlers can constant-fold boolean expressions and eliminate dead branches. With `if (env.VITE_FLAG)`, the property read on `env` does not constant-fold.
+
+ArkEnv accepts this trade-off for v1:
+
+- **Negligible bundle impact**: Accessing properties on a plain JavaScript object takes negligible execution time, no validator library bytes ship to the browser, and the client stub is tiny (a few bytes per key).
+- **Guaranteed safety**: You get unified code across server and client, genuine boot-time validation, and reliable prevention of server secrets leaking into client bundles.
