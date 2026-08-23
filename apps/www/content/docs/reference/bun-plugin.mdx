@@ -21,15 +21,23 @@ Standard Schema entry: `@arkenv/bun-plugin/standard`.
 
 ## Exports
 
-The default export is the hybrid plugin. Named exports match the
-transform factory.
+The default export is the hybrid `arkenvPlugin` instance. Named exports provide explicit aliases.
 
-| Export         | Role                            |
-| -------------- | ------------------------------- |
-| default        | `hybrid` plugin (default entry) |
-| named `arkenv` | Same transform factory as Vite  |
-| named `hybrid` | Explicit hybrid export          |
-| `./standard`   | Standard Schema plugin          |
+| Export                  | Role                                     |
+| ----------------------- | ---------------------------------------- |
+| default                 | `arkenvPlugin` hybrid plugin instance    |
+| named `arkenvPlugin`    | Hybrid plugin factory and instance       |
+| named `arkenvBunPlugin` | Host-explicit named alias                |
+| named `hybrid`          | Explicit zero-config hybrid plugin alias |
+| `./standard`            | Standard Schema plugin entry             |
+
+`arkenvPlugin` is a hybrid: it functions both as a callable factory (`arkenvPlugin({ schemaPath })`) and directly as a `BunPlugin` object with pre-attached `name`, `target`, and `setup` properties. This enables:
+
+- **Zero-config preload in `bunfig.toml`**: `plugins = ["@arkenv/bun-plugin"]`
+- **Direct registration in `Bun.build`**: `plugins: [arkenvPlugin]`
+- **Customized transform options**: `plugins: [arkenvPlugin({ schemaPath: "./src/env.ts" })]`
+
+`arkenvBunPlugin` provides a host-explicit alias when working in monorepos or alongside other bundler plugins.
 
 Default client prefix: `BUN_PUBLIC_`.
 
@@ -38,11 +46,11 @@ Default client prefix: `BUN_PUBLIC_`.
 Register the plugin in `Bun.build` (or your fullstack server setup).
 
 ```ts title="./build.ts"
-import arkenv from "@arkenv/bun-plugin";
+import arkenvPlugin from "@arkenv/bun-plugin";
 
 await Bun.build({
   entrypoints: ["./src/index.ts"],
-  plugins: [arkenv()],
+  plugins: [arkenvPlugin()],
 });
 ```
 
@@ -60,7 +68,7 @@ export const env = arkenv({
 Same transform call shape as
 [`@arkenv/vite-plugin`](/docs/reference/vite-plugin):
 
-- `arkenv()` or `arkenv({ schemaPath, clientPrefix, ... })` rewrites the
+- `arkenvPlugin()` or `arkenvPlugin({ schemaPath, clientPrefix, ... })` rewrites the
   schema module in the client graph.
 - A schema argument is rejected. Define the schema in `env.ts` and
   import `{ env }` from there.

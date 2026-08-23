@@ -21,7 +21,7 @@ export function createVitePlugin(
 	pluginName: string,
 	factoryLogOptions?: ArkEnvLogOptions,
 ) {
-	return function arkenv(
+	return function arkenvPlugin(
 		options?: VitePluginFactoryConfig,
 		unexpected?: unknown,
 	): Plugin {

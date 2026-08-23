@@ -9,7 +9,7 @@ import {
 	isEnvModuleId,
 	isTransformModeCall,
 } from "./env-module.js";
-import { arkenv, hybrid } from "./plugin.js";
+import arkenvPlugin, { hybrid } from "./index.js";
 
 describe("transform mode helpers", () => {
 	it("detects transform-mode calls", () => {
@@ -81,7 +81,7 @@ describe("transform mode plugin", () => {
 	});
 
 	it("returns a browser-targeted plugin for transform calls", () => {
-		const plugin = arkenv();
+		const plugin = arkenvPlugin();
 		expect(plugin).toHaveProperty("name", "@arkenv/bun-plugin");
 		expect(plugin).toHaveProperty("target", "browser");
 		expect(plugin).toHaveProperty("setup");
@@ -106,7 +106,7 @@ describe("transform mode plugin", () => {
 		});
 
 		try {
-			const plugin = arkenv({ schemaPath: join(fixtureDir, "env.ts") });
+			const plugin = arkenvPlugin({ schemaPath: join(fixtureDir, "env.ts") });
 
 			let onStart: (() => void | Promise<void>) | undefined;
 			let onLoad:
@@ -168,7 +168,7 @@ describe("transform mode plugin", () => {
 		});
 
 		try {
-			const plugin = arkenv({ schemaPath: join(fixtureDir, "env.ts") });
+			const plugin = arkenvPlugin({ schemaPath: join(fixtureDir, "env.ts") });
 			let onStart: (() => void | Promise<void>) | undefined;
 			let onLoad:
 				| ((args: {
@@ -210,7 +210,7 @@ describe("transform mode plugin", () => {
 		});
 
 		try {
-			const plugin = arkenv({ schemaPath: join(fixtureDir, "env.ts") });
+			const plugin = arkenvPlugin({ schemaPath: join(fixtureDir, "env.ts") });
 			let onStart: (() => void | Promise<void>) | undefined;
 			let onLoad:
 				| ((args: {
@@ -283,7 +283,7 @@ export default env;
 		);
 
 		try {
-			const plugin = arkenv({ schemaPath: join(strictDir, "env.ts") });
+			const plugin = arkenvPlugin({ schemaPath: join(strictDir, "env.ts") });
 			let onStart: (() => void | Promise<void>) | undefined;
 			plugin.setup({
 				onStart(cb: () => void | Promise<void>) {
@@ -302,7 +302,9 @@ export default env;
 describe("schema/define removal", () => {
 	it("rejects schema calls", () => {
 		expect(() =>
-			(arkenv as (a?: unknown) => unknown)({ BUN_PUBLIC_TEST: "string" }),
+			(arkenvPlugin as (a?: unknown) => unknown)({
+				BUN_PUBLIC_TEST: "string",
+			}),
 		).toThrow(/schema\/define plugin API was removed/);
 	});
 });

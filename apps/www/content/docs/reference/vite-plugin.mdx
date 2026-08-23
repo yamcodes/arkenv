@@ -18,6 +18,17 @@ npm i -D @arkenv/vite-plugin
 
 Standard Schema entry: `@arkenv/vite-plugin/standard`.
 
+## Exports
+
+The default export is the Vite plugin factory. Named exports provide explicit aliases.
+
+| Export                   | Role                          |
+| ------------------------ | ----------------------------- |
+| default                  | `arkenvPlugin` plugin factory |
+| named `arkenvPlugin`     | Plugin factory                |
+| named `arkenvVitePlugin` | Host-explicit named alias     |
+| `./standard`             | Standard Schema plugin entry  |
+
 ## Transform mode
 
 Point the plugin at your `env.ts`. The client graph is rewritten so
@@ -25,10 +36,10 @@ server secrets never inline.
 
 ```ts title="./vite.config.ts"
 import { defineConfig } from "vite";
-import arkenv from "@arkenv/vite-plugin";
+import arkenvPlugin from "@arkenv/vite-plugin";
 
 export default defineConfig({
-  plugins: [arkenv()],
+  plugins: [arkenvPlugin()],
 });
 ```
 
@@ -52,7 +63,7 @@ Pass transform options only. A schema argument is rejected.
 | Plus                  | (none)                     | All [`ArkEnvConfig`](/docs/reference/options) fields except `safe` |
 | `logger` / `logLevel` | (none)                     | Logging                                                            |
 
-Call `arkenv()` with no args, or an options object that includes
+Call `arkenvPlugin()` with no args, or an options object that includes
 transform fields (`schemaPath`, `clientPrefix`, logging). Do not pass a
 schema map or compiled `type()` to the plugin.
 
