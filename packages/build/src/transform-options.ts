@@ -3,6 +3,7 @@
  */
 export const TRANSFORM_OPTION_KEYS = new Set([
 	"schemaPath",
+	"layout",
 	"clientPrefix",
 	"logger",
 	"logLevel",
@@ -21,11 +22,17 @@ export const TRANSFORM_OPTION_KEYS = new Set([
  */
 export type TransformOptions = {
 	/**
-	 * Path to the env module (`env.ts`), relative to the project root.
+	 * Path to the env module (`env.ts`) or strict schema directory, relative to the project root.
 	 *
-	 * When omitted, ArkEnv auto-discovers `src/env.ts` or `env.ts`.
+	 * When omitted, ArkEnv auto-discovers `src/env.ts`, `env.ts`, `src/env`, or `env`.
 	 */
 	schemaPath?: string;
+	/**
+	 * Explicit layout structure mode ("flat", "simple", or "strict").
+	 *
+	 * When omitted, ArkEnv auto-detects from the schema file/directory.
+	 */
+	layout?: "simple" | "strict" | "flat";
 	/**
 	 * Prefix(es) that mark client-exposed environment variables.
 	 *
