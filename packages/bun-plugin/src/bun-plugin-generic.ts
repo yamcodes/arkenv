@@ -10,7 +10,7 @@ export type { BunPluginFactoryConfig } from "./plugin-config";
 /**
  * Create a Bun plugin factory bound to a plugin name (default or `/standard`).
  *
- * Always uses the env-module transform: `arkenv()` / `arkenv({ schemaPath, clientPrefix })`.
+ * Always uses the env-module transform: `arkenvPlugin()` / `arkenvPlugin({ schemaPath, clientPrefix })`.
  * The schema/`define` signature is rejected.
  *
  * The returned `hybrid` is the factory with transform `setup`/`target` attached so
@@ -19,7 +19,7 @@ export type { BunPluginFactoryConfig } from "./plugin-config";
  *
  * @param pluginName The Bun plugin name
  * @param factoryLogOptions Optional default logging options for the factory
- * @returns An object containing the configured arkenv factory and the hybrid plugin
+ * @returns An object containing the configured arkenvPlugin factory and the hybrid plugin
  */
 export function createBunPlugin(
 	pluginName: string,
@@ -31,7 +31,7 @@ export function createBunPlugin(
 	 * @param options Transform options (`schemaPath`, `clientPrefix`) plus ArkEnv/logging config
 	 * @returns A configured Bun plugin
 	 */
-	function arkenv(
+	function arkenvPlugin(
 		options?: BunPluginFactoryConfig,
 		unexpected?: unknown,
 	): BunPlugin {
@@ -45,7 +45,7 @@ export function createBunPlugin(
 		factoryLogOptions,
 	);
 
-	const hybrid = arkenv as typeof arkenv & BunPlugin;
+	const hybrid = arkenvPlugin as typeof arkenvPlugin & BunPlugin;
 
 	Object.defineProperty(hybrid, "name", {
 		value: pluginName,
@@ -57,5 +57,5 @@ export function createBunPlugin(
 	});
 	hybrid.setup = zeroConfigTransform.setup;
 
-	return { arkenv, hybrid };
+	return { arkenvPlugin: hybrid, hybrid };
 }

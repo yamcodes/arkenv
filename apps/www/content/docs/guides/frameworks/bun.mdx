@@ -78,12 +78,12 @@ plugins = ["@arkenv/bun-plugin"]
 Pass the plugin to `Bun.build` in your build script:
 
 ```ts title="./build.ts" twoslash
-import arkenv from "@arkenv/bun-plugin";
+import arkenvPlugin from "@arkenv/bun-plugin";
 
 await Bun.build({
   entrypoints: ["./src/index.tsx"],
   outdir: "./dist",
-  plugins: [arkenv()],
+  plugins: [arkenvPlugin()],
 });
 ```
 

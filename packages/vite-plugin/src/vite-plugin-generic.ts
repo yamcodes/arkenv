@@ -10,7 +10,7 @@ export type { VitePluginFactoryConfig } from "./plugin-config";
 /**
  * Create a Vite plugin factory bound to a plugin name (default or `/standard`).
  *
- * Always uses the env-module transform: `arkenv()` / `arkenv({ schemaPath, clientPrefix })`.
+ * Always uses the env-module transform: `arkenvPlugin()` / `arkenvPlugin({ schemaPath, clientPrefix })`.
  * The schema/`define` signature is rejected.
  *
  * @param pluginName The Vite plugin name
@@ -21,7 +21,7 @@ export function createVitePlugin(
 	pluginName: string,
 	factoryLogOptions?: ArkEnvLogOptions,
 ) {
-	return function arkenv(
+	return function arkenvPlugin(
 		options?: VitePluginFactoryConfig,
 		unexpected?: unknown,
 	): Plugin {

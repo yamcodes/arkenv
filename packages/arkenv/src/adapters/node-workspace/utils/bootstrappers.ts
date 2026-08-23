@@ -253,12 +253,12 @@ export async function bootstrapBunConfig(
 			${pc.bold("Bun Fullstack programmatic bundling (Bun.build):")}
 			To inline environment variables (e.g. ${code("PUBLIC_*")}) in your custom ${pc.cyan("client-side")} build script, add the plugin to your ${code("Bun.build")} call:
 
-			${code('import arkenv from "@arkenv/bun-plugin";')}
+			${code('import arkenvPlugin from "@arkenv/bun-plugin";')}
 
 			await Bun.build({
 			  entrypoints: ["./index.ts"],
 			  outdir: "./dist",
-			  ${pc.green("plugins: [arkenv]")}
+			  ${pc.green("plugins: [arkenvPlugin]")}
 			});
 		`;
 	}
