@@ -91,6 +91,47 @@ npx arkenv@latest init --strict
 This generates `env/client.ts`, `env/server.ts`, and `env/internal/shared.ts`.
 Learn more in [Client vs. server](/docs/validating-your-environment/client-vs-server).
 
+#### Auto-extending client env in strict layout
+
+With `withArkEnv` registered in `next.config`, the server entry (`env/server.ts`)
+automatically merges the client env when `extends` is omitted:
+
+```ts title="./env/server.ts" twoslash
+// @filename: /env/server.ts
+// ---cut---
+import arkenv from "@arkenv/nextjs/server";
+
+export const env = arkenv({
+	DATABASE_URL: "string",
+});
+// env includes DATABASE_URL + everything from env/client.ts
+```
+
+To opt out — or compose a different list — pass an explicit `extends`:
+
+```ts title="./env/server.ts" twoslash
+// @filename: /env/client.ts
+import type { type as at, distill } from "arktype";
+export const env = {} as Readonly<distill.Out<at.infer<{ NEXT_PUBLIC_API_URL: "string" }>>>;
+
+// @filename: /env/server.ts
+// ---cut---
+import arkenv from "@arkenv/nextjs/server";
+import { env as clientEnv } from "./client";
+
+export const env = arkenv(
+	{
+		DATABASE_URL: "string",
+	},
+	{
+		extends: [clientEnv], // explicit list — auto-merge is skipped
+	},
+);
+```
+
+Passing `extends: []` opts out entirely and includes no extended env.
+
+
 ## Standard Schema
 
 If you aren't using ArkType, import `withArkEnv` from the `/standard/config`

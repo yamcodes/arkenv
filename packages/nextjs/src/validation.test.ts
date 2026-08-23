@@ -268,6 +268,70 @@ describe("build-time environment validation", () => {
 			expect(exitSpy).not.toHaveBeenCalled();
 		});
 
+		it("should pass strict layout validation when server omits extends (auto-extend)", () => {
+			fs.writeFileSync(
+				sharedPath,
+				`
+				import { type } from "@arkenv/core";
+				export const SharedSchema = type({
+					NODE_ENV: "'development' | 'production'",
+				});
+				`,
+				"utf-8",
+			);
+
+			fs.writeFileSync(
+				clientPath,
+				`
+				import arkenv from "./generated/env.gen";
+				import { SharedSchema } from "./internal/shared";
+				export const env = arkenv({
+					NEXT_PUBLIC_API_URL: "string",
+				}, {
+					extends: [SharedSchema],
+					runtimeEnv: {
+						NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+						NODE_ENV: process.env.NODE_ENV,
+					}
+				});
+				`,
+				"utf-8",
+			);
+
+			fs.writeFileSync(
+				serverPath,
+				`
+				import arkenv from "${path.resolve(__dirname, "./server.ts")}";
+				export const env = arkenv({
+					DATABASE_URL: "string",
+				});
+				`,
+				"utf-8",
+			);
+
+			process.env.DATABASE_URL = "postgres://localhost/db";
+			process.env.NEXT_PUBLIC_API_URL = "https://api.example.com";
+			process.env.NODE_ENV = "development";
+
+			setupArkEnv({
+				schemaPath: strictBaseDir,
+				outputPath: strictOutputPath,
+				layout: "strict",
+				validate: false,
+			});
+
+			expect(() => {
+				setupArkEnv({
+					schemaPath: strictBaseDir,
+					outputPath: strictOutputPath,
+					layout: "strict",
+					validate: true,
+				});
+			}).not.toThrow();
+
+			expect(exitSpy).not.toHaveBeenCalled();
+		});
+
 		it("should exit build when a server variable is missing in strict layout", () => {
 			fs.writeFileSync(
 				sharedPath,

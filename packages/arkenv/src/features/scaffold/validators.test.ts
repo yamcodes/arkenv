@@ -395,7 +395,10 @@ describe("validators templates", () => {
 			expect(templates.client).not.toContain(
 				"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
 			);
-			expect(templates.server).toContain("extends: [clientEnv],");
+			expect(templates.server).not.toContain("extends: [clientEnv]");
+			expect(templates.server).not.toContain(
+				'import { env as clientEnv } from "./client"',
+			);
 		});
 
 		it("returns strict templates with custom nextjsImportPath", () => {
@@ -435,7 +438,30 @@ describe("validators templates", () => {
 			expect(templates.client).toContain(
 				"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
 			);
-			expect(templates.server).toContain("extends: [clientEnv],");
+			expect(templates.server).not.toContain("extends: [clientEnv]");
+			expect(templates.server).not.toContain(
+				'import { env as clientEnv } from "./client"',
+			);
+		});
+
+		it("returns simplified Next.js strict server template without manual extends", () => {
+			const options = {
+				validator: "arktype" as const,
+				framework: "nextjs" as const,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+			};
+			const templates = getStrictTemplates(options);
+			expect(templates.server).toContain(
+				'import arkenv from "@arkenv/nextjs/server"',
+			);
+			expect(templates.server).not.toContain("extends: [clientEnv]");
+			expect(templates.server).not.toContain(
+				'import { env as clientEnv } from "./client"',
+			);
+			expect(templates.server).toContain("export const env = arkenv(");
 		});
 
 		it("returns simplified Nuxt strict server template without manual extends", () => {

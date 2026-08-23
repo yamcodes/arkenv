@@ -103,6 +103,20 @@ export function arkenv<
 ${GENERATED_FOOTER}`;
 }
 
+/**
+ * Ambient module declaration so `#arkenv/client-env` resolves to the project's
+ * `env/client.ts` for `AutoClientEnv` type inference on `@arkenv/nextjs/server`.
+ *
+ * @returns Generated `.d.ts` source
+ */
+export function generateClientEnvAmbientDeclaration(): string {
+	return `${GENERATED_HEADER}
+declare module "#arkenv/client-env" {
+	export { env } from "../client";
+}
+`;
+}
+
 export function generateClientFactoryCode(
 	clientKeys: string[],
 	sharedKeys: string[],
