@@ -1,0 +1,31 @@
+{
+	"name": "arkenv-example-with-vite-react-standard",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"start": "vite",
+		"build": "tsc -b && vite build",
+		"preview": "vite preview",
+		"clean": "rimraf dist node_modules"
+	},
+	"dependencies": {
+		"@arkenv/standard": "1.0.0-alpha.4",
+		"@arkenv/vite-plugin": "1.0.0-alpha.8",
+		"react": "^19.2.5",
+		"react-dom": "^19.2.5",
+		"zod": "^4.4.1"
+	},
+	"devDependencies": {
+		"@types/node": "^24.12.2",
+		"@types/react": "^19.2.14",
+		"@types/react-dom": "^19.2.3",
+		"@vitejs/plugin-react": "^6.0.1",
+		"globals": "^17.5.0",
+		"rimraf": "^6.1.3",
+		"typescript": "^6.0.3",
+		"vite": "8.0.10"
+	},
+	"packageManager": "npm@11.9.0"
+}

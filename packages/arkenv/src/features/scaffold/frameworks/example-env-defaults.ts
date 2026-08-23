@@ -29,12 +29,23 @@ export const exampleEnvDefaults: Record<string, Record<string, string>> = {
 		NEXT_PUBLIC_API_URL: "https://api.example.com",
 		NODE_ENV: "development",
 	},
+	"with-nextjs-standard": {
+		DATABASE_URL: "postgres://localhost:5432/mydb",
+		NEXT_PUBLIC_API_URL: "https://api.example.com",
+		NODE_ENV: "development",
+	},
 	"with-nuxt": {
 		DATABASE_URL: "postgres://localhost:5432/mydb",
 		NUXT_PUBLIC_API_URL: "https://api.example.com",
 		NODE_ENV: "development",
 	},
 	"with-vite-react": {
+		PORT: "3000",
+		VITE_MY_VAR: "hello",
+		VITE_MY_NUMBER: "42",
+		VITE_MY_BOOLEAN: "true",
+	},
+	"with-vite-react-standard": {
 		PORT: "3000",
 		VITE_MY_VAR: "hello",
 		VITE_MY_NUMBER: "42",

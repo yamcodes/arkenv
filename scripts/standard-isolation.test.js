@@ -1,3 +1,4 @@
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -47,4 +48,30 @@ describe("integration /standard isolation", () => {
 	it("keeps every published /standard export free of arktype and @arkenv/core", async () => {
 		await assertPackagesStandardIsolation(integrationPackages);
 	}, 60_000);
+});
+
+describe("standard examples isolation", () => {
+	it("verifies with-nextjs-standard and with-vite-react-standard never depend on or import arktype / @arkenv/core", () => {
+		const standardExamples = [
+			"examples/with-nextjs-standard",
+			"examples/with-vite-react-standard",
+		];
+
+		for (const relDir of standardExamples) {
+			const dir = join(rootDir, relDir);
+			expect(existsSync(join(dir, "package.json"))).toBe(true);
+			expect(existsSync(join(dir, "README.md"))).toBe(true);
+
+			const pkg = JSON.parse(readFileSync(join(dir, "package.json"), "utf8"));
+			const allDeps = {
+				...pkg.dependencies,
+				...pkg.devDependencies,
+				...pkg.peerDependencies,
+			};
+
+			expect(allDeps).not.toHaveProperty("arktype");
+			expect(allDeps).not.toHaveProperty("@arkenv/core");
+			expect(allDeps).toHaveProperty("@arkenv/standard");
+		}
+	});
 });

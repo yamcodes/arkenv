@@ -47,10 +47,10 @@ into string arrays before validation. You can use standard `z.number()` and
 
 Zod methods for defaults and optional fields behave consistently with ArkEnv:
 
-| Method | Behavior |
-| :--- | :--- |
-| `.default(...)` | Fallback value used when the environment variable is missing |
-| `.optional()` | Allows the environment variable to remain undefined |
+| Method                   | Behavior                                                              |
+| :----------------------- | :-------------------------------------------------------------------- |
+| `.default(...)`          | Fallback value used when the environment variable is missing          |
+| `.optional()`            | Allows the environment variable to remain undefined                   |
 | `emptyAsUndefined: true` | Converts empty strings (`""`) to `undefined` so `.default()` triggers |
 
 ## Zod Mini
@@ -116,4 +116,3 @@ configuration.
 
   <Card href="/docs/guides/frameworks" title="Framework guides" description="Integrate your Zod schema with Next.js, Nuxt, Vite, or Bun." />
 </Cards>
-

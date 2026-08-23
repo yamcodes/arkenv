@@ -19,6 +19,12 @@
 			"framework": "nextjs"
 		},
 		{
+			"id": "with-nextjs-standard",
+			"name": "Next.js (Standard Schema)",
+			"description": "Minimal Next.js project with @arkenv/nextjs/standard and Zod",
+			"framework": "nextjs"
+		},
+		{
 			"id": "with-nuxt",
 			"name": "Nuxt",
 			"description": "Minimal Nuxt project with ArkType",
@@ -28,6 +34,12 @@
 			"id": "with-vite-react",
 			"name": "React + Vite",
 			"description": "React + Vite + ArkType (Client-side inlining)",
+			"framework": "vite"
+		},
+		{
+			"id": "with-vite-react-standard",
+			"name": "React + Vite (Standard Schema)",
+			"description": "React + Vite with @arkenv/vite-plugin/standard and Zod",
 			"framework": "vite"
 		},
 		{
