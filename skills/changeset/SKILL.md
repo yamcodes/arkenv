@@ -101,7 +101,8 @@ For packages in **v1+** (e.g. active `v1` branch):
 ### Title convention
 
 - **Format**: All changeset descriptions MUST start with a `####` header.
-- **Mood**: You MUST use the **imperative mood** for all headers, change summaries, and actions. Write changesets as commands to the codebase (e.g. "Add helper...", "Fix issue...", "Drop support..." instead of "Adds...", "Fixed...", "Drops..."). Any changeset using indicative ("Adds/fixes") or past tense ("Added/fixed") is strictly invalid.
+- **Mood**: You MUST use the **imperative mood** for all `####` headers (e.g. "Add helper...", "Fix issue...", "Drop support..." instead of "Adds...", "Fixed...", "Drops...").
+- **Body & Summary Tense**: Change summaries, descriptions, and action bullet points MUST be written in the **past tense** (e.g. "Added helper...", "Fixed issue...", "Registered..."). Any changeset using present indicative ("Adds/fixes") or imperative for body summaries is strictly invalid.
 
 ### Usage examples
 
@@ -154,11 +155,11 @@ export const env = arkenv({
 
 #### Imperative title of the change (e.g., "Add helper" - MUST be imperative mood)
 
-A concise, technical description of the change (using the imperative mood for action summaries). Keep it brief, avoid long prose or bullet points, and provide code snippets/usage examples where helpful.
+A concise, technical description of the change (using the past tense for action summaries and bullet points). Keep it brief, avoid long prose, and provide code snippets/usage examples where helpful.
 
 Include:
 - **Usage examples** (code blocks)
-- Bullet points for details
+- Bullet points for details (using past tense, e.g. "- Added...", "- Updated...")
 - Migration instructions for breaking changes (using `major` bump and you MUST include a `**BREAKING CHANGE**:` note at the bottom)
 
 **Note**: Do NOT reference GitHub issues (e.g., #123) directly in the changeset. Changesets will automatically be linked to the PR and commits during the release process.
@@ -171,7 +172,7 @@ Include:
 ### When to modify
 
 - The bump type is wrong (e.g., used `minor` for a patch-level change)
-- The description uses past or indicative tense instead of imperative mood
+- The title is not in imperative mood or the body/summary is not in past tense
 - Usage examples are missing or incorrect
 - The changeset references GitHub issues directly
 - A change is documented that should be excluded (internal-only refactoring with no consumer value)
@@ -187,8 +188,8 @@ Include:
 ### Validation checklist after modification
 
 - [ ] Bump type matches the decision guide (patch/minor for non-breaking, major for breaking)
-- [ ] Title starts with `####` header
-- [ ] All descriptions use imperative mood (no past tense, no indicative)
+- [ ] Title starts with `####` header in imperative mood
+- [ ] Body summaries and bullet points use past tense
 - [ ] Usage examples present for user-facing changes
 - [ ] No GitHub issue references (# numbers)
 - [ ] Breaking changes use `major` bump and include a `**BREAKING CHANGE**:` note at the bottom
@@ -243,15 +244,16 @@ ls .changeset/*.md
 
 ## Common mistakes
 
-| Mistake               | Issue               | Fix                                              |
-| --------------------- | ------------------- | ------------------------------------------------ |
-| Wrong bump type       | Unexpected version  | Review decision guide above                      |
-| Vague description     | Poor CHANGELOG      | Be specific about changes                        |
-| Missing changeset     | No release notes    | Always add before PR                             |
-| Past tense in body    | Style violation     | Rewrite in imperative mood                       |
-| Not including context | Hard to understand  | Explain *why* not just *what*                    |
-| Meaningless changes   | Cluttered CHANGELOG | Only document changes with consumer value        |
-| Including issue links | Redundant data      | Remove # references; PR links them automatically |
+| Mistake                            | Issue               | Fix                                   |
+| ---------------------------------- | ------------------- | ------------------------------------- |
+| Wrong bump type                    | Unexpected version  | Review decision guide above           |
+| Vague description                  | Poor CHANGELOG      | Be specific about changes             |
+| Missing changeset                  | No release notes    | Always add before PR                  |
+| Present/imperative tense in body   | Style violation     | Rewrite body summaries in past tense  |
+| Non-imperative title               | Style violation     | Rewrite `####` title in imperative mood |
+| Not including context              | Hard to understand  | Explain *why* not just *what*         |
+| Meaningless changes                | Cluttered CHANGELOG | Only document changes with consumer value |
+| Including issue links              | Redundant data      | Remove # references; PR links them automatically |
 
 ## Common scenarios
 
