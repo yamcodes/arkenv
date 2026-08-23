@@ -117,7 +117,9 @@ describe("HeroNameCycle", () => {
 			</h1>,
 		);
 
-		const cycle = document.querySelector(".home-aurora__cycle")!;
+		const cycle = document.querySelector(".home-aurora__cycle");
+		expect(cycle).not.toBeNull();
+		if (!cycle) return;
 		fireEvent.pointerEnter(cycle);
 		act(() => {
 			vi.advanceTimersByTime(HERO_FIRST_DWELL_MS + HERO_CYCLE_MS);
@@ -140,7 +142,10 @@ describe("HeroNameCycle", () => {
 			</h1>,
 		);
 
-		fireEvent.pointerEnter(document.getElementById("home-hero")!);
+		const hero = document.getElementById("home-hero");
+		expect(hero).not.toBeNull();
+		if (!hero) return;
+		fireEvent.pointerEnter(hero);
 		act(() => {
 			vi.advanceTimersByTime(HERO_FIRST_DWELL_MS);
 		});

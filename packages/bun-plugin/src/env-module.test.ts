@@ -20,7 +20,7 @@ describe("transform mode helpers", () => {
 		expect(
 			isTransformModeCall({ clientPrefix: "BUN_PUBLIC_" }, undefined),
 		).toBe(true);
-		expect(isTransformModeCall({}, undefined)).toBe(false);
+		expect(isTransformModeCall({}, undefined)).toBe(true);
 		expect(isTransformModeCall({ BUN_PUBLIC_FOO: "string" }, undefined)).toBe(
 			false,
 		);
@@ -92,15 +92,6 @@ describe("transform mode plugin", () => {
 		expect(hybrid).toHaveProperty("name", "@arkenv/bun-plugin");
 		expect(hybrid).toHaveProperty("target", "browser");
 		expect(hybrid).toHaveProperty("setup");
-	});
-
-	it("keeps schema/SPA path working alongside transform helpers", () => {
-		process.env.BUN_PUBLIC_TEST = "test-value";
-		const plugin = arkenv({ BUN_PUBLIC_TEST: "string" });
-		expect(plugin).toHaveProperty("name", "@arkenv/bun-plugin");
-		expect(plugin).not.toHaveProperty("target");
-		expect(plugin).toHaveProperty("setup");
-		delete process.env.BUN_PUBLIC_TEST;
 	});
 
 	it("rewrites the env module via onLoad with coerced literals", async () => {
@@ -308,12 +299,11 @@ export default env;
 	});
 });
 
-describe("SPA mode regression", () => {
-	it("still rewrites process.env for schema calls", () => {
-		process.env.BUN_PUBLIC_TEST = "test-value";
-		const plugin = arkenv({ BUN_PUBLIC_TEST: "string" });
-		expect(plugin.target).toBeUndefined();
-		delete process.env.BUN_PUBLIC_TEST;
+describe("schema/define removal", () => {
+	it("rejects schema calls", () => {
+		expect(() =>
+			(arkenv as (a?: unknown) => unknown)({ BUN_PUBLIC_TEST: "string" }),
+		).toThrow(/schema\/define plugin API was removed/);
 	});
 });
 
@@ -327,7 +317,7 @@ describe("missing-schema errors", () => {
 	});
 
 	it("throws a short discovery error without an env.ts starter", async () => {
-		const { resolveEnvModulePath } = await import("./env-module-path.js");
+		const { resolveEnvModulePath } = await import("./env-module.js");
 		const root = mkdtempSync(join(tmpdir(), "arkenv-bun-missing-schema-"));
 		temps.push(root);
 
@@ -347,8 +337,8 @@ describe("missing-schema errors", () => {
 		expect(message).not.toMatch(/from "zod"/);
 	});
 
-	it("rejects a discovered strict layout directory", async () => {
-		const { resolveEnvModulePath } = await import("./env-module-path.js");
+	it("discovers a strict layout directory without error", async () => {
+		const { resolveEnvModulePath } = await import("./env-module.js");
 		const root = mkdtempSync(join(tmpdir(), "arkenv-bun-strict-dir-"));
 		temps.push(root);
 		const envDir = join(root, "env");
@@ -356,8 +346,153 @@ describe("missing-schema errors", () => {
 		writeFileSync(join(envDir, "client.ts"), "export const env = {}");
 		writeFileSync(join(envDir, "server.ts"), "export const env = {}");
 
-		expect(() => resolveEnvModulePath(root)).toThrow(
-			/only supports a flat env module file/,
+		expect(resolveEnvModulePath(root)).toBe(envDir);
+	});
+});
+
+describe("strict layout plugin behavior", () => {
+	const temps: string[] = [];
+
+	afterEach(() => {
+		for (const dir of temps.splice(0)) {
+			rmSync(dir, { recursive: true, force: true });
+		}
+	});
+
+	it("blocks imports of env/server in browser bundles via onResolve", async () => {
+		const root = mkdtempSync(join(tmpdir(), "arkenv-bun-strict-fail-"));
+		temps.push(root);
+		const envDir = join(root, "env");
+		mkdirSync(envDir, { recursive: true });
+
+		writeFileSync(
+			join(envDir, "client.ts"),
+			`import arkenv from "@arkenv/core";
+export const env = arkenv({ BUN_PUBLIC_API_URL: "string" });
+`,
 		);
+		writeFileSync(
+			join(envDir, "server.ts"),
+			`import arkenv from "@arkenv/core";
+export const env = arkenv({ DATABASE_URL: "string" });
+`,
+		);
+
+		const previous = { ...process.env };
+		process.env.BUN_PUBLIC_API_URL = "https://api.example.com";
+
+		try {
+			const plugin = arkenv({ schemaPath: envDir });
+
+			let onStart: (() => void | Promise<void>) | undefined;
+			let onResolve:
+				| ((args: { path: string; importer?: string }) => unknown)
+				| undefined;
+
+			plugin.setup({
+				onStart(cb: () => void | Promise<void>) {
+					onStart = cb;
+				},
+				onResolve(
+					_opts: { filter: RegExp },
+					cb: typeof onResolve extends infer T ? T : never,
+				) {
+					onResolve = cb;
+				},
+				onLoad() {},
+			} as any);
+
+			await onStart?.();
+
+			expect(() =>
+				onResolve?.({
+					path: "./env/server",
+					importer: join(root, "index.ts"),
+				}),
+			).toThrow(
+				/Importing server-only environment schema on the client is not allowed/,
+			);
+		} finally {
+			process.env = previous;
+		}
+	});
+
+	it("transforms env/client in browser bundles via onLoad", async () => {
+		const root = mkdtempSync(join(tmpdir(), "arkenv-bun-strict-pass-"));
+		temps.push(root);
+		const envDir = join(root, "env");
+		mkdirSync(envDir, { recursive: true });
+
+		const clientPath = join(envDir, "client.ts");
+		writeFileSync(
+			clientPath,
+			`import arkenv from "@arkenv/core";
+export const env = arkenv({ BUN_PUBLIC_API_URL: "string" });
+`,
+		);
+		writeFileSync(
+			join(envDir, "server.ts"),
+			`import arkenv from "@arkenv/core";
+export const env = arkenv({ DATABASE_URL: "string" });
+`,
+		);
+
+		const previous = { ...process.env };
+		process.env.BUN_PUBLIC_API_URL = "https://api.example.com";
+
+		try {
+			const plugin = arkenv({ schemaPath: envDir });
+
+			let onStart: (() => void | Promise<void>) | undefined;
+			let onResolve:
+				| ((args: {
+						path: string;
+						importer?: string;
+				  }) => { errors?: { text: string }[] } | undefined)
+				| undefined;
+			let onLoad:
+				| ((args: {
+						path: string;
+				  }) =>
+						| { contents?: string; loader?: string }
+						| undefined
+						| Promise<{ contents?: string; loader?: string } | undefined>)
+				| undefined;
+
+			plugin.setup({
+				onStart(cb: () => void | Promise<void>) {
+					onStart = cb;
+				},
+				onResolve(
+					_opts: { filter: RegExp },
+					cb: typeof onResolve extends infer T ? T : never,
+				) {
+					onResolve = cb;
+				},
+				onLoad(
+					_opts: { filter: RegExp },
+					cb: typeof onLoad extends infer T ? T : never,
+				) {
+					onLoad = cb;
+				},
+			} as any);
+
+			await onStart?.();
+
+			const resolveResult = onResolve?.({
+				path: "./env/client",
+				importer: join(root, "index.ts"),
+			});
+			expect(resolveResult).toBeUndefined();
+
+			const loadResult = await onLoad?.({
+				path: clientPath,
+			});
+			expect(loadResult?.contents).toBeDefined();
+			expect(loadResult?.contents).toContain("https://api.example.com");
+			expect(loadResult?.contents).not.toContain("@arkenv/core");
+		} finally {
+			process.env = previous;
+		}
 	});
 });

@@ -1,6 +1,31 @@
 import { describe, expectTypeOf, it } from "vitest";
-import { arkenv } from "./index";
+// Regression guards: `type` and `Infer` must NOT be re-exported from @arkenv/nextjs.
+// Bindings are referenced so @ts-expect-error is only satisfied by a missing export
+// (not by noUnusedLocals / TS6133). If a directive ever becomes unused, a re-export
+// was accidentally re-introduced.
+// @ts-expect-error `type` is not exported from @arkenv/nextjs/client — import from @arkenv/core
+import { type as typeFromClient } from "./client";
+// @ts-expect-error `Infer` is not exported from @arkenv/nextjs root — import from @arkenv/core
+import type { Infer as InferFromRoot } from "./index";
+// @ts-expect-error `type` is not exported from @arkenv/nextjs root — import from @arkenv/core
+import { arkenv, type as typeFromRoot } from "./index";
+// @ts-expect-error `Infer` is not exported from @arkenv/nextjs/react-server — import from @arkenv/core
+import type { Infer as InferFromReactServer } from "./react-server";
+// @ts-expect-error `type` is not exported from @arkenv/nextjs/react-server — import from @arkenv/core
+import { type as typeFromReactServer } from "./react-server";
+// @ts-expect-error `type` is not exported from @arkenv/nextjs/server — import from @arkenv/core
+import { type as typeFromServer } from "./server";
 import arkenvStandard from "./standard";
+
+void typeFromClient;
+void typeFromRoot;
+void typeFromServer;
+void typeFromReactServer;
+
+type _InferFromRootGuard = InferFromRoot<Record<string, never>>;
+type _InferFromReactServerGuard = InferFromReactServer<Record<string, never>>;
+
+export type { _InferFromReactServerGuard, _InferFromRootGuard };
 
 const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({
 	"~standard": {

@@ -14,6 +14,133 @@ export {
 	formatMissingSchemaError,
 } from "./missing-schema-error";
 
+/**
+ * Standard build-time error thrown when client-graph code imports a server-only schema.
+ */
+export const CLIENT_SECURITY_ERROR = formatBuildError(
+	"Importing server-only environment schema on the client is not allowed!",
+);
+
+/**
+ * Check whether an imported module ID / path refers to a server schema file
+ * that must be blocked from client-graph bundles (ADR 0013 / ADR 0016).
+ *
+ * @param id The module identifier or file path being imported
+ * @param importer The module path that initiated the import (if available)
+ * @param baseDir The strict-layout base directory (e.g. `/project/env` or `/project/src/env`)
+ * @param rootDir Optional project root directory for resolving aliases
+ * @param srcDir Optional source directory for resolving aliases
+ * @returns `true` if the import targets a server-only schema file
+ */
+export function isServerSchemaImport(
+	id: string,
+	importer?: string,
+	baseDir?: string,
+	rootDir?: string,
+	srcDir?: string,
+): boolean {
+	if (!id || !id.includes("server")) return false;
+
+	const isKnownServerModule =
+		id === "@arkenv/nuxt/server" ||
+		id === "@arkenv/nuxt/standard/server" ||
+		id === "@arkenv/nextjs/server" ||
+		id === "@arkenv/nextjs/standard/server" ||
+		/[/\\]@arkenv[/\\](?:nuxt|nextjs)[/\\](?:src|dist)[/\\](?:standard[/\\])?server(?:\.[mc]?[jt]sx?)?$/.test(
+			id,
+		);
+
+	if (isKnownServerModule) {
+		return true;
+	}
+
+	if (!baseDir) {
+		return false;
+	}
+
+	const normalizedBaseDir = path.resolve(baseDir);
+
+	let cleanId = id;
+	if (cleanId.startsWith("\0")) {
+		cleanId = cleanId.slice(1);
+	}
+	const queryIndex = cleanId.indexOf("?");
+	if (queryIndex !== -1) {
+		cleanId = cleanId.slice(0, queryIndex);
+	}
+
+	const isTargetUnderBase = (target: string): boolean => {
+		if (!path.isAbsolute(target)) return false;
+
+		let realTarget = target;
+		let realBase = normalizedBaseDir;
+		try {
+			if (fs.existsSync(target)) realTarget = fs.realpathSync(target);
+			if (fs.existsSync(normalizedBaseDir))
+				realBase = fs.realpathSync(normalizedBaseDir);
+		} catch {
+			// ignore
+		}
+
+		for (const [base, candidate] of [
+			[normalizedBaseDir, target],
+			[realBase, realTarget],
+		]) {
+			const relativePath = path.relative(base, candidate);
+			const isUnderBaseDir =
+				!relativePath.startsWith("..") && !path.isAbsolute(relativePath);
+			const isServerFile = /(^|[/\\])server(?:\.[mc]?[jt]sx?|[/\\]|$)/.test(
+				relativePath,
+			);
+
+			if (isUnderBaseDir && isServerFile) {
+				return true;
+			}
+		}
+
+		return false;
+	};
+
+	let targetId = cleanId;
+	if ((cleanId.startsWith(".") || !path.isAbsolute(cleanId)) && importer) {
+		targetId = path.resolve(path.dirname(importer), cleanId);
+	} else if (rootDir) {
+		if (cleanId.startsWith("~~/")) {
+			targetId = path.resolve(rootDir, cleanId.slice(3));
+		} else if (cleanId.startsWith("~/") || cleanId.startsWith("@/")) {
+			const subPath = cleanId.slice(2);
+			if (isTargetUnderBase(path.resolve(rootDir, subPath))) return true;
+			if (isTargetUnderBase(path.resolve(rootDir, "src", subPath))) return true;
+			if (srcDir && isTargetUnderBase(path.resolve(srcDir, subPath)))
+				return true;
+		} else if (cleanId.startsWith("/")) {
+			targetId = path.resolve(rootDir, cleanId.slice(1));
+		}
+	}
+
+	if (isTargetUnderBase(targetId)) {
+		return true;
+	}
+
+	// Also check bare specifiers resolved against candidate roots (e.g. rootDir, srcDir, parent of baseDir)
+	const candidateRoots: string[] = [];
+	if (rootDir) {
+		candidateRoots.push(rootDir, path.resolve(rootDir, "src"));
+		if (srcDir) candidateRoots.push(srcDir);
+	}
+	candidateRoots.push(path.dirname(normalizedBaseDir));
+
+	const normalizedTarget = path.normalize(cleanId);
+	for (const candRoot of candidateRoots) {
+		const candPath = path.resolve(candRoot, normalizedTarget);
+		if (isTargetUnderBase(candPath)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 // Global watcher reference isolated to this bundle's scope
 let activeWatcher: FSWatcher | undefined;
 

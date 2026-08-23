@@ -21,16 +21,15 @@ Standard Schema entry: `@arkenv/bun-plugin/standard`.
 
 ## Exports
 
-The default export is the hybrid plugin. Named exports match Vite's dual
-call shapes.
+The default export is the hybrid plugin. Named exports match the
+transform factory.
 
-| Export                | Role                            |
-| --------------------- | ------------------------------- |
-| default               | `hybrid` plugin (default entry) |
-| named `arkenv`        | Same dual-mode factory as Vite  |
-| named `hybrid`        | Explicit hybrid export          |
-| `./standard`          | Standard Schema plugin          |
-| `ProcessEnvAugmented` | Type helper for `process.env`   |
+| Export         | Role                            |
+| -------------- | ------------------------------- |
+| default        | `hybrid` plugin (default entry) |
+| named `arkenv` | Same transform factory as Vite  |
+| named `hybrid` | Explicit hybrid export          |
+| `./standard`   | Standard Schema plugin          |
 
 Default client prefix: `BUN_PUBLIC_`.
 
@@ -56,27 +55,23 @@ export const env = arkenv({
 });
 ```
 
-## Modes
+## Transform options
 
-Same dual call shapes as
+Same transform call shape as
 [`@arkenv/vite-plugin`](/docs/reference/vite-plugin):
 
-1. **Transform:** `arkenv()` or
-   `arkenv({ schemaPath, clientPrefix, ... })` rewrites the schema
-   module in the client graph.
-2. **Schema / define:** `arkenv(schema)` or `arkenv(schema, config)`
-   validates and rewrites `process.env` accessors for SPA builds.
+- `arkenv()` or `arkenv({ schemaPath, clientPrefix, ... })` rewrites the
+  schema module in the client graph.
+- A schema argument is rejected. Define the schema in `env.ts` and
+  import `{ env }` from there.
 
 Plugin config omits `safe` so failed validation cannot soft-fail into
 the bundle.
 
 ## Types
 
-CLI `init` can write `bun-env.d.ts` for fullstack templates.
-
-```ts
-import type { ProcessEnvAugmented } from "@arkenv/bun-plugin";
-```
+Import the validated `env` object from your schema module. Prefer that
+over reading `process.env` for schema keys in fullstack apps.
 
 ## Next steps
 

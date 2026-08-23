@@ -1,12 +1,13 @@
 {
 	"name": "arkenv",
 	"type": "module",
-	"version": "1.0.0-alpha.11",
+	"version": "1.0.0-alpha.12",
 	"description": "Interactive CLI for scaffolding ArkEnv projects",
 	"bin": {
-		"arkenv": "./dist/index.cjs"
+		"arkenv": "./dist/bin.cjs"
 	},
 	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
@@ -21,7 +22,7 @@
 	],
 	"scripts": {
 		"build": "tsdown",
-		"start": "node ./dist/index.cjs init",
+		"start": "node ./dist/bin.cjs init",
 		"dev": "tsdown --watch",
 		"test": "vitest",
 		"test:run": "vitest run",

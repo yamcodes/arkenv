@@ -42,5 +42,3 @@ import { env } from "./env";
 env.BUN_PUBLIC_API_URL; // available on client and server
 env.DATABASE_URL; // server only — throws if read in the browser
 ```
-
-Passing a schema to `arkenv(schema)` (the previous `process.env` rewrite API) continues to work unchanged as SPA mode.

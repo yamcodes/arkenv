@@ -1,5 +1,18 @@
 # @arkenv/core
 
+## 1.0.0-alpha.12
+
+### Patch Changes
+
+- #### Harden runtime import guard for native ESM and CommonJS _[`#1591`](https://github.com/yamcodes/arkenv/pull/1591) [`fec8d08`](https://github.com/yamcodes/arkenv/commit/fec8d088574d0d8c8c58d7c4ddfbe0348f22ea83) [@yamcodes](https://github.com/yamcodes)_
+
+  Separated the CLI binary executable (`src/bin.ts`) from the package root export (`src/index.ts`) so that importing or requiring `arkenv` as a library unconditionally throws a descriptive migration error guiding users to `@arkenv/core` (or `@arkenv/standard`) in both ESM and CommonJS module systems.
+
+  ```ts
+  // Importing arkenv in ESM or requiring it in CJS throws immediately:
+  import "arkenv"; // 🚨 [ArkEnv] You imported the 'arkenv' package as a library. Starting with v1.0.0, the 'arkenv' package is exclusively the interactive CLI. If you want to validate environment variables in your code, please install and import '@arkenv/core' (or '@arkenv/standard') instead, or run `npx arkenv@latest init` to guide you through setup.
+  ```
+
 ## 1.0.0-alpha.11
 
 ### Patch Changes

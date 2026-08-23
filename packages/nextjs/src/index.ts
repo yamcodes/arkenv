@@ -108,8 +108,6 @@ export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 	);
 }
 
-export type { Infer } from "@arkenv/core";
-export { type } from "@arkenv/core";
 export type { ArkEnvScriptProps } from "./script";
 export { ArkEnvScript } from "./script";
 

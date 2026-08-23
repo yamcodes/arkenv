@@ -1,11 +1,53 @@
 import { exec as execCallback } from "node:child_process";
 import fs from "node:fs/promises";
+import { createRequire } from "node:module";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import { describe, expect, it } from "vitest";
 
 const exec = promisify(execCallback);
-const cliPath = path.resolve(__dirname, "../dist/index.cjs");
+const require = createRequire(import.meta.url);
+
+const cliPath = path.resolve(__dirname, "../dist/bin.cjs");
+const esmIndexPath = path.resolve(__dirname, "../dist/index.js");
+const cjsIndexPath = path.resolve(__dirname, "../dist/index.cjs");
+
+describe("library import guard", () => {
+	it("importing ESM entry throws migration error", async () => {
+		await expect(import(pathToFileURL(esmIndexPath).href)).rejects.toThrow(
+			"You imported the 'arkenv' package as a library",
+		);
+	});
+
+	it("requiring CJS entry throws migration error", () => {
+		expect(() => require(cjsIndexPath)).toThrow(
+			"You imported the 'arkenv' package as a library",
+		);
+	});
+
+	it("running node with ESM import throws migration error", async () => {
+		await expect(
+			exec(
+				`node --input-type=module -e "import '${pathToFileURL(esmIndexPath).href}'"`,
+			),
+		).rejects.toMatchObject({
+			stderr: expect.stringContaining(
+				"You imported the 'arkenv' package as a library",
+			),
+		});
+	});
+
+	it("running node with CJS require throws migration error", async () => {
+		await expect(
+			exec(`node -e "require('${cjsIndexPath.replace(/\\/g, "\\\\")}')"`),
+		).rejects.toMatchObject({
+			stderr: expect.stringContaining(
+				"You imported the 'arkenv' package as a library",
+			),
+		});
+	});
+});
 
 describe("cli smoke tests", () => {
 	it("--help prints usage and exits 0", async () => {

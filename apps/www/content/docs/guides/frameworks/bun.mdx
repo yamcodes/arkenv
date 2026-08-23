@@ -104,26 +104,20 @@ export const env = arkenv({
 });
 ```
 
-## TypeScript augmentation
+## Client access
 
-If you are building an accessor-style single-page app and want type safety on
-`process.env`, augment the global `NodeJS.ProcessEnv` interface:
+Import the validated `env` object from your schema module. Do not read `process.env`
+for schema keys in full-stack apps — the plugin rewrites the client copy of `env.ts`
+so public keys stay typed and coerced. For full-stack applications, prefer exporting
+the typed `env` object so validation runs reliably at process boot. See
+[`@arkenv/bun-plugin`](/docs/reference/bun-plugin).
 
-```ts title="./src/env.d.ts" twoslash
-import type { ProcessEnvAugmented } from "@arkenv/bun-plugin";
-import { type } from "@arkenv/core";
+## SSR and bundling execution
 
-export const Env = type({
-  BUN_PUBLIC_API_URL: "string",
-});
+Full-stack Bun applications separate server runtime execution from client bundle generation:
 
-declare namespace NodeJS {
-  interface ProcessEnv extends ProcessEnvAugmented<typeof Env> {}
-}
-```
-
-For full-stack applications, prefer exporting the typed `env` object so validation
-runs reliably at process boot.
+- **Server execution:** Server entrypoints and backend APIs execute real `@arkenv/core` validation at startup, validating database URLs and backend secrets before serving traffic.
+- **Client bundling:** During `Bun.build` runs or `[serve.static]` requests, `@arkenv/bun-plugin` transforms `env.ts` imports in client code. It inlines `BUN_PUBLIC_*` values as static literals and replaces server keys with throwing runtime stubs. Browser bundles omit the validator engine.
 
 ## Next steps
 

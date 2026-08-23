@@ -5,7 +5,7 @@
     "": {
       "name": "arkenv-example-with-bun-react",
       "dependencies": {
-        "@arkenv/bun-plugin": "1.0.0-alpha.8",
+        "@arkenv/bun-plugin": "1.0.0-alpha.9",
         "@arkenv/core": "1.0.0-alpha.4",
         "arktype": "^2.2.0",
         "react": "^19.2.5",
@@ -26,7 +26,7 @@
 
     "@arkenv/build": ["@arkenv/build@0.0.2-alpha.2", "", { "dependencies": { "chokidar": "^4.0.3" } }, "sha512-MEL1TDjSll8EKwPN7DEkDr32HsshLsm5Y4VNbpygztqyyZMR2cFbmHwnbWGQpqdiH58Si1/DDpWSQo2j7eauzQ=="],
 
-    "@arkenv/bun-plugin": ["@arkenv/bun-plugin@1.0.0-alpha.8", "", { "dependencies": { "@arkenv/build": "0.0.2-alpha.2", "jiti": "2.7.0" }, "peerDependencies": { "@arkenv/core": "^1.0.0", "@arkenv/standard": "^1.0.0", "arktype": "^2.1.22", "bun": "^1.0.0" }, "optionalPeers": ["@arkenv/core", "@arkenv/standard", "arktype"] }, "sha512-XAA+bHtzXD9Ncnhj/39Ytm1w3kcufc4EuSoTQZZsqHYbxvauG9R4y7x/p7m5aLee6INb089d+g97egp39uCOgA=="],
+    "@arkenv/bun-plugin": ["@arkenv/bun-plugin@1.0.0-alpha.9", "", { "dependencies": { "@arkenv/build": "0.0.2-alpha.2", "jiti": "2.7.0" }, "peerDependencies": { "@arkenv/core": "^1.0.0", "@arkenv/standard": "^1.0.0", "arktype": "^2.1.22", "bun": "^1.0.0" }, "optionalPeers": ["@arkenv/core", "@arkenv/standard", "arktype"] }, "sha512-CP8IiYXNGns7HP82J9LmUXDdw6oqH+ptLMAwQ+04t9EEGKsHkA1M7F9e7f6o4Fo0/kggPp7Gl9BgbEGTQ7196A=="],
 
     "@arkenv/core": ["@arkenv/core@1.0.0-alpha.4", "", { "peerDependencies": { "arktype": "^2.1.22" } }, "sha512-r2LsGp0oIm2E7ahsFpArP02GdxLZMWLE3y3RaYNTdMTYOtxRsmGOxXKTzy4NW8kRFA28Pr+ddyHgQ94Kt86BMQ=="],
 

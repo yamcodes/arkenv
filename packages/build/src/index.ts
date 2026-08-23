@@ -4,5 +4,25 @@
 // These are strictly build-tool types: no runtime entry point of core,
 // standard, or the integrations depends on them.
 export type { Logger, LogLevel } from "@repo/log";
+export { classifyEnvKeys } from "./classify-env-keys";
 export * from "./core";
+export {
+	isDotEnvFile,
+	isEnvModuleId,
+	normalizeModuleId,
+	normalizePrefixes,
+	resolveEnvModulePath,
+} from "./env-module-path";
+export { filterEnvByPrefix } from "./filter-env";
 export { generateClientEnvModule } from "./generate-client-env-module";
+export {
+	type LoadValidatedEnvOptions,
+	loadValidatedEnv,
+} from "./load-validated-env";
+export {
+	assertTransformModeCall,
+	isTransformModeCall,
+	SCHEMA_DEFINE_REMOVED,
+	TRANSFORM_OPTION_KEYS,
+	type TransformOptions,
+} from "./transform-options";
