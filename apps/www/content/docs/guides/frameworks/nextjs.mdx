@@ -102,7 +102,7 @@ automatically merges the client env when `extends` is omitted:
 import arkenv from "@arkenv/nextjs/server";
 
 export const env = arkenv({
-	DATABASE_URL: "string",
+  DATABASE_URL: "string",
 });
 // env includes DATABASE_URL + everything from env/client.ts
 ```
@@ -120,17 +120,16 @@ import arkenv from "@arkenv/nextjs/server";
 import { env as clientEnv } from "./client";
 
 export const env = arkenv(
-	{
-		DATABASE_URL: "string",
-	},
-	{
-		extends: [clientEnv], // explicit list — auto-merge is skipped
-	},
+  {
+    DATABASE_URL: "string",
+  },
+  {
+    extends: [clientEnv], // explicit list — auto-merge is skipped
+  },
 );
 ```
 
 Passing `extends: []` opts out entirely and includes no extended env.
-
 
 ## Standard Schema
 

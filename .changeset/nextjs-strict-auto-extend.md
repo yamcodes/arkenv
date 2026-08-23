@@ -11,7 +11,7 @@
 import arkenv from "@arkenv/nextjs/server";
 
 export const env = arkenv({
-	DATABASE_URL: "string",
+  DATABASE_URL: "string",
 });
 ```
 
