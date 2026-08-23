@@ -1,3 +1,4 @@
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -47,4 +48,54 @@ describe("integration /standard isolation", () => {
 	it("keeps every published /standard export free of arktype and @arkenv/core", async () => {
 		await assertPackagesStandardIsolation(integrationPackages);
 	}, 60_000);
+});
+
+describe("standard examples isolation", () => {
+	it("verifies with-nextjs-zod and with-vite-react-zod never depend on or import arktype / @arkenv/core", () => {
+		const standardExamples = [
+			"examples/with-nextjs-zod",
+			"examples/with-vite-react-zod",
+		];
+
+		for (const relDir of standardExamples) {
+			const dir = join(rootDir, relDir);
+			expect(existsSync(join(dir, "package.json"))).toBe(true);
+			expect(existsSync(join(dir, "README.md"))).toBe(true);
+
+			const pkg = JSON.parse(readFileSync(join(dir, "package.json"), "utf8"));
+			const allDeps = {
+				...pkg.dependencies,
+				...pkg.devDependencies,
+				...pkg.peerDependencies,
+			};
+
+			expect(allDeps).not.toHaveProperty("arktype");
+			expect(allDeps).not.toHaveProperty("@arkenv/core");
+			expect(allDeps).toHaveProperty("@arkenv/standard");
+
+			// Scan all source files in the example directory
+			const files = readdirSync(dir, { recursive: true, withFileTypes: true })
+				.filter((dirent) => dirent.isFile())
+				.map((dirent) =>
+					join(dirent.parentPath ?? dirent.path ?? dir, dirent.name),
+				)
+				.filter(
+					(file) =>
+						/\.(ts|tsx|js|mjs|cjs)$/.test(file) &&
+						!file.includes("node_modules") &&
+						!file.includes(".next") &&
+						!file.includes("dist"),
+				);
+
+			expect(files.length).toBeGreaterThan(0);
+
+			for (const file of files) {
+				const content = readFileSync(file, "utf8");
+				expect(content).not.toMatch(/from\s+['"]arktype['"]/);
+				expect(content).not.toMatch(/from\s+['"]@arkenv\/core/);
+				expect(content).not.toMatch(/import\(\s*['"]arktype['"]/);
+				expect(content).not.toMatch(/import\(\s*['"]@arkenv\/core/);
+			}
+		}
+	});
 });

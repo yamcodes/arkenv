@@ -40,8 +40,21 @@ export class RegistryClient {
 						framework: "nextjs",
 					},
 					{
+						id: "with-nextjs-zod",
+						name: "Next.js (Zod)",
+						description: "Next.js with @arkenv/nextjs/standard and Zod",
+						framework: "nextjs",
+					},
+					{
 						id: "with-vite-react",
 						name: "React + Vite",
+						framework: "vite",
+					},
+					{
+						id: "with-vite-react-zod",
+						name: "React + Vite (Zod)",
+						description:
+							"React + Vite with @arkenv/vite-plugin/standard and Zod",
 						framework: "vite",
 					},
 					{
@@ -65,6 +78,13 @@ export class RegistryClient {
 						id: "with-valibot",
 						name: "Valibot",
 						description: "ArkEnv with Valibot in Node.js",
+						framework: "vanilla",
+					},
+					{
+						id: "mix-and-match",
+						name: "Mix and Match",
+						description:
+							"ArkEnv with mixed ArkType, Zod, and Valibot in Node.js",
 						framework: "vanilla",
 					},
 				],

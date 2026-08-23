@@ -104,8 +104,8 @@
 			"name": "🛝 vite-legacy"
 		},
 		{
-			"path": "apps/playgrounds/standard-schema",
-			"name": "🛝 standard-schema"
+			"path": "apps/playgrounds/mix-and-match",
+			"name": "🛝 mix-and-match"
 		},
 		{
 			"path": "apps/playgrounds/esbuild-cjs",
@@ -132,12 +132,20 @@
 			"name": "💡 with-nextjs"
 		},
 		{
+			"path": "examples/with-nextjs-zod",
+			"name": "💡 with-nextjs-zod"
+		},
+		{
 			"path": "examples/with-nuxt",
 			"name": "💡 with-nuxt"
 		},
 		{
 			"path": "examples/with-vite-react",
 			"name": "💡 with-vite-react"
+		},
+		{
+			"path": "examples/with-vite-react-zod",
+			"name": "💡 with-vite-react-zod"
 		},
 		{
 			"path": "examples/with-bun",
@@ -160,8 +168,8 @@
 			"name": "💡 with-valibot"
 		},
 		{
-			"path": "examples/with-standard-schema",
-			"name": "💡 with-standard-schema"
+			"path": "examples/mix-and-match",
+			"name": "💡 mix-and-match"
 		},
 		{
 			"path": "examples/stackblitz",

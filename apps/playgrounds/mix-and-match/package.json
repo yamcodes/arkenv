@@ -1,5 +1,5 @@
 {
-	"name": "arkenv-example-with-standard-schema",
+	"name": "mix-and-match-playground",
 	"private": true,
 	"type": "module",
 	"scripts": {
@@ -10,13 +10,19 @@
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
-		"@arkenv/standard": "1.0.0-alpha.4",
-		"zod": "^4.4.1"
+		"@arkenv/core": "workspace:*",
+		"valibot": "catalog:",
+		"zod": "catalog:"
 	},
 	"devDependencies": {
-		"rimraf": "^6.1.3",
-		"tsx": "^4.21.0",
-		"typescript": "^6.0.3"
+		"rimraf": "catalog:",
+		"tsx": "catalog:",
+		"typescript": "catalog:"
 	},
-	"packageManager": "npm@11.9.0"
+	"arkenvExamples": [
+		{
+			"name": "mix-and-match",
+			"packageManager": "npm"
+		}
+	]
 }

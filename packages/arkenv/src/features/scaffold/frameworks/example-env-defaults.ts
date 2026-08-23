@@ -29,12 +29,23 @@ export const exampleEnvDefaults: Record<string, Record<string, string>> = {
 		NEXT_PUBLIC_API_URL: "https://api.example.com",
 		NODE_ENV: "development",
 	},
+	"with-nextjs-zod": {
+		DATABASE_URL: "postgres://localhost:5432/mydb",
+		NEXT_PUBLIC_API_URL: "https://api.example.com",
+		NODE_ENV: "development",
+	},
 	"with-nuxt": {
 		DATABASE_URL: "postgres://localhost:5432/mydb",
 		NUXT_PUBLIC_API_URL: "https://api.example.com",
 		NODE_ENV: "development",
 	},
 	"with-vite-react": {
+		PORT: "3000",
+		VITE_MY_VAR: "hello",
+		VITE_MY_NUMBER: "42",
+		VITE_MY_BOOLEAN: "true",
+	},
+	"with-vite-react-zod": {
 		PORT: "3000",
 		VITE_MY_VAR: "hello",
 		VITE_MY_NUMBER: "42",
@@ -55,10 +66,12 @@ export const exampleEnvDefaults: Record<string, Record<string, string>> = {
 		PORT: "3000",
 		NODE_ENV: "development",
 	},
-	"with-standard-schema": {
-		HOST: "localhost",
-		PORT: "3000",
+	"mix-and-match": {
+		DATABASE_URL: "https://postgres.example.com/db",
+		API_KEY: "12345678901234567890123456789012",
 		NODE_ENV: "development",
+		PORT: "3000",
+		DEBUG: "false",
 	},
 };
 
