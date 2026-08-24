@@ -9,6 +9,7 @@ import type { InitInput } from "./commands/init";
 
 const FLAG_CONFIG = {
 	isYes: { long: "--yes", short: "-y", kind: "boolean" },
+	isDryRun: { long: "--dry-run", short: "-d", kind: "boolean" },
 	isForce: { long: "--force", short: "-f", kind: "boolean" },
 	isQuiet: { long: "--quiet", short: "-q", kind: "boolean" },
 	isJson: { long: "--json", short: "-j", kind: "boolean" },
@@ -156,6 +157,10 @@ export class CLI {
 		return this.hasFlag("isAgent");
 	}
 
+	get isDryRun(): boolean {
+		return this.hasFlag("isDryRun");
+	}
+
 	get isYes(): boolean {
 		return this.isAgent || this.hasFlag("isYes");
 	}
@@ -252,6 +257,19 @@ export class CLI {
 			return { provider, isYes };
 		}
 		return { isYes };
+	}
+
+	/**
+	 * Returns the parsed input consumed by the migrate command.
+	 */
+	get migrateInput() {
+		return {
+			isDryRun: this.isDryRun,
+			isYes: this.isYes,
+			isQuiet: this.isQuiet,
+			isAgent: this.isAgent,
+			isForce: this.isForce,
+		};
 	}
 
 	/**

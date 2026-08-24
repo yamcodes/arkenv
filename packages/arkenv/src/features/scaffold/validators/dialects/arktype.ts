@@ -107,13 +107,9 @@ export const arktypeDialect: Dialect = {
 	/**
 	 * Environment variable schema for server-side or runtime-only validation.
 	 */
-	export const Env = type({
+	export const env = arkenv({
 ${schemaFields}
 	});
-
-	export const env = arkenv(Env);
 `;
 	},
-
-	pluginEnvImports: `import { type } from "@arkenv/core";`,
 };

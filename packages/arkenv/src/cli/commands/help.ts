@@ -39,6 +39,11 @@ export class HelpUseCase {
 				right: "Set up ArkEnv in your project",
 			},
 			{
+				left: "arkenv migrate",
+				right:
+					"Migrate legacy v0 (schema/define) project to v1 canonical env-object",
+			},
+			{
 				left: "arkenv add host [provider]",
 				right:
 					"Add hosting provider preset (vercel, netlify, cloudflare, railway, render, fly) to schema",
@@ -49,6 +54,10 @@ export class HelpUseCase {
 			{
 				left: "--yes, -y",
 				right: "Skip prompts and use defaults (also passed to subprocesses)",
+			},
+			{
+				left: "--dry-run, -d",
+				right: "Preview changes without writing to disk (e.g. for migrate)",
 			},
 			{
 				left: "--quiet, -q",

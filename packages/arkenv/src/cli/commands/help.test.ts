@@ -46,12 +46,12 @@ describe("HelpUseCase", () => {
 		expect(globalHeaderIndex).toBeGreaterThan(-1);
 		expect(initHeaderIndex).toBeGreaterThan(globalHeaderIndex);
 
-		// Global options align on the longest flag in that section (--quiet, -q = 11 chars)
+		// Global options align on the longest flag in that section (--dry-run, -d = 13 chars)
 		const yesOptionLog = logs.find((l) => l.includes("--yes, -y"));
 		expect(yesOptionLog).toBeDefined();
-		// "--yes, -y" is 9 chars. max (11) - 9 + colGap (4) = 6 spaces padding.
+		// "--yes, -y" is 9 chars. max (13) - 9 + colGap (4) = 8 spaces padding.
 		expect(yesOptionLog).toBe(
-			"  --yes, -y      Skip prompts and use defaults (also passed to subprocesses)",
+			"  --yes, -y        Skip prompts and use defaults (also passed to subprocesses)",
 		);
 		expect(logs.indexOf(yesOptionLog as string)).toBeGreaterThan(
 			globalHeaderIndex,
@@ -60,9 +60,9 @@ describe("HelpUseCase", () => {
 
 		const agentOptionLog = logs.find((l) => l.includes("--agent"));
 		expect(agentOptionLog).toBeDefined();
-		// "--agent" is 7 chars. max (11) - 7 + colGap (4) = 8 spaces padding.
+		// "--agent" is 7 chars. max (13) - 7 + colGap (4) = 10 spaces padding.
 		expect(agentOptionLog).toBe(
-			"  --agent        Enable non-interactive, machine-readable mode for AI agents. Bypasses all prompts and outputs structured JSON. Macro for --yes --quiet --json",
+			"  --agent          Enable non-interactive, machine-readable mode for AI agents. Bypasses all prompts and outputs structured JSON. Macro for --yes --quiet --json",
 		);
 		expect(logs.indexOf(agentOptionLog as string)).toBeLessThan(
 			initHeaderIndex,
@@ -70,8 +70,8 @@ describe("HelpUseCase", () => {
 
 		const helpOptionLog = logs.find((l) => l.includes("--help, -h"));
 		expect(helpOptionLog).toBeDefined();
-		// "--help, -h" is 10 chars. max (11) - 10 + colGap (4) = 5 spaces padding.
-		expect(helpOptionLog).toBe("  --help, -h     Show this help message");
+		// "--help, -h" is 10 chars. max (13) - 10 + colGap (4) = 7 spaces padding.
+		expect(helpOptionLog).toBe("  --help, -h       Show this help message");
 		expect(logs.indexOf(helpOptionLog as string)).toBeLessThan(initHeaderIndex);
 
 		// Init options align on --host-preset, -H <preset> (26 chars) and must not appear under Global
