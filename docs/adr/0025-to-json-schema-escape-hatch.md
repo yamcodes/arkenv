@@ -66,4 +66,3 @@ To restore DX symmetry across the Big Three validators while preserving engine p
 - **Zero Runtime Bloat:** Root `@arkenv/standard` remains 100% dependency-free.
 - **Pristine Package Footprint:** No legacy shim files in package roots; build outputs remain contained within `dist/`.
 - **Docs & CLI Alignment:** `arkenv init` scaffolds `@arkenv/standard/valibot` for Valibot and `@arkenv/standard` for Zod directly.
-
