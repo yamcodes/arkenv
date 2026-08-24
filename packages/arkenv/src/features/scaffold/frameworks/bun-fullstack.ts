@@ -1,9 +1,10 @@
-import path from "node:path";
 import { shake } from "radashi";
-import { bunTypesTemplate } from "@/features/scaffold/templates";
 import { FRAMEWORK_CLIENT_PREFIXES } from "./client-prefixes";
-import { planDtsFile } from "./dts-planning";
-import { getEnvDefaultsFromKeys, planSimpleSchemaFile } from "./shared";
+import {
+	getEnvDefaultsFromKeys,
+	planSimpleSchemaFile,
+	planStrictSchemaFiles,
+} from "./shared";
 import type { FrameworkStrategy } from "./types";
 
 export const bunFullstackStrategy: FrameworkStrategy = {
@@ -14,6 +15,7 @@ export const bunFullstackStrategy: FrameworkStrategy = {
 			return getEnvDefaultsFromKeys(keys);
 		}
 		return {
+			DATABASE_URL: "postgres://localhost:5432/mydb",
 			BUN_PUBLIC_API_URL: "https://api.example.com",
 			NODE_ENV: "development",
 		};
@@ -35,27 +37,13 @@ export const bunFullstackStrategy: FrameworkStrategy = {
 	},
 
 	getSchemaFiles(validator, options, params) {
+		if (options.layout === "strict") {
+			return planStrictSchemaFiles(validator, options, params);
+		}
 		return planSimpleSchemaFile(validator, options, params);
 	},
 
-	getTypeDefinitionFiles(options, params) {
-		if (
-			!options.bunFeatures?.length ||
-			options.installTypeDefinitions === false
-		) {
-			return [];
-		}
-
-		const typeFilePath = path.join(params.targetDir, "bun-env.d.ts");
-
-		return planDtsFile({
-			typeFilePath,
-			typeFileExists: params.existingFiles.includes(typeFilePath),
-			envDtsHandling: options.envDtsHandling,
-			templateContent: bunTypesTemplate(options.path),
-			appendContent: params.targetPath,
-			overwriteLabel: "bun-fullstack types",
-			appendLabel: `${options.framework} types`,
-		});
+	getTypeDefinitionFiles() {
+		return [];
 	},
 };

@@ -1,8 +1,5 @@
 import { getCodegenConfig } from "@/features/scaffold/frameworks/codegen-config";
-import {
-	assembleCodegenTemplate,
-	assemblePluginEnvTemplate,
-} from "@/features/scaffold/frameworks/layouts";
+import { assembleCodegenTemplate } from "@/features/scaffold/frameworks/layouts";
 import { getPresetKeys } from "@/features/scaffold/presets";
 import type { ScaffoldContext } from "@/features/scaffold/scaffold-context";
 import type { Dialect } from "./dialects";
@@ -62,10 +59,6 @@ export function assembleSimpleFromDialect(
 		schemaFields = `${dialect.defaultSimpleSchemaFields}\n${dialect.formatSimpleSchemaFields(presetKeys, context.clientPrefix, context.hostPreset)}`;
 	} else {
 		schemaFields = dialect.defaultSimpleSchemaFields;
-	}
-
-	if (context.framework === "vite" || context.framework === "bun-fullstack") {
-		return `${assemblePluginEnvTemplate(dialect, context.framework, schemaFields)}\n`;
 	}
 
 	return `${dialect.assembleVanilla(schemaFields)}\n`;

@@ -115,7 +115,4 @@ export const zodDialect: Dialect = {
 	});
 `;
 	},
-
-	pluginEnvImports: `import { type } from "@arkenv/core";
-import { z } from "zod";`,
 };

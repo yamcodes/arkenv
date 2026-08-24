@@ -117,13 +117,6 @@ export function transformViteConfig(
 					imported: "default",
 				});
 
-				if (input.envImportPath) {
-					mod.imports.$add({
-						from: input.envImportPath,
-						imported: "Env",
-					});
-				}
-
 				config.plugins.push("__ARK_PLUGIN_PLACEHOLDER__");
 			} else {
 				// Already has plugin, nothing to do
@@ -140,9 +133,7 @@ export function transformViteConfig(
 		let code = generateCode(mod, {
 			format: detectCodeFormat(initialCode),
 		}).code;
-		const pluginCall = input.envImportPath
-			? "arkenvVitePlugin(Env)"
-			: "arkenvVitePlugin()";
+		const pluginCall = "arkenvVitePlugin()";
 		code = code.replace(/['"]__ARK_PLUGIN_PLACEHOLDER__['"]/g, pluginCall);
 		code = normalizeImportSpacing(code);
 		code = preserveTrailingNewline(code, initialCode);

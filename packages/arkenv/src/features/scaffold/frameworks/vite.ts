@@ -1,9 +1,10 @@
-import path from "node:path";
 import { shake } from "radashi";
-import { viteTypesTemplate } from "@/features/scaffold/templates";
 import { FRAMEWORK_CLIENT_PREFIXES } from "./client-prefixes";
-import { planDtsFile } from "./dts-planning";
-import { getEnvDefaultsFromKeys, planSimpleSchemaFile } from "./shared";
+import {
+	getEnvDefaultsFromKeys,
+	planSimpleSchemaFile,
+	planStrictSchemaFiles,
+} from "./shared";
 import type { FrameworkStrategy } from "./types";
 
 export const viteStrategy: FrameworkStrategy = {
@@ -14,8 +15,9 @@ export const viteStrategy: FrameworkStrategy = {
 			return getEnvDefaultsFromKeys(keys);
 		}
 		return {
-			PORT: "3000",
+			DATABASE_URL: "postgres://localhost:5432/mydb",
 			VITE_API_URL: "https://api.example.com",
+			NODE_ENV: "development",
 		};
 	},
 
@@ -27,29 +29,18 @@ export const viteStrategy: FrameworkStrategy = {
 		return true;
 	},
 
-	bootstrap(options) {
+	bootstrap() {
 		return shake({ framework: "vite" as const });
 	},
 
 	getSchemaFiles(validator, options, params) {
+		if (options.layout === "strict") {
+			return planStrictSchemaFiles(validator, options, params);
+		}
 		return planSimpleSchemaFile(validator, options, params);
 	},
 
-	getTypeDefinitionFiles(options, params) {
-		if (options.installTypeDefinitions === false) {
-			return [];
-		}
-
-		return planDtsFile({
-			typeFilePath: path.join(params.targetDir, "vite-env.d.ts"),
-			typeFileExists: params.existingFiles.includes(
-				path.join(params.targetDir, "vite-env.d.ts"),
-			),
-			envDtsHandling: options.envDtsHandling,
-			templateContent: viteTypesTemplate(options.path),
-			appendContent: params.targetPath,
-			overwriteLabel: "vite types",
-			appendLabel: `${options.framework} types`,
-		});
+	getTypeDefinitionFiles() {
+		return [];
 	},
 };
