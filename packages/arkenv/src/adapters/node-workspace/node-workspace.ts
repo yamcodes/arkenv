@@ -1,5 +1,6 @@
 import { type StdioOptions, spawn } from "node:child_process";
 import fsp from "node:fs/promises";
+import path from "node:path";
 import pc from "picocolors";
 import type {
 	BootstrapResult,
@@ -150,5 +151,69 @@ export class NodeWorkspace implements WorkspacePort {
 	) {
 		const { safeAppend } = await import("../injection");
 		return safeAppend(filePath, schemaPath, framework, this.logger);
+	}
+
+	async appendMissingEnvExampleKeys(
+		cwd: string,
+		keys: string[],
+	): Promise<boolean> {
+		const envExamplePath = path.join(cwd, ".env.example");
+		if (!(await this.exists(envExamplePath))) {
+			return false;
+		}
+		const content = await this.readFile(envExamplePath);
+		const existingKeys = new Set<string>();
+		for (const line of content.split(/\r?\n/)) {
+			const m = line.match(/^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=/);
+			if (m) {
+				existingKeys.add(m[1]);
+			}
+		}
+		const missingKeys = keys.filter((k) => !existingKeys.has(k));
+		if (missingKeys.length === 0) {
+			return false;
+		}
+		const appendLines = missingKeys.map((k) => `${k}=`).join("\n") + "\n";
+		const newContent =
+			content.endsWith("\n") || content.length === 0
+				? `${content}${appendLines}`
+				: `${content}\n${appendLines}`;
+		await this.writeFile(envExamplePath, newContent);
+		return true;
+	}
+
+	async removeEnvExampleKeys(
+		cwd: string,
+		keysToRemove: string[],
+		remainingKeys: string[] = [],
+	): Promise<boolean> {
+		const envExamplePath = path.join(cwd, ".env.example");
+		if (!(await this.exists(envExamplePath))) {
+			return false;
+		}
+		const safeKeysToRemove = new Set(
+			keysToRemove.filter((k) => !remainingKeys.includes(k)),
+		);
+		if (safeKeysToRemove.size === 0) {
+			return false;
+		}
+		const content = await this.readFile(envExamplePath);
+		const lines = content.split(/\r?\n/);
+		const newLines = lines.filter((line) => {
+			const m = line.match(/^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=/);
+			if (m && safeKeysToRemove.has(m[1])) {
+				return false;
+			}
+			return true;
+		});
+		let newContent = newLines.join("\n");
+		if (content.endsWith("\n") && !newContent.endsWith("\n")) {
+			newContent += "\n";
+		}
+		if (newContent !== content) {
+			await this.writeFile(envExamplePath, newContent);
+			return true;
+		}
+		return false;
 	}
 }

@@ -1,6 +1,10 @@
 import { getCodegenConfig } from "@/features/scaffold/frameworks/codegen-config";
 import { assembleCodegenTemplate } from "@/features/scaffold/frameworks/layouts";
-import { getPresetKeys } from "@/features/scaffold/presets";
+import {
+	formatPresetEndMarker,
+	formatPresetStartMarker,
+	getPresetKeys,
+} from "@/features/scaffold/presets";
 import type { ScaffoldContext } from "@/features/scaffold/scaffold-context";
 import type { Dialect } from "./dialects";
 
@@ -48,15 +52,35 @@ export function assembleSimpleFromDialect(
 	}
 
 	let schemaFields: string;
-	if (keys.length > 0) {
-		const combined = Array.from(new Set([...keys, ...presetKeys]));
-		schemaFields = dialect.formatSimpleSchemaFields(
-			combined,
+	if (
+		context.hostPreset &&
+		context.hostPreset !== "none" &&
+		presetKeys.length > 0
+	) {
+		const startMarker = `\t\t${formatPresetStartMarker(context.hostPreset)}`;
+		const endMarker = `\t\t${formatPresetEndMarker(context.hostPreset)}`;
+		const presetFields = dialect.formatSimpleSchemaFields(
+			presetKeys,
 			context.clientPrefix,
 			context.hostPreset,
 		);
-	} else if (presetKeys.length > 0) {
-		schemaFields = `${dialect.defaultSimpleSchemaFields}\n${dialect.formatSimpleSchemaFields(presetKeys, context.clientPrefix, context.hostPreset)}`;
+		const userKeys = keys.filter((k) => !presetKeys.includes(k));
+		if (userKeys.length > 0) {
+			const userFields = dialect.formatSimpleSchemaFields(
+				userKeys,
+				context.clientPrefix,
+				undefined,
+			);
+			schemaFields = `${userFields}\n\n${startMarker}\n${presetFields}\n${endMarker}`;
+		} else {
+			schemaFields = `${dialect.defaultSimpleSchemaFields}\n\n${startMarker}\n${presetFields}\n${endMarker}`;
+		}
+	} else if (keys.length > 0) {
+		schemaFields = dialect.formatSimpleSchemaFields(
+			keys,
+			context.clientPrefix,
+			context.hostPreset,
+		);
 	} else {
 		schemaFields = dialect.defaultSimpleSchemaFields;
 	}

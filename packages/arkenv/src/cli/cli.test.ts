@@ -315,73 +315,80 @@ describe("CLI parser", () => {
 			expect(invalid.validationError).toBe("Invalid host preset: vercle");
 		});
 
-		describe("add command", () => {
-			it("should parse valid add host vercel command", () => {
-				const cli = new CLI(["node", "arkenv", "add", "host", "vercel"]);
-				expect(cli.command).toBe("add");
-				expect(cli.addInput.provider).toBe("vercel");
+		describe("preset command", () => {
+			it("should parse valid preset apply vercel command", () => {
+				const cli = new CLI(["node", "arkenv", "preset", "apply", "vercel"]);
+				expect(cli.command).toBe("preset");
+				expect(cli.presetInput.action).toBe("apply");
+				expect(cli.presetInput.provider).toBe("vercel");
 				expect(cli.validationError).toBeUndefined();
 			});
 
-			it("should parse valid add host netlify command", () => {
-				const cli = new CLI(["node", "arkenv", "add", "host", "netlify"]);
-				expect(cli.command).toBe("add");
-				expect(cli.addInput.provider).toBe("netlify");
+			it("should parse valid preset remove netlify command", () => {
+				const cli = new CLI(["node", "arkenv", "preset", "remove", "netlify"]);
+				expect(cli.command).toBe("preset");
+				expect(cli.presetInput.action).toBe("remove");
+				expect(cli.presetInput.provider).toBe("netlify");
 				expect(cli.validationError).toBeUndefined();
 			});
 
-			it("should parse valid add host cloudflare command", () => {
-				const cli = new CLI(["node", "arkenv", "add", "host", "cloudflare"]);
-				expect(cli.command).toBe("add");
-				expect(cli.addInput.provider).toBe("cloudflare");
+			it("should parse valid preset rm alias", () => {
+				const cli = new CLI(["node", "arkenv", "preset", "rm", "cloudflare"]);
+				expect(cli.command).toBe("preset");
+				expect(cli.presetInput.action).toBe("remove");
+				expect(cli.presetInput.provider).toBe("cloudflare");
 				expect(cli.validationError).toBeUndefined();
 			});
 
-			it("should parse valid add host railway command", () => {
-				const cli = new CLI(["node", "arkenv", "add", "host", "railway"]);
-				expect(cli.command).toBe("add");
-				expect(cli.addInput.provider).toBe("railway");
+			it("should parse preset apply with omitted provider", () => {
+				const cli = new CLI(["node", "arkenv", "preset", "apply"]);
+				expect(cli.command).toBe("preset");
+				expect(cli.presetInput.action).toBe("apply");
+				expect(cli.presetInput.provider).toBeUndefined();
 				expect(cli.validationError).toBeUndefined();
 			});
 
-			it("should parse valid add host command with omitted provider", () => {
-				const cli = new CLI(["node", "arkenv", "add", "host"]);
-				expect(cli.command).toBe("add");
-				expect(cli.addInput.provider).toBeUndefined();
-				expect(cli.validationError).toBeUndefined();
+			it("should parse flags in presetInput", () => {
+				const cli = new CLI([
+					"node",
+					"arkenv",
+					"preset",
+					"apply",
+					"vercel",
+					"--force",
+					"--yes",
+					"--file",
+					"./custom-env.ts",
+				]);
+				expect(cli.command).toBe("preset");
+				expect(cli.presetInput.action).toBe("apply");
+				expect(cli.presetInput.provider).toBe("vercel");
+				expect(cli.presetInput.isForce).toBe(true);
+				expect(cli.presetInput.isYes).toBe(true);
+				expect(cli.presetInput.file).toBe("./custom-env.ts");
 			});
 
-			it("should parse isYes in addInput when --yes or --agent flag is passed", () => {
-				const cli1 = new CLI(["node", "arkenv", "add", "host", "--yes"]);
-				expect(cli1.command).toBe("add");
-				expect(cli1.addInput.isYes).toBe(true);
-
-				const cli2 = new CLI(["node", "arkenv", "add", "host", "--agent"]);
-				expect(cli2.command).toBe("add");
-				expect(cli2.addInput.isYes).toBe(true);
-			});
-
-			it("should reject invalid provider", () => {
-				const cli = new CLI(["node", "arkenv", "add", "host", "vercle"]);
-				expect(cli.validationError).toBe("Invalid host preset: vercle");
-			});
-
-			it("should reject bare add without a subcommand", () => {
-				const cli = new CLI(["node", "arkenv", "add"]);
+			it("should reject bare preset without a subcommand", () => {
+				const cli = new CLI(["node", "arkenv", "preset"]);
 				expect(cli.validationError).toBe("Missing subcommand");
 			});
 
-			it("should reject non-host subcommand", () => {
-				const cli = new CLI(["node", "arkenv", "add", "client"]);
-				expect(cli.validationError).toBe("Unknown argument: client");
+			it("should reject unknown preset action", () => {
+				const cli = new CLI(["node", "arkenv", "preset", "invalid"]);
+				expect(cli.validationError).toBe("Unknown preset action: invalid");
+			});
+
+			it("should reject invalid provider in preset apply", () => {
+				const cli = new CLI(["node", "arkenv", "preset", "apply", "vercle"]);
+				expect(cli.validationError).toBe("Invalid host preset: vercle");
 			});
 
 			it("should reject extra positional arguments", () => {
 				const cli = new CLI([
 					"node",
 					"arkenv",
-					"add",
-					"host",
+					"preset",
+					"apply",
 					"vercel",
 					"extra",
 				]);

@@ -9,15 +9,16 @@ ArkEnv v1 renames packages, standardizes on a **single canonical `env` object** 
 
 In v1, package names changed:
 
-| v0 Package            | v1 Package            | Purpose                                            |
-| :-------------------- | :-------------------- | :------------------------------------------------- |
-| `@arkenv/cli`         | `arkenv`              | Primary CLI (`npx arkenv@latest init`, `add host`) |
-| `arkenv`              | `@arkenv/core`        | Core runtime & ArkType DSL engine                  |
-| *(new in v1)*         | `@arkenv/standard`    | Standard Schema engine (Zod, Valibot, etc.)        |
-| `@arkenv/vite-plugin` | `@arkenv/vite-plugin` | Vite plugin (transform mode)                       |
-| `@arkenv/bun-plugin`  | `@arkenv/bun-plugin`  | Bun plugin (transform mode)                        |
-| `@arkenv/nextjs`      | `@arkenv/nextjs`      | Next.js adapter                                    |
-| `@arkenv/nuxt`        | `@arkenv/nuxt`        | Nuxt module                                        |
+| v0 Package    | v1 Package | Purpose                                                |
+| :------------ | :--------- | :----------------------------------------------------- |
+| `@arkenv/cli` | `arkenv`   | Primary CLI (`npx arkenv@latest init`, `preset apply`) |
+
+\| `arkenv`              | `@arkenv/core`        | Core runtime & ArkType DSL engine                  |
+\| *(new in v1)*         | `@arkenv/standard`    | Standard Schema engine (Zod, Valibot, etc.)        |
+\| `@arkenv/vite-plugin` | `@arkenv/vite-plugin` | Vite plugin (transform mode)                       |
+\| `@arkenv/bun-plugin`  | `@arkenv/bun-plugin`  | Bun plugin (transform mode)                        |
+\| `@arkenv/nextjs`      | `@arkenv/nextjs`      | Next.js adapter                                    |
+\| `@arkenv/nuxt`        | `@arkenv/nuxt`        | Nuxt module                                        |
 
 ---
 

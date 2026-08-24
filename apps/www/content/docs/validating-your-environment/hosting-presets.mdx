@@ -1,65 +1,173 @@
 ---
 title: Hosting presets
-description: Pre-populate schemas with Vercel, Netlify, Cloudflare, Railway, Render, or Fly.io variables.
+description: Pre-populate schemas with Vercel, Netlify, Cloudflare, Railway, Render, or Fly.io variables using managed preset blocks.
 ---
 
-Hosting providers inject their own system environment variables at build
-and runtime. Presets teach the ArkEnv CLI which keys to add, already typed
-and optional, so you do not look them up by hand.
+Hosting providers inject their own system environment variables at build and
+runtime. Presets teach the ArkEnv CLI which variables to generate into your
+schema, pre-typed and optional, so you do not look them up manually.
 
-Presets work with ArkType, Zod, and Valibot, and with both [flat and strict](/docs/validating-your-environment/client-vs-server) layouts.
+Presets work with ArkType, Zod, and Valibot across both
+[flat and strict](/docs/validating-your-environment/client-vs-server) layouts.
 
-Not on this list? Choose **None** in the interactive CLI (or skip adding a
-host later) and declare the provider's variables yourself in the schema
-the same way you declare `DATABASE_URL`. Presets are a convenience for
-common hosts, not a requirement.
+{/* prettier-ignore */}
+
+> [!NOTE]
+> ArkEnv is **code-first**. Presets write readable TypeScript schema code
+> directly into your `./env.ts` (or `env/client.ts` and `env/server.ts`).
+> There are no runtime dependencies on CLI presets or black-box configuration
+> loaders.
 
 ## Select a preset during init
 
-### Interactive prompt
-
-The interactive CLI asks for a hosting provider when you run it without
-flags:
-
-```txt
-Select a hosting provider preset (optional):
-❯ None                          Do not add any hosting-specific environment variables
-  Vercel                        Add VERCEL, VERCEL_ENV, VERCEL_URL, etc.
-  Netlify                       Add NETLIFY, CONTEXT, URL, DEPLOY_URL, etc.
-  Cloudflare Pages/Workers      Add CF_PAGES, CF_PAGES_COMMIT_SHA, CF_PAGES_BRANCH, CF_PAGES_URL, etc.
-  Railway                       Add RAILWAY_ENVIRONMENT_NAME, RAILWAY_PUBLIC_DOMAIN, RAILWAY_GIT_COMMIT_SHA, etc.
-  Render                        Add RENDER, RENDER_SERVICE_ID, RENDER_SERVICE_TYPE, RENDER_EXTERNAL_URL, etc.
-  Fly.io                        Add FLY_APP_NAME, FLY_REGION, FLY_ALLOC_ID, etc.
-```
-
-**None** leaves the schema without provider fields.
-
-### `--host-preset` flag
-
-Skip the prompt in scripts or agent mode:
+When bootstrapping a project, select your hosting provider from the interactive
+wizard or specify the `--preset` flag:
 
 ```package-install
-npx arkenv@latest init --host-preset vercel
+npx arkenv@latest init --preset vercel
 ```
 
 Accepted values: `none`, `vercel`, `netlify`, `cloudflare`, `railway`, `render`, `fly`.
 
-## Add a host to an existing schema
+The CLI also accepts `-P`, `--host-preset`, or `-H` as aliases. Passing `none`
+scaffolds standard schema templates without provider fields.
+
+## Manage presets in an existing schema
+
+You can apply, refresh, or remove hosting presets at any time using the
+`arkenv preset` command.
+
+### Apply or refresh a preset
 
 ```package-install
-npx arkenv@latest add host vercel
+npx arkenv@latest preset apply vercel
 ```
 
-Omit the provider to pick interactively. The command detects layout, framework prefix, and validator, then merges missing keys. Existing keys stay unchanged. If the schema cannot be parsed, the CLI prints the proposed fields for manual paste.
+When you run `preset apply`, the CLI:
 
-With `--yes` or `--agent`, an omitted provider defaults to `vercel`.
+1. Resolves your schema file location automatically from the `"arkenv"` configuration pointer in `package.json` (or defaults to standard paths).
+2. Verifies that your git working tree is clean to prevent uncommitted loss.
+3. Checks for collisions against existing user-defined variables or other presets.
+4. Injects or refreshes the platform variables within delimited comment markers.
+5. Updates `.env.example` with the new keys.
+
+To specify a custom schema path explicitly, pass `--file`:
+
+```package-install
+npx arkenv@latest preset apply vercel --file ./src/config/env.ts
+```
+
+### Remove a preset
+
+```package-install
+npx arkenv@latest preset remove vercel
+```
+
+The `preset remove` command strips the delimited preset block from your schema
+and removes provider-specific entries from `.env.example`, while preserving any
+keys shared with other active presets or custom fields.
+
+## How managed preset blocks work
+
+ArkEnv isolates machine-managed platform variables using comment markers:
+
+```ts title="./env.ts"
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  DATABASE_URL: "string",
+  PORT: "number.port = 3000",
+
+  // @arkenv-preset-start vercel
+  VERCEL: "string?",
+  VERCEL_ENV: "'production' | 'preview' | 'development'?",
+  VERCEL_URL: "string?",
+  // @arkenv-preset-end vercel
+});
+```
+
+In strict layouts (`env/client.ts` and `env/server.ts`), the CLI generates
+role-suffixed markers (`vercel:client` and `vercel:server`) targeted to the
+matching runtime boundary.
+
+### Why comment markers exist
+
+1. **Handling unprefixed platform keys**: While some platforms prefix variables (e.g. `VERCEL_ENV`), many providers use common names like `URL`, `CONTEXT`, `DEPLOY_URL` (Netlify), or `PORT` (Railway, Render, Fly.io). Markers establish unambiguous machine ownership so the CLI knows which fields belong to the host.
+2. **Safe atomic updates**: When hosting platforms add new system environment variables, re-running `arkenv preset apply <provider>` replaces only the delimited block, leaving your manual schema customizations before and after untouched.
+3. **Clean removal**: Running `arkenv preset remove <provider>` deletes only the target provider block without risking collateral deletion of your own fields.
+4. **Validator and AST independence**: Because ArkEnv supports multiple validators (ArkType DSL, Zod objects, Valibot pipes, Standard Schema), line-delimited boundaries avoid heavyweight AST formatting passes that alter user indentation or drop code comments.
+
+### Runtime and build behavior
+
+Comment markers are plain TypeScript/JavaScript comments. They have **zero performance impact** and are stripped by bundlers and TypeScript compilers during build. ArkEnv's runtime validation treats marked variables as ordinary schema fields.
+
+### Safety mechanisms
+
+- **Fail-closed collision prevention**: If a variable defined by a preset already exists outside a managed block, `arkenv preset apply` halts immediately and refuses to modify the file. It will never overwrite your manual schema definitions.
+- **Git working tree gate**: All file mutations require a clean git working tree so any changes appear clearly in `git diff`. Pass `--force` (`-f`) if you want to bypass this check in automated environments.
+- **Malformed marker detection**: If marker comments are unclosed or mismatched, the CLI halts with a descriptive error before touching code.
+
+## Stacking multiple presets
+
+You can apply multiple presets to the same schema by running `preset apply` for each provider:
+
+```bash
+npx arkenv@latest preset apply vercel
+npx arkenv@latest preset apply railway
+```
+
+Both blocks coexist independently in your schema file. You can refresh or remove either preset without affecting the other.
+
+## Customizing, refining, and overriding variables
+
+Because ArkEnv gives full code ownership to your repository, you have complete control over how platform variables are validated:
+
+### 1. The "Eject" path (full manual control)
+
+If you prefer to maintain platform variables entirely by hand, delete the `// @arkenv-preset-start` and `// @arkenv-preset-end` comment lines.
+
+The variables immediately become regular, user-owned schema fields. ArkEnv's fail-closed collision engine will protect them from being overwritten if someone runs `preset apply` in the future.
+
+### 2. Adding missing platform variables
+
+If a hosting provider introduces a new environment variable before an ArkEnv CLI release includes it, add the variable directly to your schema outside the preset block:
+
+```ts title="./env.ts"
+export const env = arkenv({
+  // Add new or unlisted provider variables directly:
+  VERCEL_NEW_FEATURE: "string?",
+
+  // @arkenv-preset-start vercel
+  VERCEL: "string?",
+  VERCEL_ENV: "'production' | 'preview' | 'development'?",
+  VERCEL_URL: "string?",
+  // @arkenv-preset-end vercel
+});
+```
+
+### 3. Refining types and transformations
+
+You can modify field definitions inside or outside the block to add stricter validations, regex constraints, default values, or runtime transformations (such as prefixing URLs with `https://`):
+
+```ts title="./env.ts"
+import { type } from "@arkenv/core";
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  // Custom transformed Vercel URL
+  VERCEL_URL: type("string?").pipe((url) => (url ? `https://${url}` : undefined)),
+
+  // Stricter custom environment enum
+  VERCEL_ENV: "'production' | 'preview' | 'development' | 'staging'?",
+});
+```
 
 ## What each preset adds
 
-Every preset field is **optional** (present only on that provider). Fields split into:
+Every preset field is **optional** (present only when deployed on that provider). Fields split into:
 
-- **Server-only**: no client prefix; kept off the client
-- **Client-exposed**: safe on the client; the CLI also writes a framework-prefixed copy when a prefix applies (`NEXT_PUBLIC_`, `NUXT_PUBLIC_`, `VITE_`)
+- **Server-only**: Kept off the client bundle.
+- **Client-exposed**: Safe on the client; the CLI also generates a framework-prefixed copy when a client prefix applies (`NEXT_PUBLIC_`, `NUXT_PUBLIC_`, `VITE_`).
 
 ### Vercel
 
@@ -113,34 +221,10 @@ Every preset field is **optional** (present only on that provider). Fields split
 | `FLY_REGION`   | `string` (optional) | Server-only |
 | `FLY_ALLOC_ID` | `string` (optional) | Server-only |
 
-## Example: Vercel + ArkType flat schema
-
-After `npx arkenv@latest init -H vercel` on a Next.js app, the generated
-schema includes the preset fields alongside your own:
-
-```ts title="./env.ts"
-import arkenv from "@/generated/env.gen";
-
-export const env = arkenv({
-  DATABASE_URL: "string",
-  NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-  // Hosting preset (Vercel)
-  VERCEL: "string?",
-  VERCEL_ENV: "'production' | 'preview' | 'development'?",
-  VERCEL_URL: "string?",
-  NEXT_PUBLIC_VERCEL_ENV: "'production' | 'preview' | 'development'?",
-  NEXT_PUBLIC_VERCEL_URL: "string?",
-});
-```
-
-Exact output varies by validator and framework. Re-run
-`npx arkenv@latest add host` when you move providers instead of copying
-keys by hand.
-
 ## Next steps
 
 <Cards>
-  <Card href="/docs/reference" title="API reference" description="Comprehensive API, CLI, and package export reference." />
+  <Card href="/docs/reference/preset" title="preset reference" description="CLI reference for arkenv preset apply and arkenv preset remove." />
 
-  <Card href="/docs/core-concepts" title="Core concepts" description="Understand coercion, transforms, and Standard Schema validation." />
+  <Card href="/docs/validating-your-environment/client-vs-server" title="Client vs Server" description="Learn how flat and strict layouts manage runtime boundaries." />
 </Cards>

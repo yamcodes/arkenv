@@ -59,6 +59,12 @@ export type ConfigPort = {
 		schemaPath: string,
 		framework: "vite" | "bun-fullstack",
 	): Promise<boolean>;
+	appendMissingEnvExampleKeys(cwd: string, keys: string[]): Promise<boolean>;
+	removeEnvExampleKeys(
+		cwd: string,
+		keysToRemove: string[],
+		remainingKeys?: string[],
+	): Promise<boolean>;
 };
 
 /**

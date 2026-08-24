@@ -42,6 +42,8 @@ describe("Executor", () => {
 			.fn()
 			.mockResolvedValue({ success: true, updated: true }),
 		safeAppend: vi.fn().mockResolvedValue(true),
+		appendMissingEnvExampleKeys: vi.fn().mockResolvedValue(true),
+		removeEnvExampleKeys: vi.fn().mockResolvedValue(true),
 	};
 
 	const mockReporter: Reporter = {
