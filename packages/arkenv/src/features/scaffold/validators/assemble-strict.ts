@@ -107,6 +107,11 @@ export function assembleStrictFromDialect(
 	const serverObject = formatSchemaObject(serverFields, "\t\t");
 	const extra = dialect.strictExtraImports;
 
+	const autoExtendServerFrameworks = new Set(["nuxt", "nextjs"]);
+	const usesServerAutoExtend = autoExtendServerFrameworks.has(
+		context.framework,
+	);
+
 	const nuxtClientTemplate = `import arkenv from "${clientImportPath}";
 ${extra}
 export const env = arkenv(
@@ -161,14 +166,13 @@ export const SharedSchema = ${dialect.wrapSharedSchema(sharedObject)};`,
 					? nuxtClientTemplate
 					: manualClientNoCodegen,
 
-			server:
-				context.framework === "nuxt"
-					? `import arkenv from "${pkgName}/server";
+			server: usesServerAutoExtend
+				? `import arkenv from "${pkgName}/server";
 ${extra}
 export const env = arkenv(
 	${serverObject},
 );`
-					: `import arkenv from "${pkgName}/server";
+				: `import arkenv from "${pkgName}/server";
 ${extra}import { env as clientEnv } from "./client";
 
 export const env = arkenv(

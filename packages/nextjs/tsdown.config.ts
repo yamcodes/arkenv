@@ -8,6 +8,7 @@ export default defineConfig({
 		"src/server.ts",
 		"src/client.ts",
 		"src/mock-server-only.ts",
+		"src/empty-client-env.ts",
 		"src/standard/index.ts",
 		"src/standard/server.ts",
 		"src/standard/client.ts",
@@ -20,5 +21,6 @@ export default defineConfig({
 	sourcemap: true,
 	deps: {
 		alwaysBundle: ["@repo/log", "@repo/types", "@repo/utils"],
+		neverBundle: ["#arkenv/client-env"],
 	},
 });

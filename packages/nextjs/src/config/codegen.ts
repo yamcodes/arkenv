@@ -8,6 +8,7 @@ import {
 import { resolveBuildLog } from "@repo/log";
 import { extractKeys } from "./extract";
 import {
+	generateClientEnvAmbientDeclaration,
 	generateClientFactoryCode,
 	generateFactoryCode,
 	generateFlatFactoryCode,
@@ -103,5 +104,22 @@ export function runCodegen(
 
 	if (shouldWrite) {
 		fs.writeFileSync(outputPath, generatedCode, "utf-8");
+	}
+
+	if (resolvedLayout === "strict" && baseDir) {
+		const ambientPath = path.join(
+			path.dirname(outputPath),
+			"arkenv-client-env.d.ts",
+		);
+		const ambientCode = generateClientEnvAmbientDeclaration();
+		let shouldWriteAmbient = true;
+		if (fs.existsSync(ambientPath)) {
+			if (fs.readFileSync(ambientPath, "utf-8") === ambientCode) {
+				shouldWriteAmbient = false;
+			}
+		}
+		if (shouldWriteAmbient) {
+			fs.writeFileSync(ambientPath, ambientCode, "utf-8");
+		}
 	}
 }
