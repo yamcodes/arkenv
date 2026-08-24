@@ -1,8 +1,8 @@
-# ADR 0025: Optional `toJsonSchema` escape hatch (always-`as`)
+# ADR 0025: Optional `toJsonSchema` escape hatch (always-`as`) and subpath exports
 
 ## Status
 
-Accepted
+Amended (2026-08-24 by [#1586](https://github.com/yamcodes/arkenv/issues/1586))
 
 ## Context
 
@@ -18,7 +18,7 @@ Three layers compose (hat loop for [#1564](https://github.com/yamcodes/arkenv/is
 2. **How the callback is typed**
 3. **Where the wrapper lives** (inline vs helper vs library export vs CLI recipe)
 
-## Decision
+## Original Decision
 
 Ship **A6 + B6 + C1**:
 
@@ -34,7 +34,7 @@ toJsonSchema: (schema) =>
   }),
 ```
 
-## Rejected alternatives
+## Original Rejected alternatives
 
 **Product**
 
@@ -54,9 +54,42 @@ toJsonSchema: (schema) =>
 - Library-exported `valibotJsonSchema()` — same DX as a user helper, but `@arkenv/standard` cannot import Valibot without a peer or subpath. A dependency-free binder still needs the user to pass the converter in. This is the maintenance hell hosting presets refused (ADR 0018).
 - CLI `add to-json-schema` recipe — plausible later (emit into user source, no runtime package). Not required to close the hatch. Do not block on it.
 
-## Consequences
+## Original Consequences
 
 - `@arkenv/standard` stays vendor-neutral: no Valibot/Mini peers, no converter options stuffed into the schema map.
 - Docs teach one sentence: ArkEnv passes a Standard Schema; host converters do not accept that type; assert at the call. Mix maps (Valibot + Mini) still need a vendor switch; that is “two converters,” not a typing phase of the moon.
 - Future architecture reviews should not re-suggest smart callback narrowing, auto-detect, or `@arkenv/valibot` helpers unless the teachability / packaging constraints change.
 - A CLI converter recipe remains open; it would copy ADR 0018’s “emit into user source” property, not ship a runtime helper package.
+
+---
+
+## Amendment (2026-08-24): First-Class Subpaths & Modern Support Boundary
+
+### Context for Amendment
+
+Valibot is a first-class validator promoted across the homepage hero and marketing surfaces alongside ArkType and Zod with the claim "No boilerplate." Requiring an inline `toJsonSchema` configuration block in user-land `env.ts` contradicts that DX guarantee.
+
+To restore DX symmetry across the Big Three validators while preserving engine purity, we amend the packaging decision to introduce first-class subpath exports on `@arkenv/standard`.
+
+### Amended Decision
+
+1. **First-Class Subpath Exports on `@arkenv/standard`:**
+   - `import { arkenv } from "@arkenv/standard/valibot"`: Pre-configures coercion using `@valibot/to-json-schema` (`typeMode: "input"`, `target: "draft-07"`).
+   - `import { arkenv } from "@arkenv/standard/zod-mini"`: Pre-configures coercion using `zod/mini`'s `toJSONSchema` helper (`io: "input"`, `target: "draft-07"`).
+   - *Note on Zod*: Classic Zod already exposes JSON Schema on the value (ADR 0002), so root `import { arkenv } from "@arkenv/standard"` works zero-config out of the box. A redundant `@arkenv/standard/zod` alias is deferred to separate exploration.
+2. **Optional Peer Dependency Architecture:**
+   - `@valibot/to-json-schema` is declared under `peerDependencies` with `peerDependenciesMeta: { "@valibot/to-json-schema": { "optional": true } }`. (Zod Mini uses `zod/mini`'s exported `toJSONSchema` helper without requiring an additional third-party package).
+   - The root import `import { arkenv } from "@arkenv/standard"` remains pure with zero runtime dependencies.
+3. **Hard Modern Support Boundary (No Root Shims):**
+   - Subpaths are exposed strictly via the `package.json` `"exports"` field with `"files": ["dist"]`.
+   - We reject legacy root proxy shims (`valibot.d.ts`, `valibot.js`, `zod-mini.d.ts`, etc.) to maintain structural consistency with our existing framework packages (`@arkenv/nextjs`, `@arkenv/nuxt`, `@arkenv/vite-plugin`), which already rely strictly on `package.json` exports.
+   - Target consumers must use modern TypeScript module resolution (`moduleResolution: "bundler" | "node16" | "nodenext"`) and modern package managers (npm v7+, pnpm, yarn berry).
+4. **Preserved Escape Hatch:**
+   - The `toJsonSchema` callback remains fully supported on `@arkenv/standard` config as an escape hatch for custom schema transformers or long-tail validator libraries not covered by the subpaths.
+
+### Consequences of Amendment
+
+- **Zero-Boilerplate Valibot DX:** Valibot users get identical one-liner DX (`import { arkenv } from "@arkenv/standard/valibot"`) without boilerplate in `env.ts`.
+- **Zero Runtime Bloat:** Root `@arkenv/standard` remains 100% dependency-free.
+- **Pristine Package Footprint:** No legacy shim files in package roots; build outputs remain contained within `dist/`.
+- **Docs & CLI Alignment:** `arkenv init` will scaffold `@arkenv/standard/valibot` for Valibot ([#1607](https://github.com/yamcodes/arkenv/issues/1607)) and `@arkenv/standard` for Zod directly.

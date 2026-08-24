@@ -32,11 +32,11 @@ ArkEnv’s pre-validation step that turns raw env strings into numbers, booleans
 *Avoid*: calling coercion a morph/transform, or calling a Zod `.transform` “coercion” unless the library’s own coerce helpers are meant
 
 **toJsonSchema** (escape hatch):
-Optional `@arkenv/standard` config callback that supplies JSON Schema for **coercion** when a Standard Schema library keeps conversion off the value (Valibot, Zod Mini, Zod v3). Fallback after on-value probes. Parameter is `StandardSchemaV1`; assert at the host converter.
-*Avoid*: per-key wrappers as the happy path; Valibot/Mini helpers or peers on `@arkenv/standard`; auto-detect by `vendor`; a bare `{ toJsonSchema }` function reference as the documented Valibot path
+Optional `@arkenv/standard` config callback that supplies JSON Schema for **coercion** when using custom converters or schema libraries not covered by first-class subpaths (`@arkenv/standard/valibot`, `@arkenv/standard/zod-mini`). Fallback after on-value probes. Parameter is `StandardSchemaV1`; assert at the host converter.
+*Avoid*: per-key wrappers as the happy path; auto-detect by `vendor`; documenting `toJsonSchema` as the primary Valibot getting-started path (use `@arkenv/standard/valibot` instead)
 
 **Engine** (`@arkenv/core` / `@arkenv/standard`):
-The two first-class validation entry points. Same `arkenv()` runtime options, errors, and framework plugins; different schema authoring style and peers. Prefer dual examples (Tabs) in docs over core-first prose with a Standard Schema appendix.
+The two first-class validation entry points. Same `arkenv()` runtime options, errors, and framework plugins; different schema authoring style and peers (`@arkenv/standard` offers dedicated `./valibot` and `./zod-mini` subpaths; classic Zod uses root `@arkenv/standard`). Prefer dual examples (Tabs) in docs over core-first prose with a Standard Schema appendix.
 *Avoid*: framing Standard Schema as migration-only or second-class
 
 **Schema/define path**:
@@ -177,7 +177,7 @@ A scroll-driven increase in **Glass material** opacity/blur so content sliding u
 
 - **Packages** (`packages/`) - Published npm packages
   - `@arkenv/core` - Core library package with native ArkType support
-  - `@arkenv/standard` - ArkType-free Standard Schema entrypoint
+  - `@arkenv/standard` - ArkType-free Standard Schema entrypoint (with `./valibot` and `./zod-mini` subpaths)
   - `@arkenv/vite-plugin` - Vite plugin package
   - `@arkenv/bun-plugin` - Bun plugin package
   - `@arkenv/nextjs` - Next.js integration package
