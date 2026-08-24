@@ -80,6 +80,7 @@ export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 	);
 }
 
+export { isEnabled } from "./dce";
 export type { ArkEnvScriptProps } from "./script";
 export { ArkEnvScript } from "./script";
 

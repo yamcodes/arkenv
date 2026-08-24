@@ -28,11 +28,12 @@ pnpm-debug.log*
 # Turbo
 .turbo
 
-# Next.js
+# Next.js & ArkEnv
 .next/
 .source/
 .vercel
 .env*.local
+.arkenv/
 
 # archives
 *.zip

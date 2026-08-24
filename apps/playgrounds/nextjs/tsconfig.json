@@ -19,13 +19,15 @@
 			}
 		],
 		"paths": {
-			"@/*": ["./*"]
+			"@/*": ["./*"],
+			".arkenv/*": ["./.arkenv/*"]
 		}
 	},
 	"include": [
 		"next-env.d.ts",
 		"**/*.ts",
 		"**/*.tsx",
+		".arkenv/**/*.ts",
 		".next/types/**/*.ts",
 		".next/dev/types/**/*.ts",
 		"**/*.mts"

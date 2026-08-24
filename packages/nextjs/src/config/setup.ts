@@ -177,14 +177,75 @@ export function setupArkEnv(
 }
 
 /**
- * Wrap a Next.js configuration object to automatically generate the `runtimeEnv` block in `env.gen.ts`.
+ * Wrap a Next.js configuration object to automatically generate the `runtimeEnv` block in `env.gen.ts`
+ * and configure Turbopack and Webpack resolve aliases for virtualized `.arkenv/` placement.
  *
  * @param nextConfig The Next.js configuration object or function
  * @param options Optional configuration paths for schema and output files
- * @returns The Next.js configuration object unchanged
+ * @returns The Next.js configuration object with configured aliases
  * @throws An error if the schema file cannot be found or if code generation fails
  */
 export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 	setupArkEnv(options);
+
+	const applyAliases = (configObj: any) => {
+		const rootDir = process.cwd();
+		const hasVirtualArkenv =
+			options?.outputPath?.includes(".arkenv") ||
+			fs.existsSync(path.join(rootDir, ".arkenv"));
+
+		if (!hasVirtualArkenv && !options?.outputPath) {
+			return configObj;
+		}
+
+		const targetGenPath = options?.outputPath
+			? path.resolve(options.outputPath)
+			: path.join(rootDir, ".arkenv", "env.gen.ts");
+
+		const relativeGenPath =
+			"./" + path.relative(rootDir, targetGenPath).replace(/\\/g, "/");
+
+		const turbopack = {
+			...configObj?.turbopack,
+			resolveAlias: {
+				".arkenv/env.gen": relativeGenPath,
+				".arkenv/env.gen.ts": relativeGenPath,
+				"#arkenv/env": relativeGenPath,
+				...configObj?.turbopack?.resolveAlias,
+			},
+		};
+
+		const webpack = (webpackConfig: any, context: any) => {
+			webpackConfig.resolve = webpackConfig.resolve || {};
+			webpackConfig.resolve.alias = {
+				...webpackConfig.resolve.alias,
+				".arkenv/env.gen": targetGenPath,
+				".arkenv/env.gen.ts": targetGenPath,
+				"#arkenv/env": targetGenPath,
+			};
+			if (typeof configObj?.webpack === "function") {
+				return configObj.webpack(webpackConfig, context);
+			}
+			return webpackConfig;
+		};
+
+		return {
+			...configObj,
+			turbopack,
+			webpack,
+		};
+	};
+
+	if (typeof nextConfig === "function") {
+		return ((phase: any, context: any) => {
+			const resolved = (nextConfig as any)(phase, context);
+			return applyAliases(resolved);
+		}) as unknown as T;
+	}
+
+	if (nextConfig && typeof nextConfig === "object") {
+		return applyAliases(nextConfig) as T;
+	}
+
 	return nextConfig;
 }
