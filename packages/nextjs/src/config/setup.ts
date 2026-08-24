@@ -13,7 +13,7 @@ import {
 	resolveLoggerFromOptions,
 } from "@repo/log";
 import { createJiti } from "jiti";
-import { CLIENT_ENV_SPECIFIER } from "../strict-client-env";
+import { CLIENT_ENV_SPECIFIER, missingClientTsError } from "../strict-client-env";
 import { runCodegen } from "./codegen";
 import { normalizeLayout } from "./layout";
 import { applyStrictLayoutAliases } from "./strict-layout-aliases";
@@ -103,6 +103,10 @@ export function setupArkEnv(
 		resolvedLayout === "strict" && baseDir
 			? path.join(baseDir, "client.ts")
 			: undefined;
+
+	if (clientEnvPath && !fs.existsSync(clientEnvPath)) {
+		throw new Error(missingClientTsError(clientEnvPath, baseDir!));
+	}
 
 	const defaultOutputDir =
 		resolvedLayout === "strict" && baseDir ? baseDir : path.dirname(schemaPath);
@@ -239,7 +243,7 @@ export function setupArkEnv(
  * block in `env.gen.ts` and, in strict layout, register the `#arkenv/client-env`
  * alias so `@arkenv/nextjs/server` can auto-extend the client env.
  *
- * @param nextConfig The Next.js configuration object or function
+ * @param nextConfig The Next.js configuration object (object-form only; function-form configs are not yet supported — see follow-up issue)
  * @param options Optional configuration paths for schema and output files
  * @returns The Next.js configuration object (with strict-layout aliases when applicable)
  * @throws An error if the schema file cannot be found or if code generation fails
