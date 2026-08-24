@@ -13,7 +13,10 @@ import {
 	resolveLoggerFromOptions,
 } from "@repo/log";
 import { createJiti } from "jiti";
-import { CLIENT_ENV_SPECIFIER, missingClientTsError } from "../strict-client-env";
+import {
+	CLIENT_ENV_SPECIFIER,
+	missingClientTsError,
+} from "../strict-client-env";
 import { runCodegen } from "./codegen";
 import { normalizeLayout } from "./layout";
 import { applyStrictLayoutAliases } from "./strict-layout-aliases";
