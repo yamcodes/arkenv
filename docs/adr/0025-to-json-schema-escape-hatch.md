@@ -75,10 +75,10 @@ To restore DX symmetry across the Big Three validators while preserving engine p
 
 1. **First-Class Subpath Exports on `@arkenv/standard`:**
    - `import { arkenv } from "@arkenv/standard/valibot"`: Pre-configures coercion using `@valibot/to-json-schema` (`typeMode: "input"`, `target: "draft-07"`).
-   - `import { arkenv } from "@arkenv/standard/zod-mini"`: Pre-configures coercion using `zod-to-json-schema`.
+   - `import { arkenv } from "@arkenv/standard/zod-mini"`: Pre-configures coercion by calling `schema.toJSONSchema()` internally.
    - *Note on Zod*: Classic Zod already exposes JSON Schema on the value (ADR 0002), so root `import { arkenv } from "@arkenv/standard"` works zero-config out of the box. A redundant `@arkenv/standard/zod` alias is deferred to separate exploration.
 2. **Optional Peer Dependency Architecture:**
-   - `@valibot/to-json-schema` and `zod-to-json-schema` are declared under `peerDependencies` with `peerDependenciesMeta: { "...": { "optional": true } }`.
+   - `@valibot/to-json-schema` is declared under `peerDependencies` with `peerDependenciesMeta: { "@valibot/to-json-schema": { "optional": true } }`. (Zod Mini exposes `.toJSONSchema()` natively, requiring no additional converter peer).
    - The root import `import { arkenv } from "@arkenv/standard"` remains pure with zero runtime dependencies.
 3. **Hard Modern Support Boundary (No Root Shims):**
    - Subpaths are exposed strictly via the `package.json` `"exports"` field with `"files": ["dist"]`.
