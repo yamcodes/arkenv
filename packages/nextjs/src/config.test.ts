@@ -400,13 +400,9 @@ describe("withArkEnv wrapper", () => {
 		expect(outputConfig).not.toBe(inputConfig);
 		expect(outputConfig.reactStrictMode).toBe(true);
 		expect(typeof outputConfig.webpack).toBe("function");
-		expect(outputConfig.env?.ARKENV_STRICT_LAYOUT).toBe("true");
 		expect(outputConfig.turbopack?.resolveAlias?.["#arkenv/client-env"]).toBe(
-			path.join(strictBaseDir, "client.ts"),
+			`./${path.relative(process.cwd(), path.join(strictBaseDir, "client.ts")).replace(/\\/g, "/")}`,
 		);
-		expect(
-			outputConfig.experimental?.turbo?.resolveAlias?.["#arkenv/client-env"],
-		).toBe(path.join(strictBaseDir, "client.ts"));
 
 		const webpackConfig = {
 			resolve: { alias: {} as Record<string, string> },

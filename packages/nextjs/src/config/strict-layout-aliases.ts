@@ -1,3 +1,4 @@
+import path from "node:path";
 import type { CLIENT_ENV_SPECIFIER } from "../strict-client-env";
 
 type WebpackConfigLike = {
@@ -111,25 +112,42 @@ export function applyStrictLayoutAliases<T extends NextConfigLike>(
 		return resolved;
 	};
 
-	const existingTurbopack = nextConfig.turbopack ?? {};
-	const existingExperimental = nextConfig.experimental ?? {};
-	const existingTurbo = existingExperimental.turbo ?? {};
+	const turbopackTarget = path.isAbsolute(clientEnvPath)
+		? `./${path.relative(process.cwd(), clientEnvPath).replace(/\\/g, "/")}`
+		: clientEnvPath.startsWith(".")
+			? clientEnvPath
+			: `./${clientEnvPath}`;
 
+	const existingTurbopack = nextConfig.turbopack ?? {};
 	const turbopackResolveAlias: TurbopackResolveAlias = {
 		...(existingTurbopack.resolveAlias ?? {}),
-		[specifier]: clientEnvPath,
+		[specifier]: turbopackTarget,
 	};
-	const experimentalTurboResolveAlias: TurbopackResolveAlias = {
-		...(existingTurbo.resolveAlias ?? {}),
-		[specifier]: clientEnvPath,
-	};
+
+	const existingExperimental = nextConfig.experimental;
+	const experimental = existingExperimental
+		? {
+				...existingExperimental,
+				...(existingExperimental.turbo
+					? {
+							turbo: {
+								...existingExperimental.turbo,
+								resolveAlias: {
+									...(existingExperimental.turbo.resolveAlias ?? {}),
+									[specifier]: turbopackTarget,
+								},
+							},
+						}
+					: {}),
+			}
+		: undefined;
 
 	// NOTE: `nextConfig` is spread as a plain object below. Only the object-form
 	// of `next.config` is supported here — a callable/function-form config would
 	// lose its call signature when spread, silently dropping any phase-dependent
 	// logic. Callers are responsible for dereferencing a callable config before
 	// passing it to this function. Full callable-form support is tracked separately.
-	return {
+	const result: Record<string, unknown> = {
 		...nextConfig,
 		webpack,
 		// Turbopack / non-webpack paths: surface the flag via Next env inlining.
@@ -144,12 +162,11 @@ export function applyStrictLayoutAliases<T extends NextConfigLike>(
 			...existingTurbopack,
 			resolveAlias: turbopackResolveAlias,
 		},
-		experimental: {
-			...existingExperimental,
-			turbo: {
-				...existingTurbo,
-				resolveAlias: experimentalTurboResolveAlias,
-			},
-		},
-	} as T;
+	};
+
+	if (experimental) {
+		result.experimental = experimental;
+	}
+
+	return result as T;
 }

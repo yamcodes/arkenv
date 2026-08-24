@@ -19,7 +19,8 @@
 			}
 		],
 		"paths": {
-			"@/*": ["./*"]
+			"@/*": ["./*"],
+			"#arkenv/client-env": ["./env/client"]
 		}
 	},
 	"include": [
