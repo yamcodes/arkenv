@@ -75,10 +75,10 @@ To restore DX symmetry across the Big Three validators while preserving engine p
 
 1. **First-Class Subpath Exports on `@arkenv/standard`:**
    - `import { arkenv } from "@arkenv/standard/valibot"`: Pre-configures coercion using `@valibot/to-json-schema` (`typeMode: "input"`, `target: "draft-07"`).
-   - `import { arkenv } from "@arkenv/standard/zod-mini"`: Pre-configures coercion by calling `schema.toJSONSchema()` internally.
+   - `import { arkenv } from "@arkenv/standard/zod-mini"`: Pre-configures coercion using `zod/mini`'s `toJSONSchema` helper (`io: "input"`, `target: "draft-07"`).
    - *Note on Zod*: Classic Zod already exposes JSON Schema on the value (ADR 0002), so root `import { arkenv } from "@arkenv/standard"` works zero-config out of the box. A redundant `@arkenv/standard/zod` alias is deferred to separate exploration.
 2. **Optional Peer Dependency Architecture:**
-   - `@valibot/to-json-schema` is declared under `peerDependencies` with `peerDependenciesMeta: { "@valibot/to-json-schema": { "optional": true } }`. (Zod Mini exposes `.toJSONSchema()` natively, requiring no additional converter peer).
+   - `@valibot/to-json-schema` is declared under `peerDependencies` with `peerDependenciesMeta: { "@valibot/to-json-schema": { "optional": true } }`. (Zod Mini uses `zod/mini`'s exported `toJSONSchema` helper without requiring an additional third-party package).
    - The root import `import { arkenv } from "@arkenv/standard"` remains pure with zero runtime dependencies.
 3. **Hard Modern Support Boundary (No Root Shims):**
    - Subpaths are exposed strictly via the `package.json` `"exports"` field with `"files": ["dist"]`.
@@ -92,4 +92,4 @@ To restore DX symmetry across the Big Three validators while preserving engine p
 - **Zero-Boilerplate Valibot DX:** Valibot users get identical one-liner DX (`import { arkenv } from "@arkenv/standard/valibot"`) without boilerplate in `env.ts`.
 - **Zero Runtime Bloat:** Root `@arkenv/standard` remains 100% dependency-free.
 - **Pristine Package Footprint:** No legacy shim files in package roots; build outputs remain contained within `dist/`.
-- **Docs & CLI Alignment:** `arkenv init` scaffolds `@arkenv/standard/valibot` for Valibot and `@arkenv/standard` for Zod directly.
+- **Docs & CLI Alignment:** `arkenv init` will scaffold `@arkenv/standard/valibot` for Valibot ([#1607](https://github.com/yamcodes/arkenv/issues/1607)) and `@arkenv/standard` for Zod directly.
