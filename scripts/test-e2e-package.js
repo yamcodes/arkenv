@@ -12,7 +12,7 @@ console.log("🚀 Starting E2E Package Installation Tests...");
 
 // 1. Build the packages in the workspace
 console.log("\n📦 Building workspace packages...");
-execSync("pnpm run build", { cwd: rootDir, stdio: "inherit" });
+execSync("pnpm run build:packages", { cwd: rootDir, stdio: "inherit" });
 
 // 2. Pack the core and standard packages
 const coreDir = path.join(rootDir, "packages/core");

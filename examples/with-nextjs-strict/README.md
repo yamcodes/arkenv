@@ -34,23 +34,20 @@ The example defines the environment schema across three split files in the `env/
    ```
 
 3. **Server variables**: `env/server.ts`
+
    ```ts
    import arkenv from "@arkenv/nextjs/server";
-   import { env as clientEnv } from "./client";
 
-   export const env = arkenv(
-       {
-           DATABASE_URL: "string = 'postgres://localhost:5432/mydb'",
-       },
-       {
-           extends: [clientEnv],
-       },
-   );
+   export const env = arkenv({
+       DATABASE_URL: "string = 'postgres://localhost:5432/mydb'",
+   });
    ```
+
+   Omitting `extends` auto-merges the client env via the `#arkenv/client-env` alias registered by `withArkEnv`. Pass an explicit `extends` list to opt out.
 
 ### Configuration Wrapper
 
-The Next.js configuration `next.config.ts` wraps the config object with `withArkEnv` from `@arkenv/nextjs/config`. This statically scans the split files in `env/` and automatically generates the `env/generated/env.gen.ts` file containing the pre-filled `runtimeEnv` block.
+The Next.js configuration `next.config.ts` wraps the config object with `withArkEnv` from `@arkenv/nextjs/config`. This statically scans the split files in `env/`, generates the `env/generated/env.gen.ts` file containing the pre-filled `runtimeEnv` block, and registers the `#arkenv/client-env` alias for server auto-extend.
 
 ## Usage in Components
 

@@ -180,7 +180,7 @@ Include:
 - Bullet points for details (same body voice: "Added…", "The plugin now…")
 - Migration instructions for breaking changes (using `major` bump and you MUST include a `**BREAKING CHANGE**:` note at the bottom)
 
-**Note**: Do NOT reference GitHub issues (e.g., #123) directly in the changeset. Changesets will automatically be linked to the PR and commits during the release process.
+**Note**: Do NOT reference GitHub issues (e.g., #123) or internal developer documentation (e.g., ADRs like "ADR 0021", internal RFCs, or private discussion threads) directly in the changeset. Changesets are external, consumer-facing release notes published in CHANGELOGs; all copy should focus entirely on user-observable behavior, syntax, and migration steps.
 **BREAKING CHANGE**: Place migration instructions or descriptions of breaking changes (using the `**BREAKING CHANGE**:` label) at the **end** of the changeset. Keep it concise - 1-2 lines max, 3 lines absolute maximum. Prefer using ```diff blocks to visually demonstrate syntax/behavior changes. Write this note for users too (e.g. "The `arkenv(schema)` pattern has been dropped" rather than "Drop the `arkenv(schema)` pattern").
 ```
 
@@ -209,7 +209,7 @@ Include:
 - [ ] Title starts with `####` header and uses imperative mood
 - [ ] Body is user-facing changelog prose (past tense or "now"), not imperative commands
 - [ ] Usage examples present for user-facing changes
-- [ ] No GitHub issue references (# numbers)
+- [ ] No GitHub issue references (# numbers) or internal documentation references (e.g. ADRs, internal RFCs)
 - [ ] Breaking changes use `major` bump and include a `**BREAKING CHANGE**:` note at the bottom
 
 ## Release workflow
@@ -272,6 +272,7 @@ ls .changeset/*.md
 | Not including context | Hard to understand | Explain *why* not just *what* |
 | Meaningless changes | Cluttered CHANGELOG | Only document changes with consumer value |
 | Including issue links | Redundant data | Remove # references; PR links them automatically |
+| Referencing ADRs/internal docs | Unprofessional in consumer docs | Remove ADR / internal doc references; describe user-observable changes only |
 
 ## Common scenarios
 

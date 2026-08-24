@@ -107,7 +107,7 @@ describe("scaffold utils", () => {
 				`Check ${code("./src/env.ts")} and refine your environment schema.`,
 			);
 			expect(note.message).toContain(
-				`Access via ${code("import.meta.env.YOUR_VAR")}`,
+				`Import and use: ${code('import { env } from "./src/env"')}`,
 			);
 		});
 
@@ -121,7 +121,7 @@ describe("scaffold utils", () => {
 			};
 			const note = getNextStepsNote(plan, false);
 			expect(note.message).toContain(
-				`Access via ${code("process.env.YOUR_VAR")}`,
+				`Import and use: ${code('import { env } from "./src/env"')}`,
 			);
 		});
 

@@ -12,8 +12,6 @@ export type FrameworkGetFilesParams = {
 	cwd: string;
 	existingFiles: string[];
 	overwriteEnvSchemaFile?: boolean | undefined;
-	installTypeDefinitions?: boolean | undefined;
-	envDtsHandling?: "overwrite" | "append" | "skip" | undefined;
 	path: string;
 	tsConfig?: {
 		file?: string;

@@ -115,7 +115,4 @@ export const valibotDialect: Dialect = {
 	});
 `;
 	},
-
-	pluginEnvImports: `import { type } from "@arkenv/core";
-import * as v from "valibot";`,
 };

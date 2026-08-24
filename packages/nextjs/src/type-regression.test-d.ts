@@ -173,3 +173,42 @@ describe("@arkenv/nextjs type regression", () => {
 		env.DATABASE_URL;
 	});
 });
+
+declare module "#arkenv/client-env" {
+	// biome-ignore lint/style/useConsistentTypeDefinitions: declaration merging requires an interface
+	interface ClientEnv {
+		NEXT_PUBLIC_API_URL: string;
+		NODE_ENV: string;
+	}
+}
+
+describe("@arkenv/nextjs server auto-extend types (strict layout)", () => {
+	it("includes auto-extended client keys in type when extends is omitted", () => {
+		// Import via require-cast so the module augmentation above is in scope
+		const { arkenv: serverArkenv } =
+			require("./server") as typeof import("./server");
+		const env = serverArkenv({ DATABASE_URL: "string" });
+
+		expectTypeOf(env.DATABASE_URL).toBeString();
+		expectTypeOf(env.NEXT_PUBLIC_API_URL).toBeString();
+		expectTypeOf(env.NODE_ENV).toBeString();
+	});
+
+	it("keeps explicit extends override types", () => {
+		const { arkenv: serverArkenv } =
+			require("./server") as typeof import("./server");
+		const clientEnv = {
+			NEXT_PUBLIC_API_URL: "https://api.example.com",
+			CUSTOM_CLIENT: "value",
+		};
+
+		const env = serverArkenv(
+			{ DATABASE_URL: "string" },
+			{ extends: [clientEnv] },
+		);
+
+		expectTypeOf(env.DATABASE_URL).toBeString();
+		expectTypeOf(env.NEXT_PUBLIC_API_URL).toBeString();
+		expectTypeOf(env.CUSTOM_CLIENT).toBeString();
+	});
+});

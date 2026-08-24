@@ -290,8 +290,6 @@ export function createExistingProjectPlan(
 		cwd,
 		existingFiles,
 		overwriteEnvSchemaFile: options.overwriteEnvSchemaFile,
-		installTypeDefinitions: options.installTypeDefinitions,
-		envDtsHandling: options.envDtsHandling,
 		path: options.path,
 		tsConfig,
 	};
@@ -303,8 +301,15 @@ export function createExistingProjectPlan(
 	planEnvFiles(state, plan);
 	planGitignoreFiles(state, plan);
 
+	const basePkg =
+		options.framework === "nextjs" || options.framework === "nuxt"
+			? undefined
+			: options.validator === "arktype"
+				? "@arkenv/core"
+				: "@arkenv/standard";
+
 	const deps = [
-		"arkenv",
+		...(basePkg ? [basePkg] : []),
 		options.validator,
 		...frameworkStrategy.getDependencies(options),
 	];
@@ -315,7 +320,10 @@ export function createExistingProjectPlan(
 		deps.push("arktype");
 	}
 
-	plan.install = { packageManager, dependencies: deps };
+	plan.install = {
+		packageManager,
+		dependencies: Array.from(new Set(deps)),
+	};
 
 	if (shouldUpdateTsConfig && tsConfig.file) {
 		plan.tsConfig = {

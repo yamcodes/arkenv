@@ -139,11 +139,6 @@ export type Dialect = {
 	 * @returns Full file content without trailing newline
 	 */
 	assembleVanilla(schemaFields: string): string;
-
-	/**
-	 * Imports used by Vite/Bun Env-only templates (schema export, no arkenv call).
-	 */
-	pluginEnvImports: string;
 };
 
 /**

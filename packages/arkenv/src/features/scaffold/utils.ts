@@ -101,11 +101,7 @@ export function getNextStepsNote(
 		plan.metadata.framework === "nextjs" && !plan.metadata.disableCodegen;
 	const needsManualConfig = isNextjsWithCodegen && !nextjsConfigBootstrapped;
 
-	if (plan.metadata.framework === "vite") {
-		message += `${step++}. Access via ${code("import.meta.env.YOUR_VAR")}\n`;
-	} else if (plan.metadata.framework === "bun-fullstack") {
-		message += `${step++}. Access via ${code("process.env.YOUR_VAR")}\n`;
-	} else if (plan.metadata.framework === "nextjs") {
+	if (plan.metadata.framework === "nextjs") {
 		if (plan.metadata.layout === "strict") {
 			if (plan.metadata.disableCodegen) {
 				message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}/client"`)} (client) or ${code(`import { env } from "${plan.metadata.importPath}/server"`)} (server)\n`;
@@ -127,12 +123,8 @@ export function getNextStepsNote(
 			}
 			message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
 		}
-	} else if (plan.metadata.framework === "nuxt") {
-		if (plan.metadata.layout === "strict") {
-			message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}/client"`)} (client) or ${code(`import { env } from "${plan.metadata.importPath}/server"`)} (server)\n`;
-		} else {
-			message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
-		}
+	} else if (plan.metadata.layout === "strict") {
+		message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}/client"`)} (client) or ${code(`import { env } from "${plan.metadata.importPath}/server"`)} (server)\n`;
 	} else {
 		message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
 	}

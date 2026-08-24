@@ -25,7 +25,7 @@ describe("config-mutation", () => {
 			expect(result.code).toContain("arkenvVitePlugin()");
 		});
 
-		it("injects plugin with Env when envImportPath is provided", async () => {
+		it("injects zero-arg plugin even when envImportPath is provided", async () => {
 			const initialContent = dedent`
 				import { defineConfig } from "vite"
 				export default defineConfig({
@@ -42,8 +42,8 @@ describe("config-mutation", () => {
 			expect(result.code).toContain(
 				'import arkenvVitePlugin from "@arkenv/vite-plugin"',
 			);
-			expect(result.code).toContain('import { Env } from "./env"');
-			expect(result.code).toContain("arkenvVitePlugin(Env)");
+			expect(result.code).not.toContain("import { Env }");
+			expect(result.code).toContain("arkenvVitePlugin()");
 		});
 
 		it("injects plugin into a simple object export", async () => {
