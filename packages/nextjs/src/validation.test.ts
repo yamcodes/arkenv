@@ -400,6 +400,27 @@ describe("build-time environment validation", () => {
 
 			expect(exitSpy).toHaveBeenCalledWith(1);
 		});
+		it("should throw a friendly error when strict layout is missing client.ts", () => {
+			// Only server.ts present — client.ts is intentionally absent
+			fs.writeFileSync(
+				serverPath,
+				`
+				import arkenv from "${path.resolve(__dirname, "./server.ts")}";
+				export const env = arkenv({
+					DATABASE_URL: "string",
+				});
+				`,
+				"utf-8",
+			);
+
+			expect(() => {
+				setupArkEnv({
+					schemaPath: strictBaseDir,
+					outputPath: strictOutputPath,
+					layout: "strict",
+				});
+			}).toThrow(/client\.ts/);
+		});
 	});
 
 	describe("codegen option", () => {

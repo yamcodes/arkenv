@@ -124,6 +124,11 @@ export function applyStrictLayoutAliases<T extends NextConfigLike>(
 		[specifier]: clientEnvPath,
 	};
 
+	// NOTE: `nextConfig` is spread as a plain object below. Only the object-form
+	// of `next.config` is supported here — a callable/function-form config would
+	// lose its call signature when spread, silently dropping any phase-dependent
+	// logic. Callers are responsible for dereferencing a callable config before
+	// passing it to this function. Full callable-form support is tracked separately.
 	return {
 		...nextConfig,
 		webpack,
