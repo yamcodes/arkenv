@@ -7,6 +7,6 @@ export default defineConfig({
 	fixedExtension: false,
 	deps: {
 		alwaysBundle: ["@repo/types", "@repo/utils"],
-		neverBundle: ["@valibot/to-json-schema", "zod"],
+		neverBundle: ["@valibot/to-json-schema", "zod", "zod/mini"],
 	},
 });

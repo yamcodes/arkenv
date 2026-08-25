@@ -105,7 +105,8 @@
 			"limit": "4.5 kB",
 			"import": "*",
 			"ignore": [
-				"zod"
+				"zod",
+				"zod/mini"
 			]
 		}
 	]
