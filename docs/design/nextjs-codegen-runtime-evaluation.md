@@ -2,7 +2,7 @@
 
 Living design evaluation using [the-hat](../../.agents/skills/the-hat/SKILL.md) loop. Update this note as options enter or leave the hat. Promoted decisions belong in `docs/adr/`.
 
-**Status:** Working design note for [#1598](https://github.com/yamcodes/arkenv/issues/1598), [#1599](https://github.com/yamcodes/arkenv/issues/1599), [#1402](https://github.com/yamcodes/arkenv/issues/1402), and [#1403](https://github.com/yamcodes/arkenv/issues/1403).  
+**Status:** Working design note for [#1598](https://github.com/yamcodes/arkenv/issues/1598), [#1599](https://github.com/yamcodes/arkenv/issues/1599), [#1402](https://github.com/yamcodes/arkenv/issues/1402), and [#1403](https://github.com/yamcodes/arkenv/issues/1403).\
 **Chosen public story (S-tier stack):** Next 15/16+ baseline (zero `jiti`) + Virtual `.arkenv/` aliasing + Canonical `env` object with conditional exports + Typed `isEnabled` literal DCE helper.
 
 ---
@@ -37,15 +37,15 @@ These dimensions compose into a complete architecture:
 
 ## 3. Evaluation Metrics
 
-| Metric | Question |
-| :--- | :--- |
-| **DCE Honesty** | Can minifiers dead-code-eliminate unused client code branches when a flag is off? |
-| **Coercion Honesty** | Are numbers, booleans, and objects delivered as real types, not raw strings? |
-| **Zero-Artifact DX** | Is the developer source tree free from committed machine-generated files? |
-| **Next.js Stability** | Is the integration immune to Next.js minor and canary internal refactors? |
-| **Zero-Friction Install** | Can the package be installed without global `package.json` overrides? |
-| **Zero-Dependency Core** | Does `@arkenv/nextjs` maintain a minimal runtime/build footprint? |
-| **Single Mental Model** | Does `import { env } from "./env"` remain consistent across frameworks? |
+| Metric                    | Question                                                                          |
+| :------------------------ | :-------------------------------------------------------------------------------- |
+| **DCE Honesty**           | Can minifiers dead-code-eliminate unused client code branches when a flag is off? |
+| **Coercion Honesty**      | Are numbers, booleans, and objects delivered as real types, not raw strings?      |
+| **Zero-Artifact DX**      | Is the developer source tree free from committed machine-generated files?         |
+| **Next.js Stability**     | Is the integration immune to Next.js minor and canary internal refactors?         |
+| **Zero-Friction Install** | Can the package be installed without global `package.json` overrides?             |
+| **Zero-Dependency Core**  | Does `@arkenv/nextjs` maintain a minimal runtime/build footprint?                 |
+| **Single Mental Model**   | Does `import { env } from "./env"` remain consistent across frameworks?           |
 
 ---
 
@@ -53,47 +53,47 @@ These dimensions compose into a complete architecture:
 
 ### Layer A: Pipeline & Config Execution
 
-| # | Option | Description |
-| :- | :--- | :--- |
-| **A1** | **`@next/env` Hijack (Varlock-style)** | Replace internal `@next/env` via package manager `overrides`/`resolutions`. |
-| **A2** | **Native `next.config.ts` Execution** | Rely on Next 15/16 native TS transpilation for schema validation during config boot (zero `jiti`). |
-| **A3** | **Internal `jiti` Loader (Status Quo)** | Bundle `jiti` inside `withArkEnv` to dynamically transpile `env.ts` in Next 13-16. |
-| **A4** | **Unwrapped Top-Level Import** | Instruct users to write `import "./src/env"` manually in `next.config.ts` without `withArkEnv`. |
+| #      | Option                                  | Description                                                                                        |
+| :----- | :-------------------------------------- | :------------------------------------------------------------------------------------------------- |
+| **A1** | **`@next/env` Hijack (Varlock-style)**  | Replace internal `@next/env` via package manager `overrides`/`resolutions`.                        |
+| **A2** | **Native `next.config.ts` Execution**   | Rely on Next 15/16 native TS transpilation for schema validation during config boot (zero `jiti`). |
+| **A3** | **Internal `jiti` Loader (Status Quo)** | Bundle `jiti` inside `withArkEnv` to dynamically transpile `env.ts` in Next 13-16.                 |
+| **A4** | **Unwrapped Top-Level Import**          | Instruct users to write `import "./src/env"` manually in `next.config.ts` without `withArkEnv`.    |
 
 ### Layer B: Factory & Codegen Placement
 
-| # | Option | Description |
-| :- | :--- | :--- |
-| **B1** | **In-Tree Disk Factory (Status Quo)** | Emit `generated/env.gen.ts` directly beside user schemas. |
-| **B2** | **Root `.arkenv/` + `resolveAlias` ([#1402](https://github.com/yamcodes/arkenv/issues/1402))** | Emit to gitignored `.arkenv/`, mapped via Webpack and Turbopack aliases. |
-| **B3** | **Next Build Cache (`.next/cache/arkenv`)** | Store factories in Next's internal cache folder (fragile across cache wipes). |
-| **B4** | **Pure In-Memory Virtual Module** | Virtual Webpack/Turbopack module without physical backing files (fails external `tsc --noEmit`). |
+| #      | Option                                                                                         | Description                                                                                      |
+| :----- | :--------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------- |
+| **B1** | **In-Tree Disk Factory (Status Quo)**                                                          | Emit `generated/env.gen.ts` directly beside user schemas.                                        |
+| **B2** | **Root `.arkenv/` + `resolveAlias` ([#1402](https://github.com/yamcodes/arkenv/issues/1402))** | Emit to gitignored `.arkenv/`, mapped via Webpack and Turbopack aliases.                         |
+| **B3** | **Next Build Cache (`.next/cache/arkenv`)**                                                    | Store factories in Next's internal cache folder (fragile across cache wipes).                    |
+| **B4** | **Pure In-Memory Virtual Module**                                                              | Virtual Webpack/Turbopack module without physical backing files (fails external `tsc --noEmit`). |
 
 ### Layer C: Client/Server Boundary Enforcement
 
-| # | Option | Description |
-| :- | :--- | :--- |
-| **C1** | **Conditional Package Exports + Proxy ([ADR 0015](../adr/0015-nextjs-conditional-exports-boundary.md))** | Next.js resolves `react-server` vs `default` builds; runtime Proxy guards client reads. |
-| **C2** | **Split-File Strict Layout + Auto-Extend ([#1403](https://github.com/yamcodes/arkenv/issues/1403))** | Separate `client.ts` / `server.ts` modules with auto-merging via `#arkenv/client-env`. |
-| **C3** | **AST Secret Stripping (Vite/Bun Transform)** | Strip non-public properties from client AST (impossible in Turbopack). |
-| **C4** | **Varlock-style Decorator Sensitivity** | Use `.env.schema` decorators (`@sensitive`, `@public`, `@dynamic`) with build injection. |
+| #      | Option                                                                                                   | Description                                                                              |
+| :----- | :------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------- |
+| **C1** | **Conditional Package Exports + Proxy ([ADR 0015](../adr/0015-nextjs-conditional-exports-boundary.md))** | Next.js resolves `react-server` vs `default` builds; runtime Proxy guards client reads.  |
+| **C2** | **Split-File Strict Layout + Auto-Extend ([#1403](https://github.com/yamcodes/arkenv/issues/1403))**     | Separate `client.ts` / `server.ts` modules with auto-merging via `#arkenv/client-env`.   |
+| **C3** | **AST Secret Stripping (Vite/Bun Transform)**                                                            | Strip non-public properties from client AST (impossible in Turbopack).                   |
+| **C4** | **Varlock-style Decorator Sensitivity**                                                                  | Use `.env.schema` decorators (`@sensitive`, `@public`, `@dynamic`) with build injection. |
 
 ### Layer D: Feature Flags & Dead-Code Elimination (DCE)
 
-| # | Option | Description |
-| :- | :--- | :--- |
-| **D1** | **Object Only (Accept DCE Loss)** | Pure `if (env.FLAG)`; document that object property reads forfeit minifier DCE ([#1599](https://github.com/yamcodes/arkenv/issues/1599) Outcome B). |
-| **D2** | **Official Typed Literal Escape Hatch** | Export `isEnabled<Env>("KEY", process.env.KEY)` combining static binary comparison (`=== "true"`) with schema validation. |
-| **D3** | **Compiler Macro / SWC Transform** | Attempt AST call-site rewriting of `env.KEY` (rejected for Turbopack). |
-| **D4** | **Raw `process.env` Fallback Pattern** | Recommend raw `process.env.NEXT_PUBLIC_FLAG === "true"` in docs for heavy client branches. |
+| #      | Option                                  | Description                                                                                                                                         |
+| :----- | :-------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **D1** | **Object Only (Accept DCE Loss)**       | Pure `if (env.FLAG)`; document that object property reads forfeit minifier DCE ([#1599](https://github.com/yamcodes/arkenv/issues/1599) Outcome B). |
+| **D2** | **Official Typed Literal Escape Hatch** | Export `isEnabled<Env>("KEY", process.env.KEY)` combining static binary comparison (`=== "true"`) with schema validation.                           |
+| **D3** | **Compiler Macro / SWC Transform**      | Attempt AST call-site rewriting of `env.KEY` (rejected for Turbopack).                                                                              |
+| **D4** | **Raw `process.env` Fallback Pattern**  | Recommend raw `process.env.NEXT_PUBLIC_FLAG === "true"` in docs for heavy client branches.                                                          |
 
 ### Layer E: Version Support Baseline
 
-| # | Option | Description |
-| :- | :--- | :--- |
-| **E1** | **Universal Support (Next 13–16+)** | Maintain `jiti` and legacy mocks across all versions. |
-| **E2** | **Next 15+ / 16+ Baseline on v1** | Drop Next 13/14 from v1; make `next.config.ts` and `turbopack.resolveAlias` first-class. |
-| **E3** | **Subpath / Legacy Package Fork** | Maintain `@arkenv/nextjs` (modern Next 15+) and `@arkenv/nextjs/legacy` (Next 13/14). |
+| #      | Option                              | Description                                                                              |
+| :----- | :---------------------------------- | :--------------------------------------------------------------------------------------- |
+| **E1** | **Universal Support (Next 13–16+)** | Maintain `jiti` and legacy mocks across all versions.                                    |
+| **E2** | **Next 15+ / 16+ Baseline on v1**   | Drop Next 13/14 from v1; make `next.config.ts` and `turbopack.resolveAlias` first-class. |
+| **E3** | **Subpath / Legacy Package Fork**   | Maintain `@arkenv/nextjs` (modern Next 15+) and `@arkenv/nextjs/legacy` (Next 13/14).    |
 
 ---
 
@@ -103,12 +103,12 @@ These dimensions compose into a complete architecture:
 
 Varlock ([varlock.dev/integrations/nextjs](https://varlock.dev/integrations/nextjs/)) introduces notable ideas alongside severe operational trade-offs:
 
-* **The Mechanism:** Varlock replaces `@next/env` by requiring package-manager level `overrides` (npm/pnpm/bun) or `resolutions` (yarn). In `next.config.ts`, `varlockNextConfigPlugin()` provides an imported `ENV` object (`import { ENV } from 'varlock/env'`), inlines non-sensitive variables at build time, and marks SSR routes dynamic when sensitive/dynamic values are read.
-* **The Strengths:**
+- **The Mechanism:** Varlock replaces `@next/env` by requiring package-manager level `overrides` (npm/pnpm/bun) or `resolutions` (yarn). In `next.config.ts`, `varlockNextConfigPlugin()` provides an imported `ENV` object (`import { ENV } from 'varlock/env'`), inlines non-sensitive variables at build time, and marks SSR routes dynamic when sensitive/dynamic values are read.
+- **The Strengths:**
   1. Integrates with Next's native environment pipeline so `process.env.KEY` and `ENV.KEY` both work.
   2. Granular sensitivity control via schema decorators (`@defaultSensitive`, `@sensitive=false`, `@dynamic`).
   3. Seamless log redaction and sourcemap scrubbing.
-* **The Operational Pitfalls:**
+- **The Operational Pitfalls:**
   1. **Lockfile & Symlink Hazards:** Overriding internal scoped packages (`@next/env`) frequently causes dangling symlinks in npm/pnpm. Varlock's own documentation highlights common `Cannot find module '@next/env'` and `process.env.__VARLOCK_ENV is not set` errors, requiring full `rm -rf node_modules package-lock.json` resets.
   2. **Turbopack JS Loader Edge Incompatibilities:** Varlock hit Next 15.0–15.4 Turbopack loader crashes (`lint TP1006`) when `middleware.ts` existed, forcing version-specific loader scoping workarounds.
   3. **Standalone Deployment Friction:** Next.js `output: standalone` builds do not bundle external CLI tools or `.env` files. Varlock requires adding `cp .env.* .next/standalone` to build scripts and booting via `varlock run -- node .next/standalone/server.js`.
@@ -123,9 +123,9 @@ Varlock ([varlock.dev/integrations/nextjs](https://varlock.dev/integrations/next
 
 Setting the minimum Next.js version to **Next 15.0+ (and Next 16+)** on the `v1` branch dramatically simplifies the architecture:
 
-* **Elimination of `jiti` ([ADR 0014](../adr/0014-nextjs-jiti-build-time-validation.md) Revoked):** Next.js 15+ natively transpiles `next.config.ts` using its internal SWC engine. When `withArkEnv` runs inside `next.config.ts`, importing `env.ts` evaluates TypeScript natively. `jiti`, `_jitiAliases`, and `mock-server-only.ts` are completely deleted.
-* **First-Class Turbopack Configuration:** Next.js 16 promotes Turbopack configuration to top-level `turbopack.resolveAlias` (stabilizing `experimental.turbo.resolveAlias`). Webpack and Turbopack can be configured symmetrically in fewer than 20 lines of code.
-* **Result:** `@arkenv/nextjs` becomes a **zero-dependency** adapter package.
+- **Elimination of `jiti` ([ADR 0014](../adr/0014-nextjs-jiti-build-time-validation.md) Revoked):** Next.js 15+ natively transpiles `next.config.ts` using its internal SWC engine. When `withArkEnv` runs inside `next.config.ts`, importing `env.ts` evaluates TypeScript natively. `jiti`, `_jitiAliases`, and `mock-server-only.ts` are completely deleted.
+- **First-Class Turbopack Configuration:** Next.js 16 promotes Turbopack configuration to top-level `turbopack.resolveAlias` (stabilizing `experimental.turbo.resolveAlias`). Webpack and Turbopack can be configured symmetrically in fewer than 20 lines of code.
+- **Result:** `@arkenv/nextjs` becomes a **zero-dependency** adapter package.
 
 ---
 
@@ -145,9 +145,9 @@ Minifiers (Terser, SWC, ESBuild) only eliminate dead code branches when expressi
      return value === "true" || value === "1";
    }
    ```
-   * At compile time: Next.js inlines `process.env.NEXT_PUBLIC_FEATURE` as `"false"`.
-   * With standard minifier inlining or macro expansion: `isEnabled("NEXT_PUBLIC_FEATURE", "false")` evaluates to `"false" === "true"` $\rightarrow$ `false` $\rightarrow$ dead branch completely removed.
-   * At typecheck time: TypeScript verifies that the first argument is a valid boolean/flag key in the schema.
+   - At compile time: Next.js inlines `process.env.NEXT_PUBLIC_FEATURE` as `"false"`.
+   - With standard minifier inlining or macro expansion: `isEnabled("NEXT_PUBLIC_FEATURE", "false")` evaluates to `"false" === "true"` $\rightarrow$ `false` $\rightarrow$ dead branch completely removed.
+   - At typecheck time: TypeScript verifies that the first argument is a valid boolean/flag key in the schema.
 
 ---
 
@@ -159,7 +159,7 @@ Ranked as **complete architectural stacks**:
 
 **Stack: A2 (Native `next.config.ts`) + B2 (Virtual `.arkenv/`) + C1/C2 (Conditional Exports + Auto-Extend Strict) + D2 (`isEnabled` Helper) + E2 (Next 15+ Baseline)**
 
-* **Why it wins:**
+- **Why it wins:**
   1. **Zero dependencies:** Dropping Next 13/14 deletes `jiti`, `chokidar`, and all mock files.
   2. **Clean source tree:** Generated factories live in root `.arkenv/` (gitignored), resolved via official Webpack + Turbopack aliases.
   3. **Full Turbopack compatibility:** Uses official `turbopack.resolveAlias`.
@@ -170,36 +170,36 @@ Ranked as **complete architectural stacks**:
 
 ### A-Tier (Complementary Affordances & Documentation)
 
-* **D4 (Documented raw identifier pattern):** Complement `isEnabled` with explicit documentation on how minifiers treat `process.env.NEXT_PUBLIC_*`.
-* **E3 (Legacy Subpath / Package):** If enterprise demand for Next 13/14 remains significant, isolate `jiti` into `@arkenv/nextjs/legacy` so the primary package stays clean.
+- **D4 (Documented raw identifier pattern):** Complement `isEnabled` with explicit documentation on how minifiers treat `process.env.NEXT_PUBLIC_*`.
+- **E3 (Legacy Subpath / Package):** If enterprise demand for Next 13/14 remains significant, isolate `jiti` into `@arkenv/nextjs/legacy` so the primary package stays clean.
 
 ---
 
 ### B-Tier (Viable but Suboptimal)
 
-* **B1 (Status Quo In-Tree Codegen):** Functional and reliable, but leaves `generated/env.gen.ts` littering user source folders.
-* **D1 (Object only with accepted DCE loss):** Acceptable for small apps, but frustrates teams with large client feature flags.
+- **B1 (Status Quo In-Tree Codegen):** Functional and reliable, but leaves `generated/env.gen.ts` littering user source folders.
+- **D1 (Object only with accepted DCE loss):** Acceptable for small apps, but frustrates teams with large client feature flags.
 
 ---
 
 ### C-Tier (High Overhead / Friction)
 
-* **A3 (Universal `jiti` transpilation across Next 13–16):** Carries permanent build complexity and monorepo ESM hazards.
-* **C2 without Auto-Extend:** Forcing manual `extends: [clientEnv]` in strict mode imposes unnecessary boilerplate.
+- **A3 (Universal `jiti` transpilation across Next 13–16):** Carries permanent build complexity and monorepo ESM hazards.
+- **C2 without Auto-Extend:** Forcing manual `extends: [clientEnv]` in strict mode imposes unnecessary boilerplate.
 
 ---
 
 ### D-Tier (Fragile or Broken)
 
-* **A1 (Varlock-style `@next/env` package manager override):** Fragile across minor Next.js releases; causes lockfile/symlink installation issues and monorepo friction.
-* **B3 (`.next/cache/arkenv`):** Cache wipes break standalone builds and IDE typechecking.
-* **B4 (In-memory virtual module without disk backing):** Breaks standalone `tsc --noEmit` and IDE navigation.
+- **A1 (Varlock-style `@next/env` package manager override):** Fragile across minor Next.js releases; causes lockfile/symlink installation issues and monorepo friction.
+- **B3 (`.next/cache/arkenv`):** Cache wipes break standalone builds and IDE typechecking.
+- **B4 (In-memory virtual module without disk backing):** Breaks standalone `tsc --noEmit` and IDE navigation.
 
 ---
 
 ### F-Tier (Architecturally Impossible)
 
-* **C3 (Custom SWC AST Transform under Turbopack):** Turbopack does not support custom JS/TS SWC transform plugins.
+- **C3 (Custom SWC AST Transform under Turbopack):** Turbopack does not support custom JS/TS SWC transform plugins.
 
 ---
 
