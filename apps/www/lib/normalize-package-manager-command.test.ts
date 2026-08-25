@@ -6,9 +6,9 @@ describe("normalizePackageManagerCommand", () => {
 		expect(normalizePackageManagerCommand("npm i @arkenv/core")).toBe(
 			"npm install @arkenv/core",
 		);
-		expect(
-			normalizePackageManagerCommand("npm i -D @arkenv/vite-plugin"),
-		).toBe("npm install -D @arkenv/vite-plugin");
+		expect(normalizePackageManagerCommand("npm i -D @arkenv/vite-plugin")).toBe(
+			"npm install -D @arkenv/vite-plugin",
+		);
 	});
 
 	it("rewrites bun add to bun install", () => {

@@ -44,11 +44,7 @@ describe("package-install fences", () => {
 				for (const line of code.split("\n")) {
 					const trimmed = line.trim();
 					if (trimmed.length === 0) continue;
-					if (
-						/^(npx |npm install\b|npm rm |npm run |cd |cp )/.test(
-							trimmed,
-						)
-					) {
+					if (/^(npx |npm install\b|npm rm |npm run |cd |cp )/.test(trimmed)) {
 						continue;
 					}
 					hits.push(`${rel}: ${JSON.stringify(trimmed)}`);
