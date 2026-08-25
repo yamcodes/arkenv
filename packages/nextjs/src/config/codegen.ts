@@ -106,6 +106,18 @@ export function runCodegen(
 		fs.writeFileSync(outputPath, generatedCode, "utf-8");
 	}
 
+	const barrelPath = path.join(outputDir, "index.ts");
+	const barrelCode = `export * from "./env.gen";\nexport { default } from "./env.gen";\n`;
+	let shouldWriteBarrel = true;
+	if (fs.existsSync(barrelPath)) {
+		if (fs.readFileSync(barrelPath, "utf-8") === barrelCode) {
+			shouldWriteBarrel = false;
+		}
+	}
+	if (shouldWriteBarrel) {
+		fs.writeFileSync(barrelPath, barrelCode, "utf-8");
+	}
+
 	if (resolvedLayout === "strict" && baseDir) {
 		const ambientPath = path.join(
 			path.dirname(outputPath),

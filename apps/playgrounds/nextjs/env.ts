@@ -1,4 +1,4 @@
-import arkenv from "#arkenv/env";
+import arkenv from "@/.arkenv";
 
 export const env = arkenv({
 	DATABASE_URL: "string = 'postgres://localhost:5432/mydb'",

@@ -295,7 +295,12 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 			resolveAlias: {
 				".arkenv/env.gen": relativeGenPath,
 				".arkenv/env.gen.ts": relativeGenPath,
+				".arkenv": relativeGenPath,
+				".arkenv/index": relativeGenPath,
+				".arkenv/index.ts": relativeGenPath,
 				"#arkenv/env": relativeGenPath,
+				"@/.arkenv": relativeGenPath,
+				"@/.arkenv/env.gen": relativeGenPath,
 				...configObj?.turbopack?.resolveAlias,
 			},
 		};
@@ -306,7 +311,12 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 				...webpackConfig.resolve.alias,
 				".arkenv/env.gen": targetGenPath,
 				".arkenv/env.gen.ts": targetGenPath,
+				".arkenv": targetGenPath,
+				".arkenv/index": targetGenPath,
+				".arkenv/index.ts": targetGenPath,
 				"#arkenv/env": targetGenPath,
+				"@/.arkenv": targetGenPath,
+				"@/.arkenv/env.gen": targetGenPath,
 			};
 			if (typeof configObj?.webpack === "function") {
 				return configObj.webpack(webpackConfig, context);
