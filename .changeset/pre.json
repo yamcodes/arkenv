@@ -44,6 +44,7 @@
 		"init-v1",
 		"injectable-logger-api",
 		"machine-actionable-error-codes",
+		"nextjs-s-tier-mvp",
 		"nuxt-augment-config-key",
 		"nuxt-boot-gate-thin-accessors",
 		"nuxt-flat-layout-cli-alignment",
