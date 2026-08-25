@@ -431,11 +431,7 @@ describe("withArkEnv wrapper", () => {
 
 		const genPath = path.join(tempDir, ".arkenv", "env.gen.ts");
 		expect(fs.existsSync(genPath)).toBe(true);
-		const ambientPath = path.join(
-			tempDir,
-			".arkenv",
-			"arkenv-client-env.d.ts",
-		);
+		const ambientPath = path.join(tempDir, ".arkenv", "arkenv-client-env.d.ts");
 		expect(fs.existsSync(ambientPath)).toBe(true);
 		expect(fs.readFileSync(ambientPath, "utf-8")).toContain(
 			'declare module "#arkenv/client-env"',

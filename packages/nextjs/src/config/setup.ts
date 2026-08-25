@@ -111,7 +111,11 @@ export function setupArkEnv(
 		throw new Error(missingClientTsError(clientEnvPath, baseDir!));
 	}
 
-	function resolveProjectRoot(schema: string, base?: string, layout?: string): string {
+	function resolveProjectRoot(
+		schema: string,
+		base?: string,
+		layout?: string,
+	): string {
 		if (layout === "strict" && base) {
 			let dir = base;
 			if (path.basename(dir) === "env") {
