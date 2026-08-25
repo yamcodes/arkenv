@@ -10,6 +10,7 @@ import remarkDirective from "remark-directive";
 import remarkGemoji from "remark-gemoji";
 import { rehypeOptimizeInternalLinks } from "./lib/plugins/rehype-optimize-internal-links";
 import { remarkNormalizeCodeIndent } from "./lib/plugins/remark-normalize-code-indent";
+import { remarkNormalizePackageManagerCommands } from "./lib/plugins/remark-normalize-package-manager-commands";
 import { arktypeTwoslashOptions } from "./lib/twoslash-options";
 
 const CALLOUT_CONTAINER = "CalloutContainer";
@@ -112,21 +113,6 @@ function remarkDirectiveAdmonitionCustom(options: {
 	};
 }
 
-function remarkBunXToBunx(): RemarkPlugin {
-	return (tree: AstNode) => {
-		const traverse = (node: AstNode) => {
-			if (!node) return;
-			if (node.type === "code" && typeof node.value === "string") {
-				node.value = node.value.replace(/(^|\n)bun x /g, "$1bunx ");
-			}
-			if (node.children) {
-				node.children.forEach(traverse);
-			}
-		};
-		traverse(tree);
-	};
-}
-
 export const docs = defineDocs({
 	dir: "content/docs",
 	docs: {
@@ -150,7 +136,7 @@ export default defineConfig({
 			remarkGemoji,
 			remarkSteps,
 			remarkNormalizeCodeIndent,
-			remarkBunXToBunx,
+			remarkNormalizePackageManagerCommands,
 			remarkDirective,
 			[
 				remarkDirectiveAdmonitionCustom,

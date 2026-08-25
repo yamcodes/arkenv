@@ -8,7 +8,7 @@ const FENCE = /```package-install\n(.*?)```/gs;
 
 /**
  * Fumadocs `remarkNpm` prepends `npm install ` unless the fence already starts
- * with `npm` or `npx`. Author `npm i …` / `npx …`, not `pnpm add …`.
+ * with `npm` or `npx`. Author `npm install …` / `npx …`, not `npm i` or `pnpm add`.
  */
 function asRemarkNpmInput(body: string): string {
 	const lines = body.replace(/\n$/, "").split("\n");
@@ -34,15 +34,25 @@ function walkMdx(dir: string): string[] {
 }
 
 describe("package-install fences", () => {
-	it("starts with npm/npx so remarkNpm does not prefix a second command", () => {
+	it("authors npm install / npx so tabs do not concatenate or use npm i", () => {
 		const hits: string[] = [];
 		for (const file of walkMdx(DOCS_ROOT)) {
 			const text = readFileSync(file, "utf8");
 			const rel = relative(DOCS_ROOT, file);
 			for (const match of text.matchAll(FENCE)) {
 				const code = asRemarkNpmInput(match[1] ?? "");
-				if (code.startsWith("npm") || code.startsWith("npx")) continue;
-				hits.push(`${rel}: ${JSON.stringify(code.split("\n")[0])}`);
+				for (const line of code.split("\n")) {
+					const trimmed = line.trim();
+					if (trimmed.length === 0) continue;
+					if (
+						/^(npx |npm install\b|npm rm |npm run |cd |cp )/.test(
+							trimmed,
+						)
+					) {
+						continue;
+					}
+					hits.push(`${rel}: ${JSON.stringify(trimmed)}`);
+				}
 			}
 		}
 		expect(hits).toEqual([]);
