@@ -314,42 +314,49 @@ export class PresetUseCase {
 				}
 
 				let anyUpdated = false;
+				const removedKeys: string[] = [];
 				if (clientResult.updated) {
 					await this.workspace.writeFile(clientPath, clientResult.code);
 					anyUpdated = true;
+					if (clientResult.removedKeys) {
+						removedKeys.push(...clientResult.removedKeys);
+					}
 				}
 				if (serverResult.updated) {
 					await this.workspace.writeFile(serverPath, serverResult.code);
 					anyUpdated = true;
-				}
-
-				// Find remaining preset keys across both files
-				const validationClient = validateAndFindPresetBlocks(
-					clientResult.code || clientCode,
-				);
-				const remainingBlocksClient = validationClient.success
-					? validationClient.blocks
-					: [];
-				const validationServer = validateAndFindPresetBlocks(
-					serverResult.code || serverCode,
-				);
-				const remainingBlocksServer = validationServer.success
-					? validationServer.blocks
-					: [];
-				const remainingKeys = [
-					...remainingBlocksClient.flatMap((b) => b.keys),
-					...remainingBlocksServer.flatMap((b) => b.keys),
-				];
-
-				if (typeof this.workspace.removeEnvExampleKeys === "function") {
-					await this.workspace.removeEnvExampleKeys(
-						cwd,
-						allPresetKeys,
-						remainingKeys,
-					);
+					if (serverResult.removedKeys) {
+						removedKeys.push(...serverResult.removedKeys);
+					}
 				}
 
 				if (anyUpdated) {
+					// Find remaining preset keys across both files
+					const validationClient = validateAndFindPresetBlocks(
+						clientResult.code || clientCode,
+					);
+					const remainingBlocksClient = validationClient.success
+						? validationClient.blocks
+						: [];
+					const validationServer = validateAndFindPresetBlocks(
+						serverResult.code || serverCode,
+					);
+					const remainingBlocksServer = validationServer.success
+						? validationServer.blocks
+						: [];
+					const remainingKeys = [
+						...remainingBlocksClient.flatMap((b) => b.keys),
+						...remainingBlocksServer.flatMap((b) => b.keys),
+					];
+
+					if (typeof this.workspace.removeEnvExampleKeys === "function") {
+						await this.workspace.removeEnvExampleKeys(
+							cwd,
+							removedKeys,
+							remainingKeys,
+						);
+					}
+
 					this.logger.success(
 						`Removed ${providerName} preset from ${relClientPath} and ${relServerPath}`,
 					);
@@ -385,24 +392,25 @@ export class PresetUseCase {
 
 			if (result.updated) {
 				await this.workspace.writeFile(envPath, result.code);
+
+				const validation = validateAndFindPresetBlocks(result.code);
+				const remainingBlocks = validation.success ? validation.blocks : [];
+				const remainingKeys = remainingBlocks.flatMap((b) => b.keys);
+
+				if (typeof this.workspace.removeEnvExampleKeys === "function") {
+					await this.workspace.removeEnvExampleKeys(
+						cwd,
+						result.removedKeys || [],
+						remainingKeys,
+					);
+				}
+
 				this.logger.success(
 					`Removed ${providerName} preset from ${relEnvPath}`,
 				);
 			} else {
 				this.logger.info(
 					`${providerName} preset was not present in ${relEnvPath}`,
-				);
-			}
-
-			const validation = validateAndFindPresetBlocks(result.code);
-			const remainingBlocks = validation.success ? validation.blocks : [];
-			const remainingKeys = remainingBlocks.flatMap((b) => b.keys);
-
-			if (typeof this.workspace.removeEnvExampleKeys === "function") {
-				await this.workspace.removeEnvExampleKeys(
-					cwd,
-					allPresetKeys,
-					remainingKeys,
 				);
 			}
 

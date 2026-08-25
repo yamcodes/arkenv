@@ -5,7 +5,6 @@ import {
 	mutateEnvConfig,
 	removePresetFromSchema,
 	transformNextjsConfig,
-	transformNuxtConfig,
 	transformViteConfig,
 	validateAndFindPresetBlocks,
 } from "./config-mutation";
@@ -889,6 +888,186 @@ export const env = arkenv(
 		extends: [SharedSchema],
 	},
 );`);
+		});
+
+		it("fails closed on multi-line schema when colliding key is a second field on the same line", () => {
+			const initialContent = dedent`
+				import arkenv from "./generated/env.gen";
+
+				export const env = arkenv({
+					PORT: "number.port = 3000",
+					FOO: "string", VERCEL: "string?",
+				});
+			`;
+
+			const result = applyPresetToSchema(initialContent, {
+				preset: "vercel",
+				framework: "nextjs",
+				validator: "arktype",
+			});
+
+			expect(result.success).toBe(false);
+			expect(result.updated).toBe(false);
+			expect(result.error).toContain("Collision detected");
+			expect(result.error).toContain("VERCEL");
+		});
+
+		it("fails closed on multi-line schema when colliding key is on the same line inside another preset block", () => {
+			const initialContent = dedent`
+				import arkenv from "./generated/env.gen";
+
+				export const env = arkenv({
+					PORT: "number.port = 3000",
+					// @arkenv-preset-start other
+					OTHER_KEY: "string", VERCEL: "string?",
+					// @arkenv-preset-end other
+				});
+			`;
+
+			const result = applyPresetToSchema(initialContent, {
+				preset: "vercel",
+				framework: "nextjs",
+				validator: "arktype",
+			});
+
+			expect(result.success).toBe(false);
+			expect(result.updated).toBe(false);
+			expect(result.error).toContain("Collision detected");
+			expect(result.error).toContain("other");
+		});
+
+		it("fails closed when preset marker is missing an id", () => {
+			const initialContent = dedent`
+				import arkenv from "./generated/env.gen";
+
+				export const env = arkenv({
+					// @arkenv-preset-start
+					VERCEL: "string?",
+					// @arkenv-preset-end
+				});
+			`;
+
+			const result = validateAndFindPresetBlocks(initialContent);
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				expect(result.error).toContain("Malformed preset markers");
+				expect(result.error).toContain("missing or invalid preset id");
+			}
+
+			const applyResult = applyPresetToSchema(initialContent, {
+				preset: "vercel",
+				framework: "nextjs",
+				validator: "arktype",
+			});
+			expect(applyResult.success).toBe(false);
+			expect(applyResult.error).toContain("Malformed preset markers");
+		});
+
+		it("inserts trailing comma before line comment when last field has trailing comment without comma", () => {
+			const initialContent = dedent`
+				import arkenv from "./generated/env.gen";
+
+				export const env = arkenv({
+					PORT: "number.port = 3000" // tune
+				});
+			`;
+
+			const result = applyPresetToSchema(initialContent, {
+				preset: "vercel",
+				framework: "nextjs",
+				validator: "arktype",
+			});
+
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain('PORT: "number.port = 3000", // tune');
+			expect(result.code).not.toContain("// tune,");
+			expect(result.code).toContain("// @arkenv-preset-start vercel");
+		});
+
+		it("inserts trailing comma before block comment when last field has block comment without comma", () => {
+			const initialContent = dedent`
+				import arkenv from "./generated/env.gen";
+
+				export const env = arkenv({
+					PORT: "number.port = 3000" /* tune */
+				});
+			`;
+
+			const result = applyPresetToSchema(initialContent, {
+				preset: "vercel",
+				framework: "nextjs",
+				validator: "arktype",
+			});
+
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain('PORT: "number.port = 3000", /* tune */');
+			expect(result.code).toContain("// @arkenv-preset-start vercel");
+		});
+
+		it("does not duplicate trailing comma when last field already has comma before comment", () => {
+			const initialContent = dedent`
+				import arkenv from "./generated/env.gen";
+
+				export const env = arkenv({
+					PORT: "number.port = 3000", // tune
+				});
+			`;
+
+			const result = applyPresetToSchema(initialContent, {
+				preset: "vercel",
+				framework: "nextjs",
+				validator: "arktype",
+			});
+
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain('PORT: "number.port = 3000", // tune');
+			expect(result.code).not.toContain('PORT: "number.port = 3000",,');
+		});
+
+		it("correctly ignores slashes in string literals when finding trailing comments", () => {
+			const initialContent = dedent`
+				import arkenv from "./generated/env.gen";
+
+				export const env = arkenv({
+					API_URL: "https://api.example.com"
+				});
+			`;
+
+			const result = applyPresetToSchema(initialContent, {
+				preset: "vercel",
+				framework: "nextjs",
+				validator: "arktype",
+			});
+
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain('API_URL: "https://api.example.com",');
+			expect(result.code).toContain("// @arkenv-preset-start vercel");
+		});
+
+		it("adds trailing comma to last field when comment lines exist before closing brace", () => {
+			const initialContent = dedent`
+				import arkenv from "./generated/env.gen";
+
+				export const env = arkenv({
+					PORT: "number.port = 3000"
+					// comment before closing brace
+				});
+			`;
+
+			const result = applyPresetToSchema(initialContent, {
+				preset: "vercel",
+				framework: "nextjs",
+				validator: "arktype",
+			});
+
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain('PORT: "number.port = 3000",');
+			expect(result.code).toContain("// @arkenv-preset-start vercel");
 		});
 	});
 });

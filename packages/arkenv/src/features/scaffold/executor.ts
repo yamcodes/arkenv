@@ -179,7 +179,7 @@ export class Executor {
 						try {
 							await this.workspace.execute("node", ["-e", script], plan.cwd);
 							this.reporter.info(`Generated ${code("env.gen.ts")} for Next.js`);
-						} catch (error) {
+						} catch {
 							this.reporter.warn(
 								`Failed to automatically generate ${code("env.gen.ts")}. It will be generated when you start your dev server.`,
 							);
@@ -342,7 +342,7 @@ export class Executor {
 		if (await this.workspace.exists(pnpmWorkspacePath)) {
 			try {
 				workspaceContent = await this.workspace.readFile(pnpmWorkspacePath);
-			} catch (e) {
+			} catch {
 				// Ignore and treat as empty/non-existent
 			}
 		}

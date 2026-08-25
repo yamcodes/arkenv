@@ -442,7 +442,6 @@ describe("withArkEnv wrapper", () => {
 			turbopack?: { resolveAlias?: Record<string, string> };
 			experimental?: { turbo?: { resolveAlias?: Record<string, string> } };
 		};
-
 		// Strict layout returns a new config with webpack/turbopack aliases.
 		expect(outputConfig).not.toBe(inputConfig);
 		expect(outputConfig.reactStrictMode).toBe(true);

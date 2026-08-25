@@ -66,6 +66,7 @@ type SetupResult = {
 	resolvedLayout: "flat" | "strict" | "simple";
 	baseDir: string | undefined;
 	clientEnvPath: string | undefined;
+	outputPath: string;
 };
 
 /**

@@ -9,7 +9,7 @@ export default function DashboardPage() {
 			</h1>
 			<p style={{ color: "#64748b", margin: "0 0 24px" }}>
 				Server Component with virtualized <code>.arkenv/</code> artifact
-				placement & client-side Dead-Code Elimination (DCE).
+				placement.
 			</p>
 			<section
 				style={{
