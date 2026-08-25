@@ -1,6 +1,20 @@
 import type { Logger, LogLevel } from "@repo/log";
 
 /**
+ * Context object Next.js passes to a function-form `next.config`.
+ */
+export type NextConfigContext = {
+	defaultConfig: unknown;
+};
+
+/**
+ * Function-form Next.js config: sync or async, receiving the current phase.
+ */
+export type NextConfigFactory<
+	T extends Record<string, unknown> = Record<string, unknown>,
+> = (phase: string, context: NextConfigContext) => T | Promise<T>;
+
+/**
  * Configuration options for the ArkEnv Next.js integration.
  *
  * @example
