@@ -2,9 +2,12 @@ import type { Logger, LogLevel } from "@repo/log";
 
 /**
  * Context object Next.js passes to a function-form `next.config`.
+ *
+ * `defaultConfig` is `{}` so it is spreadable (unlike `unknown` or `object`)
+ * while remaining a supertype of Next.js's `NextConfig` interface.
  */
 export type NextConfigContext = {
-	defaultConfig: unknown;
+	defaultConfig: {};
 };
 
 /**

@@ -405,7 +405,7 @@ describe("withArkEnv wrapper", () => {
 
 		const wrapped = withArkEnv(
 			async (phase, { defaultConfig }) => ({
-				...(defaultConfig as Record<string, unknown>),
+				...defaultConfig,
 				reactStrictMode: phase !== "phase-test",
 			}),
 			{

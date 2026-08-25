@@ -222,10 +222,14 @@ describe("withArkEnv config overloads", () => {
 	});
 
 	it("accepts Next.js NextConfig without a string index signature", () => {
-		type NextConfigLike = {
+		// Must be an interface: type aliases get an implicit index signature, so they
+		// would not catch a `Record<string, unknown>` constraint the way Next 16's
+		// bare `interface NextConfig` does.
+		// biome-ignore lint/style/useConsistentTypeDefinitions: match NextConfig (interface, no index signature)
+		interface NextConfigLike {
 			reactStrictMode?: boolean;
 			distDir?: string;
-		};
+		}
 		const wrap = () => withArkEnv({} as NextConfigLike);
 		expectTypeOf(wrap).returns.toEqualTypeOf<NextConfigLike>();
 	});
@@ -238,7 +242,7 @@ describe("withArkEnv config overloads", () => {
 		expectTypeOf(wrap).returns.toMatchTypeOf<
 			(
 				phase: string,
-				context: { defaultConfig: unknown },
+				context: { defaultConfig: {} },
 			) => Promise<{ reactStrictMode: boolean }>
 		>();
 	});
@@ -246,14 +250,31 @@ describe("withArkEnv config overloads", () => {
 	it("returns an async factory for async function-form nextConfig", () => {
 		const wrap = () =>
 			withArkEnv(async (phase: string, { defaultConfig }) => ({
-				...(defaultConfig as { poweredByHeader?: boolean }),
+				...defaultConfig,
 				reactStrictMode: phase !== "phase-test",
 			}));
 		expectTypeOf(wrap).returns.toMatchTypeOf<
 			(
 				phase: string,
-				context: { defaultConfig: unknown },
-			) => Promise<{ poweredByHeader?: boolean; reactStrictMode: boolean }>
+				context: { defaultConfig: {} },
+			) => Promise<{ reactStrictMode: boolean }>
+		>();
+	});
+
+	it("typechecks the docs function-form snippet with a NextConfig-like return", () => {
+		// biome-ignore lint/style/useConsistentTypeDefinitions: match NextConfig (interface, no index signature)
+		interface NextConfigLike {
+			reactStrictMode?: boolean;
+		}
+		const wrap = () =>
+			withArkEnv(
+				async (phase: string, { defaultConfig }): Promise<NextConfigLike> => ({
+					...defaultConfig,
+					reactStrictMode: phase !== "phase-test",
+				}),
+			);
+		expectTypeOf(wrap).returns.toMatchTypeOf<
+			(phase: string, context: { defaultConfig: {} }) => Promise<NextConfigLike>
 		>();
 	});
 
@@ -271,7 +292,7 @@ describe("withArkEnv config overloads", () => {
 		expectTypeOf(wrapFunction).returns.toMatchTypeOf<
 			(
 				phase: string,
-				context: { defaultConfig: unknown },
+				context: { defaultConfig: {} },
 			) => Promise<{ reactStrictMode: boolean }>
 		>();
 	});
