@@ -255,6 +255,7 @@ export function setupArkEnv(
 		resolvedLayout,
 		baseDir,
 		clientEnvPath,
+		outputPath,
 	};
 }
 
@@ -269,26 +270,23 @@ export function setupArkEnv(
  * @throws An error if the schema file cannot be found or if code generation fails
  */
 export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
-	const { resolvedLayout, clientEnvPath } = setupArkEnv(options);
-
-	let configToWrap: any = nextConfig;
-	if (resolvedLayout === "strict" && clientEnvPath) {
-		configToWrap = applyStrictLayoutAliases(
-			configToWrap as Record<string, unknown>,
-			clientEnvPath,
-			CLIENT_ENV_SPECIFIER,
-		);
-	}
+	const {
+		resolvedLayout,
+		clientEnvPath,
+		outputPath: targetGenPath,
+	} = setupArkEnv(options);
 
 	const applyVirtualAliases = (configObj: any) => {
 		const rootDir = process.cwd();
 
-		const targetGenPath = options?.outputPath
-			? path.resolve(options.outputPath)
-			: path.join(rootDir, ".arkenv", "env.gen.ts");
+		const targetGenPathToUse =
+			targetGenPath ??
+			(options?.outputPath
+				? path.resolve(options.outputPath)
+				: path.join(rootDir, ".arkenv", "env.gen.ts"));
 
 		const relativeGenPath =
-			"./" + path.relative(rootDir, targetGenPath).replace(/\\/g, "/");
+			"./" + path.relative(rootDir, targetGenPathToUse).replace(/\\/g, "/");
 
 		const turbopack = {
 			...configObj?.turbopack,
@@ -309,14 +307,14 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 			webpackConfig.resolve = webpackConfig.resolve || {};
 			webpackConfig.resolve.alias = {
 				...webpackConfig.resolve.alias,
-				".arkenv/env.gen": targetGenPath,
-				".arkenv/env.gen.ts": targetGenPath,
-				".arkenv": targetGenPath,
-				".arkenv/index": targetGenPath,
-				".arkenv/index.ts": targetGenPath,
-				"#arkenv/env": targetGenPath,
-				"@/.arkenv": targetGenPath,
-				"@/.arkenv/env.gen": targetGenPath,
+				".arkenv/env.gen": targetGenPathToUse,
+				".arkenv/env.gen.ts": targetGenPathToUse,
+				".arkenv": targetGenPathToUse,
+				".arkenv/index": targetGenPathToUse,
+				".arkenv/index.ts": targetGenPathToUse,
+				"#arkenv/env": targetGenPathToUse,
+				"@/.arkenv": targetGenPathToUse,
+				"@/.arkenv/env.gen": targetGenPathToUse,
 			};
 			if (typeof configObj?.webpack === "function") {
 				return configObj.webpack(webpackConfig, context);
@@ -331,16 +329,28 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 		};
 	};
 
-	if (typeof configToWrap === "function") {
+	const applyAllAliases = (configObj: any) => {
+		let currentConfig = configObj;
+		if (resolvedLayout === "strict" && clientEnvPath) {
+			currentConfig = applyStrictLayoutAliases(
+				currentConfig as Record<string, unknown>,
+				clientEnvPath,
+				CLIENT_ENV_SPECIFIER,
+			);
+		}
+		return applyVirtualAliases(currentConfig);
+	};
+
+	if (typeof nextConfig === "function") {
 		return ((phase: any, context: any) => {
-			const resolved = (configToWrap as any)(phase, context);
-			return applyVirtualAliases(resolved);
+			const resolved = (nextConfig as any)(phase, context);
+			return applyAllAliases(resolved);
 		}) as unknown as T;
 	}
 
-	if (configToWrap && typeof configToWrap === "object") {
-		return applyVirtualAliases(configToWrap) as T;
+	if (nextConfig && typeof nextConfig === "object") {
+		return applyAllAliases(nextConfig) as T;
 	}
 
-	return configToWrap;
+	return nextConfig;
 }

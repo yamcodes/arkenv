@@ -123,7 +123,11 @@ export function runCodegen(
 			path.dirname(outputPath),
 			"arkenv-client-env.d.ts",
 		);
-		const ambientCode = generateClientEnvAmbientDeclaration();
+		const clientPath = path.join(baseDir, "client.ts");
+		const ambientCode = generateClientEnvAmbientDeclaration(
+			clientPath,
+			outputPath,
+		);
 		let shouldWriteAmbient = true;
 		if (fs.existsSync(ambientPath)) {
 			if (fs.readFileSync(ambientPath, "utf-8") === ambientCode) {

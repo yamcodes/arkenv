@@ -33,8 +33,7 @@ export function BetaBanner() {
 				fontSize: 13,
 			}}
 		>
-			ℹ️ Beta feature branch was statically pruned by minifier DCE (flag is
-			false).
+			ℹ️ Beta feature disabled (`NEXT_PUBLIC_ENABLE_BETA_FEATURE: false`).
 		</div>
 	);
 }

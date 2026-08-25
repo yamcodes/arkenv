@@ -1,3 +1,5 @@
+import path from "node:path";
+
 function generateRuntimeEnvLines(
 	clientKeys: string[],
 	sharedKeys: string[],
@@ -109,10 +111,20 @@ ${GENERATED_FOOTER}`;
  *
  * @returns Generated `.d.ts` source
  */
-export function generateClientEnvAmbientDeclaration(): string {
+export function generateClientEnvAmbientDeclaration(
+	clientPath?: string,
+	outputPath?: string,
+): string {
+	let importTarget = "../client";
+	if (clientPath && outputPath) {
+		const ambientDir = path.dirname(outputPath);
+		const rel = path.relative(ambientDir, clientPath).replace(/\\/g, "/");
+		const cleanRel = rel.replace(/\.tsx?$/, "");
+		importTarget = cleanRel.startsWith(".") ? cleanRel : `./${cleanRel}`;
+	}
 	return `${GENERATED_HEADER}
 declare module "#arkenv/client-env" {
-	export { env } from "../client";
+	export { env } from "${importTarget}";
 }
 `;
 }
