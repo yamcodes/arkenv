@@ -16,19 +16,19 @@ The `packages/` directory is the home for code modules that are shared across th
 
 ## Package directory
 
-| Directory                      | Package Name          | Type    | Description                                                                   |
-| :----------------------------- | :-------------------- | :------ | :---------------------------------------------------------------------------- |
-| [`core`](./core)               | `@arkenv/core`        | Public  | Core typesafe environment variable parser using ArkType.                      |
-| [`standard`](./standard)       | `@arkenv/standard`    | Public  | Dependency-free, typesafe environment variable parser using Standard Schema.  |
-| [`arkenv`](./arkenv)           | `arkenv`              | Public  | Scaffolding CLI tool (run via `npx arkenv` or installed as a dev dependency). |
-| [`vite-plugin`](./vite-plugin) | `@arkenv/vite-plugin` | Public  | Vite integration for build-time validation.                                   |
-| [`nextjs`](./nextjs)           | `@arkenv/nextjs`      | Public  | Next.js integration with automatic runtimeEnv code generation.                |
-| [`bun-plugin`](./bun-plugin)   | `@arkenv/bun-plugin`  | Public  | Bun integration for static env variable inlining.                             |
-| [`nuxt`](./nuxt)               | `@arkenv/nuxt`        | Public  | Nuxt integration for environment variable validation and injection.           |
-| [`fumadocs-ui`](./fumadocs-ui) | `@arkenv/fumadocs-ui` | Public  | Fumadocs UI components and utilities.                                         |
-| [`build`](./build)             | `@arkenv/build`         | Public  | Shared build and codegen utilities for framework plugins.                     |
+| Directory                        | Package Name           | Type    | Description                                                                   |
+| :------------------------------- | :--------------------- | :------ | :---------------------------------------------------------------------------- |
+| [`core`](./core)                 | `@arkenv/core`         | Public  | Core typesafe environment variable parser using ArkType.                      |
+| [`standard`](./standard)         | `@arkenv/standard`     | Public  | Dependency-free, typesafe environment variable parser using Standard Schema.  |
+| [`arkenv`](./arkenv)             | `arkenv`               | Public  | Scaffolding CLI tool (run via `npx arkenv` or installed as a dev dependency). |
+| [`vite-plugin`](./vite-plugin)   | `@arkenv/vite-plugin`  | Public  | Vite integration for build-time validation.                                   |
+| [`nextjs`](./nextjs)             | `@arkenv/nextjs`       | Public  | Next.js integration with automatic runtimeEnv code generation.                |
+| [`bun-plugin`](./bun-plugin)     | `@arkenv/bun-plugin`   | Public  | Bun integration for static env variable inlining.                             |
+| [`nuxt`](./nuxt)                 | `@arkenv/nuxt`         | Public  | Nuxt integration for environment variable validation and injection.           |
+| [`fumadocs-ui`](./fumadocs-ui)   | `@arkenv/fumadocs-ui`  | Public  | Fumadocs UI components and utilities.                                         |
+| [`build`](./build)               | `@arkenv/build`        | Public  | Shared build and codegen utilities for framework plugins.                     |
 | [`agent-plugin`](./agent-plugin) | `@arkenv/agent-plugin` | Public  | Coding-agent plugin and MCP server (`init`, `audit`).                         |
-| [`internal/`](./internal)      | `@repo/*`               | Private | Shared internal modules (types, scopes, keywords) used for building.          |
+| [`internal/`](./internal)        | `@repo/*`              | Private | Shared internal modules (types, scopes, keywords) used for building.          |
 
 ## Versioning & releases
 
