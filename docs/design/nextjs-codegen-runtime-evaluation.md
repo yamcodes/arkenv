@@ -154,9 +154,9 @@ These dimensions compose into a complete architecture:
 
 | # | Option | Description |
 | :- | :--- | :--- |
-| **H1** | **Framework-Specific Package Entry (`@arkenv/nextjs`)** | `import arkenv from "@arkenv/nextjs"` in Next.js; `import arkenv from "@arkenv/nuxt"` in Nuxt; `import arkenv from "@arkenv/core"` in Node. Standard npm syntax with zero strange symbols. |
+| **H1** | **Framework Package Entry (`@arkenv/nextjs`)** | `import arkenv from "@arkenv/nextjs"` in Next.js; `import arkenv from "@arkenv/nuxt"` in Nuxt; `import arkenv from "@arkenv/core"` in Node. Standard npm syntax with zero strange symbols. |
 | **H2** | **Universal Core Package Entry (`@arkenv/core`)** | `import { arkenv } from "@arkenv/core"` across all frameworks; build plugins (Next `withArkEnv`, Nuxt module, Vite plugin) alias/transform the import at build time. |
-| **H3** | **Framework Subpath Entry (`@arkenv/nextjs/env`)** | `import arkenv from "@arkenv/nextjs/env"`. Explicit subpath separating schema factory from runtime utilities. |
+| **H3** | **Framework Subpath Entry (`@arkenv/nextjs/env`)** | `import arkenv from "@arkenv/nextjs/env"`. Explicit subpath separating schema factory from runtime utilities (`isEnabled`). |
 | **H4** | **Node Subpath Import (`#arkenv/env`)** | `import arkenv from "#arkenv/env"`. Uses `package.json` `"imports"` mapping. |
 | **H5** | **Relative Virtual Artifact (`./.arkenv/env.gen`)** | `import arkenv from "./.arkenv/env.gen"`. Explicit relative path directly to the generated factory file. |
 
@@ -166,7 +166,7 @@ These dimensions compose into a complete architecture:
 
 | Stack Combination | DCE Honesty | Coercion Honesty | Zero-Artifact DX | Next.js Stability | Zero-Friction Install | Zero-Dependency Core | Single Mental Model | Import Idiomaticity | Agent Actionability |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **S-Tier (A2 + B2 + C1/C2 + D2 + E2 + F3 + G2 + H1)** | 🟢 High (`isEnabled`) | 🟢 Full (Honest) | 🟢 Clean (`.arkenv/`) | 🟢 Native API | 🟢 Standard npm | 🟢 0 runtime deps | 🟢 Unified `env` | 🟢 Standard Package (`@arkenv/nextjs`) | 🟢 Structured JSON |
+| **S-Tier (A2 + B2 + C1/C2 + D2 + E2 + F3 + G2 + H1/H3)** | 🟢 High (`isEnabled`) | 🟢 Full (Honest) | 🟢 Clean (`.arkenv/`) | 🟢 Native API | 🟢 Standard npm | 🟢 0 runtime deps | 🟢 Unified `env` | 🟢 Standard Package (`@arkenv/nextjs`) | 🟢 Structured JSON |
 | **Universal Core (A2 + B2 + C1/C2 + D2 + E2 + F3 + G2 + H2)** | 🟢 High (`isEnabled`) | 🟢 Full (Honest) | 🟢 Clean (`.arkenv/`) | 🟢 Native API | 🟢 Standard npm | 🟢 0 runtime deps | 🟢 100% Cross-FW | 🟢 Standard Package (`@arkenv/core`) | 🟢 Structured JSON |
 | **Subpath Node (A2 + B2 + C1/C2 + D2 + E2 + F3 + G2 + H4)** | 🟢 High (`isEnabled`) | 🟢 Full (Honest) | 🟢 Clean (`.arkenv/`) | 🟢 Native API | 🟢 Standard npm | 🟢 0 runtime deps | 🟢 Unified `env` | 🟡 `#` Subpath Syntax | 🟢 Structured JSON |
 | **Prisma 8 Style (A2 + B2 + C1 + D1 + E2 + F2 + G2 + H1)** | 🔴 Broken on Client | 🟢 Full (Honest) | 🟢 Clean (`contract.json`) | 🟢 Native API | 🟢 Standard npm | 🟢 0 runtime deps | 🟢 Parameterized | 🟢 Standard Package | 🟢 Structured JSON |
@@ -175,11 +175,36 @@ These dimensions compose into a complete architecture:
 
 ---
 
-## 7. The Tier List
+## 7. Deep-Dive on Open Architectural Questions
+
+### Q1: Instant TypeScript Types Without Prior Build Steps
+**Question:** If `env.ts` imports from `@arkenv/nextjs` (or `@arkenv/nextjs/env`), how does TypeScript recognize the types on a fresh `git clone` before `next dev` runs?
+
+**Answer:**
+`@arkenv/nextjs` is a real, published npm package that ships static TypeScript typings. When you author `env.ts`:
+```ts
+import arkenv from "@arkenv/nextjs";
+export const env = arkenv({ DATABASE_URL: "string", NEXT_PUBLIC_API: "string" });
+```
+TypeScript resolves the generic `arkenv(schema)` signature directly from `node_modules/@arkenv/nextjs`. The return type is inferred **instantaneously in the IDE on day 0**, with zero prior build steps or pre-existing `.arkenv/` folders required. The build-time factory in `.arkenv/env.gen.ts` only exists to satisfy the bundler's runtime AST destructuring.
+
+---
+
+### Q2: Monorepos & Shared Packages (e.g. `packages/db/env.ts`)
+**Question:** In a monorepo, how do we support a shared `packages/db/env.ts` that is imported by both a Next.js app and a plain Node background worker?
+
+**Answer:**
+1. **Server-only shared packages use `@arkenv/core`:** A database package (`packages/db`) or queue worker (`packages/queue`) is inherently server-only and framework-agnostic. It imports `import { arkenv } from "@arkenv/core"` and validates against `process.env`.
+2. **Framework packages (`@arkenv/nextjs`, `@arkenv/nuxt`) are application-level only:** Framework adapters are exclusively required in application roots (`apps/web`, `apps/dashboard`) where client-side bundle splitting (`NEXT_PUBLIC_*` / `NUXT_PUBLIC_*`) and minifier Dead-Code Elimination (DCE) must be satisfied.
+3. **Seamless Interop:** Next.js Server Components and Route Handlers can import `packages/db` without any special Next.js wrapping because server-side Node execution reads `process.env` transparently.
+
+---
+
+## 8. The Tier List
 
 ### S-Tier (The Converged Architecture)
 
-$$\mathbf{\text{S-Tier Stack (v1)}} = \mathbf{A2} + \mathbf{B2} + \mathbf{C1/C2} + \mathbf{D2} + \mathbf{E2} + \mathbf{F3} + \mathbf{G2} + \mathbf{H1}$$
+$$\mathbf{\text{S-Tier Stack (v1)}} = \mathbf{A2} + \mathbf{B2} + \mathbf{C1/C2} + \mathbf{D2} + \mathbf{E2} + \mathbf{F3} + \mathbf{G2} + \mathbf{H1/H3}$$
 
 * **A2 (Native `next.config.ts` Execution):** Leverages Next 15+ native TypeScript execution for zero-dependency build-time validation.
 * **B2 (Virtual `.arkenv/` Placement):** Keeps user source trees 100% clean; mapped via Webpack and `turbopack.resolveAlias`.
@@ -188,14 +213,13 @@ $$\mathbf{\text{S-Tier Stack (v1)}} = \mathbf{A2} + \mathbf{B2} + \mathbf{C1/C2}
 * **E2 (Next 15+ Baseline):** Purges `jiti`, `mock-server-only`, and `chokidar` from the core `@arkenv/nextjs` distribution.
 * **F3 (Virtual Factory):** Emits only the minimal factory needed for Next.js AST identifier replacement without in-tree pollution.
 * **G2 (Structured Agent Envelopes):** Equips the ArkEnv CLI with structured machine diagnostics and `nextActions` for AI agents.
-* **H1 (Framework Package Entry `@arkenv/nextjs`):** Standard, idiomatic npm package import in `env.ts`. Zero `#` syntax, zero relative dots.
+* **H1 / H3 (Framework Package / Subpath Entry):** `import arkenv from "@arkenv/nextjs"` (or `@arkenv/nextjs/env`). Clean, idiomatic npm imports with zero `#` syntax.
 
 ---
 
 ### A-Tier (Viable Alternatives)
 
 * **H2 (Universal `@arkenv/core` Entry):** Superb cross-framework universality where `env.ts` is 100% identical in Next.js, Nuxt, Vite, and Node, relying on bundler aliases.
-* **H3 (Framework Subpath Entry `@arkenv/nextjs/env`):** Explicit subpath distinction.
 * **B1 (Status Quo In-Tree Codegen):** Functional and reliable, but leaves `generated/env.gen.ts` littering user source folders.
 * **D1 (Object only with accepted DCE loss):** Acceptable for small apps, but frustrates teams with large client feature flags.
 
@@ -224,7 +248,7 @@ $$\mathbf{\text{S-Tier Stack (v1)}} = \mathbf{A2} + \mathbf{B2} + \mathbf{C1/C2}
 
 ---
 
-## 8. Concrete Usage Examples for S-Tier
+## 9. Concrete Usage Examples for S-Tier
 
 ### 1. `next.config.ts` (Next 15+ / 16+)
 
@@ -296,7 +320,7 @@ export function Header() {
 
 ---
 
-## 9. Current Lean & Implementation Plan
+## 10. Current Lean & Implementation Plan
 
 1. **Target Next 15+ as v1 baseline:** Deprecate Next 13/14 in `@arkenv/nextjs` root entry; remove `jiti`, `mock-server-only`, and `chokidar`.
 2. **Implement Virtual `.arkenv/` ([#1402](https://github.com/yamcodes/arkenv/issues/1402)):** Default `outputPath` to `.arkenv/env.gen.ts`; alias `@arkenv/nextjs` to `.arkenv/env.gen.ts`.
@@ -307,8 +331,9 @@ export function Header() {
 
 ---
 
-## 10. Changelog of this Note
+## 11. Changelog of this Note
 
-- **2026-08-25:** Added Layer H (Schema Factory Entrypoint & Import Aesthetics); evaluated H1 (`@arkenv/nextjs`), H2 (`@arkenv/core`), H3 (`@arkenv/nextjs/env`), H4 (`#arkenv/env`), and H5 (`./.arkenv/env.gen`); promoted H1 as S-Tier default.
+- **2026-08-25:** Added Section 7 addressing TypeScript day-0 typings without prior builds, monorepo shared package interop (`@arkenv/core` in `packages/db`), and Option A/B namespace hygiene.
+- **2026-08-25:** Added Layer H (Schema Factory Entrypoint & Import Aesthetics); evaluated H1 (`@arkenv/nextjs`), H2 (`@arkenv/core`), H3 (`@arkenv/nextjs/env`), H4 (`#arkenv/env`), and H5 (`./.arkenv/env.gen`).
 - **2026-08-25:** Added Prisma 8 Case Study; introduced Layer F (Artifact Shape) and Layer G (Agent Ergonomics); finalized upgraded S-Tier stack with `--json` agent envelopes.
 - **2026-08-24:** Initial write-up using `/the-hat` methodology; integrated deep audit of Varlock Next.js integration and Next 15/16 baseline simplifications.
