@@ -234,6 +234,21 @@ TypeScript resolves the generic `arkenv(schema)` signature directly from `node_m
 
 ---
 
+### Q4: Why a Directory (`.arkenv/`) vs. a Single Root File (`.arkenv.ts`) & The Role of `arkenv-client-env.d.ts`
+**Question:** Why do we need a directory (`.arkenv/`) instead of a single root dot-file (`.arkenv.ts`)?
+
+**Answer:**
+1. **Multi-Artifact Containment:** In flat layout, only `.arkenv/index.ts` (or `env.gen.ts`) is emitted. However, in **Strict Layout**, ArkEnv also emits `.arkenv/arkenv-client-env.d.ts`—an ambient module declaration:
+   ```ts title=".arkenv/arkenv-client-env.d.ts"
+   declare module "#arkenv/client-env" {
+     export { env } from "../src/env/client";
+   }
+   ```
+2. **Auto-Extend Without Manual Ceremony:** In strict layout, `@arkenv/nextjs/server` automatically includes all client variables without requiring manual `extends: [clientEnv]` wiring. It does this via `import type { env as clientEnv } from "#arkenv/client-env"`. The ambient `.d.ts` file acts as the type bridge.
+3. **Clean Root Hygiene:** A directory keeps the generated factory (`index.ts`) and ambient type bridges (`arkenv-client-env.d.ts`) cleanly consolidated under one single gitignored rule (`.arkenv/`), preventing multiple loose dot-files from scattering across the project root.
+
+---
+
 ## 8. The Tier List
 
 ### S-Tier (The Converged Architecture)
