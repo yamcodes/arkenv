@@ -12,15 +12,15 @@ import {
  * @param options Optional configuration paths for schema and output files
  * @returns The Next.js configuration object, or an async factory that resolves to it
  */
-export function withArkEnv<T extends Record<string, unknown>>(
+export function withArkEnv<T extends object>(
 	nextConfig: NextConfigFactory<T>,
 	options?: ArkEnvConfigOptions,
 ): (phase: string, context: NextConfigContext) => Promise<T>;
-export function withArkEnv<T extends Record<string, unknown>>(
+export function withArkEnv<T extends object>(
 	nextConfig: T,
 	options?: ArkEnvConfigOptions,
 ): T;
-export function withArkEnv<T extends Record<string, unknown>>(
+export function withArkEnv<T extends object>(
 	nextConfig: T | NextConfigFactory<T>,
 	options?: ArkEnvConfigOptions,
 ): T | ((phase: string, context: NextConfigContext) => Promise<T>) {

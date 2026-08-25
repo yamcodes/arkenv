@@ -10,9 +10,10 @@ export type NextConfigContext = {
 /**
  * Function-form Next.js config: sync or async, receiving the current phase.
  */
-export type NextConfigFactory<
-	T extends Record<string, unknown> = Record<string, unknown>,
-> = (phase: string, context: NextConfigContext) => T | Promise<T>;
+export type NextConfigFactory<T extends object = object> = (
+	phase: string,
+	context: NextConfigContext,
+) => T | Promise<T>;
 
 /**
  * Configuration options for the ArkEnv Next.js integration.

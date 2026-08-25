@@ -221,6 +221,15 @@ describe("withArkEnv config overloads", () => {
 		expectTypeOf(wrap).returns.toEqualTypeOf<{ reactStrictMode: true }>();
 	});
 
+	it("accepts Next.js NextConfig without a string index signature", () => {
+		type NextConfigLike = {
+			reactStrictMode?: boolean;
+			distDir?: string;
+		};
+		const wrap = () => withArkEnv({} as NextConfigLike);
+		expectTypeOf(wrap).returns.toEqualTypeOf<NextConfigLike>();
+	});
+
 	it("returns an async factory for sync function-form nextConfig", () => {
 		const wrap = () =>
 			withArkEnv((phase: string) => ({

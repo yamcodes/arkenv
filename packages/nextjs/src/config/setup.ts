@@ -280,7 +280,7 @@ type AliasableNextConfig = Record<string, unknown> & {
  * @param setup Result of `setupArkEnv` for the current invocation
  * @returns The configuration object with webpack and Turbopack aliases
  */
-function applyArkEnvAliases<T extends Record<string, unknown>>(
+function applyArkEnvAliases<T extends object>(
 	configObj: T,
 	options: ArkEnvConfigOptions | undefined,
 	setup: SetupResult,
@@ -372,15 +372,15 @@ function applyArkEnvAliases<T extends Record<string, unknown>>(
  * }));
  * ```
  */
-export function withArkEnv<T extends Record<string, unknown>>(
+export function withArkEnv<T extends object>(
 	nextConfig: NextConfigFactory<T>,
 	options?: ArkEnvConfigOptions,
 ): (phase: string, context: NextConfigContext) => Promise<T>;
-export function withArkEnv<T extends Record<string, unknown>>(
+export function withArkEnv<T extends object>(
 	nextConfig: T,
 	options?: ArkEnvConfigOptions,
 ): T;
-export function withArkEnv<T extends Record<string, unknown>>(
+export function withArkEnv<T extends object>(
 	nextConfig: T | NextConfigFactory<T>,
 	options?: ArkEnvConfigOptions,
 ): T | ((phase: string, context: NextConfigContext) => Promise<T>) {
