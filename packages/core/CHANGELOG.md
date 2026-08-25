@@ -1,5 +1,11 @@
 # @arkenv/core
 
+## 1.0.0-alpha.5
+
+### Patch Changes
+
+- Fix Nuxt (and Core) client rebundles failing with `Identifier "h" has already been declared` by shipping unminified `@repo/utils` / `@arkenv/nuxt` ESM that alwaysBundle multi-entry utils chunks. _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
 ## 1.0.0-alpha.4
 
 ### Patch Changes

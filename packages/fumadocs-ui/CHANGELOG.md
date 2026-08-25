@@ -1,5 +1,139 @@
 # @arkenv/fumadocs-ui
 
+## 1.0.0-alpha.3
+
+### Major Changes
+
+- #### Remove `Header` from `@arkenv/fumadocs-ui` _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Site-wide navigation chrome now lives in the www app as **Site Nav** (floating glass pill / docs bar). The package `Header` export is removed so a second nav implementation cannot drift from the site.
+
+  **BREAKING CHANGE**: `Header`, `HeaderLink`, and `HeaderProps` are no longer exported from `@arkenv/fumadocs-ui/components`. If you used them, replace with your own site chrome (ArkEnv www uses `apps/www/components/site-nav`).
+
+### Minor Changes
+
+- #### Replace docs "Copy Markdown" with a Copy page control _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Desktop docs pages now put a split **Copy page** button beside the title (copy plus a three-column grid menu for Markdown, AI chats, and GitHub). Narrow viewports show an inline **Copy for LLM** row under the description instead of the old bordered toolbar.
+
+  Usage:
+
+  ```tsx
+  <AIActions
+    only="desktop"
+    markdownUrl={`${page.url}.mdx`}
+    pageUrl={page.url}
+    githubUrl={editHref}
+  />
+  <AIActions
+    only="mobile"
+    markdownUrl={`${page.url}.mdx`}
+    pageUrl={page.url}
+    githubUrl={editHref}
+  />
+  ```
+
+- #### Add a Turborepo-style previous/next pager for docs pages _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Export `DocsFooter` so a Fumadocs `DocsPage` can replace the default bordered cards with a hairline rule, Previous/Next labels, and destination titles.
+
+  Usage:
+
+  ```tsx
+  import { DocsFooter } from "@arkenv/fumadocs-ui/components";
+  import { DocsPage } from "fumadocs-ui/page";
+
+  <DocsPage
+    slots={{
+      footer: DocsFooter,
+    }}
+  >
+    {children}
+  </DocsPage>;
+  ```
+
+- #### Add Turborepo-style drill-in sidebar for Fumadocs docs layouts _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Export `drillInSidebarSlots` (and `DrillInSidebar`) so a Fumadocs `DocsLayout` can replace the default accordion sidebar with one-level section drill-in. Also export `DocsBreadcrumb` and `docsTocSlots` for matching docs chrome.
+
+  Usage:
+
+  ```tsx
+  import { drillInSidebarSlots } from "@arkenv/fumadocs-ui/components";
+  import { DocsLayout } from "fumadocs-ui/layouts/docs";
+
+  <DocsLayout
+    tree={source.pageTree}
+    slots={{
+      sidebar: drillInSidebarSlots,
+    }}
+  >
+    {children}
+  </DocsLayout>;
+  ```
+
+- #### Share the docs code-block Copy control _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Export `CodeBlockCopyButton` so the homepage (and other chrome) can reuse the same copy button as docs code blocks.
+
+### Patch Changes
+
+- #### Show the docs TOC rail from 1200px _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Match geistdocs/Turborepo (`--breakpoint-xl: 1200px`) so the right-hand table of contents stays visible between 1200px and 1280px instead of vanishing at Tailwind `xl`.
+
+- #### Sit the TOC spy on the article rail and align active heading detection _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Drop the inner TOC hairline and draw the active heading marker on the column's start border (Vite `left: -1px`), so the ink bar rides the article↔TOC splitter. Select the last heading at or above the Site Nav scroll-margin so a section parked at the top of the page stays active when the next heading is in view.
+
+- #### Match docs type to Turborepo/geistdocs _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Use Geist 450 with the geistdocs heading scale (40px page title, 24px `h2`). Article text uses Turbo's rendering (`antialiased`, `ss11`, `calt` off) so in-page headings match, not just the page title. Sidebar labels use 14px / 500 (`text-button-14`). Compact page actions stay 12px / 500 like Turbo's `text-label-12`.
+
+- #### Flush docs sidebar items with the Site Nav wordmark _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Give the drill-in tree equal `--site-nav-gutter` column pads so the active pill is inset the same from both sidebar rails (pill left stays on the helm). Keep `px-2.5` inner padding so glyphs clear the 0.25rem pill radius. Clip the drill-in slide pane (`overflow: clip` plus `overflow-clip-margin: 0.5rem`) so a parked panel cannot leak a highlight sliver onto the outer rail.
+
+- #### Align heading hash scroll with the article top _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Park clicked headings at `--fd-nav-height` plus `#nd-page` padding-top (`--fd-page-pad-top`), the same offset as the page title when the docs page is scrolled to the top.
+
+- #### Fix continuous underlines for docs links that include inline code _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Links that wrap only a code chip or mix plain text with code now keep one continuous underline through the text and inside the code chip, instead of losing the line under the chip background.
+
+  Affected markdown patterns:
+
+  ```md
+  [`number.port`](/docs/reference/keywords)
+
+  [see the `number.port` keyword](/docs/reference/keywords)
+  ```
+
+- #### Align mobile docs spacing with Turborepo/geistdocs _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Match the geistdocs mobile rhythm: hide the page tagline under 960px, keep article `py-6`, sit the sidebar drawer below the header, and switch sidebar / Copy page at 960px (iPad Air mobile, iPad Pro sidebar).
+
+- #### Use a Sidebar Tree in the mobile docs drawer _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Keep one-level section drill-in on the desktop rail. On viewports below 960px, render the same page tree as expandable nested folders (section title goes to Overview; a chevron toggles children) so the drawer is a wayfinding overlay instead of a second Sidebar Page.
+
+- #### Match search dialog radius to control boundaries and maintain readable expanded layout _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Match the docs search dialog radius to the navbar search control (`--radius-control`, 0.375rem) so the collapsed overlay is no longer a pill, and adjust the expanded search panel radius so `overflow-hidden` does not clip result titles or excerpts.
+
+- #### Fix clipped sidebar keyboard focus ring _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Replace the default outline on docs sidebar links and buttons with a rounded ring (page-colored gap + `--color-fd-ring`) so Tab focus matches the item shape and is no longer cut off by the drill-in pane.
+
+- #### Soften docs sidebar and TOC rails _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Paint `#nd-sidebar` / `#nd-sidebar-mobile` rails with `--color-rule-y` (fallback `--color-fd-border`) so vertical cage lines stay slightly softer than horizontal `--color-rule`.
+
+- #### Center the TOC footer hairline _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Match the heading list’s padding-bottom to the footer’s padding-top so the give-feedback rule sits equally between the last link and “Scroll to top”.
+
 ## 1.0.0-alpha.2
 
 ### Minor Changes
