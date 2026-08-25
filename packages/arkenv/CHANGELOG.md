@@ -1,5 +1,86 @@
 # @arkenv/core
 
+## 1.0.0-alpha.13
+
+### Major Changes
+
+- #### Support CLI managed preset blocks with apply, remove, and --preset flag _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Added support for managed hosting preset comment blocks in `arkenv`, allowing safe addition, refreshing, and removal of provider presets without overwriting user-defined fields.
+
+  - The `arkenv preset apply <provider>` command safely injects or refreshes hosting presets within delimited `// @arkenv-preset-start <id>` / `// @arkenv-preset-end <id>` blocks (and role-suffixed blocks for strict layouts).
+  - The `arkenv preset remove <provider>` command removes preset blocks and updates `.env.example` while preserving keys shared with other presets.
+  - Added the `--preset, -P <provider>` option to `arkenv init` as the canonical flag.
+  - Added an `"arkenv": { "schema": "<path>", "layout": "flat" | "strict" }` configuration pointer to `package.json` on `init` for automatic schema discovery.
+  - Enforced fail-closed validation on key collisions against unmarked user fields or cross-preset blocks, as well as on malformed markers.
+  - Added clean git working tree checks before mutations (`--force` to bypass).
+
+  Usage:
+
+  ```bash
+  # Apply or refresh a preset
+  npx arkenv@latest preset apply vercel
+
+  # Remove a preset
+  npx arkenv@latest preset remove vercel
+  ```
+
+  **BREAKING CHANGE**: The `arkenv add host` command has been removed in favor of `arkenv preset apply <provider>`.
+
+  ```diff
+  - npx arkenv add host vercel
+  + npx arkenv preset apply vercel
+  ```
+
+### Minor Changes
+
+- #### Collapse CLI scaffold to canonical env-object family _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Scaffolding now consistently emits the canonical `export const env = arkenv({ ... })` surface across all supported frameworks (Next.js, Nuxt, Vite, Bun, and Node.js), eliminating ambient declaration `.d.ts` generation and runtime dependency boilerplate.
+
+  Vite and Bun scaffolding now generate the standard `import { env } from "./env"` schema and configure zero-argument plugin registration.
+
+- #### Auto-extend client env in Next.js strict layout _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  `@arkenv/nextjs/server` (and the Standard Schema server entry) now merges the client env automatically in strict layout when `extends` is omitted. `withArkEnv` registers a `#arkenv/client-env` alias (webpack + Turbopack) pointing at your `env/client.ts`.
+
+  ```ts
+  import arkenv from "@arkenv/nextjs/server";
+
+  export const env = arkenv({
+    DATABASE_URL: "string",
+  });
+  ```
+
+  Pass an explicit `extends` list (including `extends: []`) to opt out. Flat/simple layout is unchanged. CLI strict scaffolds and docs match the simplified server template.
+
+- #### Add `with-nextjs-zod`, `with-vite-react-zod`, and `mix-and-match` to example registry and scaffold defaults _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Added starter templates for Next.js (`with-nextjs-zod`), React + Vite (`with-vite-react-zod`), and mixed schema validation (`mix-and-match`) to `arkenv init`:
+
+  ```bash
+  # Bootstrap Next.js with Standard Mode and Zod
+  npx arkenv@latest init --example with-nextjs-zod my-next-app
+
+  # Bootstrap React + Vite with Standard Mode and Zod
+  npx arkenv@latest init --example with-vite-react-zod my-vite-app
+
+  # Bootstrap Node.js with mixed ArkType, Zod, and Valibot
+  npx arkenv@latest init --example mix-and-match my-mixed-app
+  ```
+
+  - Added `with-nextjs-zod`, `with-vite-react-zod`, and `mix-and-match` to the bundled fallback example registry.
+  - Added scaffold `.env` defaults for `with-nextjs-zod`, `with-vite-react-zod`, and `mix-and-match`.
+
+### Patch Changes
+
+- #### Stop reading `.env` during `arkenv init` _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  `arkenv init` no longer opens `.env` files. Schema keys still come from
+  `.env.example` or from `process.env` / `import.meta.env` usage in source.
+  If `.env.example` is missing, init writes one from detected keys and
+  framework defaults instead of stripping values from `.env`.
+
 ## 1.0.0-alpha.12
 
 ### Patch Changes

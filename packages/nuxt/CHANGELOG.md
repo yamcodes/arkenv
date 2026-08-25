@@ -1,5 +1,33 @@
 # @arkenv/nuxt
 
+## 1.0.0-alpha.13
+
+### Patch Changes
+
+- #### Clarify the error when client code reads a server-only env var _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  If a Client Component (or browser bundle) reads a server-only key, the overlay now says:
+
+  ```txt
+  Error: Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)
+  ```
+
+- Fix Nuxt (and Core) client rebundles failing with `Identifier "h" has already been declared` by shipping unminified `@repo/utils` / `@arkenv/nuxt` ESM that alwaysBundle multi-entry utils chunks. _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+<details><summary>Updated 3 dependencies</summary>
+
+<small>
+
+[`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2)
+
+</small>
+
+- `@arkenv/build@0.1.0-alpha.3`
+- `@arkenv/core@1.0.0-alpha.5`
+- `@arkenv/standard@1.0.0-alpha.5`
+
+</details>
+
 ## 1.0.0-alpha.12
 
 ### Major Changes
