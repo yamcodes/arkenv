@@ -468,6 +468,60 @@ export const env = arkenv(
 
 			expect(workspace.writeFile).not.toHaveBeenCalled();
 		});
+
+		it("does not touch .env.example when preset block was not present in schema", async () => {
+			vi.mocked(workspace.exists).mockImplementation(async (p: string) =>
+				p.endsWith("env.ts"),
+			);
+			vi.mocked(workspace.readFile).mockResolvedValue(dedent`
+				import { type } from "@arkenv/core";
+
+				export const Env = type({
+					DATABASE_URL: "string",
+				});
+			`);
+
+			const result = await useCase.execute({
+				action: "remove",
+				provider: "vercel",
+			});
+
+			expect(result).toBe(true);
+			expect(workspace.writeFile).not.toHaveBeenCalled();
+			expect(workspace.removeEnvExampleKeys).not.toHaveBeenCalled();
+			expect(logger.info).toHaveBeenCalledWith(
+				expect.stringContaining("Vercel preset was not present"),
+			);
+		});
+
+		it("only removes keys that were tracked by the removed managed block", async () => {
+			vi.mocked(workspace.exists).mockImplementation(async (p: string) =>
+				p.endsWith("env.ts"),
+			);
+			// Only VERCEL_URL is present in the managed block; other VERCEL_* keys are not in the block
+			vi.mocked(workspace.readFile).mockResolvedValue(dedent`
+				import { type } from "@arkenv/core";
+
+				export const Env = type({
+					DATABASE_URL: "string",
+					// @arkenv-preset-start vercel
+					VERCEL_URL: "string?",
+					// @arkenv-preset-end vercel
+				});
+			`);
+
+			const result = await useCase.execute({
+				action: "remove",
+				provider: "vercel",
+			});
+
+			expect(result).toBe(true);
+			expect(workspace.removeEnvExampleKeys).toHaveBeenCalledWith(
+				expect.any(String),
+				["VERCEL_URL"],
+				[],
+			);
+		});
 	});
 
 	describe("detectValidator", () => {

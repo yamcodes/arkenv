@@ -1,7 +1,6 @@
 import { Logger } from "@/adapters";
 import {
 	type HostPreset,
-	type HostProvider,
 	isHostPreset,
 	isHostProvider,
 } from "@/features/scaffold/presets";

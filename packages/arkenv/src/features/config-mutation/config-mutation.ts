@@ -29,7 +29,7 @@ export type MutationInput = {
 function normalizeImportSpacing(code: string): string {
 	return code.replace(
 		/import\s*\{([^\n}]*)\}\s*from/g,
-		(match, p1) => `import { ${p1.trim()} } from`,
+		(_match, p1) => `import { ${p1.trim()} } from`,
 	);
 }
 
@@ -364,14 +364,23 @@ export function validateAndFindPresetBlocks(
 		startLineIndex: number;
 	} | null = null;
 
-	const startRegex = /^\s*\/\/\s*@arkenv-preset-start\s+([a-zA-Z0-9_:-]+)\s*$/;
-	const endRegex = /^\s*\/\/\s*@arkenv-preset-end\s+([a-zA-Z0-9_:-]+)\s*$/;
-	const keyRegex = /^\s*([A-Za-z_][A-Za-z0-9_]*|'[^']+'|"[^"]+")\s*:/;
+	const anyStartRegex = /^\s*\/\/\s*@arkenv-preset-start(?:\s+(.*))?$/;
+	const anyEndRegex = /^\s*\/\/\s*@arkenv-preset-end(?:\s+(.*))?$/;
+	const validIdRegex = /^[a-zA-Z0-9_:-]+$/;
+	const inlineKeyRegex =
+		/(?:^|[,{\s])([A-Za-z_][A-Za-z0-9_]*|'[^']+'|"[^"]+")\s*:/g;
 
 	for (let i = 0; i < lines.length; i++) {
 		const line = lines[i];
-		const startMatch = line.match(startRegex);
+		const startMatch = line.match(anyStartRegex);
 		if (startMatch) {
+			const rawMarkerId = startMatch[1]?.trim();
+			if (!rawMarkerId || !validIdRegex.test(rawMarkerId)) {
+				return {
+					success: false,
+					error: `Malformed preset markers: missing or invalid preset id in "@arkenv-preset-start" at line ${i + 1}.`,
+				};
+			}
 			if (activeStart) {
 				return {
 					success: false,
@@ -379,15 +388,21 @@ export function validateAndFindPresetBlocks(
 				};
 			}
 			activeStart = {
-				markerId: startMatch[1].trim(),
+				markerId: rawMarkerId,
 				startLineIndex: i,
 			};
 			continue;
 		}
 
-		const endMatch = line.match(endRegex);
+		const endMatch = line.match(anyEndRegex);
 		if (endMatch) {
-			const endMarkerId = endMatch[1].trim();
+			const endMarkerId = endMatch[1]?.trim();
+			if (!endMarkerId || !validIdRegex.test(endMarkerId)) {
+				return {
+					success: false,
+					error: `Malformed preset markers: missing or invalid preset id in "@arkenv-preset-end" at line ${i + 1}.`,
+				};
+			}
 			if (!activeStart) {
 				return {
 					success: false,
@@ -406,9 +421,8 @@ export function validateAndFindPresetBlocks(
 			const keys: string[] = [];
 
 			for (const innerLine of innerLines) {
-				const kMatch = innerLine.match(keyRegex);
-				if (kMatch) {
-					const rawKey = kMatch[1];
+				for (const match of innerLine.matchAll(inlineKeyRegex)) {
+					const rawKey = match[1];
 					const cleanKey =
 						rawKey.startsWith("'") || rawKey.startsWith('"')
 							? rawKey.slice(1, -1)
@@ -870,11 +884,12 @@ export function applyPresetToSchema(
 	}
 
 	const markerId = options.markerId || preset;
-	const keyRegex = /^\s*([A-Za-z_][A-Za-z0-9_]*|'[^']+'|"[^"]+")\s*:/;
 
 	// 2. Extract keys outside managed blocks and in other presets
 	const unmarkedKeys = new Set<string>();
 	const otherPresetKeys = new Map<string, string>(); // key -> otherPresetId
+	const inlineKeyRegex =
+		/(?:^|[,{\s])([A-Za-z_][A-Za-z0-9_]*|'[^']+'|"[^"]+")\s*:/g;
 
 	if (schemaRange.isSingleLine) {
 		const line = lines[schemaRange.startLineIndex];
@@ -883,8 +898,6 @@ export function applyPresetToSchema(
 			schemaRange.endCharIndex,
 		);
 		// Parse any inline keys inside { ... }
-		const inlineKeyRegex =
-			/(?:^|[,{\s])([A-Za-z_][A-Za-z0-9_]*|'[^']+'|"[^"]+")\s*:/g;
 		for (const match of inside.matchAll(inlineKeyRegex)) {
 			const rawKey = match[1];
 			const cleanKey =
@@ -913,8 +926,7 @@ export function applyPresetToSchema(
 			if (!textToScan.trim()) continue;
 
 			if (!containingBlock) {
-				const match = textToScan.match(keyRegex);
-				if (match) {
+				for (const match of textToScan.matchAll(inlineKeyRegex)) {
 					const rawKey = match[1];
 					const cleanKey =
 						rawKey.startsWith("'") || rawKey.startsWith('"')
@@ -923,8 +935,7 @@ export function applyPresetToSchema(
 					unmarkedKeys.add(cleanKey);
 				}
 			} else if (containingBlock.baseId !== preset) {
-				const match = textToScan.match(keyRegex);
-				if (match) {
+				for (const match of textToScan.matchAll(inlineKeyRegex)) {
 					const rawKey = match[1];
 					const cleanKey =
 						rawKey.startsWith("'") || rawKey.startsWith('"')
@@ -1009,9 +1020,19 @@ export function applyPresetToSchema(
 		const baseIndent = line.match(/^(\s*)/)?.[1] || "";
 
 		if (insideContent) {
-			const formattedInside = insideContent.endsWith(",")
-				? insideContent
-				: `${insideContent},`;
+			const commentIdx = findTrailingCommentIndex(insideContent);
+			let formattedInside = insideContent;
+			if (commentIdx !== -1) {
+				const codePart = insideContent.slice(0, commentIdx);
+				const commentPart = insideContent.slice(commentIdx);
+				if (codePart.trim() && !codePart.trimEnd().endsWith(",")) {
+					const trimmedCode = codePart.trimEnd();
+					const trailingWs = codePart.slice(trimmedCode.length);
+					formattedInside = `${trimmedCode},${trailingWs}${commentPart}`;
+				}
+			} else if (!insideContent.endsWith(",")) {
+				formattedInside = `${insideContent},`;
+			}
 			lines.splice(
 				schemaRange.startLineIndex,
 				1,
@@ -1040,18 +1061,12 @@ export function applyPresetToSchema(
 
 	// Multi-line: Insert before the closing brace
 	// Ensure the line before has a trailing comma if it's a field
-	const prevLineIdx = schemaRange.endLineIndex - 1;
-	if (prevLineIdx > schemaRange.startLineIndex) {
-		const prevLine = lines[prevLineIdx].trim();
-		if (
-			prevLine &&
-			!prevLine.endsWith(",") &&
-			!prevLine.startsWith("//") &&
-			!prevLine.startsWith("/*")
-		) {
-			lines[prevLineIdx] = `${lines[prevLineIdx]},`;
-		}
-	}
+	addTrailingCommaToLastField(
+		lines,
+		schemaRange.startLineIndex,
+		schemaRange.endLineIndex,
+		schemaRange.startCharIndex,
+	);
 
 	lines.splice(schemaRange.endLineIndex, 0, ...blockLines);
 
@@ -1061,6 +1076,101 @@ export function applyPresetToSchema(
 		code: lines.join("\n"),
 		proposedFields,
 	};
+}
+
+/**
+ * Scans a line and returns the starting index of a trailing `//` or `/*` comment,
+ * correctly ignoring slashes inside string literals or template literals.
+ * Returns -1 if no trailing comment is present.
+ */
+function findTrailingCommentIndex(line: string): number {
+	let inSingle = false;
+	let inDouble = false;
+	let inBacktick = false;
+	let isEscaped = false;
+
+	for (let i = 0; i < line.length; i++) {
+		const char = line[i];
+
+		if (isEscaped) {
+			isEscaped = false;
+			continue;
+		}
+
+		if (char === "\\") {
+			isEscaped = true;
+			continue;
+		}
+
+		if (char === "'" && !inDouble && !inBacktick) {
+			inSingle = !inSingle;
+			continue;
+		}
+		if (char === '"' && !inSingle && !inBacktick) {
+			inDouble = !inDouble;
+			continue;
+		}
+		if (char === "`" && !inSingle && !inDouble) {
+			inBacktick = !inBacktick;
+			continue;
+		}
+
+		if (!inSingle && !inDouble && !inBacktick) {
+			if (char === "/" && i + 1 < line.length) {
+				if (line[i + 1] === "/" || line[i + 1] === "*") {
+					return i;
+				}
+			}
+		}
+	}
+
+	return -1;
+}
+
+/**
+ * Ensures the last field preceding the closing brace has a trailing comma,
+ * inserting the comma before any trailing comment rather than inside it.
+ */
+function addTrailingCommaToLastField(
+	lines: string[],
+	startLineIndex: number,
+	endLineIndex: number,
+	startCharIndex: number,
+): void {
+	for (let i = endLineIndex - 1; i >= startLineIndex; i--) {
+		const rawLine = lines[i];
+		let lineText = rawLine;
+		if (i === startLineIndex) {
+			lineText = lineText.slice(startCharIndex + 1);
+		}
+
+		const trimmed = lineText.trim();
+		if (!trimmed) {
+			continue;
+		}
+
+		// Skip pure comment lines
+		if (
+			trimmed.startsWith("//") ||
+			trimmed.startsWith("/*") ||
+			trimmed.startsWith("*")
+		) {
+			continue;
+		}
+
+		const commentIdx = findTrailingCommentIndex(rawLine);
+		const codePart = commentIdx !== -1 ? rawLine.slice(0, commentIdx) : rawLine;
+		const commentPart = commentIdx !== -1 ? rawLine.slice(commentIdx) : "";
+
+		if (codePart.trim().length > 0) {
+			if (!codePart.trimEnd().endsWith(",")) {
+				const trimmedCode = codePart.trimEnd();
+				const trailingWs = codePart.slice(trimmedCode.length);
+				lines[i] = `${trimmedCode},${trailingWs}${commentPart}`;
+			}
+			return;
+		}
+	}
 }
 
 /**
@@ -1086,6 +1196,7 @@ export function removePresetFromSchema(
 	updated: boolean;
 	code?: string;
 	error?: string;
+	removedKeys?: string[];
 } {
 	const { preset } = options;
 
@@ -1105,9 +1216,11 @@ export function removePresetFromSchema(
 			success: true,
 			updated: false,
 			code,
+			removedKeys: [],
 		};
 	}
 
+	const removedKeys = matchingBlocks.flatMap((b) => b.keys);
 	const lines = code.split(/\r?\n/);
 
 	// Remove blocks in reverse order of line indices
@@ -1126,6 +1239,7 @@ export function removePresetFromSchema(
 		success: true,
 		updated: true,
 		code: lines.join("\n"),
+		removedKeys,
 	};
 }
 
