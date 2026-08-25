@@ -253,17 +253,18 @@ TypeScript resolves the generic `arkenv(schema)` signature directly from `node_m
 
 ### S-Tier (The Converged Architecture)
 
-$$\mathbf{\text{S-Tier Stack (v1)}} = \mathbf{A2} + \mathbf{B2} + \mathbf{C1/C2} + \mathbf{D2} + \mathbf{E2} + \mathbf{F3} + \mathbf{G2} + \mathbf{H1/H3} + \mathbf{I1} + \mathbf{J3}$$
+$$\mathbf{\text{S-Tier Stack (v1)}} = \mathbf{A2} + \mathbf{B2} + \mathbf{C1/C2} + \mathbf{E2} + \mathbf{F3} + \mathbf{G2} + \mathbf{H1/H3} + \mathbf{I1} + \mathbf{J3}$$
 
 * **A2 (Native `next.config.ts` Execution):** Leverages Next 15+ native TypeScript execution for zero-dependency build-time validation.
 * **B2 (Virtual `.arkenv/` Placement):** Keeps user source trees 100% clean; mapped via Webpack and `turbopack.resolveAlias`.
 * **C1/C2 (Conditional Exports + Strict Auto-Extend):** Canonical `import { env } from "./env"` on flat layouts; `#arkenv/client-env` auto-extend on strict layouts.
-* **D2 (Official `isEnabled` Literal Helper):** Enables minifiers (Terser/SWC/ESBuild) to constant-fold client feature flags while preserving full TypeScript schema safety.
 * **E2 (Next 15+ Baseline):** Purges `jiti`, `mock-server-only`, and `chokidar` from the core `@arkenv/nextjs` distribution.
 * **F3 (Virtual Factory):** Emits only the minimal factory needed for Next.js AST identifier replacement without in-tree pollution.
 * **G2 (Structured Agent Envelopes):** Equips the ArkEnv CLI with structured machine diagnostics and `nextActions` for AI agents.
-* **H1 / H3 (Framework Package / Subpath Entry):** `import arkenv from "@arkenv/nextjs"` (or `@arkenv/nextjs/env`). Clean, idiomatic npm imports with zero `#` syntax.
-* **I1 / J3 (Dot-Folder + Hybrid Barrel):** `.arkenv/env.gen.ts` + `.arkenv/index.ts`.
+* **H1 / H3 / H5 (Clean Imports):** `import arkenv from "@/.arkenv"` or `@arkenv/nextjs`. Clean, idiomatic imports with zero `#` syntax.
+* **I1 / J3 (Dot-Folder + Hybrid Barrel):** `.arkenv/index.ts` primary entrypoint with companion `env.gen.ts`.
+
+> **Note on Client Feature Flag DCE:** Compile-time Dead-Code Elimination for client feature flags has been spun out into a dedicated evaluation in RFC [#1599](https://github.com/yamcodes/arkenv/issues/1599) to benchmark `isEnabled("FLAG")` vs. `flags.FLAG` across minifiers independently of the core virtual placement foundation.
 
 ---
 
@@ -272,7 +273,6 @@ $$\mathbf{\text{S-Tier Stack (v1)}} = \mathbf{A2} + \mathbf{B2} + \mathbf{C1/C2}
 * **I2 + H5 (`@/.arkenv` in `src/`):** In-src dot-folder resolving via standard Next.js `@/.arkenv` alias.
 * **H2 (Universal `@arkenv/core` Entry):** Superb cross-framework universality where `env.ts` is 100% identical in Next.js, Nuxt, Vite, and Node, relying on bundler aliases.
 * **B1 (Status Quo In-Tree Codegen):** Functional and reliable, but leaves `generated/env.gen.ts` littering user source folders.
-* **D1 (Object only with accepted DCE loss):** Acceptable for small apps, but frustrates teams with large client feature flags.
 
 ---
 
@@ -347,26 +347,15 @@ export const env = arkenv({
 });
 ```
 
-### 5. Dead-Code Elimination (DCE) for Client Feature Flags
+### 5. Client Component Consumption
 
-```tsx title="./components/admin-preview.tsx"
+```tsx title="./components/header.tsx"
 "use client";
 
-import { isEnabled } from "@arkenv/nextjs";
-import type { Env } from "@/env";
+import { env } from "@/env";
 
 export function Header() {
-  // Next compiler inlines process.env -> "false" === "true" -> minifier strips heavy chunk
-  if (
-    isEnabled<Env>(
-      "NEXT_PUBLIC_ADMIN_DASHBOARD",
-      process.env.NEXT_PUBLIC_ADMIN_DASHBOARD,
-    )
-  ) {
-    return <HeavyAdminModule />;
-  }
-
-  return <StandardHeader />;
+  return <div>Welcome to {env.NEXT_PUBLIC_API_URL}</div>;
 }
 ```
 

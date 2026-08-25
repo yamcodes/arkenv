@@ -1,19 +1,9 @@
 "use client";
 
-import { isEnabled } from "@arkenv/nextjs";
-import type { Env } from "@/env";
+import { env } from "@/env";
 
 export function BetaBanner() {
-	// Demonstrates compile-time dead-code elimination (DCE):
-	// Next.js compiler inlines process.env.NEXT_PUBLIC_ENABLE_BETA_FEATURE -> "false"
-	// Minifier evaluates `isEnabled<Env>("...", "false")` -> ("false" === "true") -> false
-	// and completely eliminates this branch from the client bundle!
-	if (
-		isEnabled<Env>(
-			"NEXT_PUBLIC_ENABLE_BETA_FEATURE",
-			process.env.NEXT_PUBLIC_ENABLE_BETA_FEATURE,
-		)
-	) {
+	if (env.NEXT_PUBLIC_ENABLE_BETA_FEATURE) {
 		return (
 			<div
 				style={{
