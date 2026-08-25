@@ -1,7 +1,7 @@
 "use client";
 
 import { isEnabled } from "@arkenv/nextjs";
-import type { Env } from "../../env";
+import type { Env } from "@/env";
 
 export function BetaBanner() {
 	// Demonstrates compile-time dead-code elimination (DCE):

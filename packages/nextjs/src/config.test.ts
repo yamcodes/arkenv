@@ -318,8 +318,8 @@ describe("withArkEnv wrapper", () => {
 			validate: false,
 		});
 
-		expect(outputConfig).toBe(inputConfig);
-		expect(fs.existsSync(path.join(tempDir, "generated", "env.gen.ts"))).toBe(
+		expect(outputConfig.reactStrictMode).toBe(true);
+		expect(fs.existsSync(path.join(tempDir, ".arkenv", "env.gen.ts"))).toBe(
 			true,
 		);
 	});
@@ -429,11 +429,11 @@ describe("withArkEnv wrapper", () => {
 			),
 		).toBe(true);
 
-		const genPath = path.join(strictBaseDir, "generated", "env.gen.ts");
+		const genPath = path.join(tempDir, ".arkenv", "env.gen.ts");
 		expect(fs.existsSync(genPath)).toBe(true);
 		const ambientPath = path.join(
-			strictBaseDir,
-			"generated",
+			tempDir,
+			".arkenv",
 			"arkenv-client-env.d.ts",
 		);
 		expect(fs.existsSync(ambientPath)).toBe(true);

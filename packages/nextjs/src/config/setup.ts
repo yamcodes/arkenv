@@ -111,13 +111,26 @@ export function setupArkEnv(
 		throw new Error(missingClientTsError(clientEnvPath, baseDir!));
 	}
 
-	const defaultOutputDir =
-		resolvedLayout === "strict" && baseDir ? baseDir : path.dirname(schemaPath);
-	const defaultOutputPath = path.join(
-		defaultOutputDir,
-		"generated",
-		"env.gen.ts",
-	);
+	function resolveProjectRoot(schema: string, base?: string, layout?: string): string {
+		if (layout === "strict" && base) {
+			let dir = base;
+			if (path.basename(dir) === "env") {
+				dir = path.dirname(dir);
+			}
+			if (path.basename(dir) === "src") {
+				dir = path.dirname(dir);
+			}
+			return dir;
+		}
+		let dir = path.dirname(schema);
+		if (path.basename(dir) === "src") {
+			dir = path.dirname(dir);
+		}
+		return dir;
+	}
+
+	const projectRoot = resolveProjectRoot(schemaPath, baseDir, resolvedLayout);
+	const defaultOutputPath = path.join(projectRoot, ".arkenv", "env.gen.ts");
 	const outputPath = options?.outputPath
 		? path.resolve(options.outputPath)
 		: defaultOutputPath;
@@ -265,13 +278,6 @@ export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
 
 	const applyVirtualAliases = (configObj: any) => {
 		const rootDir = process.cwd();
-		const hasVirtualArkenv =
-			options?.outputPath?.includes(".arkenv") ||
-			fs.existsSync(path.join(rootDir, ".arkenv"));
-
-		if (!hasVirtualArkenv && !options?.outputPath) {
-			return configObj;
-		}
 
 		const targetGenPath = options?.outputPath
 			? path.resolve(options.outputPath)

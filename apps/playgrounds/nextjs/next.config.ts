@@ -5,6 +5,4 @@ const nextConfig: NextConfig = {
 	/* config options here */
 };
 
-export default withArkEnv(nextConfig, {
-	outputPath: "./.arkenv/env.gen.ts",
-});
+export default withArkEnv(nextConfig);

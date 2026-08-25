@@ -7,7 +7,6 @@ import type { Logger, LogLevel } from "@repo/log";
  * ```ts
  * const configOptions: ArkEnvConfigOptions = {
  *   schemaPath: "./src/env.ts",
- *   outputPath: "./src/generated/env.gen.ts"
  * };
  * ```
  */
@@ -36,7 +35,6 @@ export type ArkEnvConfigOptions = {
 	 * @example
 	 * ```ts
 	 * export default withArkEnv(nextConfig, {
-	 *   outputPath: "./src/generated/env.gen.ts"
 	 * });
 	 * ```
 	 */
