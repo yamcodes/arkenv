@@ -26,8 +26,9 @@ The `packages/` directory is the home for code modules that are shared across th
 | [`bun-plugin`](./bun-plugin)   | `@arkenv/bun-plugin`  | Public  | Bun integration for static env variable inlining.                             |
 | [`nuxt`](./nuxt)               | `@arkenv/nuxt`        | Public  | Nuxt integration for environment variable validation and injection.           |
 | [`fumadocs-ui`](./fumadocs-ui) | `@arkenv/fumadocs-ui` | Public  | Fumadocs UI components and utilities.                                         |
-| [`build`](./build)             | `@arkenv/build`       | Public  | Shared build and codegen utilities for framework plugins.                     |
-| [`internal/`](./internal)      | `@repo/*`             | Private | Shared internal modules (types, scopes, keywords) used for building.          |
+| [`build`](./build)             | `@arkenv/build`         | Public  | Shared build and codegen utilities for framework plugins.                     |
+| [`agent-plugin`](./agent-plugin) | `@arkenv/agent-plugin` | Public  | Coding-agent plugin and MCP server (`init`, `audit`).                         |
+| [`internal/`](./internal)      | `@repo/*`               | Private | Shared internal modules (types, scopes, keywords) used for building.          |
 
 ## Versioning & releases
 

@@ -1,0 +1,67 @@
+{
+	"name": "@arkenv/agent-plugin",
+	"type": "module",
+	"version": "1.0.0-alpha.0",
+	"description": "ArkEnv coding-agent plugin with MCP tools for init and AST-based env audits",
+	"bin": {
+		"arkenv-agent-plugin": "./dist/bin.js"
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"files": [
+		"dist",
+		"commands",
+		"skills",
+		".plugin",
+		".claude-plugin",
+		".cursor-plugin",
+		".mcp.json"
+	],
+	"scripts": {
+		"build": "tsdown",
+		"typecheck": "tsc --noEmit",
+		"test": "vitest",
+		"test:run": "vitest run",
+		"clean": "rimraf dist node_modules",
+		"fix": "pnpm -w run fix"
+	},
+	"keywords": [
+		"arkenv",
+		"mcp",
+		"agent",
+		"plugin",
+		"environment-variables",
+		"audit",
+		"cli"
+	],
+	"license": "MIT",
+	"homepage": "https://arkenv.js.org/docs/guides/ai",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/yamcodes/arkenv.git",
+		"directory": "packages/agent-plugin"
+	},
+	"bugs": "https://github.com/yamcodes/arkenv/labels/skills",
+	"author": "Yam Borodetsky <yam@yam.codes>",
+	"publishConfig": {
+		"access": "public"
+	},
+	"dependencies": {
+		"@modelcontextprotocol/sdk": "^1.27.1",
+		"typescript": "catalog:"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:",
+		"rimraf": "catalog:",
+		"tsdown": "catalog:",
+		"vitest": "catalog:"
+	}
+}

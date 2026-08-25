@@ -21,7 +21,7 @@ const SKIP_DIR_NAMES = new Set([
 function walk(dir: string): string[] {
 	const out: string[] = [];
 	for (const name of readdirSync(dir)) {
-		if (SKIP_DIR_NAMES.has(name)) continue;
+		if (SKIP_DIR_NAMES.has(name) || name.startsWith(".")) continue;
 		const path = join(dir, name);
 		const stat = statSync(path);
 		if (stat.isDirectory()) {

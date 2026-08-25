@@ -1,0 +1,5 @@
+{
+	"name": "arkenv",
+	"version": "1.0.0-alpha.0",
+	"description": "ArkEnv coding-agent plugin: canonical env object, init, and AST security audits."
+}

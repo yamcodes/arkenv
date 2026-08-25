@@ -8,6 +8,29 @@ Cursor, and GitHub Copilot. ArkEnv provides capabilities that help assistants
 understand your environment schemas, scaffold configurations deterministically,
 and enforce client/server security boundaries.
 
+## Coding-agent plugin
+
+Install the ArkEnv plugin so Claude Code, Cursor, Codex, and other MCP
+clients get slash commands plus an AST auditor:
+
+```bash
+npx plugins add arkenv/arkenv-plugin
+```
+
+That exposes `/arkenv:init` (delegates to `arkenv init --agent`) and
+`/arkenv:audit` (flags raw `process.env` / `import.meta.env` access, server
+secrets in client modules, public-prefix mistakes, and leftover v0 ambient
+`.d.ts` files).
+
+Run the MCP server directly:
+
+```bash
+npx -y @arkenv/agent-plugin
+```
+
+See the [`@arkenv/agent-plugin` reference](/docs/reference/agent-plugin) for
+diagnostic shapes and the programmatic `auditProject` API.
+
 ## Agent skill
 
 [Agent Skills](https://agentskills.io) are an open standard that provide capabilities

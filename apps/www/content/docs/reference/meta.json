@@ -17,6 +17,7 @@
 		"nextjs",
 		"nuxt",
 		"vite-plugin",
-		"bun-plugin"
+		"bun-plugin",
+		"agent-plugin"
 	]
 }
