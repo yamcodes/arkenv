@@ -10,7 +10,7 @@
 import { withArkEnv } from "@arkenv/nextjs/config";
 
 export default withArkEnv(async (phase, { defaultConfig }) => ({
-	...defaultConfig,
-	reactStrictMode: phase !== "phase-test",
+  ...defaultConfig,
+  reactStrictMode: phase !== "phase-test",
 }));
 ```
