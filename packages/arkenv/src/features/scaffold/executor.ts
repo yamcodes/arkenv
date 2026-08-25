@@ -91,6 +91,12 @@ export class Executor {
 
 			s.stop("Configuration scaffolded!");
 
+			// 1b. Write arkenv schema pointer to package.json
+			await this.configurePackageJsonArkenv(
+				plan.install?.cwd ?? plan.cwd,
+				plan.metadata,
+			);
+
 			// 2. Install dependencies
 			if (plan.install && process.env.SKIP_INSTALL !== "true") {
 				if (plan.install.packageManager === "pnpm") {
@@ -378,5 +384,36 @@ export class Executor {
 		}
 
 		return String(doc);
+	}
+
+	/**
+	 * Persist the arkenv schema entry and layout strategy to package.json.
+	 *
+	 * @param installCwd The directory containing package.json.
+	 * @param metadata The scaffolding plan metadata.
+	 */
+	private async configurePackageJsonArkenv(
+		installCwd: string,
+		metadata: ScaffoldingPlan["metadata"],
+	): Promise<void> {
+		const packageJsonPath = path.join(installCwd, "package.json");
+		if (await this.workspace.exists(packageJsonPath)) {
+			try {
+				const pkgContent = await this.workspace.readFile(packageJsonPath);
+				const pkg = JSON.parse(pkgContent);
+				pkg.arkenv = {
+					schema: metadata.displayPath,
+					layout: metadata.layout === "strict" ? "strict" : "flat",
+				};
+				await this.workspace.writeFile(
+					packageJsonPath,
+					JSON.stringify(pkg, null, 2) + "\n",
+				);
+			} catch (e) {
+				this.reporter.warn(
+					`Could not update package.json with arkenv schema entry: ${e}`,
+				);
+			}
+		}
 	}
 }

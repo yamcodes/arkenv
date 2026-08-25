@@ -1,0 +1,75 @@
+---
+title: preset
+description: Apply, refresh, or remove hosting provider preset blocks in your schema.
+---
+
+The `arkenv preset` command manages hosting provider preset blocks in your
+schema. Use it to inject platform variables, refresh them when platform requirements
+change, or strip them cleanly when migrating providers.
+
+```package-install
+npx arkenv@latest preset apply vercel
+```
+
+```package-install
+npx arkenv@latest preset remove vercel
+```
+
+## Usage
+
+```txt title="Terminal"
+arkenv preset <action> [provider] [options]
+```
+
+### Actions
+
+- `apply`: Injects or refreshes platform variables within managed comment blocks.
+- `remove` (or `rm`): Removes the target provider's comment block from schema files and updates `.env.example`.
+
+### Arguments
+
+- `provider`: The hosting provider preset ID. Accepted values: `vercel`, `netlify`, `cloudflare`, `railway`, `render`, `fly`. Omit to select interactively.
+
+## Options
+
+### `--file <path>`
+
+Explicitly specify the path to your schema file. Overrides the `"arkenv"` configuration pointer in `package.json`.
+
+```package-install
+npx arkenv@latest preset apply vercel --file ./src/config/env.ts
+```
+
+### `--force, -f`
+
+Bypass the clean git working tree check.
+
+```package-install
+npx arkenv@latest preset apply vercel --force
+```
+
+### `--yes, -y`
+
+Skip interactive confirmation prompts and accept defaults. When `provider` is omitted, `--yes` defaults to `vercel`.
+
+### `--agent`
+
+Enable non-interactive machine-readable mode for AI agents. Combines `--yes --quiet --json`.
+
+## Behavior
+
+The CLI automatically detects your project's layout (flat `env.ts` vs strict `env/client.ts` + `env/server.ts`), framework client prefix (`NEXT_PUBLIC_`, `NUXT_PUBLIC_`, `VITE_`), and validator dialect (ArkType, Zod, Valibot).
+
+1. **Discovery**: Reads the `"arkenv"` configuration object in `package.json` to find your schema files.
+2. **Git Tree Check**: Ensures your working directory is clean to prevent uncommitted loss (override with `--force`).
+3. **Collision Detection**: Verifies that preset variables do not collide with existing user-defined fields outside managed blocks.
+4. **Mutation**: Injects, refreshes, or removes the delimited `// @arkenv-preset-start` and `// @arkenv-preset-end` blocks.
+5. **Example Sync**: Updates `.env.example` to reflect the new or removed variables while keeping shared keys intact.
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/validating-your-environment/hosting-presets" title="Hosting presets" description="Field-level breakdown and deep dive into managed preset blocks." />
+
+  <Card href="/docs/reference/init" title="init reference" description="CLI reference for scaffolding projects with presets." />
+</Cards>

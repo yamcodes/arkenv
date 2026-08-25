@@ -4,7 +4,7 @@ import {
 	NodeWorkspace,
 } from "@/adapters";
 import { CLI } from "./cli";
-import { AddUseCase, HelpUseCase, InitUseCase } from "./commands";
+import { HelpUseCase, InitUseCase, PresetUseCase } from "./commands";
 
 /**
  * Bootstraps the application's dependency graph by composing
@@ -21,7 +21,7 @@ export function compose(argv: string[]) {
 	const scanner = new NodeProjectScannerAdapter(logger);
 
 	const initUseCase = new InitUseCase(logger, workspace, prompt, scanner);
-	const addUseCase = new AddUseCase(logger, workspace, prompt, scanner);
+	const presetUseCase = new PresetUseCase(logger, workspace, prompt, scanner);
 	const helpUseCase = new HelpUseCase(logger);
 
 	return {
@@ -30,7 +30,7 @@ export function compose(argv: string[]) {
 		workspace,
 		prompt,
 		initUseCase,
-		addUseCase,
+		presetUseCase,
 		helpUseCase,
 	};
 }

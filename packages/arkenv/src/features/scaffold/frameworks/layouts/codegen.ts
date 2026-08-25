@@ -1,5 +1,10 @@
 import type { CodegenFrameworkConfig } from "@/features/scaffold/frameworks/codegen-config";
-import { getPresetKeys, type HostPreset } from "@/features/scaffold/presets";
+import {
+	formatPresetEndMarker,
+	formatPresetStartMarker,
+	getPresetKeys,
+	type HostPreset,
+} from "@/features/scaffold/presets";
 import type { Dialect } from "@/features/scaffold/validators/dialects";
 
 /**
@@ -42,7 +47,8 @@ function appendPresetCodegenFields(
 	clientPrefix: string,
 	hostPreset: HostPreset | undefined,
 ): void {
-	const presetKeys = getPresetKeys(hostPreset ?? "none", clientPrefix);
+	if (!hostPreset || hostPreset === "none") return;
+	const presetKeys = getPresetKeys(hostPreset, clientPrefix);
 	for (const key of presetKeys) {
 		if (clientPrefix && key.startsWith(clientPrefix)) {
 			buckets.clientFields.push(
@@ -193,6 +199,7 @@ export function assembleCodegenTemplate(options: CodegenLayoutOptions): string {
 			config,
 			nextjsImportPath,
 			disableCodegen,
+			hostPreset,
 		});
 	}
 
@@ -206,6 +213,7 @@ export function assembleCodegenTemplate(options: CodegenLayoutOptions): string {
 		nextjsImportPath,
 		disableCodegen,
 		layout,
+		hostPreset,
 	});
 }
 
@@ -219,6 +227,7 @@ type FieldBuckets = {
 	nextjsImportPath?: string | undefined;
 	disableCodegen?: boolean | undefined;
 	layout?: "strict" | "simple" | "flat" | undefined;
+	hostPreset?: HostPreset | undefined;
 };
 
 function assembleFlatLayout(params: FieldBuckets): string {
@@ -231,6 +240,7 @@ function assembleFlatLayout(params: FieldBuckets): string {
 		config,
 		nextjsImportPath,
 		disableCodegen,
+		hostPreset,
 	} = params;
 	const {
 		clientPrefix,
@@ -239,9 +249,42 @@ function assembleFlatLayout(params: FieldBuckets): string {
 	} = config;
 	const framework = config.id;
 	const extraImports = dialect.extraImport;
+	const presetKeys = getPresetKeys(hostPreset ?? "none", clientPrefix);
 
-	const allFields = [...serverFields, ...clientFields, ...sharedFields];
-	const flatFields = allFields.map((field) => field.replace(/^\t\t/, "\t"));
+	let flatFields: string[];
+	if (hostPreset && hostPreset !== "none" && presetKeys.length > 0) {
+		const rawFields = [...serverFields, ...clientFields, ...sharedFields];
+		const userFields = rawFields
+			.filter((f) => {
+				const key = f.trim().match(/^([a-zA-Z0-9_]+)\s*:/)?.[1];
+				return key && !presetKeys.includes(key);
+			})
+			.map((field) => field.replace(/^\t\t/, "\t"));
+
+		const presetFieldLines: string[] = [];
+		for (const key of presetKeys) {
+			const role =
+				clientPrefix && key.startsWith(clientPrefix)
+					? "client"
+					: key === "NODE_ENV"
+						? "shared"
+						: "server";
+			presetFieldLines.push(
+				`\t${dialect.formatCodegenField(key, role, clientPrefix, hostPreset)}`,
+			);
+		}
+
+		flatFields = [
+			...userFields,
+			...(userFields.length > 0 ? [""] : []),
+			`\t${formatPresetStartMarker(hostPreset)}`,
+			...presetFieldLines,
+			`\t${formatPresetEndMarker(hostPreset)}`,
+		];
+	} else {
+		const allFields = [...serverFields, ...clientFields, ...sharedFields];
+		flatFields = allFields.map((field) => field.replace(/^\t\t/, "\t"));
+	}
 
 	const exposedKeyNames: string[] = [];
 	for (const field of sharedFields) {

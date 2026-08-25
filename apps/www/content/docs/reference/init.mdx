@@ -59,13 +59,14 @@ Scaffold `env/client.ts`, `env/server.ts`, and
 
 Skip Next.js `env.gen.ts` generation and related `withArkEnv` wiring.
 
-### `--host-preset` / `-H`
+### `--preset` / `-P`
 
 Pre-populate provider system variables. Values: `none`, `vercel`,
-`netlify`, `cloudflare`, `railway`, `render`, `fly`.
+`netlify`, `cloudflare`, `railway`, `render`, `fly`. The CLI also accepts
+`--host-preset` and `-H` as aliases.
 
 See [Hosting presets](/docs/validating-your-environment/hosting-presets).
-To add a preset later, use [`add host`](/docs/reference/add-host).
+To apply or remove presets later, use [`preset`](/docs/reference/preset).
 
 ### `--agent`
 
@@ -137,7 +138,7 @@ Importing `arkenv` as a library throws and points you at `@arkenv/core`.
 <Cards>
   <Card href="/docs/getting-started/add-to-existing-repository" title="Add to an existing repository" description="Adopt ArkEnv incrementally in an existing project." />
 
-  <Card href="/docs/reference/add-host" title="add host" description="CLI reference for adding provider presets to an existing schema." />
+  <Card href="/docs/reference/preset" title="preset" description="CLI reference for applying and removing provider presets." />
 
   <Card href="/docs/reference/options" title="options" description="Configuration options passed to arkenv()." />
 </Cards>
