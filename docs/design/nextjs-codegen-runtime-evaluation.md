@@ -70,6 +70,8 @@ These dimensions compose into a complete architecture:
 - **Layer F (Schema Artifact Shape & Contract Boundaries):** The format and boundary of emitted build artifacts.
 - **Layer G (AI Agent Ergonomics & Tooling Diagnostics):** How diagnostics and repair hints are surfaced to automated agents.
 - **Layer H (Schema Factory Entrypoint & Import Aesthetics):** How the schema authoring factory is imported in `env.ts`.
+- **Layer I (Generated Directory Naming & Placement):** Naming and visibility conventions for the generated directory.
+- **Layer J (File Structure & Extension Conventions):** File naming, extensions (`.gen.ts`), and barrel exports (`index.ts`).
 
 ---
 
@@ -85,6 +87,7 @@ These dimensions compose into a complete architecture:
 | **Zero-Dependency Core** | Does `@arkenv/nextjs` maintain a minimal runtime/build footprint? |
 | **Single Mental Model** | Does `import { env } from "./env"` remain consistent across frameworks? |
 | **Import Idiomaticity** | Does the `env.ts` import feel like standard npm package syntax without hacks? |
+| **Linter Hygiene** | Do linters/formatters automatically ignore generated code without manual rules? |
 | **Agent Actionability** | Can AI coding agents parse errors and apply fixes without hallucinations? |
 
 ---
@@ -158,7 +161,25 @@ These dimensions compose into a complete architecture:
 | **H2** | **Universal Core Package Entry (`@arkenv/core`)** | `import { arkenv } from "@arkenv/core"` across all frameworks; build plugins (Next `withArkEnv`, Nuxt module, Vite plugin) alias/transform the import at build time. |
 | **H3** | **Framework Subpath Entry (`@arkenv/nextjs/env`)** | `import arkenv from "@arkenv/nextjs/env"`. Explicit subpath separating schema factory from runtime utilities (`isEnabled`). |
 | **H4** | **Node Subpath Import (`#arkenv/env`)** | `import arkenv from "#arkenv/env"`. Uses `package.json` `"imports"` mapping. |
-| **H5** | **Relative Virtual Artifact (`./.arkenv/env.gen`)** | `import arkenv from "./.arkenv/env.gen"`. Explicit relative path directly to the generated factory file. |
+| **H5** | **Relative Virtual Artifact (`./.arkenv/env.gen` or `@/.arkenv`)** | `import arkenv from "@/.arkenv"` or `import arkenv from "./.arkenv"`. Direct, transparent relative import to local output. |
+
+### Layer I: Generated Directory Naming & Placement
+
+| # | Option | Description |
+| :- | :--- | :--- |
+| **I1** | **Root Dot-Folder (`.arkenv/`)** | Hidden in root (like `.next/`, `.turbo/`, `.astro/`). Gitignored, unobtrusive. |
+| **I2** | **In-Src Dot-Folder (`src/.arkenv/`)** | Lives inside `src/`, allowing Next.js native `@/.arkenv` import resolution with zero config. |
+| **I3** | **Dunder Directory (`__generated__/` or `__gen__/`)** | Relay / GraphQL Codegen standard (`src/__generated__/`). Visible but clearly tool-managed. |
+| **I4** | **Plain Directory (`generated/` or `gen/`)** | Standard directory (`src/generated/` or `src/gen/`). Status quo, prone to git clutter if not ignored. |
+
+### Layer J: File Structure & Extension Conventions
+
+| # | Option | Description |
+| :- | :--- | :--- |
+| **J1** | **Directory Barrel (`index.ts`)** | Emits `index.ts` allowing clean directory imports (`import arkenv from "@/.arkenv"`). |
+| **J2** | **Explicit Double Extension (`env.gen.ts`)** | Uses `.gen.ts` extension automatically matched by Biome, ESLint, and Prettier ignore rules. |
+| **J3** | **Hybrid (`env.gen.ts` + `index.ts` re-export)** | Emits `env.gen.ts` for tooling/linters and an `index.ts` barrel for clean directory imports. |
+| **J4** | **Single Plain File (`env.ts`)** | Emits plain `env.ts` inside the generated folder (`.arkenv/env.ts`). |
 
 ---
 
@@ -166,12 +187,13 @@ These dimensions compose into a complete architecture:
 
 | Stack Combination | DCE Honesty | Coercion Honesty | Zero-Artifact DX | Next.js Stability | Zero-Friction Install | Zero-Dependency Core | Single Mental Model | Import Idiomaticity | Agent Actionability |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **S-Tier (A2 + B2 + C1/C2 + D2 + E2 + F3 + G2 + H1/H3)** | 🟢 High (`isEnabled`) | 🟢 Full (Honest) | 🟢 Clean (`.arkenv/`) | 🟢 Native API | 🟢 Standard npm | 🟢 0 runtime deps | 🟢 Unified `env` | 🟢 Standard Package (`@arkenv/nextjs`) | 🟢 Structured JSON |
-| **Universal Core (A2 + B2 + C1/C2 + D2 + E2 + F3 + G2 + H2)** | 🟢 High (`isEnabled`) | 🟢 Full (Honest) | 🟢 Clean (`.arkenv/`) | 🟢 Native API | 🟢 Standard npm | 🟢 0 runtime deps | 🟢 100% Cross-FW | 🟢 Standard Package (`@arkenv/core`) | 🟢 Structured JSON |
-| **Subpath Node (A2 + B2 + C1/C2 + D2 + E2 + F3 + G2 + H4)** | 🟢 High (`isEnabled`) | 🟢 Full (Honest) | 🟢 Clean (`.arkenv/`) | 🟢 Native API | 🟢 Standard npm | 🟢 0 runtime deps | 🟢 Unified `env` | 🟡 `#` Subpath Syntax | 🟢 Structured JSON |
-| **Prisma 8 Style (A2 + B2 + C1 + D1 + E2 + F2 + G2 + H1)** | 🔴 Broken on Client | 🟢 Full (Honest) | 🟢 Clean (`contract.json`) | 🟢 Native API | 🟢 Standard npm | 🟢 0 runtime deps | 🟢 Parameterized | 🟢 Standard Package | 🟢 Structured JSON |
-| **Varlock Model (A1 + B2 + C4 + D1 + E1 + F1 + G1 + H5)** | 🔴 Lost on Object | 🔴 Strings Only | 🟡 Out-of-tree | 🔴 Fragile Overrides | 🔴 Needs Overrides | 🔴 Large Footprint | 🔴 Divergent `ENV` | 🔴 Relative Path | 🟡 Unstructured |
-| **Status Quo v0 (A3 + B1 + C1 + D1 + E1 + F1 + G1 + H5)** | 🔴 Lost on Object | 🟢 Full (Honest) | 🔴 `src/generated` | 🟡 Jiti Workarounds | 🟢 Standard npm | 🔴 Bundles Jiti | 🟢 Unified `env` | 🔴 `./generated/env.gen` | 🟡 Unstructured |
+| **S-Tier (A2 + B2 + C1/C2 + D2 + E2 + F3 + G2 + H1/H3 + I1 + J3)** | 🟢 High (`isEnabled`) | 🟢 Full (Honest) | 🟢 Clean (`.arkenv/`) | 🟢 Native API | 🟢 Standard npm | 🟢 0 runtime deps | 🟢 Unified `env` | 🟢 Standard Package (`@arkenv/nextjs`) | 🟢 Structured JSON |
+| **Barrel Root (A2 + B2 + C1/C2 + D2 + E2 + F3 + G2 + H5 + I2 + J3)** | 🟢 High (`isEnabled`) | 🟢 Full (Honest) | 🟢 Clean (`src/.arkenv`) | 🟢 Native API | 🟢 Standard npm | 🟢 0 runtime deps | 🟢 Unified `env` | 🟢 Clean `@/.arkenv` | 🟢 Structured JSON |
+| **Universal Core (A2 + B2 + C1/C2 + D2 + E2 + F3 + G2 + H2 + I1 + J2)** | 🟢 High (`isEnabled`) | 🟢 Full (Honest) | 🟢 Clean (`.arkenv/`) | 🟢 Native API | 🟢 Standard npm | 🟢 0 runtime deps | 🟢 100% Cross-FW | 🟢 Standard Package (`@arkenv/core`) | 🟢 Structured JSON |
+| **Subpath Node (A2 + B2 + C1/C2 + D2 + E2 + F3 + G2 + H4 + I1 + J2)** | 🟢 High (`isEnabled`) | 🟢 Full (Honest) | 🟢 Clean (`.arkenv/`) | 🟢 Native API | 🟢 Standard npm | 🟢 0 runtime deps | 🟢 Unified `env` | 🟡 `#` Subpath Syntax | 🟢 Structured JSON |
+| **Dunder Gen (A2 + B1 + C1/C2 + D2 + E2 + F3 + G1 + H5 + I3 + J2)** | 🟢 High (`isEnabled`) | 🟢 Full (Honest) | 🟡 In-tree Dunder | 🟢 Native API | 🟢 Standard npm | 🟢 0 runtime deps | 🟢 Unified `env` | 🟡 `@/__generated__` | 🟡 Unstructured |
+| **Prisma 8 Style (A2 + B2 + C1 + D1 + E2 + F2 + G2 + H1 + I1 + J4)** | 🔴 Broken on Client | 🟢 Full (Honest) | 🟢 Clean (`contract.json`) | 🟢 Native API | 🟢 Standard npm | 🟢 0 runtime deps | 🟢 Parameterized | 🟢 Standard Package | 🟢 Structured JSON |
+| **Status Quo v0 (A3 + B1 + C1 + D1 + E1 + F1 + G1 + H5 + I4 + J2)** | 🔴 Lost on Object | 🟢 Full (Honest) | 🔴 `src/generated` | 🟡 Jiti Workarounds | 🟢 Standard npm | 🔴 Bundles Jiti | 🟢 Unified `env` | 🔴 `./generated/env.gen` | 🟡 Unstructured |
 
 ---
 
@@ -200,11 +222,23 @@ TypeScript resolves the generic `arkenv(schema)` signature directly from `node_m
 
 ---
 
+### Q3: Directory Structure (`.arkenv` vs. `__generated__`) & The `.gen.ts` Extension
+**Question:** Should we use `.arkenv/`, `__generated__/`, or `gen/`? And why keep `.gen.ts` if we also have an `index.ts` barrel?
+
+**Answer:**
+1. **Why `.arkenv/` beats `__generated__/`:** Dunder folders (`__generated__` or `__gen__`) are visible in user source trees, cluttering file explorers (`Cmd+P`). Dot-folders (`.arkenv/`) are hidden by default across editors (VS Code, Cursor, WebStorm) and git, matching `.next/` and `.turbo/`.
+2. **The Hybrid File Pattern (`J3`):**
+   - We emit **both** `.arkenv/env.gen.ts` and `.arkenv/index.ts` (which re-exports `env.gen.ts`).
+   - `.gen.ts` guarantees that ESLint, Biome, and Prettier ignore rules catch the file automatically.
+   - `index.ts` enables clean directory-level imports (`import arkenv from "@/.arkenv"` or `import arkenv from "../.arkenv"`).
+
+---
+
 ## 8. The Tier List
 
 ### S-Tier (The Converged Architecture)
 
-$$\mathbf{\text{S-Tier Stack (v1)}} = \mathbf{A2} + \mathbf{B2} + \mathbf{C1/C2} + \mathbf{D2} + \mathbf{E2} + \mathbf{F3} + \mathbf{G2} + \mathbf{H1/H3}$$
+$$\mathbf{\text{S-Tier Stack (v1)}} = \mathbf{A2} + \mathbf{B2} + \mathbf{C1/C2} + \mathbf{D2} + \mathbf{E2} + \mathbf{F3} + \mathbf{G2} + \mathbf{H1/H3} + \mathbf{I1} + \mathbf{J3}$$
 
 * **A2 (Native `next.config.ts` Execution):** Leverages Next 15+ native TypeScript execution for zero-dependency build-time validation.
 * **B2 (Virtual `.arkenv/` Placement):** Keeps user source trees 100% clean; mapped via Webpack and `turbopack.resolveAlias`.
@@ -214,11 +248,13 @@ $$\mathbf{\text{S-Tier Stack (v1)}} = \mathbf{A2} + \mathbf{B2} + \mathbf{C1/C2}
 * **F3 (Virtual Factory):** Emits only the minimal factory needed for Next.js AST identifier replacement without in-tree pollution.
 * **G2 (Structured Agent Envelopes):** Equips the ArkEnv CLI with structured machine diagnostics and `nextActions` for AI agents.
 * **H1 / H3 (Framework Package / Subpath Entry):** `import arkenv from "@arkenv/nextjs"` (or `@arkenv/nextjs/env`). Clean, idiomatic npm imports with zero `#` syntax.
+* **I1 / J3 (Dot-Folder + Hybrid Barrel):** `.arkenv/env.gen.ts` + `.arkenv/index.ts`.
 
 ---
 
 ### A-Tier (Viable Alternatives)
 
+* **I2 + H5 (`@/.arkenv` in `src/`):** In-src dot-folder resolving via standard Next.js `@/.arkenv` alias.
 * **H2 (Universal `@arkenv/core` Entry):** Superb cross-framework universality where `env.ts` is 100% identical in Next.js, Nuxt, Vite, and Node, relying on bundler aliases.
 * **B1 (Status Quo In-Tree Codegen):** Functional and reliable, but leaves `generated/env.gen.ts` littering user source folders.
 * **D1 (Object only with accepted DCE loss):** Acceptable for small apps, but frustrates teams with large client feature flags.
@@ -228,6 +264,7 @@ $$\mathbf{\text{S-Tier Stack (v1)}} = \mathbf{A2} + \mathbf{B2} + \mathbf{C1/C2}
 ### C-Tier (High Overhead / Friction)
 
 * **H4 (Subpath `#arkenv/env`):** Fully standard in Node.js, but unfamiliar `#` symbol causes hesitation among frontend developers.
+* **I3 (Dunder `__generated__/`):** Visible in tree, creates visual clutter in file trees.
 * **F2 (Metadata Contract without AST replacement):** Works well for server-only ORMs (Prisma 8), but breaks Next.js client-side variable inlining.
 * **A3 (Universal `jiti` transpilation across Next 13–16):** Carries permanent build complexity and monorepo ESM hazards.
 
@@ -235,7 +272,7 @@ $$\mathbf{\text{S-Tier Stack (v1)}} = \mathbf{A2} + \mathbf{B2} + \mathbf{C1/C2}
 
 ### D-Tier (Fragile or Broken)
 
-* **H5 (Relative `./.arkenv/env.gen`):** Ugly relative path requiring dot-folder traversal.
+* **H5 (Relative `./.arkenv/env.gen` without barrel):** Ugly relative path requiring dot-folder traversal.
 * **A1 (Varlock-style `@next/env` package manager override):** Fragile across minor Next.js releases; causes lockfile/symlink installation issues and monorepo friction.
 * **B3 (`.next/cache/arkenv`):** Cache wipes break standalone builds and IDE typechecking.
 * **B4 (In-memory virtual module without disk backing):** Breaks standalone `tsc --noEmit` and IDE navigation.
@@ -323,7 +360,7 @@ export function Header() {
 ## 10. Current Lean & Implementation Plan
 
 1. **Target Next 15+ as v1 baseline:** Deprecate Next 13/14 in `@arkenv/nextjs` root entry; remove `jiti`, `mock-server-only`, and `chokidar`.
-2. **Implement Virtual `.arkenv/` ([#1402](https://github.com/yamcodes/arkenv/issues/1402)):** Default `outputPath` to `.arkenv/env.gen.ts`; alias `@arkenv/nextjs` to `.arkenv/env.gen.ts`.
+2. **Implement Virtual `.arkenv/` ([#1402](https://github.com/yamcodes/arkenv/issues/1402)):** Default `outputPath` to `.arkenv/env.gen.ts` with `.arkenv/index.ts` barrel; alias `@arkenv/nextjs` to `.arkenv/env.gen.ts`.
 3. **Ship Strict Auto-Extend ([#1403](https://github.com/yamcodes/arkenv/issues/1403)):** Wire `#arkenv/client-env` alias resolution in `withArkEnv`.
 4. **Ship `isEnabled` DCE Helper:** Export `isEnabled` from `@arkenv/nextjs` and document feature flag optimization patterns.
 5. **Add Structured Agent Envelopes (`--json`):** Implement machine-readable diagnostics in `arkenv check --json` for agent repair loops.
@@ -333,6 +370,7 @@ export function Header() {
 
 ## 11. Changelog of this Note
 
+- **2026-08-25:** Added Layer I (Generated Directory Naming: `.arkenv/` vs `__generated__/` vs `gen/`) and Layer J (File Structure: `.gen.ts` vs `index.ts` barrel vs Hybrid J3); added Q3 deep-dive.
 - **2026-08-25:** Added Section 7 addressing TypeScript day-0 typings without prior builds, monorepo shared package interop (`@arkenv/core` in `packages/db`), and Option A/B namespace hygiene.
 - **2026-08-25:** Added Layer H (Schema Factory Entrypoint & Import Aesthetics); evaluated H1 (`@arkenv/nextjs`), H2 (`@arkenv/core`), H3 (`@arkenv/nextjs/env`), H4 (`#arkenv/env`), and H5 (`./.arkenv/env.gen`).
 - **2026-08-25:** Added Prisma 8 Case Study; introduced Layer F (Artifact Shape) and Layer G (Agent Ergonomics); finalized upgraded S-Tier stack with `--json` agent envelopes.
