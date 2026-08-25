@@ -1,0 +1,144 @@
+---
+title: init
+description: Scaffold ArkEnv schemas, layouts, and hosting presets with the CLI.
+---
+
+`arkenv` on npm is the CLI. It scaffolds schemas and wires framework
+config. Validation lives in `@arkenv/core` or `@arkenv/standard`.
+
+```package-install
+npx arkenv@latest init
+```
+
+```package-install
+npx arkenv@latest init my-app --example with-vite-react -H vercel
+```
+
+```package-install
+npx arkenv@latest init --agent --flat
+```
+
+Install locally when you want a project binary:
+
+```package-install
+npm i -D arkenv
+```
+
+## Usage
+
+```txt title="Terminal"
+arkenv init [project-name] [options]
+```
+
+Omit `project-name` to mutate the current directory. Pass a name to
+create a new folder (optionally from `--example`).
+
+[Global flags](/docs/reference#global-flags) (`--yes`, `--quiet`,
+`--json`, `--agent`, `--help`) apply here too.
+
+## Options
+
+These flags are specific to `init`.
+
+### `--force` / `-f`
+
+Bypass dirty-git and other safety checks, then force scaffolding. The
+CLI refuses a dirty working tree unless you pass this flag. Commit or
+stash first if you don't want to overwrite generated files.
+
+### `--flat`
+
+Scaffold a single `env.ts`. This is the default layout.
+
+### `--strict`
+
+Scaffold `env/client.ts`, `env/server.ts`, and
+`env/internal/shared.ts`.
+
+### `--no-codegen`
+
+Skip Next.js `env.gen.ts` generation and related `withArkEnv` wiring.
+
+### `--preset` / `-P`
+
+Pre-populate provider system variables. Values: `none`, `vercel`,
+`netlify`, `cloudflare`, `railway`, `render`, `fly`. The CLI also accepts
+`--host-preset` and `-H` as aliases.
+
+See [Hosting presets](/docs/validating-your-environment/hosting-presets).
+To apply or remove presets later, use [`preset`](/docs/reference/preset).
+
+### `--agent`
+
+Scaffold non-interactively for AI agents and automated scripts. This flag
+combines `--yes --quiet --json` into a single command:
+
+- **Token efficiency**: Suppresses terminal formatting and outputs compact JSON
+  on standard output (logs go to standard error), conserving context tokens in
+  automated sessions.
+- **Safety checks**: Performs validation before modifying files. If safety
+  checks fail (such as a dirty git working tree), the CLI emits a structured
+  refusal payload on standard output with non-zero exit code:
+
+```json
+{
+  "status": "error",
+  "code": "GIT_TREE_DIRTY",
+  "message": "Git working tree is not clean.",
+  "retryWith": ["--force"]
+}
+```
+
+Only rerun with flags listed in `retryWith` when you confirm the bypass is safe.
+
+### `--example <name>`
+
+Scaffold from a named example when creating a new project. Short `-e` is
+reserved and rejected.
+
+See [Start with an example](/docs/getting-started/examples).
+
+<Callout type="warn">
+  `--simple` is deprecated and no longer supported. The CLI errors if you
+  pass it. Use `--flat` (the default) instead.
+</Callout>
+
+## Output
+
+Depending on the detected framework and flags, `init` writes:
+
+- Schema file(s): `env.ts` or the strict `env/` tree (often under
+  `src/`)
+- `.env` / `.env.example` when missing. Init never reads an existing
+  `.env`; a missing `.env.example` is filled from detected keys and
+  defaults. If `.env` is missing, init may copy `.env.example` into it.
+- Next.js: `withArkEnv` in `next.config.*`, optional
+  `generated/env.gen.ts`
+- Vite / Bun: type augmentation files (`vite-env.d.ts`, `bun-env.d.ts`)
+- Dependency installs for the chosen dialect (`@arkenv/core`, plugins,
+  Zod/Valibot)
+
+## Import the validator from core
+
+The CLI package is not the validation library. Import `arkenv()` from
+`@arkenv/core` (or `@arkenv/standard`).
+
+```ts
+// Wrong: arkenv is the CLI package
+import arkenv from "arkenv";
+
+// Right
+import arkenv from "@arkenv/core";
+```
+
+Importing `arkenv` as a library throws and points you at `@arkenv/core`.
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/getting-started/add-to-existing-repository" title="Add to an existing repository" description="Adopt ArkEnv incrementally in an existing project." />
+
+  <Card href="/docs/reference/preset" title="preset" description="CLI reference for applying and removing provider presets." />
+
+  <Card href="/docs/reference/options" title="options" description="Configuration options passed to arkenv()." />
+</Cards>

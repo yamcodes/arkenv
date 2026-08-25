@@ -1,0 +1,85 @@
+---
+title: Valibot
+description: Validate environment variables with @arkenv/standard and Valibot.
+---
+
+Use `@arkenv/standard` to validate environment variables with Valibot. Valibot
+implements the Standard Schema specification. By providing the
+[`@valibot/to-json-schema`](https://valibot.dev/guides/json-schema/) converter
+through ArkEnv's `toJsonSchema` option, ArkEnv can inspect your schema and
+automatically coerce raw strings into numbers, booleans, and arrays.
+
+For an overview of engine options, see
+[Choosing an engine](/docs/core-concepts/standard-schema).
+
+## Installation
+
+Install `@arkenv/standard`, `valibot`, and the JSON Schema converter:
+
+```package-install
+npm i @arkenv/standard valibot @valibot/to-json-schema
+```
+
+## Define your schema
+
+Declare environment variables in an `env.ts` file using Valibot schemas and
+configure `toJsonSchema`:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import * as v from "valibot";
+import { toJsonSchema } from "@valibot/to-json-schema";
+
+export const env = arkenv(
+  {
+    DATABASE_URL: v.pipe(v.string(), v.url()),
+    PORT: v.optional(v.number(), 3000),
+    DEBUG: v.optional(v.boolean(), false),
+    TAGS: v.optional(v.array(v.string()), []),
+    NODE_ENV: v.optional(
+      v.picklist(["development", "production", "test"]),
+      "development",
+    ),
+  },
+  {
+    toJsonSchema: (schema) =>
+      toJsonSchema(schema as v.GenericSchema, {
+        typeMode: "input",
+        target: "draft-07",
+      }),
+  },
+);
+```
+
+## JSON Schema configuration
+
+Because Valibot does not embed JSON Schema metadata directly on schema instances,
+the `toJsonSchema` callback converts schemas on demand:
+
+- `typeMode: "input"` ensures piped and transformed schemas are evaluated
+  according to their input types so strings can be properly coerced.
+- `target: "draft-07"` formats output to match the JSON Schema draft expected
+  by ArkEnv.
+
+With `toJsonSchema` configured, use `v.number()` and `v.boolean()` directly.
+Manual `v.transform(Number)` steps are not required.
+
+## Defaults and optionals
+
+Valibot functions for fallback values and optional fields work seamlessly:
+
+| Pattern                            | Behavior                                                                  |
+| :--------------------------------- | :------------------------------------------------------------------------ |
+| `v.optional(schema, defaultValue)` | Fallback value used when the variable is undefined                        |
+| `v.optional(schema)`               | Allows the variable to remain undefined                                   |
+| `emptyAsUndefined: true`           | Converts empty strings (`""`) to `undefined` so optional defaults trigger |
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/reference/standard" title="@arkenv/standard reference" description="Standard Schema engine package reference and options." />
+
+  <Card href="/docs/core-concepts/coercion#valibot-tojsonschema" title="Coercion with Valibot" description="Advanced JSON Schema wiring and custom converters." />
+
+  <Card href="/docs/guides/frameworks" title="Framework guides" description="Integrate your Valibot schema with Next.js, Nuxt, Vite, or Bun." />
+</Cards>

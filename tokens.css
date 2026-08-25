@@ -11,12 +11,12 @@
 	--color-ink: oklch(95% 0.01 200);
 	--color-ink-2: oklch(78% 0.02 200);
 	--color-muted: oklch(62% 0.025 200);
-	--color-rule: oklch(30% 0.02 200);
+	--color-rule: oklch(25% 0.017 200); /* horizontals */
+	--color-rule-y: oklch(22.5% 0.015 200); /* verticals, slightly softer */
 	--color-accent: oklch(74% 0.13 195);
 	--color-accent-ink: oklch(14% 0.02 200);
 	--color-focus: oklch(78% 0.12 195);
-	--color-bloom-a: oklch(52% 0.11 195 / 0.32);
-	--color-bloom-b: oklch(42% 0.09 220 / 0.22);
+	--color-spotlight: oklch(100% 0 0 / 0.025);
 	--color-success: oklch(72% 0.14 155);
 	--color-danger: oklch(65% 0.18 25);
 	--color-danger-ink: oklch(78% 0.14 25);

@@ -9,7 +9,9 @@ export type CodegenFrameworkConfig = {
 	packageName: "@arkenv/nextjs" | "@arkenv/nuxt";
 	clientPrefix: "NEXT_PUBLIC_" | "NUXT_PUBLIC_";
 	displayName: "Next.js" | "Nuxt";
-	/** When true, bootstrap wraps next.config (Next.js only). */
+	/**
+	 * When true, bootstrap wraps next.config (Next.js only).
+	 */
 	supportsWrapNextjsConfig: boolean;
 };
 

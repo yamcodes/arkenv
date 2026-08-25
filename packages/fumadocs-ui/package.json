@@ -50,6 +50,7 @@
 		"build": "tsdown",
 		"clean": "rimraf dist",
 		"typecheck": "tsc --noEmit",
+		"test": "vitest",
 		"fix": "pnpm -w run fix"
 	},
 	"dependencies": {
@@ -58,6 +59,7 @@
 	},
 	"peerDependencies": {
 		"@fumadocs/ui": "^16.5.0",
+		"@icons-pack/react-simple-icons": "^13.13.0",
 		"@radix-ui/react-collapsible": "^1.1.12",
 		"fumadocs-core": "^16.7.11",
 		"fumadocs-ui": "^16.7.11",
@@ -69,8 +71,10 @@
 	},
 	"devDependencies": {
 		"@fumadocs/ui": "16.5.0",
+		"@icons-pack/react-simple-icons": "13.13.0",
 		"@radix-ui/react-collapsible": "1.1.12",
 		"@types/mdx": "2.0.13",
+		"@types/node": "catalog:",
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",
 		"fumadocs-core": "16.8.7",
@@ -83,7 +87,8 @@
 		"rollup-plugin-preserve-use-client": "3.0.1",
 		"tailwindcss": "4.2.4",
 		"tsdown": "catalog:",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	},
 	"publishConfig": {
 		"access": "public"

@@ -1,0 +1,157 @@
+---
+title: Introduction
+description: Typesafe environment variable validation for TypeScript applications.
+---
+
+## What is ArkEnv?
+
+ArkEnv is a typesafe environment variable validation library for JavaScript
+and TypeScript. You declare a schema once, `arkenv()` validates the
+process against that schema before application code runs, and TypeScript
+infers the types from the same declaration.
+
+This page shows why `process.env` is a weak contract, how ArkEnv's typed
+`env` object replaces it, and where to go next in these docs.
+
+## The `process.env` problem
+
+In JavaScript and TypeScript apps, environment variables are the primary
+way to configure a process. The problem is that TypeScript only types
+those values as `string | undefined`, so anything beyond that is **your
+responsibility**, including checking the type and making sure the value is
+defined.
+
+Let's see how this can get messy if not done carefully. Can you spot the
+problem with this code?
+
+```ini title=".env"
+PORT=3000
+DEBUG=false
+```
+
+```ts title="./server.ts" twoslash
+const port = process.env.PORT;
+const debug = process.env.DEBUG;
+//    ^?
+
+if (debug) {
+  console.log("verbose logging enabled");
+}
+
+console.log(`listening on ${port}`);
+```
+
+**Does it log the message?**
+
+Spoiler alert: **yes, it does.** `process.env.DEBUG` is the string `"false"`,
+not the boolean `false`. In JavaScript, a non-empty string is truthy, so
+`if (debug)` runs even though you turned logging off. `PORT` is the
+string `"3000"` for the same reason.
+
+You might reach for a `=== "true"` check and start parsing environment
+variables by hand. You might also assign a default. At this point, your
+code looks like this:
+
+```ts title="./server.ts" twoslash
+const port = Number(process.env.PORT ?? "3000");
+const debug = process.env.DEBUG === "true";
+
+if (debug) {
+  console.log("verbose logging enabled");
+}
+
+console.log(`listening on ${port}`);
+```
+
+It works, but you've just written **a bunch of boilerplate**. As soon as
+the project scales, that becomes a **maintenance burden** across more
+environments, files, and apps, and between the client and the server.
+
+## The `env` solution
+
+**ArkEnv solves your environment variable scaling problem.** `arkenv()`
+parses your values against a schema you define in a separate `env.ts`
+file, so you don't handle the loose `process.env` object in application
+code.
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  PORT: "number.port = 3000",
+  DEBUG: "boolean = false",
+});
+```
+
+The same `if` as above, after ArkEnv, looks like this:
+
+```ts title="./server.ts" twoslash
+// @filename: env.ts
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  PORT: "number.port = 3000",
+  DEBUG: "boolean = false",
+});
+
+// @filename: server.ts
+// ---cut---
+import { env } from "./env";
+
+const port = env.PORT;
+const debug = env.DEBUG;
+//    ^?
+
+if (debug) {
+  console.log("verbose logging enabled");
+}
+
+console.log(`listening on ${port}`);
+```
+
+Here `debug` is `boolean` and `port` is a number, by definition. ArkEnv's
+coercion turns `"false"` into `false` and `"3000"` into `3000`, so the
+`if` does not run and verbose logging stays off. As a bonus,
+`number.port` also guarantees that `port` is in the valid 0-65535 range.
+
+In a full-stack app, you **must keep secrets off the client**. The
+Next.js, Nuxt, Vite, and Bun packages **enforce that split** so server
+values stay out of the client graph. See
+[Client vs. server](/docs/validating-your-environment/client-vs-server).
+
+ArkEnv can be **adopted incrementally**. If you already validate forms or
+API data with [ArkType](https://arktype.io), [Zod](https://zod.dev),
+[Valibot](https://valibot.dev), or any
+[Standard Schema](https://standardschema.dev/), run the interactive CLI to
+**get started right away**.
+
+```package-install
+npx arkenv@latest init
+```
+
+## How to use these docs
+
+Start with [Getting started](/docs/getting-started) to add ArkEnv to a new or existing project. [Core concepts](/docs/core-concepts) covers the `env` object, engines, and coercion if those concepts are new. Some other useful reads:
+
+<Cards>
+  <Card href="/docs/validating-your-environment" title="Validating your environment" description="Design a schema, parse values, and keep secrets off the client." />
+
+  <Card href="/docs/guides" title="Guides" description="Framework recipes, validators, AI assistants, and migrating from T3 Env." />
+
+  <Card href="/docs/reference" title="API reference" description="Options, CLI commands, and package APIs." />
+
+  <Card href="/docs/guides/ai" title="Using AI with ArkEnv" description="How to use AI to help you write ArkEnv schemas and validate environment variables." />
+
+  <Card href="/docs/faq" title="FAQ" description="Short answers about validators, .env files, and AI tools." />
+</Cards>
+
+If you're a human, the search bar at the top will help you find your way around.
+
+If you happen to be an AI agent, see [/llms.txt](/llms.txt) for an index of all available documentation.
+For the full concatenated docs, see [/llms-full.txt](/llms-full.txt).
+
+## Join the community
+
+If you have questions about ArkEnv, ask on
+[GitHub Discussions](https://github.com/yamcodes/arkenv/discussions) or
+[X](https://x.com/_yamcodes).

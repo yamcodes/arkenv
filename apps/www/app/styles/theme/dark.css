@@ -7,12 +7,12 @@
 	--popover: oklch(17% 0.02 200);
 	--popover-foreground: oklch(95% 0.01 200);
 
-	/* Brand accent */
-	--primary: oklch(74% 0.13 195);
-	--primary-foreground: oklch(14% 0.02 200);
-	--fd-primary: oklch(74% 0.13 195);
-	--color-fd-primary: oklch(74% 0.13 195);
-	--color-fd-primary-foreground: oklch(14% 0.02 200);
+	/* Active / emphasis — foreground (not aqua); accent stays on --ring / CTAs */
+	--primary: var(--foreground);
+	--primary-foreground: var(--background);
+	--fd-primary: var(--foreground);
+	--color-fd-primary: var(--foreground);
+	--color-fd-primary-foreground: var(--background);
 
 	--secondary: oklch(21% 0.022 200);
 	--secondary-foreground: oklch(78% 0.02 200);
@@ -22,6 +22,8 @@
 	--accent-foreground: oklch(95% 0.01 200);
 	--destructive: oklch(65% 0.18 25);
 	--destructive-foreground: oklch(95% 0.01 200);
+	--color-rule: oklch(25% 0.017 200);
+	--color-rule-y: oklch(22.5% 0.015 200);
 	--border: oklch(30% 0.02 200);
 	--input: oklch(21% 0.022 200);
 	--ring: oklch(78% 0.12 195);
@@ -40,6 +42,8 @@
 	--color-fd-secondary-foreground: oklch(78% 0.02 200);
 	--color-fd-accent: oklch(21% 0.022 200);
 	--color-fd-accent-foreground: oklch(95% 0.01 200);
+	/* Drill-in sidebar hover/active pill — between subtle accent (21%) and strong (32%) */
+	--color-fd-sidebar-pill: oklch(26% 0.022 200);
 	--color-fd-ring: oklch(78% 0.12 195);
 
 	--chart-1: hsl(195 70% 50%);

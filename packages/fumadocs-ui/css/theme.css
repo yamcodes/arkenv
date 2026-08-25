@@ -2,15 +2,20 @@
 
 :root {
 	--radius: 0.125rem;
+	/* Chrome / frames — same as www `--radius-control` / `--site-nav-radius` */
+	--radius-control: 0.375rem;
 	--fd-nav-height: 80px !important;
 	--fd-header-height: 80px !important;
 	/* WCAG AA compliant: 6.13:1 contrast on white background */
 	--color-fd-muted-foreground: hsl(240 4% 40%);
+	/* Drill-in hover/active pill — consumers may override; falls back to fd-accent */
+	--color-fd-sidebar-pill: var(--color-fd-accent);
 }
 
 .dark {
 	/* WCAG AA compliant: 8.61:1 contrast on dark background */
 	--color-fd-muted-foreground: hsl(240 5% 70%);
+	--color-fd-sidebar-pill: var(--color-fd-accent);
 }
 
 @theme inline {
@@ -23,21 +28,52 @@
 	--icon-external-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 7 17 7 17 17'%3E%3C/polyline%3E%3Cline x1='7' y1='17' x2='17' y2='7'%3E%3C/line%3E%3C/svg%3E");
 }
 
-/* Override Fumadocs :has() selector that sets header height to 64px */
+/* Keep header track in sync with Site Nav clearance (set on main / :root) */
 #nd-notebook-layout,
 #nd-home-layout,
 #nd-docs-layout {
-	--fd-header-height: 80px !important;
+	--fd-header-height: var(--fd-nav-height, 80px) !important;
 }
 
-/* Override search bar and keyboard shortcuts to use minimal radius */
+/*
+ * Shared chrome gutter (matches Site Nav / home shell):
+ * 1rem → 1.5rem @ 40rem. Stock fumadocs uses px-4 / md:px-6 / xl:px-8, so
+ * between 40rem–md the article escapes past the floating bar.
+ *
+ * padding-top matches geistdocs/Turbo stock py-6 on small screens.
+ * --fd-page-pad-top is also the heading hash offset (below Site Nav).
+ */
+#nd-page {
+	--fd-page-pad-top: 1.5rem;
+	--docs-page-gutter: 1rem;
+	padding-inline: var(--docs-page-gutter);
+	padding-top: var(--fd-page-pad-top);
+}
+
+#nd-toc {
+	--docs-toc-gutter: 1rem;
+}
+
+@media (min-width: 40rem) {
+	#nd-page {
+		--docs-page-gutter: 1.5rem;
+		padding-inline: var(--docs-page-gutter);
+	}
+
+	#nd-toc {
+		--docs-toc-gutter: 1.5rem;
+	}
+}
+
+/* Override search bar and keyboard shortcuts to use minimal radius.
+ * Copy page menu is excluded so it can share the code-block radius. */
 button[data-search-full],
 button[data-search],
 [data-search-full],
 [data-search],
 [data-card],
 .prose .rounded-xl,
-[data-radix-popper-content-wrapper] [role="dialog"],
+[data-radix-popper-content-wrapper] [role="dialog"]:not([data-docs-ai-menu-popover]),
 kbd {
 	border-radius: 0.125rem !important;
 }
@@ -55,9 +91,93 @@ kbd {
 	height: var(--fd-nav-height) !important;
 }
 
-/* Heading anchors: avoid underlines and keep icons aligned */
+/* Heading anchors: avoid underlines, keep icons aligned */
 [data-arkenv-heading] {
 	overflow: visible;
+	/* Same as the page title at rest: Site Nav spacer + article padding-top */
+	scroll-margin-top: calc(var(--fd-nav-height, 80px) + var(--fd-page-pad-top, 1.5rem));
+}
+
+/*
+ * Docs type scale — geistdocs / turborepo.dev.
+ * Geist 450 is the Vercel "book" weight: larger than regular, lighter than
+ * medium/semibold, so 40px titles stay refined instead of heavy.
+ *
+ * Rendering matches Turbo's html.antialiased + Geist defaults (ss11, calt
+ * off). Homepage keeps ss01; only the docs article and sidebar pick this up
+ * so the nav wordmark stays consistent with the marketing site.
+ */
+#nd-page,
+#nd-sidebar,
+#nd-sidebar-mobile {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+	font-feature-settings:
+		"calt" 0,
+		"rlig",
+		"ss11";
+}
+
+#nd-page h1:not(:where(.prose *)) {
+	font-size: 2.5rem;
+	font-weight: 450;
+	letter-spacing: -0.05em;
+	line-height: 3rem;
+}
+
+.prose h1,
+h1[data-arkenv-heading] {
+	font-size: 2rem;
+	font-weight: 450;
+	letter-spacing: -0.04em;
+	line-height: 2.5rem;
+}
+
+.prose h2,
+h2[data-arkenv-heading] {
+	font-size: 1.5rem;
+	font-weight: 450;
+	letter-spacing: -0.04em;
+	line-height: 2rem;
+}
+
+.prose h3,
+h3[data-arkenv-heading] {
+	font-size: 1.25rem;
+	font-weight: 450;
+	letter-spacing: -0.02em;
+	line-height: 1.625rem;
+}
+
+.prose h4,
+h4[data-arkenv-heading] {
+	font-size: 1rem;
+	font-weight: 450;
+	letter-spacing: -0.02em;
+	line-height: 1.5rem;
+}
+
+.prose h5,
+.prose h6,
+h5[data-arkenv-heading],
+h6[data-arkenv-heading] {
+	font-size: 0.875rem;
+	font-weight: 450;
+	letter-spacing: -0.02em;
+	line-height: 1.25rem;
+}
+
+/*
+ * Heading text is wrapped in an <a> (hash target). Keep it a block so
+ * metrics match geistdocs `a.peer` (32px tall at 24px/1.5rem), and inherit
+ * the heading face so link styles cannot bump the weight.
+ */
+:is(h1, h2, h3, h4, h5, h6)[data-arkenv-heading] > a[data-arkenv-heading-link]:not([aria-label]) {
+	display: block;
+	font: inherit;
+	color: inherit;
+	letter-spacing: inherit;
 }
 
 [data-arkenv-heading-link] {
@@ -67,6 +187,18 @@ kbd {
 
 [data-arkenv-heading-link]:hover {
 	border-bottom: 0 !important;
+}
+
+/*
+ * Previous/next pager (Turbo/geistdocs): text links, not article underlines.
+ * Hover cue is the chevron shifting muted → foreground.
+ */
+[data-docs-footer] a {
+	border-bottom: 0 !important;
+	padding-bottom: 0 !important;
+	padding-right: 0 !important;
+	text-decoration: none !important;
+	background-image: none !important;
 }
 
 /* Icon floats to the left of the heading without taking space */
@@ -87,6 +219,41 @@ article a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not(
 article a:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]):hover,
 [data-external-link]:not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]):hover {
 	border-bottom-width: 3px;
+}
+
+/*
+ * Links that include inline code (code-only or mixed with text): use a continuous
+ * text underline so the line runs through plain text and inside the code chip at
+ * the same baseline (border-bottom on the <a> is covered by the chip background).
+ */
+article a:has(code):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]),
+[data-external-link]:has(code):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]) {
+	border-bottom: none;
+	padding-bottom: 0;
+	text-decoration: underline;
+	text-decoration-color: currentColor;
+	text-decoration-thickness: 2px;
+	text-underline-offset: 0.18em;
+	text-decoration-skip-ink: none;
+	transition: text-decoration-thickness 0.1s ease;
+}
+
+article a:has(code):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]):hover,
+[data-external-link]:has(code):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]):hover {
+	border-bottom-width: 0;
+	text-decoration-thickness: 3px;
+}
+
+/* Paint the underline on the chip too so it sits above the code background */
+article a:has(code):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]) code,
+[data-external-link]:has(code):not(:has(img)):not(.fd-card):not([data-card]):not([class*="fd-"]):not([data-no-underline]) code {
+	text-decoration: underline;
+	/* Inherit the link color so chip underlines stay in sync if code text color diverges */
+	text-decoration-color: inherit;
+	text-decoration-thickness: inherit;
+	text-underline-offset: inherit;
+	text-decoration-skip-ink: none;
+	transition: text-decoration-thickness 0.1s ease;
 }
 
 /* External links in documentation */
@@ -157,7 +324,7 @@ aside .theme-toggle {
 	margin-left: auto;
 }
 
-/* Fumadocs built-in nav backdrop (fallback, overridden by custom Header) */
+/* Fumadocs built-in nav backdrop (fallback when stock #nd-nav is used) */
 #nd-nav {
 	background-color: transparent !important;
 	backdrop-filter: none !important;
@@ -191,56 +358,215 @@ aside .theme-toggle {
 	background-color: transparent !important;
 }
 
-/* Sidebar item base styles */
-#nd-sidebar a,
-#nd-sidebar button {
-	@apply font-normal;
-	transition: color 150ms;
+/* Desktop sidebar: no card fill; 1px IDE rail (docs chrome glue, not a bento) */
+#nd-sidebar {
+	background-color: transparent;
+	border-inline-end: 1px solid var(--color-rule-y, var(--color-fd-border));
 }
 
-/* Remove rectangular hover background - use text color transition instead */
+/*
+ * Vite outline marker: 2px ink bar at left: -1px, sitting on the 1px rail.
+ * Vertical clip is set in JS from the active heading's box.
+ */
+.docs-toc-spy {
+	position: absolute;
+	inset-inline-start: -1px;
+	inset-block: 0;
+	z-index: 1;
+	width: 2px;
+	pointer-events: none;
+	background-color: var(--color-fd-foreground);
+	transition: clip-path 150ms;
+}
+
+/* Sidebar item base styles */
+#nd-sidebar a,
+#nd-sidebar button,
+#nd-sidebar-mobile a,
+#nd-sidebar-mobile button {
+	@apply font-normal;
+	transition:
+		color 150ms,
+		background-color 150ms;
+	/* Kill the UA outline (tinted by global `outline-ring/50`) — it is
+	   rectangular and gets clipped by the drill-in `overflow-hidden` pane. */
+	outline: none;
+}
+
+/*
+ * Keyboard focus: Turbo/geistdocs `--ds-focus-ring` — a page-colored inner
+ * ring (the gap) plus a 2px `--color-fd-ring` outer ring. box-shadow follows
+ * border-radius; outline:auto does not.
+ */
+#nd-sidebar a:focus-visible,
+#nd-sidebar button:focus-visible,
+#nd-sidebar-mobile a:focus-visible,
+#nd-sidebar-mobile button:focus-visible {
+	/* Above the next item's active/hover pill so the 4px ring is not covered */
+	position: relative;
+	z-index: 1;
+	box-shadow:
+		0 0 0 2px var(--color-fd-background),
+		0 0 0 4px var(--color-fd-ring);
+}
+
+/*
+ * Items are `w-full` inside the drill pane, so a 4px outer ring is
+ * clipped. Column gutters live on the tree (docs-chrome.css); items stay
+ * full-measure inside that pad so left/right rail gaps match. The pane
+ * clip expands so the ring can paint into the gutter.
+ */
+#nd-sidebar [data-drill-item],
+#nd-sidebar-mobile [data-drill-item] {
+	width: auto;
+	margin-inline: 0;
+	border-radius: 0.25rem;
+}
+
+/*
+ * Drill-in slide pane. Clip (not overflow:visible) so the parked panel
+ * (translateX ±100%) cannot paint to #nd-sidebar's scrollport — that leaked
+ * a jagged highlight sliver onto the outer rail. overflow-clip-margin lets
+ * the 0.25rem pill radius and focus ring paint into the column gutter
+ * without changing the 24px rail insets.
+ */
+#nd-sidebar [data-docs-sidebar-slide],
+#nd-sidebar-mobile [data-docs-sidebar-slide] {
+	overflow: hidden;
+}
+
+#nd-sidebar [data-sidebar-mode],
+#nd-sidebar-mobile [data-sidebar-mode] {
+	padding-block: 0.5rem;
+}
+
+/* Legacy Fumadocs wrap-anywhere items: text-only hover (non drill-in) */
 #nd-sidebar a.wrap-anywhere:hover,
 #nd-sidebar button.wrap-anywhere:hover {
 	background-color: transparent;
 	color: var(--color-fd-primary);
 }
 
-/* Remove rectangular active background */
 #nd-sidebar a.wrap-anywhere[data-active="true"] {
 	background-color: transparent;
 }
 
-/* Sidebar section header font weight */
-#nd-sidebar p {
+/* Drill-in Sidebar: Turbo-like hover/active pill (stronger than default fd-accent) */
+#nd-sidebar [data-drill-item]:is([data-active="true"], :hover),
+#nd-sidebar-mobile [data-drill-item]:is([data-active="true"], :hover) {
+	background-color: var(--color-fd-sidebar-pill, var(--color-fd-accent));
+	color: var(--color-fd-foreground);
+}
+
+/* Nested Folder leaves (n=2) — same muted color as the section back title */
+#nd-sidebar [data-drill-item][data-muted]:not([data-active="true"]):not(:hover),
+#nd-sidebar-mobile [data-drill-item][data-muted]:not([data-active="true"]):not(:hover) {
+	color: var(--color-fd-muted-foreground);
+}
+
+/* Sidebar section header font weight — same inline inset as drill items */
+#nd-sidebar p,
+#nd-sidebar-mobile p {
 	@apply font-medium;
+	margin-inline: 0;
 }
 
-/* Remove fumadocs' xl:pt-14 on the docs article - our header spacer handles the top offset */
-@media (min-width: 80rem) {
-	#nd-page {
-		padding-top: 1.5rem;
-	}
-}
-
-/* Hide the built-in close-button row at the top of the mobile sidebar drawer */
-#nd-sidebar-mobile > div:first-child > div:first-child {
+/*
+ * Copy page vs Copy for LLM — same 960px cutoff as the docs sidebar.
+ */
+[data-docs-ai-actions="desktop"] {
 	display: none;
 }
 
-/* Mobile sidebar drawer: position left, slide from left, above header */
+@media (min-width: 960px) {
+	[data-docs-ai-actions="desktop"] {
+		display: block;
+	}
+
+	[data-docs-ai-actions="mobile"] {
+		display: none;
+	}
+}
+
+/*
+ * Docs desktop chrome — Turbo/geistdocs ~960px (iPad Air mobile, iPad Pro sidebar).
+ * Zero the grid column and hide the rail so `md:layout` at 768px cannot leave a gap.
+ */
+@media (max-width: 959px) {
+	#nd-docs-layout {
+		--fd-sidebar-width: 0px !important;
+	}
+
+	[data-sidebar-placeholder] {
+		display: none !important;
+	}
+
+	#nd-page > [data-docs-breadcrumb] {
+		display: none;
+	}
+}
+
+@media (min-width: 960px) {
+	#nd-docs-layout:has([data-sidebar-placeholder]) {
+		--fd-sidebar-width: 300px;
+	}
+}
+
+/*
+ * TOC rail — geistdocs/Turbo `--breakpoint-xl: 1200px` (`hidden` + `xl:flex`).
+ * Stock fumadocs uses Tailwind xl (1280px), so the rail vanished 80px earlier.
+ */
+@media (width < 1200px) {
+	#nd-docs-layout {
+		--fd-toc-width: 0px;
+	}
+
+	#nd-toc {
+		display: none;
+	}
+}
+
+@media (min-width: 1200px) {
+	#nd-docs-layout:has(#nd-toc) {
+		--fd-toc-width: 268px;
+	}
+
+	#nd-toc {
+		display: flex;
+	}
+
+	#nd-tocnav {
+		display: none;
+	}
+}
+
+/*
+ * Article top inset — just above sidebar / TOC content start (pt-12).
+ * Header spacer already clears the Site Nav; small screens use py-6
+ * (1.5rem) like geistdocs/Turbo.
+ */
+@media (min-width: 48rem) {
+	#nd-page {
+		--fd-page-pad-top: 2.5rem;
+	}
+}
+
+/* Mobile sidebar drawer: below Site Nav (geistdocs `#nd-sidebar-mobile { mt-16 }`) */
 #nd-sidebar-mobile {
 	inset-inline-end: auto;
 	inset-inline-start: 0;
+	inset-block-start: var(--fd-nav-height);
 	border-inline-start: none;
-	border-inline-end: 1px solid var(--color-fd-border);
+	border-inline-end: 1px solid var(--color-rule-y, var(--color-fd-border));
 	--fd-sidebar-drawer-offset: -100%;
-	z-index: 60;
+	z-index: 40;
 }
 
-/* Backdrop overlay: raise above the header (z-50) so tapping the header area
-   also dismisses the drawer, and the blur covers the full viewport */
-div:has(+ #nd-sidebar-mobile) {
-	z-index: 55;
+/* Backdrop: keep Site Nav tappable; cover the page below it */
+div:has(+ #nd-sidebar-mobile),
+button:has(+ #nd-sidebar-mobile) {
+	top: var(--fd-nav-height);
+	z-index: 35;
 }
 
 /* Radix popper portals (workspace switcher dropdown, etc.) render at the body
@@ -249,19 +575,97 @@ div:has(+ #nd-sidebar-mobile) {
 	z-index: 70 !important;
 }
 
-/* Search dialog: raise above header (z-50) and mobile sidebar (z-60) */
-[role="dialog"][data-state] {
+/*
+ * Search dialog: sit on top of Site Nav (same inset / gutter / bar height).
+ * Header stays in the DOM underneath; z-65 clears header (50) and mobile
+ * sidebar (60). Stock fumadocs uses w-[calc(100%-1rem)] + top below the nav
+ * on mobile. max-w-screen-sm still caps + centers once the guttered width
+ * exceeds it; from md up, fumadocs’ vertical centering takes over.
+ *
+ * Radius matches the navbar search trigger (`--radius-control`), not a
+ * pill. Beats fumadocs `rounded-xl` and `overflow-hidden` clips the list
+ * to the same corner — no separate expanded-state radius.
+ *
+ * Scoped to `.arkenv-search-dialog` — Radix popovers also use
+ * [role="dialog"][data-state] (Copy page menu, feedback).
+ */
+.arkenv-search-dialog {
 	z-index: 65 !important;
+	width: calc(100% - 2rem) !important;
+	border-radius: var(--radius-control, 0.375rem) !important;
 }
 
-/* On mobile: push the search input box below the fixed header,
-   and hide the ESC close hint (no keyboard on mobile) */
+@media (min-width: 40rem) {
+	.arkenv-search-dialog {
+		width: calc(100% - 3rem) !important;
+	}
+}
+
 @media (max-width: 767px) {
-	[role="dialog"][data-state] {
-		top: calc(var(--fd-nav-height, 80px) + 0.5rem) !important;
+	.arkenv-search-dialog {
+		/* Match .site-nav top: var(--site-nav-inset) */
+		top: 1rem !important;
 	}
 
-	[role="dialog"][data-state] button.font-mono {
+	@media (min-width: 40rem) {
+		.arkenv-search-dialog {
+			top: 1.5rem !important;
+		}
+	}
+
+	/* Input row: Site Nav bar is border-box 3.5rem including its 1px
+	   border; dialog content also has a 1px border, so the inner bar
+	   must be 2px shorter or the overlay reads taller than the header. */
+	.arkenv-search-dialog .arkenv-search-dialog__bar {
+		box-sizing: border-box;
+		height: calc(3.5rem - 2px);
+		min-height: calc(3.5rem - 2px);
+		max-height: calc(3.5rem - 2px);
+		padding-block: 0.35rem;
+		padding-inline: 0.75rem;
+	}
+
+	/* No keyboard on mobile — hide the ESC affordance */
+	.arkenv-search-dialog button.font-mono {
 		display: none;
 	}
+}
+
+/*
+ * Copy page popover: hug the longest row. Search-dialog width used to
+ * leak onto every [role="dialog"] and stretch this menu to the article.
+ *
+ * Do not use `display: table` here. `table-row` is ignored on <button>,
+ * so Copy page sat beside View as Markdown and the <a> rows split into
+ * table columns (icon left, text right). Grid on each row is 3 columns:
+ * icon | text | trailing (external arrow or reserved empty slot).
+ */
+[data-docs-ai-menu-popover] {
+	width: max-content !important;
+	max-width: min(24rem, 98vw);
+	border-radius: var(--radius-control, 0.375rem) !important;
+	overflow: hidden;
+}
+
+[data-docs-ai-menu] {
+	display: flex !important;
+	flex-direction: column;
+	width: max-content;
+	max-width: 100%;
+}
+
+[data-docs-ai-menu-row] {
+	display: grid !important;
+	grid-template-columns: auto minmax(0, 1fr) auto;
+	align-items: center;
+	column-gap: 0.75rem;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 0.5rem;
+	text-align: left;
+	text-decoration: none;
+}
+
+[data-docs-ai-menu-row] > :nth-child(3) {
+	justify-self: end;
 }

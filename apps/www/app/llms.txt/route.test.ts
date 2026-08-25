@@ -4,7 +4,7 @@ vi.mock("~/lib/source", () => ({
 	source: {
 		getPages: () => [
 			{
-				url: "/docs/arkenv",
+				url: "/docs",
 				data: {
 					title: "ArkEnv",
 				},

@@ -2,7 +2,6 @@ import path from "node:path";
 import { type SentryBuildOptions, withSentryConfig } from "@sentry/nextjs";
 import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
-import { withNextVideo } from "next-video/process";
 import {
 	POSTHOG_API_ENDPOINT,
 	POSTHOG_ASSETS_HOST,
@@ -11,6 +10,25 @@ import {
 
 const config = {
 	outputFileTracingRoot: path.join(__dirname, "../../"),
+	// @arkenv/fumadocs-ui resolves fumadocs-* from its own node_modules.
+	// A second copy means RootProvider's FrameworkProvider is not the one
+	// DocsLayout / sidebar slots read — "wrap your application inside FrameworkProvider".
+	transpilePackages: ["@arkenv/fumadocs-ui"],
+	turbopack: {
+		resolveAlias: {
+			"fumadocs-ui": path.join(__dirname, "node_modules/fumadocs-ui"),
+			"fumadocs-core": path.join(__dirname, "node_modules/fumadocs-core"),
+		},
+	},
+	webpack: (webpackConfig) => {
+		webpackConfig.resolve ??= {};
+		webpackConfig.resolve.alias = {
+			...webpackConfig.resolve.alias,
+			"fumadocs-ui": path.join(__dirname, "node_modules/fumadocs-ui"),
+			"fumadocs-core": path.join(__dirname, "node_modules/fumadocs-core"),
+		};
+		return webpackConfig;
+	},
 	serverExternalPackages: [
 		"typescript",
 		"twoslash",
@@ -28,32 +46,252 @@ const config = {
 		// Can be reverted if any instability is observed in Next.js 16.
 		webpackMemoryOptimizations: true,
 	},
-	// Redirect /docs to /docs/arkenv
+	// Permanent redirects from the pre-revamp package-scoped docs tree.
 	async redirects() {
 		return [
-			{
-				source: "/docs",
-				destination: "/docs/arkenv",
-				permanent: true,
-			},
 			{
 				source: "/docs/llms.txt",
 				destination: "/llms.txt",
 				permanent: true,
 			},
 			{
+				source: "/faq",
+				destination: "/docs/faq",
+				permanent: true,
+			},
+			{
+				source: "/docs/standard-schema",
+				destination: "/docs/core-concepts/standard-schema",
+				permanent: true,
+			},
+
+			// --- @arkenv/core (formerly /docs/arkenv) ---
+			// Never 301 back to `/docs`: browsers may still have cached the old
+			// permanent `/docs` → `/docs/arkenv` redirect and would loop.
+			{
+				source: "/docs/arkenv",
+				destination: "/docs/getting-started",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/llms.txt",
+				destination: "/llms.txt",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/quickstart",
+				destination: "/docs/getting-started",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/examples",
+				destination: "/docs/getting-started/examples",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/faq",
+				destination: "/docs/faq",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/comparison",
+				destination: "/docs/guides/migrating-from-t3-env",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/coercion",
+				destination: "/docs/core-concepts/coercion",
+				permanent: true,
+			},
+			{
+				source: "/docs/core-concepts/morphs",
+				destination: "/docs/core-concepts/transformation",
+				permanent: true,
+			},
+			{
+				source: "/docs/core-concepts/transforms",
+				destination: "/docs/core-concepts/transformation",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/keywords",
+				destination: "/docs/reference/keywords",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/options",
+				destination: "/docs/reference/options",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/standard",
+				destination: "/docs/reference/standard",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/integrations",
+				destination: "/docs/guides",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/integrations/standard-schema",
+				destination: "/docs/core-concepts/standard-schema",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/integrations/ai",
+				destination: "/docs/guides/ai",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/integrations/ai/:path*",
+				destination: "/docs/guides/ai",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/integrations/ide",
+				destination: "/docs/getting-started/editor-integration",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/integrations/ide/:path*",
+				destination: "/docs/getting-started/editor-integration",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/how-to/reuse-schemas",
+				destination: "/docs/validating-your-environment/reusing-schemas",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/how-to/load-environment-variables",
+				destination: "/docs/validating-your-environment/framework-integration",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/how-to/:path*",
+				destination: "/docs/validating-your-environment",
+				permanent: true,
+			},
+			{
+				source: "/docs/arkenv/:path*",
+				destination: "/docs/getting-started",
+				permanent: true,
+			},
+
+			// --- @arkenv/nextjs ---
+			{
+				source: "/docs/nextjs",
+				destination: "/docs/guides/frameworks/nextjs",
+				permanent: true,
+			},
+			{
+				source: "/docs/nextjs/llms.txt",
+				destination: "/llms.txt",
+				permanent: true,
+			},
+			{
 				source: "/docs/nextjs/layouts/simple",
-				destination: "/docs/nextjs/faq#how-do-i-define-client-side-variables",
+				destination: "/docs/guides/frameworks/nextjs",
 				permanent: true,
 			},
 			{
 				source: "/docs/nextjs/migration/nested-to-flat",
-				destination: "/docs/nextjs/faq#how-do-i-define-client-side-variables",
+				destination: "/docs/guides/frameworks/nextjs",
+				permanent: true,
+			},
+			{
+				source: "/docs/nextjs/:path*",
+				destination: "/docs/guides/frameworks/nextjs",
+				permanent: true,
+			},
+
+			// --- @arkenv/nuxt ---
+			{
+				source: "/docs/nuxt",
+				destination: "/docs/guides/frameworks/nuxt",
+				permanent: true,
+			},
+			{
+				source: "/docs/nuxt/llms.txt",
+				destination: "/llms.txt",
 				permanent: true,
 			},
 			{
 				source: "/docs/nuxt/layouts/simple",
-				destination: "/docs/nuxt/layouts/flat",
+				destination: "/docs/guides/frameworks/nuxt",
+				permanent: true,
+			},
+			{
+				source: "/docs/nuxt/:path*",
+				destination: "/docs/guides/frameworks/nuxt",
+				permanent: true,
+			},
+
+			// --- @arkenv/vite-plugin ---
+			{
+				source: "/docs/vite-plugin",
+				destination: "/docs/guides/frameworks/vite",
+				permanent: true,
+			},
+			{
+				source: "/docs/vite-plugin/llms.txt",
+				destination: "/llms.txt",
+				permanent: true,
+			},
+			{
+				source: "/docs/vite-plugin/:path*",
+				destination: "/docs/guides/frameworks/vite",
+				permanent: true,
+			},
+
+			// --- @arkenv/bun-plugin ---
+			{
+				source: "/docs/bun-plugin",
+				destination: "/docs/guides/frameworks/bun",
+				permanent: true,
+			},
+			{
+				source: "/docs/bun-plugin/llms.txt",
+				destination: "/llms.txt",
+				permanent: true,
+			},
+			{
+				source: "/docs/bun-plugin/:path*",
+				destination: "/docs/guides/frameworks/bun",
+				permanent: true,
+			},
+
+			// --- arkenv CLI ---
+			{
+				source: "/docs/cli",
+				destination: "/docs/reference/init",
+				permanent: true,
+			},
+			{
+				source: "/docs/cli/llms.txt",
+				destination: "/llms.txt",
+				permanent: true,
+			},
+			{
+				source: "/docs/cli/hosting-presets",
+				destination: "/docs/validating-your-environment/hosting-presets",
+				permanent: true,
+			},
+			{
+				// `--json` / `--agent` are global CLI flags; documented on init.
+				source: "/docs/cli/machine-readable-output",
+				destination: "/docs/reference/init",
+				permanent: true,
+			},
+			{
+				source: "/docs/reference/add-host",
+				destination: "/docs/reference/preset",
+				permanent: true,
+			},
+			{
+				source: "/docs/cli/:path*",
+				destination: "/docs/reference",
 				permanent: true,
 			},
 		];
@@ -148,6 +386,4 @@ const sentryConfig = {
 	},
 } as const satisfies SentryBuildOptions;
 
-export default withNextVideo(
-	withSentryConfig(createMDX()(config), sentryConfig),
-);
+export default withSentryConfig(createMDX()(config), sentryConfig);

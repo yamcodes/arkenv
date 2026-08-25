@@ -198,7 +198,7 @@ export default defineNuxtModule({
 
 ## Module Options
 
-Type-safe options with defaults:
+Typesafe options with defaults:
 
 ```ts
 export interface ModuleOptions {

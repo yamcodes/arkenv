@@ -1,6 +1,7 @@
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { ArkEnvError } from "@arkenv/core";
 import { afterEach, describe, expect, it } from "vitest";
 import {
 	classifyEnvKeys,
@@ -8,7 +9,7 @@ import {
 	isEnvModuleId,
 	isTransformModeCall,
 } from "./env-module.js";
-import { arkenv, hybrid } from "./plugin.js";
+import arkenvPlugin, { hybrid } from "./index.js";
 
 describe("transform mode helpers", () => {
 	it("detects transform-mode calls", () => {
@@ -52,8 +53,12 @@ describe("transform mode helpers", () => {
 		expect(code).toContain('"BUN_PUBLIC_PORT": 8080');
 		expect(code).toContain('get ["DATABASE_URL"]()');
 		expect(code).toContain(
-			"Attempted to access server environment variable 'DATABASE_URL' on the client",
+			"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)",
 		);
+		expect(code).not.toContain("error.name");
+		expect(code).not.toContain("ArkEnvAccessError");
+		expect(code).not.toContain("ArkEnv Error:");
+		expect(code).not.toMatch(/import\b.*ArkEnvError/);
 		expect(code).not.toContain("arkenv");
 		expect(code).not.toContain("arktype");
 	});
@@ -76,7 +81,7 @@ describe("transform mode plugin", () => {
 	});
 
 	it("returns a browser-targeted plugin for transform calls", () => {
-		const plugin = arkenv();
+		const plugin = arkenvPlugin();
 		expect(plugin).toHaveProperty("name", "@arkenv/bun-plugin");
 		expect(plugin).toHaveProperty("target", "browser");
 		expect(plugin).toHaveProperty("setup");
@@ -101,7 +106,7 @@ describe("transform mode plugin", () => {
 		});
 
 		try {
-			const plugin = arkenv({ schemaPath: join(fixtureDir, "env.ts") });
+			const plugin = arkenvPlugin({ schemaPath: join(fixtureDir, "env.ts") });
 
 			let onStart: (() => void | Promise<void>) | undefined;
 			let onLoad:
@@ -138,8 +143,11 @@ describe("transform mode plugin", () => {
 			expect(code).toContain("8080");
 			expect(code).toContain("BUN_PUBLIC_DEBUG");
 			expect(code).toContain(
-				"Attempted to access server environment variable 'DATABASE_URL' on the client",
+				"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)",
 			);
+			expect(code).not.toContain("error.name");
+			expect(code).not.toContain("ArkEnvAccessError");
+			expect(code).not.toContain("ArkEnv Error:");
 			expect(code).not.toContain("@arkenv/core");
 			expect(code).not.toContain("arktype");
 			expect(code).not.toContain("postgres://fixture:5432/db");
@@ -160,7 +168,7 @@ describe("transform mode plugin", () => {
 		});
 
 		try {
-			const plugin = arkenv({ schemaPath: join(fixtureDir, "env.ts") });
+			const plugin = arkenvPlugin({ schemaPath: join(fixtureDir, "env.ts") });
 			let onStart: (() => void | Promise<void>) | undefined;
 			let onLoad:
 				| ((args: {
@@ -202,7 +210,7 @@ describe("transform mode plugin", () => {
 		});
 
 		try {
-			const plugin = arkenv({ schemaPath: join(fixtureDir, "env.ts") });
+			const plugin = arkenvPlugin({ schemaPath: join(fixtureDir, "env.ts") });
 			let onStart: (() => void | Promise<void>) | undefined;
 			let onLoad:
 				| ((args: {
@@ -237,9 +245,20 @@ describe("transform mode plugin", () => {
 			expect(mod.env.BUN_PUBLIC_API_URL).toBe("https://fixture.example.com");
 			expect(mod.env.BUN_PUBLIC_DEBUG).toBe(true);
 			expect(mod.env.BUN_PUBLIC_PORT).toBe(8080);
-			expect(() => mod.env.DATABASE_URL).toThrow(
-				/Attempted to access server environment variable 'DATABASE_URL' on the client/,
-			);
+			try {
+				void mod.env.DATABASE_URL;
+				expect.fail("Expected boundary access error");
+			} catch (error) {
+				expect(error).toBeInstanceOf(Error);
+				expect(error).not.toBeInstanceOf(ArkEnvError);
+				expect((error as Error).name).toBe("Error");
+				expect((error as Error).message).toBe(
+					"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)",
+				);
+				expect(String(error)).toBe(
+					"Error: Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)",
+				);
+			}
 		} finally {
 			process.env = previous;
 		}
@@ -264,7 +283,7 @@ export default env;
 		);
 
 		try {
-			const plugin = arkenv({ schemaPath: join(strictDir, "env.ts") });
+			const plugin = arkenvPlugin({ schemaPath: join(strictDir, "env.ts") });
 			let onStart: (() => void | Promise<void>) | undefined;
 			plugin.setup({
 				onStart(cb: () => void | Promise<void>) {
@@ -283,7 +302,9 @@ export default env;
 describe("schema/define removal", () => {
 	it("rejects schema calls", () => {
 		expect(() =>
-			(arkenv as (a?: unknown) => unknown)({ BUN_PUBLIC_TEST: "string" }),
+			(arkenvPlugin as (a?: unknown) => unknown)({
+				BUN_PUBLIC_TEST: "string",
+			}),
 		).toThrow(/schema\/define plugin API was removed/);
 	});
 });
@@ -298,7 +319,7 @@ describe("missing-schema errors", () => {
 	});
 
 	it("throws a short discovery error without an env.ts starter", async () => {
-		const { resolveEnvModulePath } = await import("./env-module-path.js");
+		const { resolveEnvModulePath } = await import("./env-module.js");
 		const root = mkdtempSync(join(tmpdir(), "arkenv-bun-missing-schema-"));
 		temps.push(root);
 
@@ -318,8 +339,8 @@ describe("missing-schema errors", () => {
 		expect(message).not.toMatch(/from "zod"/);
 	});
 
-	it("rejects a discovered strict layout directory", async () => {
-		const { resolveEnvModulePath } = await import("./env-module-path.js");
+	it("discovers a strict layout directory without error", async () => {
+		const { resolveEnvModulePath } = await import("./env-module.js");
 		const root = mkdtempSync(join(tmpdir(), "arkenv-bun-strict-dir-"));
 		temps.push(root);
 		const envDir = join(root, "env");
@@ -327,8 +348,153 @@ describe("missing-schema errors", () => {
 		writeFileSync(join(envDir, "client.ts"), "export const env = {}");
 		writeFileSync(join(envDir, "server.ts"), "export const env = {}");
 
-		expect(() => resolveEnvModulePath(root)).toThrow(
-			/only supports a flat env module file/,
+		expect(resolveEnvModulePath(root)).toBe(envDir);
+	});
+});
+
+describe("strict layout plugin behavior", () => {
+	const temps: string[] = [];
+
+	afterEach(() => {
+		for (const dir of temps.splice(0)) {
+			rmSync(dir, { recursive: true, force: true });
+		}
+	});
+
+	it("blocks imports of env/server in browser bundles via onResolve", async () => {
+		const root = mkdtempSync(join(tmpdir(), "arkenv-bun-strict-fail-"));
+		temps.push(root);
+		const envDir = join(root, "env");
+		mkdirSync(envDir, { recursive: true });
+
+		writeFileSync(
+			join(envDir, "client.ts"),
+			`import arkenv from "@arkenv/core";
+export const env = arkenv({ BUN_PUBLIC_API_URL: "string" });
+`,
 		);
+		writeFileSync(
+			join(envDir, "server.ts"),
+			`import arkenv from "@arkenv/core";
+export const env = arkenv({ DATABASE_URL: "string" });
+`,
+		);
+
+		const previous = { ...process.env };
+		process.env.BUN_PUBLIC_API_URL = "https://api.example.com";
+
+		try {
+			const plugin = arkenvPlugin({ schemaPath: envDir });
+
+			let onStart: (() => void | Promise<void>) | undefined;
+			let onResolve:
+				| ((args: { path: string; importer?: string }) => unknown)
+				| undefined;
+
+			plugin.setup({
+				onStart(cb: () => void | Promise<void>) {
+					onStart = cb;
+				},
+				onResolve(
+					_opts: { filter: RegExp },
+					cb: typeof onResolve extends infer T ? T : never,
+				) {
+					onResolve = cb;
+				},
+				onLoad() {},
+			} as any);
+
+			await onStart?.();
+
+			expect(() =>
+				onResolve?.({
+					path: "./env/server",
+					importer: join(root, "index.ts"),
+				}),
+			).toThrow(
+				/Importing server-only environment schema on the client is not allowed/,
+			);
+		} finally {
+			process.env = previous;
+		}
+	});
+
+	it("transforms env/client in browser bundles via onLoad", async () => {
+		const root = mkdtempSync(join(tmpdir(), "arkenv-bun-strict-pass-"));
+		temps.push(root);
+		const envDir = join(root, "env");
+		mkdirSync(envDir, { recursive: true });
+
+		const clientPath = join(envDir, "client.ts");
+		writeFileSync(
+			clientPath,
+			`import arkenv from "@arkenv/core";
+export const env = arkenv({ BUN_PUBLIC_API_URL: "string" });
+`,
+		);
+		writeFileSync(
+			join(envDir, "server.ts"),
+			`import arkenv from "@arkenv/core";
+export const env = arkenv({ DATABASE_URL: "string" });
+`,
+		);
+
+		const previous = { ...process.env };
+		process.env.BUN_PUBLIC_API_URL = "https://api.example.com";
+
+		try {
+			const plugin = arkenvPlugin({ schemaPath: envDir });
+
+			let onStart: (() => void | Promise<void>) | undefined;
+			let onResolve:
+				| ((args: {
+						path: string;
+						importer?: string;
+				  }) => { errors?: { text: string }[] } | undefined)
+				| undefined;
+			let onLoad:
+				| ((args: {
+						path: string;
+				  }) =>
+						| { contents?: string; loader?: string }
+						| undefined
+						| Promise<{ contents?: string; loader?: string } | undefined>)
+				| undefined;
+
+			plugin.setup({
+				onStart(cb: () => void | Promise<void>) {
+					onStart = cb;
+				},
+				onResolve(
+					_opts: { filter: RegExp },
+					cb: typeof onResolve extends infer T ? T : never,
+				) {
+					onResolve = cb;
+				},
+				onLoad(
+					_opts: { filter: RegExp },
+					cb: typeof onLoad extends infer T ? T : never,
+				) {
+					onLoad = cb;
+				},
+			} as any);
+
+			await onStart?.();
+
+			const resolveResult = onResolve?.({
+				path: "./env/client",
+				importer: join(root, "index.ts"),
+			});
+			expect(resolveResult).toBeUndefined();
+
+			const loadResult = await onLoad?.({
+				path: clientPath,
+			});
+			expect(loadResult?.contents).toBeDefined();
+			expect(loadResult?.contents).toContain("https://api.example.com");
+			expect(loadResult?.contents).not.toContain("@arkenv/core");
+		} finally {
+			process.env = previous;
+		}
 	});
 });

@@ -2,7 +2,7 @@
 title: Annotate async function return types
 impact: HIGH
 impactDescription: prevents runtime errors, improves inference
-tags: async, return-types, promises, type-safety, inference
+tags: async, return-types, promises, typesafety, inference
 ---
 
 ## Annotate async function return types
@@ -45,7 +45,7 @@ async function fetchUserOrders(userId: string): Promise<Order[] | null> {
 // Caller knows the exact type
 const orders = await fetchUserOrders('123')
 if (orders) {
-  orders.map(o => o.id)  // Type-safe access
+  orders.map(o => o.id)  // Typesafe access
 }
 ```
 

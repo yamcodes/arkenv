@@ -1,11 +1,17 @@
 import { expect, type Page } from "@playwright/test";
 
 type ConsoleErrorOptions = {
-	/** Timeout for page navigation (default: 60000ms) */
+	/**
+	 * Timeout for page navigation (default: 60000ms)
+	 */
 	navigationTimeout?: number;
-	/** Timeout for network idle state (default: 60000ms) */
+	/**
+	 * Timeout for network idle state (default: 60000ms)
+	 */
 	networkIdleTimeout?: number;
-	/** Additional wait time after network idle (default: 1000ms for single URL, 500ms for multiple) */
+	/**
+	 * Additional wait time after network idle (default: 1000ms for single URL, 500ms for multiple)
+	 */
 	waitTimeout?: number;
 };
 

@@ -1,0 +1,22 @@
+{
+	"title": "API reference",
+	"pages": [
+		"index",
+		"---Configuration---",
+		"options",
+		"keywords",
+		"schema",
+		"env",
+		"---Commands---",
+		"init",
+		"preset",
+
+		"---Packages---",
+		"core",
+		"standard",
+		"nextjs",
+		"nuxt",
+		"vite-plugin",
+		"bun-plugin"
+	]
+}

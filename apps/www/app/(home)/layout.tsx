@@ -1,8 +1,7 @@
 import "./aurora.css";
-import { HomeLayout } from "fumadocs-ui/layouts/home";
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { DotGrid, ScrollReveal } from "~/components/page";
-import { HomeNav } from "./home-nav";
+import { SiteNavHome } from "~/components/site-nav";
 
 export default function Layout({ children }: { children: ReactNode }) {
 	return (
@@ -11,20 +10,10 @@ export default function Layout({ children }: { children: ReactNode }) {
 				<DotGrid />
 			</div>
 			<ScrollReveal />
-			<HomeLayout
-				style={
-					{
-						paddingTop: 0,
-						"--fd-nav-height": "0px",
-						background: "transparent",
-					} as CSSProperties
-				}
-				slots={{
-					header: HomeNav,
-				}}
-			>
+			<main className="flex flex-1 flex-col">
+				<SiteNavHome />
 				{children}
-			</HomeLayout>
+			</main>
 		</div>
 	);
 }

@@ -4,7 +4,7 @@ test.describe("Vite Plugin - Using ArkEnv in Vite config", () => {
 	test("should display external link to Vite docs with security attributes", async ({
 		page,
 	}) => {
-		await page.goto("/docs/vite-plugin/arkenv-in-viteconfig");
+		await page.goto("/docs/guides/frameworks/vite");
 		await expect(page.locator("h1")).toBeVisible();
 
 		// Verify external Vite docs link has correct security attributes

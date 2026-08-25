@@ -1,7 +1,6 @@
 import {
 	rehypeCodeDefaultOptions,
 	remarkMdxFiles,
-	remarkNpm,
 } from "fumadocs-core/mdx-plugins";
 import { remarkSteps } from "fumadocs-core/mdx-plugins/remark-steps";
 import { defineConfig, defineDocs } from "fumadocs-mdx/config";
@@ -10,6 +9,7 @@ import { createFileSystemTypesCache } from "fumadocs-twoslash/cache-fs";
 import remarkDirective from "remark-directive";
 import remarkGemoji from "remark-gemoji";
 import { rehypeOptimizeInternalLinks } from "./lib/plugins/rehype-optimize-internal-links";
+import { remarkNormalizeCodeIndent } from "./lib/plugins/remark-normalize-code-indent";
 import { arktypeTwoslashOptions } from "./lib/twoslash-options";
 
 const CALLOUT_CONTAINER = "CalloutContainer";
@@ -140,11 +140,16 @@ export const docs = defineDocs({
 export default defineConfig({
 	mdxOptions: {
 		rehypePlugins: [rehypeOptimizeInternalLinks],
+		remarkNpmOptions: {
+			persist: {
+				id: "package-manager",
+			},
+		},
 		remarkPlugins: [
 			remarkMdxFiles,
 			remarkGemoji,
-			remarkNpm,
 			remarkSteps,
+			remarkNormalizeCodeIndent,
 			remarkBunXToBunx,
 			remarkDirective,
 			[
@@ -161,7 +166,7 @@ export default defineConfig({
 			],
 		],
 		rehypeCodeOptions: {
-			langs: ["ts", "tsx", "js", "jsx", "json", "bash", "dotenv"],
+			langs: ["ts", "tsx", "js", "jsx", "json", "bash", "dotenv", "diff"],
 			themes: {
 				light: "github-light-high-contrast",
 				dark: "github-dark-high-contrast",

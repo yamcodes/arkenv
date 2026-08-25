@@ -36,9 +36,10 @@ export type ProjectOptions = {
 	disableCodegen?: boolean;
 	wrapNextjsConfig?: boolean;
 	envExampleContent?: string;
-	envContent?: string;
 	gitignoreContent?: string;
-	/** Hosting provider preset selected during init (`none` / Vercel / Netlify / Cloudflare / etc.). */
+	/**
+	 * Hosting provider preset selected during init (`none` / Vercel / Netlify / Cloudflare / etc.).
+	 */
 	hostPreset?: HostPreset;
 };
 
@@ -46,33 +47,45 @@ export type ProjectOptions = {
  * Represents the complete plan of actions to scaffold ArkEnv.
  */
 export type ScaffoldingPlan = {
-	/** The target project root directory */
+	/**
+	 * The target project root directory
+	 */
 	cwd: string;
-	/** Files to be created or modified */
+	/**
+	 * Files to be created or modified
+	 */
 	files: {
 		path: string;
 		content: string;
 		action: "create" | "overwrite" | "append";
 		label?: string;
 	}[];
-	/** TypeScript configuration updates */
+	/**
+	 * TypeScript configuration updates
+	 */
 	tsConfig?: {
 		path: string;
 		action: "strict";
 	};
-	/** Dependencies to install */
+	/**
+	 * Dependencies to install
+	 */
 	install?: {
 		packageManager: PackageManager;
 		dependencies: string[];
 		cwd?: string;
 	};
-	/** Optional skill installation */
+	/**
+	 * Optional skill installation
+	 */
 	skill?: {
 		dlxCommand: string[];
 		packageName: string;
 		isYes: boolean;
 	};
-	/** Framework-specific bootstrapping */
+	/**
+	 * Framework-specific bootstrapping
+	 */
 	bootstrap?: {
 		framework: Exclude<Framework, "vanilla">;
 		path?: string;
@@ -81,7 +94,9 @@ export type ScaffoldingPlan = {
 		wrapNextjsConfig?: boolean;
 		disableCodegen?: boolean;
 	};
-	/** Metadata for reporting */
+	/**
+	 * Metadata for reporting
+	 */
 	metadata: {
 		displayPath: string;
 		framework: Framework;
@@ -95,12 +110,16 @@ export type ScaffoldingPlan = {
 		skillDetected?: boolean;
 		disableCodegen?: boolean;
 	};
-	/** Git clone information for new project flow */
+	/**
+	 * Git clone information for new project flow
+	 */
 	clone?: {
 		repository: string;
 		example: string;
 		targetName: string;
-		/** Absolute path to copy the example into. Defaults to process.cwd() when absent. */
+		/**
+		 * Absolute path to copy the example into. Defaults to process.cwd() when absent.
+		 */
 		targetDir?: string;
 	};
 };

@@ -1,18 +1,22 @@
 import fs from "node:fs";
+import path from "node:path";
+import {
+	CLIENT_SECURITY_ERROR,
+	classifyEnvKeys,
+	generateClientEnvModule,
+	isEnvModuleId,
+	isServerSchemaImport,
+	loadValidatedEnv,
+	normalizePrefixes,
+	resolveEnvModulePath,
+	resolveLayout,
+} from "@arkenv/build";
 import {
 	type ArkEnvLogOptions,
 	resolveBuildLog,
 	splitPluginConfig,
 } from "@repo/log";
 import type { BunPlugin } from "bun";
-import { classifyEnvKeys } from "./classify-env-keys";
-import {
-	isEnvModuleId,
-	normalizePrefixes,
-	resolveEnvModulePath,
-} from "./env-module-path";
-import { generateClientEnvModule } from "./generate-client-env-module";
-import { loadValidatedEnv } from "./load-validated-env";
 import type { BunPluginFactoryConfig } from "./plugin-config";
 
 /**
@@ -24,7 +28,7 @@ import type { BunPluginFactoryConfig } from "./plugin-config";
  * @param pluginName The Bun plugin name
  * @param transformOptions Plugin options including `schemaPath` / `clientPrefix`
  * @param factoryLogOptions Default logging options from the factory
- * @returns A Bun plugin that rewrites `env.ts` in browser bundles
+ * @returns A Bun plugin that rewrites `env.ts` in browser bundles and blocks server schema imports
  */
 export function createTransformPlugin(
 	pluginName: string,
@@ -33,6 +37,7 @@ export function createTransformPlugin(
 ): BunPlugin {
 	const {
 		schemaPath: schemaPathOption,
+		layout: layoutOption,
 		clientPrefix: clientPrefixOption,
 		...configWithoutTransformKeys
 	} = transformOptions;
@@ -42,13 +47,17 @@ export function createTransformPlugin(
 	const buildLog = resolveBuildLog({ ...factoryLogOptions, ...logOptions });
 
 	const state: {
+		resolvedLayout?: "simple" | "strict";
+		baseDir?: string;
 		schemaPath?: string;
+		clientPath?: string;
+		serverPath?: string;
 		prefixes: string[];
 		clientValues: Record<string, unknown>;
 		serverKeys: string[];
 		transformedSource?: string;
 	} = {
-		prefixes: normalizePrefixes(clientPrefixOption),
+		prefixes: normalizePrefixes(clientPrefixOption, ["BUN_PUBLIC_"]),
 		clientValues: {},
 		serverKeys: [],
 	};
@@ -57,15 +66,19 @@ export function createTransformPlugin(
 	 * Reload validated env values and key classification from the env module.
 	 */
 	const refreshTransformState = () => {
-		if (!state.schemaPath) return;
+		const targetPath =
+			state.resolvedLayout === "strict" ? state.clientPath : state.schemaPath;
+		if (!targetPath || !fs.existsSync(targetPath)) return;
 
 		const loaded = {
 			...process.env,
 			...(pluginConfig.env as Record<string, string | undefined> | undefined),
 		};
 
-		const validated = loadValidatedEnv(state.schemaPath, loaded);
-		const content = fs.readFileSync(state.schemaPath, "utf8");
+		const validated = loadValidatedEnv(targetPath, loaded, {
+			prefix: "ArkEnv Bun plugin:",
+		});
+		const content = fs.readFileSync(targetPath, "utf8");
 		const { clientKeys, sharedKeys, serverKeys } = classifyEnvKeys(
 			content,
 			state.prefixes,
@@ -80,8 +93,11 @@ export function createTransformPlugin(
 		}
 
 		state.clientValues = clientValues;
-		state.serverKeys = serverKeys;
-		state.transformedSource = generateClientEnvModule(clientValues, serverKeys);
+		state.serverKeys = state.resolvedLayout === "strict" ? [] : serverKeys;
+		state.transformedSource = generateClientEnvModule(
+			clientValues,
+			state.serverKeys,
+		);
 	};
 
 	return {
@@ -107,11 +123,26 @@ export function createTransformPlugin(
 			 */
 			build.onStart(() => {
 				try {
-					state.schemaPath = resolveEnvModulePath(
+					const discovered = resolveEnvModulePath(
 						process.cwd(),
 						schemaPathOption,
+						"ArkEnv Bun plugin:",
 					);
-					state.prefixes = normalizePrefixes(clientPrefixOption);
+					const layoutResult = resolveLayout(discovered, layoutOption);
+					state.resolvedLayout = layoutResult.layout;
+					state.baseDir = layoutResult.baseDir;
+
+					if (state.resolvedLayout === "strict") {
+						state.clientPath = path.join(state.baseDir, "client.ts");
+						state.serverPath = path.join(state.baseDir, "server.ts");
+						state.schemaPath = state.clientPath;
+					} else {
+						state.schemaPath = discovered;
+					}
+
+					state.prefixes = normalizePrefixes(clientPrefixOption, [
+						"BUN_PUBLIC_",
+					]);
 					refreshTransformState();
 				} catch (error: unknown) {
 					buildLog.logBuildErrorWithCause(
@@ -122,7 +153,50 @@ export function createTransformPlugin(
 				}
 			});
 
+			if (typeof build.onResolve === "function") {
+				build.onResolve({ filter: /server/ }, (args) => {
+					if (state.resolvedLayout === "strict" && state.baseDir) {
+						if (
+							isServerSchemaImport(
+								args.path,
+								args.importer,
+								state.baseDir,
+								process.cwd(),
+							)
+						) {
+							buildLog.logBuildErrorWithCause(
+								"Client security error",
+								new Error(CLIENT_SECURITY_ERROR),
+							);
+							throw new Error(CLIENT_SECURITY_ERROR);
+						}
+					}
+					return undefined;
+				});
+			}
+
 			build.onLoad({ filter: /\.(m|c)?[jt]sx?$/ }, (args) => {
+				if (state.resolvedLayout === "strict" && state.baseDir) {
+					if (
+						isServerSchemaImport(
+							args.path,
+							undefined,
+							state.baseDir,
+							process.cwd(),
+						)
+					) {
+						throw new Error(CLIENT_SECURITY_ERROR);
+					}
+					if (state.clientPath && isEnvModuleId(args.path, state.clientPath)) {
+						if (!state.transformedSource) return undefined;
+						return {
+							contents: state.transformedSource,
+							loader: "js",
+						};
+					}
+					return undefined;
+				}
+
 				if (!state.schemaPath) return undefined;
 				if (!isEnvModuleId(args.path, state.schemaPath)) return undefined;
 				if (!state.transformedSource) return undefined;

@@ -1,0 +1,98 @@
+---
+title: schema
+description: Schema shapes accepted by arkenv() in core and standard modes.
+---
+
+`arkenv()` accepts a schema that maps environment variable names to
+validators. Core uses the ArkType DSL (and compiled `type()` values).
+Standard mode accepts a map of Standard Schema validators.
+
+## Declarative map
+
+Pass a map of ArkType strings (or nested objects). This is an
+`EnvSchema`: each value is validated against ArkEnv's ArkType scope
+before parsing.
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+  HOST: "string.host = 'localhost'",
+  PORT: "number.port = 3000",
+  DATABASE_URL: "string",
+});
+```
+
+## Compiled `type()`
+
+Build the schema once with `type()` when you reuse it across runtimes or
+packages.
+
+```ts title="./env-schema.ts" twoslash
+import arkenv, { type } from "@arkenv/core";
+
+export const Env = type({
+  PORT: "number.port = 3000",
+  DATABASE_URL: "string",
+});
+
+export const env = arkenv(Env);
+```
+
+See [Reusing schemas](/docs/validating-your-environment/reusing-schemas).
+
+## Standard Schema maps
+
+With [`@arkenv/standard`](/docs/reference/standard), every value must be
+a Standard Schema validator (Zod, Valibot, and others). ArkType DSL
+strings fail.
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import { z } from "zod";
+
+export const env = arkenv({
+  PORT: z.coerce.number().int().min(0).max(65535),
+  DATABASE_URL: z.string().url(),
+});
+```
+
+## Inferring types
+
+`Infer<T>` works for declarative maps, compiled ArkType types, and
+Standard Schema values.
+
+```ts title="./env.ts" twoslash
+import arkenv, { type Infer } from "@arkenv/core";
+
+const schema = {
+  DATABASE_URL: "string",
+  PORT: "number.port = 3000",
+} as const;
+
+export const env = arkenv(schema);
+export type Env = Infer<typeof schema>;
+```
+
+## Client and server schemas
+
+Framework packages add layouts and prefixes:
+
+- **Flat:** one schema; public prefixes decide client exposure
+- **Strict:** separate client, server, and shared modules with `extends`
+
+Details:
+[Client vs. server](/docs/validating-your-environment/client-vs-server),
+[`@arkenv/nextjs`](/docs/reference/nextjs),
+[`@arkenv/nuxt`](/docs/reference/nuxt).
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/reference/options" title="options" description="Configuration options passed to the arkenv() runtime." />
+
+  <Card href="/docs/reference/env" title="env" description="The typed env object returned after validation." />
+
+  <Card href="/docs/reference/keywords" title="keywords" description="Built-in keyword extensions for environment shapes." />
+</Cards>

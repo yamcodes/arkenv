@@ -22,4 +22,19 @@ test.describe("Theme Switching", () => {
 
 		expect(hydrationErrors).toHaveLength(0);
 	});
+
+	test("should stay dark when system prefers light and storage says light", async ({
+		page,
+	}) => {
+		await page.emulateMedia({ colorScheme: "light" });
+		await page.addInitScript(() => {
+			localStorage.setItem("theme", "light");
+		});
+
+		await page.goto("/docs");
+		await page.waitForLoadState("domcontentloaded");
+
+		await expect(page.locator("html")).toHaveClass(/dark/);
+		await expect(page.locator("html")).toHaveCSS("color-scheme", "dark");
+	});
 });

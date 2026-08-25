@@ -207,4 +207,61 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 			return { status: "unknown" };
 		}
 	}
+
+	/**
+	 * Finds the nearest package.json starting from the given directory.
+	 */
+	async findPackageJson(startDir = process.cwd()): Promise<string | null> {
+		let current = path.resolve(startDir);
+		while (true) {
+			const candidate = path.join(current, "package.json");
+			try {
+				await fsp.access(candidate);
+				return candidate;
+			} catch {
+				const parent = path.dirname(current);
+				if (parent === current) {
+					return null;
+				}
+				current = parent;
+			}
+		}
+	}
+
+	/**
+	 * Reads and parses the arkenv configuration field from the nearest package.json.
+	 */
+	async readArkenvConfig(
+		cwd = process.cwd(),
+	): Promise<{ schema: string; layout: "flat" | "strict" } | null> {
+		const pkgPath = await this.findPackageJson(cwd);
+		if (!pkgPath) return null;
+
+		try {
+			const content = await fsp.readFile(pkgPath, "utf-8");
+			const pkg = JSON.parse(content);
+			if (!pkg.arkenv) return null;
+
+			if (typeof pkg.arkenv === "string") {
+				return {
+					schema: pkg.arkenv,
+					layout: "flat",
+				};
+			}
+
+			if (
+				typeof pkg.arkenv === "object" &&
+				typeof pkg.arkenv.schema === "string"
+			) {
+				return {
+					schema: pkg.arkenv.schema,
+					layout: pkg.arkenv.layout === "strict" ? "strict" : "flat",
+				};
+			}
+
+			return null;
+		} catch {
+			return null;
+		}
+	}
 }

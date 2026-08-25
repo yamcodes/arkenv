@@ -1,4 +1,9 @@
-import { AIActions } from "@arkenv/fumadocs-ui/components";
+import {
+	AIActions,
+	DocsBreadcrumb,
+	DocsFooter,
+	docsTocSlots,
+} from "@arkenv/fumadocs-ui/components";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import {
 	DocsBody,
@@ -7,9 +12,19 @@ import {
 	DocsTitle,
 } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
+import { DocsTocLinks } from "~/components/docs/toc-links";
+import { FeatureFlags } from "~/lib/feature-flags";
 import { source } from "~/lib/source";
 import { getLinkTitleAndHref } from "~/lib/utils";
 import { getMDXComponents } from "~/mdx-components";
+
+function getDocsEditHref(pagePath: string): string {
+	const basePath = (
+		process.env.NEXT_PUBLIC_DOCS_CONTENT_PATH || "apps/www/content/docs/"
+	).replace(/\/$/, "");
+	const normalizedPath = pagePath.replace(/^\/+/, "");
+	return getLinkTitleAndHref(`${basePath}/${normalizedPath}`).href;
+}
 
 export default async function Page(props: {
 	params: Promise<{ slug?: string[] }>;
@@ -19,29 +34,52 @@ export default async function Page(props: {
 	if (!page) notFound();
 
 	const MDX = page.data.body;
+	const full = page.data.full;
+	const editHref = getDocsEditHref(page.path);
+	const tocLinks = (
+		<DocsTocLinks pageTitle={page.data.title} editHref={editHref} />
+	);
 
+	// Floating Site Nav conflicts with the sticky TOC popover below 1200px; keep the desktop TOC rail only.
+	// Re-enable via FeatureFlags.DOCS_TOC_POPOVER / NEXT_PUBLIC_DOCS_TOC_POPOVER=true.
 	return (
-		<DocsPage toc={page.data.toc} full={page.data.full}>
+		<DocsPage
+			toc={page.data.toc}
+			full={full}
+			tableOfContent={{ enabled: !full, footer: tocLinks, single: true }}
+			tableOfContentPopover={{
+				enabled: FeatureFlags.DOCS_TOC_POPOVER,
+				footer: tocLinks,
+			}}
+			slots={{
+				breadcrumb: DocsBreadcrumb,
+				footer: DocsFooter,
+				toc: docsTocSlots,
+			}}
+		>
 			<div className="grow">
-				<DocsTitle className="mb-4">{page.data.title}</DocsTitle>
-				<DocsDescription>{page.data.description}</DocsDescription>
-				<div className="flex flex-row gap-2 items-center border-b pt-2 pb-6 mb-8 mt-4">
+				<div className="flex flex-col gap-4 min-[960px]:flex-row min-[960px]:items-end min-[960px]:justify-between">
+					<DocsTitle className="mb-0 min-w-0 text-balance">
+						{page.data.title}
+					</DocsTitle>
 					<AIActions
+						only="desktop"
+						className="self-end"
 						markdownUrl={`${page.url}.mdx`}
-						githubUrl={
-							getLinkTitleAndHref(
-								(() => {
-									const basePath = (
-										process.env.NEXT_PUBLIC_DOCS_CONTENT_PATH ??
-										"apps/www/content/docs/"
-									).replace(/\/$/, ""); // Remove trailing slash if present
-									const pagePath = page.path.replace(/^\//, ""); // Remove leading slash if present
-									return `${basePath}/${pagePath}`;
-								})(),
-							).href
-						}
+						pageUrl={page.url}
+						githubUrl={editHref}
 					/>
 				</div>
+				<DocsDescription className="mt-3 mb-8 min-[960px]:mb-12">
+					{page.data.description}
+				</DocsDescription>
+				<AIActions
+					only="mobile"
+					className="mb-8"
+					markdownUrl={`${page.url}.mdx`}
+					pageUrl={page.url}
+					githubUrl={editHref}
+				/>
 				<DocsBody>
 					<MDX
 						components={getMDXComponents({
@@ -73,10 +111,10 @@ export async function generateMetadata(props: {
 	}
 
 	return {
-		title: `${page.data.title} · ArkEnv`,
+		title: `${page.data.title} | ArkEnv`,
 		description: page.data.description,
 		openGraph: {
-			title: `${page.data.title} · ArkEnv`,
+			title: `${page.data.title} | ArkEnv`,
 			description: page.data.description,
 			images: [
 				{
@@ -89,7 +127,7 @@ export async function generateMetadata(props: {
 		},
 		twitter: {
 			card: "summary_large_image",
-			title: `${page.data.title} · ArkEnv`,
+			title: `${page.data.title} | ArkEnv`,
 			description: page.data.description,
 			images: [ogUrl.toString()],
 		},

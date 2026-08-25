@@ -9,9 +9,6 @@ import type { MergeExtends } from "@/types";
 
 /**
  * Client env type auto-merged in Nuxt strict layout when `extends` is omitted.
- *
- * Resolved via the `#arkenv/client-env` virtual module alias registered by
- * `@arkenv/nuxt/module`.
  */
 type AutoClientEnv = typeof import("#arkenv/client-env") extends {
 	env: infer E;

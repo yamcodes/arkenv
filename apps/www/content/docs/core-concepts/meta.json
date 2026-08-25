@@ -1,0 +1,11 @@
+{
+	"title": "Core concepts",
+	"pages": [
+		"index",
+		"validation",
+		"transformation",
+		"coercion",
+		"typesafety",
+		"standard-schema"
+	]
+}

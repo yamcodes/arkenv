@@ -1,0 +1,62 @@
+---
+title: Support policy
+description: Understand ArkEnv versioning, runtime support, and compatibility.
+---
+
+v1 is published as `1.0.0-alpha.x` under the `alpha` npm tag. **APIs can
+still change before 1.0.0.** Use the latest version whenever you can.
+
+## Package managers
+
+Packages are published as `@arkenv/<package-name>` to npm's public registry.
+The [ArkEnv CLI](/docs/reference/init) detects the package manager in
+your repository so it can install dependencies as part of an automated
+process. This only works with npm, pnpm, Yarn, and Bun.
+
+## Frameworks
+
+| Framework                                     | Support                                                        |
+| --------------------------------------------- | -------------------------------------------------------------- |
+| Next.js 13.4+                                 | Alpha via [`@arkenv/nextjs`](/docs/reference/nextjs)           |
+| Nuxt 3+                                       | Alpha via [`@arkenv/nuxt`](/docs/reference/nuxt)               |
+| Vite 4+                                       | Alpha via [`@arkenv/vite-plugin`](/docs/reference/vite-plugin) |
+| Bun 1.0+ (for `Bun.build()` or `Bun.serve()`) | Alpha via [`@arkenv/bun-plugin`](/docs/reference/bun-plugin)   |
+
+Vite-based apps (e.g. SolidStart) use `@arkenv/vite-plugin`. Apps that only use Bun as a package manager or runtime (but not a bundler or fullstack dev server) should stay on
+[`@arkenv/core`](/docs/reference/core) or
+[`@arkenv/standard`](/docs/reference/standard).
+
+<Callout type="info">
+  Frameworks have their own release schedules. New major versions are not always supported on day one.
+</Callout>
+
+## Version control
+
+While ArkEnv itself has no opinion on version control, the
+[interactive CLI](/docs/reference/init) refuses to run in a dirty working
+tree. This is to prevent accidentally overwriting important data. You can
+pass the `--force` flag to override this behavior, or commit or stash your
+changes before running the command.
+
+## Node.js
+
+ArkEnv intends to support the
+[Active and Maintenance LTS versions of Node.js](https://nodejs.org/en/about/previous-releases).
+The [CLI](/docs/reference/init), plugins, and
+[examples](/docs/getting-started/examples) depend on that. CI runs on
+`lts/*` and `latest`.
+
+## Deprecated
+
+These APIs still work on [`@arkenv/nextjs`](/docs/reference/nextjs) and
+[`@arkenv/nuxt`](/docs/reference/nuxt). They will be removed in a later
+release.
+
+- Nested `arkenv({ server, client, shared })`. Use
+  `arkenv(schema, options)` instead.
+- Options `expose` and `shared`. Use `exposeToClient`. See
+  [Client vs. server](/docs/validating-your-environment/client-vs-server).
+- Config `layout: "simple"`. Use `"flat"`.
+
+The [changelog](https://github.com/yamcodes/arkenv/releases) lists what
+changed in each release.

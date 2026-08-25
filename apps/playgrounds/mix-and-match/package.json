@@ -1,0 +1,28 @@
+{
+	"name": "mix-and-match-playground",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"start": "tsx --env-file .env index.ts",
+		"dev": "tsx watch --env-file .env index.ts",
+		"dev:example": "tsx watch --env-file .env.example index.ts",
+		"build": "tsc",
+		"clean": "rimraf dist node_modules"
+	},
+	"dependencies": {
+		"@arkenv/core": "workspace:*",
+		"valibot": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"rimraf": "catalog:",
+		"tsx": "catalog:",
+		"typescript": "catalog:"
+	},
+	"arkenvExamples": [
+		{
+			"name": "mix-and-match",
+			"packageManager": "npm"
+		}
+	]
+}

@@ -377,11 +377,72 @@ describe("withArkEnv wrapper", () => {
 		const outputConfig = withArkEnv(inputConfig, {
 			schemaPath: strictBaseDir,
 			validate: false,
-		});
+		}) as {
+			reactStrictMode: boolean;
+			webpack?: (
+				config: {
+					resolve?: { alias?: Record<string, string> };
+					plugins?: unknown[];
+				},
+				context: {
+					webpack: { DefinePlugin: new (d: Record<string, string>) => unknown };
+				},
+			) => {
+				resolve?: { alias?: Record<string, string> };
+				plugins?: unknown[];
+			};
+			env?: Record<string, string>;
+			turbopack?: { resolveAlias?: Record<string, string> };
+			experimental?: { turbo?: { resolveAlias?: Record<string, string> } };
+		};
 
-		expect(outputConfig).toBe(inputConfig);
+		// Strict layout returns a new config with webpack/turbopack aliases.
+		expect(outputConfig).not.toBe(inputConfig);
+		expect(outputConfig.reactStrictMode).toBe(true);
+		expect(typeof outputConfig.webpack).toBe("function");
+		expect(outputConfig.turbopack?.resolveAlias?.["#arkenv/client-env"]).toBe(
+			`./${path.relative(process.cwd(), path.join(strictBaseDir, "client.ts")).replace(/\\/g, "/")}`,
+		);
+
+		const webpackConfig = {
+			resolve: { alias: {} as Record<string, string> },
+			plugins: [] as unknown[],
+		};
+		class MockDefinePlugin {
+			definitions: Record<string, string>;
+			constructor(definitions: Record<string, string>) {
+				this.definitions = definitions;
+			}
+		}
+		const resolvedWebpack = outputConfig.webpack?.(webpackConfig, {
+			webpack: { DefinePlugin: MockDefinePlugin },
+		});
+		expect(resolvedWebpack?.resolve?.alias?.["#arkenv/client-env"]).toBe(
+			path.join(strictBaseDir, "client.ts"),
+		);
+		expect(
+			resolvedWebpack?.plugins?.some(
+				(plugin: unknown) =>
+					plugin instanceof MockDefinePlugin &&
+					(plugin as MockDefinePlugin).definitions.__ARKENV_STRICT_LAYOUT__ ===
+						"true",
+			),
+		).toBe(true);
+
 		const genPath = path.join(strictBaseDir, "generated", "env.gen.ts");
 		expect(fs.existsSync(genPath)).toBe(true);
+		const ambientPath = path.join(
+			strictBaseDir,
+			"generated",
+			"arkenv-client-env.d.ts",
+		);
+		expect(fs.existsSync(ambientPath)).toBe(true);
+		expect(fs.readFileSync(ambientPath, "utf-8")).toContain(
+			'declare module "#arkenv/client-env"',
+		);
+		expect(fs.readFileSync(ambientPath, "utf-8")).toContain(
+			'export { env } from "../client"',
+		);
 
 		const generatedContent = fs.readFileSync(genPath, "utf-8");
 		expect(generatedContent).toContain("export function arkenv<");

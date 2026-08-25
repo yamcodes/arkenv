@@ -18,6 +18,7 @@
 	},
 	"dependencies": {
 		"@arkenv/standard": "^1.0.0-alpha.2",
+		"@valibot/to-json-schema": "^1.6.0",
 		"valibot": "^1.3.1"
 	},
 	"engines": {

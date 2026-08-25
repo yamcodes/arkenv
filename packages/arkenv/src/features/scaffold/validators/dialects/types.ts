@@ -12,7 +12,9 @@ import {
  * flat/nested, vanilla arkenv calls).
  */
 export type Dialect = {
-	/** Extra import for codegen layouts, e.g. `import { z } from "zod";`. */
+	/**
+	 * Extra import for codegen layouts, e.g. `import { z } from "zod";`.
+	 */
 	extraImport?: string;
 
 	/**
@@ -112,7 +114,9 @@ export type Dialect = {
 		sharedFields: string[];
 	};
 
-	/** Import block for the strict shared schema file. */
+	/**
+	 * Import block for the strict shared schema file.
+	 */
 	sharedImports: string;
 
 	/**
@@ -135,11 +139,6 @@ export type Dialect = {
 	 * @returns Full file content without trailing newline
 	 */
 	assembleVanilla(schemaFields: string): string;
-
-	/**
-	 * Imports used by Vite/Bun Env-only templates (schema export, no arkenv call).
-	 */
-	pluginEnvImports: string;
 };
 
 /**

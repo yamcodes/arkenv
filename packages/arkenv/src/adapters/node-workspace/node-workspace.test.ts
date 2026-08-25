@@ -111,7 +111,7 @@ describe("NodeWorkspace", () => {
 		expect(updated).toContain(
 			'import arkenvVitePlugin from "@arkenv/vite-plugin"',
 		);
-		expect(updated).toContain("arkenvVitePlugin(Env)");
+		expect(updated).toContain("arkenvVitePlugin()");
 	});
 
 	it("is idempotent when ensuring vite plugin", async () => {

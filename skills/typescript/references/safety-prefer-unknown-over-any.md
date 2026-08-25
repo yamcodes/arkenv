@@ -2,7 +2,7 @@
 title: Prefer unknown over any
 impact: MEDIUM-HIGH
 impactDescription: forces type narrowing, prevents runtime errors
-tags: safety, unknown, any, type-narrowing, type-safety
+tags: safety, unknown, any, type-narrowing, typesafety
 ---
 
 ## Prefer unknown over any
@@ -46,7 +46,7 @@ function processApiResponse(data: unknown): string {
   if (!isApiResponse(data)) {
     throw new Error('Invalid API response')
   }
-  return data.user.name.toUpperCase()  // Type-safe access
+  return data.user.name.toUpperCase()  // Typesafe access
 }
 ```
 

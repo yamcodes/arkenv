@@ -1,0 +1,84 @@
+---
+title: "@arkenv/nuxt"
+description: Nuxt module and client/server environment entries.
+---
+
+`@arkenv/nuxt` registers a Nuxt module and provides `arkenv()` helpers
+that respect `NUXT_PUBLIC_` boundaries.
+
+## Installation
+
+```package-install
+npm i @arkenv/core @arkenv/nuxt arktype
+```
+
+Or with Standard Schema:
+
+```package-install
+npm i @arkenv/standard @arkenv/nuxt zod
+```
+
+## Subpaths
+
+Import from the subpath that matches where the code runs.
+
+| Subpath                         | Role                                                     |
+| ------------------------------- | -------------------------------------------------------- |
+| `.`                             | Runtime `arkenv` for flat layouts                        |
+| `./server`                      | Server-only entry                                        |
+| `./client`                      | Client entry                                             |
+| `./module`                      | Nuxt module (`modules: ["@arkenv/nuxt/module"]`)         |
+| `./config`                      | `setupArkEnv` and config types                           |
+| `./standard` and `./standard/*` | Standard Schema variants (including `./standard/module`) |
+
+## Module setup
+
+Register the module in `nuxt.config`. The schema module is the surface.
+Nuxt leaves `env.gen.ts` to Next.js.
+
+```ts title="./nuxt.config.ts"
+export default defineNuxtConfig({
+  modules: ["@arkenv/nuxt/module"],
+  arkenv: {
+    layout: "flat",
+  },
+});
+```
+
+### Module options
+
+These options live under `arkenv` in `nuxt.config`.
+
+| Option                | Default | Meaning                                      |
+| --------------------- | ------- | -------------------------------------------- |
+| `validate`            | `true`  | Validate during Nuxt build/dev               |
+| `layout`              | auto    | `"flat"` or `"strict"` (detected from files) |
+| `schemaPath`          | auto    | Schema entry path                            |
+| `logger` / `logLevel` | (none)  | Logging controls                             |
+
+## Flat schema
+
+Use the default entry for a single schema file.
+
+```ts title="./env.ts"
+import arkenv from "@arkenv/nuxt";
+
+export const env = arkenv({
+  DATABASE_URL: "string",
+  NUXT_PUBLIC_API_URL: "string",
+});
+```
+
+## Strict schema
+
+Use `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. Shared and client
+schemas can auto-merge via Nuxt virtual aliases when you omit `extends`.
+See [Client vs. server](/docs/validating-your-environment/client-vs-server).
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/guides/frameworks/nuxt" title="Nuxt framework guide" description="Step-by-step Nuxt module recipes and runtime config." />
+
+  <Card href="/docs/reference/core" title="@arkenv/core" description="Core runtime package exports and utilities." />
+</Cards>

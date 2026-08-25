@@ -1,0 +1,48 @@
+---
+title: Validating your environment
+description: Design, parse, and secure environment variables with ArkEnv.
+---
+
+Missing or malformed environment variables fail as early as ArkEnv can see
+them: in `next build`, during Vite or Bun plugin runs, on server boot, and
+anywhere else you call `arkenv()`.
+
+These guides take you through designing a schema, parsing values, and keeping
+secrets off the client. They are meant to be read in order the first time, as
+they build on each other. Skip ahead once you know which slice you need.
+
+By the time you've read this section, you'll have a typed `env` object and a
+clear client/server split.
+
+<Callout type="info">
+  ArkEnv validates and types your environment. Loading `.env` files is still
+  your runtime or framework's job. See
+  [Framework integration](/docs/validating-your-environment/framework-integration).
+</Callout>
+
+## From schema to `env`
+
+Start here if you're writing a schema for the first time.
+
+<Cards>
+  <Card href="/docs/validating-your-environment/structuring-your-schema" title="1. Structuring your schema" description="Put env.ts in the right place and export a typed env object." />
+
+  <Card href="/docs/validating-your-environment/defining-types" title="2. Defining types" description="Declare strings, numbers, booleans, enums, and ArkEnv keywords." />
+
+  <Card href="/docs/validating-your-environment/client-vs-server" title="3. Client vs. server" description="Keep public keys and private secrets in separate buckets." />
+
+  <Card href="/docs/validating-your-environment/coercion-and-parsing" title="4. Coercion and parsing" description="Turn raw strings into numbers, booleans, arrays, and objects." />
+
+  <Card href="/docs/validating-your-environment/error-reporting" title="5. Error reporting" description="Fail fast with clear console output and issue codes." />
+
+  <Card href="/docs/validating-your-environment/reusing-schemas" title="6. Reusing schemas" description="Share one schema across runtimes and packages." />
+
+  <Card href="/docs/validating-your-environment/framework-integration" title="7. Framework integration" description="Wire ArkEnv into Next.js, Nuxt, Vite, or Bun." />
+
+  <Card href="/docs/validating-your-environment/hosting-presets" title="8. Hosting presets" description="Add Vercel, Netlify, Cloudflare, and other provider vars." />
+</Cards>
+
+## More guides
+
+We also have recipes for
+[frameworks, validators, and other topics](/docs/guides).

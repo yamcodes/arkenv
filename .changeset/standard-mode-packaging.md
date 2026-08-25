@@ -21,7 +21,7 @@ import arkenv from "@arkenv/standard";
 import { z } from "zod";
 
 export const env = arkenv({
-	PORT: z.coerce.number().default(3000),
+  PORT: z.coerce.number().default(3000),
 });
 ```
 
@@ -32,7 +32,7 @@ import arkenv from "@arkenv/vite-plugin/standard";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-	plugins: [arkenv()],
+  plugins: [arkenv()],
 });
 ```
 

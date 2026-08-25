@@ -13,8 +13,13 @@ import {
 	resolveLoggerFromOptions,
 } from "@repo/log";
 import { createJiti } from "jiti";
+import {
+	CLIENT_ENV_SPECIFIER,
+	missingClientTsError,
+} from "../strict-client-env";
 import { runCodegen } from "./codegen";
 import { normalizeLayout } from "./layout";
+import { applyStrictLayoutAliases } from "./strict-layout-aliases";
 import type { ArkEnvConfigOptions } from "./types";
 
 function resolveMockServerOnlyPath(moduleDir: string): string {
@@ -32,6 +37,21 @@ function resolveMockServerOnlyPath(moduleDir: string): string {
 	return path.join(moduleDir, "mock-server-only.js");
 }
 
+function resolveEmptyClientEnvPath(moduleDir: string): string {
+	for (const base of [moduleDir, path.join(moduleDir, "..")]) {
+		const tsPath = path.join(base, "empty-client-env.ts");
+		if (fs.existsSync(tsPath)) {
+			return tsPath;
+		}
+		const jsPath = path.join(base, "empty-client-env.js");
+		if (fs.existsSync(jsPath)) {
+			return jsPath;
+		}
+	}
+
+	return path.join(moduleDir, "empty-client-env.js");
+}
+
 function schemaPathExists(schemaPath: string): boolean {
 	if (fs.existsSync(schemaPath)) return true;
 
@@ -42,17 +62,24 @@ function schemaPathExists(schemaPath: string): boolean {
 	return fs.existsSync(baseWithoutExt);
 }
 
+type SetupResult = {
+	resolvedLayout: "flat" | "strict" | "simple";
+	baseDir: string | undefined;
+	clientEnvPath: string | undefined;
+};
+
 /**
  * Run ArkEnv codegen and setup without wrapping nextConfig.
  *
  * @param options Optional configuration paths for schema and output files
  * @param internalOptions Optional configuration for internal testing hooks
+ * @returns Resolved layout paths used by `withArkEnv` for alias registration
  * @throws An error if the schema file cannot be found or if code generation fails
  */
 export function setupArkEnv(
 	options?: ArkEnvConfigOptions,
 	internalOptions?: { _jitiAliases?: Record<string, string> },
-): void {
+): SetupResult {
 	const buildLog = resolveBuildLog(options);
 
 	const schemaPath = options?.schemaPath
@@ -74,6 +101,15 @@ export function setupArkEnv(
 		schemaPath,
 		normalizedLayout,
 	);
+
+	const clientEnvPath =
+		resolvedLayout === "strict" && baseDir
+			? path.join(baseDir, "client.ts")
+			: undefined;
+
+	if (clientEnvPath && !fs.existsSync(clientEnvPath)) {
+		throw new Error(missingClientTsError(clientEnvPath, baseDir!));
+	}
 
 	const defaultOutputDir =
 		resolvedLayout === "strict" && baseDir ? baseDir : path.dirname(schemaPath);
@@ -106,8 +142,13 @@ export function setupArkEnv(
 
 	const runValidation = options?.validate ?? true;
 	if (runValidation) {
+		const g = globalThis as {
+			__arkenv_force_server__?: boolean;
+			__ARKENV_STRICT_LAYOUT__?: boolean;
+			__ARKENV_CLIENT_ENV__?: unknown;
+		};
 		try {
-			(globalThis as any).__arkenv_force_server__ = true;
+			g.__arkenv_force_server__ = true;
 			const fileToEvaluate =
 				resolvedLayout === "strict" && baseDir
 					? path.join(baseDir, "server.ts")
@@ -121,11 +162,16 @@ export function setupArkEnv(
 						: "";
 			const dir = path.dirname(filenameForJiti);
 			const mockServerOnlyPath = resolveMockServerOnlyPath(dir);
+			const emptyClientEnvPath = resolveEmptyClientEnvPath(dir);
 
 			const aliases: Record<string, string> = {
 				"server-only": mockServerOnlyPath,
 				"./script": mockServerOnlyPath,
 				"./script.tsx": mockServerOnlyPath,
+				[CLIENT_ENV_SPECIFIER]:
+					clientEnvPath && fs.existsSync(clientEnvPath)
+						? clientEnvPath
+						: emptyClientEnvPath,
 				...internalOptions?._jitiAliases,
 			};
 
@@ -135,6 +181,17 @@ export function setupArkEnv(
 				tsconfigPaths: true,
 				alias: aliases,
 			});
+
+			if (resolvedLayout === "strict" && clientEnvPath) {
+				g.__ARKENV_STRICT_LAYOUT__ = true;
+				const clientMod = jiti(clientEnvPath) as {
+					env?: unknown;
+					default?: { env?: unknown };
+				};
+				g.__ARKENV_CLIENT_ENV__ =
+					clientMod.env ?? clientMod.default?.env ?? clientMod;
+			}
+
 			jiti(fileToEvaluate);
 		} catch (error: unknown) {
 			buildLog.logBuildError("Environment validation failed:");
@@ -144,7 +201,9 @@ export function setupArkEnv(
 			buildLog.logBuildErrorBlankLine();
 			process.exit(1);
 		} finally {
-			delete (globalThis as any).__arkenv_force_server__;
+			delete g.__arkenv_force_server__;
+			delete g.__ARKENV_STRICT_LAYOUT__;
+			delete g.__ARKENV_CLIENT_ENV__;
 		}
 	}
 
@@ -174,17 +233,34 @@ export function setupArkEnv(
 			resolveLoggerFromOptions(options),
 		);
 	}
+
+	return {
+		resolvedLayout,
+		baseDir,
+		clientEnvPath,
+	};
 }
 
 /**
- * Wrap a Next.js configuration object to automatically generate the `runtimeEnv` block in `env.gen.ts`.
+ * Wrap a Next.js configuration object to automatically generate the `runtimeEnv`
+ * block in `env.gen.ts` and, in strict layout, register the `#arkenv/client-env`
+ * alias so `@arkenv/nextjs/server` can auto-extend the client env.
  *
- * @param nextConfig The Next.js configuration object or function
+ * @param nextConfig The Next.js configuration object (object-form only; function-form configs are not yet supported — see follow-up issue)
  * @param options Optional configuration paths for schema and output files
- * @returns The Next.js configuration object unchanged
+ * @returns The Next.js configuration object (with strict-layout aliases when applicable)
  * @throws An error if the schema file cannot be found or if code generation fails
  */
 export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
-	setupArkEnv(options);
+	const { resolvedLayout, clientEnvPath } = setupArkEnv(options);
+
+	if (resolvedLayout === "strict" && clientEnvPath) {
+		return applyStrictLayoutAliases(
+			nextConfig as Record<string, unknown>,
+			clientEnvPath,
+			CLIENT_ENV_SPECIFIER,
+		) as T;
+	}
+
 	return nextConfig;
 }

@@ -1,0 +1,62 @@
+---
+title: Editor integration
+description: Configure autocomplete, type inspection, and diagnostics in your editor.
+---
+
+To get the best experience with `arkenv()`, ArkEnv provides a few utilities
+for integrating with your editor.
+
+## Syntax highlighting and inline type errors
+
+The [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark)
+and [JetBrains plugin](https://plugins.jetbrains.com/plugin/27099-arktype)
+highlight ArkType schema strings and surface inline type errors.
+
+The extension highlights calls whose name contains `ark`. Keep the
+**default** import name `arkenv`:
+
+```diff title="./env.ts"
+- import createEnv from "@arkenv/core";
++ import arkenv from "@arkenv/core";
+
+- export const env = createEnv({
++ export const env = arkenv({
+    PORT: "number.port = 3000",
+    DEBUG: "boolean = false",
+  });
+```
+
+<Callout type="info" title="ArkType only">
+  Skip this section and [ArkThemes](#arkthemes) if you validate with
+  [`@arkenv/standard`](/docs/reference/standard). ArkType editor tools do **not** apply to Zod, Valibot, etc.
+</Callout>
+
+## ArkThemes
+
+ArkThemes is a VS Code (and Cursor) color theme that makes ArkType schema
+strings read like TypeScript, in light and dark modes.
+
+Visit the
+[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkthemes)
+to install.
+
+## Autocomplete on `env.*`
+
+TypeScript infers **keys and types** from the schema you pass to `arkenv()`.
+Import `env` in application code.
+
+```ts title="./server.ts" twoslash
+// @filename: env.ts
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  PORT: "number.port = 3000",
+});
+
+// @filename: server.ts
+// ---cut---
+import { env } from "./env";
+
+console.log(`Server is running on port ${env.PORT}`);
+// @annotate: Always use env.PORT. process.env.PORT is string | undefined.
+```

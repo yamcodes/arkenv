@@ -1,0 +1,118 @@
+---
+title: Using ArkEnv with Zod
+description: Validate environment variables with your existing Zod schemas.
+---
+
+Use `@arkenv/standard` to validate environment variables with Zod. Zod 4.2+
+embeds [Standard JSON Schema](https://standardschema.dev/json-schema) metadata
+directly on schema objects, allowing ArkEnv to automatically coerce raw string
+inputs into numbers, booleans, and arrays before validation.
+
+For an overview of engine options, see
+[Choosing an engine](/docs/core-concepts/standard-schema).
+
+## Installation
+
+Install `@arkenv/standard` alongside `zod`:
+
+```package-install
+npm i @arkenv/standard zod
+```
+
+## Define your schema
+
+Declare environment variables in an `env.ts` file using your standard Zod schemas:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import { z } from "zod";
+
+export const env = arkenv({
+  DATABASE_URL: z.string().url(),
+  PORT: z.number().int().min(0).max(65535).default(3000),
+  DEBUG: z.boolean().default(false),
+  TAGS: z.array(z.string()).default([]),
+  NODE_ENV: z
+    .enum(["development", "production", "test"])
+    .default("development"),
+});
+```
+
+Because Zod 4.2+ includes JSON Schema metadata, ArkEnv automatically converts
+`"3000"` to `3000`, `"true"` to `true`, and comma-separated lists like `"web, api"`
+into string arrays before validation. You can use standard `z.number()` and
+`z.boolean()` directly without manual `z.coerce` helpers.
+
+## Defaults and optionals
+
+Zod methods for defaults and optional fields behave consistently with ArkEnv:
+
+| Method                   | Behavior                                                              |
+| :----------------------- | :-------------------------------------------------------------------- |
+| `.default(...)`          | Fallback value used when the environment variable is missing          |
+| `.optional()`            | Allows the environment variable to remain undefined                   |
+| `emptyAsUndefined: true` | Converts empty strings (`""`) to `undefined` so `.default()` triggers |
+
+## Zod Mini
+
+[Zod Mini](https://zod.dev/packages/mini) (`import * as z from "zod/mini"`) omits
+embedded JSON Schema metadata from schema instances. To enable automatic coercion
+with Zod Mini, provide ArkEnv's `toJsonSchema` callback option:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import * as z from "zod/mini";
+
+export const env = arkenv(
+  {
+    PORT: z.number(),
+    DEBUG: z.boolean(),
+  },
+  {
+    toJsonSchema: (schema) =>
+      z.toJSONSchema(schema as z.ZodMiniType, {
+        io: "input",
+        target: "draft-07",
+      }),
+  },
+);
+```
+
+## Zod v3
+
+Zod v3 (including `zod/v3` subpath exports in Zod 4) implements Standard Schema
+validation but lacks native JSON Schema metadata. You can enable automatic
+coercion by passing [`zod-to-json-schema`](https://github.com/StefanTerdell/zod-to-json-schema)
+through the `toJsonSchema` callback:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import { z } from "zod/v3";
+import { zodToJsonSchema } from "zod-to-json-schema";
+
+export const env = arkenv(
+  {
+    PORT: z.number(),
+    DEBUG: z.boolean(),
+  },
+  {
+    toJsonSchema: (schema) =>
+      zodToJsonSchema(schema as z.ZodTypeAny, {
+        $refStrategy: "none",
+      }),
+  },
+);
+```
+
+When possible, prefer Zod 4.2+ for native JSON Schema metadata without callback
+configuration.
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/reference/standard" title="@arkenv/standard reference" description="Standard Schema engine package reference and options." />
+
+  <Card href="/docs/core-concepts/coercion" title="Coercion" description="Learn how ArkEnv converts incoming strings into typed outputs." />
+
+  <Card href="/docs/guides/frameworks" title="Framework guides" description="Integrate your Zod schema with Next.js, Nuxt, Vite, or Bun." />
+</Cards>

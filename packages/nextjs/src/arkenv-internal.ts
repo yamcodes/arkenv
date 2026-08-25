@@ -1,5 +1,6 @@
 import { logBuildWarning } from "@repo/log";
 import type { Dict, SchemaShape } from "@repo/types";
+import { boundaryAccessErrorMessage } from "@repo/utils/boundary-access-error";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
@@ -16,9 +17,13 @@ export type LegacyNestedSchema = {
 export type FlatSchemaOptions = {
 	extends?: readonly unknown[];
 	runtimeEnv?: Dict<string>;
-	/** @deprecated Use `exposeToClient` instead. */
+	/**
+	 * @deprecated Use `exposeToClient` instead.
+	 */
 	expose?: readonly string[];
-	/** @deprecated Use `exposeToClient` instead. */
+	/**
+	 * @deprecated Use `exposeToClient` instead.
+	 */
 	shared?: readonly string[];
 	exposeToClient?: readonly string[];
 };
@@ -40,9 +45,13 @@ export function arkenvInternal(
 				strictLayout?: "client" | "server";
 		  }
 		| undefined,
-	/** The core arkenv validation function (either `@arkenv/core` or `@arkenv/standard`). */
+	/**
+	 * The core arkenv validation function (either `@arkenv/core` or `@arkenv/standard`).
+	 */
 	coreArkenv: (schema: any, config?: any) => Record<string, unknown>,
-	/** Extracts the declared key names from a schema object. */
+	/**
+	 * Extracts the declared key names from a schema object.
+	 */
 	getSchemaKeysArg: (schema: SchemaShape) => string[],
 ): unknown {
 	let server: SchemaShape = {};
@@ -56,7 +65,7 @@ export function arkenvInternal(
 		if (process.env.NODE_ENV === "development" && !hasWarnedLegacy) {
 			hasWarnedLegacy = true;
 			logBuildWarning(
-				"Deprecated: The nested layout structure (specifying 'server', 'client', or 'shared' keys in arkenv) is deprecated and will be removed in the next major version. Please migrate to the flat layout. See guide: https://arkenv.js.org/docs/nextjs/faq#how-do-i-define-client-side-variables",
+				"Deprecated: The nested layout structure (specifying 'server', 'client', or 'shared' keys in arkenv) is deprecated and will be removed in the next major version. Please migrate to the flat layout. See guide: https://arkenv.js.org/docs/guides/frameworks/nextjs",
 			);
 		}
 		// Old nested schema behavior (backward compatible)
@@ -296,9 +305,7 @@ export function arkenvInternal(
 
 			if (typeof prop === "string") {
 				if (serverOnlyKeys.has(prop) && !isServer) {
-					throw new Error(
-						`ArkEnv Error: Attempted to access server environment variable '${prop}' on the client.`,
-					);
+					throw new Error(boundaryAccessErrorMessage(prop));
 				}
 
 				// Allow schema keys and standard Object prototype properties

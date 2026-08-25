@@ -1,7 +1,0 @@
-{
-	"title": "@arkenv/vite-plugin",
-	"description": "Plugin for Vite",
-	"root": true,
-	"icon": "Vite",
-	"pages": ["---Guide---", "index", "arkenv-in-viteconfig"]
-}

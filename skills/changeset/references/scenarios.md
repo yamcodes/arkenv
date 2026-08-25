@@ -19,7 +19,7 @@ Categories with parent slugs now correctly link to their parent categories durin
 "arkenv": patch
 ---
 
-#### Add `arkenv` for type-safe environment variables
+#### Add `arkenv` for typesafe environment variables
 
 The new `arkenv` function allows you to define your environment schema using ArkType.
 

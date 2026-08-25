@@ -1,11 +1,11 @@
-import arkenv from "@arkenv/bun-plugin";
+import arkenvPlugin from "@arkenv/bun-plugin";
 
 const result = await Bun.build({
 	entrypoints: ["./src/index.html"],
 	outdir: "./dist",
 	target: "browser",
 	minify: true,
-	plugins: [arkenv],
+	plugins: [arkenvPlugin],
 });
 
 if (!result.success) {

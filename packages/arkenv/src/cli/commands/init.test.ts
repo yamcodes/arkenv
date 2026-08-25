@@ -1,3 +1,4 @@
+import path from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ERROR_CODES } from "@/shared/errors";
 import type {
@@ -346,6 +347,32 @@ describe("InitUseCase", () => {
 			"Technical requirements not met, but continuing due to --force flag.",
 		);
 		expect(logger.refuse).not.toHaveBeenCalled();
+	});
+
+	it("does not read .env contents when collecting an existing project", async () => {
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			path: "./env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+		vi.mocked(workspace.readFile).mockResolvedValue(
+			"SECRET=should-not-be-read\n",
+		);
+
+		await (useCase as any).collect({
+			isYes: true,
+			isForce: false,
+			isQuiet: true,
+			isAgent: false,
+		});
+
+		const envReads = vi
+			.mocked(workspace.readFile)
+			.mock.calls.filter(
+				([filePath]) => path.basename(String(filePath)) === ".env",
+			);
+		expect(envReads).toHaveLength(0);
 	});
 
 	it("should display warnings if requirements have warnings", async () => {

@@ -1,0 +1,137 @@
+---
+title: Vite
+description: Validate Vite environment variables with @arkenv/vite-plugin.
+---
+
+Use `@arkenv/vite-plugin` to validate environment variables during Vite development
+and production builds. The plugin runs in transform mode so client bundles only
+receive public variables (prefixed with `VITE_` by default) while server secrets
+stay protected.
+
+For high-level architectural trade-offs, see
+[Framework integration](/docs/validating-your-environment/framework-integration).
+
+## Quickstart
+
+Scaffold Vite integration in an existing project using the CLI:
+
+```package-install
+npx arkenv@latest init
+```
+
+The CLI installs `@arkenv/vite-plugin`, configures `vite.config.ts`, and scaffolds
+your initial `env.ts` schema file.
+
+## Manual installation
+
+If you prefer manual setup, install `@arkenv/vite-plugin` alongside your chosen
+validation engine.
+
+### ArkType engine
+
+Install `@arkenv/core`, `arktype`, and the Vite plugin:
+
+```package-install
+pnpm add @arkenv/core arktype
+pnpm add -D @arkenv/vite-plugin
+```
+
+### Standard Schema engine
+
+If you aren't using ArkType, install `@arkenv/standard`:
+
+```package-install
+pnpm add @arkenv/standard
+pnpm add -D @arkenv/vite-plugin
+```
+
+## Configuration
+
+Add the plugin to your `vite.config.ts`.
+
+### Register the plugin
+
+Import and register the plugin in your Vite plugins array:
+
+```ts title="./vite.config.ts" twoslash
+import { defineConfig } from "vite";
+import arkenvPlugin from "@arkenv/vite-plugin";
+
+export default defineConfig({
+  plugins: [arkenvPlugin()],
+});
+```
+
+If you aren't using ArkType, import the plugin from `@arkenv/vite-plugin/standard`.
+
+### Define your schema
+
+Create an `env.ts` file in your source tree:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  DATABASE_URL: "string",
+  VITE_API_URL: "string",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+Import `{ env } from "./env"` across your application. In server contexts (such as
+SSR or development scripts), the real validation module runs at boot. In client
+bundles, the Vite plugin rewrites the import to inline public `VITE_` values and
+guards private server keys.
+
+## Reuse the schema in Vite config
+
+Vite does not load `.env*` files while evaluating `vite.config.ts`. When the config
+needs typed values (for example `server.port`), compile a reusable schema with
+`type()` and validate it with core `arkenv()` and `loadEnv`. Register the plugin
+with no schema argument — it still rewrites `env.ts` in the client graph.
+
+```ts title="./vite.config.ts" twoslash
+import { defineConfig, loadEnv } from "vite";
+import arkenvPlugin from "@arkenv/vite-plugin";
+import arkenv, { type } from "@arkenv/core";
+
+export const Env = type({
+  PORT: "number.port = 5173",
+  VITE_API_URL: "string",
+  DATABASE_URL: "string",
+});
+
+export default defineConfig(({ mode }) => {
+  const env = arkenv(Env, { env: loadEnv(mode, process.cwd(), "") });
+  return {
+    // Plugin is transform-only — no schema argument
+    plugins: [arkenvPlugin()],
+    server: { port: env.PORT },
+  };
+});
+```
+
+Learn more in [Reusing schemas](/docs/validating-your-environment/reusing-schemas).
+
+## Client access
+
+Import the validated `env` object from your schema module. Prefer that over reading
+`import.meta.env` for schema keys so server secrets still validate at boot. Types
+and options: [`@arkenv/vite-plugin`](/docs/reference/vite-plugin).
+
+## SSR and dual-graph execution
+
+Vite maintains two distinct module graphs when building and serving full-stack or SSR applications:
+
+- **Server graph:** During SSR execution and dev server requests, `env.ts` executes real `@arkenv/core` runtime validation at boot. It ensures private secrets (such as `DATABASE_URL`) and public configuration validate before handling requests.
+- **Client graph:** During client compilation, `@arkenv/vite-plugin` intercepts and transforms `env.ts`. It inlines public `VITE_*` values as static literals and replaces private server keys with throwing runtime stubs. Client bundles omit the validator engine.
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/reference/vite-plugin" title="@arkenv/vite-plugin reference" description="Transform modes, configuration options, and plugin exports." />
+
+  <Card href="/docs/validating-your-environment/hosting-presets" title="Hosting presets" description="Inject hosting provider system variables into your Vite schema." />
+
+  <Card href="/docs/validating-your-environment/client-vs-server" title="Client vs. server" description="Understand how ArkEnv protects server keys in client bundles." />
+</Cards>

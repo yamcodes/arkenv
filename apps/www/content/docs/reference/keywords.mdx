@@ -1,0 +1,87 @@
+---
+title: keywords
+description: ArkEnv keywords that extend ArkType for common environment shapes.
+---
+
+ArkEnv adds two env-oriented keywords on top of
+[ArkType's keyword set](https://arktype.io/docs/primitives). Use them in
+`arkenv({ ... })` or `type()` from `@arkenv/core`.
+
+<Callout type="info" title="ArkType only">
+  Keywords work with [`@arkenv/core`](/docs/reference/core).
+  [`@arkenv/standard`](/docs/reference/standard) has its own validator
+  map.
+</Callout>
+
+## `string.host`
+
+An IP address (`string.ip`) or the literal `"localhost"`.
+
+<Tabs items={["arkenv", "type"]}>
+  <Tab value="arkenv">
+    ```ts twoslash
+    import arkenv from "@arkenv/core";
+
+    const env = arkenv({
+    	HOST: "string.host",
+    });
+    ```
+  </Tab>
+
+  <Tab value="type">
+    ```ts twoslash
+    import { type } from "@arkenv/core";
+
+    const Host = type("string.host");
+
+    type Host = typeof Host.infer;
+    ```
+  </Tab>
+</Tabs>
+
+<TypeTable expandAll type={{ "string.host": { type: "string.ip | 'localhost'", description: 'An IP address (string.ip) or "localhost".' } }} />
+
+## `number.port`
+
+An integer port in the range `0`-`65535`.
+
+<Tabs items={["arkenv", "type"]}>
+  <Tab value="arkenv">
+    ```ts twoslash
+    import arkenv from "@arkenv/core";
+
+    const env = arkenv({
+    	PORT: "number.port",
+    });
+    ```
+  </Tab>
+
+  <Tab value="type">
+    ```ts twoslash
+    import { type } from "@arkenv/core";
+
+    const Port = type("number.port");
+
+    type Port = typeof Port.infer;
+    ```
+  </Tab>
+</Tabs>
+
+<TypeTable expandAll type={{ "number.port": { type: "0 <= number.integer <= 65535", description: "An integer port in the range 0-65535." } }} />
+
+## Everything else
+
+Other primitives (`string`, `number`, `boolean`, enums, morphs) come from
+ArkType. See
+[Defining types](/docs/validating-your-environment/defining-types) for
+common patterns.
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/reference/schema" title="schema" description="Schema shapes accepted by arkenv()." />
+
+  <Card href="/docs/reference/options" title="options" description="Configuration options passed to arkenv()." />
+
+  <Card href="/docs/reference/core" title="@arkenv/core" description="ArkType engine package reference." />
+</Cards>

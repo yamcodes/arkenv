@@ -1,3 +1,14 @@
 {
-	"pages": ["arkenv", "cli", "nextjs", "nuxt", "vite-plugin", "bun-plugin"]
+	"pages": [
+		"index",
+		"getting-started",
+		"faq",
+		"validating-your-environment",
+		"reference",
+		"core-concepts",
+		"guides",
+		"community",
+		"support-policy",
+		"external:[Changelog](https://github.com/yamcodes/arkenv/releases)"
+	]
 }

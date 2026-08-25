@@ -46,7 +46,7 @@ function handleUserEvent(event: MessageEvent): void {
     console.error('Invalid user data received')
     return
   }
-  sendEmail(event.data.email)  // Type-safe: event.data is User
+  sendEmail(event.data.email)  // Typesafe: event.data is User
 }
 
 function processResponse(data: unknown): User[] {

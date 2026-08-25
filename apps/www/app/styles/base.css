@@ -22,6 +22,7 @@
 	code,
 	pre {
 		font-family: var(--font-geist-mono), var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+		tab-size: 2;
 	}
 
 	button:not(:disabled) {
@@ -34,7 +35,7 @@
 		padding-left: 2.3rem;
 	}
 
-	/* Pin the sticky TOC popover just below our fixed header instead of using fumadocs' row-2 offset */
+	/* Pin sticky TOC popover below fixed Site Nav when FeatureFlags.DOCS_TOC_POPOVER is on */
 	.top-\(--fd-docs-row-2\) {
 		top: var(--fd-nav-height, 80px);
 	}

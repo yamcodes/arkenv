@@ -1,0 +1,90 @@
+---
+title: "@arkenv/bun-plugin"
+description: Bun bundler plugin for build-time validation and BUN_PUBLIC_ isolation.
+---
+
+`@arkenv/bun-plugin` validates environment variables for Bun builds and
+fullstack apps that inline client env. Backend-only Bun scripts use
+[`@arkenv/core`](/docs/reference/core).
+
+## Installation
+
+```package-install
+npm i @arkenv/core arktype
+```
+
+```package-install
+npm i -D @arkenv/bun-plugin
+```
+
+Standard Schema entry: `@arkenv/bun-plugin/standard`.
+
+## Exports
+
+The default export is the hybrid `arkenvPlugin` instance. Named exports provide explicit aliases.
+
+| Export                  | Role                                     |
+| ----------------------- | ---------------------------------------- |
+| default                 | `arkenvPlugin` hybrid plugin instance    |
+| named `arkenvPlugin`    | Hybrid plugin factory and instance       |
+| named `arkenvBunPlugin` | Host-explicit named alias                |
+| named `hybrid`          | Explicit zero-config hybrid plugin alias |
+| `./standard`            | Standard Schema plugin entry             |
+
+`arkenvPlugin` is a hybrid: it functions both as a callable factory (`arkenvPlugin({ schemaPath })`) and directly as a `BunPlugin` object with pre-attached `name`, `target`, and `setup` properties. This enables:
+
+- **Zero-config preload in `bunfig.toml`**: `plugins = ["@arkenv/bun-plugin"]`
+- **Direct registration in `Bun.build`**: `plugins: [arkenvPlugin]`
+- **Customized transform options**: `plugins: [arkenvPlugin({ schemaPath: "./src/env.ts" })]`
+
+`arkenvBunPlugin` provides a host-explicit alias when working in monorepos or alongside other bundler plugins.
+
+Default client prefix: `BUN_PUBLIC_`.
+
+## Usage
+
+Register the plugin in `Bun.build` (or your fullstack server setup).
+
+```ts title="./build.ts"
+import arkenvPlugin from "@arkenv/bun-plugin";
+
+await Bun.build({
+  entrypoints: ["./src/index.ts"],
+  plugins: [arkenvPlugin()],
+});
+```
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  DATABASE_URL: "string",
+  BUN_PUBLIC_API_URL: "string",
+});
+```
+
+## Transform options
+
+Same transform call shape as
+[`@arkenv/vite-plugin`](/docs/reference/vite-plugin):
+
+- `arkenvPlugin()` or `arkenvPlugin({ schemaPath, clientPrefix, ... })` rewrites the
+  schema module in the client graph.
+- A schema argument is rejected. Define the schema in `env.ts` and
+  import `{ env }` from there.
+
+Plugin config omits `safe` so failed validation cannot soft-fail into
+the bundle.
+
+## Types
+
+Import the validated `env` object from your schema module. Prefer that
+over reading `process.env` for schema keys in fullstack apps.
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/guides/frameworks/bun" title="Bun framework guide" description="Step-by-step Bun runtime and bundler recipes." />
+
+  <Card href="/docs/validating-your-environment/client-vs-server" title="Client vs. server" description="Set up security boundaries between public and private keys." />
+</Cards>

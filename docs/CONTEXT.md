@@ -19,13 +19,92 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 The imported validated environment object (`import { env } from "./env"`). This is the **canonical surface** across Next, Nuxt, Vite, and Bun — client and server.
 *Avoid*: treating `import.meta.env` / `process.env` as the recommended ArkEnv API
 
+**Transform** (also **transformation**):
+Schema-agnostic reshape of a validated env value (trim, clamp, map, normalize) during validation. Prefer this word in ArkEnv docs, skills, and issue language whenever the behavior is not tied to one schema library. Docs show ArkType and Standard Schema (Zod, …) examples side by side as first-class paths.
+*Avoid*: using **morph** as the default product term for this idea; treating `@arkenv/standard` / Zod as an afterthought section
+
+**Morph**:
+ArkType’s name for a **transform** (`.pipe` morphs; ArkType docs also say “transformation”). Use when talking about ArkType APIs or linking to [ArkType morphs](https://arktype.io/docs/intro/morphs-and-more). Zod’s parallel is `.transform`; Valibot uses pipe/transform helpers.
+*Avoid*: treating Morph as ArkEnv’s cross-validator vocabulary
+
+**Coercion**:
+ArkEnv’s pre-validation step that turns raw env strings into numbers, booleans, arrays, and objects before the schema library runs. Distinct from a **transform**: coercion is ArkEnv-owned and schema-introspected; transforms are declared on the field schema. Applies to both `@arkenv/core` and `@arkenv/standard`.
+*Avoid*: calling coercion a morph/transform, or calling a Zod `.transform` “coercion” unless the library’s own coerce helpers are meant
+
+**toJsonSchema** (escape hatch):
+Optional `@arkenv/standard` config callback that supplies JSON Schema for **coercion** when using custom converters or schema libraries not covered by first-class subpaths (`@arkenv/standard/valibot`, `@arkenv/standard/zod-mini`). Fallback after on-value probes. Parameter is `StandardSchemaV1`; assert at the host converter.
+*Avoid*: per-key wrappers as the happy path; auto-detect by `vendor`; documenting `toJsonSchema` as the primary Valibot getting-started path (use `@arkenv/standard/valibot` instead)
+
+**Engine** (`@arkenv/core` / `@arkenv/standard`):
+The two first-class validation entry points. Same `arkenv()` runtime options, errors, and framework plugins; different schema authoring style and peers (`@arkenv/standard` offers dedicated `./valibot` and `./zod-mini` subpaths; classic Zod uses root `@arkenv/standard`). Prefer dual examples (Tabs) in docs over core-first prose with a Standard Schema appendix.
+*Avoid*: framing Standard Schema as migration-only or second-class
+
 **Schema/define path**:
-The Vite plugin call shape `arkenv(schema)` that validates at build time and inlines via Vite `define` into `import.meta.env.*`, with types from `ImportMetaEnvAugmented`. Still supported so existing apps keep working (#1328 acceptance). Lasting product stance is the open call on **#1333** (gates CLI #1332 and related SPA-mode work).
-*Avoid*: **SPA mode** as the product name in examples, changelogs, or new docs for this path until #1333 decides
+The legacy v0 pattern (`arkenv(schema)` plugin argument with native-accessor `define` rewriting and ambient `.d.ts` augmentations). Dropped in v1 (ADR 0021, #1333) in favor of the unified `import { env } from "./env"` object surface across all frameworks.
+*Avoid*: recommending schema/define or ambient `.d.ts` augmentations in v1 docs, CLI, or skills; framing SPA mode as a supported v1 path
+
+### Site chrome (www)
+
+**Logo top-left**:
+Axiom for www chrome — the brand mark sits at the start of **Site Nav** (top-left of the floating bar), on home, docs, and orphans. The chrome may change form or extras; the logo’s page-corner role does not.
+*Avoid*: centered floating chrome that moves the logo away from the top-left; a third orphan-only placement
+
+**Glass material**:
+The shared translucent surface language for site chrome — hairline border, soft shadow, backdrop blur/saturation — inspired by iOS liquid glass.
+*Avoid*: treating home and docs as separate visual systems; “frosted glass” as a distinct product term
+
+**Site Nav**:
+The primary site-wide navigation chrome for [www](http://www). One header everywhere: **Glass material**, **Floating bar**, **logo top-left**, centered **Nav core** links, theme + GitHub on the right, then a shared right **action pill**. Owned as www site chrome — not a generic docs-kit primitive.
+*Avoid*: Header (when meaning the whole site chrome); separate home vs docs chrome families; centered content-sized pill; publishing Site Nav as `@arkenv/fumadocs-ui` API; search on home
+
+**Nav core**:
+The shared **Site Nav** contents on every surface and breakpoint: primary links **Docs**, **Playground** (StackBlitz, external, with an up-right icon), and **Roadmap** (external, with an up-right icon), centered in the bar; plus theme and GitHub on the right. On small screens the primary links live in a hamburger menu.
+*Avoid*: Demo as an in-page `#demo` section; Why ArkEnv? / Presets as core links; Get started or Search as core links; “Documentation” as a separate label from **Docs**; Roadmap or Playground without an external-link affordance
+
+**Action pill**:
+The shared rightmost control slot in **Site Nav** — identical height, min-width, padding, and capsule radius. Home/orphan fills it with **Get started**; docs fills it with **Search**. Not both.
+*Avoid*: differently sized Get started vs Search; search on home; Get started on docs
+
+**Floating bar**:
+The shared **Site Nav** geometry — inset from the top and sides, capsule pill radius, **logo top-left**, bounded by the page column (`--fd-layout-width`) so it does not stretch edge-to-edge on ultrawide. On docs, the logo sits above the left sidebar. Uses **Glass densify** on scroll on every surface. Positioned with sticky + absolute (not `position: fixed`) so glass blur can sample page content.
+*Avoid*: viewport-wide chrome on ultrawide; edge-to-edge top strip; solid-at-rest / glass-after-scroll swap; Fumadocs default nav as the lasting design intent
+
+**Menu panel**:
+The solid full-viewport sheet opened by the **Site Nav** hamburger on small screens. Temporary takeover for choosing a destination; not glass.
+*Avoid*: glass mobile drawer; merging with the docs sidebar drawer
+
+**Glass densify**:
+A scroll-driven increase in **Glass material** opacity/blur so content sliding under the **Floating bar** stays readable, without ever dropping to a solid non-glass rest state.
+*Avoid*: opaque header; binary solid↔glass swap
+
+## Relationships
+
+- **Site Nav** is the same header on home, docs, and orphans
+- **Logo top-left**; **Nav core** links centered; theme + GitHub then the **action pill** on the right
+- Home/orphan **action pill** = **Get started**; docs **action pill** = **Search** (same footprint)
+- Docs still mounts a mobile sidebar trigger (tree access) without changing the shared chrome layout
+- **Roadmap** is part of **Nav core** (external link with icon)
+- **Glass densify** applies on every surface
+- The hamburger **menu panel** is a solid full-viewport sheet
+- **Site Nav** is www-owned; package `Header` is removed when it ships
+- **Coercion** runs before schema validation; a **transform** (ArkType **morph**, Zod `.transform`, …) runs as part of the schema
+- Prefer **transform** in product language; reserve **morph** for ArkType-specific discussion
+- **toJsonSchema** is `@arkenv/standard` only; `@arkenv/core` introspects ArkType JSON Schema without that callback
 
 ## Flagged ambiguities
 
-- **"SPA mode"** (#1105 / canonical env-object ADR): previously named the schema/define path as a permanent documented mode. Continuity-alone justification is rejected. Lasting stance (documented escape hatch vs time-boxed deprecate/remove) is **deferred** to **#1333** pending hands-on play with the transform DX. Current lean: teach **env object** only in docs/CLI defaults; keep schema/define working but unbranded until the call. The env-object ADR's soft-landing / "SPA mode" framing may need an amendment after that decision. (Ported to `v1` as **ADR 0021** / `0021-env-object-canonical-surface`; on `dev` it remains `0015-env-object-canonical-surface`. On `v1`, ADR **0015** is still Next.js conditional exports.)
+- **"SPA mode"** (#1105 / canonical env-object ADR) — **resolved** (#1333 / ADR 0021 amendment): Option 3 (Remove / don't offer) adopted for v1. Schema/define path and ambient `.d.ts` augmentations are dropped; `import { env } from "./env"` is the sole canonical surface across all frameworks. SPA mode is not a supported v1 path. (On `v1`, ADR **0021** is the canonical env object record; ADR **0015** is Next.js conditional exports. On `dev` the canonical env object remains `0015-env-object-canonical-surface`.)
+- **"Header"** / home vs docs chrome — resolved: one **Site Nav**; home/docs differ only by **action pill** contents (Get started vs Search).
+- **Package `Header` vs www chrome** — resolved: **Site Nav** lives in www; package `Header` removed (alpha; www was the only consumer).
+- **Centered home pill vs logo top-left** — resolved: shared **Floating bar**, logo top-left, links centered.
+
+## Example dialogue
+
+> **Dev:** "Should home and docs keep slightly different headers?"
+> **Domain expert:** "No — one **Site Nav**. Logo left, links centered, GitHub right. The last control is an **action pill**: Get started on home, Search on docs — same size."
+>
+> **Dev:** "Where does Roadmap go?"
+> **Domain expert:** "In **Nav core**, with an external icon — same on every surface."
 
 ## Tech stack
 
@@ -98,7 +177,7 @@ The Vite plugin call shape `arkenv(schema)` that validates at build time and inl
 
 - **Packages** (`packages/`) - Published npm packages
   - `@arkenv/core` - Core library package with native ArkType support
-  - `@arkenv/standard` - ArkType-free Standard Schema entrypoint
+  - `@arkenv/standard` - ArkType-free Standard Schema entrypoint (with `./valibot` and `./zod-mini` subpaths)
   - `@arkenv/vite-plugin` - Vite plugin package
   - `@arkenv/bun-plugin` - Bun plugin package
   - `@arkenv/nextjs` - Next.js integration package
@@ -213,7 +292,7 @@ pnpm run test:e2e                     # E2E tests
 - Framework intros must not say the integration "requires ArkType". Users install either `@arkenv/core` (+ `arktype`) or `@arkenv/standard` (+ their validator).
 - "Zod, Valibot, and other Standard Schema validators" pages lead with Standard Mode (`@arkenv/*/standard`); mixing validators into the ArkType path is secondary.
 - FAQ coverage: sharpen the core FAQ (“Do I have to use ArkType?”) and add matching Next/Nuxt FAQ entries that point at `/standard` install + the validators pages.
-- Nuxt docs treat **flat layout** as the canonical DX layout (not “simple”). Validators examples and the Nuxt intro card should point at flat. The leftover `layouts/simple.mdx` page was removed; `/docs/nuxt/layouts/simple` redirects to flat.
+- Nuxt docs treat **flat layout** as the canonical DX layout (not “simple”). Validators examples and the Nuxt intro card should point at flat. The leftover `layouts/simple.mdx` page was removed; `/docs/nuxt/layouts/simple` permanently redirects to `/docs/guides/frameworks/nuxt`.
 - Next.js Standard Mode docs lead with the **codegen** happy path (`import arkenv from "./generated/env.gen"`); direct `@arkenv/nextjs/standard` + manual `runtimeEnv` is documented as the no-codegen alternative.
 - Same “does not require ArkType” framing applies lightly to Vite and Bun intros (remove the requires-ArkType callout; keep Standard install path). Fumadocs titled callouts use `:::important[Title]` / `:::tip[Title]`, not a bare `:::important` with the title as body text.
 - Package READMEs (`@arkenv/nextjs`, `@arkenv/nuxt`): light touch only — mention Standard Mode + `/standard`; no full README rewrite in this pass.
@@ -297,6 +376,73 @@ Module setup / `nuxt build` may still run core validation against the build envi
 > **Dev:** “Can we make Nuxt completely Vite-plugin-based like Solid Start?”
 > **Domain expert:** “Not as the only transport. Solid Start’s public keys are build-time; Nuxt’s can change via a **Nitro boot override**. Honesty requires the **Nuxt honesty transport** — the **Nuxt boot gate** (module-loaded schema, **boot gate scheduling**) coerces into `runtimeConfig` after that override, then **symmetric thin accessors**. The Vite plugin stays for import blocking; **client validator isolation** is a thin package entry, not a #1328-style rewrite. Keep the **Build-time schema check** for CI, but don’t confuse it with deploy honesty.”
 
+### Docs site navigation
+
+Language for the documentation website (`apps/www`) nav chrome. See **ADR 0022** (desktop) and **ADR 0026** (mobile).
+
+**Drill-in Sidebar**:
+The **desktop** docs sidebar: opening a **Section** replaces the current list with that section’s children, instead of expanding them inline.
+*Avoid*: Accordion / **Sidebar Tree** for the desktop root↔section transition; paged sidebar (informal)
+
+**Sidebar Tree**:
+The **mobile** docs drawer: every **Section** stays on one list and expands in place (title → **Overview**, chevron toggles children). No **Sidebar Page**, no Back.
+*Avoid*: Drill-in (in the mobile drawer); calling this a dropdown
+
+**Sidebar Page**:
+One full list view inside a **Drill-in Sidebar** (root index, or the contents of one **Section**). Desktop only.
+*Avoid*: Panel, screen, view (when referring to sidebar navigation state)
+
+**Section**:
+A root-level folder in the docs page tree. On desktop it drills into its own **Sidebar Page** (trailing chevron). On mobile it expands in the **Sidebar Tree**. Drill-in is one level only.
+*Avoid*: Category, group, accordion, folder (in UX copy)
+
+**Nested Folder**:
+A real folder under a **Section** (true URL depth n=2, e.g. `/docs/guides/frameworks/nextjs`). Does not drill: title navigates to the folder’s overview page; a separate chevron toggles **indented** child **Leaves** (starts expanded). Max one Nested Folder level inside a Section (no n=3). Same on desktop **Sidebar Page** and mobile **Sidebar Tree**.
+*Avoid*: Nested Group (retired — conflated with Separator), Section (root only), sub-section (vague)
+
+**Leaf**:
+A sidebar item that navigates to a docs URL without changing **Sidebar Page** (desktop) or expanding a folder (mobile).
+*Avoid*: Link item, page link (when contrasting with Section)
+
+**Overview**:
+The index page of a **Section**. On desktop it is listed first on that section’s **Sidebar Page**. On mobile the **Section** title itself navigates here (no extra Overview row). Opening a **Section** on desktop navigates here so a **Leaf** is always selected.
+*Avoid*: Section landing (informal), index (when speaking in UX terms)
+
+**External Leaf**:
+A **Leaf** that leaves the docs site (external URL), shown with an external-link affordance.
+*Avoid*: Outlink (unless needed in code)
+
+**Separator**:
+A non-interactive muted label that only **groups** sibling **Leaves** under a **Section** (from meta `---Label---` entries). URLs stay flat under the **Section** (n=1), e.g. `/docs/reference/system-environment-variables` with a “Configuration” label above — not a Nested Folder. Page-header taglines treat these as Section-only (`X`), never `X > Y`.
+*Avoid*: Nested Folder, divider, heading (when referring to nav chrome)
+
+**Relationships**:
+
+- **Desktop** uses a **Drill-in Sidebar** (exactly one **Sidebar Page** at a time). **Mobile** uses a **Sidebar Tree** (all **Sections** on one list; expand in place)
+- Only **Sections** (root folders) open a child **Sidebar Page** on desktop; Back returns to the root **Sidebar Page**. Mobile has no Back
+- Inside a **Section**, authors choose **Nested Folder** (true n=2 URL + collapsible indented children) or **Separator** (visual group only, flat URLs) — same on both surfaces
+- **Nested Folders** are at most one level inside a **Section** (n=2 max); they collapse/expand and do not drill
+- **Sidebar Page** selection is **URL-driven** on load and when the docs URL changes
+- Every **Section** has an **Overview** index. Desktop: clicking a **Section** opens that Overview (drill + navigate) so a **Leaf** is always selected. Mobile: the **Section** title is that Overview link
+- **Leaf** clicks change the URL. Desktop Back returns to the root **Sidebar Page** without changing the URL
+- **Changelog** is an **External Leaf** to GitHub Releases; no Glossary **External Leaf** until a glossary exists
+
+**Example dialogue**:
+
+> **Dev:** "If Guides has a Continuous Integration folder under it, do we drill in again?"
+> **Domain expert:** "No. Guides is the **Section**. Continuous Integration is a **Nested Folder** — collapsible header, indented children, URL like `/docs/guides/ci-vendors/vercel`. API reference’s “Configuration” label is a **Separator** over flat pages — not the same thing."
+
+> **Dev:** "Should the mobile drawer drill into Guides the way desktop does?"
+> **Domain expert:** "No. Mobile is a **Sidebar Tree** — Guides expands in place. Drill-in is the desktop rail only (ADR 0026)."
+
+**Flagged ambiguities**:
+
+- "paged sidebar" → **Drill-in Sidebar** / **Sidebar Page** (desktop)
+- "accordion" / "dropdown" on mobile → **Sidebar Tree**
+- "n=2" / "Nested Group" → **Nested Folder** (URL depth) vs **Separator** (visual only)
+- Visual direction is **hybrid**: Turbo structure/motion/active-pill; ArkEnv color tokens
+- Sidebar Install banner removed; use **Separators** for flat reference groupings and **Nested Folders** only when the URL is truly nested
+
 ### Environment Variable Validation
 
 - ArkEnv uses ArkType's type system to validate environment variables
@@ -355,6 +501,7 @@ Module setup / `nuxt build` may still run core validation against the build envi
 - `ArkEnvError` extends `Error` and formats ArkType validation errors
 - Errors include variable names and expected types
 - Fail-fast approach: app won't start if validation fails
+- **Boundary access error**: A native `Error` thrown when client code reads a server-only env key (Next.js, Nuxt, Vite, Bun). It is **not** an `ArkEnvError` instance — client-generated modules must stay import-free of the class, and there are no `EnvIssue`s. Leave `error.name` as `"Error"`. Message uses Next.js taint voice: `Do not access server-only key '${key}' on the client since it will leak sensitive data (prevented by ArkEnv)` (no trailing period). Do not catch this throw; fix the access. Do not add a public `isArkEnvError` helper or fake `instanceof` via `Symbol.hasInstance`. See [ADR 0024](./adr/0024-sibling-error-names.md).
 
 ## Important constraints
 

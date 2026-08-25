@@ -25,11 +25,13 @@ export function AnnouncementBadge({
 }>) {
 	return (
 		<Link href={href} data-no-underline className="home-aurora__announce">
-			{newBadge ? <NewBadge className="home-aurora__announce-new" /> : null}
+			{newBadge ? (
+				<NewBadge className="home-aurora__announce-new rounded-full" />
+			) : null}
 			<span
 				className={`home-aurora__announce-label${!newBadge ? " home-aurora__announce-label--solo" : ""}`}
 			>
-				{children}
+				<span className="home-aurora__announce-text">{children}</span>
 				{arrow &&
 					href &&
 					(isExternalUrl(href) ? (

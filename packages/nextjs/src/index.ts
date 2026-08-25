@@ -26,7 +26,7 @@ type ClientVisibleKeys<
 }[keyof TSchema];
 
 /**
- * Create a validated, type-safe environment configuration for Next.js applications (Client-side / SSR entry point).
+ * Create a validated, typesafe environment configuration for Next.js applications (Client-side / SSR entry point).
  */
 export function arkenv<
 	const TSchema extends SchemaShape & { runtimeEnv?: never } = {},
@@ -41,9 +41,13 @@ export function arkenv<
 		 * Use this option to expose custom variables that do not have the `NEXT_PUBLIC_` prefix.
 		 */
 		exposeToClient?: readonly TExpose[];
-		/** @deprecated Use `exposeToClient` instead */
+		/**
+		 * @deprecated Use `exposeToClient` instead
+		 */
 		expose?: readonly TExpose[];
-		/** @deprecated Use `exposeToClient` instead */
+		/**
+		 * @deprecated Use `exposeToClient` instead
+		 */
 		shared?: readonly TExpose[];
 		extends?: [...TExtends];
 		runtimeEnv?: Record<string, unknown>;
@@ -107,9 +111,4 @@ export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
 export type { ArkEnvScriptProps } from "./script";
 export { ArkEnvScript } from "./script";
 
-/**
- * ArkEnv's Next.js integration export
- *
- * {@link https://arkenv.js.org | ArkEnv} is a typesafe environment variables validator from editor to runtime.
- */
 export default arkenv;

@@ -6,10 +6,10 @@ import type { FlatSchemaOptions } from "./schema-shape";
 import { dispatchFlatThinArkenv } from "./thin-accessor";
 
 /**
- * Create a typesafe environment configuration for Nuxt (flat / unified entry).
+ * Create a typesafe environment configuration for Nuxt (nested schema).
  *
- * Values are read from the Nitro boot-gate coerced `runtimeConfig` / `__NUXT__`
- * payload — this entry does not run core validation.
+ * Reads already-coerced values from Nuxt `runtimeConfig` / `__NUXT__`.
+ * This entry does not re-validate.
  *
  * @param options Nested server/client/shared schema options
  * @returns A readonly environment proxy

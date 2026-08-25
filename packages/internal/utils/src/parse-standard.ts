@@ -45,10 +45,9 @@ export type ParseStandardConfig = {
 	/**
 	 * Control how ArkEnv handles environment variables that are not defined in your schema.
 	 *
-	 * Defaults to `'delete'` to ensure your output object only contains
-	 * keys you've explicitly declared.
+	 * Defaults to `'delete'` so the output object only contains keys you've declared.
 	 *
-	 * - `delete` (ArkEnv default): Undeclared keys are allowed on input but stripped from the output.
+	 * - `delete` (default): Undeclared keys are allowed on input but stripped from the output.
 	 * - `ignore`: Undeclared keys are allowed and preserved in the output.
 	 * - `reject`: Undeclared keys will cause validation to fail.
 	 *
@@ -63,13 +62,68 @@ export type ParseStandardConfig = {
 
 	/**
 	 * Whether to perform best-effort coercion on the environment variables.
-	 * Coercion requires validators that implement the StandardJSONSchemaV1 spec
-	 * (e.g. Zod, Valibot).
+	 * Coercion prefers validators that expose Standard JSON Schema on the value
+	 * itself (e.g. Zod). For converters that live outside the schema (e.g. Valibot
+	 * via `@valibot/to-json-schema`, Zod Mini via `z.toJSONSchema`, or Zod v3 via
+	 * `zod-to-json-schema`), pass {@link toJsonSchema}.
 	 *
 	 * @see https://standard-schema.dev
 	 * @default true
 	 */
 	coerce?: boolean;
+
+	/**
+	 * Optional fallback that converts a Standard Schema validator to JSON Schema
+	 * for ArkEnv pre-coercion when a key has no Standard JSON Schema on the value.
+	 *
+	 * Called per key only in that case. Not called when omitted, when `coerce` is
+	 * `false`, or when JSON Schema was already read from the value.
+	 *
+	 * - Return a plain object to use as that key's JSON Schema.
+	 * - Return `undefined` to skip coercion for that key only.
+	 * - Throwing or returning a non-plain object fails the parse with
+	 *   {@link ArkEnvError} for that key (`INVALID_SCHEMA`).
+	 *
+	 * Typed as {@link StandardSchemaV1}. Host converters (Valibot, Zod Mini,
+	 * Zod v3 via `zod-to-json-schema`) do not accept that type — assert at the
+	 * converter call (`as v.GenericSchema`, `as z.ZodMiniType`,
+	 * `as z.ZodTypeAny`). Same assertion for a single-library map and a hybrid
+	 * with classic Zod (Zod never reaches this callback at runtime).
+	 *
+	 * @example Valibot wiring
+	 * ```ts
+	 * import { toJsonSchema } from "@valibot/to-json-schema";
+	 * import * as v from "valibot";
+	 *
+	 * arkenv(
+	 *   { PORT: v.number() },
+	 *   {
+	 *     toJsonSchema: (schema) =>
+	 *       toJsonSchema(schema as v.GenericSchema, {
+	 *         typeMode: "input",
+	 *         target: "draft-07",
+	 *       }),
+	 *   },
+	 * );
+	 * ```
+	 *
+	 * @example Zod v3 wiring
+	 * ```ts
+	 * import { z } from "zod/v3";
+	 * import { zodToJsonSchema } from "zod-to-json-schema";
+	 *
+	 * arkenv(
+	 *   { PORT: z.number() },
+	 *   {
+	 *     toJsonSchema: (schema) =>
+	 *       zodToJsonSchema(schema as z.ZodTypeAny, {
+	 *         $refStrategy: "none",
+	 *       }),
+	 *   },
+	 * );
+	 * ```
+	 */
+	toJsonSchema?: (schema: StandardSchemaV1) => object | undefined;
 
 	/**
 	 * The format to use for array parsing when coercion is enabled.
@@ -120,6 +174,7 @@ export function parseStandard(
 		coerce = true,
 		arrayFormat = "comma",
 		emptyAsUndefined = false,
+		toJsonSchema,
 	} = config;
 	const output: Record<string, unknown> = {};
 	const errors: EnvIssue[] = [];
@@ -134,8 +189,10 @@ export function parseStandard(
 		arrayFormat,
 		coerce
 			? () => {
-					const { jsonSchema, hasJsonSchema, missingKeys } =
-						extractJsonSchema(def);
+					const { jsonSchema, hasJsonSchema, missingKeys } = extractJsonSchema(
+						def,
+						toJsonSchema,
+					);
 					return {
 						schema: jsonSchema,
 						hasSchema: hasJsonSchema,

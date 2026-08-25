@@ -19,6 +19,12 @@
 			"framework": "nextjs"
 		},
 		{
+			"id": "with-nextjs-zod",
+			"name": "Next.js (Zod)",
+			"description": "Minimal Next.js project with @arkenv/nextjs/standard and Zod",
+			"framework": "nextjs"
+		},
+		{
 			"id": "with-nuxt",
 			"name": "Nuxt",
 			"description": "Minimal Nuxt project with ArkType",
@@ -28,6 +34,12 @@
 			"id": "with-vite-react",
 			"name": "React + Vite",
 			"description": "React + Vite + ArkType (Client-side inlining)",
+			"framework": "vite"
+		},
+		{
+			"id": "with-vite-react-zod",
+			"name": "React + Vite (Zod)",
+			"description": "React + Vite with @arkenv/vite-plugin/standard and Zod",
 			"framework": "vite"
 		},
 		{
@@ -52,6 +64,12 @@
 			"id": "with-valibot",
 			"name": "Valibot",
 			"description": "Minimal Node.js project using Valibot instead of ArkType",
+			"framework": "vanilla"
+		},
+		{
+			"id": "mix-and-match",
+			"name": "Mix and Match",
+			"description": "Minimal Node.js project mixing ArkType, Zod, and Valibot in @arkenv/core",
 			"framework": "vanilla"
 		}
 	]

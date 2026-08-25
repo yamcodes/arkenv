@@ -1,4 +1,8 @@
-import { getPresetKeys } from "@/features/scaffold/presets";
+import {
+	formatPresetEndMarker,
+	formatPresetStartMarker,
+	getPresetKeys,
+} from "@/features/scaffold/presets";
 import type { ScaffoldContext } from "@/features/scaffold/scaffold-context";
 import type { Dialect } from "./dialects";
 import {
@@ -28,13 +32,14 @@ function appendPresetStrictFields(
 	dialect: Dialect,
 	context: ScaffoldContext,
 ): void {
-	const presetKeys = getPresetKeys(
-		context.hostPreset ?? "none",
-		context.clientPrefix,
-	);
+	if (!context.hostPreset || context.hostPreset === "none") return;
+	const presetKeys = getPresetKeys(context.hostPreset, context.clientPrefix);
+	const clientPresetFields: string[] = [];
+	const serverPresetFields: string[] = [];
+
 	for (const key of presetKeys) {
 		if (context.clientPrefix && key.startsWith(context.clientPrefix)) {
-			fields.clientFields.push(
+			clientPresetFields.push(
 				dialect.formatStrictField(
 					key,
 					"client",
@@ -44,7 +49,7 @@ function appendPresetStrictFields(
 			);
 			fields.runtimeEnvFields.push(`${key}: process.env.${key},`);
 		} else {
-			fields.serverFields.push(
+			serverPresetFields.push(
 				dialect.formatStrictField(
 					key,
 					"server",
@@ -53,6 +58,21 @@ function appendPresetStrictFields(
 				),
 			);
 		}
+	}
+
+	if (clientPresetFields.length > 0) {
+		fields.clientFields.push(
+			formatPresetStartMarker(`${context.hostPreset}:client`),
+			...clientPresetFields,
+			formatPresetEndMarker(`${context.hostPreset}:client`),
+		);
+	}
+	if (serverPresetFields.length > 0) {
+		fields.serverFields.push(
+			formatPresetStartMarker(`${context.hostPreset}:server`),
+			...serverPresetFields,
+			formatPresetEndMarker(`${context.hostPreset}:server`),
+		);
 	}
 }
 
@@ -106,6 +126,11 @@ export function assembleStrictFromDialect(
 	const clientObject = formatSchemaObject(clientFields, "\t\t");
 	const serverObject = formatSchemaObject(serverFields, "\t\t");
 	const extra = dialect.strictExtraImports;
+
+	const autoExtendServerFrameworks = new Set(["nuxt", "nextjs"]);
+	const usesServerAutoExtend = autoExtendServerFrameworks.has(
+		context.framework,
+	);
 
 	const nuxtClientTemplate = `import arkenv from "${clientImportPath}";
 ${extra}
@@ -161,14 +186,13 @@ export const SharedSchema = ${dialect.wrapSharedSchema(sharedObject)};`,
 					? nuxtClientTemplate
 					: manualClientNoCodegen,
 
-			server:
-				context.framework === "nuxt"
-					? `import arkenv from "${pkgName}/server";
+			server: usesServerAutoExtend
+				? `import arkenv from "${pkgName}/server";
 ${extra}
 export const env = arkenv(
 	${serverObject},
 );`
-					: `import arkenv from "${pkgName}/server";
+				: `import arkenv from "${pkgName}/server";
 ${extra}import { env as clientEnv } from "./client";
 
 export const env = arkenv(

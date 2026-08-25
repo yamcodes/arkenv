@@ -61,7 +61,7 @@ describe("validators templates", () => {
 				"NODE_ENV: \"'development' | 'production' | 'test' = 'development'\"",
 			);
 			expect(template).toContain('PORT: "number.port = 3000"');
-			expect(template).toContain("export const env = arkenv(Env)");
+			expect(template).toContain("export const env = arkenv({");
 		});
 
 		it("returns arktype template with envKeys and defaults", () => {
@@ -234,17 +234,12 @@ describe("validators templates", () => {
 				shouldInstall: false,
 			};
 			const template = getSimpleTemplate(options);
-			expect(template).toContain('import { type } from "@arkenv/core"');
+			expect(template).toContain('import arkenv, { type } from "@arkenv/core"');
 			expect(template).toContain(
 				"NODE_ENV: \"'development' | 'production' | 'test' = 'development'\"",
 			);
 			expect(template).toContain('PORT: "number.port = 3000"');
-			expect(template).not.toContain("export const env = arkenv(Env)");
-			expect(template).toContain("export const Env = type({");
-			expect(template).toContain("use `@arkenv/vite-plugin` to validate these");
-			expect(template).toContain(
-				"typesafety for `@import.meta.env`".replace("@", ""),
-			);
+			expect(template).toContain("export const env = arkenv({");
 		});
 
 		it("returns arktype template for bun-fullstack when validator is arktype", () => {
@@ -257,20 +252,12 @@ describe("validators templates", () => {
 				shouldInstall: false,
 			};
 			const template = getSimpleTemplate(options);
-			expect(template).toContain('import { type } from "@arkenv/core"');
+			expect(template).toContain('import arkenv, { type } from "@arkenv/core"');
 			expect(template).toContain(
 				"NODE_ENV: \"'development' | 'production' | 'test' = 'development'\"",
 			);
 			expect(template).toContain('PORT: "number.port = 3000"');
-			expect(template).not.toContain("export const env = arkenv(Env)");
-			expect(template).toContain("export const Env = type({");
-			expect(template).toContain(
-				"In Bun Fullstack, use \\`@arkenv/bun-plugin\\`".replace(/\\/g, ""),
-			);
-			expect(template).toContain("validate these at build-time");
-			expect(template).toContain(
-				"typesafety for \\`process.env\\`".replace(/\\/g, ""),
-			);
+			expect(template).toContain("export const env = arkenv({");
 		});
 
 		it("returns zod template when validator is zod", () => {
@@ -301,9 +288,9 @@ describe("validators templates", () => {
 				shouldInstall: false,
 			};
 			const template = getSimpleTemplate(options);
-			expect(template).toContain('import { type } from "@arkenv/core"');
+			expect(template).toContain('import arkenv from "@arkenv/standard"');
 			expect(template).toContain('import { z } from "zod"');
-			expect(template).toContain("export const Env = type({");
+			expect(template).toContain("export const env = arkenv({");
 		});
 
 		it("returns zod template with envKeys and defaults", () => {
@@ -353,9 +340,9 @@ describe("validators templates", () => {
 				shouldInstall: false,
 			};
 			const template = getSimpleTemplate(options);
-			expect(template).toContain('import { type } from "@arkenv/core"');
+			expect(template).toContain('import arkenv from "@arkenv/standard"');
 			expect(template).toContain('import * as v from "valibot"');
-			expect(template).toContain("export const Env = type({");
+			expect(template).toContain("export const env = arkenv({");
 		});
 
 		it("returns valibot template with envKeys and defaults", () => {
@@ -395,7 +382,10 @@ describe("validators templates", () => {
 			expect(templates.client).not.toContain(
 				"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
 			);
-			expect(templates.server).toContain("extends: [clientEnv],");
+			expect(templates.server).not.toContain("extends: [clientEnv]");
+			expect(templates.server).not.toContain(
+				'import { env as clientEnv } from "./client"',
+			);
 		});
 
 		it("returns strict templates with custom nextjsImportPath", () => {
@@ -435,7 +425,30 @@ describe("validators templates", () => {
 			expect(templates.client).toContain(
 				"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
 			);
-			expect(templates.server).toContain("extends: [clientEnv],");
+			expect(templates.server).not.toContain("extends: [clientEnv]");
+			expect(templates.server).not.toContain(
+				'import { env as clientEnv } from "./client"',
+			);
+		});
+
+		it("returns simplified Next.js strict server template without manual extends", () => {
+			const options = {
+				validator: "arktype" as const,
+				framework: "nextjs" as const,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+			};
+			const templates = getStrictTemplates(options);
+			expect(templates.server).toContain(
+				'import arkenv from "@arkenv/nextjs/server"',
+			);
+			expect(templates.server).not.toContain("extends: [clientEnv]");
+			expect(templates.server).not.toContain(
+				'import { env as clientEnv } from "./client"',
+			);
+			expect(templates.server).toContain("export const env = arkenv(");
 		});
 
 		it("returns simplified Nuxt strict server template without manual extends", () => {
@@ -528,11 +541,13 @@ describe("validators templates", () => {
 				hostPreset: "vercel" as const,
 			};
 			const template = getSimpleTemplate(options);
+			expect(template).toContain("// @arkenv-preset-start vercel");
 			expect(template).toContain('VERCEL: "string?"');
 			expect(template).toContain(
 				"VERCEL_ENV: \"'production' | 'preview' | 'development'?\"",
 			);
 			expect(template).toContain('VERCEL_URL: "string?"');
+			expect(template).toContain("// @arkenv-preset-end vercel");
 		});
 
 		it("includes Vercel preset with Zod validator in flat Next.js layout", () => {
@@ -545,6 +560,7 @@ describe("validators templates", () => {
 				hostPreset: "vercel" as const,
 			};
 			const template = getSimpleTemplate(options);
+			expect(template).toContain("// @arkenv-preset-start vercel");
 			expect(template).toContain("VERCEL: z.string().optional()");
 			expect(template).toContain(
 				'VERCEL_ENV: z.enum(["production", "preview", "development"]).optional()',
@@ -555,6 +571,30 @@ describe("validators templates", () => {
 			expect(template).toContain(
 				"NEXT_PUBLIC_VERCEL_URL: z.string().optional()",
 			);
+			expect(template).toContain("// @arkenv-preset-end vercel");
+		});
+
+		it("includes role-suffixed markers in strict layout templates", () => {
+			const options = {
+				validator: "arktype" as any,
+				framework: "nextjs" as any,
+				layout: "strict" as const,
+				path: "env.ts",
+				language: "ts" as const,
+				shouldUpdateTsConfig: false,
+				shouldInstall: false,
+				hostPreset: "vercel" as const,
+			};
+			const templates = getStrictTemplates(options);
+
+			expect(templates.client).toContain(
+				"// @arkenv-preset-start vercel:client",
+			);
+			expect(templates.client).toContain("// @arkenv-preset-end vercel:client");
+			expect(templates.server).toContain(
+				"// @arkenv-preset-start vercel:server",
+			);
+			expect(templates.server).toContain("// @arkenv-preset-end vercel:server");
 		});
 
 		it("includes Netlify preset with Valibot in strict Next.js layout", () => {

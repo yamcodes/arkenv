@@ -1,221 +1,127 @@
 import type { Metadata } from "next";
 import { AnnouncementBadge } from "~/components/announcement-badge";
 import {
-	AgentNativePitch,
-	BeforeAfterCompare,
+	AutocompleteShowcase,
 	BringYourOwnValidator,
-	CompatibilityRails,
-	HeroFaq,
+	DotGrid,
+	FailFastShowcase,
+	HeroEnvHoverSlot,
+	HeroMvpExampleSlot,
+	HeroNameCycle,
+	HeroPlaygroundProvider,
 	InstallPanel,
 	QuickstartButton,
 	SecureBoundary,
+	SocialProof,
 	StarUsButton,
-	TypeSafetyShowcase,
-	VideoDemo,
+	WorksWith,
 } from "~/components/page";
-import { Logo } from "~/components/page/logo";
+import { SiteFooter } from "~/components/site-footer";
 
 export const metadata: Metadata = {
-	title: "ArkEnv",
-	description: "The simple way to validate environment variables.",
+	title: "ArkEnv - Typesafe environment variables for TypeScript",
+	description:
+		"Typesafe environment variables with ArkType, Zod, Valibot, or any Standard Schema. Get a strictly typed env object using your existing TypeScript validator. No boilerplate. Zero runtime dependencies.",
 };
 
 export default function HomePage() {
 	return (
 		<div className="home-aurora__shell">
+			<div className="home-aurora__rails" aria-hidden="true" />
 			<section className="home-aurora__intro" aria-labelledby="home-hero">
-				<div
-					className="home-aurora__badge rise"
-					style={{ animationDelay: "40ms" }}
-				>
-					<AnnouncementBadge href="docs/cli/hosting-presets" new>
-						Next.js, Netlify presets
-					</AnnouncementBadge>
-				</div>
-				<h1
-					id="home-hero"
-					className="home-aurora__tagline rise-blur"
-					style={{ animationDelay: "120ms" }}
-				>
-					<span className="home-aurora__lead">The simple way to validate</span>{" "}
-					<span className="home-aurora__digital home-aurora__digital-accent">
-						<span className="home-aurora__digital-word">
-							environment variables
-						</span>
-					</span>
-				</h1>
-				<p
-					className="home-aurora__summary rise-blur"
-					style={{ animationDelay: "240ms" }}
-				>
-					One function validates, parses, and keeps your <code>env</code> vars
-					typesafe. Use ArkType, Zod, or any Standard Schema. Fail fast, ship
-					faster.
-				</p>
-				<div className="rise" style={{ animationDelay: "320ms" }}>
-					<CompatibilityRails className="home-aurora__rails-host" />
-				</div>
-				<div
-					className="home-aurora__install-row rise"
-					style={{ animationDelay: "400ms" }}
-				>
-					<InstallPanel />
-					<StarUsButton />
-					<QuickstartButton />
-				</div>
-			</section>
-
-			<section className="home-aurora__bench" aria-label="Interactive Demo">
-				<div data-reveal style={{ ["--reveal-delay" as string]: "160ms" }}>
-					<VideoDemo />
-				</div>
-			</section>
-
-			<BeforeAfterCompare />
-			<TypeSafetyShowcase />
-			<SecureBoundary />
-			<BringYourOwnValidator />
-			<AgentNativePitch />
-
-			<HeroFaq />
-
-			<section className="home-aurora__outro" aria-labelledby="home-outro">
-				<h2
-					id="home-outro"
-					className="home-aurora__outro-title"
-					data-reveal="blur"
-				>
-					Try ArkEnv now.
-				</h2>
-				<div
-					className="home-aurora__install-row home-aurora__install-row--outro"
-					data-reveal
-					style={{ ["--reveal-delay" as string]: "80ms" }}
-				>
-					<InstallPanel />
-					<a href="/docs/arkenv/quickstart" className="home-aurora__outro-docs">
-						Read the docs
-						<span aria-hidden="true">→</span>
-					</a>
-				</div>
-			</section>
-
-			<footer className="home-aurora__footer" data-reveal="fade">
-				<div className="home-aurora__footer-grid">
-					<div className="home-aurora__footer-brand">
-						<a
-							href="/"
-							className="home-aurora__wordmark"
-							aria-label="ArkEnv home"
+				<HeroPlaygroundProvider>
+					<div
+						className="home-aurora__badge rise"
+						style={{ animationDelay: "40ms" }}
+					>
+						<AnnouncementBadge
+							href="/docs/validating-your-environment/hosting-presets"
+							new
 						>
-							<Logo />
-						</a>
-						<p>The simple way to validate environment variables.</p>
-						<p className="home-aurora__footer-license">MIT License</p>
+							Vercel, Netlify & Cloudflare presets
+						</AnnouncementBadge>
 					</div>
+					<div className="home-aurora__hero-copy">
+						<h1 id="home-hero" className="home-aurora__tagline">
+							<span
+								className="home-aurora__lead rise-blur"
+								style={{ animationDelay: "120ms" }}
+							>
+								Typesafe environment variables
+								<br />
+								<span className="home-aurora__lead-with">
+									<HeroNameCycle />
+								</span>
+							</span>
+						</h1>
+						<p
+							className="home-aurora__summary rise-blur"
+							style={{ animationDelay: "520ms" }}
+						>
+							Get a strictly typed <HeroEnvHoverSlot /> object using your
+							existing TypeScript validator. No boilerplate. Zero runtime
+							dependencies.
+						</p>
+					</div>
+					<div className="home-aurora__hero-ctas">
+						<div
+							className="home-aurora__install-row rise"
+							style={{ animationDelay: "640ms" }}
+						>
+							<InstallPanel />
+							<QuickstartButton />
+							<StarUsButton />
+						</div>
+					</div>
+					<div
+						className="home-aurora__hero-example rise"
+						style={{ animationDelay: "280ms" }}
+					>
+						<HeroMvpExampleSlot />
+					</div>
+					<div
+						className="home-aurora__trust rise"
+						style={{ animationDelay: "760ms" }}
+					>
+						<SocialProof />
+						<WorksWith />
+					</div>
+				</HeroPlaygroundProvider>
+			</section>
 
-					<nav aria-labelledby="footer-resources">
-						<h3 id="footer-resources">Resources</h3>
-						<ul>
-							<li>
-								<a href="/docs/arkenv">Documentation</a>
-							</li>
-							<li>
-								<a href="/docs/arkenv/quickstart">Quick Start</a>
-							</li>
-							<li>
-								<a href="/docs/nextjs">Next.js</a>
-							</li>
-							<li>
-								<a href="/docs/cli/hosting-presets">Hosting presets</a>
-							</li>
-						</ul>
-					</nav>
+			<div className="home-aurora__bento">
+				<FailFastShowcase />
+				<AutocompleteShowcase />
+				<SecureBoundary />
+				<BringYourOwnValidator />
+			</div>
 
-					<nav aria-labelledby="footer-ecosystem">
-						<h3 id="footer-ecosystem">Ecosystem</h3>
-						<ul>
-							<li>
-								<a
-									href="https://github.com/yamcodes/arkenv"
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									GitHub
-								</a>
-							</li>
-							<li>
-								<a
-									href="https://www.npmjs.com/package/arkenv"
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									npm
-								</a>
-							</li>
-							<li>
-								<a
-									href="https://github.com/yamcodes/arkenv/releases"
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									Releases
-								</a>
-							</li>
-							<li>
-								<a
-									href="https://arktype.io/docs/ecosystem#arkenv"
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									ArkType ecosystem
-								</a>
-							</li>
-						</ul>
-					</nav>
+			<div className="home-aurora__stripe" aria-hidden="true" />
 
-					<nav aria-labelledby="footer-community">
-						<h3 id="footer-community">Community</h3>
-						<ul>
-							<li>
-								<a
-									href="https://github.com/sponsors/yamcodes"
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									Sponsor
-								</a>
-							</li>
-							<li>
-								<a
-									href="https://yam.codes"
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									@yamcodes
-								</a>
-							</li>
-							<li>
-								<a
-									href="https://discord.gg/zAmUyuxXH9"
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									Discord
-								</a>
-							</li>
-						</ul>
-					</nav>
-				</div>
+			<div className="home-aurora__bento home-aurora__bento--solo">
+				<section
+					className="home-aurora__pitch home-aurora__pitch--span home-aurora__outro"
+					aria-labelledby="home-outro"
+				>
+					<div className="home-aurora__outro-atmosphere" aria-hidden="true">
+						<DotGrid />
+					</div>
+					<div className="home-aurora__outro-copy" data-reveal="blur">
+						<h2 id="home-outro" className="home-aurora__outro-title">
+							Start validating with ArkEnv
+						</h2>
+					</div>
+					<div
+						className="home-aurora__outro-cta"
+						data-reveal
+						style={{ ["--reveal-delay" as string]: "80ms" }}
+					>
+						<InstallPanel variant="outro" />
+					</div>
+				</section>
+			</div>
 
-				<div className="home-aurora__footer-meta">
-					<span className="home-aurora__wordmark">ArkEnv</span>
-					<span>
-						Free and open-source software · Copyright © 2025-present Yam
-						Borodetsky
-					</span>
-				</div>
-			</footer>
+			<SiteFooter reveal />
 		</div>
 	);
 }

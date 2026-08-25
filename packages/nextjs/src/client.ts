@@ -7,7 +7,7 @@ import { arkenvInternal } from "./arkenv-internal";
 import type { MergeExtends } from "./types";
 
 /**
- * Create a validated, type-safe environment configuration for Next.js applications (Client entry point).
+ * Create a validated, typesafe environment configuration for Next.js applications (Client entry point).
  */
 export function arkenv<
 	const TSchema extends SchemaShape = {},

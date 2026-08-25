@@ -1,0 +1,133 @@
+---
+title: "@arkenv/nextjs"
+description: "Next.js integration: withArkEnv, client/server entries, and env.gen.ts."
+---
+
+`@arkenv/nextjs` adds Next.js-aware `arkenv()` entries, build-time
+validation, and `env.gen.ts` codegen.
+
+## Installation
+
+```package-install
+npm i @arkenv/core @arkenv/nextjs arktype
+```
+
+Or with Standard Schema:
+
+```package-install
+npm i @arkenv/standard @arkenv/nextjs zod
+```
+
+Peers: `next`, `react`. `@arkenv/core` / `@arkenv/standard` / `arktype`
+are optional depending on dialect.
+
+## Subpaths
+
+Import from the subpath that matches where the code runs.
+
+| Subpath                                                       | Role                                                                        |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `.`                                                           | Unified `arkenv` (`react-server` condition for RSC, default for client/SSR) |
+| `./server`                                                    | Server-only `arkenv` (`server-only`)                                        |
+| `./client`                                                    | Client `arkenv`                                                             |
+| `./config`                                                    | `withArkEnv`, `runCodegen`, config types                                    |
+| `./standard`                                                  | Standard Schema unified entry                                               |
+| `./standard/server`, `./standard/client`, `./standard/shared` | Split Standard entries                                                      |
+| `./standard/config`                                           | Standard `withArkEnv` (forces Standard codegen)                             |
+
+## Config plugin
+
+Wrap your Next.js config with `withArkEnv`. By default this writes
+`generated/env.gen.ts` and validates the schema during config/build.
+
+```ts title="./next.config.ts"
+import type { NextConfig } from "next";
+import { withArkEnv } from "@arkenv/nextjs/config";
+
+const nextConfig: NextConfig = {};
+
+export default withArkEnv(nextConfig);
+```
+
+Your app schema imports the generated factory:
+
+```ts title="./env.ts"
+import arkenv from "@/generated/env.gen";
+
+export const env = arkenv({
+  DATABASE_URL: "string",
+  NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+### `withArkEnv` options
+
+Pass a second argument to change codegen, layout, or validation.
+
+| Option       | Default  | Meaning                      |
+| ------------ | -------- | ---------------------------- |
+| `codegen`    | `true`   | Write `env.gen.ts`           |
+| `validate`   | `true`   | Validate during config/build |
+| `layout`     | `"flat"` | `"flat"` or `"strict"`       |
+| `schemaPath` | auto     | Schema entry path            |
+| `outputPath` | auto     | Generated file path          |
+| `standard`   | `false`  | Standard Schema codegen      |
+| `logger`     | console  | Build-time logger            |
+| `logLevel`   | (none)   | Minimum log level            |
+
+Skip generation during CLI scaffolds with
+`npx arkenv@latest init --no-codegen`.
+
+### Programmatic codegen
+
+Call `runCodegen` from custom tooling. Apps wire generation through
+`withArkEnv`.
+
+```ts
+import { runCodegen } from "@arkenv/nextjs/config";
+
+await runCodegen(schemaPath, outputPath);
+```
+
+### Standard Schema codegen
+
+Import `withArkEnv` from the Standard config entry to force
+Standard Schema-compatible generated imports.
+
+```ts title="./next.config.ts"
+import { withArkEnv } from "@arkenv/nextjs/standard/config";
+
+export default withArkEnv(nextConfig);
+```
+
+## Flat vs strict
+
+Public keys use the `NEXT_PUBLIC_` prefix. Flat mode uses one schema
+file plus a runtime Proxy that blocks server-key reads on the client.
+
+Strict mode splits modules so the server schema never enters the client
+graph:
+
+```ts title="./env/server.ts"
+import arkenv from "@arkenv/nextjs/server";
+import { env as clientEnv } from "./client";
+
+export const env = arkenv(
+  { DATABASE_URL: "string" },
+  { extends: [clientEnv] },
+);
+```
+
+Scaffold with `npx arkenv@latest init --strict`. Guide:
+[Client vs. server](/docs/validating-your-environment/client-vs-server).
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/guides/frameworks/nextjs" title="Next.js framework guide" description="Step-by-step Next.js recipes and configuration." />
+
+  <Card href="/docs/validating-your-environment/hosting-presets" title="Hosting presets" description="Pre-populate provider environment variables." />
+
+  <Card href="/docs/reference/preset" title="preset" description="CLI reference for managing hosting presets." />
+</Cards>

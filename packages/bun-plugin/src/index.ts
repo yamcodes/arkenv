@@ -1,5 +1,5 @@
-import { hybrid } from "./plugin";
+import { arkenvBunPlugin, arkenvPlugin, hybrid } from "./plugin";
 
 export type { BunTransformOptions } from "./plugin";
-export { arkenv, hybrid } from "./plugin";
-export default hybrid;
+export { arkenvBunPlugin, arkenvPlugin, hybrid };
+export default arkenvPlugin;

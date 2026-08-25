@@ -135,6 +135,13 @@
 	},
 	"type": "module",
 	"types": "./dist/index.d.ts",
+	"imports": {
+		"#arkenv/client-env": {
+			"types": "./dist/empty-client-env.d.ts",
+			"import": "./dist/empty-client-env.js",
+			"require": "./dist/empty-client-env.cjs"
+		}
+	},
 	"size-limit": [
 		{
 			"name": "@arkenv/nextjs",
@@ -173,7 +180,7 @@
 		{
 			"name": "@arkenv/nextjs/config",
 			"path": "dist/config/index.js",
-			"limit": "4 kB",
+			"limit": "6 kB",
 			"import": "*",
 			"ignore": [
 				"next",

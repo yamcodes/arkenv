@@ -3,7 +3,7 @@
   <h1 align="center">ArkEnv</h1>
   <div align="center">
     <p align="center">
-      The simple way to validate environment variables with your favorite library <br/> for <a href="https://nextjs.org/">Next.js</a>, <a href="https://nuxt.com/">Nuxt</a>, <a href="https://nodejs.org/">Node.js</a>, <a href="https://vite.dev/">Vite</a>, and <a href="https://bun.com/">Bun</a>
+      Typesafe environment variables with ArkType, Zod, Valibot, or any Standard Schema. <br/> <a href="https://nextjs.org/">Next.js</a>, <a href="https://nuxt.com/">Nuxt</a>, <a href="https://nodejs.org/">Node.js</a>, <a href="https://vite.dev/">Vite</a>, and <a href="https://bun.com/">Bun</a>
     </p>
     <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Av1"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/test.yml/badge.svg?branch=v1"></a>
     <a href="https://bundlephobia.com/package/arkenv"><img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/arkenv"></a>
@@ -16,9 +16,9 @@
 > You are viewing the **v1 branch**, a pre-release (alpha) version of ArkEnv. Track progress on the [v1 roadmap](https://github.com/yamcodes/arkenv/issues/683).
 
 <div align="center">
-  <a href="https://arkenv-v1.vercel.app/docs/arkenv">Docs</a>
+  <a href="https://arkenv-v1.vercel.app/docs">Docs</a>
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
-  <a href="https://arkenv-v1.vercel.app/docs/arkenv/faq">FAQ</a>
+  <a href="https://arkenv-v1.vercel.app/docs/faq">FAQ</a>
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
   <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/v1/examples/stackblitz?file=index.ts">Try on StackBlitz</a>
   <br />
@@ -29,7 +29,7 @@
 
 
 <h3 align="center">
-  Bring your own validator: <a href="https://arktype.io/">ArkType</a>, <a href="https://zod.dev/">Zod</a>, <a href="https://valibot.dev/">Valibot</a>, or <a href="https://arkenv-v1.vercel.app/docs/arkenv/integrations/standard-schema">any Standard Schema library</a>
+  Bring your own validator: <a href="https://arktype.io/">ArkType</a>, <a href="https://zod.dev/">Zod</a>, <a href="https://valibot.dev/">Valibot</a>, or <a href="https://arkenv-v1.vercel.app/docs/core-concepts/standard-schema">any Standard Schema library</a>
 </h3>
 
 <br />
@@ -81,7 +81,7 @@ bunx arkenv@latest init
 
 <br />
 
-### [Read the docs →](https://arkenv-v1.vercel.app/docs/arkenv/quickstart)
+### [Read the docs →](https://arkenv-v1.vercel.app/docs/getting-started)
 
 <br />
 

@@ -1,0 +1,177 @@
+/* Docs structural glue — same hairline language as the landing page, not a bento.
+ * Row 0 is Site Nav (full-bleed + border-bottom). Vite four-rail cage: outer and
+ * inner 1px rails on both the sidebar and the TOC (--color-rule-y, slightly
+ * softer than horizontal --color-rule). */
+
+#docs-chrome-shell,
+#nd-sidebar-mobile {
+	--docs-chrome-radius: 0.25rem;
+	--docs-control-radius: 0.375rem;
+	--docs-toc-gutter: 1rem;
+	--site-nav-gutter: 1rem;
+}
+
+#docs-chrome-shell {
+	position: relative;
+	background-color: var(--color-fd-background);
+}
+
+@media (min-width: 40rem) {
+	#docs-chrome-shell,
+	#nd-sidebar-mobile {
+		--docs-toc-gutter: 1.5rem;
+		--site-nav-gutter: 1.5rem;
+	}
+}
+
+/* Solid paper so the reading column stays a quiet channel. */
+#nd-page {
+	background-color: var(--color-fd-background);
+	min-height: 100%;
+}
+
+/* Far-left + left-middle. End rail also lives in fumadocs-ui theme.css. */
+#nd-sidebar {
+	border-inline-start: 1px solid var(--color-rule-y, var(--color-fd-border));
+	border-inline-end: 1px solid var(--color-rule-y, var(--color-fd-border));
+}
+
+[data-docs-sidebar-slide] {
+	overflow: hidden;
+}
+
+/*
+ * Right-middle + far-right. No inline padding on the column so the TOC spy
+ * can sit on the start rail and the feedback hairline can span rail-to-rail.
+ */
+#nd-toc {
+	border-inline-start: 1px solid var(--color-rule-y, var(--color-fd-border));
+	border-inline-end: 1px solid var(--color-rule-y, var(--color-fd-border));
+	padding-inline: 0;
+}
+
+/*
+ * Pager hairline (below community copy, above Previous/Next): break out of
+ * #nd-page's inline gutter so the rule meets the sidebar inner rail and the
+ * TOC inner rail. Re-pad the pager links so they stay on the article measure.
+ */
+#nd-page [data-docs-footer] {
+	margin-inline: calc(-1 * var(--docs-page-gutter));
+	padding-inline: var(--docs-page-gutter);
+	border-top-color: var(--color-rule);
+}
+
+/* Rail-to-rail hairline. Symmetric spacing: 1.25rem above (margin) + 1.25rem below (padding). */
+#nd-toc [data-docs-toc-spy] ~ div,
+#nd-toc .overflow-auto {
+	padding-bottom: 0 !important;
+	mask-image: none !important;
+	-webkit-mask-image: none !important;
+}
+
+[data-docs-toc-footer] {
+	border-top-color: var(--color-rule);
+	margin-top: 1.25rem;
+	padding-top: 1.25rem;
+}
+
+/*
+ * Site footer outer cage. Do not paint these with background-position % —
+ * % there is (container - image), so a 1px strip sits ~1px left of the
+ * sidebar/TOC borders (stair-step at the footer-top hairline).
+ * Same box model as the cage: a centered --fd-layout-width column with
+ * border-inline start/end. `top: -1px` crosses the edge-to-edge footer-top
+ * hairline (open-slide). Inner splitters stay on the columns and stop here.
+ */
+.site-footer-bleed {
+	container-type: inline-size;
+	position: relative;
+}
+
+.docs-outer-rails {
+	display: none;
+}
+
+@media (min-width: 960px) {
+	.docs-outer-rails {
+		display: block;
+		position: absolute;
+		top: -1px;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 6;
+		pointer-events: none;
+		box-sizing: border-box;
+		width: min(100%, var(--fd-layout-width, 1400px));
+		margin-inline: auto;
+		border-inline-start: 1px solid var(--color-rule-y, var(--color-fd-border));
+	}
+}
+
+@media (min-width: 1200px) {
+	.docs-outer-rails {
+		border-inline-end: 1px solid var(--color-rule-y, var(--color-fd-border));
+	}
+}
+
+/*
+ * Copyright hairline — edge-to-edge like homepage `.home-aurora__footer-meta`.
+ * 100cqi is the bleed (viewport content), not 100vw (avoids scrollbar delta).
+ * Text stays on the band+footer gutter; the rule itself runs to the margins.
+ */
+.site-footer-bleed .home-aurora__footer-meta {
+	--docs-footer-gutter: 1rem;
+	--docs-outer-rail-inset: max(0px, calc((100cqi - var(--fd-layout-width, 1400px)) / 2));
+	position: relative;
+	box-sizing: border-box;
+	width: 100cqi;
+	max-width: none;
+	margin-inline: calc(50% - 50cqi);
+	padding-inline: calc(var(--docs-outer-rail-inset) + var(--docs-footer-gutter));
+	padding-block: var(--sf-space-sm, 1rem);
+}
+
+@media (min-width: 40rem) {
+	.site-footer-bleed .home-aurora__footer-meta {
+		--docs-footer-gutter: 1.5rem;
+	}
+}
+
+/* Copy page split — same 0.375rem as Get started / Search, not --radius 0.6rem. */
+[data-docs-ai-actions="desktop"] > .flex > button:first-child {
+	border-start-start-radius: var(--docs-chrome-radius, 0.25rem);
+	border-end-start-radius: var(--docs-chrome-radius, 0.25rem);
+	border-start-end-radius: 0;
+	border-end-end-radius: 0;
+}
+
+[data-docs-ai-actions="desktop"] > .flex > button:last-of-type {
+	border-start-start-radius: 0;
+	border-end-start-radius: 0;
+	border-start-end-radius: var(--docs-chrome-radius, 0.25rem);
+	border-end-end-radius: var(--docs-chrome-radius, 0.25rem);
+}
+
+[data-docs-ai-menu-popover] {
+	border-radius: var(--docs-control-radius, 0.375rem) !important;
+}
+
+#nd-sidebar [data-drill-item],
+#nd-sidebar-mobile [data-drill-item] {
+	border-radius: var(--docs-chrome-radius);
+}
+
+/*
+ * Equal column gutters (Site Nav gutter minus the 1px rail). Pill left stays
+ * on the helm; pill right matches. Item `px-2.5` is inner pad so glyphs clear
+ * the 0.25rem radius — not extra column inset.
+ */
+#nd-sidebar [data-docs-sidebar-tree],
+#nd-sidebar-mobile [data-docs-sidebar-tree] {
+	padding-inline: calc(var(--site-nav-gutter, 1.5rem) - 1px);
+}
+
+#nd-sidebar-mobile {
+	background-color: var(--color-fd-background);
+}

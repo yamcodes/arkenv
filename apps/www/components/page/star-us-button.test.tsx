@@ -31,12 +31,13 @@ describe("StarUsButton", () => {
 		expect(customElements.length).toBeGreaterThan(0);
 	});
 
-	it("renders mobile version only", () => {
+	it("uses the shared mobile CTA shell", () => {
 		render(<StarUsButton />);
 
-		// Should have one button with the same text (mobile version)
-		const buttons = screen.getAllByText("Star us on GitHub");
-		expect(buttons).toHaveLength(1);
+		expect(screen.getByRole("link")).toHaveClass(
+			"home-aurora__mobile-cta",
+			"home-aurora__star-cta",
+		);
 	});
 
 	it("provides accessible links", () => {

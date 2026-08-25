@@ -1,0 +1,57 @@
+---
+title: "@arkenv/core"
+description: ArkType-powered environment validation for TypeScript projects.
+---
+
+`@arkenv/core` is the primary validation library. It exports `arkenv()`
+and an ArkType `type()` bound to ArkEnv keywords. No runtime
+dependencies; ArkType is a required peer.
+
+## Installation
+
+```package-install
+npm i @arkenv/core arktype
+```
+
+Peer dependency: `arktype` (^2.1.22).
+
+## Usage
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  HOST: "string.host = 'localhost'",
+  PORT: "number.port = 3000",
+  DATABASE_URL: "string",
+});
+```
+
+## Exports
+
+The package's export surface is `"."` only.
+
+| Export             | Kind                       | Role                                                       |
+| ------------------ | -------------------------- | ---------------------------------------------------------- |
+| `arkenv`           | function (default + named) | Validate and return a typed env object                     |
+| `type`             | function                   | ArkType `type` with [`keywords`](/docs/reference/keywords) |
+| `ArkEnvError`      | class                      | Thrown on validation failure                               |
+| `formatIssues`     | function                   | Format `EnvIssue[]` for display                            |
+| `getSchemaKeys`    | function                   | List keys declared on a schema                             |
+| `ArkEnvConfig`     | type                       | [Options](/docs/reference/options) object                  |
+| `EnvSchema`        | type                       | Declarative schema map                                     |
+| `Infer`            | type                       | Infer output from a schema                                 |
+| `SafeArkEnvResult` | type                       | Result shape when `safe: true`                             |
+| `EnvIssue`         | type                       | Structured validation issue                                |
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/reference/options" title="options" description="Configuration options passed to the arkenv() runtime." />
+
+  <Card href="/docs/reference/keywords" title="keywords" description="Built-in keyword extensions like string.host and number.port." />
+
+  <Card href="/docs/reference/schema" title="schema" description="Schema definition shapes accepted by arkenv()." />
+
+  <Card href="/docs/reference/standard" title="@arkenv/standard" description="ArkType-free runtime adapter for Standard Schema validators." />
+</Cards>

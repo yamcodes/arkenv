@@ -1,7 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 
-/** Directory names that must never be walked (match mdxlint / build artifacts). */
+/**
+ * Directory names that must never be walked (match mdxlint / build artifacts).
+ */
 const SKIP_DIRS = new Set(["node_modules", ".git", "dist", ".next", ".source"]);
 
 /**

@@ -1,56 +1,26 @@
 import { BringYourOwnValidatorView } from "./bring-your-own-validator-view";
-import { highlightTs } from "./highlight-ts";
+import { highlightTwoslash } from "./highlight-hero-twoslash";
 
-const EXAMPLES = [
-	{
-		id: "arktype" as const,
-		label: "ArkType",
-		importLine: "@arkenv/core",
-		code: `import arkenv from "@arkenv/core";
-
-export const env = arkenv({
-  DATABASE_URL: "string.url",
-  PORT: "number.port",
-});`,
-	},
-	{
-		id: "zod" as const,
-		label: "Zod",
-		importLine: "@arkenv/standard",
-		code: `import arkenv from "@arkenv/standard";
+export const BYOV_CODE = `import arkenv from "@arkenv/core";
 import { z } from "zod";
-
-export const env = arkenv({
-  DATABASE_URL: z.url(),
-  PORT: z.coerce.number().int().min(0).max(65535),
-});`,
-	},
-	{
-		id: "valibot" as const,
-		label: "Valibot",
-		importLine: "@arkenv/standard",
-		code: `import arkenv from "@arkenv/standard";
 import * as v from "valibot";
-
+// ---cut---
 export const env = arkenv({
+  NODE_ENV: "'development' | 'test' | 'production'",
   DATABASE_URL: v.pipe(v.string(), v.url()),
-  PORT: v.pipe(v.string(), v.toNumber(), v.integer(), v.minValue(0), v.maxValue(65535)),
-});`,
-	},
-];
+  DEBUG: z.boolean(),
+});`;
+
+const cut = "// ---cut---\n";
+
+export const BYOV_VISIBLE = BYOV_CODE.includes(cut)
+	? BYOV_CODE.slice(BYOV_CODE.indexOf(cut) + cut.length)
+	: BYOV_CODE;
 
 /**
- * Pitch: same ArkEnv API across ArkType / Zod / Valibot via Standard Schema.
+ * Pitch: same ArkEnv API across ArkType, Zod, and Valibot — mixed in one schema.
  */
 export async function BringYourOwnValidator() {
-	const examples = await Promise.all(
-		EXAMPLES.map(async (example) => ({
-			id: example.id,
-			label: example.label,
-			importLine: example.importLine,
-			html: await highlightTs(example.code),
-		})),
-	);
-
-	return <BringYourOwnValidatorView examples={examples} />;
+	const html = await highlightTwoslash(BYOV_CODE, "arktype");
+	return <BringYourOwnValidatorView html={html} copyText={BYOV_VISIBLE} />;
 }

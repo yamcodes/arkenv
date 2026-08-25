@@ -10,7 +10,7 @@ export type { ViteTransformOptions };
 const arkenvCreator = createVitePlugin("@arkenv/vite-plugin/standard");
 
 /**
- * Vite plugin (Standard Schema) — rewrite `env.ts` in the client graph.
+ * Create a Vite plugin (Standard Schema) that rewrites `env.ts` in the client graph.
  *
  * @param options Transform options (`schemaPath`, `clientPrefix`) plus ArkEnv/logging config
  * @returns The Vite plugin instance
@@ -19,6 +19,9 @@ const arkenvCreator = createVitePlugin("@arkenv/vite-plugin/standard");
  * ADR 0021: env.ts is the canonical surface. Do not add `env.gen.ts` codegen,
  * client-side re-validation, or a schema/`define` signature on this host.
  */
-export default function arkenv(options?: VitePluginFactoryConfig): Plugin {
+export function arkenvPlugin(options?: VitePluginFactoryConfig): Plugin {
 	return arkenvCreator(options);
 }
+
+export { arkenvPlugin as arkenvVitePlugin };
+export default arkenvPlugin;

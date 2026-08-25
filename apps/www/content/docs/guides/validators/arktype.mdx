@@ -1,0 +1,94 @@
+---
+title: ArkType
+description: Validate environment variables with @arkenv/core and ArkType.
+---
+
+Use `@arkenv/core` to validate environment variables with ArkType. It provides
+concise type definition syntax, built-in keywords like `number.port` and
+`string.host`, and automated string coercion.
+
+For an overview of available engines, see
+[Choosing an engine](/docs/core-concepts/standard-schema).
+
+## Installation
+
+Install `@arkenv/core` and its peer dependency `arktype`:
+
+```package-install
+npm i @arkenv/core arktype
+```
+
+## Define your schema
+
+Declare environment variables in an `env.ts` file using ArkType string definitions
+or compiled `type()` objects:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  DATABASE_URL: "string",
+  PORT: "number.port = 3000",
+  DEBUG: "boolean = false",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+Import `{ env } from "./env"` at application startup. If any required variables
+are missing or fail validation, ArkEnv throws an
+[`ArkEnvError`](/docs/reference/core) with formatted issue details.
+
+## Automatic coercion
+
+ArkEnv inspects the compiled ArkType schema's JSON Schema to automatically coerce
+incoming string values into numbers, booleans, and arrays before validation:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  {
+    PORT: "number.port",
+    DEBUG: "boolean",
+    TAGS: "string[]",
+  },
+  {
+    env: {
+      PORT: "8080",
+      DEBUG: "true",
+      TAGS: "web, api",
+    },
+  },
+);
+
+env.PORT; // number
+env.DEBUG; // boolean
+env.TAGS; // string[]
+```
+
+To disable automatic string conversion and preserve raw strings for custom morphs,
+pass `{ coerce: false }`. Learn more in [Coercion](/docs/core-concepts/coercion).
+
+## Defaults and optionals
+
+ArkType syntax supports inline default values and optional properties:
+
+| Pattern                            | Behavior                                                         |
+| :--------------------------------- | :--------------------------------------------------------------- |
+| `= 'value'` / `= 3000`             | Fallback value when the variable is undefined                    |
+| `string \| undefined` or `string?` | Optional environment variable                                    |
+| `emptyAsUndefined: true`           | Converts empty strings (`""`) to `undefined` so defaults trigger |
+
+For specialized validators like `string.host` and `number.port`, see
+[Keywords](/docs/reference/keywords). To build complex custom schemas or morphs,
+see [Defining types](/docs/validating-your-environment/defining-types).
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/reference/core" title="@arkenv/core reference" description="Package exports, ArkEnvConfig options, and type definitions." />
+
+  <Card href="/docs/core-concepts/standard-schema" title="Choosing an engine" description="Compare @arkenv/core with the @arkenv/standard adapter." />
+
+  <Card href="/docs/guides/frameworks" title="Framework guides" description="Integrate your ArkType schema with Next.js, Nuxt, Vite, or Bun." />
+</Cards>

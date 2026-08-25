@@ -6,13 +6,17 @@ import {
 import { createConsoleLogger } from "./console-logger";
 import type { Logger, LogLevel } from "./types";
 
-/** Logging options accepted by ArkEnv build integrations. */
+/**
+ * Logging options accepted by ArkEnv build integrations.
+ */
 export type ArkEnvLogOptions = {
 	logger?: Logger;
 	logLevel?: LogLevel;
 };
 
-/** Plugin config with optional logging fields alongside ArkEnv options. */
+/**
+ * Plugin config with optional logging fields alongside ArkEnv options.
+ */
 export type ArkEnvPluginConfig<T extends Record<string, unknown>> = T &
 	ArkEnvLogOptions;
 

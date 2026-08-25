@@ -1,30 +1,18 @@
-"use client";
-
-import { useId, useState } from "react";
+import { HeroTwoslashHtml } from "./hero-twoslash-html";
 import { WindowChrome } from "./window-chrome";
 
-type ValidatorExample = {
-	id: "arktype" | "zod" | "valibot";
-	label: string;
-	importLine: string;
-	html: string;
-};
-
 type BringYourOwnValidatorViewProps = {
-	examples: ValidatorExample[];
+	html: string;
+	copyText: string;
 };
 
 /**
- * Client tabs over server-highlighted validator snippets.
+ * One mixed ArkType / Zod / Valibot schema. No validator tabs.
  */
 export function BringYourOwnValidatorView({
-	examples,
+	html,
+	copyText,
 }: BringYourOwnValidatorViewProps) {
-	const [active, setActive] = useState<ValidatorExample["id"]>("arktype");
-	const baseId = useId();
-	const example = examples.find((item) => item.id === active) ?? examples[0];
-	const panelId = `${baseId}-panel`;
-
 	return (
 		<section
 			className="home-aurora__pitch"
@@ -32,75 +20,24 @@ export function BringYourOwnValidatorView({
 			id="modular"
 		>
 			<header className="home-aurora__pitch-head">
-				<p className="home-aurora__pitch-label" data-reveal="fade">
-					04 / MODULAR
-				</p>
 				<h2 id="home-modular" data-reveal="blur">
-					Bring your own validator.
+					Bring your own validator
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
 					Use ArkType, Zod, Valibot, or any{" "}
-					<a href="/docs/arkenv/integrations/standard-schema">
-						Standard Schema
-					</a>{" "}
-					library. Either way, you get the same <code>env</code> API.
+					<a href="/docs/core-concepts/standard-schema">Standard Schema</a> you
+					already have. Mix and match for incremental migration.
 				</p>
 			</header>
 
-			<div
-				className="home-aurora__validator"
+			<figure
+				className="home-aurora__pitch-visual home-aurora__code-window"
 				data-reveal
 				style={{ ["--reveal-delay" as string]: "140ms" }}
 			>
-				<div
-					className="home-aurora__validator-tabs"
-					role="tablist"
-					aria-label="Validator examples"
-				>
-					{examples.map((item) => (
-						<button
-							key={item.id}
-							type="button"
-							role="tab"
-							id={`${baseId}-tab-${item.id}`}
-							aria-selected={active === item.id}
-							aria-controls={panelId}
-							tabIndex={active === item.id ? 0 : -1}
-							className="home-aurora__validator-tab"
-							data-active={active === item.id ? "true" : undefined}
-							onClick={() => setActive(item.id)}
-						>
-							{item.label}
-						</button>
-					))}
-				</div>
-
-				<figure className="home-aurora__validator-frame">
-					<WindowChrome title="env.ts" />
-					<div
-						role="tabpanel"
-						id={panelId}
-						aria-labelledby={`${baseId}-tab-${example.id}`}
-						className="home-aurora__validator-body"
-						key={example.id}
-					>
-						<div
-							className="home-aurora__shiki"
-							// biome-ignore lint/security/noDangerouslySetInnerHtml: static Shiki HTML from server
-							dangerouslySetInnerHTML={{ __html: example.html }}
-						/>
-					</div>
-				</figure>
-
-				<p className="home-aurora__validator-note">
-					<span className="home-aurora__tok-muted">via</span>{" "}
-					<code>{example.importLine}</code>
-					{" · "}
-					<a href="/docs/arkenv/integrations/standard-schema">
-						See Standard Schema docs →
-					</a>
-				</p>
-			</div>
+				<WindowChrome title="./env.ts" copyText={copyText} />
+				<HeroTwoslashHtml html={html} active />
+			</figure>
 		</section>
 	);
 }

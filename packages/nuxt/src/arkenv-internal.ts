@@ -1,5 +1,5 @@
 import type { SchemaShape } from "@repo/types";
-import { getSchemaKeys } from "@repo/utils";
+import { boundaryAccessErrorMessage, getSchemaKeys } from "@repo/utils";
 import { getBootGateResult } from "./boot-gate-state";
 import { createCaptureStub, isCapturing, recordCapture } from "./capture";
 import {
@@ -240,9 +240,7 @@ function createSecurityProxy(
 
 			if (typeof prop === "string") {
 				if (serverOnlyKeys.has(prop) && !isServer) {
-					throw new Error(
-						`Accessing server-side environment variable '${prop}' on the client is not allowed.`,
-					);
+					throw new Error(boundaryAccessErrorMessage(prop));
 				}
 
 				if (!allKeys.has(prop) && !(prop in Object.prototype)) {

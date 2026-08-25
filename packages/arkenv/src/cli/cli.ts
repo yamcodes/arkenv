@@ -1,11 +1,11 @@
 import { Logger } from "@/adapters";
 import {
 	type HostPreset,
-	type HostProvider,
 	isHostPreset,
 	isHostProvider,
 } from "@/features/scaffold/presets";
 import type { InitInput } from "./commands/init";
+import type { PresetInput } from "./commands/preset";
 
 const FLAG_CONFIG = {
 	isYes: { long: "--yes", short: "-y", kind: "boolean" },
@@ -22,7 +22,9 @@ const FLAG_CONFIG = {
 	isSimple: { long: "--simple", short: "", kind: "boolean" },
 	isFlat: { long: "--flat", short: "", kind: "boolean" },
 	noCodegen: { long: "--no-codegen", short: "", kind: "boolean" },
+	preset: { long: "--preset", short: "-P", kind: "value" },
 	hostPreset: { long: "--host-preset", short: "-H", kind: "value" },
+	file: { long: "--file", short: "", kind: "value" },
 } as const;
 
 const knownFlags = new Set<string>(
@@ -111,8 +113,12 @@ export class CLI {
 		}
 
 		if (!this.validationError) {
-			const flag = FLAG_CONFIG.hostPreset;
-			const rawPresetVal = this.getFlagValue(flag.long, flag.short);
+			const rawPresetVal =
+				this.getFlagValue(FLAG_CONFIG.preset.long, FLAG_CONFIG.preset.short) ??
+				this.getFlagValue(
+					FLAG_CONFIG.hostPreset.long,
+					FLAG_CONFIG.hostPreset.short,
+				);
 			if (rawPresetVal !== undefined && !isHostPreset(rawPresetVal)) {
 				this.validationError = `Invalid host preset: ${rawPresetVal}`;
 			}
@@ -121,17 +127,25 @@ export class CLI {
 		this.positionalArgs = positionalArgs;
 
 		if (!this.validationError) {
-			if (this.command === "add") {
-				if (!positionalArgs[0]) {
+			if (this.command === "preset") {
+				if (positionalArgs.length === 0) {
 					this.validationError = "Missing subcommand";
-				} else if (positionalArgs[0] !== "host") {
-					this.validationError = `Unknown argument: ${positionalArgs[0]}`;
-				} else if (positionalArgs.length > 2) {
-					this.validationError = `Unknown argument: ${positionalArgs[2]}`;
 				} else {
-					const provider = positionalArgs[1];
-					if (provider !== undefined && !isHostProvider(provider)) {
-						this.validationError = `Invalid host preset: ${provider}`;
+					const action = positionalArgs[0];
+					if (
+						action !== "apply" &&
+						action !== "remove" &&
+						action !== "rm" &&
+						action !== "add"
+					) {
+						this.validationError = `Unknown preset action: ${action}`;
+					} else if (positionalArgs.length > 2) {
+						this.validationError = `Unknown argument: ${positionalArgs[2]}`;
+					} else {
+						const provider = positionalArgs[1];
+						if (provider !== undefined && !isHostProvider(provider)) {
+							this.validationError = `Invalid host preset: ${provider}`;
+						}
 					}
 				}
 			} else {
@@ -197,10 +211,19 @@ export class CLI {
 		return this.hasFlag("noCodegen");
 	}
 
+	get file(): string | undefined {
+		const flag = FLAG_CONFIG.file;
+		return this.getFlagValue(flag.long, flag.short);
+	}
+
 	get hostPreset(): HostPreset | undefined {
-		const flag = FLAG_CONFIG.hostPreset;
-		const val = this.getFlagValue(flag.long, flag.short);
-		if (val !== undefined && isHostPreset(val)) {
+		const val =
+			this.getFlagValue(FLAG_CONFIG.preset.long, FLAG_CONFIG.preset.short) ??
+			this.getFlagValue(
+				FLAG_CONFIG.hostPreset.long,
+				FLAG_CONFIG.hostPreset.short,
+			);
+		if (val && isHostPreset(val)) {
 			return val;
 		}
 		return undefined;
@@ -242,16 +265,19 @@ export class CLI {
 		return input;
 	}
 
-	/**
-	 * Returns the parsed input consumed by the add command.
-	 */
-	get addInput(): { provider?: HostProvider; isYes?: boolean } {
+	get presetInput(): PresetInput {
+		const rawAction = this.positionalArgs[0];
+		const action =
+			rawAction === "remove" || rawAction === "rm" ? "remove" : "apply";
 		const provider = this.positionalArgs[1];
-		const isYes = this.isYes;
-		if (provider !== undefined && isHostProvider(provider)) {
-			return { provider, isYes };
-		}
-		return { isYes };
+		const file = this.file;
+		return {
+			action,
+			...(provider && isHostProvider(provider) ? { provider } : {}),
+			...(file !== undefined ? { file } : {}),
+			isForce: this.isForce,
+			isYes: this.isYes,
+		};
 	}
 
 	/**

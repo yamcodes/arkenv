@@ -1,0 +1,168 @@
+---
+title: Next.js
+description: Validate Next.js environment variables with @arkenv/nextjs and withArkEnv.
+---
+
+Use `@arkenv/nextjs` to validate environment variables in your Next.js application,
+generate typesafe accessors, and prevent server secrets from leaking into Client
+Components.
+
+For high-level architectural trade-offs, see
+[Framework integration](/docs/validating-your-environment/framework-integration).
+
+## Quickstart
+
+Scaffold Next.js integration in an existing project using the CLI:
+
+```package-install
+npx arkenv@latest init
+```
+
+The CLI detects Next.js, installs the required packages, wraps `next.config` with
+`withArkEnv`, and creates your initial schema file.
+
+## Manual installation
+
+If you prefer manual setup, install `@arkenv/nextjs` alongside your chosen
+validation engine.
+
+### ArkType engine
+
+Install `@arkenv/core` and its peer dependency `arktype`:
+
+```package-install
+pnpm add @arkenv/core @arkenv/nextjs arktype
+```
+
+### Standard Schema engine
+
+If you aren't using ArkType, install `@arkenv/standard`:
+
+```package-install
+pnpm add @arkenv/standard @arkenv/nextjs
+```
+
+## Configuration
+
+Wrap your Next.js configuration object with `withArkEnv`. This plugin runs schema
+validation during development and builds, and generates typed accessors in
+`generated/env.gen.ts`.
+
+```ts title="./next.config.ts" twoslash
+import type { NextConfig } from "next";
+import { withArkEnv } from "@arkenv/nextjs/config";
+
+const nextConfig: NextConfig = {};
+
+export default withArkEnv(nextConfig);
+```
+
+## Schema layout
+
+ArkEnv supports two schema layouts depending on your team's isolation needs.
+
+### Flat layout (default)
+
+The default flat layout uses a single `env.ts` file. Client variables must use
+the `NEXT_PUBLIC_` prefix:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@/generated/env.gen";
+
+export const env = arkenv({
+  DATABASE_URL: "string",
+  NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+Import `env` anywhere in your application. When client code accesses a server key
+such as `DATABASE_URL`, ArkEnv throws a runtime error to prevent data leaks.
+
+### Strict layout
+
+For compile-time guarantee that server keys never enter the client bundle graph,
+scaffold a strict file structure:
+
+```package-install
+npx arkenv@latest init --strict
+```
+
+This generates `env/client.ts`, `env/server.ts`, and `env/internal/shared.ts`.
+Learn more in [Client vs. server](/docs/validating-your-environment/client-vs-server).
+
+#### Auto-extending client env in strict layout
+
+With `withArkEnv` registered in `next.config`, the server entry (`env/server.ts`)
+automatically merges the client env when `extends` is omitted:
+
+```ts title="./env/server.ts" twoslash
+// @filename: /env/server.ts
+// ---cut---
+import arkenv from "@arkenv/nextjs/server";
+
+export const env = arkenv({
+  DATABASE_URL: "string",
+});
+// env includes DATABASE_URL + everything from env/client.ts
+```
+
+To opt out — or compose a different list — pass an explicit `extends`:
+
+```ts title="./env/server.ts" twoslash
+// @filename: /env/client.ts
+import type { type as at, distill } from "arktype";
+export const env = {} as Readonly<distill.Out<at.infer<{ NEXT_PUBLIC_API_URL: "string" }>>>;
+
+// @filename: /env/server.ts
+// ---cut---
+import arkenv from "@arkenv/nextjs/server";
+import { env as clientEnv } from "./client";
+
+export const env = arkenv(
+  {
+    DATABASE_URL: "string",
+  },
+  {
+    extends: [clientEnv], // explicit list — auto-merge is skipped
+  },
+);
+```
+
+Passing `extends: []` opts out entirely and includes no extended env.
+
+## Standard Schema
+
+If you aren't using ArkType, import `withArkEnv` from the `/standard/config`
+subpath:
+
+```ts title="./next.config.ts" twoslash
+import type { NextConfig } from "next";
+import { withArkEnv } from "@arkenv/nextjs/standard/config";
+
+const nextConfig: NextConfig = {};
+
+export default withArkEnv(nextConfig);
+```
+
+Then define your schema in `env.ts` using your validator:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@/generated/env.gen";
+import { z } from "zod";
+
+export const env = arkenv({
+  DATABASE_URL: z.string().url(),
+  NEXT_PUBLIC_API_URL: z.string().url().default("https://api.example.com"),
+});
+```
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/reference/nextjs" title="@arkenv/nextjs reference" description="Plugin options, codegen flags, and subpath exports." />
+
+  <Card href="/docs/validating-your-environment/hosting-presets" title="Hosting presets" description="Inject Vercel system environment variables into your schema." />
+
+  <Card href="/docs/validating-your-environment/client-vs-server" title="Client vs. server" description="Understand flat versus strict client/server isolation." />
+</Cards>

@@ -1,7 +1,7 @@
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import type { CollectedState } from "./plan";
-import { createPlan, stripValuesFromEnvContent } from "./planner";
+import { createPlan } from "./planner";
 
 describe("Planner", () => {
 	const defaultState: CollectedState = {
@@ -29,7 +29,7 @@ describe("Planner", () => {
 		expect(plan.files[0].action).toBe("create");
 		expect(plan.files[0].content).toContain("export");
 		expect(plan.files[0].content).toContain("type");
-		expect(plan.install?.dependencies).toContain("arkenv");
+		expect(plan.install?.dependencies).toContain("@arkenv/core");
 		expect(plan.install?.dependencies).toContain("arktype");
 	});
 
@@ -41,7 +41,9 @@ describe("Planner", () => {
 		};
 		const plan = createPlan(state);
 		expect(plan.install?.dependencies).toContain("@arkenv/vite-plugin");
-		expect(plan.files.some((f) => f.path.endsWith("vite-env.d.ts"))).toBe(true);
+		expect(plan.files.some((f) => f.path.endsWith("vite-env.d.ts"))).toBe(
+			false,
+		);
 		expect(plan.bootstrap?.framework).toBe("vite");
 	});
 
@@ -145,7 +147,7 @@ describe("Planner", () => {
 		};
 		const plan = createPlan(state);
 		expect(plan.install?.dependencies).toContain("@arkenv/bun-plugin");
-		expect(plan.files.some((f) => f.path.endsWith("bun-env.d.ts"))).toBe(true);
+		expect(plan.files.some((f) => f.path.endsWith("bun-env.d.ts"))).toBe(false);
 		expect(plan.bootstrap?.framework).toBe("bun-fullstack");
 		expect(plan.bootstrap?.bunFeatures).toContain("serve");
 	});
@@ -164,7 +166,6 @@ describe("Planner", () => {
 		expect(plan.install?.dependencies).not.toContain("@arkenv/bun-plugin");
 		expect(plan.files.some((f) => f.path.endsWith("bun-env.d.ts"))).toBe(false);
 		expect(plan.bootstrap?.framework).toBe("bun-fullstack");
-		expect(plan.bootstrap?.bunFeatures).toEqual([]);
 	});
 
 	it("plans tsconfig update when requested", () => {
@@ -189,20 +190,16 @@ describe("Planner", () => {
 		expect(plan.files[0].action).toBe("overwrite");
 	});
 
-	it("plans append when type definition exists and requested", () => {
-		const typePath = path.resolve("/test", "vite-env.d.ts");
+	it("plans without type definition files", () => {
 		const state: CollectedState = {
 			...defaultState,
 			options: {
 				...defaultState.options,
 				framework: "vite",
-				envDtsHandling: "append",
 			},
-			existingFiles: [typePath],
 		};
 		const plan = createPlan(state);
-		const typeFile = plan.files.find((f) => f.path === typePath);
-		expect(typeFile?.action).toBe("append");
+		expect(plan.files.some((f) => f.path.endsWith(".d.ts"))).toBe(false);
 	});
 
 	it("plans skill installation", () => {
@@ -562,16 +559,14 @@ describe("Planner", () => {
 			expect(envExampleFile).toBeUndefined();
 		});
 
-		it("copies .env to .env.example with values stripped in existing project mode if .env.example is missing", () => {
+		it("generates .env.example from detected keys when .env exists and .env.example is missing", () => {
 			const state: CollectedState = {
 				...defaultState,
 				existingFiles: ["/test/.env"],
 				options: {
 					...defaultState.options,
-					envContent: `# Database URL
-DATABASE_URL=postgres://user:pass@localhost:5432/db
-  export API_KEY = "xyz"
-UNRELATED=`,
+					envKeys: ["DATABASE_URL", "API_KEY"],
+					framework: "vanilla",
 				},
 			};
 			const plan = createPlan(state);
@@ -585,10 +580,8 @@ UNRELATED=`,
 
 			expect(envExampleFile).toBeDefined();
 			expect(envExampleFile?.action).toBe("create");
-			expect(envExampleFile?.content).toBe(`# Database URL
-DATABASE_URL=
-  export API_KEY=
-UNRELATED=`);
+			expect(envExampleFile?.content).toContain("DATABASE_URL=");
+			expect(envExampleFile?.content).toContain("API_KEY=");
 		});
 
 		describe("gitignore checks", () => {
@@ -674,33 +667,6 @@ UNRELATED=`);
 
 				expect(gitignoreFile).toBeUndefined();
 			});
-		});
-	});
-
-	describe("stripValuesFromEnvContent", () => {
-		it("strips standard environment values but leaves keys", () => {
-			const content =
-				"PORT=3000\nHOST=localhost\n# comment\n\nDB_URL=postgresql://user:pass@localhost:5432/db";
-			const result = stripValuesFromEnvContent(content);
-			expect(result).toBe("PORT=\nHOST=\n# comment\n\nDB_URL=");
-		});
-
-		it("strips multiline quoted values securely", () => {
-			const content = `PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----
-MIIEpQIBAAKCAQEA0y...
------END RSA PRIVATE KEY-----"
-PORT=3000`;
-			const result = stripValuesFromEnvContent(content);
-			expect(result).toBe("PRIVATE_KEY=\nPORT=");
-		});
-
-		it("strips single quoted multiline values securely", () => {
-			const content = `SECRET='foo
-bar
-baz'
-PORT=3000`;
-			const result = stripValuesFromEnvContent(content);
-			expect(result).toBe("SECRET=\nPORT=");
 		});
 	});
 

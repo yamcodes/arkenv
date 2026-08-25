@@ -58,7 +58,7 @@ function assertValidOrder(order: Order | null): asserts order is ValidOrder {
 function processOrder(order: Order | null): void {
   assertValidOrder(order)
   // order is now typed as ValidOrder
-  submitOrder(order)  // Type-safe
+  submitOrder(order)  // Typesafe
 }
 
 function shipOrder(order: Order | null): void {

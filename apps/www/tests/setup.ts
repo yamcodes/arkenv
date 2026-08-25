@@ -4,7 +4,7 @@ import { afterEach, expect, vi } from "vitest";
 
 expect.extend(matchers);
 
-// Mock ResizeObserver for next-video/background-video dependency
+// Mock ResizeObserver (Radix / layout observers)
 class ResizeObserverMock {
 	observe() {
 		// Mock implementation
@@ -20,7 +20,7 @@ class ResizeObserverMock {
 global.ResizeObserver = ResizeObserverMock as typeof ResizeObserver;
 globalThis.ResizeObserver = ResizeObserverMock as typeof ResizeObserver;
 
-// Mock matchMedia for next-video/background-video dependency
+// Mock matchMedia (theme / reduced-motion)
 Object.defineProperty(window, "matchMedia", {
 	writable: true,
 	value: vi.fn((query: string) => ({

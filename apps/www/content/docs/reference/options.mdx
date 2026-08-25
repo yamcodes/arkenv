@@ -1,0 +1,197 @@
+---
+title: options
+description: Configuration object passed as the second argument to arkenv().
+---
+
+The second argument to `arkenv()` is an optional configuration object.
+Shared fields exist on both engines: `env`, `coerce`, `safe`,
+`emptyAsUndefined`, `onUndeclaredKey`, `arrayFormat`, and `debugSecrets`.
+`toJsonSchema` exists only on
+[`@arkenv/standard`](/docs/reference/standard). ArkType already exposes
+JSON Schema, so [`@arkenv/core`](/docs/reference/core) has nothing to fall
+back to.
+
+## Type
+
+`ArkEnvConfig` is the ArkType engine table. `StandardEnvConfig` is that
+table plus optional `toJsonSchema`.
+
+<AutoTypeTable path="../../packages/core/src/arkenv.ts" name="ArkEnvConfig" expandAll />
+
+## Options
+
+Each field below is optional. Omit the whole object to read `process.env`
+with coercion on.
+
+### env
+
+The record to parse. Defaults to `process.env`. Pass a record in tests,
+Cloudflare Workers, or when you load values with Vite `loadEnv`.
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  { PORT: "number.port" },
+  { env: { PORT: "3000" } },
+);
+```
+
+### coerce
+
+Default: `true`
+
+When `true`, ArkEnv turns env strings into the types in your schema
+before the validator runs. Turn it off when you want raw strings and
+you'll transform them yourself.
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  { PORT: "string" },
+  { coerce: false, env: { PORT: "3000" } },
+);
+
+env.PORT; // "3000"
+```
+
+See
+[Coercion and parsing](/docs/validating-your-environment/coercion-and-parsing).
+
+### arrayFormat
+
+Default: `"comma"`
+
+How ArkEnv parses array env values when coercion is on.
+
+- `"comma"`: split on commas and trim each item
+- `"json"`: parse the string as JSON
+
+Use `"json"` when your host stores arrays as JSON strings.
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  { TAGS: "string[]" },
+  { arrayFormat: "json", env: { TAGS: '["web", "app"]' } },
+);
+```
+
+### emptyAsUndefined
+
+Default: `false`
+
+Treat `""` as missing so schema defaults apply. With `PORT=` in a `.env`
+file, `PORT` becomes `undefined` before validation.
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  {
+    PORT: "number.port = 3000",
+    DEBUG: "boolean = false",
+  },
+  {
+    emptyAsUndefined: true,
+    env: {
+      PORT: "",
+      DEBUG: "",
+    },
+  },
+);
+
+env.PORT; // 3000
+env.DEBUG; // false
+```
+
+### onUndeclaredKey
+
+Default: `"delete"`
+
+What to do with keys that appear on input but not in your schema.
+
+- `"delete"`: allow them on input, strip them from the output
+- `"ignore"`: allow them and keep them on the output
+- `"reject"`: fail validation
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  { PORT: "number.port" },
+  {
+    onUndeclaredKey: "reject",
+    env: { PORT: "3000", EXTRA: "nope" },
+  },
+);
+```
+
+### safe
+
+Default: `false`
+
+Return `{ success, data | issues }` instead of throwing. Use this in
+tests or a custom boot UI when you handle failures yourself.
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+const result = arkenv(
+  { PORT: "number.port" },
+  { safe: true, env: { PORT: "invalid" } },
+);
+
+if (!result.success) {
+  console.error(result.issues);
+} else {
+  console.log(result.data.PORT);
+}
+```
+
+<Callout type="warn">
+  Framework plugins omit `safe` so a failed validation cannot soft-fail
+  into the client bundle. Call `arkenv()` yourself if you need
+  programmatic failure handling outside a plugin.
+</Callout>
+
+### debugSecrets
+
+Default: `process.env.ARKENV_DEBUG_SECRETS` is `"true"` or `"1"`
+
+Bypass secret redaction in debug output so you can see raw values. Leave
+this off in shared logs and CI.
+
+### toJsonSchema
+
+`@arkenv/standard` only. This field is not on ArkType `ArkEnvConfig`.
+Vite and Bun `/standard` plugin configs that alias `ParseStandardConfig`
+inherit it.
+
+Pass a fallback converter for Standard Schema validators that omit JSON
+Schema on the value (Valibot, Zod Mini, Zod v3 via `zod-to-json-schema`,
+and similar). ArkEnv calls it per key when it can't read JSON Schema from
+that value.
+
+Wiring: [Valibot](/docs/guides/validators/valibot),
+[Zod](/docs/guides/validators/zod) (Mini and v3), and
+[Coercion](/docs/core-concepts/coercion#valibot-tojsonschema).
+
+## Framework-only options
+
+Next.js and Nuxt wrappers accept `extends` to merge shared or client env
+objects into a server schema. That field lives outside core
+`ArkEnvConfig`. See
+[Client vs. server](/docs/validating-your-environment/client-vs-server).
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/reference/schema" title="schema" description="Schema definition shapes accepted by arkenv()." />
+
+  <Card href="/docs/reference/env" title="env" description="The typed env object returned after validation." />
+
+  <Card href="/docs/reference/standard" title="@arkenv/standard" description="Standard Schema engine package reference." />
+</Cards>

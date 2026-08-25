@@ -3,7 +3,7 @@ import type { Dict, StandardSchemaV1 } from "@repo/types";
 import { arkenvInternal } from "@/arkenv-internal";
 
 /**
- * Create a validated, type-safe environment configuration for Next.js applications (Shared entry point, Standard Mode).
+ * Create a validated, typesafe environment configuration for Next.js applications (Shared entry point, Standard Mode).
  */
 export function arkenv<
 	const TSchema extends Record<string, StandardSchemaV1> = {},
