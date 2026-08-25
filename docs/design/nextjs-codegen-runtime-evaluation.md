@@ -357,19 +357,49 @@ export function Header() {
 
 ---
 
-## 10. Current Lean & Implementation Plan
+## 10. Next 13/14 (v0) -> Next 15/16 (v1) Migration Strategy
 
-1. **Target Next 15+ as v1 baseline:** Deprecate Next 13/14 in `@arkenv/nextjs` root entry; remove `jiti`, `mock-server-only`, and `chokidar`.
-2. **Implement Virtual `.arkenv/` ([#1402](https://github.com/yamcodes/arkenv/issues/1402)):** Default `outputPath` to `.arkenv/env.gen.ts` with `.arkenv/index.ts` barrel; alias `@arkenv/nextjs` to `.arkenv/env.gen.ts`.
-3. **Ship Strict Auto-Extend ([#1403](https://github.com/yamcodes/arkenv/issues/1403)):** Wire `#arkenv/client-env` alias resolution in `withArkEnv`.
-4. **Ship `isEnabled` DCE Helper:** Export `isEnabled` from `@arkenv/nextjs` and document feature flag optimization patterns.
-5. **Add Structured Agent Envelopes (`--json`):** Implement machine-readable diagnostics in `arkenv check --json` for agent repair loops.
-6. **Close [#1598](https://github.com/yamcodes/arkenv/issues/1598) and [#1599](https://github.com/yamcodes/arkenv/issues/1599)** referencing this evaluation note.
+Because **ArkEnv v1.0.0** is a major SemVer milestone, it introduces a clean platform baseline:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 1. Dual-Track Maintenance Model                                             │
+│    • ArkEnv v0 (`0.x` on `latest` tag): Maintained on `dev` branch for      │
+│      teams locked into Next 13/14 with `jiti` and legacy in-tree codegen.   │
+│    • ArkEnv v1 (`1.0.0` on `alpha` tag -> `latest`): Next 15+ baseline      │
+│      with zero `jiti`, virtual `.arkenv/`, and `isEnabled` DCE.             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 2. Automated Migration CLI (`npx arkenv@latest migrate`)                    │
+│    • Automatically inspects project structure and executes upgrades:        │
+│      ① Removes `src/generated/env.gen.ts` & cleans old postinstall hooks.   │
+│      ② Injects `.arkenv` into `.gitignore` and `.eslintignore`.             │
+│      ③ Rewrites imports to `@/.arkenv` (or `#arkenv/env`).                  │
+│      ④ Simplifies `next.config.ts` to `export default withArkEnv(...)`.     │
+│      ⑤ Scans client components and flags `env.FLAG` reads for `isEnabled`.  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 3. Runtime Boot Guard                                                       │
+│    • If `withArkEnv` runs in Next < 15, it halts with an actionable error:   │
+│      "ArkEnv v1 requires Next.js 15+. For Next 13/14, stay on arkenv v0.x"  │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## 11. Changelog of this Note
+## 11. Current Lean & Implementation Plan
 
+1. **Target Next 15+ as v1 baseline:** Deprecate Next 13/14 in `@arkenv/nextjs` root entry; remove `jiti`, `mock-server-only`, and `chokidar`.
+2. **Implement Virtual `.arkenv/` ([#1402](https://github.com/yamcodes/arkenv/issues/1402)):** Default `outputPath` to `.arkenv/env.gen.ts` with `.arkenv/index.ts` hybrid barrel; auto-inject `.arkenv` into `.gitignore`.
+3. **Ship Strict Auto-Extend ([#1403](https://github.com/yamcodes/arkenv/issues/1403)):** Wire `#arkenv/client-env` alias resolution in `withArkEnv`.
+4. **Ship `isEnabled` DCE Helper:** Export `isEnabled` from `@arkenv/nextjs` and document feature flag optimization patterns.
+5. **Add Structured Agent Envelopes (`--json`):** Implement machine-readable diagnostics in `arkenv check --json` for agent repair loops.
+6. **Provide `arkenv migrate` CLI command:** Automate v0 -> v1 code and config transformations.
+7. **Close [#1598](https://github.com/yamcodes/arkenv/issues/1598) and [#1599](https://github.com/yamcodes/arkenv/issues/1599)** referencing this evaluation note.
+
+---
+
+## 12. Changelog of this Note
+
+- **2026-08-25:** Added Section 10 documenting the v0 -> v1 Next 13/14 migration strategy, `.gitignore` automation, and `package.json` exports protection.
 - **2026-08-25:** Added Layer I (Generated Directory Naming: `.arkenv/` vs `__generated__/` vs `gen/`) and Layer J (File Structure: `.gen.ts` vs `index.ts` barrel vs Hybrid J3); added Q3 deep-dive.
 - **2026-08-25:** Added Section 7 addressing TypeScript day-0 typings without prior builds, monorepo shared package interop (`@arkenv/core` in `packages/db`), and Option A/B namespace hygiene.
 - **2026-08-25:** Added Layer H (Schema Factory Entrypoint & Import Aesthetics); evaluated H1 (`@arkenv/nextjs`), H2 (`@arkenv/core`), H3 (`@arkenv/nextjs/env`), H4 (`#arkenv/env`), and H5 (`./.arkenv/env.gen`).
