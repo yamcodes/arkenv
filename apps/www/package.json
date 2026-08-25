@@ -89,7 +89,7 @@
 		"babel-plugin-react-compiler": "^1.0.0",
 		"jsdom": "29.1.1",
 		"mdast-util-mdx-jsx": "3.2.0",
-		"next-video": "2.7.1",
+		"next-video": "2.8.1",
 		"postcss": "8.5.23",
 		"rimraf": "catalog:",
 		"styled-jsx": "5.1.7",
