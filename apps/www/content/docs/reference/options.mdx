@@ -175,8 +175,9 @@ Schema on the value (Valibot, Zod Mini, Zod v3 via `zod-to-json-schema`,
 and similar). ArkEnv calls it per key when it can't read JSON Schema from
 that value.
 
-Wiring: [Valibot](/docs/guides/validators/valibot),
-[Zod](/docs/guides/validators/zod) (Mini and v3), and
+Wiring: prefer [`@arkenv/standard/valibot`](/docs/guides/validators/valibot)
+and [`@arkenv/standard/zod-mini`](/docs/guides/validators/zod#zod-mini).
+The callback remains the escape hatch for Zod v3 and mixed maps. See
 [Coercion](/docs/core-concepts/coercion#valibot-tojsonschema).
 
 ## Framework-only options

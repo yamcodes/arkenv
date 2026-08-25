@@ -170,6 +170,18 @@ export const env = arkenv({
 });
 ```
 
+Valibot uses the `/valibot` subpath (install `@valibot/to-json-schema` as well):
+
+```ts title="src/env.ts"
+import { arkenv } from "@arkenv/standard/valibot";
+import * as v from "valibot";
+
+export const env = arkenv({
+  PORT: v.optional(v.number(), 3000),
+  DATABASE_URL: v.pipe(v.string(), v.url()),
+});
+```
+
 ### Consuming `env` in Application Code
 
 Always import and read properties directly from the canonical `env` object:

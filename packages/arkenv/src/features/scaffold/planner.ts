@@ -311,6 +311,7 @@ export function createExistingProjectPlan(
 	const deps = [
 		...(basePkg ? [basePkg] : []),
 		options.validator,
+		...(options.validator === "valibot" ? ["@valibot/to-json-schema"] : []),
 		...frameworkStrategy.getDependencies(options),
 	];
 	if (
