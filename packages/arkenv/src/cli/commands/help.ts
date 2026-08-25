@@ -39,9 +39,13 @@ export class HelpUseCase {
 				right: "Set up ArkEnv in your project",
 			},
 			{
-				left: "arkenv add host [provider]",
+				left: "arkenv preset apply [provider]",
 				right:
-					"Add hosting provider preset (vercel, netlify, cloudflare, railway, render, fly) to schema",
+					"Apply or refresh hosting provider preset (vercel, netlify, cloudflare, railway, render, fly)",
+			},
+			{
+				left: "arkenv preset remove [provider]",
+				right: "Remove hosting provider preset from schema",
 			},
 		];
 
@@ -84,9 +88,20 @@ export class HelpUseCase {
 				right: "Disable automatic env.gen.ts code generation for Next.js",
 			},
 			{
-				left: "--host-preset, -H <preset>",
+				left: "--preset, -P <preset>",
 				right:
 					"Specify a hosting provider preset (none, vercel, netlify, cloudflare, railway, render, fly)",
+			},
+		];
+
+		const presetOptions: HelpItem[] = [
+			{
+				left: "--file <path>",
+				right: "Path to schema file (overrides package.json arkenv pointer)",
+			},
+			{
+				left: "--force, -f",
+				right: "Bypass dirty git working tree check",
 			},
 		];
 
@@ -101,6 +116,10 @@ export class HelpUseCase {
 		}
 		this.logger.log(`\n${pc.bold("init options:")}`);
 		for (const line of formatColumns(initOptions)) {
+			this.logger.log(line);
+		}
+		this.logger.log(`\n${pc.bold("preset options:")}`);
+		for (const line of formatColumns(presetOptions)) {
 			this.logger.log(line);
 		}
 	}

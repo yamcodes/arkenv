@@ -9,7 +9,8 @@
 		"env",
 		"---Commands---",
 		"init",
-		"add-host",
+		"preset",
+
 		"---Packages---",
 		"core",
 		"standard",

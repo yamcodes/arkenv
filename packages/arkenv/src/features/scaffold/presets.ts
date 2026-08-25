@@ -138,7 +138,7 @@ export function isHostPreset(value: string): value is HostPreset {
 }
 
 /**
- * Type-guard for `add host` provider values against {@link HostProvider}.
+ * Type-guard for preset provider values against {@link HostProvider}.
  *
  * @param value Raw CLI string
  * @returns Whether `value` is a known hosting provider id
@@ -250,4 +250,41 @@ export function mergeEnvKeysWithPreset(
 		return undefined;
 	}
 	return Array.from(new Set([...(envKeys ?? []), ...presetKeys]));
+}
+
+/**
+ * Marker tags used to delimit machine-managed hosting preset blocks in schema files.
+ */
+export const PRESET_START_TAG = "@arkenv-preset-start";
+export const PRESET_END_TAG = "@arkenv-preset-end";
+
+/**
+ * Formats a start marker comment for a preset block.
+ */
+export function formatPresetStartMarker(markerId: string): string {
+	return `// ${PRESET_START_TAG} ${markerId}`;
+}
+
+/**
+ * Formats an end marker comment for a preset block.
+ */
+export function formatPresetEndMarker(markerId: string): string {
+	return `// ${PRESET_END_TAG} ${markerId}`;
+}
+
+/**
+ * Parses the marker ID string into base ID and optional role.
+ */
+export function parseMarkerId(markerId: string): {
+	baseId: string;
+	role?: string;
+} {
+	const colonIndex = markerId.indexOf(":");
+	if (colonIndex === -1) {
+		return { baseId: markerId };
+	}
+	return {
+		baseId: markerId.slice(0, colonIndex),
+		role: markerId.slice(colonIndex + 1),
+	};
 }

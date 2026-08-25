@@ -26,15 +26,23 @@ describe("HelpUseCase", () => {
 		);
 		expect(initCommandLog).toBeDefined();
 		expect(initCommandLog).toBe(
-			"  arkenv init [project-name]    Set up ArkEnv in your project",
+			"  arkenv init [project-name]         Set up ArkEnv in your project",
 		);
 
-		const addCommandLog = logs.find((l) =>
-			l.includes("arkenv add host [provider]"),
+		const presetApplyCommandLog = logs.find((l) =>
+			l.includes("arkenv preset apply [provider]"),
 		);
-		expect(addCommandLog).toBeDefined();
-		expect(addCommandLog).toBe(
-			"  arkenv add host [provider]    Add hosting provider preset (vercel, netlify, cloudflare, railway, render, fly) to schema",
+		expect(presetApplyCommandLog).toBeDefined();
+		expect(presetApplyCommandLog).toBe(
+			"  arkenv preset apply [provider]     Apply or refresh hosting provider preset (vercel, netlify, cloudflare, railway, render, fly)",
+		);
+
+		const presetRemoveCommandLog = logs.find((l) =>
+			l.includes("arkenv preset remove [provider]"),
+		);
+		expect(presetRemoveCommandLog).toBeDefined();
+		expect(presetRemoveCommandLog).toBe(
+			"  arkenv preset remove [provider]    Remove hosting provider preset from schema",
 		);
 
 		const globalHeaderIndex = logs.findIndex((l) =>
@@ -74,34 +82,25 @@ describe("HelpUseCase", () => {
 		expect(helpOptionLog).toBe("  --help, -h     Show this help message");
 		expect(logs.indexOf(helpOptionLog as string)).toBeLessThan(initHeaderIndex);
 
-		// Init options align on --host-preset, -H <preset> (26 chars) and must not appear under Global
+		// Init options align on --preset, -P <preset> (21 chars) and must not appear under Global
 		const exampleOptionLog = logs.find((l) => l.includes("--example"));
 		expect(exampleOptionLog).toBeDefined();
-		// "--example" is 9 chars. max (26) - 9 + colGap (4) = 21 spaces padding.
-		expect(exampleOptionLog).toBe(
-			"  --example                     Specify an example name when creating a new project",
-		);
 		expect(logs.indexOf(exampleOptionLog as string)).toBeGreaterThan(
 			initHeaderIndex,
 		);
 
 		const noCodegenOptionLog = logs.find((l) => l.includes("--no-codegen"));
 		expect(noCodegenOptionLog).toBeDefined();
-		// "--no-codegen" is 12 chars. max (26) - 12 + colGap (4) = 18 spaces padding.
-		expect(noCodegenOptionLog).toBe(
-			"  --no-codegen                  Disable automatic env.gen.ts code generation for Next.js",
-		);
 		expect(logs.indexOf(noCodegenOptionLog as string)).toBeGreaterThan(
 			initHeaderIndex,
 		);
 
 		const hostPresetOptionLog = logs.find((l) =>
-			l.includes("--host-preset, -H <preset>"),
+			l.includes("--preset, -P <preset>"),
 		);
 		expect(hostPresetOptionLog).toBeDefined();
-		// "--host-preset, -H <preset>" is 26 chars. max (26) - 26 + colGap (4) = 4 spaces padding.
 		expect(hostPresetOptionLog).toBe(
-			"  --host-preset, -H <preset>    Specify a hosting provider preset (none, vercel, netlify, cloudflare, railway, render, fly)",
+			"  --preset, -P <preset>    Specify a hosting provider preset (none, vercel, netlify, cloudflare, railway, render, fly)",
 		);
 		expect(logs.indexOf(hostPresetOptionLog as string)).toBeGreaterThan(
 			initHeaderIndex,

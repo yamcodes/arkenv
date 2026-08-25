@@ -285,6 +285,11 @@ const config = {
 				permanent: true,
 			},
 			{
+				source: "/docs/reference/add-host",
+				destination: "/docs/reference/preset",
+				permanent: true,
+			},
+			{
 				source: "/docs/cli/:path*",
 				destination: "/docs/reference",
 				permanent: true,
