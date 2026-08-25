@@ -95,6 +95,7 @@
 		"unify-coercion",
 		"valibot-example-registry",
 		"vite-env-module-transform",
+		"vite-plugin-registry-compat",
 		"walk-back-env-starters",
 		"zod-mode-examples-registry"
 	]
