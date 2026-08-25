@@ -1,11 +1,15 @@
 import { env } from "@/env";
+import { BetaBanner } from "./components/beta-banner";
 
 export default function DashboardPage() {
 	return (
 		<main style={{ padding: "32px 28px", maxWidth: 720 }}>
-			<h1 style={{ fontSize: 22, margin: "0 0 8px" }}>Dashboard</h1>
+			<h1 style={{ fontSize: 22, margin: "0 0 8px" }}>
+				Next.js ArkEnv S-Tier Prototype
+			</h1>
 			<p style={{ color: "#64748b", margin: "0 0 24px" }}>
-				Server Component — secrets are allowed here.
+				Server Component with virtualized <code>.arkenv/</code> artifact
+				placement.
 			</p>
 			<section
 				style={{
@@ -25,8 +29,11 @@ export default function DashboardPage() {
 					<strong>Env:</strong> <code>{env.NODE_ENV}</code>
 				</p>
 			</section>
+
+			<BetaBanner />
+
 			<p style={{ marginTop: 20, fontSize: 14, color: "#64748b" }}>
-				Billing is a Client Component that copied the database read. Open it.
+				Billing is a Client Component that demonstrates secret protection.
 			</p>
 		</main>
 	);

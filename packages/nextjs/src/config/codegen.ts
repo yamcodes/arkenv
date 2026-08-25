@@ -106,12 +106,30 @@ export function runCodegen(
 		fs.writeFileSync(outputPath, generatedCode, "utf-8");
 	}
 
+	const barrelPath = path.join(outputDir, "index.ts");
+	const barrelCode = `export * from "./env.gen";\nexport { default } from "./env.gen";\n`;
+	if (path.basename(outputDir) === ".arkenv" || !fs.existsSync(barrelPath)) {
+		let shouldWriteBarrel = true;
+		if (fs.existsSync(barrelPath)) {
+			if (fs.readFileSync(barrelPath, "utf-8") === barrelCode) {
+				shouldWriteBarrel = false;
+			}
+		}
+		if (shouldWriteBarrel) {
+			fs.writeFileSync(barrelPath, barrelCode, "utf-8");
+		}
+	}
+
 	if (resolvedLayout === "strict" && baseDir) {
 		const ambientPath = path.join(
 			path.dirname(outputPath),
 			"arkenv-client-env.d.ts",
 		);
-		const ambientCode = generateClientEnvAmbientDeclaration();
+		const clientPath = path.join(baseDir, "client.ts");
+		const ambientCode = generateClientEnvAmbientDeclaration(
+			clientPath,
+			outputPath,
+		);
 		let shouldWriteAmbient = true;
 		if (fs.existsSync(ambientPath)) {
 			if (fs.readFileSync(ambientPath, "utf-8") === ambientCode) {

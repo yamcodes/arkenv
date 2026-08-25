@@ -66,6 +66,7 @@ type SetupResult = {
 	resolvedLayout: "flat" | "strict" | "simple";
 	baseDir: string | undefined;
 	clientEnvPath: string | undefined;
+	outputPath: string;
 };
 
 /**
@@ -111,13 +112,30 @@ export function setupArkEnv(
 		throw new Error(missingClientTsError(clientEnvPath, baseDir!));
 	}
 
-	const defaultOutputDir =
-		resolvedLayout === "strict" && baseDir ? baseDir : path.dirname(schemaPath);
-	const defaultOutputPath = path.join(
-		defaultOutputDir,
-		"generated",
-		"env.gen.ts",
-	);
+	function resolveProjectRoot(
+		schema: string,
+		base?: string,
+		layout?: string,
+	): string {
+		if (layout === "strict" && base) {
+			let dir = base;
+			if (path.basename(dir) === "env") {
+				dir = path.dirname(dir);
+			}
+			if (path.basename(dir) === "src") {
+				dir = path.dirname(dir);
+			}
+			return dir;
+		}
+		let dir = path.dirname(schema);
+		if (path.basename(dir) === "src") {
+			dir = path.dirname(dir);
+		}
+		return dir;
+	}
+
+	const projectRoot = resolveProjectRoot(schemaPath, baseDir, resolvedLayout);
+	const defaultOutputPath = path.join(projectRoot, ".arkenv", "env.gen.ts");
 	const outputPath = options?.outputPath
 		? path.resolve(options.outputPath)
 		: defaultOutputPath;
@@ -238,28 +256,101 @@ export function setupArkEnv(
 		resolvedLayout,
 		baseDir,
 		clientEnvPath,
+		outputPath,
 	};
 }
 
 /**
  * Wrap a Next.js configuration object to automatically generate the `runtimeEnv`
- * block in `env.gen.ts` and, in strict layout, register the `#arkenv/client-env`
- * alias so `@arkenv/nextjs/server` can auto-extend the client env.
+ * block in `env.gen.ts`, register `#arkenv/client-env` in strict layout for auto-extend,
+ * and configure Turbopack/Webpack aliases for virtualized `.arkenv/` placement.
  *
- * @param nextConfig The Next.js configuration object (object-form only; function-form configs are not yet supported — see follow-up issue)
+ * @param nextConfig The Next.js configuration object
  * @param options Optional configuration paths for schema and output files
- * @returns The Next.js configuration object (with strict-layout aliases when applicable)
+ * @returns The Next.js configuration object with configured aliases
  * @throws An error if the schema file cannot be found or if code generation fails
  */
 export function withArkEnv<T>(nextConfig: T, options?: ArkEnvConfigOptions): T {
-	const { resolvedLayout, clientEnvPath } = setupArkEnv(options);
+	const {
+		resolvedLayout,
+		clientEnvPath,
+		outputPath: targetGenPath,
+	} = setupArkEnv(options);
 
-	if (resolvedLayout === "strict" && clientEnvPath) {
-		return applyStrictLayoutAliases(
-			nextConfig as Record<string, unknown>,
-			clientEnvPath,
-			CLIENT_ENV_SPECIFIER,
-		) as T;
+	const applyVirtualAliases = (configObj: any) => {
+		const rootDir = process.cwd();
+
+		const targetGenPathToUse =
+			targetGenPath ??
+			(options?.outputPath
+				? path.resolve(options.outputPath)
+				: path.join(rootDir, ".arkenv", "env.gen.ts"));
+
+		const relativeGenPath =
+			"./" + path.relative(rootDir, targetGenPathToUse).replace(/\\/g, "/");
+
+		const turbopack = {
+			...configObj?.turbopack,
+			resolveAlias: {
+				".arkenv/env.gen": relativeGenPath,
+				".arkenv/env.gen.ts": relativeGenPath,
+				".arkenv": relativeGenPath,
+				".arkenv/index": relativeGenPath,
+				".arkenv/index.ts": relativeGenPath,
+				"#arkenv/env": relativeGenPath,
+				"@/.arkenv": relativeGenPath,
+				"@/.arkenv/env.gen": relativeGenPath,
+				...configObj?.turbopack?.resolveAlias,
+			},
+		};
+
+		const webpack = (webpackConfig: any, context: any) => {
+			webpackConfig.resolve = webpackConfig.resolve || {};
+			webpackConfig.resolve.alias = {
+				...webpackConfig.resolve.alias,
+				".arkenv/env.gen": targetGenPathToUse,
+				".arkenv/env.gen.ts": targetGenPathToUse,
+				".arkenv": targetGenPathToUse,
+				".arkenv/index": targetGenPathToUse,
+				".arkenv/index.ts": targetGenPathToUse,
+				"#arkenv/env": targetGenPathToUse,
+				"@/.arkenv": targetGenPathToUse,
+				"@/.arkenv/env.gen": targetGenPathToUse,
+			};
+			if (typeof configObj?.webpack === "function") {
+				return configObj.webpack(webpackConfig, context);
+			}
+			return webpackConfig;
+		};
+
+		return {
+			...configObj,
+			turbopack,
+			webpack,
+		};
+	};
+
+	const applyAllAliases = (configObj: any) => {
+		let currentConfig = configObj;
+		if (resolvedLayout === "strict" && clientEnvPath) {
+			currentConfig = applyStrictLayoutAliases(
+				currentConfig as Record<string, unknown>,
+				clientEnvPath,
+				CLIENT_ENV_SPECIFIER,
+			);
+		}
+		return applyVirtualAliases(currentConfig);
+	};
+
+	if (typeof nextConfig === "function") {
+		return ((phase: any, context: any) => {
+			const resolved = (nextConfig as any)(phase, context);
+			return applyAllAliases(resolved);
+		}) as unknown as T;
+	}
+
+	if (nextConfig && typeof nextConfig === "object") {
+		return applyAllAliases(nextConfig) as T;
 	}
 
 	return nextConfig;

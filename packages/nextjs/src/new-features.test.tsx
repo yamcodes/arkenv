@@ -32,7 +32,7 @@ describe("setupArkEnv non-wrapping API", () => {
 
 		setupArkEnv({ schemaPath, validate: false });
 
-		const genPath = path.join(tempDir, "generated", "env.gen.ts");
+		const genPath = path.join(tempDir, ".arkenv", "env.gen.ts");
 		expect(fs.existsSync(genPath)).toBe(true);
 
 		const generatedContent = fs.readFileSync(genPath, "utf-8");

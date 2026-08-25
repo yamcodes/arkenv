@@ -297,7 +297,7 @@ describe("withArkEnv wrapper", () => {
 		}
 	});
 
-	it("should pass nextConfig through unchanged", () => {
+	it("should configure turbopack and webpack aliases for virtual .arkenv placement in flat layout", () => {
 		if (!fs.existsSync(tempDir)) {
 			fs.mkdirSync(tempDir, { recursive: true });
 		}
@@ -316,12 +316,59 @@ describe("withArkEnv wrapper", () => {
 		const outputConfig = withArkEnv(inputConfig, {
 			schemaPath,
 			validate: false,
+		}) as any;
+
+		expect(outputConfig.reactStrictMode).toBe(true);
+		const genPath = path.join(tempDir, ".arkenv", "env.gen.ts");
+		expect(fs.existsSync(genPath)).toBe(true);
+		expect(fs.existsSync(path.join(tempDir, ".arkenv", "index.ts"))).toBe(true);
+
+		// Assert Turbopack aliases for flat layout
+		expect(outputConfig.turbopack?.resolveAlias?.["#arkenv/env"]).toBe(
+			`./${path.relative(process.cwd(), genPath).replace(/\\/g, "/")}`,
+		);
+		expect(outputConfig.turbopack?.resolveAlias?.["@/.arkenv"]).toBe(
+			`./${path.relative(process.cwd(), genPath).replace(/\\/g, "/")}`,
+		);
+
+		// Assert Webpack aliases for flat layout
+		const webpackConfig = { resolve: { alias: {} } };
+		const resolvedWebpack = outputConfig.webpack?.(webpackConfig, {});
+		expect(resolvedWebpack?.resolve?.alias?.["#arkenv/env"]).toBe(genPath);
+		expect(resolvedWebpack?.resolve?.alias?.["@/.arkenv"]).toBe(genPath);
+	});
+
+	it("should support function-form nextConfig in both flat and strict layouts", () => {
+		if (!fs.existsSync(tempDir)) {
+			fs.mkdirSync(tempDir, { recursive: true });
+		}
+
+		fs.writeFileSync(
+			schemaPath,
+			`
+			export const env = arkenv({
+				client: { NEXT_PUBLIC_API_URL: "string" }
+			});
+			`,
+			"utf-8",
+		);
+
+		const functionConfig = (phase: string) => ({
+			reactStrictMode: phase === "phase-production-build",
+			customFlag: true,
 		});
 
-		expect(outputConfig).toBe(inputConfig);
-		expect(fs.existsSync(path.join(tempDir, "generated", "env.gen.ts"))).toBe(
-			true,
-		);
+		const wrapped = withArkEnv(functionConfig, {
+			schemaPath,
+			validate: false,
+		}) as any;
+
+		expect(typeof wrapped).toBe("function");
+		const resolved = wrapped("phase-production-build", {});
+		expect(resolved.reactStrictMode).toBe(true);
+		expect(resolved.customFlag).toBe(true);
+		expect(resolved.turbopack?.resolveAlias?.["@/.arkenv"]).toBeDefined();
+		expect(typeof resolved.webpack).toBe("function");
 	});
 
 	it("should support strict layout auto-detection and generation", () => {
@@ -395,7 +442,6 @@ describe("withArkEnv wrapper", () => {
 			turbopack?: { resolveAlias?: Record<string, string> };
 			experimental?: { turbo?: { resolveAlias?: Record<string, string> } };
 		};
-
 		// Strict layout returns a new config with webpack/turbopack aliases.
 		expect(outputConfig).not.toBe(inputConfig);
 		expect(outputConfig.reactStrictMode).toBe(true);
@@ -429,19 +475,22 @@ describe("withArkEnv wrapper", () => {
 			),
 		).toBe(true);
 
-		const genPath = path.join(strictBaseDir, "generated", "env.gen.ts");
+		const genPath = path.join(tempDir, ".arkenv", "env.gen.ts");
 		expect(fs.existsSync(genPath)).toBe(true);
-		const ambientPath = path.join(
-			strictBaseDir,
-			"generated",
-			"arkenv-client-env.d.ts",
-		);
+		const ambientPath = path.join(tempDir, ".arkenv", "arkenv-client-env.d.ts");
 		expect(fs.existsSync(ambientPath)).toBe(true);
 		expect(fs.readFileSync(ambientPath, "utf-8")).toContain(
 			'declare module "#arkenv/client-env"',
 		);
+		const expectedRel = path
+			.relative(
+				path.dirname(ambientPath),
+				path.join(strictBaseDir, "client.ts"),
+			)
+			.replace(/\\/g, "/")
+			.replace(/\.ts$/, "");
 		expect(fs.readFileSync(ambientPath, "utf-8")).toContain(
-			'export { env } from "../client"',
+			`export { env } from "${expectedRel}"`,
 		);
 
 		const generatedContent = fs.readFileSync(genPath, "utf-8");
