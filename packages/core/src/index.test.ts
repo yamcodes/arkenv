@@ -1,11 +1,22 @@
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 // Import both the default export and the named export to verify they are identical and correctly exposed.
-import defaultArkenv, { arkenv as namedArkenv } from ".";
+import defaultArkenv, {
+	beginSchemaCapture,
+	endSchemaCapture,
+	isCapturingSchema,
+	arkenv as namedArkenv,
+} from ".";
 
 describe("index.ts exports", () => {
 	it("should export arkenv as default export", () => {
 		expect(defaultArkenv).toBe(namedArkenv);
 		expect(typeof defaultArkenv).toBe("function");
+	});
+
+	it("should export schema capture helpers", () => {
+		expect(typeof beginSchemaCapture).toBe("function");
+		expect(typeof endSchemaCapture).toBe("function");
+		expect(typeof isCapturingSchema).toBe("function");
 	});
 
 	it("should have correct types for exported functions", () => {

@@ -5,7 +5,13 @@ import type {
 	SchemaShape,
 	StandardSchemaV1,
 } from "@repo/types";
-import { ArkEnvError, type SafeArkEnvResult, safeExecute } from "@repo/utils";
+import {
+	ArkEnvError,
+	isCapturingSchema,
+	recordSchemaCapture,
+	type SafeArkEnvResult,
+	safeExecute,
+} from "@repo/utils";
 import type { type as at, distill } from "arktype";
 import { parse } from "./arktype";
 
@@ -152,6 +158,10 @@ export function arkenv<
 	def: D,
 	config: ArkEnvConfig = {},
 ): ArkenvOutput<T, D> | SafeArkEnvResult<ArkenvOutput<T, D>> {
+	if (isCapturingSchema()) {
+		recordSchemaCapture(def);
+		return {} as ArkenvOutput<T, D>;
+	}
 	if (config.safe) {
 		return safeExecute(() => parse(def as any, config));
 	}

@@ -1,5 +1,6 @@
 import {
 	ClackPromptAdapter,
+	JitiSchemaLoaderAdapter,
 	NodeProjectScannerAdapter,
 	NodeWorkspace,
 } from "@/adapters";
@@ -19,6 +20,7 @@ export function compose(argv: string[]) {
 	const workspace = new NodeWorkspace(cli.isQuiet, logger.stdio, logger);
 	const prompt = new ClackPromptAdapter();
 	const scanner = new NodeProjectScannerAdapter(logger);
+	const schemaLoader = new JitiSchemaLoaderAdapter();
 
 	const initUseCase = new InitUseCase(logger, workspace, prompt, scanner);
 	const presetUseCase = new PresetUseCase(logger, workspace, prompt, scanner);
@@ -32,5 +34,6 @@ export function compose(argv: string[]) {
 		initUseCase,
 		presetUseCase,
 		helpUseCase,
+		schemaLoader,
 	};
 }

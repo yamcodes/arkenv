@@ -4,20 +4,27 @@ import {
 	assertNotArkTypeDsl,
 	assertStandardSchema,
 	assertStandardSchemaMap,
+	beginSchemaCapture,
 	type EnvIssue,
+	endSchemaCapture,
 	formatIssues,
 	getSchemaKeys,
+	isCapturingSchema,
 	type ParseStandardConfig,
 	parseStandard,
+	recordSchemaCapture,
 	type SafeArkEnvResult,
 	safeExecute,
 } from "@repo/utils";
 
 export {
 	ArkEnvError,
+	beginSchemaCapture,
 	type EnvIssue,
+	endSchemaCapture,
 	formatIssues,
 	getSchemaKeys,
+	isCapturingSchema,
 	type SafeArkEnvResult,
 };
 
@@ -68,6 +75,13 @@ export function arkenv<
 		const validator = (def as Record<string, unknown>)[key];
 		assertNotArkTypeDsl(key, validator);
 		assertStandardSchema(key, validator);
+	}
+
+	if (isCapturingSchema()) {
+		recordSchemaCapture(def);
+		return {} as [Safe] extends [true]
+			? SafeArkEnvResult<StandardEnvOutput<T>>
+			: StandardEnvOutput<T>;
 	}
 
 	if (resolved.safe) {

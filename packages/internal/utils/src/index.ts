@@ -18,6 +18,12 @@ export {
 } from "./parse-standard";
 export { getSchemaKeys } from "./schema";
 export {
+	beginSchemaCapture,
+	endSchemaCapture,
+	isCapturingSchema,
+	recordSchemaCapture,
+} from "./schema-capture";
+export {
 	ARKENV_ERROR_NAME,
 	boundaryAccessErrorMessage,
 } from "./utils/boundary-access-error";
