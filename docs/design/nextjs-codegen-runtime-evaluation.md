@@ -253,18 +253,19 @@ TypeScript resolves the generic `arkenv(schema)` signature directly from `node_m
 
 ### S-Tier (The Converged Architecture)
 
-$$\mathbf{\text{S-Tier Stack (v1)}} = \mathbf{A2} + \mathbf{B2} + \mathbf{C1/C2} + \mathbf{E2} + \mathbf{F3} + \mathbf{G2} + \mathbf{H1/H3} + \mathbf{I1} + \mathbf{J3}$$
+$$\mathbf{\text{S-Tier Next.js Stack (v1)}} = \mathbf{A2} + \mathbf{B2} + \mathbf{C1/C2} + \mathbf{E2} + \mathbf{F3} + \mathbf{H1/H3} + \mathbf{I1} + \mathbf{J3}$$
 
 * **A2 (Native `next.config.ts` Execution):** Leverages Next 15+ native TypeScript execution for zero-dependency build-time validation.
 * **B2 (Virtual `.arkenv/` Placement):** Keeps user source trees 100% clean; mapped via Webpack and `turbopack.resolveAlias`.
 * **C1/C2 (Conditional Exports + Strict Auto-Extend):** Canonical `import { env } from "./env"` on flat layouts; `#arkenv/client-env` auto-extend on strict layouts.
 * **E2 (Next 15+ Baseline):** Purges `jiti`, `mock-server-only`, and `chokidar` from the core `@arkenv/nextjs` distribution.
 * **F3 (Virtual Factory):** Emits only the minimal factory needed for Next.js AST identifier replacement without in-tree pollution.
-* **G2 (Structured Agent Envelopes):** Equips the ArkEnv CLI with structured machine diagnostics and `nextActions` for AI agents.
 * **H1 / H3 / H5 (Clean Imports):** `import arkenv from "@/.arkenv"` or `@arkenv/nextjs`. Clean, idiomatic imports with zero `#` syntax.
 * **I1 / J3 (Dot-Folder + Hybrid Barrel):** `.arkenv/index.ts` primary entrypoint with companion `env.gen.ts`.
 
-> **Note on Client Feature Flag DCE:** Compile-time Dead-Code Elimination for client feature flags has been spun out into a dedicated evaluation in RFC [#1599](https://github.com/yamcodes/arkenv/issues/1599) to benchmark `isEnabled("FLAG")` vs. `flags.FLAG` across minifiers independently of the core virtual placement foundation.
+> **Dedicated Follow-Up RFCs Spun Out:**
+> - **Client Feature Flag DCE:** Spun out to RFC [#1599](https://github.com/yamcodes/arkenv/issues/1599) to evaluate `isEnabled("FLAG")` vs. `flags.FLAG` minifier constant-folding across frameworks.
+> - **AI Agent `--json` Diagnostics:** Spun out to RFC [#1614](https://github.com/yamcodes/arkenv/issues/1614) as a universal CLI capability with machine-actionable `nextActions` envelopes across all runtimes.
 
 ---
 
