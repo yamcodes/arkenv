@@ -1,5 +1,78 @@
 # @arkenv/bun-plugin
 
+## 1.0.0-alpha.10
+
+### Major Changes
+
+- #### Rename Bun plugin exports to `arkenvPlugin` _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  The primary exports from `@arkenv/bun-plugin` and `@arkenv/bun-plugin/standard` have been renamed to `arkenvPlugin`, with named aliases `arkenvBunPlugin` and `hybrid`. The previously exposed named `arkenv` export has been removed.
+
+  The hybrid callable/zero-config interface for Bun continues to be supported on `arkenvPlugin` and the `hybrid` alias.
+
+  Usage in Bun build scripts (`build.ts`):
+
+  ```ts
+  import arkenvPlugin, { arkenvBunPlugin, hybrid } from "@arkenv/bun-plugin";
+
+  await Bun.build({
+    entrypoints: ["./src/index.tsx"],
+    outdir: "./dist",
+    plugins: [arkenvPlugin],
+  });
+  ```
+
+  **BREAKING CHANGE:** Removed named `arkenv` export from `@arkenv/bun-plugin`. Use `arkenvPlugin`, `arkenvBunPlugin`, or `hybrid` instead.
+
+  ```diff
+  - import { arkenv } from "@arkenv/bun-plugin";
+  + import { arkenvPlugin } from "@arkenv/bun-plugin";
+  ```
+
+### Minor Changes
+
+- #### Add strict layout support and compile-time import blocking to Vite and Bun plugins _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Added strict layout (`env/client.ts`, `env/server.ts`) support to `@arkenv/vite-plugin` and `@arkenv/bun-plugin` with compile-time import blocking:
+
+  - Configured `@arkenv/vite-plugin` to reject client-graph imports of server-only environment schemas during build with a descriptive error.
+  - Enforced compile-time server schema import blocking in `@arkenv/bun-plugin` for `target: "browser"` builds.
+  - Added strict layout resolution and server schema detection utilities to `@arkenv/build` to share security mechanisms across bundler integrations.
+  - Preserved existing flat layout transform behavior and zero-validator client bundle inlining.
+
+### Patch Changes
+
+- #### Clarify the error when client code reads a server-only env var _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  If a Client Component (or browser bundle) reads a server-only key, the overlay now says:
+
+  ```txt
+  Error: Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)
+  ```
+
+- #### Consolidate Vite and Bun plugin build plumbing into `@arkenv/build` _[`#1527`](https://github.com/yamcodes/arkenv/pull/1527) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [@yamcodes](https://github.com/yamcodes)_
+
+  Consolidated duplicated build-time utilities across `@arkenv/vite-plugin` and `@arkenv/bun-plugin` into `@arkenv/build` in accordance with ADR 0009:
+
+  - Centralized env-module path resolution, module ID normalization, and dotenv detection helpers in `@arkenv/build`.
+  - Moved schema key classification (`classifyEnvKeys`) and dynamic env module loading via `jiti` (`loadValidatedEnv`) into `@arkenv/build`.
+  - Added shared prefix filtering (`filterEnvByPrefix`) and transform mode detection (`isTransformModeCall`).
+  - Refactored both plugins to consume these shared utilities while preserving their public APIs and behaviors.
+
+<details><summary>Updated 3 dependencies</summary>
+
+<small>
+
+[`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2) [`5e69f5e`](https://github.com/yamcodes/arkenv/commit/5e69f5ebd69bbcdde6bcf535df2c790a23943ac2)
+
+</small>
+
+- `@arkenv/build@0.1.0-alpha.3`
+- `@arkenv/core@1.0.0-alpha.5`
+- `@arkenv/standard@1.0.0-alpha.5`
+
+</details>
+
 ## 1.0.0-alpha.9
 
 ### Major Changes
