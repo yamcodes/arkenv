@@ -10,8 +10,13 @@ and enforce client/server security boundaries.
 
 ## Coding-agent plugin
 
-Install the ArkEnv plugin so Claude Code, Cursor, Codex, and other MCP
-clients get slash commands plus an AST auditor:
+The plugin and the skill coexist. Prefer the plugin on hosts that support
+it (Claude Code, Cursor, Codex, and other MCP clients). Keep the skill
+path below when your assistant only loads Agent Skills. Installing the
+plugin does not replace `npx skills add yamcodes/arkenv`.
+
+Install `@arkenv/agent-plugin` so those hosts get slash commands plus an
+AST auditor:
 
 ```bash
 npx plugins add yamcodes/arkenv
@@ -37,11 +42,11 @@ diagnostic shapes and the programmatic `auditProject` API.
 
 ## Agent skill
 
-[Agent Skills](https://agentskills.io) are an open standard that provide capabilities
-and domain expertise to AI coding assistants.
+[Agent Skills](https://agentskills.io) are an open standard that provide
+capabilities and domain expertise to AI coding assistants. Use this path
+when the host has no plugin or MCP install, or when you want both.
 
-You can install the official ArkEnv skill into your project using your package
-manager:
+Install the official ArkEnv skill into your project:
 
 ```package-install
 npx skills add yamcodes/arkenv
@@ -115,7 +120,7 @@ The complete text of all documentation pages is available in a single plain text
 <Cards>
   <Card href="/docs/guides/frameworks" title="Framework guides" description="Recipes for Next.js, Nuxt, Vite, and Bun." />
 
-  <Card href="/docs/validating-your-environment/framework-integration" title="Framework integration" description="Understand client/server security boundaries across hosts." />
+  <Card href="/docs/validating-your-environment/framework-integration" title="Integrations" description="Wire ArkEnv into Next.js, Nuxt, Vite, Bun, or coding agents." />
 
   <Card href="/docs/reference/init" title="init reference" description="Complete CLI flags, agent mode payloads, and error codes." />
 

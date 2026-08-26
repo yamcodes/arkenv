@@ -1,11 +1,17 @@
 ---
-title: Framework integration
-description: Connect ArkEnv to Next.js, Nuxt, Vite, or Bun.
+title: Integrations
+description: Connect ArkEnv to Next.js, Nuxt, Vite, Bun, or coding agents.
 ---
 
-ArkEnv is built around a flat `arkenv()` call: one schema, one typed `env` object. Framework packages exist so that same call stays honest on each host. They add public-prefix rules, codegen, build plugins, and runtime guards so you do not invent a second API for Next.js or Vite. Radical simplicity at the call site; the integration absorbs the host's complexity.
+ArkEnv ships first-party packages for frameworks, bundlers, and coding
+agents. Validation hosts keep a flat `arkenv()` call honest: they add
+public-prefix rules, codegen, build plugins, and runtime guards so you
+do not invent a second API for Next.js or Vite. The coding-agent package
+is separate: it scaffolds and audits source. It does not validate env at
+runtime.
 
-Pick the package that matches your host, then follow the linked guide for layout details.
+Pick the package that matches your host, then follow the linked guide for
+layout details.
 
 ## Choose your stack
 
@@ -17,11 +23,15 @@ Pick the package that matches your host, then follow the linked guide for layout
   <Card href="/docs/guides/frameworks/vite" title="Vite" description="@arkenv/vite-plugin for build and dev validation of VITE_ keys." />
 
   <Card href="/docs/guides/frameworks/bun" title="Bun bundler / fullstack" description="@arkenv/bun-plugin for Bun bundler and fullstack apps that inline BUN_PUBLIC_ keys." />
+
+  <Card href="/docs/guides/ai" title="Coding agents" description="@arkenv/agent-plugin for slash commands and MCP. Skill-only hosts still use npx skills add." />
 </Cards>
 
 ## Install pattern
 
-Install a validation package (`@arkenv/core` + `arktype`, or `@arkenv/standard`) alongside the framework package:
+For Next.js, Nuxt, Vite, and Bun, install a validation package
+(`@arkenv/core` + `arktype`, or `@arkenv/standard`) alongside the host
+adapter:
 
 ```package-install
 # Next.js example
@@ -39,14 +49,21 @@ Scaffold with the CLI when you want files generated for you:
 npx arkenv@latest init
 ```
 
+Coding agents install `@arkenv/agent-plugin` through the plugin and MCP
+commands on the [AI guide](/docs/guides/ai). That package is not a
+validation adapter and has no `/standard` entry. See the
+[`@arkenv/agent-plugin` reference](/docs/reference/agent-plugin) for
+handshake details.
+
 ## What each integration adds
 
-| Host    | Package               | Boundary mechanism                                                               |
-| ------- | --------------------- | -------------------------------------------------------------------------------- |
-| Next.js | `@arkenv/nextjs`      | `withArkEnv` codegen, `NEXT_PUBLIC_*`, runtime proxy, optional strict file split |
-| Nuxt    | `@arkenv/nuxt`        | Nuxt module, `NUXT_PUBLIC_*`, client/server entrypoints                          |
-| Vite    | `@arkenv/vite-plugin` | Dev/build validation; only `VITE_*` (and optional `NODE_ENV`) reach the client   |
-| Bun     | `@arkenv/bun-plugin`  | Bun bundler / fullstack inlining for `BUN_PUBLIC_*`                              |
+| Host          | Package                 | Boundary mechanism                                                               |
+| ------------- | ----------------------- | -------------------------------------------------------------------------------- |
+| Next.js       | `@arkenv/nextjs`        | `withArkEnv` codegen, `NEXT_PUBLIC_*`, runtime proxy, optional strict file split |
+| Nuxt          | `@arkenv/nuxt`          | Nuxt module, `NUXT_PUBLIC_*`, client/server entrypoints                          |
+| Vite          | `@arkenv/vite-plugin`   | Dev/build validation; only `VITE_*` (and optional `NODE_ENV`) reach the client   |
+| Bun           | `@arkenv/bun-plugin`    | Bun bundler / fullstack inlining for `BUN_PUBLIC_*`                              |
+| Coding agents | `@arkenv/agent-plugin`  | Slash commands and MCP; audits source, does not validate at boot                 |
 
 Plain Node or Bun **as a runtime** (no browser bundle) can stay on `@arkenv/core` alone. The Bun plugin targets apps that ship client code through Bun's bundler or fullstack server, not Bun-as-Node replacements or Bun-as-package-manager.
 
@@ -108,4 +125,6 @@ validates them.
   <Card href="/docs/validating-your-environment/hosting-presets" title="Hosting presets" description="Pre-populate schemas with provider system environment variables." />
 
   <Card href="/docs/guides/frameworks" title="Framework guides" description="Step-by-step recipes for Next.js, Nuxt, Vite, and Bun." />
+
+  <Card href="/docs/guides/ai" title="Using AI with ArkEnv" description="Install the coding-agent plugin, MCP server, or skill." />
 </Cards>
