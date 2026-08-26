@@ -14,18 +14,22 @@ Install the ArkEnv plugin so Claude Code, Cursor, Codex, and other MCP
 clients get slash commands plus an AST auditor:
 
 ```bash
-npx plugins add arkenv/arkenv-plugin
+npx plugins add yamcodes/arkenv
 ```
 
-That exposes `/arkenv:init` (delegates to `arkenv init --agent`) and
+That command reads the repo's `marketplace.json` and installs
+`packages/agent-plugin` (not the root `skills/` tree). From a clone, use
+`npx plugins add ./packages/agent-plugin`.
+
+It exposes `/arkenv:init` (delegates to `arkenv init --agent`) and
 `/arkenv:audit` (flags raw `process.env` / `import.meta.env` access, server
 secrets in client modules, public-prefix mistakes, and leftover v0 ambient
 `.d.ts` files).
 
-Run the MCP server directly:
+Run the MCP server after the package is on npm (alpha tag):
 
 ```bash
-npx -y @arkenv/agent-plugin
+npx -y @arkenv/agent-plugin@alpha
 ```
 
 See the [`@arkenv/agent-plugin` reference](/docs/reference/agent-plugin) for

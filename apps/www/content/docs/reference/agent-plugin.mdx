@@ -10,16 +10,23 @@ projects and audits source for unvalidated env access.
 ## Install
 
 ```bash
-npx plugins add arkenv/arkenv-plugin
+npx plugins add yamcodes/arkenv
+```
+
+The ArkEnv repo's `marketplace.json` points that command at
+`packages/agent-plugin`. From a clone, install by path:
+
+```bash
+npx plugins add ./packages/agent-plugin
 ```
 
 This registers `/arkenv:init` and `/arkenv:audit` in compatible runtimes
 (Claude Code, Cursor, Codex, and other MCP clients).
 
-Connect the MCP server directly:
+Connect the MCP server after the package is published:
 
 ```bash
-npx -y @arkenv/agent-plugin
+npx -y @arkenv/agent-plugin@alpha
 ```
 
 Or add it to an MCP config:
@@ -29,7 +36,7 @@ Or add it to an MCP config:
   "mcpServers": {
     "arkenv": {
       "command": "npx",
-      "args": ["-y", "@arkenv/agent-plugin"]
+      "args": ["-y", "@arkenv/agent-plugin@alpha"]
     }
   }
 }

@@ -7,24 +7,35 @@ and leftover v0 ambient `.d.ts` augmentations.
 
 ## Install the plugin
 
-```bash
-npx plugins add arkenv/arkenv-plugin
-```
-
-Compatible agent runtimes expose `/arkenv:init` and `/arkenv:audit`.
-
-Until that GitHub shorthand is published, install from this monorepo:
+The monorepo lists this package in the root `marketplace.json`, so the plugins
+CLI installs `packages/agent-plugin` instead of treating the repo root's
+`skills/` tree as a plugin:
 
 ```bash
 npx plugins add yamcodes/arkenv
 ```
 
-The plugin lives in `packages/agent-plugin` (discovered by a two-level scan).
+From a local clone:
+
+```bash
+npx plugins add ./packages/agent-plugin
+```
+
+Compatible agent runtimes expose `/arkenv:init` and `/arkenv:audit`.
 
 ## MCP server
 
+After this package is published (alpha tag):
+
 ```bash
-npx -y @arkenv/agent-plugin
+npx -y @arkenv/agent-plugin@alpha
+```
+
+From a local clone, build first and point MCP at the bin:
+
+```bash
+pnpm --filter @arkenv/agent-plugin build
+node ./packages/agent-plugin/dist/bin.js
 ```
 
 Stdio MCP tools:
