@@ -27,4 +27,4 @@ export const env = arkenv({
 });
 ```
 
-Install `@valibot/to-json-schema` when using the Valibot subpath (optional peer). TypeScript must use `moduleResolution: "bundler" | "node16" | "nodenext"`.
+Install `@valibot/to-json-schema` when using the Valibot subpath, and `zod` when using the Zod Mini subpath (both optional peers). TypeScript must use `moduleResolution: "bundler" | "node16" | "nodenext"`.

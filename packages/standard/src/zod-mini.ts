@@ -15,7 +15,8 @@ const zodMiniToJsonSchema: NonNullable<StandardEnvConfig["toJsonSchema"]> = (
  *
  * Pre-binds `zod/mini`'s `toJSONSchema` helper (`io: "input"`, `target: "draft-07"`)
  * so Mini `z.number()` and `z.boolean()` coerce without a manual `toJsonSchema`
- * callback. Classic Zod should keep using `@arkenv/standard`.
+ * callback. Install `zod` (optional peer) and import Mini from `zod/mini`.
+ * Classic Zod should keep using `@arkenv/standard`.
  *
  * @param def An object mapping variable names to Zod Mini schemas
  * @param config Optional configuration. Pass `toJsonSchema` to override the bound converter

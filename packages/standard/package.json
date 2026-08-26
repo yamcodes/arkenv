@@ -24,10 +24,14 @@
 		}
 	},
 	"peerDependencies": {
-		"@valibot/to-json-schema": "^1.0.0"
+		"@valibot/to-json-schema": "^1.0.0",
+		"zod": "^4.0.0"
 	},
 	"peerDependenciesMeta": {
 		"@valibot/to-json-schema": {
+			"optional": true
+		},
+		"zod": {
 			"optional": true
 		}
 	},
