@@ -30,59 +30,59 @@ Items on different layers compose. “Put it on `@arkenv/core`” is not a compl
 
 ## Metrics
 
-| Metric | Question |
-| ------ | -------- |
-| Honesty | Does the import path match the audience (app vs tool)? |
-| App footguns | Can changelog / autocomplete trick people into calling this from `env.ts`? |
-| CLI sufficiency | Can *our* CLI capture without this surface? |
-| Third-party tools | Can a published plugin or other CLI start capture without a private protocol? |
-| Dual-engine tax | Do we duplicate API on `@arkenv/core` *and* `@arkenv/standard` for one protocol? |
-| Handshake / skew | Does the story pretend `begin()` must come from the same package instance as the user’s `arkenv()`? (It must not. The bus is `globalThis`.) |
-| Bundle | Does `size-limit` `import: "*"` on the main entry pay for tooling the app never calls? |
-| Teachability | Can we explain it in one sentence? |
-| Semver / hide-ability | Are we committing a public API we will regret, or hiding something tools will scrape anyway? |
-| Maintenance hell | New package, dual barrels, documenting a magic global, or fighting our own changelog examples? |
+| Metric                | Question                                                                                                                                    |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Honesty               | Does the import path match the audience (app vs tool)?                                                                                      |
+| App footguns          | Can changelog / autocomplete trick people into calling this from `env.ts`?                                                                  |
+| CLI sufficiency       | Can *our* CLI capture without this surface?                                                                                                 |
+| Third-party tools     | Can a published plugin or other CLI start capture without a private protocol?                                                               |
+| Dual-engine tax       | Do we duplicate API on `@arkenv/core` *and* `@arkenv/standard` for one protocol?                                                            |
+| Handshake / skew      | Does the story pretend `begin()` must come from the same package instance as the user’s `arkenv()`? (It must not. The bus is `globalThis`.) |
+| Bundle                | Does `size-limit` `import: "*"` on the main entry pay for tooling the app never calls?                                                      |
+| Teachability          | Can we explain it in one sentence?                                                                                                          |
+| Semver / hide-ability | Are we committing a public API we will regret, or hiding something tools will scrape anyway?                                                |
+| Maintenance hell      | New package, dual barrels, documenting a magic global, or fighting our own changelog examples?                                              |
 
 ## The hat
 
 ### Layer A — Published start/stop contract
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| A1 | No public start/stop | Only our CLI (and in-repo tests) call `begin`/`end`. Protocol stays unpublished. |
-| A2 | Document `globalThis.__ARKENV_SCHEMA_CAPTURE__` as the protocol | Tools poke the bag; no function export. |
-| A3 | Export `beginSchemaCapture` / `endSchemaCapture` as supported functions | What PR #1622 put on the barrels. |
-| A4 | App authors wrap `arkenv()` in `env.ts` | The changelog-shaped misunderstanding. **Rejected as product.** Stays in the hat so it cannot return as “ergonomic API.” |
+| #  | Option                                                                  | Notes                                                                                                                    |
+| -- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| A1 | No public start/stop                                                    | Only our CLI (and in-repo tests) call `begin`/`end`. Protocol stays unpublished.                                         |
+| A2 | Document `globalThis.__ARKENV_SCHEMA_CAPTURE__` as the protocol         | Tools poke the bag; no function export.                                                                                  |
+| A3 | Export `beginSchemaCapture` / `endSchemaCapture` as supported functions | What PR #1622 put on the barrels.                                                                                        |
+| A4 | App authors wrap `arkenv()` in `env.ts`                                 | The changelog-shaped misunderstanding. **Rejected as product.** Stays in the hat so it cannot return as “ergonomic API.” |
 
 ### Layer B — Package that owns the contract
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| B1 | `@repo/utils` only | Unpublished. CLI and `arkenv()` already use this. |
-| B2 | `@arkenv/core` only | Standard-tier `env.ts` still runs `arkenv()` from `@arkenv/standard`; start/stop does not have to live there. |
-| B3 | `@arkenv/standard` only | Symmetric miss for ArkType-only apps. |
-| B4 | Both core and standard | Status quo on #1622. Duplicates one protocol. |
-| B5 | `arkenv` (the CLI package) | Tools that must not depend on the CLI. |
-| B6 | New `@arkenv/capture` | Four functions that already live in utils. |
-| B7 | `@arkenv/build` | Published plugin-build utils. Capture is not codegen. |
+| #  | Option                     | Notes                                                                                                         |
+| -- | -------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| B1 | `@repo/utils` only         | Unpublished. CLI and `arkenv()` already use this.                                                             |
+| B2 | `@arkenv/core` only        | Standard-tier `env.ts` still runs `arkenv()` from `@arkenv/standard`; start/stop does not have to live there. |
+| B3 | `@arkenv/standard` only    | Symmetric miss for ArkType-only apps.                                                                         |
+| B4 | Both core and standard     | Status quo on #1622. Duplicates one protocol.                                                                 |
+| B5 | `arkenv` (the CLI package) | Tools that must not depend on the CLI.                                                                        |
+| B6 | New `@arkenv/capture`      | Four functions that already live in utils.                                                                    |
+| B7 | `@arkenv/build`            | Published plugin-build utils. Capture is not codegen.                                                         |
 
 ### Layer C — Entry path
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| C1 | Main barrel `.` | Status quo. Same import as `arkenv`. |
-| C2 | `/tooling` (or `/cli`) | Published, not the default import. |
-| C3 | `/internal` | “Unstable” not “for tools.” People still import it. |
-| C4 | No extra path | N/A when A1/B1. |
+| #  | Option                 | Notes                                               |
+| -- | ---------------------- | --------------------------------------------------- |
+| C1 | Main barrel `.`        | Status quo. Same import as `arkenv`.                |
+| C2 | `/tooling` (or `/cli`) | Published, not the default import.                  |
+| C3 | `/internal`            | “Unstable” not “for tools.” People still import it. |
+| C4 | No extra path          | N/A when A1/B1.                                     |
 
 ### Layer D — Symbol set
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| D1 | `beginSchemaCapture` + `endSchemaCapture` only | Enough to drive the bag. |
-| D2 | D1 + `isCapturingSchema` | Status quo export. App-adjacent curiosity. |
-| D3 | D2 + `recordSchemaCapture` | Lets tools fake `arkenv()`; bypasses the real short-circuit. |
-| D4 | Export the global key as a named constant | Makes A2 slightly less magic without documenting a raw string. |
+| #  | Option                                         | Notes                                                          |
+| -- | ---------------------------------------------- | -------------------------------------------------------------- |
+| D1 | `beginSchemaCapture` + `endSchemaCapture` only | Enough to drive the bag.                                       |
+| D2 | D1 + `isCapturingSchema`                       | Status quo export. App-adjacent curiosity.                     |
+| D3 | D2 + `recordSchemaCapture`                     | Lets tools fake `arkenv()`; bypasses the real short-circuit.   |
+| D4 | Export the global key as a named constant      | Makes A2 slightly less magic without documenting a raw string. |
 
 ## Evaluation
 
