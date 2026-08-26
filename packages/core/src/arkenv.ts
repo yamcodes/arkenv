@@ -121,7 +121,7 @@ export type ArkenvOutput<T extends SchemaShape, D> =
  *
  * @param def The schema definition
  * @param config The evaluation configuration
- * @returns The parsed environment variables, or a SafeArkEnvResult if `{ safe: true }` is configured
+ * @returns The parsed environment variables, a SafeArkEnvResult if `{ safe: true }` is configured, or a value-less stub when schema capture is active
  * @throws An {@link ArkEnvError | error} if the environment variables are invalid and `safe` is not enabled
  */
 export function arkenv<const T extends SchemaShape>(
@@ -160,6 +160,8 @@ export function arkenv<
 ): ArkenvOutput<T, D> | SafeArkEnvResult<ArkenvOutput<T, D>> {
 	if (isCapturingSchema()) {
 		recordSchemaCapture(def);
+		// Capture records the schema only. The returned object has no values, so
+		// schema modules must stay declarative and must not require env at module scope.
 		return {} as ArkenvOutput<T, D>;
 	}
 	if (config.safe) {

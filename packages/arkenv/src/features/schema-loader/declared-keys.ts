@@ -1,3 +1,5 @@
+import { getSchemaKeys } from "@repo/utils";
+
 /**
  * One declared environment variable extracted from a captured `arkenv()` schema.
  */
@@ -11,9 +13,19 @@ export type DeclaredSchemaKey = {
 	 */
 	schema: unknown;
 	/**
-	 * Whether the schema declares a default value
+	 * Whether a default is detectable on this key.
+	 *
+	 * Standard Schema v1 has no default concept, so this is best-effort: ArkType
+	 * DSL/`json.default`, Zod `_def.defaultValue` / `type: "default"`, and
+	 * Valibot own `default` / `fallback` fields. Unknown validators report false.
 	 */
 	hasDefault: boolean;
+};
+
+type CompiledKeyEntry = {
+	key?: string;
+	value?: unknown;
+	default?: unknown;
 };
 
 /**
@@ -31,25 +43,22 @@ export function schemaHasDefault(schema: unknown): boolean {
 	}
 
 	const value = schema as Record<string, unknown>;
+	if (Object.hasOwn(value, "default") || Object.hasOwn(value, "fallback")) {
+		return true;
+	}
+
 	const def = value._def;
 	if (def && typeof def === "object") {
 		const inner = def as Record<string, unknown>;
-		if ("defaultValue" in inner || inner.typeName === "ZodDefault") {
+		if (
+			"defaultValue" in inner ||
+			inner.typeName === "ZodDefault" ||
+			inner.type === "default"
+		) {
 			return true;
 		}
 		if ("innerType" in inner) {
 			return schemaHasDefault(inner.innerType);
-		}
-	}
-
-	const zod = value._zod;
-	if (zod && typeof zod === "object") {
-		const zdef = (zod as { def?: { type?: string; innerType?: unknown } }).def;
-		if (zdef?.type === "default") {
-			return true;
-		}
-		if (zdef?.innerType) {
-			return schemaHasDefault(zdef.innerType);
 		}
 	}
 
@@ -67,7 +76,72 @@ export function declaredKeyName(key: string): string {
 }
 
 /**
+ * Push compiled ArkType `json.required` / `json.optional` entries as per-key metadata.
+ *
+ * @param entries Compiled key descriptors (array or map)
+ * @param keys Accumulated declared keys
+ * @param schema Accumulated per-key schema map
+ */
+function pushCompiledEntries(
+	entries: unknown,
+	keys: DeclaredSchemaKey[],
+	schema: Record<string, unknown>,
+): void {
+	if (!entries) {
+		return;
+	}
+	if (Array.isArray(entries)) {
+		for (const entry of entries) {
+			if (Array.isArray(entry) && typeof entry[0] === "string") {
+				keys.push({
+					name: entry[0],
+					schema: entry[1],
+					hasDefault: false,
+				});
+				schema[entry[0]] = entry[1];
+				continue;
+			}
+			if (
+				entry &&
+				typeof entry === "object" &&
+				typeof (entry as CompiledKeyEntry).key === "string"
+			) {
+				const compiled = entry as CompiledKeyEntry;
+				const perKeySchema = "value" in compiled ? compiled.value : undefined;
+				keys.push({
+					name: compiled.key,
+					schema: perKeySchema,
+					hasDefault: Object.hasOwn(compiled, "default"),
+				});
+				schema[compiled.key] = perKeySchema;
+			}
+		}
+		return;
+	}
+	if (typeof entries === "object") {
+		for (const [name, value] of Object.entries(
+			entries as Record<string, unknown>,
+		)) {
+			const inner =
+				value && typeof value === "object"
+					? (value as CompiledKeyEntry)
+					: undefined;
+			const perKeySchema = inner && "value" in inner ? inner.value : value;
+			keys.push({
+				name,
+				schema: perKeySchema,
+				hasDefault: Boolean(inner && Object.hasOwn(inner, "default")),
+			});
+			schema[name] = perKeySchema;
+		}
+	}
+}
+
+/**
  * Convert captured `arkenv()` definitions into ordered key metadata.
+ *
+ * An empty captured object (`arkenv({})`) yields `keys: []` — that is a valid
+ * empty schema, not a load failure.
  *
  * @param definitions Schema objects recorded during capture
  * @returns Ordered keys and a combined schema map
@@ -80,44 +154,51 @@ export function declaredKeysFromDefinitions(definitions: unknown[]): {
 	const schema: Record<string, unknown> = {};
 
 	for (const definition of definitions) {
-		if (!definition || typeof definition !== "object") {
+		if (
+			!definition ||
+			(typeof definition !== "object" && typeof definition !== "function")
+		) {
 			continue;
 		}
 
 		const record = definition as Record<string, unknown>;
-		const json = record.json;
-		if (
-			json &&
-			typeof json === "object" &&
-			(json as { domain?: string }).domain === "object"
-		) {
+		const jsonRaw = record.json;
+		const json =
+			typeof jsonRaw === "function" ? (jsonRaw as () => unknown)() : jsonRaw;
+		const before = keys.length;
+		if (json && typeof json === "object") {
 			const compiled = json as {
-				required?: { key?: string }[];
-				optional?: { key?: string }[];
+				domain?: string;
+				required?: unknown;
+				optional?: unknown;
 			};
-			const compiledKeys: string[] = [];
-			for (const entry of compiled.required ?? []) {
-				if (
-					entry &&
-					typeof entry === "object" &&
-					typeof entry.key === "string"
-				) {
-					compiledKeys.push(entry.key);
+			if (
+				compiled.domain === "object" ||
+				compiled.required !== undefined ||
+				compiled.optional !== undefined
+			) {
+				pushCompiledEntries(compiled.required, keys, schema);
+				pushCompiledEntries(compiled.optional, keys, schema);
+				if (keys.length > before) {
+					continue;
 				}
 			}
-			for (const entry of compiled.optional ?? []) {
-				if (
-					entry &&
-					typeof entry === "object" &&
-					typeof entry.key === "string"
-				) {
-					compiledKeys.push(entry.key);
-				}
+		}
+
+		const compiledNames = json ? getSchemaKeys(definition) : [];
+		if (keys.length === before && compiledNames.length > 0) {
+			for (const name of compiledNames) {
+				keys.push({ name, schema: undefined, hasDefault: false });
+				schema[name] = undefined;
 			}
-			for (const name of compiledKeys) {
-				keys.push({ name, schema: definition, hasDefault: false });
-				schema[name] = definition;
-			}
+			continue;
+		}
+
+		if (keys.length > before) {
+			continue;
+		}
+
+		if (typeof definition === "function") {
 			continue;
 		}
 

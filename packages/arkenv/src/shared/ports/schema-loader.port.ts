@@ -24,7 +24,10 @@ export type SchemaLoadErrorCode =
 export type SchemaLoadSuccess = {
 	ok: true;
 	/**
-	 * Declared keys in schema declaration order
+	 * Declared keys in schema declaration order.
+	 *
+	 * An empty array means `arkenv({})` was captured — a valid empty schema,
+	 * not a loader failure.
 	 */
 	keys: DeclaredSchemaKey[];
 	/**
@@ -48,6 +51,10 @@ export type SchemaLoadResult = SchemaLoadSuccess | SchemaLoadFailure;
 export type SchemaLoaderPort = {
 	/**
 	 * Import `target.schemaPath` and inspect its `arkenv()` definition.
+	 *
+	 * Capture does not populate env values. The schema module should stay
+	 * declarative. The installed `@arkenv/core` / `@arkenv/standard` must
+	 * include schema-capture support.
 	 *
 	 * @param target The schema module to load
 	 * @returns A discriminated success or structured error result

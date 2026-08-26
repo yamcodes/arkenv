@@ -18,6 +18,7 @@ describe("schema capture", () => {
 			PORT: "number = 3000",
 		});
 		expect(env).toEqual({});
+		expect(env.DATABASE_URL).toBeUndefined();
 		expect(isCapturingSchema()).toBe(true);
 		expect(endSchemaCapture()).toEqual([
 			{

@@ -7,6 +7,10 @@ import {
 	type SchemaLoadResult,
 	type SchemaLoadTarget,
 } from "@/shared/ports";
+import {
+	formatModuleLoadFailedMessage,
+	formatNoSchemaMessage,
+} from "./schema-load-errors";
 
 export type JitiSchemaLoaderOptions = {
 	/**
@@ -36,7 +40,7 @@ export class JitiSchemaLoaderAdapter implements SchemaLoaderPort {
 				return {
 					ok: false,
 					code: SCHEMA_LOAD_ERROR_CODES.NO_SCHEMA,
-					message: `No arkenv() schema definition was found in "${target.schemaPath}".`,
+					message: formatNoSchemaMessage(target.schemaPath),
 				};
 			}
 			const declared = declaredKeysFromDefinitions(definitions);
@@ -47,11 +51,10 @@ export class JitiSchemaLoaderAdapter implements SchemaLoaderPort {
 			};
 		} catch (cause) {
 			endSchemaCapture();
-			const message = cause instanceof Error ? cause.message : String(cause);
 			return {
 				ok: false,
 				code: SCHEMA_LOAD_ERROR_CODES.MODULE_LOAD_FAILED,
-				message: `Failed to load schema module at "${target.schemaPath}": ${message}`,
+				message: formatModuleLoadFailedMessage(target.schemaPath, cause),
 				cause,
 			};
 		}

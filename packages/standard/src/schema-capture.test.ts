@@ -26,6 +26,7 @@ describe("schema capture", () => {
 		beginSchemaCapture();
 		const env = arkenv({ DATABASE_URL: mockString });
 		expect(env).toEqual({});
+		expect(env.DATABASE_URL).toBeUndefined();
 		expect(isCapturingSchema()).toBe(true);
 		expect(endSchemaCapture()).toEqual([{ DATABASE_URL: mockString }]);
 	});

@@ -45,7 +45,7 @@ type StandardEnvOutput<T extends Record<string, StandardSchemaV1>> = {
  *
  * @param def An object mapping variable names to Standard Schema validators
  * @param config Optional configuration
- * @returns The validated environment variables, or a SafeArkEnvResult if `{ safe: true }` is configured
+ * @returns The validated environment variables, a SafeArkEnvResult if `{ safe: true }` is configured, or a value-less stub when schema capture is active
  * @throws An {@link ArkEnvError} if validation fails and `safe` is not enabled
  *
  * @example
@@ -79,6 +79,8 @@ export function arkenv<
 
 	if (isCapturingSchema()) {
 		recordSchemaCapture(def);
+		// Capture records the schema only. The returned object has no values, so
+		// schema modules must stay declarative and must not require env at module scope.
 		return {} as [Safe] extends [true]
 			? SafeArkEnvResult<StandardEnvOutput<T>>
 			: StandardEnvOutput<T>;

@@ -27,6 +27,27 @@ describe("declaredKeysFromDefinitions", () => {
 		]);
 		expect(keys.map((key) => key.name)).toEqual(["FIRST", "SECOND"]);
 	});
+
+	it("treats an empty captured object as an empty schema", () => {
+		const { keys, schema } = declaredKeysFromDefinitions([{}]);
+		expect(keys).toEqual([]);
+		expect(schema).toEqual({});
+	});
+
+	it("reads defaults from compiled ArkType json entries", () => {
+		const compiled = {
+			json: {
+				domain: "object",
+				required: [{ key: "PORT", value: "number" }],
+				optional: [{ key: "DATABASE_URL", value: "string", default: "foo" }],
+			},
+		};
+		const { keys, schema } = declaredKeysFromDefinitions([compiled]);
+		expect(keys.map((key) => key.name)).toEqual(["PORT", "DATABASE_URL"]);
+		expect(keys.map((key) => key.hasDefault)).toEqual([false, true]);
+		expect(schema.PORT).toBe("number");
+		expect(schema.DATABASE_URL).toBe("string");
+	});
 });
 
 describe("schemaHasDefault", () => {
@@ -36,17 +57,42 @@ describe("schemaHasDefault", () => {
 		expect(schemaHasDefault("boolean = false")).toBe(true);
 	});
 
-	it("detects Zod default wrappers", () => {
+	it("detects Zod 4 and Zod 3 default wrappers", () => {
+		expect(
+			schemaHasDefault({
+				_def: { type: "default", defaultValue: 3000, innerType: {} },
+			}),
+		).toBe(true);
 		expect(
 			schemaHasDefault({
 				_def: { typeName: "ZodDefault", innerType: { _def: {} } },
 			}),
 		).toBe(true);
+	});
+
+	it("detects Valibot default and fallback own fields", () => {
 		expect(
 			schemaHasDefault({
-				_zod: { def: { type: "default", innerType: {} } },
+				kind: "schema",
+				type: "optional",
+				default: "dev",
+				"~standard": {},
 			}),
 		).toBe(true);
+		expect(
+			schemaHasDefault({
+				kind: "schema",
+				type: "fallback",
+				fallback: "x",
+				"~standard": {},
+			}),
+		).toBe(true);
+		expect(
+			schemaHasDefault({
+				kind: "schema",
+				"~standard": {},
+			}),
+		).toBe(false);
 	});
 });
 
