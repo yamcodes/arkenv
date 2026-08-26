@@ -28,6 +28,11 @@ type CompiledKeyEntry = {
 	default?: unknown;
 };
 
+/** Own-key check compatible with es2020 (no `Object.hasOwn`) and noPrototypeBuiltins. */
+function hasOwn(object: object, key: string): boolean {
+	return Object.prototype.hasOwnProperty.call(object, key);
+}
+
 /**
  * Detect whether a per-key schema declares a default.
  *
@@ -43,7 +48,7 @@ export function schemaHasDefault(schema: unknown): boolean {
 	}
 
 	const value = schema as Record<string, unknown>;
-	if (Object.hasOwn(value, "default") || Object.hasOwn(value, "fallback")) {
+	if (hasOwn(value, "default") || hasOwn(value, "fallback")) {
 		return true;
 	}
 
@@ -101,19 +106,19 @@ function pushCompiledEntries(
 				schema[entry[0]] = entry[1];
 				continue;
 			}
-			if (
-				entry &&
-				typeof entry === "object" &&
-				typeof (entry as CompiledKeyEntry).key === "string"
-			) {
+			if (entry && typeof entry === "object") {
 				const compiled = entry as CompiledKeyEntry;
+				const name = compiled.key;
+				if (typeof name !== "string") {
+					continue;
+				}
 				const perKeySchema = "value" in compiled ? compiled.value : undefined;
 				keys.push({
-					name: compiled.key,
+					name,
 					schema: perKeySchema,
-					hasDefault: Object.hasOwn(compiled, "default"),
+					hasDefault: hasOwn(compiled, "default"),
 				});
-				schema[compiled.key] = perKeySchema;
+				schema[name] = perKeySchema;
 			}
 		}
 		return;
@@ -130,7 +135,7 @@ function pushCompiledEntries(
 			keys.push({
 				name,
 				schema: perKeySchema,
-				hasDefault: Boolean(inner && Object.hasOwn(inner, "default")),
+				hasDefault: Boolean(inner && hasOwn(inner, "default")),
 			});
 			schema[name] = perKeySchema;
 		}
