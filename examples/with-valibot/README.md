@@ -2,12 +2,12 @@
 
 This example demonstrates how to use ArkEnv with [Valibot](https://valibot.dev/) for validation, without ArkType.
 
-Because Valibot implements the [Standard Schema](https://standardschema.dev/) specification, its schemas can be passed straight to ArkEnv via the `@arkenv/standard` package. Valibot keeps JSON Schema conversion in [`@valibot/to-json-schema`](https://valibot.dev/guides/json-schema/) rather than on the schema itself, so this example wires ArkEnv's optional `toJsonSchema` escape hatch for automatic coercion.
+Because Valibot implements the [Standard Schema](https://standardschema.dev/) specification, its schemas can be passed straight to ArkEnv via `@arkenv/standard/valibot`. That subpath pre-configures [`@valibot/to-json-schema`](https://valibot.dev/guides/json-schema/) so `v.number()` and `v.boolean()` coerce automatically.
 
 ## What's inside?
 
-- Pure Valibot usage via `@arkenv/standard` (no ArkType dependency)
-- ArkEnv coercion for `v.number()` / `v.boolean()` via `toJsonSchema` + `@valibot/to-json-schema`
+- Pure Valibot usage via `@arkenv/standard/valibot` (no ArkType dependency)
+- Zero-boilerplate ArkEnv coercion for `v.number()` / `v.boolean()`
 - A minimal schema validating a URL, a port number, a hostname, and a boolean
 - Full TypeScript type inference for the validated environment
 
@@ -16,6 +16,8 @@ Because Valibot implements the [Standard Schema](https://standardschema.dev/) sp
 ### Prerequisites
 
 Make sure you have [Node.js](https://nodejs.org) installed. We recommend using [nvm](https://github.com/nvm-sh/nvm) to install it.
+
+TypeScript projects must use `moduleResolution: "bundler" | "node16" | "nodenext"`.
 
 ### Quickstart
 

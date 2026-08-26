@@ -35,3 +35,10 @@ If you aren't using ArkType, install
 ### Framework integrations
 
 Next.js, Nuxt, Vite, and Bun have **first-party** integrations. The CLI detects your stack and installs the matching one. To add them manually, see the [framework guides](/docs/guides/frameworks).
+
+## TypeScript module resolution
+
+`@arkenv/standard` subpath exports (`/valibot`, `/zod-mini`) and the
+framework plugin subpaths require modern TypeScript module resolution.
+Set `compilerOptions.moduleResolution` to `"bundler"`, `"node16"`, or
+`"nodenext"`. Legacy `"node"` resolution is not supported.

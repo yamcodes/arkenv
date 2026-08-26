@@ -317,7 +317,10 @@ describe("validators templates", () => {
 				shouldInstall: false,
 			};
 			const template = getSimpleTemplate(options);
-			expect(template).toContain('import arkenv from "@arkenv/standard"');
+			expect(template).toContain(
+				'import { arkenv } from "@arkenv/standard/valibot"',
+			);
+			expect(template).not.toContain("toJsonSchema");
 			expect(template).toContain('import * as v from "valibot"');
 			expect(template).toContain("v.integer()");
 			expect(template).toContain(
@@ -340,7 +343,10 @@ describe("validators templates", () => {
 				shouldInstall: false,
 			};
 			const template = getSimpleTemplate(options);
-			expect(template).toContain('import arkenv from "@arkenv/standard"');
+			expect(template).toContain(
+				'import { arkenv } from "@arkenv/standard/valibot"',
+			);
+			expect(template).not.toContain("toJsonSchema");
 			expect(template).toContain('import * as v from "valibot"');
 			expect(template).toContain("export const env = arkenv({");
 		});
