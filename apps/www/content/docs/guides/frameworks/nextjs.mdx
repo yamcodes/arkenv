@@ -57,6 +57,19 @@ const nextConfig: NextConfig = {};
 export default withArkEnv(nextConfig);
 ```
 
+Function-form configs work too. `withArkEnv` awaits your factory, then applies
+aliases to the resolved object (including phase-dependent options):
+
+```ts title="./next.config.ts"
+import type { NextConfig } from "next";
+import { withArkEnv } from "@arkenv/nextjs/config";
+
+export default withArkEnv(async (phase, { defaultConfig }): Promise<NextConfig> => ({
+  ...defaultConfig,
+  reactStrictMode: phase !== "phase-test",
+}));
+```
+
 ## Schema layout
 
 ArkEnv supports two schema layouts depending on your team's isolation needs.
