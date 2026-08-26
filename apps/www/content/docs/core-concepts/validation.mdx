@@ -46,12 +46,12 @@ coerces the string first. See
 
 ## When checks run
 
-| Moment | What runs |
-| ------ | --------- |
-| Module load | `arkenv()` validates the current `env` source (default `process.env`) |
-| Next.js / Nuxt build | Framework wrappers validate during config or module setup |
-| Vite / Bun build | Plugins validate in the bundler pipeline |
-| Client bundle | Public keys are already validated at build time; server secrets are stripped or guarded |
+| Moment               | What runs                                                                               |
+| -------------------- | --------------------------------------------------------------------------------------- |
+| Module load          | `arkenv()` validates the current `env` source (default `process.env`)                   |
+| Next.js / Nuxt build | Framework wrappers validate during config or module setup                               |
+| Vite / Bun build     | Plugins validate in the bundler pipeline                                                |
+| Client bundle        | Public keys are already validated at build time; server secrets are stripped or guarded |
 
 Framework adapters validate in builds by default.
 
@@ -61,10 +61,10 @@ ArkEnv loads the input record, optionally
 [coerces](/docs/core-concepts/coercion) strings, then hands the result
 to your schema library. Field rules always come from that library:
 
-| Package | You supply | Shared with both engines |
-| ------- | ---------- | ------------------------ |
-| [`@arkenv/core`](/docs/reference/core) | ArkType DSL strings or `type()` definitions | `arkenv()` options, `ArkEnvError`, fail-fast boot, framework plugins |
-| [`@arkenv/standard`](/docs/reference/standard) | A map of Standard Schema validators (Zod, Valibot, …) | Same, plus `toJsonSchema` |
+| Package                                        | You supply                                            | Shared with both engines                                             |
+| ---------------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------- |
+| [`@arkenv/core`](/docs/reference/core)         | ArkType DSL strings or `type()` definitions           | `arkenv()` options, `ArkEnvError`, fail-fast boot, framework plugins |
+| [`@arkenv/standard`](/docs/reference/standard) | A map of Standard Schema validators (Zod, Valibot, …) | Same, plus `toJsonSchema`                                            |
 
 See [Choosing an engine](/docs/core-concepts/standard-schema) for
 packaging and peer-dependency differences.

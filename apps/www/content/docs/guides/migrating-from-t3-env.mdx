@@ -11,12 +11,12 @@ For a feature cheatsheet, see [Comparison](/docs/comparison).
 
 The table below is the mapping you need while you edit files.
 
-| Feature | T3 Env | ArkEnv |
-| ------- | ------ | ------ |
-| Core function | `createEnv` from `@t3-oss/env-nextjs` | `arkenv` from `@arkenv/nextjs` or `@arkenv/core` |
-| Schema structure | Nested `{ server, client, runtimeEnv }` | Flat schema, or a `--strict` file split |
-| Client inlining | Manual `runtimeEnv` object | `withArkEnv` writes the mapping |
-| Validator | Zod only | ArkType via `@arkenv/core`, or Zod via `@arkenv/standard` |
+| Feature          | T3 Env                                  | ArkEnv                                                    |
+| ---------------- | --------------------------------------- | --------------------------------------------------------- |
+| Core function    | `createEnv` from `@t3-oss/env-nextjs`   | `arkenv` from `@arkenv/nextjs` or `@arkenv/core`          |
+| Schema structure | Nested `{ server, client, runtimeEnv }` | Flat schema, or a `--strict` file split                   |
+| Client inlining  | Manual `runtimeEnv` object              | `withArkEnv` writes the mapping                           |
+| Validator        | Zod only                                | ArkType via `@arkenv/core`, or Zod via `@arkenv/standard` |
 
 A flat layout still infers types and throws if client code reads a
 server key. Scaffold `--strict` when secret **names** must stay out of
