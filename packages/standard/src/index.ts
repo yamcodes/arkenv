@@ -4,9 +4,7 @@ import {
 	assertNotArkTypeDsl,
 	assertStandardSchema,
 	assertStandardSchemaMap,
-	beginSchemaCapture,
 	type EnvIssue,
-	endSchemaCapture,
 	formatIssues,
 	getSchemaKeys,
 	isCapturingSchema,
@@ -19,12 +17,9 @@ import {
 
 export {
 	ArkEnvError,
-	beginSchemaCapture,
 	type EnvIssue,
-	endSchemaCapture,
 	formatIssues,
 	getSchemaKeys,
-	isCapturingSchema,
 	type SafeArkEnvResult,
 };
 

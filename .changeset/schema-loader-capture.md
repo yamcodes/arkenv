@@ -4,18 +4,17 @@
 "arkenv": minor
 ---
 
-#### Add schema capture for inspecting `env.ts` without validating the environment
+#### Inspect `env.ts` from the CLI without validating the environment
 
-`arkenv()` can now record schema definitions instead of reading `process.env`. The CLI uses this to load a project's flat `env.ts` and return declared keys (and per-key schemas) even when the environment is empty.
+Your schema file does **not** change. Keep writing:
 
 ```ts
-import { arkenv, beginSchemaCapture, endSchemaCapture } from "@arkenv/core";
+import { arkenv } from "@arkenv/core";
 
-beginSchemaCapture();
-arkenv({
+export const env = arkenv({
   DATABASE_URL: "string",
   PORT: "number = 3000",
 });
-const definitions = endSchemaCapture();
-// definitions[0] is `{ DATABASE_URL: "string", PORT: "number = 3000" }`
 ```
+
+The ArkEnv CLI can now load that module and read declared keys even when `process.env` is empty. `arkenv()` still validates as usual when the app runs.

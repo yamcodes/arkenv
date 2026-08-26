@@ -1,10 +1,10 @@
-import { afterEach, describe, expect, it } from "vitest";
 import {
-	arkenv,
 	beginSchemaCapture,
 	endSchemaCapture,
 	isCapturingSchema,
-} from "@";
+} from "@repo/utils";
+import { afterEach, describe, expect, it } from "vitest";
+import { arkenv } from "@";
 
 describe("schema capture", () => {
 	afterEach(() => {
