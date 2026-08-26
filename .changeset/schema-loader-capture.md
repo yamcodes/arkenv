@@ -1,9 +1,8 @@
 ---
 "@arkenv/core": patch
 "@arkenv/standard": patch
-"arkenv": patch
 ---
 
-#### Inspect `env.ts` from the CLI without validating the environment
+#### Record the schema without reading the environment when a tool is inspecting it
 
-The CLI can now load a project's flat `env.ts` and read declared keys even when the environment is empty. `arkenv()` still validates as usual when the app runs.
+`arkenv()` now records the definition object instead of validating `process.env` when the ArkEnv CLI (or another in-process tool) is inspecting the schema. App validation is unchanged.
