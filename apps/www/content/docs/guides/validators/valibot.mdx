@@ -3,11 +3,10 @@ title: Valibot
 description: Validate environment variables with @arkenv/standard/valibot.
 ---
 
-Use `@arkenv/standard/valibot` to validate environment variables with Valibot.
-Valibot implements the Standard Schema specification. The subpath pre-configures
-[`@valibot/to-json-schema`](https://valibot.dev/guides/json-schema/) so ArkEnv
-can inspect your schema and coerce raw strings into numbers, booleans, and
-arrays.
+`@arkenv/standard/valibot` wires Valibot into ArkEnv. Valibot implements
+Standard Schema. The subpath pre-configures
+[`@valibot/to-json-schema`](https://valibot.dev/guides/json-schema/) so
+ArkEnv can coerce strings into numbers, booleans, and arrays.
 
 For an overview of engine options, see
 [Choosing an engine](/docs/core-concepts/standard-schema).
@@ -62,7 +61,8 @@ custom converters or mixed-validator maps. See
 
 ## Defaults and optionals
 
-Valibot functions for fallback values and optional fields work seamlessly:
+Valibot fallbacks and optionals map onto ArkEnv the same way as other
+engines:
 
 | Pattern                            | Behavior                                                                  |
 | :--------------------------------- | :------------------------------------------------------------------------ |

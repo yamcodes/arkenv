@@ -3,9 +3,8 @@ title: Next.js
 description: Validate Next.js environment variables with @arkenv/nextjs and withArkEnv.
 ---
 
-Use `@arkenv/nextjs` to validate environment variables in your Next.js application,
-generate typesafe accessors, and prevent server secrets from leaking into Client
-Components.
+`@arkenv/nextjs` validates Next.js environment variables, generates
+typesafe accessors, and blocks server secrets from Client Components.
 
 For high-level architectural trade-offs, see
 [Framework integration](/docs/validating-your-environment/framework-integration).
@@ -169,6 +168,22 @@ export const env = arkenv({
   NEXT_PUBLIC_API_URL: z.string().url().default("https://api.example.com"),
 });
 ```
+
+## Read `env` in application code
+
+Import `{ env } from "./env"` in Server Components, route handlers, and
+Client Components. Do not read `process.env` for schema keys.
+
+```ts title="./app/page.tsx"
+import { env } from "../env";
+
+export default function Page() {
+  return <p>{env.NEXT_PUBLIC_API_URL}</p>;
+}
+```
+
+Reading `env.DATABASE_URL` from a Client Component throws. See
+[Client vs. server](/docs/validating-your-environment/client-vs-server).
 
 ## Next steps
 

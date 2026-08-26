@@ -3,9 +3,9 @@ title: Bun
 description: Validate Bun environment variables with @arkenv/bun-plugin.
 ---
 
-Use `@arkenv/bun-plugin` when Bun builds or serves a client bundle that inlines
-public environment variables (prefixed with `BUN_PUBLIC_` by default). Plain Bun
-backend services do not need the plugin and can call `@arkenv/core` directly.
+`@arkenv/bun-plugin` is for Bun builds or fullstack servers that inline
+public `BUN_PUBLIC_` keys. Plain Bun backends skip the plugin and call
+`@arkenv/core` directly.
 
 For high-level architectural trade-offs, see
 [Framework integration](/docs/validating-your-environment/framework-integration).

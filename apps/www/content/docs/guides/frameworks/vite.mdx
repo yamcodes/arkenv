@@ -3,10 +3,9 @@ title: Vite
 description: Validate Vite environment variables with @arkenv/vite-plugin.
 ---
 
-Use `@arkenv/vite-plugin` to validate environment variables during Vite development
-and production builds. The plugin runs in transform mode so client bundles only
-receive public variables (prefixed with `VITE_` by default) while server secrets
-stay protected.
+`@arkenv/vite-plugin` validates during Vite dev and production builds.
+Transform mode inlines public `VITE_` keys into the client bundle and
+keeps server secrets out.
 
 For high-level architectural trade-offs, see
 [Framework integration](/docs/validating-your-environment/framework-integration).

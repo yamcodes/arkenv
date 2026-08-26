@@ -3,10 +3,10 @@ title: Using ArkEnv with Zod
 description: Validate environment variables with your existing Zod schemas.
 ---
 
-Use `@arkenv/standard` to validate environment variables with Zod. Zod 4.2+
-embeds [Standard JSON Schema](https://standardschema.dev/json-schema) metadata
-directly on schema objects, allowing ArkEnv to automatically coerce raw string
-inputs into numbers, booleans, and arrays before validation.
+`@arkenv/standard` runs your Zod schemas against the environment. Zod
+4.2+ embeds
+[Standard JSON Schema](https://standardschema.dev/json-schema) on schema
+objects, so ArkEnv coerces `"3000"` and `"true"` before validation.
 
 For an overview of engine options, see
 [Choosing an engine](/docs/core-concepts/standard-schema).
@@ -100,8 +100,8 @@ export const env = arkenv(
 );
 ```
 
-When possible, prefer Zod 4.2+ for native JSON Schema metadata without callback
-configuration.
+Use Zod 4.2+ when you can. It ships JSON Schema metadata, so you skip
+the `toJsonSchema` callback.
 
 ## Next steps
 

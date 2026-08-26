@@ -3,11 +3,16 @@ title: Validation
 description: Fail fast at startup and validate environment variables during builds.
 ---
 
-ArkEnv's job is to prove your process has the configuration it claims to need before application code runs. Validation is that proof. The same fail-fast path applies whether the schema is ArkType or Zod (or another Standard Schema validator).
+ArkEnv proves the process has the configuration it claims before
+application code runs. That fail-fast path is the same for ArkType, Zod,
+or any other Standard Schema validator.
 
 ## Fail fast
 
-Calling `arkenv()` parses the configured source immediately. Missing required keys or values that fail the schema throw [`ArkEnvError`](/docs/validating-your-environment/error-reporting) at the call site.
+Calling `arkenv()` parses the configured source immediately. Missing
+required keys or values that fail the schema throw
+[`ArkEnvError`](/docs/validating-your-environment/error-reporting) at
+the call site.
 
 <Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
   <Tab value="ArkType (@arkenv/core)">
@@ -28,45 +33,59 @@ Calling `arkenv()` parses the configured source immediately. Missing required ke
 
     export const env = arkenv({
     	DATABASE_URL: z.string().url(),
-    	PORT: z.coerce.number().int().min(0).max(65535).default(3000),
+    	PORT: z.number().int().min(0).max(65535).default(3000),
     });
     ```
   </Tab>
 </Tabs>
 
-Importing `./env` in a server entrypoint is enough to abort a bad deploy before a request is served.
+Importing `./env` in a server entrypoint aborts a bad deploy before a
+request is served. Zod 4.2+ does not need `z.coerce` here; ArkEnv
+coerces the string first. See
+[Using ArkEnv with Zod](/docs/guides/validators/zod).
 
 ## When checks run
 
-| Moment               | What runs                                                                               |
-| -------------------- | --------------------------------------------------------------------------------------- |
-| Module load          | `arkenv()` validates the current `env` source (default `process.env`)                   |
-| Next.js / Nuxt build | Framework wrappers validate again during config or module setup                         |
-| Vite / Bun build     | Plugins validate in the bundler pipeline                                                |
-| Client bundle        | Public keys are already validated at build time; server secrets are stripped or guarded |
+| Moment | What runs |
+| ------ | --------- |
+| Module load | `arkenv()` validates the current `env` source (default `process.env`) |
+| Next.js / Nuxt build | Framework wrappers validate during config or module setup |
+| Vite / Bun build | Plugins validate in the bundler pipeline |
+| Client bundle | Public keys are already validated at build time; server secrets are stripped or guarded |
 
-Framework adapters default to validating in builds. Soft-failing a production build with unchecked config is a last resort, not the default.
+Framework adapters validate in builds by default.
 
 ## What ArkEnv owns vs your schema library
 
-ArkEnv loads the input record, optionally [coerces](/docs/core-concepts/coercion) strings, then hands the result to your schema library. Field rules always come from that library:
+ArkEnv loads the input record, optionally
+[coerces](/docs/core-concepts/coercion) strings, then hands the result
+to your schema library. Field rules always come from that library:
 
-| Package                                        | You supply                                            | Shared with both engines                                             |
-| ---------------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------- |
-| [`@arkenv/core`](/docs/reference/core)         | ArkType DSL strings or `type()` definitions           | `arkenv()` options, `ArkEnvError`, fail-fast boot, framework plugins |
-| [`@arkenv/standard`](/docs/reference/standard) | A map of Standard Schema validators (Zod, Valibot, …) | Same, plus `toJsonSchema`                                            |
+| Package | You supply | Shared with both engines |
+| ------- | ---------- | ------------------------ |
+| [`@arkenv/core`](/docs/reference/core) | ArkType DSL strings or `type()` definitions | `arkenv()` options, `ArkEnvError`, fail-fast boot, framework plugins |
+| [`@arkenv/standard`](/docs/reference/standard) | A map of Standard Schema validators (Zod, Valibot, …) | Same, plus `toJsonSchema` |
 
-See [Choosing an engine](/docs/core-concepts/standard-schema) for packaging and peer-dependency differences.
+See [Choosing an engine](/docs/core-concepts/standard-schema) for
+packaging and peer-dependency differences.
 
 ## Schema is the contract
 
-Only keys you declare appear on the returned object (`onUndeclaredKey` defaults to `"delete"`). That keeps `env` a closed set of known fields instead of a bag of leftover process variables.
+Only keys you declare appear on the returned object
+(`onUndeclaredKey` defaults to `"delete"`). `env` is a closed set of
+known fields, not leftover process variables.
 
-See [options](/docs/reference/options) for `safe`, `emptyAsUndefined`, and undeclared-key behavior. Those options apply to both engines. `toJsonSchema` is `@arkenv/standard` only (ArkType already exposes JSON Schema); see [Valibot](/docs/guides/validators/valibot).
+See [options](/docs/reference/options) for `safe`, `emptyAsUndefined`,
+and undeclared-key behavior. Those options apply to both engines.
+`toJsonSchema` is `@arkenv/standard` only (ArkType already exposes JSON
+Schema); see [Valibot](/docs/guides/validators/valibot).
 
 ## Errors carry structure
 
-Thrown errors expose `issues` with codes such as `MISSING_VARIABLE` and `INVALID_TYPE`. Sensitive values are redacted unless you opt into debug mode. Details live under [Error reporting](/docs/validating-your-environment/error-reporting).
+Thrown errors expose `issues` with codes such as `MISSING_VARIABLE` and
+`INVALID_TYPE`. Sensitive values are redacted unless you opt into debug
+mode. Details live under
+[Error reporting](/docs/validating-your-environment/error-reporting).
 
 ## Related
 
@@ -77,5 +96,5 @@ Thrown errors expose `issues` with codes such as `MISSING_VARIABLE` and `INVALID
 
   <Card href="/docs/validating-your-environment/structuring-your-schema" title="Structuring your schema" description="Where to put env.ts and how to export env." />
 
-  <Card href="/docs/reference/validate" title="validate" description="Framework wiring notes for the validate helper." />
+  <Card href="/docs/reference/core" title="@arkenv/core" description="Runtime exports and ArkEnvError." />
 </Cards>
