@@ -209,9 +209,9 @@ Details: [`@arkenv/nextjs` reference](/docs/reference/nextjs).
 
 `@arkenv/nextjs` uses package export conditions plus a runtime proxy:
 
-| Export condition | Next.js context              | Accessible keys        |
-| ---------------- | ---------------------------- | ---------------------- |
-| `react-server`   | Server Components and routes | All schema keys        |
+| Export condition | Next.js context                 | Accessible keys        |
+| ---------------- | ------------------------------- | ---------------------- |
+| `react-server`   | Server Components and routes    | All schema keys        |
 | `default`        | Client Components (SSR/browser) | Public and shared keys |
 
 Reading a server-only key from client code throws. Strict layout also
