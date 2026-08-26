@@ -12,7 +12,7 @@
 			"name": "arkenv",
 			"source": "./packages/agent-plugin",
 			"description": "Canonical env object, init, and AST security audits for environment variables.",
-			"version": "1.0.0-alpha.0",
+			"version": "0.0.0",
 			"keywords": ["arkenv", "environment-variables", "mcp", "audit"]
 		}
 	]

@@ -1,5 +1,5 @@
 ---
-"@arkenv/agent-plugin": minor
+"@arkenv/agent-plugin": patch
 ---
 
 #### Add a coding-agent plugin with MCP `init` and `audit` tools

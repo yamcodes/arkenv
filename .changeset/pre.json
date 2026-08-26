@@ -21,7 +21,7 @@
 		"@arkenv/core": "1.0.0-alpha.2",
 		"@repo/utils": "0.1.3",
 		"@arkenv/standard": "1.0.0-alpha.2",
-		"@arkenv/agent-plugin": "1.0.0-alpha.0",
+		"@arkenv/agent-plugin": "0.0.0",
 		"@repo/log": "0.0.1",
 		"@repo/dash": "0.0.0"
 	},
