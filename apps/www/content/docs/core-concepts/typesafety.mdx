@@ -3,11 +3,14 @@ title: Typesafety
 description: Infer strict TypeScript types directly from your environment schema.
 ---
 
-ArkEnv pairs runtime validation with TypeScript inference. The schema is the single source of truth for both engines: ArkType via `@arkenv/core`, or Zod/Valibot via `@arkenv/standard`.
+The schema is the single source of truth for runtime checks and
+TypeScript types. That holds for ArkType via `@arkenv/core` and for
+Zod or Valibot via `@arkenv/standard`.
 
 ## Canonical surface: `env`
 
-Import a validated object. Do not sprinkle `process.env` reads through the app.
+Import a validated object. Do not sprinkle `process.env` reads through
+the app.
 
 <Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
   <Tab value="ArkType (@arkenv/core)">
@@ -33,7 +36,7 @@ Import a validated object. Do not sprinkle `process.env` reads through the app.
 
     const schema = {
     	DATABASE_URL: z.string().url(),
-    	PORT: z.coerce.number().int().min(0).max(65535).default(3000),
+    	PORT: z.number().int().min(0).max(65535).default(3000),
     };
 
     export const env = arkenv(schema);
@@ -44,29 +47,40 @@ Import a validated object. Do not sprinkle `process.env` reads through the app.
   </Tab>
 </Tabs>
 
-This object surface is the product default across Next.js, Nuxt, Vite, and Bun. Plugins and codegen deliver that object safely on each host for either engine (use `/standard` subpaths when the schema is Standard Schema).
+This object is the default across Next.js, Nuxt, Vite, and Bun. Plugins
+and codegen deliver it on each host. Use `/standard` subpaths when the
+schema is Standard Schema.
 
 ## Inference paths
 
-| Input                                          | Result                                                                    |
-| ---------------------------------------------- | ------------------------------------------------------------------------- |
-| ArkType declarative map (`{ PORT: "number" }`) | `Infer<typeof schema>` from `@arkenv/core`                                |
-| Compiled `type({ ... })`                       | `typeof Env.infer` / `Infer<typeof Env>`                                  |
-| Standard Schema field map (Zod, Valibot, …)    | `typeof env` after `arkenv(schema)`, or each validator’s own infer helper |
+| Input | Result |
+| ----- | ------ |
+| ArkType declarative map (`{ PORT: "number" }`) | `Infer<typeof schema>` from `@arkenv/core` |
+| Compiled `type({ ... })` | `typeof Env.infer` / `Infer<typeof Env>` |
+| Standard Schema field map (Zod, Valibot, …) | `typeof env` after `arkenv(schema)`, or each validator's own infer helper |
 
-Hovering `env` in the editor shows the coerced output types when coercion is enabled.
+Hovering `env` in the editor shows the coerced output types when
+coercion is enabled.
 
 ## Framework typing
 
-- **Next.js:** generated `env.gen.ts` factory plus full schema inference; a Proxy enforces server/client access at runtime
+- **Next.js:** generated `env.gen.ts` factory plus full schema
+  inference; a Proxy enforces server/client access at runtime
 - **Nuxt:** same object model with module wiring
-- **Vite / Bun:** transform mode rewrites the client copy of `env.ts` so public keys stay typed and coerced; import `{ env }` from that module instead of reading native accessors for schema keys
+- **Vite / Bun:** transform mode rewrites the client copy of `env.ts`
+  so public keys stay typed and coerced; import `{ env }` from that
+  module instead of native accessors for schema keys
 
-Flat layouts may expose server **key names** to client TypeScript while blocking values. Strict layouts keep server modules out of the client graph. See [Client vs. server](/docs/validating-your-environment/client-vs-server).
+Flat layouts may expose server **key names** to client TypeScript while
+blocking values. Strict layouts keep server modules out of the client
+graph. See
+[Client vs. server](/docs/validating-your-environment/client-vs-server).
 
-## What typesafety is not
+## Where the guarantee holds
 
-Types do not load `.env` files. Types do not stop you from reading `process.env` with a cast. ArkEnv's guarantee holds when application code imports `env` and validation runs at boot or build.
+Typesafety holds when application code imports `env` and validation
+runs at boot or build. Casting `process.env`, or skipping the import,
+bypasses it. Types do not load `.env` files.
 
 ## Related
 

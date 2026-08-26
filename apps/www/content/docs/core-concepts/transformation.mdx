@@ -3,14 +3,14 @@ title: Transformation
 description: Transform and normalize validated environment variables during schema parsing.
 ---
 
-Transformation is the process of changing a value, like trimming a string or
-parsing a number. Your schema library may have one or more ways to do this,
-often called "transforms", "morphs", or "pipes". ArkEnv supports these out of
-the box.
+A transform changes a value after it is a valid input: trim a string,
+clamp a number, map an enum. Schema libraries call these transforms,
+morphs, or pipes. ArkEnv runs them as part of parsing.
 
 ## Basic transform
 
-Trim and normalize a string field:
+Trim and normalize a string field. `PORT` still uses built-in
+[coercion](/docs/core-concepts/coercion), not a custom pipe.
 
 <Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
   <Tab value="ArkType (@arkenv/core)">
@@ -33,17 +33,18 @@ Trim and normalize a string field:
     	BUILD_ID: z
     		.string()
     		.transform((value) => value.trim().toUpperCase()),
-    	PORT: z.coerce.number().int().min(0).max(65535).default(3000),
+    	PORT: z.number().int().min(0).max(65535).default(3000),
     });
     ```
   </Tab>
 </Tabs>
 
-`BUILD_ID` is validated as a string, then reshaped. `PORT` uses coercion (or Zod’s `z.coerce`), not a custom transform.
+`BUILD_ID` is validated as a string, then reshaped.
 
 ## Transform after coercion
 
-Coercion can feed a transform. The string `"3"` becomes a number before your pipe runs:
+Coercion can feed a transform. The string `"3"` becomes a number before
+your pipe runs:
 
 <Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
   <Tab value="ArkType (@arkenv/core)">
@@ -78,15 +79,16 @@ Coercion can feed a transform. The string `"3"` becomes a number before your pip
   </Tab>
 </Tabs>
 
-With `{ coerce: false }`, `"3"` never becomes a number unless the transform accepts a string itself (or you use the library’s own coerce helpers).
+With `{ coerce: false }`, `"3"` never becomes a number unless the
+transform accepts a string itself.
 
 ## Transform vs coerce
 
-| Need                                      | Prefer                                                                     |
-| ----------------------------------------- | -------------------------------------------------------------------------- |
-| `"3000"` → `number`, `"true"` → `boolean` | [Coercion](/docs/core-concepts/coercion) (default on), or Zod `z.coerce.*` |
-| Trim, normalize, clamp, map enums         | Transform on the field schema                                              |
-| Multi-step pipelines                      | ArkType `.pipe` chains / Zod `.pipe` / Valibot `pipe`                      |
+| Need | Prefer |
+| ---- | ------ |
+| `"3000"` → `number`, `"true"` → `boolean` | [Coercion](/docs/core-concepts/coercion) (on by default) |
+| Trim, normalize, clamp, map enums | Transform on the field schema |
+| Multi-step pipelines | ArkType `.pipe` / Zod `.pipe` / Valibot `pipe` |
 
 ## Next steps
 
