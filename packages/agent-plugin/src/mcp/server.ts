@@ -4,6 +4,7 @@ import {
 	CallToolRequestSchema,
 	ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
+import { version } from "../../package.json";
 import {
 	AUDIT_TOOL_NAME,
 	INIT_TOOL_NAME,
@@ -45,7 +46,7 @@ const INIT_INPUT_SCHEMA = {
  */
 export function createMcpServer(): Server {
 	const server = new Server(
-		{ name: "arkenv", version: "1.0.0-alpha.0" },
+		{ name: "arkenv", version },
 		{ capabilities: { tools: {} } },
 	);
 
