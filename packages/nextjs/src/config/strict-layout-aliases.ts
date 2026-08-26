@@ -142,11 +142,8 @@ export function applyStrictLayoutAliases<T extends NextConfigLike>(
 			}
 		: undefined;
 
-	// NOTE: `nextConfig` is spread as a plain object below. Only the object-form
-	// of `next.config` is supported here — a callable/function-form config would
-	// lose its call signature when spread, silently dropping any phase-dependent
-	// logic. Callers are responsible for dereferencing a callable config before
-	// passing it to this function. Full callable-form support is tracked separately.
+	// Spread as a plain object. Callers must pass a resolved config object —
+	// `withArkEnv` awaits function-form `next.config` before calling this.
 	const result: Record<string, unknown> = {
 		...nextConfig,
 		webpack,

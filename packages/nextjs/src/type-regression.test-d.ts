@@ -5,6 +5,7 @@ import { describe, expectTypeOf, it } from "vitest";
 // was accidentally re-introduced.
 // @ts-expect-error `type` is not exported from @arkenv/nextjs/client — import from @arkenv/core
 import { type as typeFromClient } from "./client";
+import { withArkEnv } from "./config";
 // @ts-expect-error `Infer` is not exported from @arkenv/nextjs root — import from @arkenv/core
 import type { Infer as InferFromRoot } from "./index";
 // @ts-expect-error `type` is not exported from @arkenv/nextjs root — import from @arkenv/core
@@ -16,6 +17,7 @@ import { type as typeFromReactServer } from "./react-server";
 // @ts-expect-error `type` is not exported from @arkenv/nextjs/server — import from @arkenv/core
 import { type as typeFromServer } from "./server";
 import arkenvStandard from "./standard";
+import { withArkEnv as withArkEnvStandard } from "./standard/config";
 
 void typeFromClient;
 void typeFromRoot;
@@ -210,5 +212,88 @@ describe("@arkenv/nextjs server auto-extend types (strict layout)", () => {
 		expectTypeOf(env.DATABASE_URL).toBeString();
 		expectTypeOf(env.NEXT_PUBLIC_API_URL).toBeString();
 		expectTypeOf(env.CUSTOM_CLIENT).toBeString();
+	});
+});
+
+describe("withArkEnv config overloads", () => {
+	it("preserves object-form nextConfig fields", () => {
+		const wrap = () => withArkEnv({ reactStrictMode: true as const });
+		expectTypeOf(wrap).returns.toEqualTypeOf<{ reactStrictMode: true }>();
+	});
+
+	it("accepts Next.js NextConfig without a string index signature", () => {
+		// Must be an interface: type aliases get an implicit index signature, so they
+		// would not catch a `Record<string, unknown>` constraint the way Next 16's
+		// bare `interface NextConfig` does.
+		// biome-ignore lint/style/useConsistentTypeDefinitions: match NextConfig (interface, no index signature)
+		interface NextConfigLike {
+			reactStrictMode?: boolean;
+			distDir?: string;
+		}
+		const wrap = () => withArkEnv({} as NextConfigLike);
+		expectTypeOf(wrap).returns.toEqualTypeOf<NextConfigLike>();
+	});
+
+	it("returns an async factory for sync function-form nextConfig", () => {
+		const wrap = () =>
+			withArkEnv((phase: string) => ({
+				reactStrictMode: phase !== "phase-test",
+			}));
+		expectTypeOf(wrap).returns.toMatchTypeOf<
+			(
+				phase: string,
+				context: { defaultConfig: {} },
+			) => Promise<{ reactStrictMode: boolean }>
+		>();
+	});
+
+	it("returns an async factory for async function-form nextConfig", () => {
+		const wrap = () =>
+			withArkEnv(async (phase: string, { defaultConfig }) => ({
+				...defaultConfig,
+				reactStrictMode: phase !== "phase-test",
+			}));
+		expectTypeOf(wrap).returns.toMatchTypeOf<
+			(
+				phase: string,
+				context: { defaultConfig: {} },
+			) => Promise<{ reactStrictMode: boolean }>
+		>();
+	});
+
+	it("typechecks the docs function-form snippet with a NextConfig-like return", () => {
+		// biome-ignore lint/style/useConsistentTypeDefinitions: match NextConfig (interface, no index signature)
+		interface NextConfigLike {
+			reactStrictMode?: boolean;
+		}
+		const wrap = () =>
+			withArkEnv(
+				async (phase: string, { defaultConfig }): Promise<NextConfigLike> => ({
+					...defaultConfig,
+					reactStrictMode: phase !== "phase-test",
+				}),
+			);
+		expectTypeOf(wrap).returns.toMatchTypeOf<
+			(phase: string, context: { defaultConfig: {} }) => Promise<NextConfigLike>
+		>();
+	});
+
+	it("matches overloads on the Standard config entry", () => {
+		const wrapObject = () =>
+			withArkEnvStandard({ reactStrictMode: true as const });
+		expectTypeOf(wrapObject).returns.toEqualTypeOf<{
+			reactStrictMode: true;
+		}>();
+
+		const wrapFunction = () =>
+			withArkEnvStandard(async (phase: string) => ({
+				reactStrictMode: phase !== "phase-test",
+			}));
+		expectTypeOf(wrapFunction).returns.toMatchTypeOf<
+			(
+				phase: string,
+				context: { defaultConfig: {} },
+			) => Promise<{ reactStrictMode: boolean }>
+		>();
 	});
 });

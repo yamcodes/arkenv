@@ -3,10 +3,10 @@ title: Using ArkEnv with Zod
 description: Validate environment variables with your existing Zod schemas.
 ---
 
-Use `@arkenv/standard` to validate environment variables with Zod. Zod 4.2+
-embeds [Standard JSON Schema](https://standardschema.dev/json-schema) metadata
-directly on schema objects, allowing ArkEnv to automatically coerce raw string
-inputs into numbers, booleans, and arrays before validation.
+`@arkenv/standard` runs your Zod schemas against the environment. Zod
+4.2+ embeds
+[Standard JSON Schema](https://standardschema.dev/json-schema) on schema
+objects, so ArkEnv coerces `"3000"` and `"true"` before validation.
 
 For an overview of engine options, see
 [Choosing an engine](/docs/core-concepts/standard-schema).
@@ -16,7 +16,7 @@ For an overview of engine options, see
 Install `@arkenv/standard` alongside `zod`:
 
 ```package-install
-npm i @arkenv/standard zod
+npm install @arkenv/standard zod
 ```
 
 ## Define your schema
@@ -56,27 +56,23 @@ Zod methods for defaults and optional fields behave consistently with ArkEnv:
 ## Zod Mini
 
 [Zod Mini](https://zod.dev/packages/mini) (`import * as z from "zod/mini"`) omits
-embedded JSON Schema metadata from schema instances. To enable automatic coercion
-with Zod Mini, provide ArkEnv's `toJsonSchema` callback option:
+embedded JSON Schema metadata from schema instances. Import
+`@arkenv/standard/zod-mini` so Mini `z.number()` and `z.boolean()` coerce
+without a callback:
 
 ```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/standard";
+import { arkenv } from "@arkenv/standard/zod-mini";
 import * as z from "zod/mini";
 
-export const env = arkenv(
-  {
-    PORT: z.number(),
-    DEBUG: z.boolean(),
-  },
-  {
-    toJsonSchema: (schema) =>
-      z.toJSONSchema(schema as z.ZodMiniType, {
-        io: "input",
-        target: "draft-07",
-      }),
-  },
-);
+export const env = arkenv({
+  PORT: z.number(),
+  DEBUG: z.boolean(),
+});
 ```
+
+TypeScript must use `moduleResolution: "bundler" | "node16" | "nodenext"`.
+The root `toJsonSchema` callback remains available for mixed maps; see
+[Coercion](/docs/core-concepts/coercion#mixing-with-zod-mini).
 
 ## Zod v3
 
@@ -104,8 +100,8 @@ export const env = arkenv(
 );
 ```
 
-When possible, prefer Zod 4.2+ for native JSON Schema metadata without callback
-configuration.
+Use Zod 4.2+ when you can. It ships JSON Schema metadata, so you skip
+the `toJsonSchema` callback.
 
 ## Next steps
 

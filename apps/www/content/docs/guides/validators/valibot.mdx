@@ -1,72 +1,68 @@
 ---
 title: Valibot
-description: Validate environment variables with @arkenv/standard and Valibot.
+description: Validate environment variables with @arkenv/standard/valibot.
 ---
 
-Use `@arkenv/standard` to validate environment variables with Valibot. Valibot
-implements the Standard Schema specification. By providing the
-[`@valibot/to-json-schema`](https://valibot.dev/guides/json-schema/) converter
-through ArkEnv's `toJsonSchema` option, ArkEnv can inspect your schema and
-automatically coerce raw strings into numbers, booleans, and arrays.
+`@arkenv/standard/valibot` wires Valibot into ArkEnv. Valibot implements
+Standard Schema. The subpath pre-configures
+[`@valibot/to-json-schema`](https://valibot.dev/guides/json-schema/) so
+ArkEnv can coerce strings into numbers, booleans, and arrays.
 
 For an overview of engine options, see
 [Choosing an engine](/docs/core-concepts/standard-schema).
 
 ## Installation
 
-Install `@arkenv/standard`, `valibot`, and the JSON Schema converter:
+Install `@arkenv/standard`, `valibot`, and the JSON Schema converter (an
+optional peer of `@arkenv/standard`):
 
 ```package-install
-npm i @arkenv/standard valibot @valibot/to-json-schema
+npm install @arkenv/standard valibot @valibot/to-json-schema
 ```
+
+TypeScript must use `moduleResolution: "bundler" | "node16" | "nodenext"`.
+Subpath exports are not resolved under legacy `"node"` module resolution.
 
 ## Define your schema
 
-Declare environment variables in an `env.ts` file using Valibot schemas and
-configure `toJsonSchema`:
+Declare environment variables in an `env.ts` file using Valibot schemas:
 
 ```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/standard";
+import { arkenv } from "@arkenv/standard/valibot";
 import * as v from "valibot";
-import { toJsonSchema } from "@valibot/to-json-schema";
 
-export const env = arkenv(
-  {
-    DATABASE_URL: v.pipe(v.string(), v.url()),
-    PORT: v.optional(v.number(), 3000),
-    DEBUG: v.optional(v.boolean(), false),
-    TAGS: v.optional(v.array(v.string()), []),
-    NODE_ENV: v.optional(
-      v.picklist(["development", "production", "test"]),
-      "development",
-    ),
-  },
-  {
-    toJsonSchema: (schema) =>
-      toJsonSchema(schema as v.GenericSchema, {
-        typeMode: "input",
-        target: "draft-07",
-      }),
-  },
-);
+export const env = arkenv({
+  DATABASE_URL: v.pipe(v.string(), v.url()),
+  PORT: v.optional(v.number(), 3000),
+  DEBUG: v.optional(v.boolean(), false),
+  TAGS: v.optional(v.array(v.string()), []),
+  NODE_ENV: v.optional(
+    v.picklist(["development", "production", "test"]),
+    "development",
+  ),
+});
 ```
+
+Use `v.number()` and `v.boolean()` directly. Manual `v.transform(Number)`
+steps are not required.
 
 ## JSON Schema configuration
 
-Because Valibot does not embed JSON Schema metadata directly on schema instances,
-the `toJsonSchema` callback converts schemas on demand:
+Valibot does not embed JSON Schema metadata on schema instances. The
+`/valibot` subpath calls `@valibot/to-json-schema` with:
 
-- `typeMode: "input"` ensures piped and transformed schemas are evaluated
-  according to their input types so strings can be properly coerced.
-- `target: "draft-07"` formats output to match the JSON Schema draft expected
-  by ArkEnv.
+- `typeMode: "input"` so piped and transformed schemas are evaluated
+  according to their input types and strings can be coerced
+- `target: "draft-07"` so output matches the JSON Schema draft ArkEnv expects
 
-With `toJsonSchema` configured, use `v.number()` and `v.boolean()` directly.
-Manual `v.transform(Number)` steps are not required.
+The root `toJsonSchema` callback remains available on `@arkenv/standard` for
+custom converters or mixed-validator maps. See
+[Coercion](/docs/core-concepts/coercion#valibot-tojsonschema).
 
 ## Defaults and optionals
 
-Valibot functions for fallback values and optional fields work seamlessly:
+Valibot fallbacks and optionals map onto ArkEnv the same way as other
+engines:
 
 | Pattern                            | Behavior                                                                  |
 | :--------------------------------- | :------------------------------------------------------------------------ |

@@ -18,6 +18,12 @@ export const arktypeTwoslashVfs = {
 		paths: {
 			"@arkenv/core": [path.join(root, "packages/core/src/index.ts")],
 			"@arkenv/standard": [path.join(root, "packages/standard/src/index.ts")],
+			"@arkenv/standard/valibot": [
+				path.join(root, "packages/standard/src/valibot.ts"),
+			],
+			"@arkenv/standard/zod-mini": [
+				path.join(root, "packages/standard/src/zod-mini.ts"),
+			],
 			"@arkenv/nextjs": [path.join(root, "packages/nextjs/src/index.ts")],
 			"@arkenv/nextjs/server": [
 				path.join(root, "packages/nextjs/src/server.ts"),

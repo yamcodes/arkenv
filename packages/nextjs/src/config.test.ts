@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { closeWatcher } from "@arkenv/build";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 let useMockWatcher = false;
@@ -31,6 +32,7 @@ import {
 	runCodegen,
 	withArkEnv,
 } from "./config";
+import { withArkEnv as withArkEnvStandard } from "./standard/config";
 
 describe("config key extraction", () => {
 	it("should extract client and shared keys correctly", () => {
@@ -291,7 +293,8 @@ describe("withArkEnv wrapper", () => {
 	const tempDir = path.join(__dirname, "__temp_tests_wrapper__");
 	const schemaPath = path.join(tempDir, "env.ts");
 
-	afterEach(() => {
+	afterEach(async () => {
+		await closeWatcher();
 		if (fs.existsSync(tempDir)) {
 			fs.rmSync(tempDir, { recursive: true, force: true });
 		}
@@ -338,7 +341,7 @@ describe("withArkEnv wrapper", () => {
 		expect(resolvedWebpack?.resolve?.alias?.["@/.arkenv"]).toBe(genPath);
 	});
 
-	it("should support function-form nextConfig in both flat and strict layouts", () => {
+	it("should support sync function-form nextConfig in flat layout", async () => {
 		if (!fs.existsSync(tempDir)) {
 			fs.mkdirSync(tempDir, { recursive: true });
 		}
@@ -361,14 +364,223 @@ describe("withArkEnv wrapper", () => {
 		const wrapped = withArkEnv(functionConfig, {
 			schemaPath,
 			validate: false,
-		}) as any;
+		});
 
 		expect(typeof wrapped).toBe("function");
-		const resolved = wrapped("phase-production-build", {});
+		expect(fs.existsSync(path.join(tempDir, ".arkenv", "env.gen.ts"))).toBe(
+			false,
+		);
+
+		const resolved = (await wrapped("phase-production-build", {
+			defaultConfig: {},
+		})) as {
+			reactStrictMode: boolean;
+			customFlag: boolean;
+			turbopack?: { resolveAlias?: Record<string, unknown> };
+			webpack?: (config: unknown, context: unknown) => unknown;
+		};
 		expect(resolved.reactStrictMode).toBe(true);
 		expect(resolved.customFlag).toBe(true);
 		expect(resolved.turbopack?.resolveAlias?.["@/.arkenv"]).toBeDefined();
 		expect(typeof resolved.webpack).toBe("function");
+		expect(fs.existsSync(path.join(tempDir, ".arkenv", "env.gen.ts"))).toBe(
+			true,
+		);
+	});
+
+	it("should support async function-form nextConfig in flat layout", async () => {
+		if (!fs.existsSync(tempDir)) {
+			fs.mkdirSync(tempDir, { recursive: true });
+		}
+
+		fs.writeFileSync(
+			schemaPath,
+			`
+			export const env = arkenv({
+				client: { NEXT_PUBLIC_API_URL: "string" }
+			});
+			`,
+			"utf-8",
+		);
+
+		const wrapped = withArkEnv(
+			async (phase, { defaultConfig }) => ({
+				...defaultConfig,
+				reactStrictMode: phase !== "phase-test",
+			}),
+			{
+				schemaPath,
+				validate: false,
+			},
+		);
+
+		const resolved = (await wrapped("phase-production-build", {
+			defaultConfig: { poweredByHeader: false },
+		})) as {
+			reactStrictMode: boolean;
+			poweredByHeader?: boolean;
+			turbopack?: { resolveAlias?: Record<string, unknown> };
+		};
+		expect(resolved.reactStrictMode).toBe(true);
+		expect(resolved.poweredByHeader).toBe(false);
+		expect(resolved.turbopack?.resolveAlias?.["@/.arkenv"]).toBeDefined();
+	});
+
+	it("should apply strict layout aliases for function-form nextConfig", async () => {
+		if (!fs.existsSync(tempDir)) {
+			fs.mkdirSync(tempDir, { recursive: true });
+		}
+
+		const strictBaseDir = path.join(tempDir, "env");
+		fs.mkdirSync(path.join(strictBaseDir, "internal"), { recursive: true });
+		fs.writeFileSync(
+			path.join(strictBaseDir, "internal", "shared.ts"),
+			`
+			import { type } from "@arkenv/core";
+			export const SharedSchema = type({
+				NODE_ENV: "string = 'development'",
+			});
+			`,
+			"utf-8",
+		);
+		fs.writeFileSync(
+			path.join(strictBaseDir, "client.ts"),
+			`
+			import arkenv from "@arkenv/nextjs/client";
+			import { SharedSchema } from "./internal/shared";
+			export const env = arkenv(
+				{ NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'" },
+				{ extends: [SharedSchema], runtimeEnv: {} },
+			);
+			`,
+			"utf-8",
+		);
+		fs.writeFileSync(
+			path.join(strictBaseDir, "server.ts"),
+			`
+			import arkenv from "@arkenv/nextjs/server";
+			export const env = arkenv({ DATABASE_URL: "string" });
+			`,
+			"utf-8",
+		);
+
+		const wrapped = withArkEnv(
+			(phase: string) => ({ reactStrictMode: phase !== "phase-test" }),
+			{ schemaPath: strictBaseDir, validate: false },
+		);
+
+		const resolved = (await wrapped("phase-production-build", {
+			defaultConfig: {},
+		})) as {
+			reactStrictMode: boolean;
+			turbopack?: { resolveAlias?: Record<string, string> };
+			webpack?: (
+				config: unknown,
+				context: unknown,
+			) => {
+				resolve?: { alias?: Record<string, string> };
+				plugins?: unknown[];
+			};
+		};
+		expect(resolved.reactStrictMode).toBe(true);
+		expect(resolved.turbopack?.resolveAlias?.["#arkenv/client-env"]).toBe(
+			`./${path.relative(process.cwd(), path.join(strictBaseDir, "client.ts")).replace(/\\/g, "/")}`,
+		);
+
+		const webpackConfig = {
+			resolve: { alias: {} as Record<string, string> },
+			plugins: [] as unknown[],
+		};
+		class MockDefinePlugin {
+			definitions: Record<string, string>;
+			constructor(definitions: Record<string, string>) {
+				this.definitions = definitions;
+			}
+		}
+		const resolvedWebpack = resolved.webpack?.(webpackConfig, {
+			webpack: { DefinePlugin: MockDefinePlugin },
+		}) as {
+			resolve?: { alias?: Record<string, string> };
+			plugins?: unknown[];
+		};
+		expect(resolvedWebpack?.resolve?.alias?.["#arkenv/client-env"]).toBe(
+			path.join(strictBaseDir, "client.ts"),
+		);
+		expect(
+			resolvedWebpack?.plugins?.some(
+				(plugin: unknown) =>
+					plugin instanceof MockDefinePlugin &&
+					(plugin as MockDefinePlugin).definitions.__ARKENV_STRICT_LAYOUT__ ===
+						"true",
+			),
+		).toBe(true);
+	});
+
+	it("should start schema watch on function-form invocation in development", async () => {
+		useMockWatcher = true;
+		mockWatch.mockClear();
+		mockClose.mockClear();
+
+		if (!fs.existsSync(tempDir)) {
+			fs.mkdirSync(tempDir, { recursive: true });
+		}
+
+		fs.writeFileSync(
+			schemaPath,
+			`export const env = arkenv({ client: { NEXT_PUBLIC_API_URL: "string" } });`,
+			"utf-8",
+		);
+
+		const originalNodeEnv = process.env.NODE_ENV;
+		process.env.NODE_ENV = "development";
+
+		try {
+			const wrapped = withArkEnv(() => ({ reactStrictMode: true }), {
+				schemaPath,
+				validate: false,
+			});
+			expect(mockWatch).not.toHaveBeenCalled();
+
+			await wrapped("phase-development-server", { defaultConfig: {} });
+			expect(mockWatch).toHaveBeenCalledTimes(1);
+
+			await wrapped("phase-development-server", { defaultConfig: {} });
+			expect(mockWatch).toHaveBeenCalledTimes(2);
+			expect(mockClose).toHaveBeenCalledTimes(1);
+		} finally {
+			process.env.NODE_ENV = originalNodeEnv;
+			delete (globalThis as Record<string, unknown>).__arkenv_watcher__;
+			useMockWatcher = false;
+		}
+	});
+
+	it("should support function-form nextConfig from the Standard config entry", async () => {
+		if (!fs.existsSync(tempDir)) {
+			fs.mkdirSync(tempDir, { recursive: true });
+		}
+
+		fs.writeFileSync(
+			schemaPath,
+			`
+			export const env = arkenv({
+				client: { NEXT_PUBLIC_API_URL: "string" }
+			});
+			`,
+			"utf-8",
+		);
+
+		const wrapped = withArkEnvStandard(
+			(phase: string) => ({ reactStrictMode: phase !== "phase-test" }),
+			{ schemaPath, validate: false },
+		);
+		const resolved = (await wrapped("phase-production-build", {
+			defaultConfig: {},
+		})) as {
+			reactStrictMode: boolean;
+			turbopack?: { resolveAlias?: Record<string, unknown> };
+		};
+		expect(resolved.reactStrictMode).toBe(true);
+		expect(resolved.turbopack?.resolveAlias?.["@/.arkenv"]).toBeDefined();
 	});
 
 	it("should support strict layout auto-detection and generation", () => {

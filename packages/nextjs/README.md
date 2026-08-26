@@ -32,6 +32,15 @@ const nextConfig: NextConfig = {
 export default withArkEnv(nextConfig);
 ```
 
+Function-form configs (sync or async) are supported:
+
+```typescript
+export default withArkEnv(async (phase, { defaultConfig }) => ({
+  ...defaultConfig,
+  reactStrictMode: phase !== "phase-test",
+}));
+```
+
 ### 2. Define your schema in `env.ts`
 
 Import `arkenv` from the generated `./generated/env.gen` file instead of the package:

@@ -9,13 +9,13 @@ validation, and `env.gen.ts` codegen.
 ## Installation
 
 ```package-install
-npm i @arkenv/core @arkenv/nextjs arktype
+npm install @arkenv/core @arkenv/nextjs arktype
 ```
 
 Or with Standard Schema:
 
 ```package-install
-npm i @arkenv/standard @arkenv/nextjs zod
+npm install @arkenv/standard @arkenv/nextjs zod
 ```
 
 Peers: `next`, `react`. `@arkenv/core` / `@arkenv/standard` / `arktype`
@@ -47,6 +47,19 @@ import { withArkEnv } from "@arkenv/nextjs/config";
 const nextConfig: NextConfig = {};
 
 export default withArkEnv(nextConfig);
+```
+
+Function-form `next.config` is supported. ArkEnv awaits the factory and applies
+aliases to the resolved object:
+
+```ts title="./next.config.ts"
+import type { NextConfig } from "next";
+import { withArkEnv } from "@arkenv/nextjs/config";
+
+export default withArkEnv(async (phase, { defaultConfig }): Promise<NextConfig> => ({
+  ...defaultConfig,
+  reactStrictMode: phase !== "phase-test",
+}));
 ```
 
 Your app schema imports the generated factory:

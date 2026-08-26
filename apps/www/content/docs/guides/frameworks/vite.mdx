@@ -3,10 +3,9 @@ title: Vite
 description: Validate Vite environment variables with @arkenv/vite-plugin.
 ---
 
-Use `@arkenv/vite-plugin` to validate environment variables during Vite development
-and production builds. The plugin runs in transform mode so client bundles only
-receive public variables (prefixed with `VITE_` by default) while server secrets
-stay protected.
+`@arkenv/vite-plugin` validates during Vite dev and production builds.
+Transform mode inlines public `VITE_` keys into the client bundle and
+keeps server secrets out.
 
 For high-level architectural trade-offs, see
 [Integrations](/docs/validating-your-environment/framework-integration).
@@ -32,8 +31,8 @@ validation engine.
 Install `@arkenv/core`, `arktype`, and the Vite plugin:
 
 ```package-install
-pnpm add @arkenv/core arktype
-pnpm add -D @arkenv/vite-plugin
+npm install @arkenv/core arktype
+npm install -D @arkenv/vite-plugin
 ```
 
 ### Standard Schema engine
@@ -41,8 +40,8 @@ pnpm add -D @arkenv/vite-plugin
 If you aren't using ArkType, install `@arkenv/standard`:
 
 ```package-install
-pnpm add @arkenv/standard
-pnpm add -D @arkenv/vite-plugin
+npm install @arkenv/standard
+npm install -D @arkenv/vite-plugin
 ```
 
 ## Configuration

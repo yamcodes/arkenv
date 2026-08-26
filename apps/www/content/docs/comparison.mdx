@@ -1,0 +1,166 @@
+---
+title: Comparison
+description: See how ArkEnv compares to other environment variable validation libraries and techniques.
+---
+
+This page is a cheatsheet of how ArkEnv compares to T3 Env,
+vite-plugin-validate-env, znv, Envalid, dotenv-safe, and a DIY schema.
+If you are migrating from T3 Env, start at
+[Migrating from T3 Env](/docs/guides/migrating-from-t3-env).
+
+## Comparison cheatsheet
+
+| Feature                           | **ArkEnv** | T3 Env | vite-plugin-validate-env | znv | Envalid | dotenv-safe |
+| :-------------------------------- | :--------: | :----: | :----------------------: | :-: | :-----: | :---------: |
+| **Native ArkType support\***      |      ✅     |    ❌   |             ❌            |  ❌  |    ❌    |      ❌      |
+| **Standard Schema**               |      ✅     |    ✅   |             ✅            |  ❌  |    ❌    |      ❌      |
+| **Typesafety**                    |      ✅     |    ✅   |             ✅            |  ✅  |    ✅    |      ❌      |
+| **Automatic coercion**            |      ✅     |    ❌   |             ❌            |  ✅  |    ✅    |      ❌      |
+| **Default values**                |      ✅     |    ✅   |             ✅            |  ✅  |    ✅    |      ❌      |
+| **First-class Vite support**      |      ✅     |    ❌   |             ✅            |  ❌  |    ❌    |      ❌      |
+| **First-class Next.js support**   |      ✅     |    ✅   |             ❌            |  ❌  |    ❌    |      ❌      |
+| **First-class Nuxt support**      |      ✅     |    ✅   |             ❌            |  ❌  |    ❌    |      ❌      |
+| **Bun fullstack dev server**      |      ✅     |    ❌   |             ❌            |  ❌  |    ❌    |      ❌      |
+| **Zero runtime dependencies\*\*** |      ✅     |    ✅   |             ❌            |  ✅  |    ❌    |      ✅      |
+| **Command Line Interface**        |      ✅     |    ❌   |             ❌            |  ❌  |    ❌    |      ❌      |
+| **Hosting presets**               |      ✅     |    ✅   |             ❌            |  ❌  |    ❌    |      ❌      |
+
+\* ArkType is supported directly without wrapping each key in ArkType's
+`type()`.
+
+\*\* True of `@arkenv/core` (peer `arktype` only) and `@arkenv/standard`
+(none). The CLI and framework plugins have their own dependencies.
+
+✅ Built-in / first-class support
+
+❌ Not supported
+
+## Detailed comparisons
+
+Each section below is a short "why ArkEnv instead of X" for a library
+people often evaluate against.
+
+### DIY
+
+You can validate `process.env` with ArkType (or Zod, Valibot, Typia)
+in a few lines:
+
+```ts title="env.ts" twoslash
+import { type } from "arktype";
+
+const Env = type({
+  PORT: type("string.integer.parse").to("0 <= number <= 65535").default("3000"),
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+
+export const env = Env.assert(process.env);
+```
+
+That gives you validation, types, defaults, and morphs. Next.js still
+strips non-`NEXT_PUBLIC_` values from the client bundle when you read
+`process.env` directly. ArkEnv's Next.js codegen maps only safe keys
+into `runtimeEnv`, so server secrets never reach the client proxy.
+
+Past a hello-world script, the DIY path gets tedious:
+
+- **Manual parsing.** `process.env` is strings only, so every number or
+  boolean needs a parse. ArkEnv handles this with built-in
+  [coercion](/docs/core-concepts/coercion).
+- **Verbose errors.** Most validation libraries log as if you sent a
+  nested API payload. ArkEnv prints a concise env-var dump.
+- **Boilerplate fatigue.** Repeating the same assert across projects
+  gets old. ArkEnv is one declarative `arkenv()` call and
+  `import { env } from "./env"`.
+- **Framework nuances.** Passing `process.env` into a schema fails in
+  Vite and Bun, where variables are statically replaced. ArkEnv's
+  plugins rewrite `env.ts` in the client graph and still validate at
+  boot on the server.
+
+If that list is the work you wanted to skip, start at
+[Getting started](/docs/getting-started).
+
+### T3 Env
+
+[T3 Env](https://env.t3.gg) is a major inspiration for ArkEnv, but they
+differ in design and boilerplate:
+
+- **Fewer moving parts.** In Next.js and Nuxt, T3 Env requires a
+  dedicated `runtimeEnv` object to inline client variables (for example
+  `NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL`). You have to
+  keep that object in sync with your schema, or the app can break
+  silently. ArkEnv removes that friction: Next.js auto-generates the
+  `runtimeEnv` mapping at build time; Nuxt reads public values from
+  `useRuntimeConfig()` at runtime, with no generated files. Next.js
+  codegen can be opted out with `{ codegen: false }`.
+- **Flat by default.** T3 Env forces client/server blocks even in its
+  agnostic core, which is redundant for Node scripts or server-only
+  code. ArkEnv defaults to a flat schema and only splits client/server
+  in fullstack frameworks like Next.js and Nuxt.
+- **Richer feature set.** Native ArkType, automatic coercion, first-class
+  Vite, Nuxt, and Bun fullstack support, and a dedicated CLI.
+- **Same security, less ceremony.** ArkEnv's flat layout matches T3
+  Env's single-file mode: full type inference plus a runtime proxy that
+  throws when a server variable is accessed on the client, without
+  forcing `server:` and `client:` blocks. Both libraries ship the schema
+  (not the values) to the client in single-file mode. If variable
+  *names* are sensitive, scaffold a strict layout for compile-time
+  isolation. See [Client vs. server](/docs/validating-your-environment/client-vs-server)
+  and [Migrating from T3 Env](/docs/guides/migrating-from-t3-env).
+
+### vite-plugin-validate-env
+
+[@julr/vite-plugin-validate-env](https://github.com/julien-r44/vite-plugin-validate-env)
+is a specialized plugin for validating variables at build time. It's a
+good tool for focused Vite projects and supports any Standard Schema
+validator.
+
+ArkEnv is a broader solution. The
+[Vite plugin](/docs/guides/frameworks/vite) covers the same build-time
+check, plus global coercion and native ArkType. You can also
+[reuse the schema in `vite.config.ts`](/docs/guides/frameworks/vite#reuse-the-schema-in-vite-config)
+with `loadEnv`, which `@julr/vite-plugin-validate-env` does not
+emphasize.
+
+### znv
+
+[znv](https://github.com/lostfictions/znv) is a lean, zero-dependency
+validator for Zod. Its coercion design influenced ArkEnv.
+
+ArkEnv keeps that spirit and expands it. znv is tied to Zod; ArkEnv
+supports any Standard Schema validator, including ArkType, Valibot, and
+Zod, plus first-class framework integrations.
+
+### Envalid
+
+[Envalid](https://github.com/af/envalid) is a long-standing, robust
+environment validator.
+
+It does not speak Zod, ArkType, or Valibot without wrappers, and it
+does not hook into Next.js, Vite, or Bun the way ArkEnv does.
+
+If Envalid already owns a codebase, keep it. For new work, ArkEnv is
+the typesafe path with first-party framework packages.
+
+### dotenv-safe
+
+[dotenv-safe](https://github.com/rolodato/dotenv-safe) is not a type
+validator. It checks that your `.env` file matches `.env.example`, using
+that file as a type-less schema.
+
+If you only need a presence check, `dotenv-safe` is enough. If you need
+typesafety, runtime coercion, defaults, or framework integrations,
+ArkEnv covers those in a similarly small core with a higher ceiling.
+
+## Next steps
+
+```package-install
+npx arkenv@latest init
+```
+
+<Cards>
+  <Card href="/docs/getting-started" title="Getting started" description="Install ArkEnv and configure your first environment schema." />
+
+  <Card href="/docs/guides/migrating-from-t3-env" title="Migrating from T3 Env" description="Replace createEnv and runtimeEnv with a flat ArkEnv schema." />
+
+  <Card href="/docs/faq" title="FAQ" description="Short answers about validators, .env files, and AI tools." />
+</Cards>

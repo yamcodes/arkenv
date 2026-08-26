@@ -1,150 +1,247 @@
 ---
 title: Migrating to v1
-description: Migrate your ArkEnv setup from v0 to the unified v1 architecture.
+description: Move a v0 project to the v1 packages and the canonical env object.
 ---
 
-ArkEnv v1 renames packages, standardizes on a **single canonical `env` object** across all frameworks, and adds first-class `@arkenv/standard` support.
+v1 splits the old `arkenv` library from the CLI, and it uses the same
+`import { env } from "./env"` surface on every host. Vite and Bun no
+longer take a schema in the plugin call. v1 is still
+`1.0.0-alpha.x`; see [Compatibility](/docs/compatibility).
 
-## Package renames
+If you are coming from T3 Env rather than ArkEnv v0, use
+[Migrating from T3 Env](/docs/guides/migrating-from-t3-env).
 
-In v1, package names changed:
+## Package names
 
-| v0 Package    | v1 Package | Purpose                                                |
-| :------------ | :--------- | :----------------------------------------------------- |
-| `@arkenv/cli` | `arkenv`   | Primary CLI (`npx arkenv@latest init`, `preset apply`) |
+On v0, `arkenv` on npm was the runtime. On v1 that name is the **CLI**.
+Importing `arkenv` as a library throws. Swap packages first.
 
-\| `arkenv`              | `@arkenv/core`        | Core runtime & ArkType DSL engine                  |
-\| *(new in v1)*         | `@arkenv/standard`    | Standard Schema engine (Zod, Valibot, etc.)        |
-\| `@arkenv/vite-plugin` | `@arkenv/vite-plugin` | Vite plugin (transform mode)                       |
-\| `@arkenv/bun-plugin`  | `@arkenv/bun-plugin`  | Bun plugin (transform mode)                        |
-\| `@arkenv/nextjs`      | `@arkenv/nextjs`      | Next.js adapter                                    |
-\| `@arkenv/nuxt`        | `@arkenv/nuxt`        | Nuxt module                                        |
+| v0                    | v1                    | Role                                               |
+| --------------------- | --------------------- | -------------------------------------------------- |
+| `arkenv`              | `@arkenv/core`        | Runtime and ArkType engine                         |
+| `@arkenv/cli`         | `arkenv`              | CLI (`init`, `preset`)                             |
+| —                     | `@arkenv/standard`    | Zod, Valibot, and other Standard Schema validators |
+| `@arkenv/vite-plugin` | `@arkenv/vite-plugin` | Vite plugin (transform mode only)                  |
+| `@arkenv/bun-plugin`  | `@arkenv/bun-plugin`  | Bun plugin (transform mode only)                   |
+| `@arkenv/nextjs`      | `@arkenv/nextjs`      | Next.js adapter                                    |
+| `@arkenv/nuxt`        | `@arkenv/nuxt`        | Nuxt module                                        |
 
----
+<Steps>
+  <Step>
+    ### Swap the runtime and CLI packages
 
-## Canonical `env` object across all frameworks
+    Remove the v0 library (and `@arkenv/cli` if you had it), then install
+    `@arkenv/core` plus the CLI:
 
-In v0, Vite and Bun integrations used a dual-surface approach: the plugin accepted the schema directly (`arkenv(schema)`), rewrote native accessors (`import.meta.env.*` or `process.env.*`), and relied on manual ambient `.d.ts` declaration merging (`ImportMetaEnvAugmented` or `ProcessEnvAugmented`).
+    ```package-install
+    npm rm arkenv @arkenv/cli
+    npm install @arkenv/core arktype
+    npm install -D arkenv
+    ```
 
-In v1, **all frameworks share the canonical surface**:
+    If you want Zod or Valibot without ArkType, install
+    [`@arkenv/standard`](/docs/guides/validators) instead of
+    `@arkenv/core` and `arktype`.
+  </Step>
+
+  <Step>
+    ### Point imports at the new packages
+
+    Replace `from "arkenv"` with `from "@arkenv/core"` (or
+    `@arkenv/standard`). Framework packages keep their names. Keep
+    exporting `env` from your schema module and import it as
+    `{ env } from "./env"`.
+  </Step>
+</Steps>
+
+## Canonical `env` object
+
+Every framework now uses one validated object:
 
 ```ts
 import { env } from "./env";
 ```
 
-### Why schema/define was dropped
+On v0, Vite and Bun plugins accepted the schema as the first argument
+(`arkenv({ VITE_API_URL: "string" })`), rewrote `import.meta.env` or
+`process.env`, and asked you to merge `ImportMetaEnvAugmented` or
+`ProcessEnvAugmented` into a `.d.ts` file. That **schema/define** API is
+gone. Those plugins only rewrite imports of `./env` in the client graph.
+They do not take a schema.
 
-1. **Fullstack consistency**: Fullstack frameworks (SolidStart, TanStack Start, React Router 7, `Bun.serve`) need boot-time validation on the server for private secrets (like `DATABASE_URL`). The ambient plugin approach could only validate on the build machine.
-2. **Honesty ceiling**: Static compiler macros only rewrite static reads (`import.meta.env.PORT`). Spreads, dynamic access (`import.meta.env[key]`), and aliasing read raw strings from `process.env`/`import.meta.env` while TypeScript claims they are parsed numbers or booleans.
-3. **True security boundary**: The canonical `env.ts` module lets the plugin intercept client bundle imports, inlining public coerced literals while replacing private server keys with throwing runtime guard stubs.
+The ambient path could only check values on the build machine, and it
+only rewrote static reads. Spreads, `import.meta.env[key]`, and aliases
+still saw raw strings while TypeScript claimed parsed types. A real
+`env.ts` module lets the plugin inline public keys and stub server
+secrets, and it validates private keys when the server boots.
 
----
+## Vite
 
-## Migrating Vite projects
+Follow these steps if the v0 plugin still receives a schema argument.
 
-### 1. Update `env.ts`
+<Steps>
+  <Step>
+    ### Export `env` from `env.ts`
 
-Create or update `src/env.ts` to export your validated `env` object:
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/core";
 
-```ts title="src/env.ts"
-import arkenv from "@arkenv/core";
+    export const env = arkenv({
+      DATABASE_URL: "string",
+      VITE_API_URL: "string",
+      PORT: "number.port = 3000",
+    });
+    ```
+  </Step>
 
-export const env = arkenv({
-  PORT: "number.port = 3000",
-  VITE_API_URL: "string",
-  DATABASE_URL: "string",
-});
-```
+  <Step>
+    ### Register the plugin with no schema
 
-### 2. Update `vite.config.ts`
+    ```diff title="./vite.config.ts"
+      import { defineConfig } from "vite";
+      import arkenvPlugin from "@arkenv/vite-plugin";
 
-Remove the schema argument from the plugin call. The plugin operates in transform mode, rewriting imports from `env.ts` in the client graph:
+      export default defineConfig({
+    -   plugins: [arkenvPlugin({
+    -     VITE_API_URL: "string",
+    -     DATABASE_URL: "string",
+    -   })],
+    +   plugins: [arkenvPlugin()],
+      });
+    ```
 
-```ts title="vite.config.ts"
-import { defineConfig } from "vite";
-import arkenv from "@arkenv/vite-plugin";
+    For Zod or Valibot, import from `@arkenv/vite-plugin/standard`.
+  </Step>
 
-export default defineConfig({
-  plugins: [arkenv()],
-});
-```
+  <Step>
+    ### Delete ambient `ImportMetaEnv` merges
 
-### 3. Remove ambient `.d.ts` augmentations
+    ```diff title="./src/vite-env.d.ts"
+      /// <reference types="vite/client" />
+    -
+    - type ImportMetaEnvAugmented = import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
+    -   typeof import("./env").Env
+    - >;
+    -
+    - interface ImportMetaEnv extends ImportMetaEnvAugmented {}
+    ```
+  </Step>
 
-Delete `ImportMetaEnvAugmented` from your `src/vite-env.d.ts`:
+  <Step>
+    ### Read `env` in application code
 
-```diff title="src/vite-env.d.ts"
-/// <reference types="vite/client" />
--
--type ImportMetaEnvAugmented = import("@arkenv/vite-plugin").ImportMetaEnvAugmented<
--  typeof import("./env").Env
-->;
--
--interface ImportMetaEnv extends ImportMetaEnvAugmented {}
-```
+    ```diff title="./src/App.tsx"
+    + import { env } from "../env";
 
-### 4. Update component imports
+      function App() {
+    -   const apiUrl = import.meta.env.VITE_API_URL;
+    +   const apiUrl = env.VITE_API_URL;
+        return <div>API: {apiUrl}</div>;
+      }
+    ```
+  </Step>
+</Steps>
 
-Replace `import.meta.env` calls with the imported `env` object:
+See the [Vite guide](/docs/guides/frameworks/vite) for transform mode and
+reusing a compiled schema in `vite.config.ts`.
 
-```diff title="src/App.tsx"
-+import { env } from "./env";
+## Bun
 
-function App() {
--  const apiUrl = import.meta.env.VITE_API_URL;
-+  const apiUrl = env.VITE_API_URL;
-   return <div>API: {apiUrl}</div>;
-}
-```
+Same shape as Vite: schema in `env.ts`, plugin with no schema argument.
 
----
+<Steps>
+  <Step>
+    ### Export `env` from `env.ts`
 
-## Migrating Bun projects
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/core";
 
-### 1. Update `src/env.ts`
+    export const env = arkenv({
+      BUN_PUBLIC_API_URL: "string.url",
+      DATABASE_URL: "string",
+    });
+    ```
+  </Step>
 
-```ts title="src/env.ts"
-import arkenv from "@arkenv/core";
+  <Step>
+    ### Register `@arkenv/bun-plugin` without a schema
 
-export const env = arkenv({
-  BUN_PUBLIC_API_URL: "string.url",
-  DATABASE_URL: "string",
-});
-```
+    Keep the plugin in `bunfig.toml` or `Bun.build`. Do not pass the
+    schema object. Backend-only processes can skip the plugin and call
+    `@arkenv/core` directly. See the [Bun guide](/docs/guides/frameworks/bun).
+  </Step>
 
-### 2. Remove ambient `bun-env.d.ts` augmentations
+  <Step>
+    ### Delete ambient `ProcessEnv` merges
 
-```diff title="bun-env.d.ts"
-/// <reference types="bun-types" />
--
--type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<
--  typeof import("./src/env").default
-->;
--
--declare namespace NodeJS {
--  interface ProcessEnv extends ProcessEnvAugmented {}
--}
-```
+    ```diff title="./bun-env.d.ts"
+      /// <reference types="bun-types" />
+    -
+    - type ProcessEnvAugmented = import("@arkenv/bun-plugin").ProcessEnvAugmented<
+    -   typeof import("./src/env").default
+    - >;
+    -
+    - declare namespace NodeJS {
+    -   interface ProcessEnv extends ProcessEnvAugmented {}
+    - }
+    ```
+  </Step>
 
-### 3. Update component imports
+  <Step>
+    ### Read `env` in application code
 
-```diff title="src/app.tsx"
-+import { env } from "./env";
+    ```diff title="./src/app.tsx"
+    + import { env } from "../env";
 
-export function App() {
--  const apiUrl = process.env.BUN_PUBLIC_API_URL;
-+  const apiUrl = env.BUN_PUBLIC_API_URL;
-   return <div>API: {apiUrl}</div>;
-}
-```
+      export function App() {
+    -   const apiUrl = process.env.BUN_PUBLIC_API_URL;
+    +   const apiUrl = env.BUN_PUBLIC_API_URL;
+        return <div>API: {apiUrl}</div>;
+      }
+    ```
+  </Step>
+</Steps>
 
----
+## Next.js and Nuxt
 
-## Dead Code Elimination (DCE) trade-off
+Package names for `@arkenv/nextjs` and `@arkenv/nuxt` did not change.
+After you switch the runtime import from `arkenv` to `@arkenv/core` (or
+the framework package), keep using `withArkEnv` or the Nuxt module.
 
-With static ambient accessors (`if (import.meta.env.VITE_FLAG)`), bundlers can constant-fold boolean expressions and eliminate dead branches. With `if (env.VITE_FLAG)`, the property read on `env` does not constant-fold.
+Nested `arkenv({ server, client, shared })` still runs. Prefer a flat
+schema or a `--strict` layout. See
+[Client vs. server](/docs/validating-your-environment/client-vs-server)
+and the [Next.js](/docs/guides/frameworks/nextjs) /
+[Nuxt](/docs/guides/frameworks/nuxt) guides.
 
-ArkEnv accepts this trade-off for v1:
+## Dead-code elimination
 
-- **Negligible bundle impact**: Accessing properties on a plain JavaScript object takes negligible execution time, no validator library bytes ship to the browser, and the client stub is tiny (a few bytes per key).
-- **Guaranteed safety**: You get unified code across server and client, genuine boot-time validation, and reliable prevention of server secrets leaking into client bundles.
+`if (import.meta.env.VITE_FLAG)` can constant-fold in a bundler.
+`if (env.VITE_FLAG)` does not. v1 takes that trade-off: the client stub
+is a few bytes per key, no validator ships to the browser, and server
+secrets stay off the client.
+
+## Deprecated APIs
+
+These still work on [`@arkenv/nextjs`](/docs/reference/nextjs) and
+[`@arkenv/nuxt`](/docs/reference/nuxt). They will be removed in a later
+release.
+
+- Nested `arkenv({ server, client, shared })`. Use
+  `arkenv(schema, options)` instead.
+- Options `expose` and `shared`. Use `exposeToClient`. See
+  [Client vs. server](/docs/validating-your-environment/client-vs-server).
+- Config `layout: "simple"`. Use `"flat"`.
+
+The [changelog](https://github.com/yamcodes/arkenv/releases) lists what
+changed in each release.
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/guides/frameworks" title="Framework guides" description="Wire the v1 plugin or module for Next.js, Nuxt, Vite, or Bun." />
+
+  <Card href="/docs/guides/validators" title="Validators" description="ArkType, Zod, and Valibot cookbooks on @arkenv/core or @arkenv/standard." />
+
+  <Card href="/docs/compatibility" title="Compatibility" description="Alpha tag, supported runtimes, and package managers." />
+</Cards>
