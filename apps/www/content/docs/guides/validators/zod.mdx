@@ -56,27 +56,23 @@ Zod methods for defaults and optional fields behave consistently with ArkEnv:
 ## Zod Mini
 
 [Zod Mini](https://zod.dev/packages/mini) (`import * as z from "zod/mini"`) omits
-embedded JSON Schema metadata from schema instances. To enable automatic coercion
-with Zod Mini, provide ArkEnv's `toJsonSchema` callback option:
+embedded JSON Schema metadata from schema instances. Import
+`@arkenv/standard/zod-mini` so Mini `z.number()` and `z.boolean()` coerce
+without a callback:
 
 ```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/standard";
+import { arkenv } from "@arkenv/standard/zod-mini";
 import * as z from "zod/mini";
 
-export const env = arkenv(
-  {
-    PORT: z.number(),
-    DEBUG: z.boolean(),
-  },
-  {
-    toJsonSchema: (schema) =>
-      z.toJSONSchema(schema as z.ZodMiniType, {
-        io: "input",
-        target: "draft-07",
-      }),
-  },
-);
+export const env = arkenv({
+  PORT: z.number(),
+  DEBUG: z.boolean(),
+});
 ```
+
+TypeScript must use `moduleResolution: "bundler" | "node16" | "nodenext"`.
+The root `toJsonSchema` callback remains available for mixed maps; see
+[Coercion](/docs/core-concepts/coercion#mixing-with-zod-mini).
 
 ## Zod v3
 

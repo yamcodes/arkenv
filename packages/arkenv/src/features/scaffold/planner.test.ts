@@ -135,6 +135,24 @@ describe("Planner", () => {
 		expect(plan.install?.dependencies).toContain("arktype");
 	});
 
+	it("plans vanilla valibot with the JSON Schema converter peer", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: {
+				...defaultState.options,
+				validator: "valibot",
+			},
+		};
+		const plan = createPlan(state);
+		expect(plan.install?.dependencies).toContain("@arkenv/standard");
+		expect(plan.install?.dependencies).toContain("valibot");
+		expect(plan.install?.dependencies).toContain("@valibot/to-json-schema");
+		expect(plan.files[0]?.content).toContain(
+			'import { arkenv } from "@arkenv/standard/valibot"',
+		);
+		expect(plan.files[0]?.content).not.toContain("toJsonSchema");
+	});
+
 	it("plans for bun-fullstack framework with features", () => {
 		const state: CollectedState = {
 			...defaultState,

@@ -130,6 +130,34 @@ const db = env.DATABASE_URL;
 		expect(nuxtErrors).not.toContain(2307);
 	});
 
+	it("typechecks @arkenv/standard/valibot without a toJsonSchema callback", () => {
+		const result = twoslasher(
+			`import { arkenv } from "@arkenv/standard/valibot";
+import * as v from "valibot";
+
+export const env = arkenv({ PORT: v.number(), DEBUG: v.boolean() });
+`,
+			"ts",
+			arktypeTwoslashOptions.twoslashOptions,
+		);
+
+		expect(result.errors).toEqual([]);
+	});
+
+	it("typechecks @arkenv/standard/zod-mini without a toJsonSchema callback", () => {
+		const result = twoslasher(
+			`import { arkenv } from "@arkenv/standard/zod-mini";
+import * as z from "zod/mini";
+
+export const env = arkenv({ PORT: z.number(), DEBUG: z.boolean() });
+`,
+			"ts",
+			arktypeTwoslashOptions.twoslashOptions,
+		);
+
+		expect(result.errors).toEqual([]);
+	});
+
 	it("typechecks Valibot toJsonSchema with a GenericSchema assertion", () => {
 		const result = twoslasher(
 			`import arkenv from "@arkenv/standard";

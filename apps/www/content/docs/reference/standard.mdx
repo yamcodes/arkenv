@@ -5,11 +5,14 @@ description: ArkType-free environment validation via Standard Schema.
 
 `@arkenv/standard` validates environment variables with any
 [Standard Schema](https://standardschema.dev/) validator (Zod, Valibot,
-and others). No runtime dependencies or peers. Install your validator
-yourself.
+and others). The root import has no runtime dependencies or peers. Install
+your validator yourself. Valibot and Zod Mini use optional subpaths that
+bind JSON Schema converters.
 
 Choose `@arkenv/core` when you want ArkType. Choose `@arkenv/standard`
 when you migrate from Zod/Valibot or keep the tree ArkType-free.
+
+TypeScript must use `moduleResolution: "bundler" | "node16" | "nodenext"`.
 
 ## Installation
 
@@ -37,13 +40,13 @@ export const env = arkenv({
 Both engines share `arkenv()` options, errors, and framework plugins.
 They differ in schema style and peers.
 
-|                                         | `@arkenv/core`              | `@arkenv/standard`                                                                                                                     |
-| --------------------------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| Validator                               | ArkType DSL + `type()`      | Standard Schema map only                                                                                                               |
-| Keywords (`string.host`, `number.port`) | Yes                         | No                                                                                                                                     |
-| Peer `arktype`                          | Required                    | None                                                                                                                                   |
-| [Options](/docs/reference/options)      | `ArkEnvConfig`              | `StandardEnvConfig` (`ArkEnvConfig` plus `toJsonSchema`)                                                                               |
-| Coercion                                | Built-in for ArkType shapes | Standard JSON Schema on the value, or [`toJsonSchema`](/docs/core-concepts/coercion#valibot-tojsonschema) for Valibot-style converters |
+|                                         | `@arkenv/core`              | `@arkenv/standard`                                                                                                                                   |
+| --------------------------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Validator                               | ArkType DSL + `type()`      | Standard Schema map only                                                                                                                             |
+| Keywords (`string.host`, `number.port`) | Yes                         | No                                                                                                                                                   |
+| Peer `arktype`                          | Required                    | None                                                                                                                                                 |
+| [Options](/docs/reference/options)      | `ArkEnvConfig`              | `StandardEnvConfig` (`ArkEnvConfig` plus `toJsonSchema`)                                                                                             |
+| Coercion                                | Built-in for ArkType shapes | Standard JSON Schema on the value, or `@arkenv/standard/valibot` / `/zod-mini` / [`toJsonSchema`](/docs/core-concepts/coercion#valibot-tojsonschema) |
 
 ## Exports
 
@@ -56,6 +59,23 @@ These are the public names from `@arkenv/standard`.
 | `formatIssues`       | function                   | Format issues                                                |
 | `getSchemaKeys`      | function                   | List schema keys                                             |
 | Config / issue types | types                      | `StandardEnvConfig` extends core options with `toJsonSchema` |
+
+### Subpaths
+
+| Import                      | Role                                                                                       |
+| --------------------------- | ------------------------------------------------------------------------------------------ |
+| `@arkenv/standard`          | Root engine. Dependency-free. Classic Zod works zero-config.                               |
+| `@arkenv/standard/valibot`  | Same `arkenv`, pre-bound to `@valibot/to-json-schema`. Install that optional peer.         |
+| `@arkenv/standard/zod-mini` | Same `arkenv`, pre-bound to `zod/mini`'s `toJSONSchema` helper. `zod` is an optional peer. |
+
+```ts title="./env.ts" twoslash
+import { arkenv } from "@arkenv/standard/valibot";
+import * as v from "valibot";
+
+export const env = arkenv({
+  PORT: v.optional(v.number(), 3000),
+});
+```
 
 ## Framework `/standard` subpaths
 

@@ -104,7 +104,7 @@ export const valibotDialect: Dialect = {
 
 	assembleVanilla(schemaFields) {
 		return dedent /* ts */`
-	import arkenv from "@arkenv/standard";
+	import { arkenv } from "@arkenv/standard/valibot";
 	import * as v from "valibot";
 
 	/**
