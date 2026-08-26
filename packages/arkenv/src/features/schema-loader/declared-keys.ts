@@ -30,7 +30,7 @@ type CompiledKeyEntry = {
 
 /** Own-key check compatible with es2020 (no `Object.hasOwn`) and noPrototypeBuiltins. */
 function hasOwn(object: object, key: string): boolean {
-	return Object.hasOwn(object, key);
+	return Object.keys(object).includes(key);
 }
 
 /**
