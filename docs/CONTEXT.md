@@ -183,6 +183,7 @@ A scroll-driven increase in **Glass material** opacity/blur so content sliding u
   - `@arkenv/nextjs` - Next.js integration package
   - `@arkenv/nuxt` - Nuxt integration package
   - `arkenv` - Interactive CLI for scaffolding and project mutation
+  - `@arkenv/agent-plugin` - Coding-agent plugin and MCP server (`init`, `audit`)
 - **Apps** (`apps/`) - Applications and testing suites (not published)
   - `www` - Next.js documentation site
   - `playgrounds/*` - Test playgrounds for different runtimes

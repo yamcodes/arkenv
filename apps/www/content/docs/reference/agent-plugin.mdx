@@ -1,0 +1,72 @@
+---
+title: "@arkenv/agent-plugin"
+description: Coding-agent plugin and MCP server for init and env audits.
+---
+
+`@arkenv/agent-plugin` is the installable ArkEnv plugin for coding agents.
+It ships slash commands, a bundled skill, and an MCP server that scaffolds
+projects and audits source for unvalidated env access.
+
+## Install
+
+```bash
+npx plugins add yamcodes/arkenv
+```
+
+The ArkEnv repo's `marketplace.json` points that command at
+`packages/agent-plugin`. From a clone, install by path:
+
+```bash
+npx plugins add ./packages/agent-plugin
+```
+
+This registers `/arkenv:init` and `/arkenv:audit` in compatible runtimes
+(Claude Code, Cursor, Codex, and other MCP clients).
+
+Connect the MCP server after the package is published:
+
+```bash
+npx -y @arkenv/agent-plugin@alpha
+```
+
+Or add it to an MCP config:
+
+```json
+{
+  "mcpServers": {
+    "arkenv": {
+      "command": "npx",
+      "args": ["-y", "@arkenv/agent-plugin@alpha"]
+    }
+  }
+}
+```
+
+## Commands
+
+### `/arkenv:init`
+
+Delegates to `npx arkenv@latest init --agent`. Parse JSON on stdout. Do not
+pass `--force` unless a refusal lists it in `retryWith`.
+
+### `/arkenv:audit`
+
+Runs the TypeScript AST auditor. Each diagnostic includes `file`, `line`,
+`character`, `severity`, `ruleId`, `message`, and `suggestedFix`.
+
+| `ruleId`             | Meaning                                             |
+| -------------------- | --------------------------------------------------- |
+| `unvalidated-access` | `process.env` or `import.meta.env` outside `env.ts` |
+| `secret-leak`        | Server-only key referenced from a client module     |
+| `prefix-violation`   | Public prefix on a secret-looking name              |
+| `legacy-ambient`     | v0 `ProcessEnv` / `ImportMetaEnv` `.d.ts` glob      |
+
+Valid `import { env } from "./env"` usage is not flagged.
+
+## Programmatic API
+
+```ts
+import { auditProject } from "@arkenv/agent-plugin";
+
+const { diagnostics } = await auditProject(".");
+```

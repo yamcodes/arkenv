@@ -1,0 +1,13 @@
+{
+	"name": "arkenv",
+	"version": "0.0.0",
+	"description": "ArkEnv coding-agent plugin: canonical env object, init, and AST security audits.",
+	"author": {
+		"name": "Yam Borodetsky",
+		"url": "https://yam.codes"
+	},
+	"repository": "https://github.com/yamcodes/arkenv",
+	"homepage": "https://arkenv.js.org/docs/guides/ai",
+	"license": "MIT",
+	"keywords": ["arkenv", "environment-variables", "mcp", "audit"]
+}
