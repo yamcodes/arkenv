@@ -1,5 +1,13 @@
 # @arkenv/vite-plugin
 
+## 1.0.0-alpha.11
+
+### Patch Changes
+
+- #### Declare Vite-only compatibility for the plugin registry _[`e79fad6`](https://github.com/yamcodes/arkenv/commit/e79fad65775468c77eb62b5d51a7906fb628967b) [@yamcodes](https://github.com/yamcodes)_
+
+  Marked Rollup and Rolldown as incompatible in `compatiblePackages` with reason "Uses Vite-specific APIs". The plugin uses Vite `loadEnv`, `config` / `configResolved`, and `handleHotUpdate`, so it is not a standalone Rollup or Rolldown plugin.
+
 ## 1.0.0-alpha.10
 
 ### Minor Changes
