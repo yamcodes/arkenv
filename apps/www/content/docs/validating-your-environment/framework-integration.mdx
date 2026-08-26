@@ -55,13 +55,13 @@ handshake details.
 
 ## What each integration adds
 
-| Host          | Package                 | Boundary mechanism                                                               |
-| ------------- | ----------------------- | -------------------------------------------------------------------------------- |
-| Next.js       | `@arkenv/nextjs`        | `withArkEnv` codegen, `NEXT_PUBLIC_*`, runtime proxy, optional strict file split |
-| Nuxt          | `@arkenv/nuxt`          | Nuxt module, `NUXT_PUBLIC_*`, client/server entrypoints                          |
-| Vite          | `@arkenv/vite-plugin`   | Dev/build validation; only `VITE_*` (and optional `NODE_ENV`) reach the client   |
-| Bun           | `@arkenv/bun-plugin`    | Bun bundler / fullstack inlining for `BUN_PUBLIC_*`                              |
-| Coding agents | `@arkenv/agent-plugin`  | Slash commands and MCP; audits source, does not validate at boot                 |
+| Host          | Package                | Boundary mechanism                                                               |
+| ------------- | ---------------------- | -------------------------------------------------------------------------------- |
+| Next.js       | `@arkenv/nextjs`       | `withArkEnv` codegen, `NEXT_PUBLIC_*`, runtime proxy, optional strict file split |
+| Nuxt          | `@arkenv/nuxt`         | Nuxt module, `NUXT_PUBLIC_*`, client/server entrypoints                          |
+| Vite          | `@arkenv/vite-plugin`  | Dev/build validation; only `VITE_*` (and optional `NODE_ENV`) reach the client   |
+| Bun           | `@arkenv/bun-plugin`   | Bun bundler / fullstack inlining for `BUN_PUBLIC_*`                              |
+| Coding agents | `@arkenv/agent-plugin` | Slash commands and MCP; audits source, does not validate at boot                 |
 
 Plain Node or Bun **as a runtime** (no browser bundle) can stay on `@arkenv/core` alone. The Bun plugin targets apps that ship client code through Bun's bundler or fullstack server, not Bun-as-Node replacements or Bun-as-package-manager.
 
