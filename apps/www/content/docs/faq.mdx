@@ -3,8 +3,9 @@ title: FAQ
 description: Common questions about typesafe environment variables with ArkEnv.
 ---
 
-Short answers to questions people ask before they install ArkEnv. For
-setup, start at [Getting started](/docs/getting-started).
+Short answers to questions people ask before they install ArkEnv, plus
+the Next.js, Nuxt, and CLI questions that used to live on separate FAQ
+pages. For setup, start at [Getting started](/docs/getting-started).
 
 ## Why do I need ArkEnv?
 
@@ -17,6 +18,20 @@ ArkEnv validates the environment against your schema before a single
 line of application code runs. See [Introduction](/docs) for the
 `process.env` problem and the typed `env` object.
 
+## What does a failed validation look like?
+
+ArkEnv throws at boot (or during the framework build) and prints every
+failing key to stderr:
+
+```txt title="Terminal"
+ArkEnvError: Errors found while validating environment variables
+  HOST must be a string or "localhost" (was missing)
+  PORT must be a number (was a string)
+```
+
+See [Error reporting](/docs/validating-your-environment/error-reporting)
+for issue codes, secret redaction, and `{ safe: true }`.
+
 ## Does ArkEnv load my `.env` files?
 
 No. ArkEnv validates the env your framework already loaded. It does not
@@ -25,6 +40,25 @@ read `.env` files itself.
 Next.js, Nuxt, Vite, and Bun load `.env*` files for you. On plain Node,
 [Nub](https://nubjs.com/docs/runtime/env) is the recommended runner. See
 [Loading `.env` files](/docs/validating-your-environment/framework-integration#loading-env-files).
+
+## Why do empty values in my `.env` file cause validation errors?
+
+`PORT=` in a `.env` file arrives as `""`. ArkEnv treats that as a value,
+so defaults do not apply and non-string types fail.
+
+Set `emptyAsUndefined: true` if you want empty strings treated as
+missing. See [`emptyAsUndefined`](/docs/reference/options#emptyasundefined).
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  { PORT: "number.port = 3000" },
+  { emptyAsUndefined: true, env: { PORT: "" } },
+);
+
+env.PORT; // 3000
+```
 
 ## Do I have to use ArkType?
 
@@ -39,23 +73,181 @@ Yes. Zod has a first-class example, and the CLI can scaffold ArkEnv +
 Zod for you. See [Using ArkEnv with Zod](/docs/guides/validators/zod)
 and [Start with an example](/docs/getting-started/examples).
 
+## Why use ArkEnv instead of just ArkType or Zod?
+
+A one-file `Env.assert(process.env)` works for a hello-world Node
+script. ArkEnv adds env-specific errors, automatic coercion, a CLI, and
+framework plugins that keep server secrets out of the client graph.
+
+See [Comparison](/docs/comparison) for DIY, T3 Env, znv, Envalid, and
+related tools.
+
+## Can I use ArkEnv with plain JavaScript?
+
+Yes. The runtime validates without TypeScript. You lose editor
+autocomplete and build-time types. See the
+[basic-js example](https://github.com/yamcodes/arkenv/tree/v1/examples/basic-js).
+
+## Is ArkEnv only for Next.js or Vite?
+
+No. First-class packages exist for Next.js, Nuxt, Vite, Bun, and plain
+Node. `@arkenv/core` is ordinary JavaScript and runs anywhere those
+runtimes do. See [Frameworks](/docs/guides/frameworks).
+
+## What does the ArkEnv CLI do?
+
+The `arkenv` package on npm is the CLI. It scans the repo, picks a
+layout, writes `env.ts`, and wires framework config.
+
+```package-install
+npx arkenv@latest init
+```
+
+See [`init`](/docs/reference/init) and [`preset`](/docs/reference/preset).
+
+## Why use the CLI?
+
+You can wire ArkEnv by hand. The CLI is the fastest way to get the
+correct import paths, layout, and framework plugin in place. Use
+`--agent` in automated sessions.
+
 ## Does ArkEnv support AI development tools like Claude Code or Cursor?
 
 Yes. Point the agent skill at your `.env.example` to set up validation
 and guide your assistant through schema maintenance. See
 [Using AI with ArkEnv](/docs/guides/ai).
 
+## Is it safe to use in production?
+
+Yes for fail-fast validation: a bad env fails the build or process boot
+instead of shipping `undefined`. `@arkenv/core` and `@arkenv/standard`
+are small runtimes (peer `arktype` on core; none on standard). The CLI
+and framework plugins have their own dependencies.
+
+v1 is a pre-release (`1.0.0-alpha`). Follow
+[Compatibility](/docs/compatibility) for SemVer and supported runtimes.
+
 ## Why does `env.ts` import from `@arkenv/core` in Vite and Bun, but from framework packages in Next.js and Nuxt?
 
-Vite and Bun use build plugins (`@arkenv/vite-plugin` and `@arkenv/bun-plugin`) that transform `env.ts` during bundling. Application code imports `@arkenv/core` (or `@arkenv/standard`), and the bundler rewrites client-side imports to inline public values and guard secrets.
+Vite and Bun use build plugins (`@arkenv/vite-plugin` and
+`@arkenv/bun-plugin`) that transform `env.ts` during bundling.
+Application code imports `@arkenv/core` (or `@arkenv/standard`), and the
+bundler rewrites client-side imports to inline public values and guard
+secrets.
 
-Next.js and Nuxt use host runtime adapters (such as codegen with conditional exports or Nitro runtime configuration hooks) that require dedicated framework entrypoints (`@arkenv/nextjs` and `@arkenv/nuxt`). See [Framework integration](/docs/validating-your-environment/framework-integration).
+Next.js and Nuxt use host runtime adapters (codegen with conditional
+exports, or Nitro runtime configuration) that require dedicated
+entrypoints (`@arkenv/nextjs` and `@arkenv/nuxt`). See
+[Framework integration](/docs/validating-your-environment/framework-integration).
 
 ## Why are `@arkenv/core` and `@arkenv/standard` peer dependencies instead of bundled into framework packages?
 
-Separating the validation engine from host adapters keeps runtime overhead minimal and avoids duplicate validation engines in your dependency tree.
+Separating the validation engine from host adapters keeps runtime
+overhead minimal and avoids duplicate engines in your tree.
 
-Framework packages handle bundlers and host lifecycles. Declaring `@arkenv/core` and `@arkenv/standard` as peer dependencies lets you pair any framework adapter with your choice of validator (ArkType DSL or Standard Schema validators like Zod and Valibot) without shipping redundant packages.
+Framework packages handle bundlers and host lifecycles. Peer engines let
+you pair any adapter with ArkType or a Standard Schema validator.
+
+## How do I define client-side variables?
+
+Use the framework public prefix on a **flat** schema. There are no
+nested `server` / `client` blocks by default:
+
+| Framework | Client-visible keys |
+| --------- | ------------------- |
+| Next.js   | `NEXT_PUBLIC_*`     |
+| Nuxt      | `NUXT_PUBLIC_*`     |
+| Vite      | `VITE_*`            |
+| Bun       | `BUN_PUBLIC_*`      |
+
+See [Client vs. server](/docs/validating-your-environment/client-vs-server).
+
+## I was able to access a client-side variable in a server context. Is that ok?
+
+Yes. Public keys (`NEXT_PUBLIC_*`, `NUXT_PUBLIC_*`, and the other
+prefixes) are meant to be readable everywhere. The proxy only blocks the
+reverse: a **server-only** key on the client.
+
+## Do I need to manually map client variables in `runtimeEnv`?
+
+No. Next.js `withArkEnv` generates that mapping in `env.gen.ts`. Nuxt
+registers public keys on `runtimeConfig` and does not write a generated
+file.
+
+If you pass `{ codegen: false }` to `withArkEnv`, you own a manual
+`runtimeEnv` and must keep it in sync:
+
+```ts title="./next.config.ts" twoslash
+import type { NextConfig } from "next";
+import { withArkEnv } from "@arkenv/nextjs/config";
+
+const nextConfig: NextConfig = {};
+
+export default withArkEnv(nextConfig, { codegen: false });
+```
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/nextjs";
+
+export const env = arkenv(
+  {
+    DATABASE_URL: "string",
+    NEXT_PUBLIC_API_URL: "string",
+  },
+  {
+    runtimeEnv: {
+      NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+      NODE_ENV: process.env.NODE_ENV,
+    },
+  },
+);
+```
+
+Details: [`@arkenv/nextjs` reference](/docs/reference/nextjs).
+
+## How does Next.js runtime protection work?
+
+`@arkenv/nextjs` uses package export conditions plus a runtime proxy:
+
+| Export condition | Next.js context              | Accessible keys        |
+| ---------------- | ---------------------------- | ---------------------- |
+| `react-server`   | Server Components and routes | All schema keys        |
+| `default`        | Client Components (SSR/browser) | Public and shared keys |
+
+Reading a server-only key from client code throws. Strict layout also
+imports `server-only` so the server schema cannot enter the client
+graph at compile time.
+
+## When should I use the strict layout?
+
+Use flat layout unless you need compile-time isolation. Strict layout
+splits `env/client.ts` and `env/server.ts` so secret **names and types**
+never enter the client module graph. Scaffold with
+`npx arkenv@latest init --strict`.
+
+See [Client vs. server](/docs/validating-your-environment/client-vs-server).
+
+## Why is only `NODE_ENV` shared on Next.js besides `NEXT_PUBLIC_*` keys?
+
+Next.js inlines `process.env.NODE_ENV` on both sides. Other
+non-prefixed keys are stripped from the client bundle. If you
+`exposeToClient` a key like `PORT` with a default, the server can see
+`8080` while the client falls back to `3000` and hydrates wrong.
+
+Keep non-public keys off `exposeToClient`. See the
+[Next.js env docs](https://nextjs.org/docs/app/guides/environment-variables).
+
+## Can I deploy the same Nuxt build to staging and production?
+
+Yes. `@arkenv/nuxt` validates at Nitro boot and hydrates
+`useRuntimeConfig().public` at runtime. You can ship one image and
+change env at container start. See the
+[Nuxt guide](/docs/guides/frameworks/nuxt#nitro-boot-gate-and-runtimeconfig-hydration).
+
+## Does `@arkenv/nuxt` generate files I need to commit or gitignore?
+
+No. Unlike Next.js `env.gen.ts`, Nuxt generates nothing. The module
+validates at boot and registers public keys on `runtimeConfig`.
 
 ## Next steps
 
@@ -65,6 +257,8 @@ npx arkenv@latest init
 
 <Cards>
   <Card href="/docs/getting-started" title="Getting started" description="Install ArkEnv and configure your first environment schema." />
+
+  <Card href="/docs/comparison" title="Comparison" description="How ArkEnv stacks up against T3 Env, znv, Envalid, and a DIY schema." />
 
   <Card href="/docs/guides" title="Guides" description="Explore framework, schema validator, and AI integration guides." />
 </Cards>

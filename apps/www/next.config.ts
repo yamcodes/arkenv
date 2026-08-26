@@ -60,6 +60,36 @@ const config = {
 				permanent: true,
 			},
 			{
+				source: "/docs/cli/faq",
+				destination: "/docs/faq",
+				permanent: true,
+			},
+			{
+				source: "/docs/nextjs/faq",
+				destination: "/docs/faq",
+				permanent: true,
+			},
+			{
+				source: "/docs/nuxt/faq",
+				destination: "/docs/faq",
+				permanent: true,
+			},
+			{
+				source: "/docs/nextjs/security",
+				destination: "/docs/validating-your-environment/client-vs-server",
+				permanent: true,
+			},
+			{
+				source: "/docs/nuxt/security",
+				destination: "/docs/validating-your-environment/client-vs-server",
+				permanent: true,
+			},
+			{
+				source: "/docs/support-policy",
+				destination: "/docs/compatibility",
+				permanent: true,
+			},
+			{
 				source: "/docs/standard-schema",
 				destination: "/docs/core-concepts/standard-schema",
 				permanent: true,
@@ -95,7 +125,7 @@ const config = {
 			},
 			{
 				source: "/docs/arkenv/comparison",
-				destination: "/docs/guides/migrating-from-t3-env",
+				destination: "/docs/comparison",
 				permanent: true,
 			},
 			{

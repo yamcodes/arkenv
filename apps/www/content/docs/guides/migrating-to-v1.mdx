@@ -148,3 +148,18 @@ ArkEnv accepts this trade-off for v1:
 
 - **Negligible bundle impact**: Accessing properties on a plain JavaScript object takes negligible execution time, no validator library bytes ship to the browser, and the client stub is tiny (a few bytes per key).
 - **Guaranteed safety**: You get unified code across server and client, genuine boot-time validation, and reliable prevention of server secrets leaking into client bundles.
+
+## Deprecated APIs
+
+These APIs still work on [`@arkenv/nextjs`](/docs/reference/nextjs) and
+[`@arkenv/nuxt`](/docs/reference/nuxt). They will be removed in a later
+release.
+
+- Nested `arkenv({ server, client, shared })`. Use
+  `arkenv(schema, options)` instead.
+- Options `expose` and `shared`. Use `exposeToClient`. See
+  [Client vs. server](/docs/validating-your-environment/client-vs-server).
+- Config `layout: "simple"`. Use `"flat"`.
+
+The [changelog](https://github.com/yamcodes/arkenv/releases) lists what
+changed in each release.

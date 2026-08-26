@@ -70,6 +70,9 @@ export function SiteFooter({
 							</a>
 						</li>
 						<li>
+							<a href="/docs/comparison">Comparison</a>
+						</li>
+						<li>
 							<a href="/docs/faq">FAQ</a>
 						</li>
 					</ul>

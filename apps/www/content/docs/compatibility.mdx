@@ -1,10 +1,14 @@
 ---
-title: Support policy
-description: Understand ArkEnv versioning, runtime support, and compatibility.
+title: Compatibility
+description: Runtimes, frameworks, and package managers ArkEnv works with.
 ---
 
 v1 is published as `1.0.0-alpha.x` under the `alpha` npm tag. **APIs can
 still change before 1.0.0.** Use the latest version whenever you can.
+
+This page is the compatibility matrix: which package managers, frameworks,
+and Node.js versions ArkEnv supports. Deprecated APIs are documented in
+[Migrating to v1](/docs/guides/migrating-to-v1#deprecated-apis).
 
 ## Package managers
 
@@ -15,6 +19,8 @@ process. This only works with npm, pnpm, Yarn, and Bun.
 
 ## Frameworks
 
+First-party plugins cover Next.js, Nuxt, Vite, and Bun's bundler APIs.
+
 | Framework                                     | Support                                                        |
 | --------------------------------------------- | -------------------------------------------------------------- |
 | Next.js 13.4+                                 | Alpha via [`@arkenv/nextjs`](/docs/reference/nextjs)           |
@@ -22,7 +28,9 @@ process. This only works with npm, pnpm, Yarn, and Bun.
 | Vite 4+                                       | Alpha via [`@arkenv/vite-plugin`](/docs/reference/vite-plugin) |
 | Bun 1.0+ (for `Bun.build()` or `Bun.serve()`) | Alpha via [`@arkenv/bun-plugin`](/docs/reference/bun-plugin)   |
 
-Vite-based apps (e.g. SolidStart) use `@arkenv/vite-plugin`. Apps that only use Bun as a package manager or runtime (but not a bundler or fullstack dev server) should stay on
+Vite-based apps (for example SolidStart) use `@arkenv/vite-plugin`. Apps
+that only use Bun as a package manager or runtime (but not a bundler or
+fullstack dev server) should stay on
 [`@arkenv/core`](/docs/reference/core) or
 [`@arkenv/standard`](/docs/reference/standard).
 
@@ -45,18 +53,3 @@ ArkEnv intends to support the
 The [CLI](/docs/reference/init), plugins, and
 [examples](/docs/getting-started/examples) depend on that. CI runs on
 `lts/*` and `latest`.
-
-## Deprecated
-
-These APIs still work on [`@arkenv/nextjs`](/docs/reference/nextjs) and
-[`@arkenv/nuxt`](/docs/reference/nuxt). They will be removed in a later
-release.
-
-- Nested `arkenv({ server, client, shared })`. Use
-  `arkenv(schema, options)` instead.
-- Options `expose` and `shared`. Use `exposeToClient`. See
-  [Client vs. server](/docs/validating-your-environment/client-vs-server).
-- Config `layout: "simple"`. Use `"flat"`.
-
-The [changelog](https://github.com/yamcodes/arkenv/releases) lists what
-changed in each release.

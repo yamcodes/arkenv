@@ -21,6 +21,7 @@ test.describe("Smoke Tests", () => {
 	const topRoutes = [
 		"/",
 		"/docs",
+		"/docs/comparison",
 		"/docs/getting-started",
 		"/docs/getting-started/installation",
 		"/docs/validating-your-environment",
@@ -29,8 +30,9 @@ test.describe("Smoke Tests", () => {
 		"/docs/guides",
 		"/docs/guides/frameworks",
 		"/docs/guides/frameworks/nextjs",
+		"/docs/faq",
 		"/docs/community",
-		"/docs/support-policy",
+		"/docs/compatibility",
 	];
 
 	for (const url of topRoutes) {
