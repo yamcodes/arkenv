@@ -1,7 +1,7 @@
 ---
-"@arkenv/core": minor
-"@arkenv/standard": minor
-"arkenv": minor
+"@arkenv/core": patch
+"@arkenv/standard": patch
+"arkenv": patch
 ---
 
 #### Inspect `env.ts` from the CLI without validating the environment
