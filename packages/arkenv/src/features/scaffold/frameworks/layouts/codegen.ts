@@ -322,7 +322,7 @@ function assembleFlatLayout(params: FieldBuckets): string {
 			? pkgName
 			: disableCodegen
 				? pkgName
-				: nextjsImportPath || "./generated/env.gen";
+				: nextjsImportPath || "@/.arkenv";
 
 	const imports = [
 		`import arkenv from "${flatImportPath}";`,
@@ -332,7 +332,7 @@ function assembleFlatLayout(params: FieldBuckets): string {
 	const flatDocsHint =
 		framework === "nuxt"
 			? `In ${frameworkName}, use \`${pkgName}\` to validate variables at build-time and runtime.`
-			: `In ${frameworkName}, use the generated \`arkenv\` from \`env.gen.ts\` to validate variables.`;
+			: `In ${frameworkName}, import the generated \`arkenv\` from \`@/.arkenv\` to validate variables.`;
 
 	return `${imports}
 
@@ -407,7 +407,7 @@ ${sections.join(",\n")},
 	}
 
 	const imports = [
-		`import arkenv from "${nextjsImportPath || "./generated/env.gen"}";`,
+		`import arkenv from "${nextjsImportPath || "@/.arkenv"}";`,
 		...(extraImports ? [extraImports] : []),
 	].join("\n");
 
@@ -415,7 +415,7 @@ ${sections.join(",\n")},
 
 /**
  * Environment variable schema.
- * In ${frameworkName}, use the generated \`arkenv\` from \`env.gen.ts\` to validate variables.
+ * In ${frameworkName}, import the generated \`arkenv\` from \`@/.arkenv\` to validate variables.
  * Enforces client/server separation and prevents secret leaks.
  */
 export const env = arkenv({

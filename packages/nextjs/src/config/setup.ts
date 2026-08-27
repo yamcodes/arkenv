@@ -153,6 +153,7 @@ export function setupArkEnv(
 				resolvedLayout,
 				options?.standard,
 				options,
+				projectRoot,
 			);
 		} catch (error: unknown) {
 			const message = error instanceof Error ? error.message : String(error);
@@ -250,6 +251,7 @@ export function setupArkEnv(
 					resolvedLayout,
 					options?.standard,
 					options,
+					projectRoot,
 				);
 			},
 			resolveLoggerFromOptions(options),

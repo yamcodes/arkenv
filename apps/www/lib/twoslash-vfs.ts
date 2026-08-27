@@ -49,6 +49,7 @@ export const arktypeTwoslashVfs = {
 			"@arkenv/nextjs/standard/config": [
 				path.join(root, "packages/nextjs/src/standard/config.ts"),
 			],
+			"@/.arkenv": [path.join(root, "packages/nextjs/src/index.ts")],
 			"@/generated/env.gen": [path.join(root, "packages/nextjs/src/index.ts")],
 			"@arkenv/vite-plugin": [
 				path.join(root, "packages/vite-plugin/src/index.ts"),

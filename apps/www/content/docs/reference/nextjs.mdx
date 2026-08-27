@@ -1,10 +1,10 @@
 ---
 title: "@arkenv/nextjs"
-description: "Next.js integration: withArkEnv, client/server entries, and env.gen.ts."
+description: "Next.js integration: withArkEnv, client/server entries, and .arkenv codegen."
 ---
 
 `@arkenv/nextjs` adds Next.js-aware `arkenv()` entries, build-time
-validation, and `env.gen.ts` codegen.
+validation, and `.arkenv` codegen.
 
 ## Installation
 
@@ -38,7 +38,9 @@ Import from the subpath that matches where the code runs.
 ## Config plugin
 
 Wrap your Next.js config with `withArkEnv`. By default this writes
-`generated/env.gen.ts` and validates the schema during config/build.
+`.arkenv/env.gen.ts` and validates the schema during config/build. Import
+the factory as `@/.arkenv`. Gitignore `.arkenv/`; regenerate by running Next
+or `arkenv init`.
 
 ```ts title="./next.config.ts"
 import type { NextConfig } from "next";
@@ -65,7 +67,7 @@ export default withArkEnv(async (phase, { defaultConfig }): Promise<NextConfig> 
 Your app schema imports the generated factory:
 
 ```ts title="./env.ts"
-import arkenv from "@/generated/env.gen";
+import arkenv from "@/.arkenv";
 
 export const env = arkenv({
   DATABASE_URL: "string",
@@ -88,6 +90,10 @@ Pass a second argument to change codegen, layout, or validation.
 | `standard`   | `false`  | Standard Schema codegen      |
 | `logger`     | console  | Build-time logger            |
 | `logLevel`   | (none)   | Minimum log level            |
+
+A custom `outputPath` still imports as `@/.arkenv`. Next.js aliases the
+specifier; codegen keeps `.arkenv/index.ts` re-exporting that file so
+`tsc --noEmit` matches.
 
 Skip generation during CLI scaffolds with
 `npx arkenv@latest init --no-codegen`.

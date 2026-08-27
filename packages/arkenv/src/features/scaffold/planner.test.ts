@@ -339,7 +339,7 @@ describe("Planner", () => {
 		expect(sharedFile?.content).toContain(
 			'import { type } from "@arkenv/core"',
 		);
-		expect(clientFile?.content).toContain("./generated/env.gen");
+		expect(clientFile?.content).toContain("@/.arkenv");
 		expect(serverFile?.content).toContain("@arkenv/nextjs/server");
 	});
 
@@ -380,7 +380,7 @@ describe("Planner", () => {
 		expect(serverFile?.action).toBe("overwrite");
 	});
 
-	it("resolves nextjsImportPath using tsconfig paths mapping when schema is inside mapped folder", () => {
+	it("uses @/.arkenv for Next.js codegen regardless of tsconfig path aliases", () => {
 		const state: CollectedState = {
 			...defaultState,
 			cwd: "/test",
@@ -404,70 +404,10 @@ describe("Planner", () => {
 		};
 		const plan = createPlan(state);
 		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
-		expect(envFile?.content).toContain(
-			'import arkenv from "@/generated/env.gen"',
-		);
+		expect(envFile?.content).toContain('import arkenv from "@/.arkenv"');
 	});
 
-	it("resolves nextjsImportPath using tsconfig paths mapping with root wildcard mapping", () => {
-		const state: CollectedState = {
-			...defaultState,
-			cwd: "/test",
-			options: {
-				...defaultState.options,
-				framework: "nextjs",
-				path: "env.ts",
-			},
-			tsConfig: {
-				status: "strict",
-				file: "tsconfig.json",
-				parsed: {
-					path: "/test/tsconfig.json",
-					compilerOptions: {
-						paths: {
-							"@/*": ["./*"],
-						},
-					},
-				},
-			},
-		};
-		const plan = createPlan(state);
-		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
-		expect(envFile?.content).toContain(
-			'import arkenv from "@/generated/env.gen"',
-		);
-	});
-
-	it("falls back to relative path if schema is outside mapped tsconfig paths folder", () => {
-		const state: CollectedState = {
-			...defaultState,
-			cwd: "/test",
-			options: {
-				...defaultState.options,
-				framework: "nextjs",
-				path: "env.ts",
-			},
-			tsConfig: {
-				status: "strict",
-				file: "tsconfig.json",
-				parsed: {
-					path: "/test/tsconfig.json",
-					compilerOptions: {
-						paths: {
-							"@/*": ["./src/*"],
-						},
-					},
-				},
-			},
-		};
-		const plan = createPlan(state);
-		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
-		expect(envFile?.content).toContain(
-			'import arkenv from "./generated/env.gen"',
-		);
-	});
-
-	it("resolves nextjsImportPath in strict layout using tsconfig paths mapping", () => {
+	it("uses @/.arkenv in Next.js strict layout client schema", () => {
 		const state: CollectedState = {
 			...defaultState,
 			cwd: "/test",
@@ -494,9 +434,25 @@ describe("Planner", () => {
 		const clientFile = plan.files.find((f) =>
 			f.path.replace(/\\/g, "/").endsWith("env/client.ts"),
 		);
-		expect(clientFile?.content).toContain(
-			'import arkenv from "@/env/generated/env.gen"',
+		expect(clientFile?.content).toContain('import arkenv from "@/.arkenv"');
+	});
+
+	it("adds .arkenv/ to .gitignore for Next.js when env files are already ignored", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				gitignoreContent: "node_modules/\n.env\n.env.local\n",
+			},
+			existingFiles: ["/test/.env", "/test/.env.example", "/test/.gitignore"],
+		};
+		const plan = createPlan(state);
+		const gitignoreFile = plan.files.find((f) =>
+			f.path.endsWith("/.gitignore"),
 		);
+		expect(gitignoreFile).toBeDefined();
+		expect(gitignoreFile?.content).toContain(".arkenv/");
 	});
 
 	describe("env and env.example generation", () => {

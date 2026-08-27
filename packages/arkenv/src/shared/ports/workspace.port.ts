@@ -37,6 +37,10 @@ export type ConfigPort = {
 		status: "updated" | "already_strict" | "not_found" | "error";
 		file?: string;
 	}>;
+	ensureNextjsArkEnvTsConfig(path?: string): Promise<{
+		status: "updated" | "already_configured" | "not_found" | "error";
+		file?: string;
+	}>;
 	findViteConfig(cwd?: string): Promise<string | null>;
 	findBunConfig(cwd?: string): Promise<string | null>;
 	findNextjsConfig(cwd?: string): Promise<string | null>;
