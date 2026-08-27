@@ -43,7 +43,9 @@ function htmlFor(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
 					? "NEXT_PUBLIC_API_URL"
 					: validator === "zod"
 						? "z.url()"
-						: "@arkenv/standard";
+						: validator === "valibot"
+							? "v.pipe(v.string(), v.url())"
+							: "@arkenv/standard";
 	return `<pre class="shiki twoslash"><code>${token}</code></pre>`;
 }
 
@@ -56,7 +58,9 @@ const examples = HERO_MVP_HOSTS.flatMap((host) =>
 				? "@/.arkenv"
 				: validator.id === "arktype"
 					? "@arkenv/core"
-					: "@arkenv/standard",
+					: validator.id === "valibot"
+						? "@arkenv/standard/valibot"
+						: "@arkenv/standard",
 		html: htmlFor(host.id, validator.id),
 		code: heroMvpSnippet(host.id, validator.id).code,
 	})),
@@ -77,7 +81,9 @@ function renderPlayground() {
 						html:
 							example.validator === "zod"
 								? "<span>z.url()</span>"
-								: "<span>DATABASE_URL PORT</span>",
+								: example.validator === "valibot"
+									? "<span>v.pipe(v.string(), v.url())</span>"
+									: "<span>DATABASE_URL PORT</span>",
 					}))}
 				/>{" "}
 				object
@@ -185,6 +191,19 @@ describe("hero playground sync", () => {
 		expect(
 			screen.getByRole("tabpanel").querySelector("[data-active='true']"),
 		).toHaveTextContent("z.url()");
+
+		await user.click(screen.getByRole("tab", { name: "Valibot" }));
+
+		expect(document.querySelector("[data-pos='current']")?.textContent).toBe(
+			"ArkType",
+		);
+		expect(screen.getByRole("tab", { name: "Valibot" })).toHaveAttribute(
+			"aria-selected",
+			"true",
+		);
+		expect(
+			screen.getByRole("tabpanel").querySelector("[data-active='true']"),
+		).toHaveTextContent("v.pipe(v.string(), v.url())");
 	});
 
 	it("updates the slogan env hover when the validator changes", async () => {
@@ -198,5 +217,14 @@ describe("hero playground sync", () => {
 
 		expect(await screen.findByRole("dialog")).toHaveTextContent("z.url()");
 		expect(screen.queryByText(/VITE_API_URL/)).not.toBeInTheDocument();
+
+		await user.click(screen.getByRole("tab", { name: "Valibot" }));
+		await user.hover(
+			screen.getByRole("button", { name: "Example type of env" }),
+		);
+
+		expect(await screen.findByRole("dialog")).toHaveTextContent(
+			"v.pipe(v.string(), v.url())",
+		);
 	});
 });
