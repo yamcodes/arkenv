@@ -188,7 +188,10 @@ export function getBinName(): string {
 			: "pnpm arkenv";
 	}
 	if (userAgent.includes("bun")) {
-		return "bun arkenv";
+		const execPath = process.env._ || process.argv[1] || "";
+		return execPath.includes("bunx") || process.env.npm_command === "x"
+			? "bunx arkenv"
+			: "bun arkenv";
 	}
 	if (userAgent.includes("yarn")) {
 		return process.env.npm_command === "dlx"

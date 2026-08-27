@@ -336,6 +336,10 @@ describe("Reporters", () => {
 			process.env.npm_config_user_agent = "bun/1.1.0";
 			expect(getBinName()).toBe("bun arkenv");
 
+			process.env._ = "/usr/local/bin/bunx";
+			expect(getBinName()).toBe("bunx arkenv");
+			delete process.env._;
+
 			process.env.npm_config_user_agent = "yarn/1.22.19";
 			expect(getBinName()).toBe("yarn arkenv");
 
