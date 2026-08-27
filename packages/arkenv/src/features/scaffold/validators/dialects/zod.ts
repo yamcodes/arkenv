@@ -18,7 +18,7 @@ export const zodDialect: Dialect = {
 			return `${key}: z.enum(["development", "production", "test"]).default("development"),`;
 		}
 		if (role === "server" && key === "PORT") {
-			return "PORT: z.coerce.number().int().min(1).max(65535).default(3000),";
+			return "PORT: z.number().int().min(1).max(65535).default(3000),";
 		}
 		const preset = tryFormatPresetFieldValue(
 			zodDialect,
@@ -45,7 +45,7 @@ export const zodDialect: Dialect = {
 	},
 
 	defaultSimpleSchemaFields: `\t\tNODE_ENV: z.enum(["development", "production", "test"]).default("development"),
-		PORT: z.coerce.number().int().min(1).max(65535).default(3000),`,
+		PORT: z.number().int().min(1).max(65535).default(3000),`,
 
 	formatSimpleSchemaFields(keys, clientPrefix = "", hostPreset = undefined) {
 		return keys

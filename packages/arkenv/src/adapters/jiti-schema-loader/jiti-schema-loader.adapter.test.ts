@@ -170,7 +170,7 @@ describe("JitiSchemaLoaderAdapter", () => {
 			const shared = { DATABASE_URL: z.string() };
 			export const env = arkenv({
 				...shared,
-				PORT: z.coerce.number().default(3000),
+				PORT: z.number().default(3000),
 			});
 			`,
 		);
