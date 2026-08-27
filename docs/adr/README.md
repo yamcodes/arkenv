@@ -36,7 +36,7 @@ These groups share a theme. They remain separate ADRs (no nesting or history rew
 | Framework server/client boundaries | `nextjs-runtime-env`, `nextjs-conditional-exports-boundary`, `nuxt-vite-compile-time-boundary`, `flat-layout-codegen-type-strategy`, `framework-subpath-exports`, `strict-layout-complexity-budget`, `sibling-error-names` |
 | Packaging & module graph           | `export-surface-tiers`, `standard-mode-packaging-strategy`, `bundle-isolation-over-dryness`, `runtime-shared-logic-strategy`, `shared-build-package`                                                                       |
 | Coercion / Standard Schema         | `coercion-schema-transformer`, `standard-mode-packaging-strategy`, `to-json-schema-escape-hatch`                                                                                                                           |
-| CLI / scaffold IR                  | `cli-hosting-preset-field-metadata`, `dotenv-linter-custom-parser-strategy`                                                                                                                                                |
+| CLI / scaffold IR                  | `cli-hosting-preset-field-metadata`, `dotenv-linter-custom-parser-strategy`, `cli-schema-inspection`                                                                                                                       |
 | www docs chrome                    | `drill-in-sidebar`, `mobile-sidebar-tree`, `site-nav-glass-chrome`                                                                                                                                                         |
 
 ## Tooling & agent skills
