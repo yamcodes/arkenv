@@ -272,7 +272,11 @@ describe("CheckUseCase", () => {
 		process.env.DATABASE_URL = "postgres://user:p)ass@localhost:5432/db";
 
 		try {
+<<<<<<< HEAD
 			const exitCode = await useCase.execute({ schema: envPath, cwd: tempDir });
+=======
+			const exitCode = await useCase.execute({});
+>>>>>>> dccd79fda (fix(cli): address PR review comments on redaction, bin resolution, and exit codes)
 			expect(exitCode).toBe(4);
 
 			const reports = memoryReporter.logs.filter(

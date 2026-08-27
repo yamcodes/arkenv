@@ -175,9 +175,37 @@ export const PROTOCOL_ERROR_CODES = {
 /**
  * Resolve the binary execution name for command strings.
  *
- * @returns The resolved executable name (e.g. "arkenv")
+ * Checks npm user agent and process execution path to determine
+ * whether the CLI is invoked via pnpm, npx, bun, yarn, or direct binary.
+ *
+ * @returns The resolved executable name (e.g. "pnpm arkenv", "npx arkenv", "arkenv")
  */
 export function getBinName(): string {
+	const userAgent = process.env.npm_config_user_agent || "";
+	if (userAgent.includes("pnpm")) {
+		return process.env.npm_command === "dlx"
+			? "pnpm dlx arkenv"
+			: "pnpm arkenv";
+	}
+	if (userAgent.includes("bun")) {
+		return "bun arkenv";
+	}
+	if (userAgent.includes("yarn")) {
+		return process.env.npm_command === "dlx"
+			? "yarn dlx arkenv"
+			: "yarn arkenv";
+	}
+	if (userAgent.includes("npm")) {
+		return "npx arkenv";
+	}
+
+	const execPath = process.env._ || process.argv[1] || "";
+	if (execPath.includes("npx")) return "npx arkenv";
+	if (execPath.includes("bunx")) return "bunx arkenv";
+	if (execPath.includes("pnpm")) return "pnpm arkenv";
+	if (execPath.includes("yarn")) return "yarn arkenv";
+	if (execPath.includes("bun")) return "bun arkenv";
+
 	return "arkenv";
 }
 
@@ -216,7 +244,7 @@ export function resolveNextActionBin(
 }
 
 /**
- * Strip ANSI escape codes from a string.
+ * Strip ANSI color and control characters from strings.
  *
  * @param str Input string
  * @returns Clean string without ANSI formatting
@@ -245,8 +273,8 @@ export function sanitizeSecretText(
 	}
 
 	if (key && shouldRedact(key)) {
-		// Replace any '(was ...)' patterns with '(was [REDACTED])'
-		return clean.replace(/\(was [^)]*\)/g, "(was [REDACTED])");
+		// Replace any '(was ...)' patterns with '(was [REDACTED])' even if value contains parens
+		return clean.replace(/\(was .*\)/g, "(was [REDACTED])");
 	}
 
 	return clean;

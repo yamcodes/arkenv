@@ -188,7 +188,7 @@ describe("Reporters", () => {
 						{
 							kind: "run-command",
 							label: "Re-run with --force to bypass this check",
-							command: "arkenv init --force",
+							command: expect.stringMatching(/arkenv init --force/),
 						},
 					],
 				},
@@ -197,7 +197,7 @@ describe("Reporters", () => {
 					{
 						kind: "run-command",
 						label: "Re-run with --force to bypass this check",
-						command: "arkenv init --force",
+						command: expect.stringMatching(/arkenv init --force/),
 					},
 				],
 			});
@@ -221,7 +221,7 @@ describe("Reporters", () => {
 						{
 							kind: "run-command",
 							label: "Re-run with --force to bypass this check",
-							command: "arkenv init --force",
+							command: expect.stringMatching(/arkenv init --force/),
 						},
 					],
 				},
@@ -230,7 +230,7 @@ describe("Reporters", () => {
 					{
 						kind: "run-command",
 						label: "Re-run with --force to bypass this check",
-						command: "arkenv init --force",
+						command: expect.stringMatching(/arkenv init --force/),
 					},
 				],
 			});
@@ -311,6 +311,43 @@ describe("Reporters", () => {
 				message: refusal.message,
 				data: { ...refusal, commandId: undefined },
 			});
+		});
+	});
+
+	describe("Protocol Helpers", () => {
+		const originalEnv = { ...process.env };
+
+		beforeEach(() => {
+			process.env = { ...originalEnv };
+		});
+
+		it("getBinName detects pnpm runner", async () => {
+			const { getBinName } = await import("@/shared/protocol");
+			process.env.npm_config_user_agent = "pnpm/9.1.0 npm/? node/v22.0.0 darwin arm64";
+			expect(getBinName()).toBe("pnpm arkenv");
+
+			process.env.npm_command = "dlx";
+			expect(getBinName()).toBe("pnpm dlx arkenv");
+		});
+
+		it("getBinName detects bun, yarn, and npm runners", async () => {
+			const { getBinName } = await import("@/shared/protocol");
+			process.env.npm_config_user_agent = "bun/1.1.0";
+			expect(getBinName()).toBe("bun arkenv");
+
+			process.env.npm_config_user_agent = "yarn/1.22.19";
+			expect(getBinName()).toBe("yarn arkenv");
+
+			process.env.npm_config_user_agent = "npm/10.5.0";
+			expect(getBinName()).toBe("npx arkenv");
+		});
+
+		it("sanitizeSecretText redacts values with nested or closing parentheses", async () => {
+			const { sanitizeSecretText } = await import("@/shared/protocol");
+			const input = "DATABASE_URL must be a URL (was postgres://user:p)ass@localhost/db)";
+			const sanitized = sanitizeSecretText(input, "DATABASE_URL");
+			expect(sanitized).toBe("DATABASE_URL must be a URL (was [REDACTED])");
+			expect(sanitized).not.toContain("p)ass");
 		});
 	});
 });
