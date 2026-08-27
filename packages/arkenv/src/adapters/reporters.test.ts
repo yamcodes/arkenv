@@ -323,7 +323,8 @@ describe("Reporters", () => {
 
 		it("getBinName detects pnpm runner", async () => {
 			const { getBinName } = await import("@/shared/protocol");
-			process.env.npm_config_user_agent = "pnpm/9.1.0 npm/? node/v22.0.0 darwin arm64";
+			process.env.npm_config_user_agent =
+				"pnpm/9.1.0 npm/? node/v22.0.0 darwin arm64";
 			expect(getBinName()).toBe("pnpm arkenv");
 
 			process.env.npm_command = "dlx";
@@ -344,7 +345,8 @@ describe("Reporters", () => {
 
 		it("sanitizeSecretText redacts values with nested or closing parentheses", async () => {
 			const { sanitizeSecretText } = await import("@/shared/protocol");
-			const input = "DATABASE_URL must be a URL (was postgres://user:p)ass@localhost/db)";
+			const input =
+				"DATABASE_URL must be a URL (was postgres://user:p)ass@localhost/db)";
 			const sanitized = sanitizeSecretText(input, "DATABASE_URL");
 			expect(sanitized).toBe("DATABASE_URL must be a URL (was [REDACTED])");
 			expect(sanitized).not.toContain("p)ass");

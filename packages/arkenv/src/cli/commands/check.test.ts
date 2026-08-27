@@ -286,7 +286,9 @@ describe("CheckUseCase", () => {
 			const diag = envelope.diagnostics[0];
 
 			expect(diag.meta.received).toBe("[REDACTED]");
-			expect(diag.summary).toBe("DATABASE_URL must be a number (was [REDACTED])");
+			expect(diag.summary).toBe(
+				"DATABASE_URL must be a number (was [REDACTED])",
+			);
 			expect(JSON.stringify(envelope)).not.toContain("p)ass");
 		} finally {
 			process.env = originalEnv;
