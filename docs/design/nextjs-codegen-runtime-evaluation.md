@@ -2,7 +2,7 @@
 
 Living design evaluation using [the-hat](../../.agents/skills/the-hat/SKILL.md) loop. Update this note as options enter or leave the hat. Promoted decisions belong in `docs/adr/`.
 
-**Status:** Working design note for [#1598](https://github.com/yamcodes/arkenv/issues/1598), [#1599](https://github.com/yamcodes/arkenv/issues/1599), [#1402](https://github.com/yamcodes/arkenv/issues/1402), and [#1403](https://github.com/yamcodes/arkenv/issues/1403).\
+**Status:** Working design note for [#1599](https://github.com/yamcodes/arkenv/issues/1599), [#1402](https://github.com/yamcodes/arkenv/issues/1402), and [#1403](https://github.com/yamcodes/arkenv/issues/1403). Layer A (`@next/env`) is accepted as [ADR 0028](../adr/0028-nextjs-no-next-env-hook.md) ([#1598](https://github.com/yamcodes/arkenv/issues/1598)).\
 **Chosen public story (S-tier stack):** Next 15/16+ baseline (zero `jiti`) + Virtual `.arkenv/` aliasing + Framework package entry (`@arkenv/nextjs`) + Canonical `env` object with conditional exports + Typed `isEnabled` literal DCE helper + Structured Agent Envelopes.
 
 ---
@@ -408,12 +408,14 @@ Because **ArkEnv v1.0.0** is a major SemVer milestone, it introduces a clean pla
 4. **Ship `isEnabled` DCE Helper:** Export `isEnabled` from `@arkenv/nextjs` and document feature flag optimization patterns.
 5. **Add Structured Agent Envelopes (`--json`):** Implement machine-readable diagnostics in `arkenv check --json` for agent repair loops.
 6. **Provide `arkenv migrate` CLI command:** Automate v0 -> v1 code and config transformations.
-7. **Close [#1598](https://github.com/yamcodes/arkenv/issues/1598) and [#1599](https://github.com/yamcodes/arkenv/issues/1599)** referencing this evaluation note.
+7. **[#1598](https://github.com/yamcodes/arkenv/issues/1598) closed.** Decision is [ADR 0028](../adr/0028-nextjs-no-next-env-hook.md) (do not hook `@next/env`). [#1599](https://github.com/yamcodes/arkenv/issues/1599) stays open until DCE ships or is explicitly declined.
 
 ---
 
 ## 12. Changelog of this Note
 
+- **2026-08-27:** Promoted Layer A (`@next/env` hijack rejected) to
+  [ADR 0028](../adr/0028-nextjs-no-next-env-hook.md); closed #1598.
 - **2026-08-25:** Added Section 10 documenting the v0 -> v1 Next 13/14 migration strategy, `.gitignore` automation, and `package.json` exports protection.
 - **2026-08-25:** Added Layer I (Generated Directory Naming: `.arkenv/` vs `__generated__/` vs `gen/`) and Layer J (File Structure: `.gen.ts` vs `index.ts` barrel vs Hybrid J3); added Q3 deep-dive.
 - **2026-08-25:** Added Section 7 addressing TypeScript day-0 typings without prior builds, monorepo shared package interop (`@arkenv/core` in `packages/db`), and Option A/B namespace hygiene.
