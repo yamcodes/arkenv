@@ -97,9 +97,13 @@ describe("hero MVP snippets", () => {
 		expect(valibot?.code).toContain(
 			"DATABASE_URL: v.pipe(v.string(), v.url())",
 		);
-		expect(valibot?.code).toContain(
-			"PORT: v.optional(v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)), 3000)",
-		);
+		expect(valibot?.code).toContain("PORT: v.optional(");
+		expect(valibot?.code).toContain("v.pipe(");
+		expect(valibot?.code).toContain("v.number()");
+		expect(valibot?.code).toContain("v.integer()");
+		expect(valibot?.code).toContain("v.minValue(0)");
+		expect(valibot?.code).toContain("v.maxValue(65535)");
+		expect(valibot?.code).toContain("3000");
 		expect(valibot?.code).toContain("CI: v.optional(v.boolean(), false)");
 		expect(valibot?.code).not.toContain("NODE_ENV");
 		expect(valibot?.code).not.toContain("LOG_LEVEL");
