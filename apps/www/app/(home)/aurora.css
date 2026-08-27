@@ -1827,6 +1827,12 @@
 	--color-fd-popover: var(--color-paper-2);
 	--color-fd-popover-foreground: var(--color-ink);
 	--color-fd-border: var(--color-rule);
+	/* Zod's 8-line window — Valibot nests PORT and scrolls inside this cap. */
+	--mvp-lines: 8;
+	--mvp-lh: 1.55;
+	--mvp-body-size: calc(
+		var(--mvp-lines) * var(--mvp-lh) * var(--text-code) + 2 * var(--space-sm)
+	);
 	display: grid;
 	grid-template-columns: minmax(0, 1fr);
 	gap: var(--space-xs);
@@ -1835,14 +1841,40 @@
 }
 
 .home-aurora__mvp-frame {
-	overflow: visible;
+	overflow: hidden;
 	grid-template-rows: auto auto;
 }
 
 .home-aurora__mvp-body {
-	display: grid;
 	position: relative;
 	min-width: 0;
+	height: var(--mvp-body-size);
+	overflow: hidden;
+}
+
+.home-aurora__mvp-scroll {
+	display: grid;
+	height: 100%;
+	min-width: 0;
+	overflow: auto;
+	overscroll-behavior: contain;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.home-aurora__mvp-scroll::-webkit-scrollbar {
+	display: none;
+}
+
+.home-aurora__mvp-body[data-overflow="true"]::after {
+	content: "";
+	position: absolute;
+	inset-inline: 0;
+	bottom: 0;
+	height: 2.75rem;
+	pointer-events: none;
+	background: linear-gradient(to bottom, transparent, var(--color-paper-2));
+	z-index: 1;
 }
 
 .home-aurora__mvp-pane {
@@ -1859,12 +1891,12 @@
 }
 
 .home-aurora__mvp-body--pending {
-	min-height: 9.25rem;
+	height: var(--mvp-body-size);
 }
 
 .home-aurora__mvp-shiki,
 .home-aurora__mvp-shiki .shiki {
-	overflow: visible;
+	overflow-x: auto;
 }
 
 .home-aurora__mvp-shiki .shiki {

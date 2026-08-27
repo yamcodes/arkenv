@@ -1,6 +1,6 @@
 "use client";
 
-import { useId } from "react";
+import { useId, useLayoutEffect, useRef } from "react";
 import { HeroMvpValidatorMark } from "./hero-mvp-marks";
 import {
 	HERO_MVP_VALIDATORS,
@@ -30,7 +30,12 @@ type HeroMvpExampleViewProps = {
 export function HeroMvpExampleView({ examples }: HeroMvpExampleViewProps) {
 	const { validator, setValidator } = useHeroPlayground();
 	const baseId = useId();
+	const bodyRef = useRef<HTMLDivElement>(null);
 	const panes = examples.filter((item) => item.host === "vanilla");
+	useLayoutEffect(() => {
+		const body = bodyRef.current;
+		if (body) body.scrollTop = 0;
+	}, [validator]);
 	if (panes.length === 0) return null;
 	const panelId = `${baseId}-panel`;
 	const active = panes.find((item) => item.validator === validator) ?? panes[0];
@@ -55,21 +60,28 @@ export function HeroMvpExampleView({ examples }: HeroMvpExampleViewProps) {
 
 			<figure className="home-aurora__code-window home-aurora__mvp-frame">
 				<WindowChrome title="./env.ts" copyText={active.code} />
-				<div role="tabpanel" id={panelId} className="home-aurora__mvp-body">
-					{panes.map((item) => {
-						const active = item.validator === validator;
-						return (
-							<div
-								key={`${item.host}-${item.validator}`}
-								className="home-aurora__mvp-pane"
-								data-active={active ? "true" : undefined}
-								aria-hidden={active ? undefined : true}
-								{...(!active ? { inert: true } : {})}
-							>
-								<HeroTwoslashHtml html={item.html} active={active} />
-							</div>
-						);
-					})}
+				<div
+					role="tabpanel"
+					id={panelId}
+					className="home-aurora__mvp-body"
+					data-overflow={active.validator === "valibot" ? "true" : undefined}
+				>
+					<div ref={bodyRef} className="home-aurora__mvp-scroll">
+						{panes.map((item) => {
+							const active = item.validator === validator;
+							return (
+								<div
+									key={`${item.host}-${item.validator}`}
+									className="home-aurora__mvp-pane"
+									data-active={active ? "true" : undefined}
+									aria-hidden={active ? undefined : true}
+									{...(!active ? { inert: true } : {})}
+								>
+									<HeroTwoslashHtml html={item.html} active={active} />
+								</div>
+							);
+						})}
+					</div>
 				</div>
 			</figure>
 		</div>

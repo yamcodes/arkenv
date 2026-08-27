@@ -1,6 +1,6 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { HeroMvpExampleView } from "./hero-mvp-example-view";
 import {
 	HERO_MVP_HOSTS,
@@ -53,16 +53,6 @@ function renderView() {
 }
 
 describe("HeroMvpExampleView", () => {
-	let writeText: ReturnType<typeof vi.fn>;
-
-	beforeEach(() => {
-		writeText = vi.fn().mockResolvedValue(undefined);
-		Object.defineProperty(window.navigator, "clipboard", {
-			configurable: true,
-			value: { writeText },
-		});
-	});
-
 	it("starts on ArkType with validator tabs and no host switcher", () => {
 		renderView();
 
@@ -94,7 +84,10 @@ describe("HeroMvpExampleView", () => {
 		const user = userEvent.setup();
 		renderView();
 
+		expect(screen.getByRole("tabpanel")).not.toHaveAttribute("data-overflow");
+
 		await user.click(screen.getByRole("tab", { name: "Zod" }));
+		expect(screen.getByRole("tabpanel")).not.toHaveAttribute("data-overflow");
 		expect(
 			screen.getByRole("tabpanel").querySelector("[data-active='true']"),
 		).toHaveTextContent("z.url()");
@@ -109,33 +102,31 @@ describe("HeroMvpExampleView", () => {
 		expect(
 			screen.getByRole("tabpanel").querySelector("[data-active='true']"),
 		).not.toHaveTextContent("VITE_API_URL");
+		expect(screen.getByRole("tabpanel")).toHaveAttribute(
+			"data-overflow",
+			"true",
+		);
 	});
 
 	it("copies the visible tab source", async () => {
 		const user = userEvent.setup();
 		renderView();
 
-		fireEvent.click(screen.getByRole("button", { name: "Copy" }));
-		await waitFor(() => {
-			expect(writeText).toHaveBeenCalledWith(
-				heroMvpSnippet("vanilla", "arktype").code,
-			);
-		});
+		await user.click(screen.getByRole("button", { name: "Copy" }));
+		expect(await navigator.clipboard.readText()).toBe(
+			heroMvpSnippet("vanilla", "arktype").code,
+		);
 
 		await user.click(screen.getByRole("tab", { name: "Zod" }));
-		fireEvent.click(screen.getByRole("button", { name: /^Copy$|^Copied$/ }));
-		await waitFor(() => {
-			expect(writeText).toHaveBeenLastCalledWith(
-				heroMvpSnippet("vanilla", "zod").code,
-			);
-		});
+		await user.click(screen.getByRole("button", { name: /^Copy$|^Copied$/ }));
+		expect(await navigator.clipboard.readText()).toBe(
+			heroMvpSnippet("vanilla", "zod").code,
+		);
 
 		await user.click(screen.getByRole("tab", { name: "Valibot" }));
-		fireEvent.click(screen.getByRole("button", { name: /^Copy$|^Copied$/ }));
-		await waitFor(() => {
-			expect(writeText).toHaveBeenLastCalledWith(
-				heroMvpSnippet("vanilla", "valibot").code,
-			);
-		});
+		await user.click(screen.getByRole("button", { name: /^Copy$|^Copied$/ }));
+		expect(await navigator.clipboard.readText()).toBe(
+			heroMvpSnippet("vanilla", "valibot").code,
+		);
 	});
 });

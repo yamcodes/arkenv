@@ -81,9 +81,15 @@ function schemaFields(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
 	if (validator === "valibot") {
 		const fields = ["  DATABASE_URL: v.pipe(v.string(), v.url()),"];
 		if (publicKey) fields.push(`  ${publicKey}: v.pipe(v.string(), v.url()),`);
-		fields.push(
-			"  PORT: v.optional(v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)), 3000),",
-		);
+		fields.push(`  PORT: v.optional(
+    v.pipe(
+      v.number(),
+      v.integer(),
+      v.minValue(0),
+      v.maxValue(65535),
+    ),
+    3000,
+  ),`);
 		fields.push("  CI: v.optional(v.boolean(), false),");
 		return fields.join("\n");
 	}
