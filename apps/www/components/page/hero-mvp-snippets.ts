@@ -7,6 +7,7 @@ export const HERO_MVP_HOSTS = [
 export const HERO_MVP_VALIDATORS = [
 	{ id: "arktype", label: "ArkType" },
 	{ id: "zod", label: "Zod" },
+	{ id: "valibot", label: "Valibot" },
 ] as const;
 
 export type HeroMvpHostId = (typeof HERO_MVP_HOSTS)[number]["id"];
@@ -51,10 +52,18 @@ function importBlock(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
 			return `import arkenv from "@/generated/env.gen";
 import { z } from "zod";`;
 		}
+		if (validator === "valibot") {
+			return `import arkenv from "@/generated/env.gen";
+import * as v from "valibot";`;
+		}
 		return `import arkenv from "@/generated/env.gen";`;
 	}
 	if (validator === "arktype") {
 		return `import arkenv from "@arkenv/core";`;
+	}
+	if (validator === "valibot") {
+		return `import arkenv from "@arkenv/standard/valibot";
+import * as v from "valibot";`;
 	}
 	return `import arkenv from "@arkenv/standard";
 import { z } from "zod";`;
@@ -69,6 +78,21 @@ function schemaFields(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
 		fields.push(`  CI: "boolean = false",`);
 		return fields.join("\n");
 	}
+	if (validator === "valibot") {
+		const fields = ["  DATABASE_URL: v.pipe(v.string(), v.url()),"];
+		if (publicKey) fields.push(`  ${publicKey}: v.pipe(v.string(), v.url()),`);
+		fields.push(`  PORT: v.optional(
+    v.pipe(
+      v.number(),
+      v.integer(),
+      v.minValue(0),
+      v.maxValue(65535),
+    ),
+    3000,
+  ),`);
+		fields.push("  CI: v.optional(v.boolean(), false),");
+		return fields.join("\n");
+	}
 	const fields = ["  DATABASE_URL: z.url(),"];
 	if (publicKey) fields.push(`  ${publicKey}: z.url(),`);
 	fields.push("  PORT: z.number().int().min(0).max(65535).default(3000),");
@@ -79,6 +103,7 @@ function schemaFields(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
 function importLine(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
 	if (host === "next") return "@/generated/env.gen";
 	if (validator === "arktype") return "@arkenv/core";
+	if (validator === "valibot") return "@arkenv/standard/valibot";
 	return "@arkenv/standard";
 }
 
