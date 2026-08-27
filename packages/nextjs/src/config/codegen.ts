@@ -31,7 +31,7 @@ function detectStandard(content: string, forceStandard?: boolean): boolean {
  * @returns A relative specifier without a `.ts` / `.tsx` extension
  */
 function toModuleSpecifier(fromDir: string, toFile: string): string {
-	let rel = path.relative(fromDir, toFile).replaceAll("\\", "/");
+	let rel = path.relative(fromDir, toFile).replace(/\\/g, "/");
 	if (!rel.startsWith(".")) {
 		rel = `./${rel}`;
 	}
