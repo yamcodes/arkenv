@@ -10,12 +10,7 @@ Accepted
 
 `arkenv()` validates eagerly on call. Importing that file from the CLI with an empty or CLI-owned `process.env` either throws or validates the wrong world.
 
-[#1314](https://github.com/yamcodes/arkenv/issues/1314) already chose **import, don’t parse** (Jiti-class loader) so the CLI is not a mini ArkType/Zod compiler. That continues [ADR 0013](0013-flat-layout-codegen-type-strategy.md) (`flat-layout-codegen-type-strategy`): codegen and the CLI must not statically compile schema grammar. The issue named a dry-run hook **or** an env stub and did not score them.
-
-Two hat loops on [#1622](https://github.com/yamcodes/arkenv/pull/1622) made the trade-off explicit:
-
-- Mechanism: [docs/schema-loader-mechanism.md](../schema-loader-mechanism.md)
-- Export surface: [docs/schema-capture-export-surface.md](../schema-capture-export-surface.md)
+[#1314](https://github.com/yamcodes/arkenv/issues/1314) already chose **import, don’t parse** (Jiti-class loader) so the CLI is not a mini ArkType/Zod compiler. That continues [ADR 0013](0013-flat-layout-codegen-type-strategy.md) (`flat-layout-codegen-type-strategy`): codegen and the CLI must not statically compile schema grammar. The issue named a dry-run hook **or** an env stub and did not score them. Scoring (import vs parse, record vs stub vs boot, unpublished handshake) landed in this ADR via [#1622](https://github.com/yamcodes/arkenv/pull/1622).
 
 The user’s `env.ts` imports `@arkenv/core` / `@arkenv/standard` from **their** `node_modules`. The CLI’s copy of those packages is a different module instance. A flag on the CLI graph alone does not reach `arkenv()`.
 
