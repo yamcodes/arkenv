@@ -3,9 +3,14 @@ title: "@arkenv/agent-plugin"
 description: Coding-agent plugin and MCP server for init and env audits.
 ---
 
-`@arkenv/agent-plugin` is the installable ArkEnv plugin for coding agents.
-It ships slash commands, a bundled skill, and an MCP server that scaffolds
-projects and audits source for unvalidated env access.
+`@arkenv/agent-plugin` is the installable ArkEnv plugin for coding
+agents. It ships slash commands, a bundled skill, and an MCP server that
+scaffolds projects and audits source for unvalidated env access.
+
+The plugin and the Agent Skills markdown package coexist. Prefer the
+plugin on hosts that support it. Keep
+[`npx skills add yamcodes/arkenv`](/docs/guides/ai#agent-skill) when
+your assistant only loads skills.
 
 ## Install
 
@@ -13,7 +18,7 @@ projects and audits source for unvalidated env access.
 npx plugins add yamcodes/arkenv
 ```
 
-The ArkEnv repo's `marketplace.json` points that command at
+The repo's `marketplace.json` points that command at
 `packages/agent-plugin`. From a clone, install by path:
 
 ```bash
@@ -23,7 +28,7 @@ npx plugins add ./packages/agent-plugin
 This registers `/arkenv:init` and `/arkenv:audit` in compatible runtimes
 (Claude Code, Cursor, Codex, and other MCP clients).
 
-Connect the MCP server after the package is published:
+Connect the MCP server after the package is on npm (alpha tag):
 
 ```bash
 npx -y @arkenv/agent-plugin@alpha
@@ -44,15 +49,18 @@ Or add it to an MCP config:
 
 ## Commands
 
+Two slash commands wrap the CLI and the auditor. Parse JSON on stdout.
+Do not pass `--force` unless a refusal lists it in `retryWith`.
+
 ### `/arkenv:init`
 
-Delegates to `npx arkenv@latest init --agent`. Parse JSON on stdout. Do not
-pass `--force` unless a refusal lists it in `retryWith`.
+Delegates to `npx arkenv@latest init --agent`.
 
 ### `/arkenv:audit`
 
-Runs the TypeScript AST auditor. Each diagnostic includes `file`, `line`,
-`character`, `severity`, `ruleId`, `message`, and `suggestedFix`.
+Runs the TypeScript AST auditor. Each diagnostic includes `file`,
+`line`, `character`, `severity`, `ruleId`, `message`, and
+`suggestedFix`.
 
 | `ruleId`             | Meaning                                             |
 | -------------------- | --------------------------------------------------- |
@@ -65,8 +73,19 @@ Valid `import { env } from "./env"` usage is not flagged.
 
 ## Programmatic API
 
+Call `auditProject` from tests or a local script when you don't want
+MCP.
+
 ```ts
 import { auditProject } from "@arkenv/agent-plugin";
 
 const { diagnostics } = await auditProject(".");
 ```
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/guides/ai" title="Using AI with ArkEnv" description="Skills, prompts, and init --agent guardrails." />
+
+  <Card href="/docs/reference/init" title="init" description="CLI flags the plugin forwards, including --agent." />
+</Cards>

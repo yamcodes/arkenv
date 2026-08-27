@@ -182,7 +182,9 @@ env.PORT;
 // ^?
 ```
 
-You can also lean on the validator's own coercion (`z.coerce.number()`) and keep ArkEnv's `coerce` option as a backup.
+Keep `z.coerce` for `{ coerce: false }`. With ArkEnv's default
+coercion, Zod 4.2+ accepts `z.number()` and `z.boolean()` because
+strings are converted first.
 
 Cookbooks: [Validators](/docs/guides/validators).
 

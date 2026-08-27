@@ -58,7 +58,7 @@ Export the schema once, then call `arkenv()` (or the framework/plugin entry) whe
 
     export const schema = {
     	HOST: z.string().default("localhost"),
-    	PORT: z.coerce.number().int().min(0).max(65535).default(3000),
+    	PORT: z.number().int().min(0).max(65535).default(3000),
     	VITE_API_URL: z.string(),
     	DATABASE_URL: z.string().url(),
     } as const;

@@ -70,15 +70,11 @@ To apply or remove presets later, use [`preset`](/docs/reference/preset).
 
 ### `--agent`
 
-Scaffold non-interactively for AI agents and automated scripts. This flag
-combines `--yes --quiet --json` into a single command:
+Same macro as the [global `--agent` flag](/docs/reference#agent):
+`--yes --quiet --json`. It does not imply `--force`.
 
-- **Token efficiency**: Suppresses terminal formatting and outputs compact JSON
-  on standard output (logs go to standard error), conserving context tokens in
-  automated sessions.
-- **Safety checks**: Performs validation before modifying files. If safety
-  checks fail (such as a dirty git working tree), the CLI emits a structured
-  refusal payload on standard output with non-zero exit code:
+When a safety check fails (dirty git tree), stdout is a JSON refusal and
+the process exits non-zero:
 
 ```json
 {
@@ -89,7 +85,8 @@ combines `--yes --quiet --json` into a single command:
 }
 ```
 
-Only rerun with flags listed in `retryWith` when you confirm the bypass is safe.
+Only rerun with flags in `retryWith` after you confirm the bypass is
+safe.
 
 ### `--example <name>`
 

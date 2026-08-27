@@ -21,7 +21,8 @@ Standard Schema entry: `@arkenv/bun-plugin/standard`.
 
 ## Exports
 
-The default export is the hybrid `arkenvPlugin` instance. Named exports provide explicit aliases.
+The default export is a hybrid `arkenvPlugin` instance. Named exports
+are explicit aliases.
 
 | Export                  | Role                                     |
 | ----------------------- | ---------------------------------------- |
@@ -31,13 +32,16 @@ The default export is the hybrid `arkenvPlugin` instance. Named exports provide 
 | named `hybrid`          | Explicit zero-config hybrid plugin alias |
 | `./standard`            | Standard Schema plugin entry             |
 
-`arkenvPlugin` is a hybrid: it functions both as a callable factory (`arkenvPlugin({ schemaPath })`) and directly as a `BunPlugin` object with pre-attached `name`, `target`, and `setup` properties. This enables:
+`arkenvPlugin` is both a factory (`arkenvPlugin({ schemaPath })`) and a
+`BunPlugin` object with `name`, `target`, and `setup`. You can:
 
-- **Zero-config preload in `bunfig.toml`**: `plugins = ["@arkenv/bun-plugin"]`
-- **Direct registration in `Bun.build`**: `plugins: [arkenvPlugin]`
-- **Customized transform options**: `plugins: [arkenvPlugin({ schemaPath: "./src/env.ts" })]`
+- Preload in `bunfig.toml`: `plugins = ["@arkenv/bun-plugin"]`
+- Register in `Bun.build`: `plugins: [arkenvPlugin]`
+- Pass transform options:
+  `plugins: [arkenvPlugin({ schemaPath: "./src/env.ts" })]`
 
-`arkenvBunPlugin` provides a host-explicit alias when working in monorepos or alongside other bundler plugins.
+`arkenvBunPlugin` is the host-explicit alias for monorepos that load
+more than one bundler plugin.
 
 Default client prefix: `BUN_PUBLIC_`.
 
@@ -68,8 +72,9 @@ export const env = arkenv({
 Same transform call shape as
 [`@arkenv/vite-plugin`](/docs/reference/vite-plugin):
 
-- `arkenvPlugin()` or `arkenvPlugin({ schemaPath, clientPrefix, ... })` rewrites the
-  schema module in the client graph.
+- `arkenvPlugin()` or
+  `arkenvPlugin({ schemaPath, clientPrefix, ... })` rewrites the schema
+  module in the client graph.
 - A schema argument is rejected. Define the schema in `env.ts` and
   import `{ env }` from there.
 

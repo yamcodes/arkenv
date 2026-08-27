@@ -53,7 +53,7 @@ import arkenv from "@arkenv/standard";
 import { z } from "zod";
 
 export const env = arkenv({
-  PORT: z.coerce.number().int().min(0).max(65535),
+  PORT: z.number().int().min(0).max(65535),
   DATABASE_URL: z.string().url(),
 });
 ```

@@ -3,9 +3,9 @@ title: preset
 description: Apply, refresh, or remove hosting provider preset blocks in your schema.
 ---
 
-The `arkenv preset` command manages hosting provider preset blocks in your
-schema. Use it to inject platform variables, refresh them when platform requirements
-change, or strip them cleanly when migrating providers.
+`arkenv preset` writes managed comment blocks into your schema for a
+hosting provider. Use it to add platform variables, refresh them when
+the provider list changes, or strip a provider when you switch hosts.
 
 ```package-install
 npx arkenv@latest preset apply vercel
@@ -15,32 +15,37 @@ npx arkenv@latest preset apply vercel
 npx arkenv@latest preset remove vercel
 ```
 
+[Global flags](/docs/reference#global-flags) (`--yes`, `--quiet`,
+`--json`, `--agent`, `--help`) apply here too.
+
 ## Usage
 
 ```txt title="Terminal"
 arkenv preset <action> [provider] [options]
 ```
 
-### Actions
+`action` is `apply` or `remove` (`rm` is an alias). `apply` injects or
+refreshes variables inside managed comment blocks. `remove` deletes that
+provider's block and updates `.env.example`.
 
-- `apply`: Injects or refreshes platform variables within managed comment blocks.
-- `remove` (or `rm`): Removes the target provider's comment block from schema files and updates `.env.example`.
-
-### Arguments
-
-- `provider`: The hosting provider preset ID. Accepted values: `vercel`, `netlify`, `cloudflare`, `railway`, `render`, `fly`. Omit to select interactively.
+`provider` is `vercel`, `netlify`, `cloudflare`, `railway`, `render`, or
+`fly`. Omit it to pick interactively. With `--yes` and no provider, the
+CLI defaults to `vercel`.
 
 ## Options
 
+These flags are specific to `preset`.
+
 ### `--file <path>`
 
-Explicitly specify the path to your schema file. Overrides the `"arkenv"` configuration pointer in `package.json`.
+Point at a schema file. This overrides the `"arkenv"` pointer in
+`package.json`.
 
 ```package-install
 npx arkenv@latest preset apply vercel --file ./src/config/env.ts
 ```
 
-### `--force, -f`
+### `--force` / `-f`
 
 Bypass the clean git working tree check.
 
@@ -48,28 +53,36 @@ Bypass the clean git working tree check.
 npx arkenv@latest preset apply vercel --force
 ```
 
-### `--yes, -y`
+### `--yes` / `-y`
 
-Skip interactive confirmation prompts and accept defaults. When `provider` is omitted, `--yes` defaults to `vercel`.
+Skip confirmation prompts and accept defaults.
 
 ### `--agent`
 
-Enable non-interactive machine-readable mode for AI agents. Combines `--yes --quiet --json`.
+Non-interactive JSON mode for agents. Same macro as the
+[global `--agent` flag](/docs/reference#agent): `--yes --quiet --json`.
 
 ## Behavior
 
-The CLI automatically detects your project's layout (flat `env.ts` vs strict `env/client.ts` + `env/server.ts`), framework client prefix (`NEXT_PUBLIC_`, `NUXT_PUBLIC_`, `VITE_`), and validator dialect (ArkType, Zod, Valibot).
+The CLI detects flat vs strict layout, the framework public prefix
+(`NEXT_PUBLIC_`, `NUXT_PUBLIC_`, `VITE_`), and the validator dialect
+(ArkType, Zod, Valibot). Then it:
 
-1. **Discovery**: Reads the `"arkenv"` configuration object in `package.json` to find your schema files.
-2. **Git Tree Check**: Ensures your working directory is clean to prevent uncommitted loss (override with `--force`).
-3. **Collision Detection**: Verifies that preset variables do not collide with existing user-defined fields outside managed blocks.
-4. **Mutation**: Injects, refreshes, or removes the delimited `// @arkenv-preset-start` and `// @arkenv-preset-end` blocks.
-5. **Example Sync**: Updates `.env.example` to reflect the new or removed variables while keeping shared keys intact.
+1. Reads the `"arkenv"` object in `package.json` to find schema files.
+2. Refuses a dirty git tree unless you pass `--force`.
+3. Rejects collisions with fields you defined outside managed blocks.
+4. Inserts, refreshes, or removes `// @arkenv-preset-start` /
+   `// @arkenv-preset-end` blocks.
+5. Syncs `.env.example` for added or removed keys and leaves shared keys
+   in place.
+
+See [Hosting presets](/docs/validating-your-environment/hosting-presets)
+for the field lists.
 
 ## Next steps
 
 <Cards>
-  <Card href="/docs/validating-your-environment/hosting-presets" title="Hosting presets" description="Field-level breakdown and deep dive into managed preset blocks." />
+  <Card href="/docs/validating-your-environment/hosting-presets" title="Hosting presets" description="Field-level breakdown of managed preset blocks." />
 
-  <Card href="/docs/reference/init" title="init reference" description="CLI reference for scaffolding projects with presets." />
+  <Card href="/docs/reference/init" title="init" description="Scaffold a project and apply a preset in one command." />
 </Cards>

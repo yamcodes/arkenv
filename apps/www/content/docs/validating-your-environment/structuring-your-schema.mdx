@@ -37,7 +37,7 @@ Install either engine, then create `env.ts` next to the code that boots first. R
 
     export const env = arkenv({
     	HOST: z.string().default("localhost"),
-    	PORT: z.coerce.number().int().min(0).max(65535).default(3000),
+    	PORT: z.number().int().min(0).max(65535).default(3000),
     	NODE_ENV: z
     		.enum(["development", "production", "test"])
     		.default("development"),
