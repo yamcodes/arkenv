@@ -44,8 +44,12 @@ The legacy v0 pattern (`arkenv(schema)` plugin argument with native-accessor `de
 *Avoid*: recommending schema/define or ambient `.d.ts` augmentations in v1 docs, CLI, or skills; framing SPA mode as a supported v1 path
 
 **Check**:
-CLI command `arkenv check` that validates the resolved environment (`process.env` plus optional `--env-file` overlays) against the project schema. Findings are not a crash: `--json` emits a completed envelope with `ok: true` and exit code `4`.
-*Avoid*: treating validation findings as `ok: false` or exit `1`; calling Check a dotenv loader (it does not load `.env` unless `--env-file` is passed)
+CLI command `arkenv check` that validates the resolved environment (`process.env` plus optional `--env-file` overlays) against the project schema. Findings are not a crash: `--json` emits a completed envelope with `ok: true` and exit code `4`. Complementary to **Lint**: same schema loader and `validate()`, different subject (live env vs files on disk).
+*Avoid*: treating validation findings as `ok: false` or exit `1`; calling Check a dotenv loader (it does not load `.env` unless `--env-file` is passed); folding file lint rules or Unix `path:line:col` onto Check via `--lint` / `--format unix` (that is **Lint**; `--env-file` on Check means overlay, not “lint these files”)
+
+**Lint**:
+CLI command `arkenv lint` (epic [#481](https://github.com/yamcodes/arkenv/issues/481), ADR 0017) that lints `.env*` files on disk: cascade-by-mode, coordinate-aware parse, static dotenv rules, and schema issues remapped to `file:line:col`. Reuses Check’s schema loader and `validate()`; grows the dotenv parser to keep coordinates instead of skipping bad lines.
+*Avoid*: treating Lint as a rename of Check; wrapping `dotenv-linter`; a second validation engine
 
 **Envelope** (also **settlement envelope**):
 CLI `--json` / `--agent` stdout document. Discriminated by `ok`. Success and Check findings use `CompletedEnvelope` (`ok: true`, `diagnostics`, required `nextActions`). Preconditions and crashes use `ErroredEnvelope` (`ok: false`, `error`). Codes are dotted `NAMESPACE.SUBCODE`. `{bin}` in nextActions is resolved to the active runner before serialize.
