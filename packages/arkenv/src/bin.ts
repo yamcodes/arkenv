@@ -24,13 +24,13 @@ async function main() {
 		compose(process.argv);
 	globalLogger = logger;
 
-	setupGracefulShutdown(logger);
+	setupGracefulShutdown(logger, cli.command);
 
 	if (cli.validationError) {
 		logger.error(cli.validationError);
 		await helpUseCase.execute();
 		await logger.flush();
-		process.exit(1);
+		process.exit(2);
 	}
 
 	if (cli.helpRequested) {
@@ -57,18 +57,24 @@ async function main() {
 		}
 		await helpUseCase.execute();
 		await logger.flush();
-		process.exit(1);
+		process.exit(2);
 	}
 
 	try {
-		const success = await handler();
-		if (!success) {
+		const result = await handler();
+		if (typeof result === "number") {
 			await logger.flush();
-			process.exit(1);
+			process.exit(result);
 		}
+		if (!result) {
+			await logger.flush();
+			process.exit(2);
+		}
+		await logger.flush();
+		process.exit(0);
 	} catch (error) {
 		try {
-			logger.fatal("An unexpected error occurred", error);
+			logger.fatal("An unexpected error occurred", error, cli.command || "cli");
 		} catch {
 			// Ignore throw from fatal as we are already handling the error
 		}
@@ -81,8 +87,9 @@ async function main() {
  * Install signal handlers that cancel prompts and flush logs before exiting.
  *
  * @param logger The active logger instance to flush on shutdown
+ * @param commandId The active command name
  */
-function setupGracefulShutdown(logger: any) {
+function setupGracefulShutdown(logger: any, commandId?: string) {
 	/**
 	 * Flush the current prompt and logger state before exiting with a signal code.
 	 *
@@ -105,7 +112,7 @@ function setupGracefulShutdown(logger: any) {
 		}
 
 		try {
-			logger.cancel("Operation cancelled.");
+			logger.cancel("Operation cancelled.", commandId);
 			await logger.flush();
 		} catch (err) {
 			// Best-effort logging on shutdown failure
@@ -113,7 +120,7 @@ function setupGracefulShutdown(logger: any) {
 				logger.error("Logger failed during shutdown", err);
 			}
 		} finally {
-			process.exit(code);
+			process.exit(code === 130 ? 3 : code);
 		}
 	};
 

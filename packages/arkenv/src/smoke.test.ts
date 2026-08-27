@@ -54,6 +54,7 @@ describe("cli smoke tests", () => {
 		const { stdout, stderr } = await exec(`node ${cliPath} --help`);
 		expect(stdout).toContain("Usage:");
 		expect(stdout).toContain("arkenv init");
+		expect(stdout).toContain("arkenv check");
 		expect(stderr).toBe("");
 	});
 
@@ -62,16 +63,16 @@ describe("cli smoke tests", () => {
 		expect(stdout).toContain("Usage:");
 	});
 
-	it("unknown command prints usage and exits 1", async () => {
+	it("unknown command prints usage and exits 2", async () => {
 		await expect(exec(`node ${cliPath} unknown`)).rejects.toMatchObject({
-			code: 1,
+			code: 2,
 			stdout: expect.stringContaining("Usage:"),
 		});
 	});
 
-	it("running without arguments prints usage and exits 1", async () => {
+	it("running without arguments prints usage and exits 2", async () => {
 		await expect(exec(`node ${cliPath}`)).rejects.toMatchObject({
-			code: 1,
+			code: 2,
 			stdout: expect.stringContaining("Usage:"),
 		});
 	});
@@ -117,7 +118,14 @@ describe("cli smoke tests", () => {
 				},
 			);
 
-			expect(stdout).toContain('"status": "success"');
+			const envelope = JSON.parse(stdout);
+			expect(envelope).toMatchObject({
+				ok: true,
+				commandId: "init",
+				exitCode: 0,
+				diagnostics: [],
+				nextActions: [],
+			});
 
 			const envFileExists = await fs
 				.access(path.join(tempDir, "env.ts"))
@@ -129,23 +137,30 @@ describe("cli smoke tests", () => {
 		}
 	});
 
+<<<<<<< HEAD
 	it("check command returns non-zero when schema is missing", async () => {
+=======
+	it("check --json emits structured missing schema error when no env.ts exists", async () => {
+>>>>>>> 308c8a1b6 (feat(cli): universal --json diagnostics and nextActions envelopes (#1614))
 		const uuid = Math.random().toString(36).substring(7);
 		const tempDir = path.resolve(__dirname, `../tmp-smoke-check-${uuid}`);
 		await fs.mkdir(tempDir, { recursive: true });
 
 		try {
 			await expect(
-				exec(`node ${cliPath} check`, { cwd: tempDir }),
+				exec(`node ${cliPath} check --json`, {
+					cwd: tempDir,
+				}),
 			).rejects.toMatchObject({
-				code: 1,
+				code: 2,
+				stdout: expect.stringContaining('"code": "CLI.SCHEMA_NOT_FOUND"'),
 			});
 		} finally {
 			await fs.rm(tempDir, { recursive: true, force: true });
 		}
 	});
 
-	it("check --agent returns structured SCHEMA_NOT_FOUND error on missing schema", async () => {
+	it("check --agent returns structured CLI.SCHEMA_NOT_FOUND error on missing schema", async () => {
 		const uuid = Math.random().toString(36).substring(7);
 		const tempDir = path.resolve(__dirname, `../tmp-smoke-check-${uuid}`);
 		await fs.mkdir(tempDir, { recursive: true });
@@ -155,8 +170,8 @@ describe("cli smoke tests", () => {
 				cwd: tempDir,
 			}).catch((err) => err);
 
-			expect(res.code).toBe(1);
-			expect(res.stdout).toContain('"code": "SCHEMA_NOT_FOUND"');
+			expect(res.code).toBe(2);
+			expect(res.stdout).toContain('"code": "CLI.SCHEMA_NOT_FOUND"');
 		} finally {
 			await fs.rm(tempDir, { recursive: true, force: true });
 		}

@@ -40,7 +40,11 @@ export class HelpUseCase {
 			},
 			{
 				left: "arkenv check",
+<<<<<<< HEAD
 				right: "Validate the environment against the schema",
+=======
+				right: "Validate process environment against your schema",
+>>>>>>> 308c8a1b6 (feat(cli): universal --json diagnostics and nextActions envelopes (#1614))
 			},
 			{
 				left: "arkenv preset apply [provider]",

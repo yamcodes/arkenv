@@ -135,6 +135,7 @@ describe("InitUseCase", () => {
 				code: ERROR_CODES.NON_EMPTY_DIR,
 				retryWith: ["--force"],
 			}),
+			"init",
 		);
 	});
 
@@ -248,6 +249,7 @@ describe("InitUseCase", () => {
 				code: ERROR_CODES.NON_EMPTY_DIR,
 				retryWith: ["--force"],
 			}),
+			"init",
 		);
 	});
 
@@ -303,21 +305,24 @@ describe("InitUseCase", () => {
 		expect(logger.info).toHaveBeenCalledWith(
 			"Use --force to bypass these checks.",
 		);
-		expect(logger.refuse).toHaveBeenCalledWith({
-			code: ERROR_CODES.REQUIREMENTS_NOT_MET,
-			message: "Technical requirements not met.",
-			retryWith: ["--force"],
-			details: {
-				requirements: [
-					{
-						requirement: "Node.js Version",
-						message: "Node.js version must be >= 22.0.0",
-						current: "20.0.0",
-						expected: ">= 22.0.0",
-					},
-				],
-			},
-		});
+		expect(logger.refuse).toHaveBeenCalledWith(
+			expect.objectContaining({
+				code: ERROR_CODES.REQUIREMENTS_NOT_MET,
+				message: "Technical requirements not met.",
+				retryWith: ["--force"],
+				details: {
+					requirements: [
+						{
+							requirement: "Node.js Version",
+							message: "Node.js version must be >= 22.0.0",
+							current: "20.0.0",
+							expected: ">= 22.0.0",
+						},
+					],
+				},
+			}),
+			"init",
+		);
 	});
 
 	it("should continue if requirements fail but --force is used", async () => {
@@ -496,11 +501,14 @@ describe("InitUseCase", () => {
 		expect(logger.error).toHaveBeenCalledWith(
 			expect.stringContaining("Git working tree is not clean"),
 		);
-		expect(logger.refuse).toHaveBeenCalledWith({
-			code: ERROR_CODES.GIT_TREE_DIRTY,
-			message: "Git working tree is not clean.",
-			retryWith: ["--force"],
-		});
+		expect(logger.refuse).toHaveBeenCalledWith(
+			expect.objectContaining({
+				code: ERROR_CODES.GIT_TREE_DIRTY,
+				message: "Git working tree is not clean.",
+				retryWith: ["--force"],
+			}),
+			"init",
+		);
 	});
 
 	it("should continue with a warning when git working tree is dirty and --force is set", async () => {

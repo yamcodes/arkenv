@@ -115,11 +115,22 @@ export class InitUseCase {
 			this.logger.info(
 				`To scaffold a new project, run ${code("arkenv init")} in an empty directory or use ${code("--force")} to proceed anyway.`,
 			);
-			this.logger.refuse({
-				code: ERROR_CODES.NON_EMPTY_DIR,
-				message: "Directory is not empty and no package.json was found.",
-				retryWith: ["--force"],
-			});
+			this.logger.refuse(
+				{
+					code: ERROR_CODES.NON_EMPTY_DIR,
+					message: "Directory is not empty and no package.json was found.",
+					why: "To scaffold a new project, run arkenv init in an empty directory or use --force to proceed anyway.",
+					retryWith: ["--force"],
+					nextActions: [
+						{
+							kind: "run-command",
+							label: "Re-run with --force to scaffold into non-empty directory",
+							command: "{bin} init --force",
+						},
+					],
+				},
+				"init",
+			);
 			return null;
 		} finally {
 			this.logger.interactiveStdout(false);
@@ -159,21 +170,32 @@ export class InitUseCase {
 					);
 				}
 				this.logger.info("Use --force to bypass these checks.");
-				this.logger.refuse({
-					code: ERROR_CODES.REQUIREMENTS_NOT_MET,
-					message: "Technical requirements not met.",
-					retryWith: ["--force"],
-					details: {
-						requirements: failures.map((fail) =>
-							shake({
-								requirement: fail.requirement,
-								message: fail.message,
-								current: fail.current,
-								expected: fail.expected,
-							}),
-						),
+				this.logger.refuse(
+					{
+						code: ERROR_CODES.REQUIREMENTS_NOT_MET,
+						message: "Technical requirements not met.",
+						why: "Technical requirements (e.g. Node.js version) were not met.",
+						retryWith: ["--force"],
+						nextActions: [
+							{
+								kind: "run-command",
+								label: "Re-run with --force to bypass technical requirements",
+								command: "{bin} init --force",
+							},
+						],
+						details: {
+							requirements: failures.map((fail) =>
+								shake({
+									requirement: fail.requirement,
+									message: fail.message,
+									current: fail.current,
+									expected: fail.expected,
+								}),
+							),
+						},
 					},
-				});
+					"init",
+				);
 				return null;
 			}
 		}
@@ -189,11 +211,22 @@ export class InitUseCase {
 					"Git working tree is not clean. Commit or stash your changes (use 'git stash -u' for untracked files) before running arkenv init.",
 				);
 				this.logger.info("Use --force to bypass this check.");
-				this.logger.refuse({
-					code: ERROR_CODES.GIT_TREE_DIRTY,
-					message: "Git working tree is not clean.",
-					retryWith: ["--force"],
-				});
+				this.logger.refuse(
+					{
+						code: ERROR_CODES.GIT_TREE_DIRTY,
+						message: "Git working tree is not clean.",
+						why: "Commit or stash your changes before running arkenv init.",
+						retryWith: ["--force"],
+						nextActions: [
+							{
+								kind: "run-command",
+								label: "Re-run with --force to bypass git working tree check",
+								command: "{bin} init --force",
+							},
+						],
+					},
+					"init",
+				);
 				return null;
 			}
 		}
@@ -466,12 +499,23 @@ export class InitUseCase {
 			this.logger.info(
 				`Run ${code("arkenv init")} in an empty directory or choose a sub-directory name instead.`,
 			);
-			this.logger.refuse({
-				code: ERROR_CODES.NON_EMPTY_DIR,
-				message:
-					"Cannot scaffold into the current directory because it is not empty.",
-				retryWith: ["--force"],
-			});
+			this.logger.refuse(
+				{
+					code: ERROR_CODES.NON_EMPTY_DIR,
+					message:
+						"Cannot scaffold into the current directory because it is not empty.",
+					why: "Run arkenv init in an empty directory or choose a sub-directory name instead, or use --force.",
+					retryWith: ["--force"],
+					nextActions: [
+						{
+							kind: "run-command",
+							label: "Re-run with --force to scaffold into non-empty directory",
+							command: "{bin} init --force",
+						},
+					],
+				},
+				"init",
+			);
 			return null;
 		}
 

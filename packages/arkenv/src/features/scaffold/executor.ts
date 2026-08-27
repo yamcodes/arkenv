@@ -301,6 +301,7 @@ export class Executor {
 					tsConfigUpdated,
 					skillInstalled,
 				},
+				"init",
 			);
 		} catch (error) {
 			s.stop("Scaffolding failed.");

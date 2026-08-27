@@ -1,4 +1,5 @@
 import type { Refusal } from "@/shared/errors";
+import type { CompletedEnvelope, ErroredEnvelope } from "@/shared/protocol";
 
 /**
  * Represents a CLI spinner for long-running tasks.
@@ -23,16 +24,23 @@ export type LoggerPort = {
 	log(message: string): void;
 	spinner(): Spinner;
 	json(data: unknown): void;
-	cancel(message: string): void;
-	fatal(message: string, error?: unknown): never;
+	cancel(message: string, commandId?: string): void;
+	fatal(message: string, error?: unknown, commandId?: string): never;
 	/**
 	 * Reports a deliberate, machine-readable refusal (a tripped safety check).
 	 * Emits structured JSON in `--json`/`--agent` mode; a no-op for human output.
 	 */
-	refuse(refusal: Refusal): void;
-	finish(message: string, details?: Record<string, unknown>): void;
+	refuse(refusal: Refusal, commandId?: string): void;
+	finish(
+		message: string,
+		details?: Record<string, unknown>,
+		commandId?: string,
+	): void;
+	reportCompleted(envelope: CompletedEnvelope): void;
+	reportErrored(envelope: ErroredEnvelope): void;
 	flush(): Promise<void>;
 	interactiveStdout(enable: boolean): void;
+	readonly isJson?: boolean;
 	readonly stdio:
 		| "inherit"
 		| "ignore"

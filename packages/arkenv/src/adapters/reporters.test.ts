@@ -120,31 +120,39 @@ describe("Reporters", () => {
 		it("fatal logs json to stdout and throws", () => {
 			expect(() => reporter.fatal("fatal error")).toThrow("fatal error");
 			expect(stdoutSpy).toHaveBeenCalledWith(
-				expect.stringContaining('"status": "error"'),
+				expect.stringContaining('"ok": false'),
 			);
 			expect(stdoutSpy).toHaveBeenCalledWith(
-				expect.stringContaining('"message": "fatal error"'),
+				expect.stringContaining('"summary": "fatal error"'),
 			);
 		});
 
-		it("fatal carries the generic INTERNAL code and empty retryWith", () => {
+		it("fatal carries the generic CLI.INTERNAL_ERROR code and empty nextActions", () => {
 			expect(() => reporter.fatal("boom", new Error("kaboom"))).toThrow(
 				"kaboom",
 			);
 			const payload = JSON.parse(stdoutSpy.mock.calls.at(-1)?.[0] as string);
 			expect(payload).toEqual({
-				status: "error",
-				code: ERROR_CODES.INTERNAL,
-				message: "boom",
-				retryWith: [],
-				details: { error: "kaboom" },
+				ok: false,
+				commandId: "cli",
+				error: {
+					code: ERROR_CODES.INTERNAL,
+					severity: "error",
+					summary: "boom",
+					why: "kaboom",
+					meta: { error: "kaboom" },
+					nextActions: [],
+				},
+				diagnostics: [],
+				nextActions: [],
 			});
 		});
 
-		it("refuse logs a structured, coded error payload to stdout", () => {
+		it("refuse logs a structured, coded error payload to stdout with resolved {bin}", () => {
 			reporter.refuse({
 				code: ERROR_CODES.REQUIREMENTS_NOT_MET,
 				message: "Technical requirements not met.",
+				why: "Technical requirements (e.g. Node.js version) were not met.",
 				retryWith: ["--force"],
 				details: {
 					requirements: [
@@ -159,20 +167,39 @@ describe("Reporters", () => {
 			});
 			const payload = JSON.parse(stdoutSpy.mock.calls.at(-1)?.[0] as string);
 			expect(payload).toEqual({
-				status: "error",
-				code: ERROR_CODES.REQUIREMENTS_NOT_MET,
-				message: "Technical requirements not met.",
-				retryWith: ["--force"],
-				details: {
-					requirements: [
+				ok: false,
+				commandId: "init",
+				error: {
+					code: ERROR_CODES.REQUIREMENTS_NOT_MET,
+					severity: "error",
+					summary: "Technical requirements not met.",
+					why: "Technical requirements (e.g. Node.js version) were not met.",
+					meta: {
+						requirements: [
+							{
+								requirement: "Node.js Version",
+								message: "Node.js version must be >= 22.0.0",
+								current: "20.0.0",
+								expected: ">= 22.0.0",
+							},
+						],
+					},
+					nextActions: [
 						{
-							requirement: "Node.js Version",
-							message: "Node.js version must be >= 22.0.0",
-							current: "20.0.0",
-							expected: ">= 22.0.0",
+							kind: "run-command",
+							label: "Re-run with --force to bypass this check",
+							command: "arkenv init --force",
 						},
 					],
 				},
+				diagnostics: [],
+				nextActions: [
+					{
+						kind: "run-command",
+						label: "Re-run with --force to bypass this check",
+						command: "arkenv init --force",
+					},
+				],
 			});
 		});
 
@@ -183,22 +210,40 @@ describe("Reporters", () => {
 				retryWith: ["--force"],
 			});
 			const payload = JSON.parse(stdoutSpy.mock.calls.at(-1)?.[0] as string);
-			expect(payload).toEqual({
-				status: "error",
-				code: ERROR_CODES.GIT_TREE_DIRTY,
-				message: "Git working tree is not clean.",
-				retryWith: ["--force"],
+			expect(payload).toMatchObject({
+				ok: false,
+				commandId: "init",
+				error: {
+					code: ERROR_CODES.GIT_TREE_DIRTY,
+					severity: "error",
+					summary: "Git working tree is not clean.",
+					nextActions: [
+						{
+							kind: "run-command",
+							label: "Re-run with --force to bypass this check",
+							command: "arkenv init --force",
+						},
+					],
+				},
+				diagnostics: [],
+				nextActions: [
+					{
+						kind: "run-command",
+						label: "Re-run with --force to bypass this check",
+						command: "arkenv init --force",
+					},
+				],
 			});
-			expect(payload).not.toHaveProperty("details");
+			expect(payload.error).not.toHaveProperty("meta");
 		});
 
-		it("cancel logs json to stdout", () => {
+		it("cancel logs errored envelope to stdout", () => {
 			reporter.cancel("cancelled");
 			expect(stdoutSpy).toHaveBeenCalledWith(
-				expect.stringContaining('"status": "cancelled"'),
+				expect.stringContaining('"ok": false'),
 			);
 			expect(stdoutSpy).toHaveBeenCalledWith(
-				expect.stringContaining('"message": "cancelled"'),
+				expect.stringContaining('"summary": "cancelled"'),
 			);
 			expect(exitSpy).not.toHaveBeenCalled();
 		});
@@ -264,7 +309,7 @@ describe("Reporters", () => {
 			expect(reporter.logs[0]).toEqual({
 				type: "refuse",
 				message: refusal.message,
-				data: refusal,
+				data: { ...refusal, commandId: undefined },
 			});
 		});
 	});

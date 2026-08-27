@@ -1,4 +1,5 @@
 import type { Refusal } from "@/shared/errors";
+import type { CompletedEnvelope, ErroredEnvelope } from "@/shared/protocol";
 import type { Reporter, Spinner } from "./types";
 
 /**
@@ -48,25 +49,49 @@ export class MemoryReporter implements Reporter {
 		this.logs.push({ type: "json", message: JSON.stringify(data), data });
 	}
 
-	cancel(message: string) {
-		this.logs.push({ type: "cancel", message });
+	cancel(message: string, commandId?: string) {
+		this.logs.push({ type: "cancel", message, data: { commandId } });
 	}
 
-	fatal(message: string, error?: unknown): never {
-		this.logs.push({ type: "fatal", message, data: error });
+	fatal(message: string, error?: unknown, commandId?: string): never {
+		this.logs.push({ type: "fatal", message, data: { error, commandId } });
 		throw error instanceof Error ? error : new Error(message);
 	}
 
-	refuse(refusal: Refusal) {
+	refuse(refusal: Refusal, commandId?: string) {
 		this.logs.push({
 			type: "refuse",
 			message: refusal.message,
-			data: refusal,
+			data: { ...refusal, commandId },
 		});
 	}
 
-	finish(message: string, details?: Record<string, unknown>) {
-		this.logs.push({ type: "finish", message, data: details });
+	finish(
+		message: string,
+		details?: Record<string, unknown>,
+		commandId?: string,
+	) {
+		this.logs.push({
+			type: "finish",
+			message,
+			data: { details, commandId },
+		});
+	}
+
+	reportCompleted(envelope: CompletedEnvelope) {
+		this.logs.push({
+			type: "reportCompleted",
+			message: `Completed ${envelope.commandId} with exitCode ${envelope.exitCode}`,
+			data: envelope,
+		});
+	}
+
+	reportErrored(envelope: ErroredEnvelope) {
+		this.logs.push({
+			type: "reportErrored",
+			message: `Errored ${envelope.commandId}: ${envelope.error.summary}`,
+			data: envelope,
+		});
 	}
 
 	async flush(): Promise<void> {}

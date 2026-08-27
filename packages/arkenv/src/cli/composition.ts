@@ -17,18 +17,32 @@ import {
  * the core CLI instance with its adapters and use cases.
  *
  * @param argv Command line arguments.
+ * @param options Optional overrides for testing or embedding.
  * @returns The composed instances.
  */
-export function compose(argv: string[]) {
+export function compose(
+	argv: string[],
+	options: { jitiAliases?: Record<string, string> } = {},
+) {
 	const cli = new CLI(argv);
-	const logger = cli.logger; // CLI currently creates the logger, which is fine for now
+	const logger = cli.logger;
 	const workspace = new NodeWorkspace(cli.isQuiet, logger.stdio, logger);
 	const prompt = new ClackPromptAdapter();
 	const scanner = new NodeProjectScannerAdapter(logger);
-	const schemaLoader = new JitiSchemaLoaderAdapter();
+	const jitiOptions = options.jitiAliases
+		? { jitiAliases: options.jitiAliases }
+		: {};
+	const schemaLoader = new JitiSchemaLoaderAdapter(jitiOptions);
 
 	const initUseCase = new InitUseCase(logger, workspace, prompt, scanner);
 	const presetUseCase = new PresetUseCase(logger, workspace, prompt, scanner);
+	const checkUseCase = new CheckUseCase(
+		logger,
+		workspace,
+		scanner,
+		schemaLoader,
+		jitiOptions,
+	);
 	const helpUseCase = new HelpUseCase(logger);
 	const checkUseCase = new CheckUseCase(
 		logger,
@@ -44,6 +58,7 @@ export function compose(argv: string[]) {
 		prompt,
 		initUseCase,
 		presetUseCase,
+		checkUseCase,
 		helpUseCase,
 		checkUseCase,
 		schemaLoader,

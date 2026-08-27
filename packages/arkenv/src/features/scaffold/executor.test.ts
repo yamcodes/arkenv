@@ -65,6 +65,8 @@ describe("Executor", () => {
 		}),
 		refuse: vi.fn(),
 		finish: vi.fn(),
+		reportCompleted: vi.fn(),
+		reportErrored: vi.fn(),
 		flush: vi.fn().mockResolvedValue(undefined),
 	};
 

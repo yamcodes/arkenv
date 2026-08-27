@@ -1,6 +1,7 @@
 import { spinner as clackSpinner, note, outro } from "@clack/prompts";
 import pc from "picocolors";
 import type { Refusal } from "@/shared/errors";
+import type { CompletedEnvelope, ErroredEnvelope } from "@/shared/protocol";
 import type { Reporter, Spinner } from "./types";
 
 /**
@@ -44,11 +45,11 @@ export class TextReporter implements Reporter {
 		process.stdout.write(`${JSON.stringify(data, null, 2)}\n`);
 	}
 
-	cancel(message: string) {
+	cancel(message: string, _commandId?: string) {
 		process.stderr.write(`${pc.red(`✘ ${message}`)}\n`);
 	}
 
-	fatal(message: string, error?: unknown): never {
+	fatal(message: string, error?: unknown, _commandId?: string): never {
 		process.stderr.write(`${pc.red(`✘ ${message}`)}\n`);
 		if (error) {
 			const detail = `${pc.red(error instanceof Error ? (error.stack ?? String(error)) : String(error))}\n`;
@@ -57,13 +58,30 @@ export class TextReporter implements Reporter {
 		throw error instanceof Error ? error : new Error(message);
 	}
 
-	refuse(_refusal: Refusal) {
+	refuse(_refusal: Refusal, _commandId?: string) {
 		// Human-oriented refusal guidance is emitted via error()/info();
 		// the structured payload is reserved for JSON output.
 	}
 
-	finish(message: string, _details?: Record<string, unknown>) {
+	finish(
+		message: string,
+		_details?: Record<string, unknown>,
+		_commandId?: string,
+	) {
 		outro(message);
+	}
+
+	reportCompleted(envelope: CompletedEnvelope) {
+		if (envelope.exitCode === 0) {
+			this.success("Environment variables are valid");
+		}
+	}
+
+	reportErrored(envelope: ErroredEnvelope) {
+		this.error(envelope.error.summary);
+		if (envelope.error.why) {
+			this.warn(envelope.error.why);
+		}
 	}
 
 	async flush(): Promise<void> {

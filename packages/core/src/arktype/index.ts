@@ -215,10 +215,11 @@ export function parse<const T extends SchemaShape>(
 		validatedEnv instanceof ArkErrors ||
 		(validatedEnv &&
 			typeof validatedEnv === "object" &&
-			"byPath" in validatedEnv &&
-			typeof (validatedEnv as any).byPath === "object")
+			((validatedEnv as any)[" arkKind"] === "errors" ||
+				("byPath" in validatedEnv &&
+					typeof (validatedEnv as any).byPath === "object")))
 	) {
-		throw new ArkEnvError(arkErrorsToIssues(validatedEnv as ArkErrors, config));
+		throw new ArkEnvError(arkErrorsToIssues(validatedEnv as any, config));
 	}
 
 	return validatedEnv;
