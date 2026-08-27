@@ -36,7 +36,7 @@ describe("Infer<T> Type Helper", () => {
 
 	it("infers types from a Zod schema", () => {
 		const schema = z.object({
-			PORT: z.coerce.number(),
+			PORT: z.number(),
 			HOST: z.string(),
 			DEBUG: z.boolean().optional(),
 		});
@@ -68,7 +68,7 @@ describe("arkenv Type Inference with Zod", () => {
 
 	it("infers types correctly with arkenv/standard", () => {
 		const schema = {
-			PORT: z.coerce.number(),
+			PORT: z.number(),
 			HOST: z.string(),
 		};
 

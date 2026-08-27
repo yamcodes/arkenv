@@ -49,7 +49,7 @@ type StandardEnvOutput<T extends Record<string, StandardSchemaV1>> = {
  * import { z } from "zod";
  *
  * const env = arkenv({
- *   PORT: z.coerce.number(),
+ *   PORT: z.number(),
  *   HOST: z.string(),
  * });
  * ```

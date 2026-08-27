@@ -3,7 +3,7 @@ import z from "zod";
 
 const env = arkenv({
 	TEST_VALUE: z.url(),
-	PORT: z.coerce.number(),
+	PORT: z.number(),
 	HOST: z.literal("localhost").or(z.hostname()),
 });
 
