@@ -1,0 +1,145 @@
+---
+title: check
+description: Validate environment variables against the schema with CI-friendly exit codes.
+---
+
+`arkenv check` validates the active environment against your project's
+schema. Use it as a standalone verification step in CI/CD pipelines,
+local verification scripts, or pre-commit hooks.
+
+```package-install
+npx arkenv@latest check
+```
+
+```package-install
+npx arkenv@latest check --env-file .env.production
+```
+
+```package-install
+npx arkenv@latest check --schema ./src/env.ts --env-file .env --env-file .env.local
+```
+
+[Global flags](/docs/reference#global-flags) (`--quiet`, `--json`,
+`--agent`, `--help`) apply here too.
+
+## Usage
+
+```txt title="Terminal"
+arkenv check [options]
+```
+
+When the environment satisfies the schema, `check` prints a success line
+and exits with code `0`:
+
+```txt title="Terminal"
+✔ No issues found — your environment matches the schema
+```
+
+When validation fails, `check` outputs the formatted issues and exits
+with code `1`:
+
+```txt title="Terminal"
+Errors found while validating environment variables
+  DATABASE_URL must be a URL string (was [REDACTED])
+  PORT must be a number (was a string)
+```
+
+## Options
+
+These flags are specific to `check`.
+
+### `--schema <path>` / `-s`
+
+Explicit path to the schema module. Overrides `"arkenv"` in `package.json`
+and convention discovery.
+
+```package-install
+npx arkenv@latest check --schema ./src/config/env.ts
+```
+
+### `--env-file <file>`
+
+Load a `.env` file before validating. This flag is repeatable; multiple
+files are loaded in sequence with later files taking precedence over
+earlier ones.
+
+```package-install
+npx arkenv@latest check --env-file .env --env-file .env.local
+```
+
+Values from `--env-file` are merged over `process.env`. Missing files fail
+fast with a non-zero exit code. Parsing is literal plain dotenv syntax
+(no variable expansion).
+
+### `--json` / `-j`
+
+Output structured JSON. On success:
+
+```json
+{
+  "status": "success",
+  "message": "No issues found — your environment matches the schema",
+  "details": {
+    "keys": ["DATABASE_URL", "PORT"]
+  }
+}
+```
+
+On validation failure:
+
+```json
+{
+  "status": "error",
+  "code": "VALIDATION_FAILED",
+  "message": "Errors found while validating environment variables",
+  "issues": [
+    {
+      "path": "DATABASE_URL",
+      "message": "must be a URL string (was [REDACTED])",
+      "code": "INVALID_FORMAT"
+    }
+  ]
+}
+```
+
+### `--quiet` / `-q`
+
+Suppress normal console output. Exits `0` on success and `1` on failure.
+
+## CI/CD integration
+
+Add `arkenv check` to your CI workflow to ensure required environment
+variables are present before building or deploying.
+
+```yaml title=".github/workflows/ci.yml"
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  validate-env:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Validate environment
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          PORT: "3000"
+        run: pnpm exec arkenv check
+```
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/validating-your-environment/error-reporting" title="Error reporting" description="Understand ArkEnv validation error formats and issue codes." />
+
+  <Card href="/docs/reference/init" title="init" description="Scaffold a project and schema files." />
+
+  <Card href="/docs/reference/options" title="options" description="Configuration options passed to arkenv()." />
+</Cards>

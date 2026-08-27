@@ -5,7 +5,12 @@ import {
 	NodeWorkspace,
 } from "@/adapters";
 import { CLI } from "./cli";
-import { HelpUseCase, InitUseCase, PresetUseCase } from "./commands";
+import {
+	CheckUseCase,
+	HelpUseCase,
+	InitUseCase,
+	PresetUseCase,
+} from "./commands";
 
 /**
  * Bootstraps the application's dependency graph by composing
@@ -25,6 +30,12 @@ export function compose(argv: string[]) {
 	const initUseCase = new InitUseCase(logger, workspace, prompt, scanner);
 	const presetUseCase = new PresetUseCase(logger, workspace, prompt, scanner);
 	const helpUseCase = new HelpUseCase(logger);
+	const checkUseCase = new CheckUseCase(
+		logger,
+		workspace,
+		scanner,
+		schemaLoader,
+	);
 
 	return {
 		cli,
@@ -34,6 +45,7 @@ export function compose(argv: string[]) {
 		initUseCase,
 		presetUseCase,
 		helpUseCase,
+		checkUseCase,
 		schemaLoader,
 	};
 }

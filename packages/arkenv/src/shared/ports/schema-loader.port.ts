@@ -1,3 +1,4 @@
+import type { EnvIssue } from "@repo/utils";
 import type { DeclaredSchemaKey } from "@/features/schema-loader";
 
 /**
@@ -45,6 +46,29 @@ export type SchemaLoadFailure = {
 
 export type SchemaLoadResult = SchemaLoadSuccess | SchemaLoadFailure;
 
+export type SchemaValidationSuccess = {
+	ok: true;
+};
+
+export type SchemaValidationFailure =
+	| {
+			ok: false;
+			kind: "validation";
+			message: string;
+			issues: EnvIssue[];
+	  }
+	| {
+			ok: false;
+			kind: "load";
+			code: SchemaLoadErrorCode;
+			message: string;
+			cause?: unknown;
+	  };
+
+export type SchemaValidationResult =
+	| SchemaValidationSuccess
+	| SchemaValidationFailure;
+
 /**
  * Load a user's schema module and return declared keys without validating env.
  */
@@ -60,4 +84,16 @@ export type SchemaLoaderPort = {
 	 * @returns A discriminated success or structured error result
 	 */
 	load(target: SchemaLoadTarget): Promise<SchemaLoadResult>;
+
+	/**
+	 * Validate a resolved environment dictionary against the schema module.
+	 *
+	 * @param target The schema module to load and evaluate
+	 * @param env The resolved environment dictionary to validate
+	 * @returns Success or discriminated validation / load failure
+	 */
+	validate(
+		target: SchemaLoadTarget,
+		env: Record<string, string | undefined>,
+	): Promise<SchemaValidationResult>;
 };

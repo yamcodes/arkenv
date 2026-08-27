@@ -39,6 +39,10 @@ export class HelpUseCase {
 				right: "Set up ArkEnv in your project",
 			},
 			{
+				left: "arkenv check",
+				right: "Validate the environment against the schema",
+			},
+			{
 				left: "arkenv preset apply [provider]",
 				right:
 					"Apply or refresh hosting provider preset (vercel, netlify, cloudflare, railway, render, fly)",
@@ -94,6 +98,19 @@ export class HelpUseCase {
 			},
 		];
 
+		const checkOptions: HelpItem[] = [
+			{
+				left: "--schema, -s <path>",
+				right:
+					"Path to schema file (overrides package.json or convention discovery)",
+			},
+			{
+				left: "--env-file <file>",
+				right:
+					"Path to .env file to load (repeatable; merged in order over process.env)",
+			},
+		];
+
 		const presetOptions: HelpItem[] = [
 			{
 				left: "--file <path>",
@@ -116,6 +133,10 @@ export class HelpUseCase {
 		}
 		this.logger.log(`\n${pc.bold("init options:")}`);
 		for (const line of formatColumns(initOptions)) {
+			this.logger.log(line);
+		}
+		this.logger.log(`\n${pc.bold("check options:")}`);
+		for (const line of formatColumns(checkOptions)) {
 			this.logger.log(line);
 		}
 		this.logger.log(`\n${pc.bold("preset options:")}`);

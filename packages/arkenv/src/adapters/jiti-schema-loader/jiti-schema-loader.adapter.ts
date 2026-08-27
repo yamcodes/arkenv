@@ -1,3 +1,4 @@
+import type { EnvIssue } from "@repo/utils";
 import { beginSchemaCapture, endSchemaCapture } from "@repo/utils";
 import { createJiti } from "jiti";
 import { declaredKeysFromDefinitions } from "@/features/schema-loader";
@@ -6,10 +7,12 @@ import {
 	type SchemaLoaderPort,
 	type SchemaLoadResult,
 	type SchemaLoadTarget,
+	type SchemaValidationResult,
 } from "@/shared/ports";
 import {
 	formatModuleLoadFailedMessage,
 	formatNoSchemaMessage,
+	isEnvValidationCause,
 } from "./schema-load-errors";
 
 export type JitiSchemaLoaderOptions = {
@@ -57,6 +60,68 @@ export class JitiSchemaLoaderAdapter implements SchemaLoaderPort {
 				message: formatModuleLoadFailedMessage(target.schemaPath, cause),
 				cause,
 			};
+		}
+	}
+
+	/**
+	 * Validate a resolved environment dictionary against the schema module.
+	 *
+	 * @param target The schema module to load and evaluate
+	 * @param env The resolved environment dictionary to validate
+	 * @returns Success or discriminated validation / load failure
+	 */
+	async validate(
+		target: SchemaLoadTarget,
+		env: Record<string, string | undefined>,
+	): Promise<SchemaValidationResult> {
+		const savedEnv = { ...process.env };
+		for (const key of Object.keys(process.env)) {
+			if (!(key in env) || env[key] === undefined) {
+				delete process.env[key];
+			}
+		}
+		for (const [key, value] of Object.entries(env)) {
+			if (value !== undefined) {
+				process.env[key] = value;
+			}
+		}
+
+		try {
+			this.evaluateModule(target.schemaPath);
+			return { ok: true };
+		} catch (cause) {
+			if (isEnvValidationCause(cause)) {
+				const issues =
+					cause && typeof cause === "object" && "issues" in cause
+						? ((cause as { issues?: EnvIssue[] }).issues ?? [])
+						: [];
+				const message = cause instanceof Error ? cause.message : String(cause);
+				return {
+					ok: false,
+					kind: "validation",
+					message,
+					issues,
+				};
+			}
+
+			return {
+				ok: false,
+				kind: "load",
+				code: SCHEMA_LOAD_ERROR_CODES.MODULE_LOAD_FAILED,
+				message: formatModuleLoadFailedMessage(target.schemaPath, cause),
+				cause,
+			};
+		} finally {
+			for (const key of Object.keys(process.env)) {
+				if (!(key in savedEnv)) {
+					delete process.env[key];
+				}
+			}
+			for (const [key, value] of Object.entries(savedEnv)) {
+				if (value !== undefined) {
+					process.env[key] = value;
+				}
+			}
 		}
 	}
 
