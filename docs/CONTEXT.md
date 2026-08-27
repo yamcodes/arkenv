@@ -48,8 +48,8 @@ CLI command `arkenv check` that validates the resolved environment (`process.env
 *Avoid*: treating validation findings as `ok: false` or exit `1`; calling Check a dotenv loader (it does not load `.env` unless `--env-file` is passed); folding file lint rules or Unix `path:line:col` onto Check via `--lint` / `--format unix` (that is **Lint**; `--env-file` on Check means overlay, not “lint these files”)
 
 **Lint**:
-CLI command `arkenv lint` (epic [#481](https://github.com/yamcodes/arkenv/issues/481), ADR 0017) that lints `.env*` files on disk: cascade-by-mode, coordinate-aware parse, static dotenv rules, and schema issues remapped to `file:line:col`. Reuses Check’s schema loader and `validate()`; grows the dotenv parser to keep coordinates instead of skipping bad lines.
-*Avoid*: treating Lint as a rename of Check; wrapping `dotenv-linter`; a second validation engine
+Planned CLI command `arkenv lint` (not yet shipped; epic [#481](https://github.com/yamcodes/arkenv/issues/481), ADR 0017) that lints `.env*` files on disk: cascade-by-mode, coordinate-aware parse, static dotenv rules, and schema issues remapped to `file:line:col`. Reuses Check’s schema loader and `validate()`; grows the dotenv parser to keep coordinates instead of skipping bad lines.
+*Avoid*: treating Lint as a rename of Check; wrapping `dotenv-linter`; a second validation engine; documenting or invoking `arkenv lint` as available on current v1
 
 **Envelope** (also **settlement envelope**):
 CLI `--json` / `--agent` stdout document. Discriminated by `ok`. Success and Check findings use `CompletedEnvelope` (`ok: true`, `diagnostics`, required `nextActions`). Preconditions and crashes use `ErroredEnvelope` (`ok: false`, `error`). Codes are dotted `NAMESPACE.SUBCODE`. `{bin}` in nextActions is resolved to the active runner before serialize.
