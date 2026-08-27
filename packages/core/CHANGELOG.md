@@ -1,5 +1,13 @@
 # @arkenv/core
 
+## 1.0.0-alpha.6
+
+### Patch Changes
+
+- #### Record the schema without reading the environment when a tool is inspecting it _[`#1622`](https://github.com/yamcodes/arkenv/pull/1622) [`a735e9a`](https://github.com/yamcodes/arkenv/commit/a735e9a7531e3d9fbf6013f1dd814c33b2c9c47a) [@yamcodes](https://github.com/yamcodes)_
+
+  `arkenv()` now records the definition object instead of validating `process.env` when the ArkEnv CLI (or another in-process tool) is inspecting the schema. App validation is unchanged.
+
 ## 1.0.0-alpha.5
 
 ### Patch Changes

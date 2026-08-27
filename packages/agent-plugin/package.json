@@ -1,7 +1,7 @@
 {
 	"name": "@arkenv/agent-plugin",
 	"type": "module",
-	"version": "0.0.0",
+	"version": "0.0.1-alpha.0",
 	"description": "ArkEnv coding-agent plugin with MCP tools for init and AST-based env audits",
 	"bin": {
 		"arkenv-agent-plugin": "./dist/bin.js"
