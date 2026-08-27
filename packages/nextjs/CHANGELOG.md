@@ -1,5 +1,37 @@
 # @arkenv/nextjs
 
+## 1.0.0-alpha.12
+
+### Minor Changes
+
+- #### Support function-form `next.config` in `withArkEnv` _[`#1621`](https://github.com/yamcodes/arkenv/pull/1621) [`f079663`](https://github.com/yamcodes/arkenv/commit/f0796639c910ad6bce472b9311bd8f9d13ac93aa) [@yamcodes](https://github.com/yamcodes)_
+
+  `withArkEnv` now accepts Next.js function-form configs (sync or async). The wrapper awaits the user's factory with the `phase` and context Next.js provides, then applies strict-layout and `.arkenv/` aliases to the resolved object.
+
+  ```ts
+  import { withArkEnv } from "@arkenv/nextjs/config";
+
+  export default withArkEnv(async (phase, { defaultConfig }) => ({
+    ...defaultConfig,
+    reactStrictMode: phase !== "phase-test",
+  }));
+  ```
+
+### Patch Changes
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`a735e9a`](https://github.com/yamcodes/arkenv/commit/a735e9a7531e3d9fbf6013f1dd814c33b2c9c47a) [`6d2e3c7`](https://github.com/yamcodes/arkenv/commit/6d2e3c740f4db54767987973d946ddcbd04fe22f)
+
+</small>
+
+- `@arkenv/core@1.0.0-alpha.6`
+- `@arkenv/standard@1.0.0-alpha.6`
+
+</details>
+
 ## 1.0.0-alpha.11
 
 ### Minor Changes

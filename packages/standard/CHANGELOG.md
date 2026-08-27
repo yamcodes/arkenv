@@ -1,5 +1,41 @@
 # @arkenv/standard
 
+## 1.0.0-alpha.6
+
+### Minor Changes
+
+- #### Add `@arkenv/standard/valibot` and `@arkenv/standard/zod-mini` subpaths _[`#1623`](https://github.com/yamcodes/arkenv/pull/1623) [`6d2e3c7`](https://github.com/yamcodes/arkenv/commit/6d2e3c740f4db54767987973d946ddcbd04fe22f) [@yamcodes](https://github.com/yamcodes)_
+
+  Valibot and Zod Mini now have first-class imports that bind JSON Schema converters, so `v.number()` / Mini `z.boolean()` coerce without a manual `toJsonSchema` callback. Root `@arkenv/standard` stays dependency-free. `arkenv init` scaffolds `@arkenv/standard/valibot` for Valibot.
+
+  ```ts
+  import { arkenv } from "@arkenv/standard/valibot";
+  import * as v from "valibot";
+
+  export const env = arkenv({
+    PORT: v.optional(v.number(), 3000),
+    DEBUG: v.optional(v.boolean(), false),
+  });
+  ```
+
+  ```ts
+  import { arkenv } from "@arkenv/standard/zod-mini";
+  import * as z from "zod/mini";
+
+  export const env = arkenv({
+    PORT: z.number(),
+    DEBUG: z.boolean(),
+  });
+  ```
+
+  Install `@valibot/to-json-schema` when using the Valibot subpath, and `zod` when using the Zod Mini subpath (both optional peers). TypeScript must use `moduleResolution: "bundler" | "node16" | "nodenext"`.
+
+### Patch Changes
+
+- #### Record the schema without reading the environment when a tool is inspecting it _[`#1622`](https://github.com/yamcodes/arkenv/pull/1622) [`a735e9a`](https://github.com/yamcodes/arkenv/commit/a735e9a7531e3d9fbf6013f1dd814c33b2c9c47a) [@yamcodes](https://github.com/yamcodes)_
+
+  `arkenv()` now records the definition object instead of validating `process.env` when the ArkEnv CLI (or another in-process tool) is inspecting the schema. App validation is unchanged.
+
 ## 1.0.0-alpha.5
 
 ### Minor Changes
