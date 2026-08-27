@@ -22,10 +22,12 @@ src/
 │
 ├── features/                 # Pure Business Domains (Headless)
 │   ├── scaffold/             # Generation engine (Planner, Executor)
+│   ├── schema-loader/        # Inspect env.ts schemas without validating env
 │   └── config-mutation/      # AST-based configuration manipulation
 │
 ├── adapters/                 # Driven Adapters (Infrastructure)
 │   ├── node-workspace.adapter.ts # Concrete File System & Process logic
+│   ├── jiti-schema-loader/   # Jiti import of user env.ts (no validation)
 │   ├── logger.adapter.ts     # Concrete Terminal & JSON output logic
 │   └── prompt.adapter.ts     # Concrete @clack/prompts implementation
 │
