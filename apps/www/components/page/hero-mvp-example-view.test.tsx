@@ -77,12 +77,8 @@ describe("HeroMvpExampleView", () => {
 		expect(
 			screen.getByRole("tab", { name: "ArkType" }).querySelector("svg"),
 		).not.toBeNull();
-		expect(
-			screen.getByRole("tab", { name: "Zod" }),
-		).toBeInTheDocument();
-		expect(
-			screen.getByRole("tab", { name: "Valibot" }),
-		).toBeInTheDocument();
+		expect(screen.getByRole("tab", { name: "Zod" })).toBeInTheDocument();
+		expect(screen.getByRole("tab", { name: "Valibot" })).toBeInTheDocument();
 		expect(
 			screen.queryByRole("tab", { name: "Vanilla" }),
 		).not.toBeInTheDocument();
