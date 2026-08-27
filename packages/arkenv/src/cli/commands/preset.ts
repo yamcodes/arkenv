@@ -84,11 +84,22 @@ export class PresetUseCase {
 						"Git working tree is not clean. Commit or stash your changes before running arkenv preset.",
 					);
 					this.logger.info("Use --force to bypass this check.");
-					this.logger.refuse({
-						code: ERROR_CODES.GIT_TREE_DIRTY,
-						message: "Git working tree is not clean.",
-						retryWith: ["--force"],
-					});
+					this.logger.refuse(
+						{
+							code: ERROR_CODES.GIT_TREE_DIRTY,
+							message: "Git working tree is not clean.",
+							why: "Commit or stash your changes before running arkenv preset.",
+							retryWith: ["--force"],
+							nextActions: [
+								{
+									kind: "run-command",
+									label: "Re-run with --force to bypass git working tree check",
+									command: `{bin} preset ${input.action} --force`,
+								},
+							],
+						},
+						"preset",
+					);
 					return false;
 				}
 			} else if (gitStatus.status === "unknown") {

@@ -36,7 +36,9 @@ and exits with code `0`:
 ```
 
 When validation fails, `check` outputs the formatted issues and exits
-with code `1`:
+with code `4`. That band means "the command ran, and the environment does
+not match the schema" — not an internal crash (`1`) or a missing schema
+(`2`):
 
 ```txt title="Terminal"
 Errors found while validating environment variables
@@ -73,30 +75,50 @@ fast with a non-zero exit code. Parsing is literal plain dotenv syntax
 
 ### `--json` / `-j`
 
-Output structured JSON. On success:
+Write a settlement envelope to stdout. Success is `ok: true` with
+`exitCode: 0`:
 
 ```json
 {
-  "status": "success",
-  "message": "No issues found — your environment matches the schema",
-  "details": {
-    "keys": ["DATABASE_URL", "PORT"]
-  }
+  "ok": true,
+  "commandId": "check",
+  "result": { "schema": { "path": "env.ts" } },
+  "exitCode": 0,
+  "diagnostics": [],
+  "nextActions": []
 }
 ```
 
-On validation failure:
+Validation findings are still `ok: true` — the command completed — with
+`exitCode: 4` and `diagnostics` / `nextActions` for each key. Missing
+schema or a missing `--env-file` is `ok: false` with a dotted `CLI.*`
+code and exit `2`.
 
 ```json
 {
-  "status": "error",
-  "code": "VALIDATION_FAILED",
-  "message": "Errors found while validating environment variables",
-  "issues": [
+  "ok": true,
+  "commandId": "check",
+  "result": { "schema": { "path": "env.ts" } },
+  "exitCode": 4,
+  "diagnostics": [
     {
-      "path": "DATABASE_URL",
-      "message": "must be a URL string (was [REDACTED])",
-      "code": "INVALID_FORMAT"
+      "code": "ENV.MISSING_VARIABLE",
+      "severity": "error",
+      "summary": "DATABASE_URL is required",
+      "nextActions": [
+        {
+          "kind": "edit-file",
+          "label": "Set DATABASE_URL in .env",
+          "where": { "path": ".env" }
+        }
+      ]
+    }
+  ],
+  "nextActions": [
+    {
+      "kind": "edit-file",
+      "label": "Set DATABASE_URL in .env",
+      "where": { "path": ".env" }
     }
   ]
 }
@@ -104,7 +126,9 @@ On validation failure:
 
 ### `--quiet` / `-q`
 
-Suppress normal console output. Exits `0` on success and `1` on failure.
+Suppress normal console output. JSON envelopes still go to stdout when
+`--json` is set. Exit codes stay the same: `0` success, `2` could not
+run, `4` findings.
 
 ## CI/CD integration
 

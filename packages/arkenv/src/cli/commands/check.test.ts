@@ -1,295 +1,394 @@
+import fs from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import type {
-	LoggerPort,
-	ProjectScannerPort,
-	SchemaLoaderPort,
-	WorkspacePort,
-} from "@/shared/ports";
-import { CheckUseCase } from "./check";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { JitiSchemaLoaderAdapter } from "@/adapters/jiti-schema-loader";
+import { Logger } from "@/adapters/logger.adapter";
+import { NodeProjectScannerAdapter } from "@/adapters/node-project-scanner";
+import { NodeWorkspace } from "@/adapters/node-workspace";
+import { MemoryReporter } from "@/adapters/reporters/memory.reporter";
+import { CheckUseCase } from "@/cli/commands/check";
 
 describe("CheckUseCase", () => {
-	let logger: LoggerPort;
-	let workspace: WorkspacePort;
-	let scanner: ProjectScannerPort;
-	let schemaLoader: SchemaLoaderPort;
+	let tempDir: string;
+	let memoryReporter: MemoryReporter;
+	let logger: Logger;
+	let workspace: NodeWorkspace;
+	let scanner: NodeProjectScannerAdapter;
+	let schemaLoader: JitiSchemaLoaderAdapter;
 	let useCase: CheckUseCase;
 
-	beforeEach(() => {
-		logger = {
-			debug: vi.fn(),
-			info: vi.fn(),
-			warn: vi.fn(),
-			error: vi.fn(),
-			success: vi.fn(),
-			step: vi.fn(),
-			note: vi.fn(),
-			log: vi.fn(),
-			spinner: vi.fn(),
-			json: vi.fn(),
-			cancel: vi.fn(),
-			fatal: vi.fn(() => {
-				throw new Error("fatal");
-			}),
-			refuse: vi.fn(),
-			finish: vi.fn(),
-			flush: vi.fn(),
-			interactiveStdout: vi.fn(),
-			stdio: "inherit" as const,
-		};
-
-		workspace = {
-			exists: vi.fn(async () => true),
-			readFile: vi.fn(async () => ""),
-			writeFile: vi.fn(async () => {}),
-			mkdir: vi.fn(async () => {}),
-			execute: vi.fn(async () => {}),
-		} as unknown as WorkspacePort;
-
-		scanner = {
-			isEmptyDirectory: vi.fn(async () => false),
-			hasPackageJson: vi.fn(async () => true),
-			findTsConfig: vi.fn(async () => null),
-			loadTsConfig: vi.fn(async () => ({
-				path: "",
-				raw: {},
-				parsed: {},
-				compilerOptions: {},
-			})),
-			getEnvExampleKeys: vi.fn(async () => null),
-			suggestDefaultEnvPath: vi.fn(async () => "./src/env.ts"),
-			checkTsConfig: vi.fn(async () => ({ status: "strict" as const })),
-			checkRequirements: vi.fn(async () => []),
-			detectFramework: vi.fn(async () => "vanilla" as const),
-			detectBunFeatures: vi.fn(async () => []),
-			detectPackageManager: vi.fn(async () => "npm" as const),
-			hasSkill: vi.fn(async () => false),
-			checkGitStatus: vi.fn(async () => ({ status: "clean" as const })),
-			findPackageJson: vi.fn(async () => "/app/package.json"),
-			readArkenvConfig: vi.fn(async () => null),
-		};
-
-		schemaLoader = {
-			load: vi.fn(async () => ({
-				ok: true as const,
-				keys: [
-					{ name: "DATABASE_URL", schema: undefined, hasDefault: false },
-					{ name: "PORT", schema: undefined, hasDefault: true },
-				],
-				schema: {},
-			})),
-			validate: vi.fn(async () => ({ ok: true as const })),
-		};
-
+	beforeEach(async () => {
+		tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "arkenv-check-test-"));
+		memoryReporter = new MemoryReporter();
+		logger = new Logger({
+			reporter: memoryReporter,
+			isQuiet: false,
+			isJson: false,
+		});
+		workspace = new NodeWorkspace(false, "pipe", logger);
+		scanner = new NodeProjectScannerAdapter(logger);
+		schemaLoader = new JitiSchemaLoaderAdapter({
+			jitiAliases: {
+				"@arkenv/core": path.resolve(
+					__dirname,
+					"../../../../core/src/index.ts",
+				),
+				arkenv: path.resolve(__dirname, "../../../../core/src/index.ts"),
+			},
+		});
 		useCase = new CheckUseCase(logger, workspace, scanner, schemaLoader);
 	});
 
-	it("returns true and logs success when environment is valid", async () => {
-		const result = await useCase.execute({
-			schema: "./src/env.ts",
-		});
-
-		expect(result).toBe(true);
-		expect(logger.success).toHaveBeenCalledWith(
-			"No issues found — your environment matches the schema",
-		);
-		expect(schemaLoader.validate).toHaveBeenCalledWith(
-			{ schemaPath: path.resolve(process.cwd(), "./src/env.ts") },
-			expect.any(Object),
-		);
+	afterEach(async () => {
+		await fs.rm(tempDir, { recursive: true, force: true });
 	});
 
-	it("emits structured JSON on success when isJson is enabled", async () => {
-		const result = await useCase.execute({
-			schema: "./src/env.ts",
-			isJson: true,
-		});
+	it("returns exit code 2 when schema file cannot be found", async () => {
+		const exitCode = await useCase.execute({ cwd: tempDir });
+		expect(exitCode).toBe(2);
+		expect(memoryReporter.logs.some((l) => l.type === "error")).toBe(true);
+	});
 
-		expect(result).toBe(true);
-		expect(logger.json).toHaveBeenCalledWith({
-			status: "success",
-			message: "No issues found — your environment matches the schema",
-			details: {
-				keys: ["DATABASE_URL", "PORT"],
+	it("emits CLI.SCHEMA_NOT_FOUND in JSON mode when schema file is missing", async () => {
+		(logger as any).options.isJson = true;
+		const exitCode = await useCase.execute({ cwd: tempDir });
+		expect(exitCode).toBe(2);
+
+		const reports = memoryReporter.logs.filter(
+			(l) => l.type === "reportErrored",
+		);
+		expect(reports).toHaveLength(1);
+		expect(reports[0].data).toMatchObject({
+			ok: false,
+			commandId: "check",
+			error: {
+				code: "CLI.SCHEMA_NOT_FOUND",
+				severity: "error",
+				summary: expect.stringContaining("Could not locate your schema file"),
+				nextActions: [
+					{
+						kind: "run-command",
+						label: "Initialize a new ArkEnv schema",
+					},
+				],
 			},
 		});
 	});
 
-	it("fails and logs error when schema file does not exist", async () => {
-		vi.mocked(workspace.exists).mockResolvedValue(false);
-
-		const result = await useCase.execute({
-			schema: "./src/missing-env.ts",
+	it("returns exit code 2 when --schema specifies a non-existent file", async () => {
+		const exitCode = await useCase.execute({
+			schema: "./non-existent.ts",
+			cwd: tempDir,
 		});
-
-		expect(result).toBe(false);
-		expect(logger.error).toHaveBeenCalledWith(
-			expect.stringContaining("Schema file not found"),
-		);
+		expect(exitCode).toBe(2);
+		expect(
+			memoryReporter.logs.some(
+				(l) => l.type === "error" && l.message.includes("not found"),
+			),
+		).toBe(true);
 	});
 
-	it("emits structured error when schema file is missing in JSON mode", async () => {
-		vi.mocked(workspace.exists).mockResolvedValue(false);
+	it("returns exit code 2 when --env-file specifies a non-existent file", async () => {
+		const envPath = path.join(tempDir, "env.ts");
+		await fs.writeFile(
+			envPath,
+			`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ PORT: "number" });\n`,
+		);
 
-		const result = await useCase.execute({
-			schema: "./src/missing-env.ts",
-			isJson: true,
+		const exitCode = await useCase.execute({
+			schema: envPath,
+			envFiles: ["./missing.env"],
+			cwd: tempDir,
 		});
+		expect(exitCode).toBe(2);
+	});
 
-		expect(result).toBe(false);
-		expect(logger.json).toHaveBeenCalledWith({
-			status: "error",
-			code: "SCHEMA_NOT_FOUND",
-			message: expect.stringContaining("Schema file not found"),
-		});
+	it("returns exit code 2 when schema file does not call arkenv()", async () => {
+		const envPath = path.join(tempDir, "env.ts");
+		await fs.writeFile(envPath, "export const foo = 123;\n");
+
+		const exitCode = await useCase.execute({ schema: envPath, cwd: tempDir });
+		expect(exitCode).toBe(2);
+		expect(
+			memoryReporter.logs.some(
+				(l) =>
+					l.type === "error" &&
+					l.message.includes("No arkenv() schema definition was found"),
+			),
+		).toBe(true);
 	});
 
 	it("discovers schema file from package.json arkenv config", async () => {
-		vi.mocked(scanner.readArkenvConfig).mockResolvedValue({
-			schema: "./custom/my-env.ts",
-			layout: "flat",
-		});
-
-		const result = await useCase.execute({});
-
-		expect(result).toBe(true);
-		expect(schemaLoader.validate).toHaveBeenCalledWith(
-			{ schemaPath: path.resolve(process.cwd(), "./custom/my-env.ts") },
-			expect.any(Object),
+		const schemaDir = path.join(tempDir, "config");
+		await fs.mkdir(schemaDir);
+		const envPath = path.join(schemaDir, "env.ts");
+		await fs.writeFile(
+			envPath,
+			`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ PORT: "number" });\n`,
 		);
-	});
-
-	it("fails when an explicitly provided --env-file does not exist", async () => {
-		vi.mocked(workspace.exists).mockImplementation(async (p) => {
-			return !p.endsWith(".env.local");
-		});
-
-		const result = await useCase.execute({
-			schema: "./src/env.ts",
-			envFiles: [".env.local"],
-		});
-
-		expect(result).toBe(false);
-		expect(logger.error).toHaveBeenCalledWith(
-			expect.stringContaining("Environment file not found"),
+		await fs.writeFile(
+			path.join(tempDir, "package.json"),
+			JSON.stringify({ name: "app", arkenv: { schema: "./config/env.ts" } }),
 		);
+
+		const originalEnv = { ...process.env };
+		process.env.PORT = "3000";
+
+		try {
+			const exitCode = await useCase.execute({ cwd: tempDir });
+			expect(exitCode).toBe(0);
+		} finally {
+			process.env = originalEnv;
+		}
 	});
 
-	it("emits ENV_FILE_NOT_FOUND error in JSON mode when --env-file is missing", async () => {
-		vi.mocked(workspace.exists).mockImplementation(async (p) => {
-			return !p.endsWith(".env.local");
-		});
+	it("returns exit code 0 when environment variables are valid", async () => {
+		const envPath = path.join(tempDir, "env.ts");
+		await fs.writeFile(
+			envPath,
+			`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ PORT: "number" });\n`,
+		);
 
-		const result = await useCase.execute({
-			schema: "./src/env.ts",
-			envFiles: [".env.local"],
-			isJson: true,
-		});
+		const originalEnv = { ...process.env };
+		process.env.PORT = "3000";
 
-		expect(result).toBe(false);
-		expect(logger.json).toHaveBeenCalledWith({
-			status: "error",
-			code: "ENV_FILE_NOT_FOUND",
-			message: expect.stringContaining("Environment file not found"),
-		});
+		try {
+			const exitCode = await useCase.execute({ schema: envPath, cwd: tempDir });
+			expect(exitCode).toBe(0);
+			expect(
+				memoryReporter.logs.some(
+					(l) =>
+						l.type === "success" &&
+						l.message.includes("your environment matches the schema"),
+				),
+			).toBe(true);
+		} finally {
+			process.env = originalEnv;
+		}
 	});
 
-	it("loads and merges multiple --env-file flags in sequence", async () => {
-		vi.mocked(workspace.readFile).mockImplementation(async (filePath) => {
-			if (filePath.endsWith(".env.base")) {
-				return "PORT=3000\nHOST=localhost\nDEBUG=false";
-			}
-			if (filePath.endsWith(".env.override")) {
-				return "PORT=8080\nDEBUG=true";
-			}
-			return "";
-		});
+	it("loads and merges multiple --env-file parameters correctly", async () => {
+		const envPath = path.join(tempDir, "env.ts");
+		await fs.writeFile(
+			envPath,
+			`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ HOST: "string", PORT: "number" });\n`,
+		);
 
-		const result = await useCase.execute({
-			schema: "./src/env.ts",
-			envFiles: [".env.base", ".env.override"],
-		});
+		const envFile1 = path.join(tempDir, ".env.base");
+		const envFile2 = path.join(tempDir, ".env.override");
+		await fs.writeFile(envFile1, "HOST=localhost\nPORT=3000\n");
+		await fs.writeFile(envFile2, "PORT=8080\n");
 
-		expect(result).toBe(true);
-		expect(schemaLoader.validate).toHaveBeenCalledWith(
-			expect.any(Object),
-			expect.objectContaining({
-				PORT: "8080",
-				HOST: "localhost",
-				DEBUG: "true",
+		const originalEnv = { ...process.env };
+		delete process.env.HOST;
+		delete process.env.PORT;
+
+		try {
+			const exitCode = await useCase.execute({
+				schema: envPath,
+				envFiles: [envFile1, envFile2],
+				cwd: tempDir,
+			});
+			expect(exitCode).toBe(0);
+		} finally {
+			process.env = originalEnv;
+		}
+	});
+
+	it("returns exit code 4 with diagnostics and nextActions when validation fails", async () => {
+		(logger as any).options.isJson = true;
+		const envPath = path.join(tempDir, "env.ts");
+		await fs.writeFile(
+			envPath,
+			`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ DATABASE_URL: "string", PORT: "number" });\n`,
+		);
+
+		const originalEnv = { ...process.env };
+		delete process.env.DATABASE_URL;
+		process.env.PORT = "invalid-number";
+
+		try {
+			const exitCode = await useCase.execute({ schema: envPath, cwd: tempDir });
+			expect(exitCode).toBe(4);
+
+			const reports = memoryReporter.logs.filter(
+				(l) => l.type === "reportCompleted",
+			);
+			expect(reports).toHaveLength(1);
+			const envelope = reports[0].data as any;
+			expect(envelope.ok).toBe(true);
+			expect(envelope.commandId).toBe("check");
+			expect(envelope.exitCode).toBe(4);
+			expect(envelope.diagnostics).toHaveLength(2);
+
+			const missingDiag = envelope.diagnostics.find(
+				(d: any) => d.meta.key === "DATABASE_URL",
+			);
+			expect(missingDiag).toMatchObject({
+				code: "ENV.MISSING_VARIABLE",
+				severity: "error",
+				meta: {
+					key: "DATABASE_URL",
+					received: "missing",
+				},
+				nextActions: [
+					{
+						kind: "edit-file",
+						label: "Set DATABASE_URL in .env",
+						where: { path: ".env" },
+					},
+				],
+			});
+
+			const invalidDiag = envelope.diagnostics.find(
+				(d: any) => d.meta.key === "PORT",
+			);
+			expect(invalidDiag).toMatchObject({
+				code: "ENV.INVALID_VALUE",
+				severity: "error",
+				meta: {
+					key: "PORT",
+					received: "invalid-number",
+				},
+				nextActions: [
+					{
+						kind: "edit-file",
+						label: "Set PORT in .env",
+						where: { path: ".env" },
+					},
+				],
+			});
+		} finally {
+			process.env = originalEnv;
+		}
+	});
+
+	it("strictly redacts sensitive variable values in diagnostics meta and summary", async () => {
+		(logger as any).options.isJson = true;
+		const envPath = path.join(tempDir, "env.ts");
+		await fs.writeFile(
+			envPath,
+			`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ API_SECRET_TOKEN: "number" });\n`,
+		);
+
+		const originalEnv = { ...process.env };
+		process.env.API_SECRET_TOKEN = "super-secret-token-value";
+
+		try {
+			const exitCode = await useCase.execute({ schema: envPath, cwd: tempDir });
+			expect(exitCode).toBe(4);
+
+			const reports = memoryReporter.logs.filter(
+				(l) => l.type === "reportCompleted",
+			);
+			const envelope = reports[0].data as any;
+			const diag = envelope.diagnostics[0];
+
+			expect(diag.meta.received).toBe("[REDACTED]");
+			expect(diag.summary).toContain("(was [REDACTED])");
+			expect(JSON.stringify(envelope)).not.toContain(
+				"super-secret-token-value",
+			);
+		} finally {
+			process.env = originalEnv;
+		}
+	});
+
+	it("strictly redacts sensitive values containing closing parentheses", async () => {
+		(logger as any).options.isJson = true;
+		const envPath = path.join(tempDir, "env.ts");
+		await fs.writeFile(
+			envPath,
+			`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ DATABASE_URL: "number" });\n`,
+		);
+
+		const originalEnv = { ...process.env };
+		process.env.DATABASE_URL = "postgres://user:p)ass@localhost:5432/db";
+
+		try {
+			const exitCode = await useCase.execute({ schema: envPath, cwd: tempDir });
+			expect(exitCode).toBe(4);
+
+			const reports = memoryReporter.logs.filter(
+				(l) => l.type === "reportCompleted",
+			);
+			const envelope = reports[0].data as any;
+			const diag = envelope.diagnostics[0];
+
+			expect(diag.meta.received).toBe("[REDACTED]");
+			expect(diag.summary).toBe(
+				"DATABASE_URL must be a number (was [REDACTED])",
+			);
+			expect(JSON.stringify(envelope)).not.toContain("p)ass");
+		} finally {
+			process.env = originalEnv;
+		}
+	});
+
+	it("suggests .env.local for nextActions when Next.js framework is detected", async () => {
+		(logger as any).options.isJson = true;
+		await fs.writeFile(
+			path.join(tempDir, "package.json"),
+			JSON.stringify({
+				name: "my-next-app",
+				dependencies: { next: "15.0.0" },
 			}),
 		);
-	});
-
-	it("fails when schemaLoader.load fails under capture mode", async () => {
-		vi.mocked(schemaLoader.load).mockResolvedValue({
-			ok: false,
-			code: "NO_SCHEMA",
-			message: "No arkenv() schema found",
-		});
-
-		const result = await useCase.execute({
-			schema: "./src/env.ts",
-		});
-
-		expect(result).toBe(false);
-		expect(logger.error).toHaveBeenCalledWith("No arkenv() schema found");
-		expect(schemaLoader.validate).not.toHaveBeenCalled();
-	});
-
-	it("fails and logs formatted error when validation fails", async () => {
-		vi.mocked(schemaLoader.validate).mockResolvedValue({
-			ok: false,
-			kind: "validation",
-			message:
-				"Errors found while validating environment variables\n  PORT must be a number",
-			issues: [
-				{
-					path: "PORT",
-					message: "must be a number",
-					code: "INVALID_TYPE",
-				},
-			],
-		});
-
-		const result = await useCase.execute({
-			schema: "./src/env.ts",
-		});
-
-		expect(result).toBe(false);
-		expect(logger.log).toHaveBeenCalledWith(
-			"Errors found while validating environment variables\n  PORT must be a number",
+		const envPath = path.join(tempDir, "env.ts");
+		await fs.writeFile(
+			envPath,
+			`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ API_KEY: "string" });\n`,
 		);
+
+		const originalEnv = { ...process.env };
+		delete process.env.API_KEY;
+
+		try {
+			const exitCode = await useCase.execute({ schema: envPath, cwd: tempDir });
+			expect(exitCode).toBe(4);
+
+			const reports = memoryReporter.logs.filter(
+				(l) => l.type === "reportCompleted",
+			);
+			const envelope = reports[0].data as any;
+			expect(envelope.nextActions[0].where.path).toBe(".env.local");
+			expect(envelope.nextActions[0].meta.targetFile).toBe(".env.local");
+		} finally {
+			process.env = originalEnv;
+		}
 	});
 
-	it("emits VALIDATION_FAILED with issues array in JSON mode", async () => {
-		const issues = [
-			{
-				path: "PORT",
-				message: "must be a number (was a string)",
-				code: "INVALID_TYPE" as const,
-			},
-		];
+	it("returns exit code 1 when an unexpected runtime crash occurs during evaluation", async () => {
+		(logger as any).options.isJson = true;
+		const envPath = path.join(tempDir, "env.ts");
+		await fs.writeFile(
+			envPath,
+			`import { arkenv } from "@arkenv/core";\nimport { isCapturingSchema } from "@repo/utils";\nexport const env = arkenv({ PORT: "number" });\nif (!isCapturingSchema()) { throw new Error("Unexpected native failure"); }\n`,
+		);
 
-		vi.mocked(schemaLoader.validate).mockResolvedValue({
-			ok: false,
-			kind: "validation",
-			message:
-				"Errors found while validating environment variables\n  PORT must be a number",
-			issues,
-		});
+		const originalEnv = { ...process.env };
+		process.env.PORT = "3000";
 
-		const result = await useCase.execute({
-			schema: "./src/env.ts",
-			isJson: true,
-		});
+		try {
+			const exitCode = await useCase.execute({ schema: envPath, cwd: tempDir });
+			expect(exitCode).toBe(1);
 
-		expect(result).toBe(false);
-		expect(logger.json).toHaveBeenCalledWith({
-			status: "error",
-			code: "VALIDATION_FAILED",
-			message: "Errors found while validating environment variables",
-			issues,
-		});
+			const reports = memoryReporter.logs.filter(
+				(l) => l.type === "reportErrored",
+			);
+			expect(reports).toHaveLength(1);
+			expect(reports[0].data).toMatchObject({
+				ok: false,
+				commandId: "check",
+				error: {
+					code: "CLI.INTERNAL_ERROR",
+					severity: "error",
+					summary: expect.stringContaining("Unexpected native failure"),
+				},
+			});
+		} finally {
+			process.env = originalEnv;
+		}
 	});
 });

@@ -91,11 +91,14 @@ describe("PresetUseCase", () => {
 			expect(logger.error).toHaveBeenCalledWith(
 				expect.stringContaining("Git working tree is not clean"),
 			);
-			expect(logger.refuse).toHaveBeenCalledWith({
-				code: ERROR_CODES.GIT_TREE_DIRTY,
-				message: "Git working tree is not clean.",
-				retryWith: ["--force"],
-			});
+			expect(logger.refuse).toHaveBeenCalledWith(
+				expect.objectContaining({
+					code: ERROR_CODES.GIT_TREE_DIRTY,
+					message: "Git working tree is not clean.",
+					retryWith: ["--force"],
+				}),
+				"preset",
+			);
 			expect(workspace.writeFile).not.toHaveBeenCalled();
 		});
 

@@ -1,10 +1,17 @@
 import pc from "picocolors";
 import { ERROR_CODES, type Refusal } from "@/shared/errors";
+import {
+	type CompletedEnvelope,
+	type ErroredEnvelope,
+	type NextAction,
+	resolveNextActionBin,
+	sanitizeSecretText,
+} from "@/shared/protocol";
 import type { Reporter, Spinner } from "./types";
 
 /**
- * Reporter implementation that outputs structured JSON logs.
- * Useful for machine-readable output or agent modes.
+ * Reporter implementation that outputs structured JSON logs conforming to Prisma 8 settlement envelopes.
+ * Machine-readable output for AI coding agents and CI/CD pipelines.
  */
 export class JsonReporter implements Reporter {
 	info(message: string) {
@@ -51,45 +58,139 @@ export class JsonReporter implements Reporter {
 		process.stdout.write(`${JSON.stringify(data, null, 2)}\n`);
 	}
 
-	cancel(message: string) {
+	reportCompleted(envelope: CompletedEnvelope) {
+		const resolvedDiagnostics = envelope.diagnostics.map((d) => ({
+			...d,
+			nextActions: (d.nextActions ?? []).map((action) =>
+				resolveNextActionBin(action),
+			),
+		}));
+		const resolvedNextActions = (envelope.nextActions ?? []).map((action) =>
+			resolveNextActionBin(action),
+		);
+
 		this.json({
-			status: "cancelled",
-			message,
+			ok: true,
+			commandId: envelope.commandId,
+			result: envelope.result,
+			exitCode: envelope.exitCode,
+			diagnostics: resolvedDiagnostics,
+			nextActions: resolvedNextActions,
 		});
 	}
 
-	fatal(message: string, error?: unknown): never {
+	reportErrored(envelope: ErroredEnvelope) {
+		const resolvedErrorActions = (envelope.error.nextActions ?? []).map(
+			(action) => resolveNextActionBin(action),
+		);
+		const resolvedNextActions = (
+			envelope.nextActions ?? resolvedErrorActions
+		).map((action) => resolveNextActionBin(action));
+		const resolvedDiagnostics = (envelope.diagnostics ?? []).map((d) => ({
+			...d,
+			nextActions: (d.nextActions ?? []).map((action) =>
+				resolveNextActionBin(action),
+			),
+		}));
+
+		this.json({
+			ok: false,
+			commandId: envelope.commandId,
+			error: {
+				...envelope.error,
+				nextActions: resolvedErrorActions,
+			},
+			diagnostics: resolvedDiagnostics,
+			nextActions: resolvedNextActions,
+		});
+	}
+
+	cancel(message: string, commandId = "cli") {
+		this.reportErrored({
+			ok: false,
+			commandId,
+			error: {
+				code: ERROR_CODES.CANCELLED,
+				severity: "info",
+				summary: sanitizeSecretText(message),
+				nextActions: [],
+			},
+			diagnostics: [],
+			nextActions: [],
+		});
+	}
+
+	fatal(message: string, error?: unknown, commandId = "cli"): never {
 		const errorText =
 			error instanceof Error
 				? error.message
 				: error
 					? String(error)
 					: undefined;
-		this.json({
-			status: "error",
-			code: ERROR_CODES.INTERNAL,
-			message,
-			retryWith: [],
-			...(errorText !== undefined ? { details: { error: errorText } } : {}),
+
+		this.reportErrored({
+			ok: false,
+			commandId,
+			error: {
+				code: ERROR_CODES.INTERNAL,
+				severity: "error",
+				summary: sanitizeSecretText(message),
+				...(errorText !== undefined
+					? { why: sanitizeSecretText(errorText) }
+					: {}),
+				...(errorText !== undefined ? { meta: { error: errorText } } : {}),
+				nextActions: [],
+			},
+			diagnostics: [],
+			nextActions: [],
 		});
 		throw error instanceof Error ? error : new Error(message);
 	}
 
-	refuse(refusal: Refusal) {
-		this.json({
-			status: "error",
-			code: refusal.code,
-			message: refusal.message,
-			retryWith: refusal.retryWith,
-			...(refusal.details !== undefined ? { details: refusal.details } : {}),
+	refuse(refusal: Refusal, commandId = "init") {
+		const nextActions: NextAction[] =
+			refusal.nextActions ??
+			(refusal.retryWith?.includes("--force")
+				? [
+						{
+							kind: "run-command",
+							label: "Re-run with --force to bypass this check",
+							command: `{bin} ${commandId} --force`,
+						},
+					]
+				: []);
+
+		this.reportErrored({
+			ok: false,
+			commandId,
+			error: {
+				code: refusal.code,
+				severity: "error",
+				summary: sanitizeSecretText(refusal.message),
+				...(refusal.why ? { why: sanitizeSecretText(refusal.why) } : {}),
+				...(refusal.details !== undefined ? { meta: refusal.details } : {}),
+				nextActions,
+			},
+			diagnostics: [],
+			nextActions,
 		});
 	}
 
-	finish(message: string, details?: Record<string, unknown>) {
-		this.json({
-			status: "success",
-			message,
-			details,
+	finish(
+		message: string,
+		details?: Record<string, unknown>,
+		commandId = "init",
+	) {
+		this.reportCompleted({
+			ok: true,
+			commandId,
+			result: {
+				message,
+				...(details ?? {}),
+			},
+			exitCode: 0,
+			diagnostics: [],
+			nextActions: [],
 		});
 	}
 

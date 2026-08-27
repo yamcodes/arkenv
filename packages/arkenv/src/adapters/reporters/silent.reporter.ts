@@ -1,4 +1,5 @@
 import type { Refusal } from "@/shared/errors";
+import type { CompletedEnvelope, ErroredEnvelope } from "@/shared/protocol";
 import type { Reporter, Spinner } from "./types";
 
 /**
@@ -33,11 +34,11 @@ export class SilentReporter implements Reporter {
 		process.stdout.write(`${JSON.stringify(data, null, 2)}\n`);
 	}
 
-	cancel(message: string) {
+	cancel(message: string, _commandId?: string) {
 		process.stderr.write(`✘ Cancelled: ${message}\n`);
 	}
 
-	fatal(message: string, error?: unknown): never {
+	fatal(message: string, error?: unknown, _commandId?: string): never {
 		process.stderr.write(`✘ Fatal: ${message}\n`);
 		if (error) {
 			process.stderr.write(
@@ -47,9 +48,17 @@ export class SilentReporter implements Reporter {
 		throw error instanceof Error ? error : new Error(message);
 	}
 
-	refuse(_refusal: Refusal) {}
+	refuse(_refusal: Refusal, _commandId?: string) {}
 
-	finish(_message: string, _details?: Record<string, unknown>) {}
+	finish(
+		_message: string,
+		_details?: Record<string, unknown>,
+		_commandId?: string,
+	) {}
+
+	reportCompleted(_envelope: CompletedEnvelope) {}
+
+	reportErrored(_envelope: ErroredEnvelope) {}
 
 	async flush(): Promise<void> {
 		return new Promise((resolve) => {

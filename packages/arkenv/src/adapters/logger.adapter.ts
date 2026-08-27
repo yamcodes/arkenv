@@ -1,5 +1,6 @@
 import type { Refusal } from "@/shared/errors";
 import type { LoggerPort } from "@/shared/ports";
+import type { CompletedEnvelope, ErroredEnvelope } from "@/shared/protocol";
 import {
 	JsonReporter,
 	type Reporter,
@@ -15,6 +16,7 @@ export type LoggerOptions = {
 	isQuiet: boolean;
 	isJson: boolean;
 	isYes?: boolean;
+	reporter?: Reporter;
 };
 
 /**
@@ -26,13 +28,19 @@ export class Logger implements LoggerPort {
 	private reporter: Reporter;
 
 	constructor(private options: LoggerOptions) {
-		if (options.isJson) {
+		if (options.reporter) {
+			this.reporter = options.reporter;
+		} else if (options.isJson) {
 			this.reporter = new JsonReporter();
 		} else if (options.isQuiet) {
 			this.reporter = new SilentReporter();
 		} else {
 			this.reporter = new TextReporter();
 		}
+	}
+
+	get isJson(): boolean {
+		return this.options.isJson;
 	}
 
 	debug(message: string) {
@@ -91,20 +99,32 @@ export class Logger implements LoggerPort {
 		}
 	}
 
-	cancel(message: string) {
-		this.reporter.cancel(message);
+	cancel(message: string, commandId = "cli") {
+		this.reporter.cancel(message, commandId);
 	}
 
-	fatal(message: string, error?: unknown): never {
-		this.reporter.fatal(message, error);
+	fatal(message: string, error?: unknown, commandId = "cli"): never {
+		this.reporter.fatal(message, error, commandId);
 	}
 
-	refuse(refusal: Refusal) {
-		this.reporter.refuse(refusal);
+	refuse(refusal: Refusal, commandId = "init") {
+		this.reporter.refuse(refusal, commandId);
 	}
 
-	finish(message: string, details?: Record<string, unknown>) {
-		this.reporter.finish(message, details);
+	finish(
+		message: string,
+		details?: Record<string, unknown>,
+		commandId = "init",
+	) {
+		this.reporter.finish(message, details, commandId);
+	}
+
+	reportCompleted(envelope: CompletedEnvelope) {
+		this.reporter.reportCompleted(envelope);
+	}
+
+	reportErrored(envelope: ErroredEnvelope) {
+		this.reporter.reportErrored(envelope);
 	}
 
 	async flush() {

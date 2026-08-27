@@ -1,40 +1,40 @@
 import path from "node:path";
+import {
+	type EnvIssue,
+	formatIssues,
+	indent,
+	isDebugSecrets,
+	safeStringify,
+	shouldRedact,
+} from "@repo/utils";
 import { parseDotenv } from "@/features/check/dotenv";
-import type {
-	LoggerPort,
-	ProjectScannerPort,
-	SchemaLoaderPort,
-	WorkspacePort,
+import {
+	type LoggerPort,
+	type ProjectScannerPort,
+	SCHEMA_LOAD_ERROR_CODES,
+	type SchemaLoaderPort,
+	type WorkspacePort,
 } from "@/shared/ports";
+import {
+	type Diagnostic,
+	type NextAction,
+	PROTOCOL_ERROR_CODES,
+	sanitizeSecretText,
+} from "@/shared/protocol";
 
 /**
- * Input parameters for the `check` CLI command.
+ * Input parameters for the 'check' command.
  */
 export type CheckInput = {
-	/**
-	 * Explicit path to the schema module (overrides package.json or convention discovery).
-	 */
-	schema?: string | undefined;
-	/**
-	 * List of `.env` file paths to load in sequence (later files overwrite earlier ones).
-	 */
-	envFiles?: string[] | undefined;
-	/**
-	 * Suppress console output.
-	 */
-	isQuiet?: boolean | undefined;
-	/**
-	 * Emit machine-readable JSON output.
-	 */
-	isJson?: boolean | undefined;
-	/**
-	 * Run in agent mode (implies `--quiet`, `--json`, `--yes`).
-	 */
-	isAgent?: boolean | undefined;
-	/**
-	 * Working directory to resolve paths from (defaults to `process.cwd()`).
-	 */
-	cwd?: string | undefined;
+	schema?: string;
+	file?: string;
+	envFiles?: string[];
+	isQuiet?: boolean;
+	isJson?: boolean;
+	isAgent?: boolean;
+	isYes?: boolean;
+	isForce?: boolean;
+	cwd?: string;
 };
 
 /**
@@ -42,7 +42,8 @@ export type CheckInput = {
  */
 export class CheckUseCase {
 	/**
-	 * Creates a new CheckUseCase instance.
+	 * Create a CheckUseCase with the ports used to locate, load, and
+	 * validate the project schema.
 	 *
 	 * @param logger Port for console logging and structured reporting
 	 * @param workspace Port for reading files and checking filesystem existence
@@ -59,31 +60,64 @@ export class CheckUseCase {
 	/**
 	 * Execute environment variable validation against the project schema.
 	 *
-	 * @param input Configuration options and overrides for the check command
-	 * @returns `true` if the environment is valid; `false` otherwise
+	 * @param input Options and overrides for the check command
+	 * @returns Process exit code (0 for valid, 4 for validation issues, 2 for missing schema/preconditions, 1 for internal crash)
 	 */
-	async execute(input: CheckInput): Promise<boolean> {
+	async execute(input: CheckInput): Promise<number> {
 		const cwd = input.cwd ?? process.cwd();
-		const isJson = Boolean(input.isJson || input.isAgent);
+		const requestedSchema = input.schema ?? input.file;
+		const isJson = Boolean(this.logger.isJson || input.isJson || input.isAgent);
 
-		// 1. Locate schema file
-		const schemaPath = await this.resolveSchemaPath(cwd, input.schema);
-		if (!schemaPath) {
-			const message = input.schema
-				? `Schema file not found at "${path.resolve(cwd, input.schema)}".`
-				: "Could not locate your schema file. Add an 'arkenv' entry to package.json or specify --schema <path>.";
-			this.logger.error(message);
-			if (isJson) {
-				this.logger.json({
-					status: "error",
-					code: "SCHEMA_NOT_FOUND",
-					message,
-				});
+		// 1. Detect framework to suggest appropriate .env file (e.g. .env.local for Next.js)
+		let suggestedEnvFile = ".env";
+		try {
+			const framework = await this.scanner.detectFramework(cwd);
+			if (framework === "nextjs") {
+				suggestedEnvFile = ".env.local";
 			}
-			return false;
+		} catch {
+			// Default to .env if scanner fails
 		}
 
-		// 2. Resolve environment variables
+		// 2. Locate schema file
+		const schemaPath = await this.resolveSchemaPath(cwd, requestedSchema);
+		if (!schemaPath) {
+			const summary = requestedSchema
+				? `Schema file not found at "${path.resolve(cwd, requestedSchema)}".`
+				: "Could not locate your schema file. Add an 'arkenv' entry to package.json or specify --schema <path>.";
+
+			const nextActions: NextAction[] = [
+				{
+					kind: "run-command",
+					label: "Initialize a new ArkEnv schema",
+					command: "{bin} init",
+				},
+			];
+
+			if (isJson) {
+				this.logger.reportErrored({
+					ok: false,
+					commandId: "check",
+					error: {
+						code: PROTOCOL_ERROR_CODES.CLI_SCHEMA_NOT_FOUND,
+						severity: "error",
+						summary,
+						why: "The schema file could not be found in package.json or convention paths.",
+						docsUrl: "https://arkenv.js.org/docs/reference/check",
+						nextActions,
+					},
+					diagnostics: [],
+					nextActions,
+				});
+			} else {
+				this.logger.error(summary);
+			}
+			return 2;
+		}
+
+		const relSchemaPath = path.relative(cwd, schemaPath) || schemaPath;
+
+		// 3. Resolve environment variables
 		const resolvedEnv: Record<string, string | undefined> = {
 			...process.env,
 		};
@@ -92,16 +126,25 @@ export class CheckUseCase {
 			for (const envFile of input.envFiles) {
 				const resolvedEnvPath = path.resolve(cwd, envFile);
 				if (!(await this.workspace.exists(resolvedEnvPath))) {
-					const message = `Environment file not found at "${resolvedEnvPath}".`;
-					this.logger.error(message);
+					const summary = `Environment file not found at "${resolvedEnvPath}".`;
 					if (isJson) {
-						this.logger.json({
-							status: "error",
-							code: "ENV_FILE_NOT_FOUND",
-							message,
+						this.logger.reportErrored({
+							ok: false,
+							commandId: "check",
+							error: {
+								code: PROTOCOL_ERROR_CODES.CLI_INVALID_ARGUMENT,
+								severity: "error",
+								summary,
+								where: { path: envFile },
+								nextActions: [],
+							},
+							diagnostics: [],
+							nextActions: [],
 						});
+					} else {
+						this.logger.error(summary);
 					}
-					return false;
+					return 2;
 				}
 
 				const content = await this.workspace.readFile(resolvedEnvPath);
@@ -110,88 +153,266 @@ export class CheckUseCase {
 			}
 		}
 
-		// 3. Inspect schema under capture mode to verify validity and extract keys
+		// 4. Load schema under capture mode to verify validity
 		const loadResult = await this.schemaLoader.load({ schemaPath });
 		if (!loadResult.ok) {
-			this.logger.error(loadResult.message);
-			if (isJson) {
-				this.logger.json({
-					status: "error",
-					code: loadResult.code,
-					message: loadResult.message,
-				});
+			const summary = sanitizeSecretText(loadResult.message);
+			if (loadResult.code === SCHEMA_LOAD_ERROR_CODES.NO_SCHEMA) {
+				const nextActions: NextAction[] = [
+					{
+						kind: "run-command",
+						label: "Initialize a new ArkEnv schema",
+						command: "{bin} init",
+					},
+				];
+
+				if (isJson) {
+					this.logger.reportErrored({
+						ok: false,
+						commandId: "check",
+						error: {
+							code: PROTOCOL_ERROR_CODES.CLI_SCHEMA_NOT_FOUND,
+							severity: "error",
+							summary,
+							where: { path: relSchemaPath },
+							nextActions,
+						},
+						diagnostics: [],
+						nextActions,
+					});
+				} else {
+					this.logger.error(summary);
+				}
+				return 2;
 			}
-			return false;
+
+			const whyText = loadResult.cause
+				? sanitizeSecretText(
+						loadResult.cause instanceof Error
+							? (loadResult.cause.stack ?? loadResult.cause.message)
+							: String(loadResult.cause),
+					)
+				: undefined;
+
+			const nextActions: NextAction[] = [
+				{
+					kind: "edit-file",
+					label: `Fix errors in ${relSchemaPath}`,
+					where: { path: relSchemaPath },
+				},
+			];
+
+			if (isJson) {
+				this.logger.reportErrored({
+					ok: false,
+					commandId: "check",
+					error: {
+						code: PROTOCOL_ERROR_CODES.CLI_SCHEMA_NOT_FOUND,
+						severity: "error",
+						summary,
+						...(whyText ? { why: whyText } : {}),
+						where: { path: relSchemaPath },
+						nextActions,
+					},
+					diagnostics: [],
+					nextActions,
+				});
+			} else {
+				this.logger.error(summary);
+				if (whyText) {
+					this.logger.warn(whyText);
+				}
+			}
+			return 2;
 		}
 
-		// 4. Validate resolved environment against schema
+		// 5. Validate resolved environment against schema
 		const validationResult = await this.schemaLoader.validate(
 			{ schemaPath },
 			resolvedEnv,
 		);
 
-		if (!validationResult.ok) {
-			if (validationResult.kind === "validation") {
-				if (isJson) {
-					this.logger.json({
-						status: "error",
-						code: "VALIDATION_FAILED",
-						message: "Errors found while validating environment variables",
-						issues: validationResult.issues,
-					});
-				} else {
-					this.logger.log(validationResult.message.trimEnd());
-				}
-				return false;
-			}
-
-			// kind === "load"
-			this.logger.error(validationResult.message);
+		if (validationResult.ok) {
 			if (isJson) {
-				this.logger.json({
-					status: "error",
-					code: validationResult.code,
-					message: validationResult.message,
+				this.logger.reportCompleted({
+					ok: true,
+					commandId: "check",
+					result: {
+						schema: {
+							path: relSchemaPath,
+						},
+					},
+					exitCode: 0,
+					diagnostics: [],
+					nextActions: [],
 				});
+			} else {
+				this.logger.success(
+					"No issues found — your environment matches the schema",
+				);
 			}
-			return false;
+			return 0;
 		}
 
-		// 5. Report success
-		const successMessage =
-			"No issues found — your environment matches the schema";
+		if (validationResult.kind === "validation") {
+			const issues: EnvIssue[] = validationResult.issues ?? [];
+
+			const diagnostics: Diagnostic[] = issues.map((issue) => {
+				const isMissing =
+					issue.code === "MISSING_VARIABLE" || issue.received === undefined;
+				const code = isMissing
+					? PROTOCOL_ERROR_CODES.ENV_MISSING_VARIABLE
+					: PROTOCOL_ERROR_CODES.ENV_INVALID_VALUE;
+				const isSensitive = shouldRedact(issue.path) && !isDebugSecrets();
+
+				let received: unknown;
+				if (isSensitive) {
+					received = isMissing ? "missing" : "[REDACTED]";
+				} else {
+					received = isMissing
+						? "missing"
+						: issue.received !== undefined
+							? typeof issue.received === "string"
+								? issue.received
+								: safeStringify(issue.received, issue.path)
+							: "missing";
+				}
+
+				const summary = sanitizeSecretText(
+					issue.message.startsWith(issue.path)
+						? issue.message
+						: `${issue.path} ${issue.message.trimStart()}`,
+					issue.path,
+				);
+
+				const nextActions: NextAction[] = [
+					{
+						kind: "edit-file",
+						label: `Set ${issue.path} in ${suggestedEnvFile}`,
+						where: {
+							path: suggestedEnvFile,
+						},
+						meta: {
+							targetFile: suggestedEnvFile,
+							key: issue.path,
+							...(issue.expected !== undefined
+								? { expected: issue.expected }
+								: {}),
+						},
+					},
+				];
+
+				const meta: Record<string, unknown> = {
+					key: issue.path,
+					...(issue.expected !== undefined ? { expected: issue.expected } : {}),
+					received,
+					issueCode: issue.code,
+					...(issue.meta ? issue.meta : {}),
+				};
+
+				return {
+					code,
+					severity: "error",
+					summary,
+					where: {
+						path: relSchemaPath,
+					},
+					meta,
+					nextActions,
+				};
+			});
+
+			const allNextActions = diagnostics.flatMap((d) => d.nextActions);
+
+			if (isJson) {
+				this.logger.reportCompleted({
+					ok: true,
+					commandId: "check",
+					result: {
+						schema: {
+							path: relSchemaPath,
+						},
+					},
+					exitCode: 4,
+					diagnostics,
+					nextActions: allNextActions,
+				});
+			} else {
+				this.logger.error(
+					`Errors found while validating environment variables:\n${indent(formatIssues(issues))}`,
+				);
+			}
+			return 4;
+		}
+
+		// validationResult.kind === "load"
+		const message = validationResult.message;
+		const summary = sanitizeSecretText(message);
+
+		// If cause indicates an unexpected runtime crash during evaluation
+		if (
+			validationResult.cause &&
+			!(validationResult.cause instanceof SyntaxError) &&
+			!/syntax|cannot find module/i.test(message)
+		) {
+			if (isJson) {
+				this.logger.reportErrored({
+					ok: false,
+					commandId: "check",
+					error: {
+						code: PROTOCOL_ERROR_CODES.CLI_INTERNAL_ERROR,
+						severity: "error",
+						summary,
+						where: { path: relSchemaPath },
+						nextActions: [],
+					},
+					diagnostics: [],
+					nextActions: [],
+				});
+			} else {
+				this.logger.error(`Failed to validate environment: ${summary}`);
+			}
+			return 1;
+		}
+
 		if (isJson) {
-			this.logger.json({
-				status: "success",
-				message: successMessage,
-				details: {
-					keys: loadResult.keys.map((k) => k.name),
+			this.logger.reportErrored({
+				ok: false,
+				commandId: "check",
+				error: {
+					code: PROTOCOL_ERROR_CODES.CLI_SCHEMA_NOT_FOUND,
+					severity: "error",
+					summary,
+					where: { path: relSchemaPath },
+					nextActions: [],
 				},
+				diagnostics: [],
+				nextActions: [],
 			});
 		} else {
-			this.logger.success(successMessage);
+			this.logger.error(
+				`Failed to load schema file at ${relSchemaPath}: ${summary}`,
+			);
 		}
-
-		return true;
+		return 2;
 	}
 
 	/**
-	 * Find the absolute path to the project's schema file.
+	 * Resolve the path to the schema module.
 	 *
-	 * @param cwd Current working directory
-	 * @param schemaOverride Optional explicit schema file path passed via CLI
-	 * @returns Absolute path to existing schema file, or `null` if not found
+	 * @param cwd Working directory to search from
+	 * @param explicitPath Optional explicit schema path from `--schema` or `--file`
+	 * @returns Absolute path to an existing schema file, or undefined if none is found
 	 */
 	private async resolveSchemaPath(
 		cwd: string,
-		schemaOverride?: string,
-	): Promise<string | null> {
-		if (schemaOverride) {
-			const resolved = path.resolve(cwd, schemaOverride);
-			return (await this.workspace.exists(resolved)) ? resolved : null;
+		explicitPath?: string,
+	): Promise<string | undefined> {
+		if (explicitPath) {
+			const resolved = path.resolve(cwd, explicitPath);
+			return (await this.workspace.exists(resolved)) ? resolved : undefined;
 		}
 
-		// Check package.json arkenv config
 		if (typeof this.scanner.readArkenvConfig === "function") {
 			const arkenvConfig = await this.scanner.readArkenvConfig(cwd);
 			if (arkenvConfig) {
@@ -202,10 +423,15 @@ export class CheckUseCase {
 			}
 		}
 
-		// Fallback to convention locations
 		const candidates = [
 			path.resolve(cwd, "env.ts"),
 			path.resolve(cwd, "src/env.ts"),
+			path.resolve(cwd, "env.js"),
+			path.resolve(cwd, "src/env.js"),
+			path.resolve(cwd, "env.mjs"),
+			path.resolve(cwd, "src/env.mjs"),
+			path.resolve(cwd, "env/server.ts"),
+			path.resolve(cwd, "src/env/server.ts"),
 		];
 
 		const suggested = await this.scanner.suggestDefaultEnvPath(cwd);
@@ -219,6 +445,6 @@ export class CheckUseCase {
 			}
 		}
 
-		return null;
+		return undefined;
 	}
 }
