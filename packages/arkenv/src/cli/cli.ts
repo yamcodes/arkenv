@@ -299,7 +299,9 @@ export class CLI {
 
 	get checkInput(): CheckInput {
 		return {
-			...(this.schema !== undefined ? { schema: this.schema, file: this.schema } : {}),
+			...(this.schema !== undefined
+				? { schema: this.schema, file: this.schema }
+				: {}),
 			...(this.envFiles.length > 0 ? { envFiles: this.envFiles } : {}),
 			isQuiet: this.isQuiet,
 			isJson: this.isJson,
