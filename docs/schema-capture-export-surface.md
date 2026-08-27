@@ -1,8 +1,8 @@
 # Schema capture export surface
 
-Living evaluation, not an ADR. Update this file as options enter or leave the hat. Promoted decisions belong in `docs/adr/`.
+Living evaluation that was **promoted** (export-surface S) into [ADR 0027](./adr/0027-cli-schema-inspection.md). Slot new packaging ideas here; the ADR is the decision.
 
-**Status:** working note for [#1314](https://github.com/yamcodes/arkenv/issues/1314) / PR [#1622](https://github.com/yamcodes/arkenv/pull/1622). **Chosen public story:** S stack (implemented on the PR: unpublish start/stop from the `arkenv()` barrel; CLI keeps `@repo/utils`).
+**Status:** promoted for [#1314](https://github.com/yamcodes/arkenv/issues/1314) / PR [#1622](https://github.com/yamcodes/arkenv/pull/1622). **Chosen public story:** unpublished start/stop; CLI keeps `@repo/utils`.
 
 Related consumer notes: version skew on [#962](https://github.com/yamcodes/arkenv/issues/962) / [#1234](https://github.com/yamcodes/arkenv/issues/1234).
 
@@ -15,7 +15,7 @@ When we are done:
 3. Autocomplete, the changelog, and the main `@arkenv/core` / `@arkenv/standard` barrels do not present capture as application API.
 4. The handshake still works when the CLI and the user’s `arkenv()` are different module instances (Jiti + `node_modules`).
 
-Out of scope for this note: whether capture returns `{}` vs a Proxy; `sync` / `check` command UX; version-skew detection vs upgrade hint (already recorded on the consumer issues).
+Out of scope for this note: `sync` / `check` command UX. Mechanism (record vs stub vs boot) is [schema-loader-mechanism.md](./schema-loader-mechanism.md). Version-skew detection vs upgrade hint is on the consumer issues.
 
 The engine that all options assume: `arkenv()` in core and standard already short-circuits on `isCapturingSchema()` and `recordSchemaCapture()`, sharing state via `globalThis.__ARKENV_SCHEMA_CAPTURE__`. That implementation is not a rival of the export-surface options.
 
@@ -252,3 +252,4 @@ The user’s project still supplies `@arkenv/core` / `@arkenv/standard` that hon
 
 - 2026-08-27: First write-up (layers, metrics, hat, tier list) after the #1622 changeset was misread as app API.
 - 2026-08-27: Implemented S on the PR (barrel unexport; tests import start/stop from `@repo/utils`).
+- 2026-08-27: Promoted export-surface S into [ADR 0027](./adr/0027-cli-schema-inspection.md).
