@@ -91,6 +91,10 @@ Pass a second argument to change codegen, layout, or validation.
 | `logger`     | console  | Build-time logger            |
 | `logLevel`   | (none)   | Minimum log level            |
 
+A custom `outputPath` still imports as `@/.arkenv`. Next.js aliases the
+specifier; codegen keeps `.arkenv/index.ts` re-exporting that file so
+`tsc --noEmit` matches.
+
 Skip generation during CLI scaffolds with
 `npx arkenv@latest init --no-codegen`.
 

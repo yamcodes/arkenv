@@ -19,7 +19,7 @@ const GENERATED_ENV_MODULE = "env.gen";
 
 /**
  * Public import for the Next.js codegen factory. `withArkEnv` aliases this
- * specifier to `.arkenv/env.gen.ts` (or a custom `outputPath`).
+ * specifier to the generated file. `tsc` resolves it through `.arkenv/index.ts`.
  */
 export const NEXTJS_VIRTUAL_FACTORY_IMPORT = "@/.arkenv";
 

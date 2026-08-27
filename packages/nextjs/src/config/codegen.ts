@@ -24,12 +24,64 @@ function detectStandard(content: string, forceStandard?: boolean): boolean {
 }
 
 /**
+ * Convert a file path to a relative TypeScript module specifier from `fromDir`.
+ *
+ * @param fromDir Directory the import is written in
+ * @param toFile Absolute path of the target module
+ * @returns A relative specifier without a `.ts` / `.tsx` extension
+ */
+function toModuleSpecifier(fromDir: string, toFile: string): string {
+	let rel = path.relative(fromDir, toFile).replaceAll("\\", "/");
+	if (!rel.startsWith(".")) {
+		rel = `./${rel}`;
+	}
+	return rel.replace(/\.tsx?$/, "");
+}
+
+/**
+ * Write `.arkenv/index.ts` so `tsc` can resolve `@/.arkenv` even when the
+ * factory file lives at a custom `outputPath`.
+ *
+ * @param barrelDir Directory for the TypeScript entry (`<projectRoot>/.arkenv`)
+ * @param factoryPath Absolute path of the generated factory file
+ */
+function writeFactoryBarrel(barrelDir: string, factoryPath: string) {
+	if (!fs.existsSync(barrelDir)) {
+		fs.mkdirSync(barrelDir, { recursive: true });
+	}
+	const barrelPath = path.join(barrelDir, "index.ts");
+	const spec = toModuleSpecifier(barrelDir, factoryPath);
+	const barrelCode = `export * from ${JSON.stringify(spec)};\nexport { default } from ${JSON.stringify(spec)};\n`;
+	if (
+		fs.existsSync(barrelPath) &&
+		fs.readFileSync(barrelPath, "utf-8") === barrelCode
+	) {
+		return;
+	}
+	fs.writeFileSync(barrelPath, barrelCode, "utf-8");
+}
+
+/**
+ * Infer the app root from a factory path written into `<root>/.arkenv/`.
+ *
+ * @param outputPath Absolute path of the generated factory file
+ * @returns The parent of `.arkenv`, or `undefined` when the file is elsewhere
+ */
+function projectRootFromDefaultOutput(outputPath: string): string | undefined {
+	const outputDir = path.dirname(outputPath);
+	if (path.basename(outputDir) !== ".arkenv") return undefined;
+	return path.dirname(outputDir);
+}
+
+/**
  * Run code generation to read the schema file and generate the env.gen.ts factory.
  *
  * @param schemaPath The absolute path to the schema file or directory
  * @param outputPath The absolute path to the generated output file
  * @param layoutOption The explicit layout to use; auto-detected from the filesystem when omitted
  * @param forceStandard Force standard mode code generation
+ * @param logOptions Logger options forwarded to layout resolution
+ * @param projectRoot App root used to keep `.arkenv/index.ts` as the `@/.arkenv` TypeScript entry
  * @throws An error if strict layout files are missing when `layoutOption` is `"strict"`
  */
 export function runCodegen(
@@ -38,6 +90,7 @@ export function runCodegen(
 	layoutOption?: ArkEnvConfigOptions["layout"],
 	forceStandard?: boolean,
 	logOptions?: Pick<ArkEnvConfigOptions, "logger" | "logLevel">,
+	projectRoot?: string,
 ) {
 	const normalizedLayout = normalizeLayout(
 		layoutOption,
@@ -106,18 +159,9 @@ export function runCodegen(
 		fs.writeFileSync(outputPath, generatedCode, "utf-8");
 	}
 
-	const barrelPath = path.join(outputDir, "index.ts");
-	const barrelCode = `export * from "./env.gen";\nexport { default } from "./env.gen";\n`;
-	if (path.basename(outputDir) === ".arkenv" || !fs.existsSync(barrelPath)) {
-		let shouldWriteBarrel = true;
-		if (fs.existsSync(barrelPath)) {
-			if (fs.readFileSync(barrelPath, "utf-8") === barrelCode) {
-				shouldWriteBarrel = false;
-			}
-		}
-		if (shouldWriteBarrel) {
-			fs.writeFileSync(barrelPath, barrelCode, "utf-8");
-		}
+	const tsEntryRoot = projectRoot ?? projectRootFromDefaultOutput(outputPath);
+	if (tsEntryRoot) {
+		writeFactoryBarrel(path.join(tsEntryRoot, ".arkenv"), outputPath);
 	}
 
 	if (resolvedLayout === "strict" && baseDir) {

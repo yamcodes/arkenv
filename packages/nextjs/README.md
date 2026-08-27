@@ -62,7 +62,7 @@ export const env = arkenv({
 
 ## Customizing Paths
 
-If you need a different on-disk location, pass `outputPath`. Keep importing `@/.arkenv`; the alias still points at that file.
+If you need a different on-disk location, pass `outputPath`. Keep importing `@/.arkenv`. `withArkEnv` aliases the specifier for Next.js; codegen writes `.arkenv/index.ts` so `tsc --noEmit` follows the same import.
 
 ```typescript
 // next.config.ts

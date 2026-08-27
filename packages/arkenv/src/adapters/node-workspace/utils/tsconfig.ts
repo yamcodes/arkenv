@@ -39,8 +39,9 @@ const ARKENV_INCLUDE_GLOB = ".arkenv/**/*.ts";
 const JSONC_FORMAT = { insertSpaces: true, tabSize: 2 };
 
 /**
- * Point TypeScript at the Next.js virtual factory so `import arkenv from
- * "@/.arkenv"` typechecks even when `@/*` maps to `src/*`.
+ * Point TypeScript at `.arkenv/index.ts` so `import arkenv from "@/.arkenv"`
+ * typechecks even when `@/*` maps to `src/*`. Codegen keeps that barrel in
+ * sync with a custom `outputPath`.
  *
  * @param workspace File read/write adapter
  * @param filePath Optional tsconfig path; defaults to discovering tsconfig.json

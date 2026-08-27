@@ -16,4 +16,4 @@ export const env = arkenv({
 });
 ```
 
-Existing `outputPath` overrides still work. Keep importing `@/.arkenv`; `withArkEnv` aliases it to the file on disk.
+Existing `outputPath` overrides still work. Keep importing `@/.arkenv`. `withArkEnv` aliases the specifier for bundlers, and codegen keeps `.arkenv/index.ts` re-exporting the file so `tsc --noEmit` resolves it too.

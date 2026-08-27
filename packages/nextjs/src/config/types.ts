@@ -48,7 +48,9 @@ export type ArkEnvConfigOptions = {
 	 * Specify the path where the generated file (`env.gen.ts`) should be written.
 	 *
 	 * Defaults to `.arkenv/env.gen.ts` at the project root. Import the factory
-	 * via `@/.arkenv`; `withArkEnv` aliases that specifier to this path.
+	 * via `@/.arkenv`. Bundlers resolve that specifier through `withArkEnv`.
+	 * `tsc --noEmit` resolves it through `.arkenv/index.ts`, which re-exports
+	 * this file when it lives outside `.arkenv/`.
 	 *
 	 * @default "[projectRoot]/.arkenv/env.gen.ts"
 	 * @example
