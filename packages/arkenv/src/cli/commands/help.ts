@@ -43,6 +43,10 @@ export class HelpUseCase {
 				right: "Validate the environment against the schema",
 			},
 			{
+				left: "arkenv sync",
+				right: "Generate or update .env.example from the schema",
+			},
+			{
 				left: "arkenv preset apply [provider]",
 				right:
 					"Apply or refresh hosting provider preset (vercel, netlify, cloudflare, railway, render, fly)",
@@ -111,6 +115,14 @@ export class HelpUseCase {
 			},
 		];
 
+		const syncOptions: HelpItem[] = [
+			{
+				left: "--schema, -s <path>",
+				right:
+					"Path to schema file (overrides package.json or convention discovery)",
+			},
+		];
+
 		const presetOptions: HelpItem[] = [
 			{
 				left: "--file <path>",
@@ -137,6 +149,10 @@ export class HelpUseCase {
 		}
 		this.logger.log(`\n${pc.bold("check options:")}`);
 		for (const line of formatColumns(checkOptions)) {
+			this.logger.log(line);
+		}
+		this.logger.log(`\n${pc.bold("sync options:")}`);
+		for (const line of formatColumns(syncOptions)) {
 			this.logger.log(line);
 		}
 		this.logger.log(`\n${pc.bold("preset options:")}`);

@@ -29,6 +29,18 @@ describe("HelpUseCase", () => {
 			"  arkenv init [project-name]         Set up ArkEnv in your project",
 		);
 
+		const checkCommandLog = logs.find((l) => l.includes("arkenv check"));
+		expect(checkCommandLog).toBeDefined();
+		expect(checkCommandLog).toBe(
+			"  arkenv check                       Validate the environment against the schema",
+		);
+
+		const syncCommandLog = logs.find((l) => l.includes("arkenv sync"));
+		expect(syncCommandLog).toBeDefined();
+		expect(syncCommandLog).toBe(
+			"  arkenv sync                        Generate or update .env.example from the schema",
+		);
+
 		const presetApplyCommandLog = logs.find((l) =>
 			l.includes("arkenv preset apply [provider]"),
 		);
@@ -111,5 +123,14 @@ describe("HelpUseCase", () => {
 		expect(logs.indexOf(forceOptionLog as string)).toBeGreaterThan(
 			initHeaderIndex,
 		);
+
+		const checkHeaderIndex = logs.findIndex((l) =>
+			l.includes(pc.bold("check options:")),
+		);
+		const syncHeaderIndex = logs.findIndex((l) =>
+			l.includes(pc.bold("sync options:")),
+		);
+		expect(checkHeaderIndex).toBeGreaterThan(initHeaderIndex);
+		expect(syncHeaderIndex).toBeGreaterThan(checkHeaderIndex);
 	});
 });

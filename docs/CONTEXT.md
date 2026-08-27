@@ -47,6 +47,10 @@ The legacy v0 pattern (`arkenv(schema)` plugin argument with native-accessor `de
 CLI command `arkenv check` that validates the resolved environment (`process.env` plus optional `--env-file` overlays) against the project schema. Findings are not a crash: `--json` emits a completed envelope with `ok: true` and exit code `4`.
 *Avoid*: treating validation findings as `ok: false` or exit `1`; calling Check a dotenv loader (it does not load `.env` unless `--env-file` is passed)
 
+**Sync**:
+CLI command `arkenv sync` that writes `.env.example` from declared schema keys (same loader as Check). Merge-aware: preserve comments/values for surviving keys, drop stale keys, append new keys. Loader failure does not write a partial file.
+*Avoid*: static-parsing `env.ts`; writing `.env` with real secrets; treating Sync as a replacement for Check
+
 **Envelope** (also **settlement envelope**):
 CLI `--json` / `--agent` stdout document. Discriminated by `ok`. Success and Check findings use `CompletedEnvelope` (`ok: true`, `diagnostics`, required `nextActions`). Preconditions and crashes use `ErroredEnvelope` (`ok: false`, `error`). Codes are dotted `NAMESPACE.SUBCODE`. `{bin}` in nextActions is resolved to the active runner before serialize.
 *Avoid*: `{ status, message, retryWith }`; `ERR_*` codes; custom nextAction kinds such as `type: set_env`

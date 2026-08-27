@@ -1,0 +1,131 @@
+---
+title: sync
+description: Generate or update .env.example from the env schema.
+---
+
+ArkEnv is designed to keep `.env.example` aligned with the keys you
+declare in schema. ArkEnv provides `arkenv sync` so you can refresh
+that file whenever the schema changes — in CI, a pre-commit hook, or
+right after you add a variable.
+
+```package-install
+npx arkenv@latest sync
+```
+
+```package-install
+npx arkenv@latest sync --schema ./src/env.ts
+```
+
+[Global flags](/docs/reference#global-flags) (`--quiet`, `--json`,
+`--agent`, `--help`) apply here too.
+
+## Usage
+
+```txt title="Terminal"
+arkenv sync [options]
+```
+
+`sync` loads your schema the same way [`check`](/docs/reference/check)
+does (import the module; do not parse TypeScript by hand). It writes
+`.env.example` in the project root with every declared key.
+
+When the file is missing, `sync` creates it in schema declaration
+order:
+
+```txt title="Terminal"
+✔ Created .env.example from env.ts
+```
+
+When the file already exists, `sync` is merge-aware: comments and
+values on keys that are still in the schema stay put, keys that left
+the schema are removed, and new keys are appended as `KEY=`. Running
+it twice with no schema change produces no diff.
+
+If the schema cannot be loaded, `sync` prints the cause, exits
+non-zero, and does not touch `.env.example`.
+
+`arkenv init` reuses this same write path after it scaffolds an
+existing project, so a schema that is already in the tree still seeds
+`.env.example`.
+
+## Options
+
+These flags are specific to `sync`.
+
+### `--schema <path>` / `-s`
+
+Explicit path to the schema module. Overrides `"arkenv"` in
+`package.json` and convention discovery.
+
+```package-install
+npx arkenv@latest sync --schema ./src/config/env.ts
+```
+
+### `--json` / `-j`
+
+Write a settlement envelope to stdout. Success is `ok: true` with
+`exitCode: 0` and a `status` of `created`, `updated`, or `unchanged`:
+
+```json
+{
+  "ok": true,
+  "commandId": "sync",
+  "result": {
+    "status": "created",
+    "schema": { "path": "env.ts" },
+    "file": { "path": ".env.example" },
+    "keys": { "declared": 3 }
+  },
+  "exitCode": 0,
+  "diagnostics": [],
+  "nextActions": []
+}
+```
+
+A missing or unloadable schema is `ok: false` with a dotted `CLI.*`
+code and exit `2`.
+
+### `--quiet` / `-q`
+
+Suppress normal console output. JSON envelopes still go to stdout when
+`--json` is set.
+
+## CI and pre-commit
+
+Add `arkenv sync` where `.env.example` must stay honest as the schema
+evolves. A typical pre-commit hook regenerates the file and fails if
+git sees a diff you forgot to commit:
+
+```yaml title=".github/workflows/ci.yml"
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  env-example:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Refresh .env.example from the schema
+        run: pnpm exec arkenv sync
+```
+
+`sync` only writes `.env.example`. It does not write `.env` or copy
+secrets. Pair it with [`check`](/docs/reference/check) when you also
+need the live environment to match the schema.
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/reference/check" title="check" description="Validate the resolved environment against your schema with CI exit codes." />
+
+  <Card href="/docs/reference/init" title="init" description="Scaffold a project and schema files." />
+
+  <Card href="/docs/getting-started/add-to-existing-repository" title="Add to an existing repository" description="Adopt ArkEnv incrementally in an existing project." />
+</Cards>

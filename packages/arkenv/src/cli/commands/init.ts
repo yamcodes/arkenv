@@ -11,6 +11,7 @@ import type {
 	PromptPort,
 	WorkspacePort,
 } from "@/shared/ports";
+import type { SyncUseCase } from "./sync";
 
 /**
  * Input parameters for the 'init' command.
@@ -42,6 +43,7 @@ export class InitUseCase {
 		private readonly prompt: PromptPort,
 		private readonly scanner: ProjectScannerPort,
 		private readonly registry = new RegistryClient(),
+		private readonly sync?: SyncUseCase,
 	) {}
 
 	/**
@@ -58,6 +60,19 @@ export class InitUseCase {
 			await executor.execute(plan);
 		} catch (error) {
 			this.logger.fatal("Scaffolding failed.", error);
+		}
+
+		if (this.sync && state.mode === "existing") {
+			const syncCode = await this.sync.execute({
+				cwd: state.cwd,
+				embedded: true,
+				isQuiet: input.isQuiet,
+			});
+			if (syncCode !== 0 && !input.isQuiet && !input.isAgent) {
+				this.logger.warn(
+					`Could not update ${code(".env.example")} from the schema. Run ${code("arkenv sync")} after fixing the schema file.`,
+				);
+			}
 		}
 
 		return true;

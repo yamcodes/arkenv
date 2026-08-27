@@ -7,6 +7,7 @@ import {
 import type { CheckInput } from "./commands/check";
 import type { InitInput } from "./commands/init";
 import type { PresetInput } from "./commands/preset";
+import type { SyncInput } from "./commands/sync";
 
 const FLAG_CONFIG = {
 	isYes: { long: "--yes", short: "-y", kind: "boolean" },
@@ -151,7 +152,7 @@ export class CLI {
 						}
 					}
 				}
-			} else if (this.command === "check") {
+			} else if (this.command === "check" || this.command === "sync") {
 				if (positionalArgs.length > 0) {
 					this.validationError = `Unknown argument: ${positionalArgs[0]}`;
 				}
@@ -308,6 +309,18 @@ export class CLI {
 			isAgent: this.isAgent,
 			isYes: this.isYes,
 			isForce: this.isForce,
+		};
+	}
+
+	get syncInput(): SyncInput {
+		return {
+			...(this.schema !== undefined
+				? { schema: this.schema, file: this.schema }
+				: {}),
+			isQuiet: this.isQuiet,
+			isJson: this.isJson,
+			isAgent: this.isAgent,
+			isYes: this.isYes,
 		};
 	}
 
