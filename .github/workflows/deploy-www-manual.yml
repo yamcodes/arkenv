@@ -42,6 +42,8 @@ jobs:
           fetch-depth: 0
       - name: Set up Turborepo Remote Cache
         uses: ./.github/actions/setup-turbo-remote-cache
+        with:
+          team: ${{ vars.TURBO_TEAM }}
       - name: Resolve git metadata for the deployed commit
         id: meta
         run: |

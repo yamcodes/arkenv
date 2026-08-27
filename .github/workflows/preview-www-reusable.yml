@@ -26,6 +26,8 @@ jobs:
           persist-credentials: false
       - name: Set up Turborepo Remote Cache
         uses: ./.github/actions/setup-turbo-remote-cache
+        with:
+          team: ${{ vars.TURBO_TEAM }}
       - name: Set Turbo base/head for PRs
         env:
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}

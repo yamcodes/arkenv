@@ -31,6 +31,8 @@ jobs:
 
       - name: Set up Turborepo Remote Cache
         uses: ./.github/actions/setup-turbo-remote-cache
+        with:
+          team: ${{ vars.TURBO_TEAM }}
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6

@@ -48,6 +48,8 @@ jobs:
           fetch-depth: 0 # Full history needed for change detection
       - name: Set up Turborepo Remote Cache
         uses: ./.github/actions/setup-turbo-remote-cache
+        with:
+          team: ${{ vars.TURBO_TEAM }}
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
