@@ -1830,9 +1830,7 @@
 	/* Zod's 8-line window — Valibot nests PORT and scrolls inside this cap. */
 	--mvp-lines: 8;
 	--mvp-lh: 1.55;
-	--mvp-body-size: calc(
-		var(--mvp-lines) * var(--mvp-lh) * var(--text-code) + 2 * var(--space-sm)
-	);
+	--mvp-body-size: calc(var(--mvp-lines) * var(--mvp-lh) * var(--text-code) + 2 * var(--space-sm));
 	display: grid;
 	grid-template-columns: minmax(0, 1fr);
 	gap: var(--space-xs);
