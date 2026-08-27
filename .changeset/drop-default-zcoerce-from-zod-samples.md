@@ -1,5 +1,6 @@
 ---
 "arkenv": patch
+"@arkenv/standard": patch
 ---
 
 #### Drop default `z.coerce` from Zod product samples and scaffold templates
