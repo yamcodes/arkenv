@@ -1,20 +1,44 @@
 /**
  * Unescape double-quoted string escape sequences.
  *
+ * Uses a single-pass token replacement so escaped backslashes (`\\`)
+ * are preserved correctly and do not interfere with subsequent escape sequences.
+ *
  * @param value The raw string inside double quotes
  * @returns The unescaped string
  */
 function unescapeDoubleQuoted(value: string): string {
-	return value
-		.replace(/\\n/g, "\n")
-		.replace(/\\r/g, "\r")
-		.replace(/\\t/g, "\t")
-		.replace(/\\"/g, '"')
-		.replace(/\\\\/g, "\\");
+	return value.replace(/\\([nrtbfv0"\\])/g, (_, match: string) => {
+		switch (match) {
+			case "n":
+				return "\n";
+			case "r":
+				return "\r";
+			case "t":
+				return "\t";
+			case "b":
+				return "\b";
+			case "f":
+				return "\f";
+			case "v":
+				return "\v";
+			case "0":
+				return "\0";
+			case '"':
+				return '"';
+			case "\\":
+				return "\\";
+			default:
+				return `\\${match}`;
+		}
+	});
 }
 
 /**
  * Find the index of an unescaped closing quote matching the delimiter.
+ *
+ * In double quotes (`"`), a backslash (`\`) escapes the following character.
+ * In single quotes (`'`) and backticks (``` ` ```), backslashes are treated as literal characters.
  *
  * @param text Text to search
  * @param quote The quote character (`"`, `'`, or '`')
@@ -22,8 +46,8 @@ function unescapeDoubleQuoted(value: string): string {
  */
 function findClosingQuote(text: string, quote: string): number {
 	for (let i = 0; i < text.length; i++) {
-		if (text[i] === "\\") {
-			i++; // skip next character (escaped)
+		if (quote === '"' && text[i] === "\\") {
+			i++; // skip next character (escaped in double quotes)
 			continue;
 		}
 		if (text[i] === quote) {

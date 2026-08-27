@@ -45,22 +45,32 @@ export HOST=localhost
 GREETING="Hello\\nWorld"
 TABBED="A\\tB"
 QUOTED="He said \\"Hello\\""
+ESCAPED_SLASH="C:\\\\Program Files\\\\App"
+ESCAPED_NEWLINE_LITERAL="Literal\\\\nNotNewline"
+TRAILING_SLASH="EndingWithSlash\\\\"
 `;
 		expect(parseDotenv(content)).toEqual({
 			GREETING: "Hello\nWorld",
 			TABBED: "A\tB",
 			QUOTED: 'He said "Hello"',
+			ESCAPED_SLASH: "C:\\Program Files\\App",
+			ESCAPED_NEWLINE_LITERAL: "Literal\\nNotNewline",
+			TRAILING_SLASH: "EndingWithSlash\\",
 		});
 	});
 
-	it("handles single-quoted and backtick strings literally", () => {
+	it("handles single-quoted and backtick strings literally including backslashes", () => {
 		const content = `
 RAW_URL='https://example.com?a=1&b=2'
 BACKTICK=\`simple value\`
+TRAILING_BACKSLASH='C:\\Windows\\'
+LITERAL_ESCAPE='Hello\\nWorld'
 `;
 		expect(parseDotenv(content)).toEqual({
 			RAW_URL: "https://example.com?a=1&b=2",
 			BACKTICK: "simple value",
+			TRAILING_BACKSLASH: "C:\\Windows\\",
+			LITERAL_ESCAPE: "Hello\\nWorld",
 		});
 	});
 
