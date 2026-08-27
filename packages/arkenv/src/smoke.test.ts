@@ -128,4 +128,37 @@ describe("cli smoke tests", () => {
 			await fs.rm(tempDir, { recursive: true, force: true });
 		}
 	});
+
+	it("check command returns non-zero when schema is missing", async () => {
+		const uuid = Math.random().toString(36).substring(7);
+		const tempDir = path.resolve(__dirname, `../tmp-smoke-check-${uuid}`);
+		await fs.mkdir(tempDir, { recursive: true });
+
+		try {
+			await expect(
+				exec(`node ${cliPath} check`, { cwd: tempDir }),
+			).rejects.toMatchObject({
+				code: 1,
+			});
+		} finally {
+			await fs.rm(tempDir, { recursive: true, force: true });
+		}
+	});
+
+	it("check --agent returns structured SCHEMA_NOT_FOUND error on missing schema", async () => {
+		const uuid = Math.random().toString(36).substring(7);
+		const tempDir = path.resolve(__dirname, `../tmp-smoke-check-${uuid}`);
+		await fs.mkdir(tempDir, { recursive: true });
+
+		try {
+			const res = await exec(`node ${cliPath} check --agent`, {
+				cwd: tempDir,
+			}).catch((err) => err);
+
+			expect(res.code).toBe(1);
+			expect(res.stdout).toContain('"code": "SCHEMA_NOT_FOUND"');
+		} finally {
+			await fs.rm(tempDir, { recursive: true, force: true });
+		}
+	});
 });

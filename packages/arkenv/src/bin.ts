@@ -20,9 +20,8 @@ async function main() {
 		}
 	}
 
-	const { cli, logger, initUseCase, presetUseCase, helpUseCase } = compose(
-		process.argv,
-	);
+	const { cli, logger, initUseCase, presetUseCase, helpUseCase, checkUseCase } =
+		compose(process.argv);
 	globalLogger = logger;
 
 	setupGracefulShutdown(logger);
@@ -43,6 +42,7 @@ async function main() {
 	const commands = {
 		init: () => initUseCase.execute(shake(cli.initInput)),
 		preset: () => presetUseCase.execute(cli.presetInput),
+		check: () => checkUseCase.execute(cli.checkInput),
 	} as const;
 
 	const handler = cli.command

@@ -211,8 +211,14 @@ export function parse<const T extends SchemaShape>(
 	const validatedEnv = schemaWithKeys(coercedEnv);
 
 	// In ArkType 2.x, calling a type as a function returns the validated data or ArkErrors.
-	if (validatedEnv instanceof ArkErrors) {
-		throw new ArkEnvError(arkErrorsToIssues(validatedEnv, config));
+	if (
+		validatedEnv instanceof ArkErrors ||
+		(validatedEnv &&
+			typeof validatedEnv === "object" &&
+			"byPath" in validatedEnv &&
+			typeof (validatedEnv as any).byPath === "object")
+	) {
+		throw new ArkEnvError(arkErrorsToIssues(validatedEnv as ArkErrors, config));
 	}
 
 	return validatedEnv;

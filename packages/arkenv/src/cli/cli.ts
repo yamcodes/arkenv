@@ -4,6 +4,7 @@ import {
 	isHostPreset,
 	isHostProvider,
 } from "@/features/scaffold/presets";
+import type { CheckInput } from "./commands/check";
 import type { InitInput } from "./commands/init";
 import type { PresetInput } from "./commands/preset";
 
@@ -25,6 +26,8 @@ const FLAG_CONFIG = {
 	preset: { long: "--preset", short: "-P", kind: "value" },
 	hostPreset: { long: "--host-preset", short: "-H", kind: "value" },
 	file: { long: "--file", short: "", kind: "value" },
+	schema: { long: "--schema", short: "-s", kind: "value" },
+	envFile: { long: "--env-file", short: "", kind: "value" },
 } as const;
 
 const knownFlags = new Set<string>(
@@ -148,6 +151,10 @@ export class CLI {
 						}
 					}
 				}
+			} else if (this.command === "check") {
+				if (positionalArgs.length > 0) {
+					this.validationError = `Unknown argument: ${positionalArgs[0]}`;
+				}
 			} else {
 				if (positionalArgs.length > 1) {
 					this.validationError = `Unknown argument: ${positionalArgs[1]}`;
@@ -216,6 +223,16 @@ export class CLI {
 		return this.getFlagValue(flag.long, flag.short);
 	}
 
+	get schema(): string | undefined {
+		const flag = FLAG_CONFIG.schema;
+		return this.getFlagValue(flag.long, flag.short) ?? this.file;
+	}
+
+	get envFiles(): string[] {
+		const flag = FLAG_CONFIG.envFile;
+		return this.getFlagValues(flag.long, flag.short);
+	}
+
 	get hostPreset(): HostPreset | undefined {
 		const val =
 			this.getFlagValue(FLAG_CONFIG.preset.long, FLAG_CONFIG.preset.short) ??
@@ -280,6 +297,16 @@ export class CLI {
 		};
 	}
 
+	get checkInput(): CheckInput {
+		return {
+			...(this.schema !== undefined ? { schema: this.schema } : {}),
+			...(this.envFiles.length > 0 ? { envFiles: this.envFiles } : {}),
+			isQuiet: this.isQuiet,
+			isJson: this.isJson,
+			isAgent: this.isAgent,
+		};
+	}
+
 	/**
 	 * Returns the value passed to a long or short CLI flag.
 	 */
@@ -293,5 +320,22 @@ export class CLI {
 			return this.args[index + 1];
 		}
 		return undefined;
+	}
+
+	/**
+	 * Returns all values passed to a repeatable long or short CLI flag, in order.
+	 */
+	private getFlagValues(long: string, short?: string): string[] {
+		const values: string[] = [];
+		for (let i = 0; i < this.args.length - 1; i++) {
+			const arg = this.args[i];
+			if (
+				(arg === long || (Boolean(short) && arg === short)) &&
+				!this.args[i + 1].startsWith("-")
+			) {
+				values.push(this.args[i + 1]);
+			}
+		}
+		return values;
 	}
 }

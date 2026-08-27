@@ -396,4 +396,61 @@ describe("CLI parser", () => {
 			});
 		});
 	});
+
+	describe("check command", () => {
+		it("should parse bare check command", () => {
+			const cli = new CLI(["node", "arkenv", "check"]);
+			expect(cli.command).toBe("check");
+			expect(cli.checkInput.schema).toBeUndefined();
+			expect(cli.checkInput.envFiles).toBeUndefined();
+			expect(cli.validationError).toBeUndefined();
+		});
+
+		it("should parse check with --schema and --env-file", () => {
+			const cli = new CLI([
+				"node",
+				"arkenv",
+				"check",
+				"--schema",
+				"./src/env.ts",
+				"--env-file",
+				".env.local",
+			]);
+			expect(cli.command).toBe("check");
+			expect(cli.checkInput.schema).toBe("./src/env.ts");
+			expect(cli.checkInput.envFiles).toEqual([".env.local"]);
+			expect(cli.validationError).toBeUndefined();
+		});
+
+		it("should parse multiple repeatable --env-file flags in sequence", () => {
+			const cli = new CLI([
+				"node",
+				"arkenv",
+				"check",
+				"--env-file",
+				".env",
+				"--env-file",
+				".env.local",
+				"--env-file",
+				".env.test",
+			]);
+			expect(cli.checkInput.envFiles).toEqual([
+				".env",
+				".env.local",
+				".env.test",
+			]);
+			expect(cli.validationError).toBeUndefined();
+		});
+
+		it("should parse short -s for --schema", () => {
+			const cli = new CLI(["node", "arkenv", "check", "-s", "./env.ts"]);
+			expect(cli.checkInput.schema).toBe("./env.ts");
+			expect(cli.validationError).toBeUndefined();
+		});
+
+		it("should reject positional arguments to check command", () => {
+			const cli = new CLI(["node", "arkenv", "check", "unexpected"]);
+			expect(cli.validationError).toBe("Unknown argument: unexpected");
+		});
+	});
 });

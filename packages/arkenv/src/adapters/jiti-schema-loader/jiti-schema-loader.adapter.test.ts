@@ -263,4 +263,113 @@ describe("JitiSchemaLoaderAdapter", () => {
 		expect(result.code).toBe("MODULE_LOAD_FAILED");
 		expect(result.message).toContain("does not populate env values");
 	});
+
+	describe("validate", () => {
+		it("validates an ArkType schema successfully against a matching environment", async () => {
+			const schemaPath = path.join(tempDir, "env.ts");
+			await fsp.writeFile(
+				schemaPath,
+				`
+				import arkenv from "@arkenv/core";
+				export const env = arkenv({
+					DATABASE_URL: "string",
+					PORT: "0 <= number.integer <= 65535 = 3000",
+				});
+				`,
+			);
+
+			const loader = new JitiSchemaLoaderAdapter({ jitiAliases });
+			const result = await loader.validate(
+				{ schemaPath },
+				{ DATABASE_URL: "postgres://localhost/db", PORT: "8080" },
+			);
+
+			expect(result.ok).toBe(true);
+		});
+
+		it("returns formatted issues when ArkType validation fails", async () => {
+			const schemaPath = path.join(tempDir, "env.ts");
+			await fsp.writeFile(
+				schemaPath,
+				`
+				import arkenv from "@arkenv/core";
+				export const env = arkenv({
+					DATABASE_URL: "string",
+					PORT: "number",
+				});
+				`,
+			);
+
+			const loader = new JitiSchemaLoaderAdapter({ jitiAliases });
+			const result = await loader.validate(
+				{ schemaPath },
+				{ DATABASE_URL: "postgres://localhost/db", PORT: "not-a-number" },
+			);
+
+			expect(result.ok).toBe(false);
+			if (result.ok) return;
+			expect(result.kind).toBe("validation");
+			if (result.kind === "validation") {
+				expect(result.issues.length).toBeGreaterThan(0);
+				expect(result.message).toContain(
+					"Errors found while validating environment variables",
+				);
+			}
+		});
+
+		it("validates a Zod Standard Schema successfully and fails on missing vars", async () => {
+			const schemaPath = path.join(tempDir, "env.ts");
+			await fsp.writeFile(
+				schemaPath,
+				`
+				import arkenv from "@arkenv/standard";
+				import { z } from "zod";
+				export const env = arkenv({
+					API_KEY: z.string(),
+					PORT: z.coerce.number().default(3000),
+				});
+				`,
+			);
+
+			const loader = new JitiSchemaLoaderAdapter({ jitiAliases });
+			const successResult = await loader.validate(
+				{ schemaPath },
+				{ API_KEY: "secret-key" },
+			);
+			expect(successResult.ok).toBe(true);
+
+			const failResult = await loader.validate({ schemaPath }, {});
+			expect(failResult.ok).toBe(false);
+			if (failResult.ok) return;
+			expect(failResult.kind).toBe("validation");
+			if (failResult.kind === "validation") {
+				expect(
+					failResult.issues.find((i) => i.path === "API_KEY"),
+				).toBeDefined();
+			}
+		});
+
+		it("restores process.env even if validation throws", async () => {
+			process.env.__TEST_PERSISTENT_ENV__ = "original-value";
+			const schemaPath = path.join(tempDir, "env.ts");
+			await fsp.writeFile(
+				schemaPath,
+				`
+				import arkenv from "@arkenv/core";
+				export const env = arkenv({
+					REQUIRED_VAR: "string",
+				});
+				`,
+			);
+
+			const loader = new JitiSchemaLoaderAdapter({ jitiAliases });
+			await loader.validate(
+				{ schemaPath },
+				{ __TEST_PERSISTENT_ENV__: "mutated-value" },
+			);
+
+			expect(process.env.__TEST_PERSISTENT_ENV__).toBe("original-value");
+			delete process.env.__TEST_PERSISTENT_ENV__;
+		});
+	});
 });
