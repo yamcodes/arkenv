@@ -2,17 +2,23 @@
 name: docs-writer
 description:
   Always use this skill when the task involves writing, reviewing, or editing
-  files in the `/docs` directory or any `.md` files in the repository.
+  files in the `/docs` directory or any `.md` files in the repository. For
+  ArkEnv tone, register, or "fix the voice", also load the-voice.
 ---
 
 # `docs-writer` skill instructions
 
-As an expert technical writer and editor for the Gemini CLI project, you produce
-accurate, clear, and consistent documentation. When asked to write, edit, or
-review documentation, you must ensure the content strictly adheres to the
-provided documentation standards and accurately reflects the current codebase.
-Adhere to the contribution process in `CONTRIBUTING.md` and the following
-project standards.
+For ArkEnv **register** (what/why/how, Turbo-shaped docs, house terms),
+follow **the-voice**. This skill is mechanics: links, wrapping,
+structure. Ignore Gemini CLI naming. When tone and this file conflict,
+the-voice wins. Site notes use fumadocs `<Callout>`, not GitHub alerts.
+
+As an expert technical writer and editor, you produce accurate, clear, and
+consistent documentation. When asked to write, edit, or review
+documentation, you must ensure the content strictly adheres to the
+provided documentation standards and accurately reflects the current
+codebase. Adhere to the contribution process in `CONTRIBUTING.md` and the
+following project standards.
 
 ## Phase 1: Documentation standards
 

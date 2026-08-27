@@ -1,57 +1,68 @@
 ---
 title: Using AI with ArkEnv
-description: Point coding assistants at ArkEnv schemas, the CLI, and llms.txt.
+description: Get the most out of AI coding assistants with ArkEnv.
 ---
 
-Install the ArkEnv skill, run `init --agent`, and keep `.env.example` in
-sync. Assistants then write schemas, respect public prefixes, and skip
-hand-rolling `next.config` or `env.ts` unless the CLI fails.
+ArkEnv is designed to work seamlessly with AI coding assistants. ArkEnv
+provides features that help AI understand your environment schema and
+work more efficiently.
 
 ## Coding-agent plugin
 
-The plugin and the skill coexist. Prefer the plugin on hosts that support
-it (Claude Code, Cursor, Codex, and other MCP clients). Keep the skill
-path below when your assistant only loads Agent Skills. Installing the
-plugin does not replace `npx skills add yamcodes/arkenv`.
+Most coding agents like Claude Code, Cursor, and Codex support plugins:
+a combination of skills, slash commands, and MCP tools. ArkEnv provides
+`@arkenv/agent-plugin` so those hosts can scaffold a project and catch
+unvalidated env access without grepping the tree.
 
-Install `@arkenv/agent-plugin` so those hosts get slash commands plus an
-AST auditor:
+You can add the plugin with:
 
-```bash
+```package-install
 npx plugins add yamcodes/arkenv
 ```
 
-That command reads the repo's `marketplace.json` and installs
-`packages/agent-plugin` (not the root `skills/` tree). From a clone, use
-`npx plugins add ./packages/agent-plugin`.
+Once it is installed, ask your assistant to add ArkEnv, or paste a
+prompt from [Prompts that work well](#prompts-that-work-well). The
+bundled skill and MCP tools are picked up automatically. You do not
+need to type a slash command.
 
-It exposes `/arkenv:init` (delegates to `arkenv init --agent`) and
-`/arkenv:audit` (flags raw `process.env` / `import.meta.env` access, server
-secrets in client modules, public-prefix mistakes, and leftover v0 ambient
-`.d.ts` files).
+The plugin teaches agents:
 
-Run the MCP server after the package is on npm (alpha tag):
+- Scaffold with `arkenv init --agent` instead of writing `env.ts` by
+  hand
+- Audit for raw `process.env` / `import.meta.env` access, server
+  secrets on the client, public-prefix mistakes, and leftover v0
+  ambient `.d.ts` files
 
-```bash
-npx -y @arkenv/agent-plugin@alpha
-```
+<Callout type="info" title="Want to run it yourself?">
+  Type `/arkenv:init` or `/arkenv:audit` in the agent. Those are
+  shortcuts for the same MCP workflows.
+</Callout>
 
-See the [`@arkenv/agent-plugin` reference](/docs/reference/agent-plugin) for
-diagnostic shapes and the programmatic `auditProject` API.
+<Callout type="info" title="No plugin marketplace?">
+  Add the MCP server in config instead. See the
+  [`@arkenv/agent-plugin` reference](/docs/reference/agent-plugin).
+</Callout>
 
 ## Agent skill
 
-[Agent Skills](https://agentskills.io) are markdown packages that teach
-an assistant a tool. Use this path when the host has no plugin or MCP
-install, or when you want both.
+<Callout type="info" title="Already installed the plugin?">
+  Skip this section. The plugin already includes the skill. Use the
+  skill only when the host cannot load plugins.
+</Callout>
 
-Install the official ArkEnv skill with:
+[Agent Skills](https://agentskills.io) are an open standard that give
+new capabilities and expertise to agents. They're folders of
+instructions, scripts, and resources that agents can use to do things
+more accurately.
+
+You can add the ArkEnv skill to your agent, making it an expert in
+ArkEnv and env validation:
 
 ```package-install
 npx skills add yamcodes/arkenv
 ```
 
-The skill covers:
+The skill teaches agents:
 
 - Schema authoring for ArkType (`@arkenv/core`) and Standard Schema
   (`@arkenv/standard` with Zod or Valibot)
@@ -61,11 +72,12 @@ The skill covers:
   [`--agent`](/docs/reference/init#agent)
 - `.env.example` templates without copying secret values
 
-Discover more skills at [skills.sh](https://skills.sh).
+Find more skills at [skills.sh](https://skills.sh).
 
 ## Prompts that work well
 
-Paste these into the assistant.
+Copy these into the assistant when you want it to use the CLI, honor
+public prefixes, and skip a `runtimeEnv` map.
 
 **Greenfield setup**
 
@@ -99,7 +111,8 @@ Add the Vercel hosting preset with `npx arkenv@latest preset apply vercel --agen
 
 ## Machine-readable documentation
 
-Fetch markdown instead of HTML when you want to save tokens.
+ArkEnv's documentation site is optimized for AI consumption. Fetch
+markdown instead of HTML when you want a smaller context window.
 
 ### Direct markdown routes
 
@@ -123,6 +136,8 @@ Every page concatenated: [/llms-full.txt](/llms-full.txt).
   <Card href="/docs/guides/frameworks" title="Framework guides" description="Wire Next.js, Nuxt, Vite, or Bun." />
 
   <Card href="/docs/validating-your-environment/framework-integration" title="Integrations" description="Wire ArkEnv into Next.js, Nuxt, Vite, Bun, or coding agents." />
+
+  <Card href="/docs/reference/agent-plugin" title="@arkenv/agent-plugin" description="Diagnostic shapes, auditProject, and MCP-only config." />
 
   <Card href="/docs/reference/init" title="init reference" description="CLI flags, --agent payloads, and error codes." />
 

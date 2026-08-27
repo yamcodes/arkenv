@@ -7,34 +7,25 @@ description: Coding-agent plugin and MCP server for init and env audits.
 agents. It ships slash commands, a bundled skill, and an MCP server that
 scaffolds projects and audits source for unvalidated env access.
 
-The plugin and the Agent Skills markdown package coexist. Prefer the
-plugin on hosts that support it. Keep
-[`npx skills add yamcodes/arkenv`](/docs/guides/ai#agent-skill) when
-your assistant only loads skills.
+Install the plugin. It already includes the skill, slash commands, and
+MCP. Use the [Agent skill](/docs/guides/ai#agent-skill) only when the
+host cannot load plugins. Do not install both.
 
 ## Install
 
-```bash
+```package-install
 npx plugins add yamcodes/arkenv
 ```
 
-The repo's `marketplace.json` points that command at
-`packages/agent-plugin`. From a clone, install by path:
+Ask the assistant to add ArkEnv. Slash commands `/arkenv:init` and
+`/arkenv:audit` are optional shortcuts for the same MCP tools. You do
+not run a second install command.
 
-```bash
-npx plugins add ./packages/agent-plugin
-```
+### MCP-only hosts
 
-This registers `/arkenv:init` and `/arkenv:audit` in compatible runtimes
-(Claude Code, Cursor, Codex, and other MCP clients).
-
-Connect the MCP server after the package is on npm (alpha tag):
-
-```bash
-npx -y @arkenv/agent-plugin@alpha
-```
-
-Or add it to an MCP config:
+If the host has no plugin marketplace, add the server to MCP config.
+`npx -y @arkenv/agent-plugin@alpha` is the process the host spawns, not
+a follow-up to `plugins add`.
 
 ```json
 {
