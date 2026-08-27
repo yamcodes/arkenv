@@ -32,6 +32,7 @@ export function HeroMvpExampleView({ examples }: HeroMvpExampleViewProps) {
 	const baseId = useId();
 	const bodyRef = useRef<HTMLDivElement>(null);
 	const panes = examples.filter((item) => item.host === "vanilla");
+	// biome-ignore lint/correctness/useExhaustiveDependencies: tab switch must reset shared pane scroll
 	useLayoutEffect(() => {
 		const body = bodyRef.current;
 		if (body) body.scrollTop = 0;
