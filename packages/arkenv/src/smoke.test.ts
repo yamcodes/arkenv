@@ -137,11 +137,7 @@ describe("cli smoke tests", () => {
 		}
 	});
 
-<<<<<<< HEAD
-	it("check command returns non-zero when schema is missing", async () => {
-=======
 	it("check --json emits structured missing schema error when no env.ts exists", async () => {
->>>>>>> 308c8a1b6 (feat(cli): universal --json diagnostics and nextActions envelopes (#1614))
 		const uuid = Math.random().toString(36).substring(7);
 		const tempDir = path.resolve(__dirname, `../tmp-smoke-check-${uuid}`);
 		await fs.mkdir(tempDir, { recursive: true });

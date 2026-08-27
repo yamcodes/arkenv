@@ -41,15 +41,8 @@ export function compose(
 		workspace,
 		scanner,
 		schemaLoader,
-		jitiOptions,
 	);
 	const helpUseCase = new HelpUseCase(logger);
-	const checkUseCase = new CheckUseCase(
-		logger,
-		workspace,
-		scanner,
-		schemaLoader,
-	);
 
 	return {
 		cli,
@@ -60,7 +53,6 @@ export function compose(
 		presetUseCase,
 		checkUseCase,
 		helpUseCase,
-		checkUseCase,
 		schemaLoader,
 	};
 }

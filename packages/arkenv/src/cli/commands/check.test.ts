@@ -1,19 +1,19 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { JitiSchemaLoaderAdapter } from "@/adapters/jiti-schema-loader";
 import { Logger } from "@/adapters/logger.adapter";
 import { NodeProjectScannerAdapter } from "@/adapters/node-project-scanner";
-import { NodeWorkspaceAdapter } from "@/adapters/node-workspace";
+import { NodeWorkspace } from "@/adapters/node-workspace";
 import { MemoryReporter } from "@/adapters/reporters/memory.reporter";
 import { CheckUseCase } from "@/cli/commands/check";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 describe("CheckUseCase", () => {
 	let tempDir: string;
 	let memoryReporter: MemoryReporter;
 	let logger: Logger;
-	let workspace: NodeWorkspaceAdapter;
+	let workspace: NodeWorkspace;
 	let scanner: NodeProjectScannerAdapter;
 	let schemaLoader: JitiSchemaLoaderAdapter;
 	let useCase: CheckUseCase;
@@ -21,12 +21,19 @@ describe("CheckUseCase", () => {
 	beforeEach(async () => {
 		tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "arkenv-check-test-"));
 		memoryReporter = new MemoryReporter();
-		logger = new Logger({ reporter: memoryReporter, isQuiet: false, isJson: false });
-		workspace = new NodeWorkspaceAdapter();
-		scanner = new NodeProjectScannerAdapter();
+		logger = new Logger({
+			reporter: memoryReporter,
+			isQuiet: false,
+			isJson: false,
+		});
+		workspace = new NodeWorkspace(false, "pipe", logger);
+		scanner = new NodeProjectScannerAdapter(logger);
 		schemaLoader = new JitiSchemaLoaderAdapter({
 			jitiAliases: {
-				"@arkenv/core": path.resolve(__dirname, "../../../../core/src/index.ts"),
+				"@arkenv/core": path.resolve(
+					__dirname,
+					"../../../../core/src/index.ts",
+				),
 				arkenv: path.resolve(__dirname, "../../../../core/src/index.ts"),
 			},
 		});
@@ -99,15 +106,41 @@ describe("CheckUseCase", () => {
 
 	it("returns exit code 2 when schema file does not call arkenv()", async () => {
 		const envPath = path.join(tempDir, "env.ts");
-		await fs.writeFile(envPath, `export const foo = 123;\n`);
+		await fs.writeFile(envPath, "export const foo = 123;\n");
 
 		const exitCode = await useCase.execute({ schema: envPath, cwd: tempDir });
 		expect(exitCode).toBe(2);
 		expect(
 			memoryReporter.logs.some(
-				(l) => l.type === "error" && l.message.includes("No environment schema"),
+				(l) =>
+					l.type === "error" &&
+					l.message.includes("No arkenv() schema definition was found"),
 			),
 		).toBe(true);
+	});
+
+	it("discovers schema file from package.json arkenv config", async () => {
+		const schemaDir = path.join(tempDir, "config");
+		await fs.mkdir(schemaDir);
+		const envPath = path.join(schemaDir, "env.ts");
+		await fs.writeFile(
+			envPath,
+			`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ PORT: "number" });\n`,
+		);
+		await fs.writeFile(
+			path.join(tempDir, "package.json"),
+			JSON.stringify({ name: "app", arkenv: { schema: "./config/env.ts" } }),
+		);
+
+		const originalEnv = { ...process.env };
+		process.env.PORT = "3000";
+
+		try {
+			const exitCode = await useCase.execute({ cwd: tempDir });
+			expect(exitCode).toBe(0);
+		} finally {
+			process.env = originalEnv;
+		}
 	});
 
 	it("returns exit code 0 when environment variables are valid", async () => {
@@ -125,7 +158,9 @@ describe("CheckUseCase", () => {
 			expect(exitCode).toBe(0);
 			expect(
 				memoryReporter.logs.some(
-					(l) => l.type === "success" && l.message.includes("valid"),
+					(l) =>
+						l.type === "success" &&
+						l.message.includes("your environment matches the schema"),
 				),
 			).toBe(true);
 		} finally {
@@ -272,11 +307,7 @@ describe("CheckUseCase", () => {
 		process.env.DATABASE_URL = "postgres://user:p)ass@localhost:5432/db";
 
 		try {
-<<<<<<< HEAD
 			const exitCode = await useCase.execute({ schema: envPath, cwd: tempDir });
-=======
-			const exitCode = await useCase.execute({});
->>>>>>> dccd79fda (fix(cli): address PR review comments on redaction, bin resolution, and exit codes)
 			expect(exitCode).toBe(4);
 
 			const reports = memoryReporter.logs.filter(

@@ -16,6 +16,7 @@ export type LoggerOptions = {
 	isQuiet: boolean;
 	isJson: boolean;
 	isYes?: boolean;
+	reporter?: Reporter;
 };
 
 /**
@@ -27,7 +28,9 @@ export class Logger implements LoggerPort {
 	private reporter: Reporter;
 
 	constructor(private options: LoggerOptions) {
-		if (options.isJson) {
+		if (options.reporter) {
+			this.reporter = options.reporter;
+		} else if (options.isJson) {
 			this.reporter = new JsonReporter();
 		} else if (options.isQuiet) {
 			this.reporter = new SilentReporter();
