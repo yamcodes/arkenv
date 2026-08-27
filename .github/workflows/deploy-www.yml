@@ -2,8 +2,6 @@ name: Deploy www (arkenv.js.org)
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 on:
   push:
     branches:
@@ -22,11 +20,17 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   Deploy-Production:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - name: Set up Turborepo Remote Cache
+        uses: ./.github/actions/setup-turbo-remote-cache
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:

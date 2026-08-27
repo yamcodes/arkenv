@@ -21,9 +21,6 @@ jobs:
     # See docs/adr/0006-branching-and-release-flow.md.
     if: github.event.sender.login != 'autofix-ci[bot]'
     runs-on: ubuntu-latest
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     steps:
       - name: Generate GitHub App Token
         id: generate-token
@@ -37,6 +34,9 @@ jobs:
         with:
           token: ${{ steps.generate-token.outputs.token }}
           fetch-depth: 0
+
+      - name: Set up Turborepo Remote Cache
+        uses: ./.github/actions/setup-turbo-remote-cache
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6
