@@ -32,63 +32,63 @@ Items on different layers compose. “Just stub `process.env`” is B+C, not a f
 
 ## Metrics
 
-| Metric | Question |
-| ------ | -------- |
-| Matches #1314 | Do we get keys + schema with an empty environment, all validators, no parse? |
-| Feeds `check` | Can we validate a *chosen* env dict with the same `parse` as runtime? |
-| App `env.ts` tax | Must authors change their schema file? |
-| Simplicity | Moving parts in core, CLI, and the user’s process? |
-| Honesty | Do we pretend validation ran when it did not? |
-| Footguns | Silent wrong keys, CLI env leaking into “valid”, module-scope `env.FOO` throws? |
-| Validator neutrality | Zod / Valibot / compiled ArkType without CLI special cases? |
-| Handshake / skew | New CLI + old core: fail clearly, or silently do the wrong thing? |
-| ADR 0013 | Are we a mini schema compiler? |
-| Maintenance hell | Proxies, aliases, monkey-patches, dual validation engines? |
+| Metric               | Question                                                                        |
+| -------------------- | ------------------------------------------------------------------------------- |
+| Matches #1314        | Do we get keys + schema with an empty environment, all validators, no parse?    |
+| Feeds `check`        | Can we validate a *chosen* env dict with the same `parse` as runtime?           |
+| App `env.ts` tax     | Must authors change their schema file?                                          |
+| Simplicity           | Moving parts in core, CLI, and the user’s process?                              |
+| Honesty              | Do we pretend validation ran when it did not?                                   |
+| Footguns             | Silent wrong keys, CLI env leaking into “valid”, module-scope `env.FOO` throws? |
+| Validator neutrality | Zod / Valibot / compiled ArkType without CLI special cases?                     |
+| Handshake / skew     | New CLI + old core: fail clearly, or silently do the wrong thing?               |
+| ADR 0013             | Are we a mini schema compiler?                                                  |
+| Maintenance hell     | Proxies, aliases, monkey-patches, dual validation engines?                      |
 
 ## The hat
 
 ### Layer A — Getting the file into the process
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| A1 | In-process import (Jiti / bundle-require / tsx) | Blessed on #1314. PR uses Jiti. |
-| A2 | Static parse of `env.ts` (AST / regex of ArkType) | Rejected, [ADR 0013](./adr/0013-flat-layout-codegen-type-strategy.md). Stays so it cannot return. |
-| A3 | Subprocess: generate a tiny inspector and `node` it | Import in another process; still needs a B. |
-| A4 | Regex-scan `process.env.X` / `env.X` in the repo | What the CLI already does for init. Not the schema. |
-| A5 | Author exports a second `schema` / `keys` constant | App tax. |
+| #  | Option                                              | Notes                                                                                             |
+| -- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| A1 | In-process import (Jiti / bundle-require / tsx)     | Blessed on #1314. PR uses Jiti.                                                                   |
+| A2 | Static parse of `env.ts` (AST / regex of ArkType)   | Rejected, [ADR 0013](./adr/0013-flat-layout-codegen-type-strategy.md). Stays so it cannot return. |
+| A3 | Subprocess: generate a tiny inspector and `node` it | Import in another process; still needs a B.                                                       |
+| A4 | Regex-scan `process.env.X` / `env.X` in the repo    | What the CLI already does for init. Not the schema.                                               |
+| A5 | Author exports a second `schema` / `keys` constant  | App tax.                                                                                          |
 
 ### Layer B — Surviving `arkenv()` at import
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| B1 | Skip validation; **record** the `def` argument | Current PR. Global capture flag. |
-| B2 | Stub / fill `process.env` so validation **succeeds** | Named on #1314. “Simpler.” |
-| B3 | Populate from `--env-file` / real env and **boot** | Natural `check`. Fails empty-env `sync`. |
-| B4 | Import, **catch** `ArkEnvError`, scrape issue paths | Keys maybe; no schema objects; misses defaults that never ran. |
-| B5 | `arkenv(def, { dryRun: true })` | CLI cannot change the user’s call. |
-| B6 | Public `collectKeys(def)` instead of `arkenv` | Same: user’s file still calls `arkenv`. |
-| B7 | Monkey-patch / wrap `arkenv` in Jiti before eval | Fragile; still a skip/record in a costume. |
-| B8 | Always stash `def` on the returned object / a WeakMap **after** parse | Still requires parse to succeed. |
-| B9 | Return a Proxy env | Tried; broke Jiti. Record still happened. |
-| B10 | Authors wrap `begin`/`end` in `env.ts` | Rejected product (export-surface hat A4). |
+| #   | Option                                                                | Notes                                                          |
+| --- | --------------------------------------------------------------------- | -------------------------------------------------------------- |
+| B1  | Skip validation; **record** the `def` argument                        | Current PR. Global capture flag.                               |
+| B2  | Stub / fill `process.env` so validation **succeeds**                  | Named on #1314. “Simpler.”                                     |
+| B3  | Populate from `--env-file` / real env and **boot**                    | Natural `check`. Fails empty-env `sync`.                       |
+| B4  | Import, **catch** `ArkEnvError`, scrape issue paths                   | Keys maybe; no schema objects; misses defaults that never ran. |
+| B5  | `arkenv(def, { dryRun: true })`                                       | CLI cannot change the user’s call.                             |
+| B6  | Public `collectKeys(def)` instead of `arkenv`                         | Same: user’s file still calls `arkenv`.                        |
+| B7  | Monkey-patch / wrap `arkenv` in Jiti before eval                      | Fragile; still a skip/record in a costume.                     |
+| B8  | Always stash `def` on the returned object / a WeakMap **after** parse | Still requires parse to succeed.                               |
+| B9  | Return a Proxy env                                                    | Tried; broke Jiti. Record still happened.                      |
+| B10 | Authors wrap `begin`/`end` in `env.ts`                                | Rejected product (export-surface hat A4).                      |
 
 ### Layer C — Result shape
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| C1 | Recorded `def` → `declaredKeysFromDefinitions` | Keys, per-key schema, best-effort `hasDefault`. |
+| #  | Option                                            | Notes                                                |
+| -- | ------------------------------------------------- | ---------------------------------------------------- |
+| C1 | Recorded `def` → `declaredKeysFromDefinitions`    | Keys, per-key schema, best-effort `hasDefault`.      |
 | C2 | `Object.keys` / `getSchemaKeys` on a booted `env` | Values, not schema. Defaults look like present keys. |
-| C3 | Paths from a thrown `ArkEnvError` | Incomplete; no happy-path keys. |
-| C4 | `getSchemaKeys` only (compiled ArkType JSON) | Misses Zod/Valibot maps and raw DSL objects. |
+| C3 | Paths from a thrown `ArkEnvError`                 | Incomplete; no happy-path keys.                      |
+| C4 | `getSchemaKeys` only (compiled ArkType JSON)      | Misses Zod/Valibot maps and raw DSL objects.         |
 
 ### Layer D — Handshake
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| D1 | `globalThis` capture bag | Current. CLI sets flag; user’s `arkenv()` reads it. |
-| D2 | Jiti alias `@arkenv/core` to CLI/workspace copy | Tests do this. Production must not (wrong runtime). |
-| D3 | None | Only if B does not need user `arkenv()` to change (B2/B3/B4). |
-| D4 | Document poking the global key | Escape hatch, not a product. |
+| #  | Option                                          | Notes                                                         |
+| -- | ----------------------------------------------- | ------------------------------------------------------------- |
+| D1 | `globalThis` capture bag                        | Current. CLI sets flag; user’s `arkenv()` reads it.           |
+| D2 | Jiti alias `@arkenv/core` to CLI/workspace copy | Tests do this. Production must not (wrong runtime).           |
+| D3 | None                                            | Only if B does not need user `arkenv()` to change (B2/B3/B4). |
+| D4 | Document poking the global key                  | Escape hatch, not a product.                                  |
 
 ## Evaluation
 
