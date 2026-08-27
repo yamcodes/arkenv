@@ -109,8 +109,8 @@ Depending on the detected framework and flags, `init` writes:
 - `.env` / `.env.example` when missing. Init never reads an existing
   `.env`; a missing `.env.example` is filled from detected keys and
   defaults. If `.env` is missing, init may copy `.env.example` into it.
-- Next.js: `withArkEnv` in `next.config.*`, optional
-  `generated/env.gen.ts`
+- Next.js: `withArkEnv` in `next.config.*`, `.arkenv/` in `.gitignore`,
+  optional `.arkenv/env.gen.ts` (import as `@/.arkenv`)
 - Vite / Bun: type augmentation files (`vite-env.d.ts`, `bun-env.d.ts`)
 - Dependency installs for the chosen dialect (`@arkenv/core`, plugins,
   Zod/Valibot)

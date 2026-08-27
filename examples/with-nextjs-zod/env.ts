@@ -1,5 +1,5 @@
 import { z } from "zod";
-import arkenv from "@/generated/env.gen";
+import arkenv from "@/.arkenv";
 
 export const env = arkenv({
 	DATABASE_URL: z.string().default("postgres://localhost:5432/mydb"),

@@ -19,7 +19,8 @@
 			}
 		],
 		"paths": {
-			"@/*": ["./*"]
+			"@/*": ["./*"],
+			"@/.arkenv": ["./.arkenv/index.ts"]
 		}
 	},
 	"include": [
@@ -27,7 +28,7 @@
 		"**/*.ts",
 		"**/*.tsx",
 		".next/types/**/*.ts",
-		"generated/env.gen.ts"
+		".arkenv/**/*.ts"
 	],
 	"exclude": ["node_modules"]
 }

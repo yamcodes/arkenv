@@ -48,10 +48,10 @@ export function heroMvpEnvType(
 function importBlock(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
 	if (host === "next") {
 		if (validator === "zod") {
-			return `import arkenv from "@/generated/env.gen";
+			return `import arkenv from "@/.arkenv";
 import { z } from "zod";`;
 		}
-		return `import arkenv from "@/generated/env.gen";`;
+		return `import arkenv from "@/.arkenv";`;
 	}
 	if (validator === "arktype") {
 		return `import arkenv from "@arkenv/core";`;
@@ -77,7 +77,7 @@ function schemaFields(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
 }
 
 function importLine(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
-	if (host === "next") return "@/generated/env.gen";
+	if (host === "next") return "@/.arkenv";
 	if (validator === "arktype") return "@arkenv/core";
 	return "@arkenv/standard";
 }

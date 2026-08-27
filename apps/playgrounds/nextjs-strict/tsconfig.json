@@ -20,6 +20,7 @@
 		],
 		"paths": {
 			"@/*": ["./*"],
+			"@/.arkenv": ["./.arkenv/index.ts"],
 			"#arkenv/client-env": ["./env/client"]
 		}
 	},
@@ -27,6 +28,7 @@
 		"next-env.d.ts",
 		"**/*.ts",
 		"**/*.tsx",
+		".arkenv/**/*.ts",
 		".next/types/**/*.ts",
 		".next/dev/types/**/*.ts",
 		"**/*.mts"

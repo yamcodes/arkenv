@@ -14,7 +14,9 @@ For Zod, Valibot, or other Standard Schema validators **without** ArkType, insta
 
 Next.js requires client-side environment variables to be statically destructured (`process.env.NEXT_PUBLIC_...`) to allow static inlining during bundling.
 
-To automate this, `@arkenv/nextjs/config` provides `withArkEnv`, which statically extracts your keys and writes a tailored factory in `generated/env.gen.ts`.
+To automate this, `@arkenv/nextjs/config` provides `withArkEnv`, which statically extracts your keys and writes a tailored factory in `.arkenv/env.gen.ts`. Import that factory as `@/.arkenv`. The wrapper registers Turbopack and Webpack aliases so you never import from the dot-folder directly.
+
+Add `.arkenv/` to `.gitignore`. `withArkEnv` regenerates the factory when Next.js loads your config (dev and build). `arkenv init` also writes the factory once and maps `@/.arkenv` in `tsconfig.json` so `tsc --noEmit` works after install.
 
 ### 1. Configure `next.config.ts`
 
@@ -43,33 +45,24 @@ export default withArkEnv(async (phase, { defaultConfig }) => ({
 
 ### 2. Define your schema in `env.ts`
 
-Import `arkenv` from the generated `./generated/env.gen` file instead of the package:
+Import `arkenv` from `@/.arkenv` instead of the package:
 
 ```typescript
 // src/env.ts
-import arkenv from "./generated/env.gen";
+import arkenv from "@/.arkenv";
 
 export const env = arkenv({
-  server: {
-    DATABASE_URL: "string",
-    STRIPE_API_KEY: "string",
-  },
-  client: {
-    NEXT_PUBLIC_API_URL: "string.host",
-  },
-  shared: {
-    NODE_ENV: "string",
-  },
+  DATABASE_URL: "string",
+  NEXT_PUBLIC_API_URL: "string.host",
+  NODE_ENV: "string",
 });
 ```
-
-*Note: For the best DX and CI/CD compatibility, we recommend committing `generated/env.gen.ts` to source control.*
 
 ---
 
 ## Customizing Paths
 
-If you want to keep generated files in a separate subdirectory (like `src/generated/`), you can specify the `schemaPath` and `outputPath` options in `next.config.ts`:
+If you need a different on-disk location, pass `outputPath`. Keep importing `@/.arkenv`; the alias still points at that file.
 
 ```typescript
 // next.config.ts
@@ -83,19 +76,6 @@ const nextConfig: NextConfig = {
 export default withArkEnv(nextConfig, {
   schemaPath: "src/env.ts",
   outputPath: "src/generated/env.gen.ts"
-});
-```
-
-Then, import from the custom location:
-
-```typescript
-// src/env.ts
-import arkenv from "./generated/env.gen";
-
-export const env = arkenv({
-  client: {
-    NEXT_PUBLIC_API_URL: "string",
-  }
 });
 ```
 

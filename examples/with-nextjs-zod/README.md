@@ -11,7 +11,7 @@ This example demonstrates how to use [@arkenv/nextjs](https://arkenv.js.org/docs
 The example defines the environment schema in `env.ts` with Zod:
 
 ```ts title="env.ts"
-import arkenv from "@/generated/env.gen";
+import arkenv from "@/.arkenv";
 import { z } from "zod";
 
 export const env = arkenv({
@@ -39,7 +39,7 @@ export default withArkEnv(nextConfig);
 1. **Server Schema**: Variables that are only accessible on the server.
 2. **Client Schema**: Variables that are exposed to the client (must begin with `NEXT_PUBLIC_` to match Next.js conventions).
 3. **Shared Schema**: Common variables like `NODE_ENV`.
-4. **Automatic Codegen**: ArkEnv automatically parses the keys and generates `generated/env.gen.ts` importing from `@arkenv/nextjs/standard` via the `withArkEnv` wrapper in `next.config.ts`.
+4. **Automatic Codegen**: ArkEnv automatically parses the keys and generates `.arkenv/env.gen.ts` importing from `@arkenv/nextjs/standard` via the `withArkEnv` wrapper in `next.config.ts`. Import it as `@/.arkenv`.
 
 ## Usage in Components
 

@@ -17,6 +17,12 @@ const PATH_ALIAS_PREFIX = "@/";
 const GENERATED_ENV_DIR = "generated";
 const GENERATED_ENV_MODULE = "env.gen";
 
+/**
+ * Public import for the Next.js codegen factory. `withArkEnv` aliases this
+ * specifier to `.arkenv/env.gen.ts` (or a custom `outputPath`).
+ */
+export const NEXTJS_VIRTUAL_FACTORY_IMPORT = "@/.arkenv";
+
 const STRICT_INTERNAL_DIR = "internal";
 const STRICT_SHARED_BASENAME = "shared";
 const STRICT_CLIENT_BASENAME = "client";
@@ -99,11 +105,15 @@ function resolveCodegenImportPath(
 	generatedDir: string,
 	options: { framework: Framework; disableCodegen?: boolean },
 ): string | undefined {
-	if (
-		!isCodegenFramework(options.framework) ||
-		options.disableCodegen ||
-		!params.tsConfig?.parsed
-	) {
+	if (!isCodegenFramework(options.framework) || options.disableCodegen) {
+		return undefined;
+	}
+
+	if (options.framework === "nextjs") {
+		return NEXTJS_VIRTUAL_FACTORY_IMPORT;
+	}
+
+	if (!params.tsConfig?.parsed) {
 		return undefined;
 	}
 

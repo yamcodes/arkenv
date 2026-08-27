@@ -20,6 +20,7 @@
 		],
 		"paths": {
 			"@/*": ["./*"],
+			"@/.arkenv": ["./.arkenv/index.ts"],
 			"#arkenv/*": ["./.arkenv/*"],
 			"#arkenv/env": ["./.arkenv/env.gen.ts"]
 		}
