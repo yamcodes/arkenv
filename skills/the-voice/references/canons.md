@@ -31,8 +31,7 @@ Read at least two of these before a voice pass:
 - `apps/www/content/docs/guides/frameworks/nextjs.mdx` (or Vite):
   `package-install` fences, authored as `npx` / `npm install`
 
-Canonical docs live under `apps/www/content/docs/`. If `docs/docs/` still
-mirrors a page, keep both in sync.
+Canonical docs live under `apps/www/content/docs/`.
 
 ## Mechanics vs register
 
