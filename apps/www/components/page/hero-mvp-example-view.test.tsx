@@ -21,7 +21,9 @@ function htmlFor(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
 					? "NEXT_PUBLIC_API_URL"
 					: validator === "zod"
 						? "z.url()"
-						: "@arkenv/standard";
+						: validator === "valibot"
+							? "v.pipe(v.string(), v.url())"
+							: "@arkenv/standard";
 	return `<pre class="shiki twoslash"><code>${token}</code></pre>`;
 }
 
@@ -34,7 +36,9 @@ const examples = HERO_MVP_HOSTS.flatMap((host) =>
 				? "@/generated/env.gen"
 				: validator.id === "arktype"
 					? "@arkenv/core"
-					: "@arkenv/standard",
+					: validator.id === "valibot"
+						? "@arkenv/standard/valibot"
+						: "@arkenv/standard",
 		html: htmlFor(host.id, validator.id),
 		code: heroMvpSnippet(host.id, validator.id).code,
 	})),
@@ -74,10 +78,13 @@ describe("HeroMvpExampleView", () => {
 			screen.getByRole("tab", { name: "ArkType" }).querySelector("svg"),
 		).not.toBeNull();
 		expect(
-			screen.queryByRole("tab", { name: "Vanilla" }),
-		).not.toBeInTheDocument();
+			screen.getByRole("tab", { name: "Zod" }),
+		).toBeInTheDocument();
 		expect(
-			screen.queryByRole("tab", { name: "Valibot" }),
+			screen.getByRole("tab", { name: "Valibot" }),
+		).toBeInTheDocument();
+		expect(
+			screen.queryByRole("tab", { name: "Vanilla" }),
 		).not.toBeInTheDocument();
 		expect(
 			screen.getByRole("tabpanel").querySelector("[data-active='true']"),
@@ -98,9 +105,18 @@ describe("HeroMvpExampleView", () => {
 		expect(
 			screen.getByRole("tabpanel").querySelector("[data-active='true']"),
 		).not.toHaveTextContent("VITE_API_URL");
+
+		await user.click(screen.getByRole("tab", { name: "Valibot" }));
+		expect(
+			screen.getByRole("tabpanel").querySelector("[data-active='true']"),
+		).toHaveTextContent("v.pipe(v.string(), v.url())");
+		expect(
+			screen.getByRole("tabpanel").querySelector("[data-active='true']"),
+		).not.toHaveTextContent("VITE_API_URL");
 	});
 
 	it("copies the visible tab source", async () => {
+		const user = userEvent.setup();
 		renderView();
 
 		fireEvent.click(screen.getByRole("button", { name: "Copy" }));
@@ -110,11 +126,19 @@ describe("HeroMvpExampleView", () => {
 			);
 		});
 
-		fireEvent.click(screen.getByRole("tab", { name: "Zod" }));
+		await user.click(screen.getByRole("tab", { name: "Zod" }));
 		fireEvent.click(screen.getByRole("button", { name: /^Copy$|^Copied$/ }));
 		await waitFor(() => {
 			expect(writeText).toHaveBeenLastCalledWith(
 				heroMvpSnippet("vanilla", "zod").code,
+			);
+		});
+
+		await user.click(screen.getByRole("tab", { name: "Valibot" }));
+		fireEvent.click(screen.getByRole("button", { name: /^Copy$|^Copied$/ }));
+		await waitFor(() => {
+			expect(writeText).toHaveBeenLastCalledWith(
+				heroMvpSnippet("vanilla", "valibot").code,
 			);
 		});
 	});
