@@ -15,6 +15,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      id-token: write
     steps:
       - uses: actions/checkout@v6
         with:
@@ -23,6 +24,10 @@ jobs:
           # ref so fork commits resolve and base history remains available for turbo.
           ref: ${{ github.event.pull_request.number && format('refs/pull/{0}/head', github.event.pull_request.number) || github.sha }}
           persist-credentials: false
+      - name: Set up Turborepo Remote Cache
+        uses: ./.github/actions/setup-turbo-remote-cache
+        with:
+          team: ${{ vars.TURBO_TEAM }}
       - name: Set Turbo base/head for PRs
         env:
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
@@ -40,7 +45,6 @@ jobs:
       - name: Check if www is affected
         id: affected
         env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
@@ -79,7 +83,6 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
         run: node scripts/vercel-wrapper.cjs build --token="$VERCEL_TOKEN"
       - name: Deploy Project Artifacts to Vercel
         if: steps.affected.outputs.is_affected == 'true'
