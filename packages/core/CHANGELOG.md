@@ -1,5 +1,14 @@
 # @arkenv/core
 
+## 1.0.0-alpha.7
+
+### Patch Changes
+
+- #### Add `arkenv check` command and cross-module validation detection _[`#1632`](https://github.com/yamcodes/arkenv/pull/1632) [`01a028d`](https://github.com/yamcodes/arkenv/commit/01a028def38f5e440329f7eeef03773d4a76c46a) [@yamcodes](https://github.com/yamcodes)_
+
+  - Add `arkenv check` CLI command to validate the active environment against the project's env schema, supporting `--schema` (`-s`), repeatable `--env-file`, `--json`, `--quiet`, and `--agent` with CI-friendly exit codes.
+  - Add structural `ArkErrors` verification in `@arkenv/core` so cross-module-instance schema evaluation reliably surfaces validation issues.
+
 ## 1.0.0-alpha.6
 
 ### Patch Changes

@@ -1,5 +1,24 @@
 # @arkenv/standard
 
+## 1.0.0-alpha.7
+
+### Patch Changes
+
+- #### Drop default `z.coerce` from Zod product samples and scaffold templates _[`#1631`](https://github.com/yamcodes/arkenv/pull/1631) [`ba9f903`](https://github.com/yamcodes/arkenv/commit/ba9f9030e8291a3bc315b164012eb825693e22ba) [@yamcodes](https://github.com/yamcodes)_
+
+  Scaffolded Zod templates, `@arkenv/standard` JSDoc examples, and official example projects now declare numeric and boolean fields with `z.number()` and `z.boolean()` instead of `z.coerce.number()` or `z.coerce.boolean()`, reflecting ArkEnv's built-in pre-coercion for Standard Schema validators.
+
+  ```ts
+  import arkenv from "@arkenv/standard";
+  import { z } from "zod";
+
+  export const env = arkenv({
+    PORT: z.number().default(3000),
+    DATABASE_URL: z.string().url(),
+    DEBUG: z.boolean().default(false),
+  });
+  ```
+
 ## 1.0.0-alpha.6
 
 ### Minor Changes
