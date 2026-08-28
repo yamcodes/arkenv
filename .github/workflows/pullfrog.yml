@@ -25,7 +25,7 @@ jobs:
     steps:
       - name: Check PR source
         id: check-pr-source
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             let prNumber = null;
@@ -78,7 +78,7 @@ jobs:
             core.setOutput("skip", String(shouldSkip))
       - name: Checkout code
         if: steps.check-pr-source.outputs.skip != 'true'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
       - name: Run agent
