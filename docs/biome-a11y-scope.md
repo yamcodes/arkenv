@@ -48,7 +48,7 @@ Items on different layers compose. Do not flatten into “turn a11y off vs keep 
 | A2 | Axe **and** Biome a11y on `apps/www`     | Current for www: Biome `recommended` already includes a11y; axe is extra.              |
 | A3 | Drop axe; Biome a11y only                | Out of scope for #1657. Loses runtime DOM, Fumadocs chrome, contrast in the real tree. |
 | A4 | Neither                                  | Rejected. Docs site would have no CI WCAG gate.                                        |
-| A5 | Axe only; Biome `a11y: off` at repo root | Removes the cheap catch on www.                                                        |
+| A5 | Axe only; Biome `a11y: off` at repo root | Removes the cheap catch on [www](http://www).                                          |
 
 ### B — Biome a11y scope
 
@@ -92,7 +92,7 @@ Items on different layers compose. Do not flatten into “turn a11y off vs keep 
 
 **B3 Playgrounds + examples** — Honesty: same trees we already relax (`noConsole`). Misses eval-viewer (skills, not playground). Incomplete for this PR.
 
-**B4 Playgrounds + examples + eval-viewer** — Honesty: lint off where axe never runs. Product coverage: www unchanged. Cheap catch: www kept. Tax fairness: pnpm group unblocked. Footguns: a *new* tree outside those globs can still fail autofix (pay then, same as today). Simplicity: one more `includes` on the existing override, plus a small override for the viewer. Teachability: “fixtures are not www.” Maintenance: two globs, not N `biome-ignore`s.
+**B4 Playgrounds + examples + eval-viewer** — Honesty: lint off where axe never runs. Product coverage: www unchanged. Cheap catch: www kept. Tax fairness: pnpm group unblocked. Footguns: a *new* tree outside those globs can still fail autofix (pay then, same as today). Simplicity: one more `includes` on the existing override, plus a small override for the viewer. Teachability: “fixtures are not [www.”](http://www.”) Maintenance: two globs, not N `biome-ignore`s.
 
 **B5 Root off** — See A5. Scores well on tax fairness, poorly on cheap catch and honesty if we still say “we lint a11y.”
 
