@@ -48,7 +48,7 @@ Items on different layers compose. Do not flatten into “turn a11y off vs keep 
 | A2 | Axe **and** Biome a11y on `apps/www`     | Current for www: Biome `recommended` already includes a11y; axe is extra.              |
 | A3 | Drop axe; Biome a11y only                | Out of scope for #1657. Loses runtime DOM, Fumadocs chrome, contrast in the real tree. |
 | A4 | Neither                                  | Rejected. Docs site would have no CI WCAG gate.                                        |
-| A5 | Axe only; Biome `a11y: off` at repo root | Removes the cheap catch on `apps/www`.                                                  |
+| A5 | Axe only; Biome `a11y: off` at repo root | Removes the cheap catch on `apps/www`.                                                 |
 
 ### B — Biome a11y scope
 
