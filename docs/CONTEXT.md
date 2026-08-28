@@ -358,7 +358,7 @@ On Nuxt, both server and client `arkenv()` paths are thin readers of the coerced
 *Avoid*: “server still validates on import, client is thin”; asymmetric honesty
 
 **Boot gate schema load** (resolved):
-The module loads the configured `schemaPath` / strict layout files and the **Nuxt boot gate** (and build-time validate) call **core** validation against that schema. Public thin `arkenv()` is never used as the validator entry.
+The module loads the configured `schemaPath` and the **Nuxt boot gate** (and build-time validate) call **core** validation against that schema. Public thin `arkenv()` is never used as the validator entry. Dedicated strict-layout multi-file load is withdrawn ([ADR 0020](./adr/0020-strict-layout-complexity-budget.md)); it remains in tree until the removal issue.
 *Avoid*: requiring a user-exported `schema`; validating by side-effect of executing fat `arkenv()` in `env.ts`
 
 **Boot gate scheduling** (resolved):
@@ -375,7 +375,7 @@ Module setup / `nuxt build` may still run core validation against the build envi
 
 **Flagged ambiguities**
 
-- “Completely Vite-plugin-based like Solid Start” for Nuxt — **resolved: no** as the sole public-value transport. Nuxt keeps a Nuxt module + **Nuxt boot gate** + **symmetric thin accessors**; Vite is only for the compile-time import boundary (ADR 0016), not Solid-Start-style value inlining. See [#1424 design call](https://github.com/yamcodes/arkenv/issues/1424#issuecomment-5038256349).
+- “Completely Vite-plugin-based like Solid Start” for Nuxt — **resolved: no** as the sole public-value transport. Nuxt keeps a Nuxt module + **Nuxt boot gate** + **symmetric thin accessors**. Vite is not Solid-Start-style value inlining. The compile-time import boundary ([ADR 0016](./adr/0016-nuxt-vite-compile-time-boundary.md)) is **superseded** by [ADR 0020](./adr/0020-strict-layout-complexity-budget.md). See [#1424 design call](https://github.com/yamcodes/arkenv/issues/1424#issuecomment-5038256349).
 
 **Relationships**:
 
@@ -480,16 +480,14 @@ A non-interactive muted label that only **groups** sibling **Leaves** under a **
 
 - **Vanilla**: The default runtime-only core module for Node.js, Bun, and Deno. Uses `import { env } from "./env"`. Validated environment variables are accessed directly from the returned `env` object for typesafety. Primarily used for **server-side** or runtime-only validation. No plugins are required.
 - **Vite**: Integrated via `@arkenv/vite-plugin`. Validates environment variables at build-time and inlines `import.meta.env` variables for **client-side** (browser) usage.
-- **Next.js**: Integrated via `@arkenv/nextjs`. Provides two layout patterns:
-  - **Strict layout**: Uses separate environment files for client, server, and shared scopes (`env/client.ts`, `env/server.ts`, and `env/internal/shared.ts`) for compile-time locking of secrets from browser bundles using package conditional exports (`react-server` vs. `default`) and `server-only`.
-  - **Flat layout** (also called simple layout in older docs): Uses a single `env.ts` schema file. In Next.js, client-side environment variables must be statically destructured in a `runtimeEnv` block to allow static inlining by the Next.js compiler. To automate this, `@arkenv/nextjs/config` exposes a `withArkEnv` wrapper for `next.config.js` that performs static analysis on `env.ts` to locate `client` and `shared` keys, then automatically generates a tailored `arkenv` factory in `.arkenv/env.gen.ts` (imported as `@/.arkenv`) that pre-fills `runtimeEnv`. It enforces strict client-side prefixing (`NEXT_PUBLIC_`) and prevents server secrets from leaking to client components.
-  - **Standard Mode**: Import from `@arkenv/nextjs/standard` (peer: `@arkenv/standard`). ArkType is not required. Flat and strict layouts are both supported.
+- **Next.js**: Integrated via `@arkenv/nextjs`. **Flat layout** is the only first-class pattern: a single `env.ts`. Client-side keys must be statically destructured in a `runtimeEnv` block for Next inlining; `withArkEnv` generates a tailored factory in `.arkenv/env.gen.ts` (imported as `@/.arkenv`) that pre-fills `runtimeEnv`, enforces `NEXT_PUBLIC_` prefixing, and keeps server **values** off client components (conditional exports + proxy). Name/type isolation is a documented two-module recipe ([ADR 0020](./adr/0020-strict-layout-complexity-budget.md)), not a layout engine — client module via codegen, server module via `@arkenv/core` plus optional `import "server-only"`. Dedicated `--strict` / `/client` `/server` still exist in the tree until the follow-up removal issue.
+  - **Standard Mode**: Import from `@arkenv/nextjs/standard` (peer: `@arkenv/standard`). ArkType is not required. Flat is the happy path; the split recipe applies the same as ArkType mode.
 - **Nuxt**: Integrated via `@arkenv/nuxt`. Exposes a Nuxt module (`@arkenv/nuxt/module`) that:
-  - Automates environment variable validation and codegen (for both simple/flat and strict layouts) during development (with file watching) and build.
-  - Dynamically populates Nuxt's `runtimeConfig` with environment variable keys defined in the schema.
-  - Registers a Vite plugin during client bundling to prevent client-side code from importing `@arkenv/nuxt/server` (compile-time security).
+  - Automates environment variable validation during development (with file watching) and build for the configured `schemaPath` (flat `env.ts`).
+  - Dynamically populates Nuxt's `runtimeConfig` with environment variable keys defined in the schema (public keys only in `runtimeConfig.public`).
   - Enforces client-side environment variable prefixing (`NUXT_PUBLIC_`).
-  - **Standard Mode**: Register `@arkenv/nuxt/standard/module` and import from `@arkenv/nuxt/standard` (peer: `@arkenv/standard`). ArkType is not required. Flat and strict layouts are both supported.
+  - Does **not** (as of ADR 0020) keep a Vite compile-time import blocker or `/server` `/client` subpaths. Split-recipe users must not import the server module from client/Vue code. The in-tree blocker remains until the removal issue.
+  - **Standard Mode**: Register `@arkenv/nuxt/standard/module` and import from `@arkenv/nuxt/standard` (peer: `@arkenv/standard`). ArkType is not required.
 - **Bun fullstack dev server**:
   - **Bun.serve**: An HTTP server runtime that integrates with Bun's built-in bundler to scan HTML files, trigger on-demand bundling, and serve resulting assets. It does not perform bundling itself; rather, it coordinates with Bun's bundler (configured via `@arkenv/bun-plugin` in `bunfig.toml`) to inline environment variables (e.g., using a `PUBLIC_` prefix) via static replacement. Primarily used for **client-side** bundling integration.
   - **Bun.build**: Bun's programmatic bundling API. Integrated via `@arkenv/bun-plugin` in the `Bun.build` plugins array. Used for custom build scripts targeting the browser in a fullstack context.

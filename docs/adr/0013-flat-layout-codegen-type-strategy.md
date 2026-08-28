@@ -33,12 +33,12 @@ We adopt **Path A** for the flat layout.
 2. **Runtime Proxy is the security boundary.** Types protect the happy path; the existing `Proxy` in `@arkenv/nextjs` throws on client access to server-only keys. Compile-time client filtering is intentionally not provided in the flat layout.
 3. **Accepted limitations of the wrapper.** The generated code uses bare `at.infer<TSchema>` (not `at.infer<TSchema, $>`) and omits `MergeExtends`, because the arkenv scope (`$` from `@repo/scope`) and `MergeExtends` (`./types`) are internal and not part of the public `@arkenv/nextjs` surface, so they cannot be referenced from user-land generated code. Flat-layout usage does not rely on custom scope keywords or `extends`.
 4. **No new inference overhead.** `distill.Out<at.infer<...>>` is the same pattern used by every existing entry point (`index`, `server`, `client`, `shared`, `react-server`), so Path A matches the package baseline rather than introducing a new hotspot.
-5. **Strict layout is unaffected.** Projects needing compile-time client/server separation use the strict layout (`env/server.ts`, `env/client.ts`), which keeps its dedicated entry points.
+5. **Strict layout is withdrawn** ([ADR 0020](./0020-strict-layout-complexity-budget.md)). Projects that want name/type isolation use the documented two-module recipe, not dedicated `/client` `/server` entries.
 
 ## Consequences
 
 - **Zero-config DX.** Server Components type server-only keys; client components type all keys (runtime Proxy guards misuse). Users never touch `tsconfig.json`.
 - **Simple, robust CLI.** Codegen stays a boilerplate emitter decoupled from schema contents; it never tracks ArkType grammar.
-- **Security is runtime-enforced in flat mode.** A developer can write `env.DATABASE_URL` in a client component and TypeScript will allow it; the Proxy throws at runtime. Teams wanting compile-time prevention should use the strict layout.
+- **Security is runtime-enforced in flat mode.** A developer can write `env.DATABASE_URL` in a client component and TypeScript will allow it; the Proxy throws at runtime. Name/type hiding is the documented split-file recipe ([ADR 0020](./0020-strict-layout-complexity-budget.md)), not a second layout engine.
 - **Future "compiled mode" remains open.** Path B (CLI statically compiling ArkType into static types) is a deliberate future enhancement behind a separate layout/flag - not a retrofit onto the flat factory.
 - **Maintenance tripwire.** A concise `@remarks` note on `generateFlatFactoryCode` references this ADR so contributors and AI agents editing `config.ts` do not attempt to statically compile the schema or add internal-only types to generated code.
