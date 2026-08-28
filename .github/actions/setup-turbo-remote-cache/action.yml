@@ -7,6 +7,10 @@ inputs:
 runs:
   using: composite
   steps:
+    # GitHub withholds OIDC on `pull_request` from forks; skip so turbo runs
+    # without cache (pre-OIDC behavior). `pull_request_target`, `push`, and
+    # `workflow_dispatch` still exchange a token.
     - uses: vercel/setup-turborepo-remote-cache-action@v1.1.0
+      if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork != true }}
       with:
         team: ${{ inputs.team }}
