@@ -81,9 +81,7 @@ describe("/docs/[package]/llms.txt route", () => {
 	});
 
 	it("should 404 when a package folder has no index and only nested pages", async () => {
-		const req = new Request(
-			"https://arkenv.js.org/docs/nested-only/llms.txt",
-		);
+		const req = new Request("https://arkenv.js.org/docs/nested-only/llms.txt");
 		const params = Promise.resolve({ package: "nested-only" });
 
 		await expect(GET(req, { params })).rejects.toThrow();
