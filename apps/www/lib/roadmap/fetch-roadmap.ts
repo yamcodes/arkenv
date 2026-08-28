@@ -22,8 +22,8 @@ type GitHubIssue = {
 	pull_request?: unknown;
 };
 
-const EXTRA_ORDER = new Map(
-	ROADMAP_EXTRAS.map((extra, index) => [`extra:${extra.id}`, index] as const),
+const EXTRA_ORDER = new Map<string, number>(
+	ROADMAP_EXTRAS.map((extra, index) => [`extra:${extra.id}`, index]),
 );
 
 function githubHeaders(): HeadersInit {
