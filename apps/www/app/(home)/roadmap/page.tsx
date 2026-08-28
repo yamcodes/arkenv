@@ -7,7 +7,7 @@ import type { RoadmapItem } from "~/lib/roadmap/types";
 export const metadata: Metadata = {
 	title: "v1 Roadmap | ArkEnv",
 	description:
-		"Track ArkEnv v1 progress toward a stable release. Checklist driven by the GitHub v1 milestone.",
+		"ArkEnv v1 checklist from the GitHub milestone, plus launch steps.",
 };
 
 export const revalidate = 300;
@@ -76,20 +76,7 @@ export default async function RoadmapPage() {
 			<div className="home-aurora__rails" aria-hidden="true" />
 			<article className="roadmap-page">
 				<header className="roadmap-page__header">
-					<p className="roadmap-page__eyebrow">ArkEnv alpha</p>
 					<h1 className="roadmap-page__title-heading">v1 Roadmap</h1>
-					<p className="roadmap-page__lede">
-						Path to a production-ready, stable v1. Issue rows come from the{" "}
-						<a
-							href={roadmap.milestone.url}
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							{roadmap.milestone.title} milestone
-						</a>{" "}
-						on GitHub. A few launch steps that are not issues are listed with
-						the open work until they ship.
-					</p>
 				</header>
 
 				<section
@@ -122,8 +109,7 @@ export default async function RoadmapPage() {
 					</p>
 					{roadmap.stale ? (
 						<p className="roadmap-page__stale">
-							Could not refresh GitHub right now. Showing manual launch items
-							only — check the{" "}
+							GitHub did not respond. You are seeing launch extras only. See the{" "}
 							<a
 								href={roadmap.milestone.url}
 								target="_blank"
@@ -141,14 +127,14 @@ export default async function RoadmapPage() {
 					aria-labelledby="roadmap-success"
 				>
 					<h2 id="roadmap-success" className="roadmap-page__section-title">
-						What stable looks like
+						Stable v1
 					</h2>
 					<ul className="roadmap-page__criteria-list">
-						<li>Stable API with a clear deprecation policy</li>
-						<li>Solid test coverage across core paths</li>
-						<li>Documentation with examples and migration notes</li>
+						<li>Stable API and a written deprecation policy</li>
+						<li>Tests on the core paths</li>
+						<li>Docs with examples and migration notes</li>
 						<li>Clear errors and predictable validation</li>
-						<li>Documented MO that the codebase matches</li>
+						<li>Code that matches the documented MO</li>
 					</ul>
 				</section>
 
@@ -187,8 +173,8 @@ export default async function RoadmapPage() {
 				) : null}
 
 				<p className="roadmap-page__help">
-					Want to help? Testing, docs, and triage move the needle most. Open an
-					issue with clear repro steps, or pick something from the{" "}
+					Help with tests, docs, or triage. Open an issue with a clear repro, or
+					take something from the{" "}
 					<a
 						href={roadmap.milestone.url}
 						target="_blank"

@@ -24,14 +24,14 @@ type NavLink = {
 const NAV_CORE_LINKS: NavLink[] = [
 	{ text: "Docs", url: "/docs", activeMatch: "/docs" },
 	{
-		text: "Playground",
-		url: STACKBLITZ_PLAYGROUND_URL,
-		external: true,
-	},
-	{
 		text: "Roadmap",
 		url: "/roadmap",
 		activeMatch: "/roadmap",
+	},
+	{
+		text: "Playground",
+		url: STACKBLITZ_PLAYGROUND_URL,
+		external: true,
 	},
 ];
 

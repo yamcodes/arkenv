@@ -18,15 +18,6 @@
 	gap: var(--space-sm);
 }
 
-.roadmap-page__eyebrow {
-	margin: 0;
-	font-size: var(--text-sm);
-	font-weight: 500;
-	letter-spacing: 0.04em;
-	text-transform: uppercase;
-	color: var(--color-accent);
-}
-
 .roadmap-page__title-heading {
 	margin: 0;
 	font-family: var(--font-display);
@@ -38,15 +29,6 @@
 	font-feature-settings: var(--font-feature-sans);
 }
 
-.roadmap-page__lede {
-	margin: 0;
-	max-width: 40rem;
-	font-size: var(--text-md);
-	line-height: 1.55;
-	color: var(--color-ink-2);
-}
-
-.roadmap-page__lede a,
 .roadmap-page__stale a,
 .roadmap-page__help a {
 	color: var(--color-ink-2);
@@ -55,7 +37,6 @@
 	transition: color var(--dur-short) var(--ease-out);
 }
 
-.roadmap-page__lede a:hover,
 .roadmap-page__stale a:hover,
 .roadmap-page__help a:hover {
 	color: var(--color-ink);
@@ -118,20 +99,20 @@
 	align-items: baseline;
 	gap: var(--space-xs);
 	margin: 0 0 var(--space-sm);
-	font-size: var(--text-sm);
-	font-weight: 500;
-	letter-spacing: 0.04em;
-	text-transform: uppercase;
-	color: var(--color-muted);
+	font-size: var(--text-md);
+	font-weight: 450;
+	letter-spacing: var(--text-heading-tracking);
+	color: var(--color-ink);
+	font-feature-settings: var(--font-feature-sans);
 }
 
 .roadmap-page__count {
 	font-family: var(--font-mono);
 	font-feature-settings: var(--font-feature-mono);
 	font-variant-numeric: tabular-nums;
-	color: var(--color-ink-2);
-	text-transform: none;
-	letter-spacing: 0;
+	font-size: var(--text-sm);
+	font-weight: 400;
+	color: var(--color-muted);
 }
 
 .roadmap-page__criteria-list {
