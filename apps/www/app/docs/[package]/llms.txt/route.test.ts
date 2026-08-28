@@ -9,11 +9,31 @@ vi.mock("~/lib/source", () => ({
 				{
 					type: "folder",
 					$ref: { folder: "arkenv", meta: "arkenv/meta.json" },
+					index: {
+						type: "page",
+						url: "/docs/arkenv",
+						name: "ArkEnv",
+					},
 					children: [
 						{
 							type: "page",
-							url: "/docs/arkenv",
-							name: "ArkEnv",
+							url: "/docs/arkenv/quickstart",
+							name: "Quickstart",
+						},
+						{
+							type: "folder",
+							index: {
+								type: "page",
+								url: "/docs/arkenv/integrations",
+								name: "Integrations",
+							},
+							children: [
+								{
+									type: "page",
+									url: "/docs/arkenv/integrations/ide/vscode",
+									name: "VS Code",
+								},
+							],
 						},
 					],
 				},
@@ -24,8 +44,12 @@ vi.mock("~/lib/source", () => ({
 
 vi.mock("fumadocs-core/source", () => ({
 	llms: () => ({
-		indexNode: (node: { $ref?: unknown; name?: string }) =>
-			`Mocked Folder Index Content: ${JSON.stringify(node.$ref) || node.name}`,
+		indexNode: (node: {
+			$ref?: unknown;
+			name?: string;
+			index?: { url?: string };
+		}) =>
+			`Mocked Folder Index Content: ${node.index?.url ?? JSON.stringify(node.$ref) ?? node.name}`,
 	}),
 }));
 
@@ -45,7 +69,9 @@ describe("/docs/[package]/llms.txt route", () => {
 
 		const body = await response.text();
 		expect(body).toBeTypeOf("string");
-		expect(body).toContain("arkenv");
+		expect(body).toContain("/docs/arkenv");
+		// Must be the package folder (index.url), not a nested /docs/arkenv/… subtree
+		expect(body).not.toContain("/docs/arkenv/integrations");
 	});
 
 	it("should return 404 for a nonexistent package", async () => {

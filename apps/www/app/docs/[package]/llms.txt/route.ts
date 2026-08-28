@@ -17,36 +17,35 @@ type Node = {
 };
 
 /**
- * Traverse the page tree nodes to find the folder corresponding to the package slug.
+ * Find the package folder among root page-tree children.
  *
- * @param nodes The page tree nodes to search
+ * Package docs folders are root children of the page tree
+ * (`content/docs/meta.json`). Each ships an `index.mdx`, matched via
+ * `index.url`. Direct child pages are a fallback. Do not descend into nested
+ * folders: a child folder can share the `/docs/${slug}/…` URL prefix and would
+ * truncate `llms.txt` to that subtree.
+ *
+ * @param nodes The root page tree children
  * @param packageSlug The package folder/slug name
  * @returns The matching Folder node, or undefined if not found
  */
 function findFolder(nodes: Node[], packageSlug: string): Node | undefined {
 	for (const node of nodes) {
-		if (node.type === "folder") {
-			// 1. If it has an index, does its index.url match `/docs/${packageSlug}`?
-			if (node.index && node.index.url === `/docs/${packageSlug}`) {
-				return node;
-			}
-			// 2. Or, do any of its child pages have a URL that starts with `/docs/${packageSlug}`?
-			const hasMatchingPage = node.children?.some(
-				(child) =>
-					child.type === "page" &&
-					child.url &&
-					(child.url === `/docs/${packageSlug}` ||
-						child.url.startsWith(`/docs/${packageSlug}/`)),
-			);
-			if (hasMatchingPage) {
-				return node;
-			}
-
-			// Recursively search children
-			if (node.children) {
-				const found = findFolder(node.children, packageSlug);
-				if (found) return found;
-			}
+		if (node.type !== "folder") {
+			continue;
+		}
+		if (node.index?.url === `/docs/${packageSlug}`) {
+			return node;
+		}
+		const hasMatchingPage = node.children?.some(
+			(child) =>
+				child.type === "page" &&
+				child.url &&
+				(child.url === `/docs/${packageSlug}` ||
+					child.url.startsWith(`/docs/${packageSlug}/`)),
+		);
+		if (hasMatchingPage) {
+			return node;
 		}
 	}
 	return undefined;
