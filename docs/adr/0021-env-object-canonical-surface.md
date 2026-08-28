@@ -2,9 +2,9 @@
 
 ## Status
 
-Accepted
+Accepted — amended 2026-08-28 by [ADR 0020](./0020-strict-layout-complexity-budget.md) ([#1634](https://github.com/yamcodes/arkenv/issues/1634))
 
-Amended 2026-08-28: [ADR 0020](./0020-strict-layout-complexity-budget.md) withdraws dedicated strict layout and the client-import blocker. Decision items 3–4 originally treated strict layout as the name/type escape hatch and reused ADR 0016’s Vite plugin (this file’s historical “ADR 0013” references mean that compile-time blocker). Value isolation on the transformed/proxied `env.ts` is unchanged.
+Decision items 3–4 originally treated strict layout as the name/type escape hatch and reused ADR 0016’s Vite plugin (this file’s historical “ADR 0013” references mean that compile-time blocker). Value isolation on the transformed/proxied `env.ts` is unchanged.
 
 ## Context
 

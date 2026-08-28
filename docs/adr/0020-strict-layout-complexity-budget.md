@@ -1,4 +1,4 @@
-# ADR 0020: Strict layout is a security boundary with a complexity budget
+# ADR 0020: Name/type isolation is a two-module recipe, not a layout engine
 
 Name/type isolation is a documented two-module recipe, not a first-class layout engine. Flat `env.ts` is the only scaffolded path. Secret **values** stay off the client via prefixes, proxy, and client transform; hiding **names and types** is user-land import-graph discipline.
 
@@ -6,7 +6,7 @@ Name/type isolation is a documented two-module recipe, not a first-class layout 
 
 Accepted (amended 2026-08-28; [#1634](https://github.com/yamcodes/arkenv/issues/1634))
 
-The original decision kept dedicated strict layout as a minority product path with a complexity budget. That standing decision is replaced below. Filename and number are unchanged.
+The original decision kept dedicated strict layout as a minority product path with a complexity budget. That standing decision is replaced below. Filename and number are unchanged so existing links keep working.
 
 ## Context & problem
 
@@ -20,7 +20,7 @@ ArkEnv built a **layout engine** on top of that idea: CLI `--strict` / wizard, `
 
 That is ongoing cost across CLI, four integrations, presets, and docs. The security **value** (secret **values** stay off the client) is already the flat path: prefixes + proxy / client transform ([ADR 0015](./0015-nextjs-conditional-exports-boundary.md), [ADR 0021](./0021-env-object-canonical-surface.md)). Dedicated strict only hid names and types from the client module graph — a minority requirement T3 treats as a recipe.
 
-`@arkenv/nextjs/server` is not required for that recipe. It exists to bake `server-only`, auto-extend the client env, and expose unconditional full types. The root `@arkenv/nextjs` entry is the wrong import for a split **server** file: published types are the client surface (`NEXT_PUBLIC_*` only) via ADR 0015, which is the **single** `env.ts` story. A server-only module should use `@arkenv/core` (types always complete).
+`@arkenv/nextjs/server` is not required for that recipe. It exists to bake `server-only`, auto-extend the client env, and expose unconditional full types. The root `@arkenv/nextjs` entry is the wrong import for a split **server** file: published types are the client surface (client-visible keys) via ADR 0015, which is the **single** `env.ts` story. A server-only module should use `@arkenv/core` (types always complete).
 
 Related work crystallised the tension:
 

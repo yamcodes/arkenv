@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Accepted — amended 2026-08-28 by [ADR 0020](./0020-strict-layout-complexity-budget.md) ([#1634](https://github.com/yamcodes/arkenv/issues/1634))
 
 ## Context
 

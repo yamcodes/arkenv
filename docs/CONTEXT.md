@@ -382,7 +382,7 @@ Module setup / `nuxt build` may still run core validation against the build envi
 - A **Nitro boot override** happens after Vite build and before the `__NUXT__` / `runtimeConfig` payload is served to the client
 - **Vite transform mode** is appropriate for hosts whose public env is build-time (e.g. Solid Start); it is not sufficient alone for Nuxt
 - **Canonical env object** is shared; the *transport* that materializes client values is host-specific
-- On Nuxt, the **Nuxt honesty transport** owns public client values; the existing Vite plugin remains for the compile-time import boundary only (not value transport)
+- On Nuxt, the **Nuxt honesty transport** owns public client values. The Vite compile-time import blocker remains in tree until the layout-engine removal ([ADR 0016](./adr/0016-nuxt-vite-compile-time-boundary.md) superseded by [ADR 0020](./adr/0020-strict-layout-complexity-budget.md)); it is not value transport
 - The **Nuxt boot gate** runs after **Nitro boot overrides** and before honest **Canonical env object** reads on either side
 - **Boot gate scheduling** ensures the gate precedes thin server reads; the serialized public payload then precedes thin client reads
 - **Client validator isolation** is a package-entry concern, not a transform-mode concern, on Nuxt
@@ -391,7 +391,7 @@ Module setup / `nuxt build` may still run core validation against the build envi
 **Example dialogue**:
 
 > **Dev:** “Can we make Nuxt completely Vite-plugin-based like Solid Start?”
-> **Domain expert:** “Not as the only transport. Solid Start’s public keys are build-time; Nuxt’s can change via a **Nitro boot override**. Honesty requires the **Nuxt honesty transport** — the **Nuxt boot gate** (module-loaded schema, **boot gate scheduling**) coerces into `runtimeConfig` after that override, then **symmetric thin accessors**. The Vite plugin stays for import blocking; **client validator isolation** is a thin package entry, not a #1328-style rewrite. Keep the **Build-time schema check** for CI, but don’t confuse it with deploy honesty.”
+> **Domain expert:** “Not as the only transport. Solid Start’s public keys are build-time; Nuxt’s can change via a **Nitro boot override**. Honesty requires the **Nuxt honesty transport** — the **Nuxt boot gate** (module-loaded schema, **boot gate scheduling**) coerces into `runtimeConfig` after that override, then **symmetric thin accessors**. The Vite import blocker stays only until the layout-engine removal ([ADR 0020](./adr/0020-strict-layout-complexity-budget.md)); **client validator isolation** is a thin package entry, not a #1328-style rewrite. Keep the **Build-time schema check** for CI, but don’t confuse it with deploy honesty.”
 
 ### Docs site navigation
 

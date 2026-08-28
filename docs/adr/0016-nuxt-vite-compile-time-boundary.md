@@ -2,7 +2,7 @@
 
 ## Status
 
-Superseded by [ADR 0020](./0020-strict-layout-complexity-budget.md) (amended 2026-08-28; [#1634](https://github.com/yamcodes/arkenv/issues/1634))
+Superseded 2026-08-28 by [ADR 0020](./0020-strict-layout-complexity-budget.md) ([#1634](https://github.com/yamcodes/arkenv/issues/1634))
 
 Dedicated strict layout is withdrawn. Name/type isolation is a documented two-module recipe; ArkEnv does not police the Nuxt/Vite client graph. Nuxt has no `server-only` analogue; that is accepted. Flat-layout value isolation (proxy + `runtimeConfig.public`) is unchanged.
 
