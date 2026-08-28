@@ -19,17 +19,20 @@ on:
 permissions:
   contents: read
   pull-requests: write
+  id-token: write
 
 jobs:
   pkg-pr-new:
     if: github.repository == 'yamcodes/arkenv'
     runs-on: ubuntu-latest
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Set up Turborepo Remote Cache
+        uses: ./.github/actions/setup-turbo-remote-cache
+        with:
+          team: ${{ vars.TURBO_TEAM }}
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6
