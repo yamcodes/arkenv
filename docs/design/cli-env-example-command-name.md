@@ -40,59 +40,59 @@ alias” into one list. An alias of `sync` still spends the verb.
 
 ## Metrics
 
-| Metric | Question |
-| --- | --- |
-| Honesty | Does the name describe merging `.env.example` from the schema, not live secrets or TypeScript emit? |
-| Vocabulary headroom | Does this name leave `sync` and `generate` free for later, different jobs? |
-| CLI collision | Does it clash with `init`, `check`, `preset`, `--example`, `--env-file`, or a future `lint`? |
-| Teachability | Can help, docs, and agents discover it in one short token? |
-| Merge implication | Does it suggest preserve-and-diff rather than wipe-and-replace? |
-| Ecosystem footgun | Would someone from Doppler / Vercel / Infisical / Prisma hear the wrong product? |
-| Rename tax | Cost of changing `commandId`, docs, help, and #1643 before merge vs after shipping `sync` on the alpha tag. |
+| Metric              | Question                                                                                                    |
+| ------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Honesty             | Does the name describe merging `.env.example` from the schema, not live secrets or TypeScript emit?         |
+| Vocabulary headroom | Does this name leave `sync` and `generate` free for later, different jobs?                                  |
+| CLI collision       | Does it clash with `init`, `check`, `preset`, `--example`, `--env-file`, or a future `lint`?                |
+| Teachability        | Can help, docs, and agents discover it in one short token?                                                  |
+| Merge implication   | Does it suggest preserve-and-diff rather than wipe-and-replace?                                             |
+| Ecosystem footgun   | Would someone from Doppler / Vercel / Infisical / Prisma hear the wrong product?                            |
+| Rename tax          | Cost of changing `commandId`, docs, help, and #1643 before merge vs after shipping `sync` on the alpha tag. |
 
 ## The hat
 
 ### Layer A — public command path
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| A1 | `sync` | Blessed in the #1234 agent brief. Current PR. |
-| A2 | `template` | User-suggested. Scaffolding already has example *templates*. |
-| A3 | `example` | User-suggested. Artifact is `.env.example`. |
-| A4 | `gen` | User-suggested abbreviation of generate. |
-| A5 | `generate` | Original bikeshed rival. Prisma-shaped. |
-| A6 | `codegen` | User-suggested. Implies TypeScript / `env.gen.ts`. |
-| A7 | `env-example` | User-suggested. Filename as command. |
-| A8 | `update` | User-suggested. Vague object. |
-| A9 | `refresh` | Verb like `check`. Does not name the file. |
-| A10 | `dump` | Overwrite energy. Hostile. |
-| A11 | `export` | Sounds like dumping `process.env` or a shell export. |
-| A12 | `write-example` | Honest, long, hyphen pile. |
-| A13 | `pull` | Cloud-secret verb. Out of scope for this job. |
-| A14 | `push` | Same family as pull. Wrong direction. |
-| A15 | `hydrate` | Jargon; sounds like filling values. |
-| A16 | `seed` | Sounds like writing `.env` with starter secrets. |
-| A17 | `emit` | Compiler-speak. |
-| A18 | `snapshot` | Implies a point-in-time copy of live env. |
-| A19 | `align` / `reconcile` | Accurate, uncommon as CLI verbs. |
-| A20 | `example-env` | Word order vs the filename. |
-| A21 | `dotenv-example` | Brands a format ArkEnv is not a loader for. |
-| A22 | `schema-example` | Honest source, still hyphenated. |
-| A23 | `make-example` | Make-ism. |
-| A24 | `sync-example` | Keeps `sync` in the public path. |
-| A25 | `example sync` (subcommand) | Extra noun for one job. |
-| A26 | Fold into `init` only | Rejected in #1234: `.env.example` drifts after day one. |
-| A27 | Fold into `check` (`check --write-example`) | Mixes validate-env with write-file. |
-| A28 | `lint` | Reserved for on-disk env-file lint (#481). |
+| #   | Option                                      | Notes                                                        |
+| --- | ------------------------------------------- | ------------------------------------------------------------ |
+| A1  | `sync`                                      | Blessed in the #1234 agent brief. Current PR.                |
+| A2  | `template`                                  | User-suggested. Scaffolding already has example *templates*. |
+| A3  | `example`                                   | User-suggested. Artifact is `.env.example`.                  |
+| A4  | `gen`                                       | User-suggested abbreviation of generate.                     |
+| A5  | `generate`                                  | Original bikeshed rival. Prisma-shaped.                      |
+| A6  | `codegen`                                   | User-suggested. Implies TypeScript / `env.gen.ts`.           |
+| A7  | `env-example`                               | User-suggested. Filename as command.                         |
+| A8  | `update`                                    | User-suggested. Vague object.                                |
+| A9  | `refresh`                                   | Verb like `check`. Does not name the file.                   |
+| A10 | `dump`                                      | Overwrite energy. Hostile.                                   |
+| A11 | `export`                                    | Sounds like dumping `process.env` or a shell export.         |
+| A12 | `write-example`                             | Honest, long, hyphen pile.                                   |
+| A13 | `pull`                                      | Cloud-secret verb. Out of scope for this job.                |
+| A14 | `push`                                      | Same family as pull. Wrong direction.                        |
+| A15 | `hydrate`                                   | Jargon; sounds like filling values.                          |
+| A16 | `seed`                                      | Sounds like writing `.env` with starter secrets.             |
+| A17 | `emit`                                      | Compiler-speak.                                              |
+| A18 | `snapshot`                                  | Implies a point-in-time copy of live env.                    |
+| A19 | `align` / `reconcile`                       | Accurate, uncommon as CLI verbs.                             |
+| A20 | `example-env`                               | Word order vs the filename.                                  |
+| A21 | `dotenv-example`                            | Brands a format ArkEnv is not a loader for.                  |
+| A22 | `schema-example`                            | Honest source, still hyphenated.                             |
+| A23 | `make-example`                              | Make-ism.                                                    |
+| A24 | `sync-example`                              | Keeps `sync` in the public path.                             |
+| A25 | `example sync` (subcommand)                 | Extra noun for one job.                                      |
+| A26 | Fold into `init` only                       | Rejected in #1234: `.env.example` drifts after day one.      |
+| A27 | Fold into `check` (`check --write-example`) | Mixes validate-env with write-file.                          |
+| A28 | `lint`                                      | Reserved for on-disk env-file lint (#481).                   |
 
 ### Layer B — alias policy
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| B1 | No alias | One name in help. |
-| B2 | Keep `sync` as alias of the S name | Spends `sync` in autocomplete anyway. |
-| B3 | Keep `generate` as alias | Spends the codegen verb. |
-| B4 | Hide the old name, document only the new | Still a second parser token. |
+| #  | Option                                   | Notes                                 |
+| -- | ---------------------------------------- | ------------------------------------- |
+| B1 | No alias                                 | One name in help.                     |
+| B2 | Keep `sync` as alias of the S name       | Spends `sync` in autocomplete anyway. |
+| B3 | Keep `generate` as alias                 | Spends the codegen verb.              |
+| B4 | Hide the old name, document only the new | Still a second parser token.          |
 
 ## Evaluation
 
@@ -193,13 +193,13 @@ tokens become folklore.
 
 ### Close call: `example` vs `env-example` vs `template`
 
-| Metric | `example` | `env-example` | `template` |
-| --- | --- | --- | --- |
-| Honesty | Names the file family | Names the file | Names “not secrets,” not the path |
-| Headroom | Frees `sync` and `generate` | Same | Same |
-| Collision | `init --example` | Low | Init/preset “templates” |
-| Teachability | Short; docs must say `.env.example` | Long; self-describing | Medium |
-| Merge implication | Neutral | Neutral | Slightly write-once |
+| Metric            | `example`                           | `env-example`         | `template`                        |
+| ----------------- | ----------------------------------- | --------------------- | --------------------------------- |
+| Honesty           | Names the file family               | Names the file        | Names “not secrets,” not the path |
+| Headroom          | Frees `sync` and `generate`         | Same                  | Same                              |
+| Collision         | `init --example`                    | Low                   | Init/preset “templates”           |
+| Teachability      | Short; docs must say `.env.example` | Long; self-describing | Medium                            |
+| Merge implication | Neutral                             | Neutral               | Slightly write-once               |
 
 `example` wins teachability and CLI shape. `env-example` wins collision
 and self-description. `template` loses both collisions and path honesty.
