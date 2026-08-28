@@ -1,4 +1,4 @@
-# ADR 0028: Canonical root import for Classic Zod
+# ADR 0029: Canonical root import for Classic Zod
 
 Classic Zod 4.2+ embeds Standard JSON Schema on the schema value, so the only Classic Zod entry point is root `@arkenv/standard`. We will not publish `@arkenv/standard/zod` as a re-export of that root.
 

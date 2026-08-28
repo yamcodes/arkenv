@@ -76,7 +76,7 @@ To restore DX symmetry across the Big Three validators while preserving engine p
 1. **First-Class Subpath Exports on `@arkenv/standard`:**
    - `import { arkenv } from "@arkenv/standard/valibot"`: Pre-configures coercion using `@valibot/to-json-schema` (`typeMode: "input"`, `target: "draft-07"`).
    - `import { arkenv } from "@arkenv/standard/zod-mini"`: Pre-configures coercion using `zod/mini`'s `toJSONSchema` helper (`io: "input"`, `target: "draft-07"`).
-   - *Note on Zod*: Classic Zod already exposes JSON Schema on the value (ADR 0002), so root `import { arkenv } from "@arkenv/standard"` works zero-config out of the box. A redundant `@arkenv/standard/zod` alias is **rejected** ([ADR 0028](./0028-canonical-root-for-classic-zod.md), [#1609](https://github.com/yamcodes/arkenv/issues/1609)).
+   - *Note on Zod*: Classic Zod already exposes JSON Schema on the value (ADR 0002), so root `import { arkenv } from "@arkenv/standard"` works zero-config out of the box. A redundant `@arkenv/standard/zod` alias is **rejected** ([ADR 0029](./0029-canonical-root-for-classic-zod.md), [#1609](https://github.com/yamcodes/arkenv/issues/1609)).
 2. **Optional Peer Dependency Architecture:**
    - `@valibot/to-json-schema` is declared under `peerDependencies` with `peerDependenciesMeta: { "@valibot/to-json-schema": { "optional": true } }`. (Zod Mini uses `zod/mini`'s exported `toJSONSchema` helper without requiring an additional third-party package).
    - The root import `import { arkenv } from "@arkenv/standard"` remains pure with zero runtime dependencies.
@@ -98,4 +98,4 @@ To restore DX symmetry across the Big Three validators while preserving engine p
 
 ## Amendment (2026-08-28): No `@arkenv/standard/zod` alias
 
-The 2026-08-24 note deferred a cosmetic `/zod` re-export. That exploration is closed as **Option A** in [ADR 0028](./0028-canonical-root-for-classic-zod.md): Classic Zod stays on the root import. Converter subpaths (`./valibot`, `./zod-mini`) are unchanged.
+The 2026-08-24 note deferred a cosmetic `/zod` re-export. That exploration is closed as **Option A** in [ADR 0029](./0029-canonical-root-for-classic-zod.md): Classic Zod stays on the root import. Converter subpaths (`./valibot`, `./zod-mini`) are unchanged.
