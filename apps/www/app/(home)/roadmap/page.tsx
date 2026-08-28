@@ -69,7 +69,6 @@ function RoadmapRow({ item }: { item: RoadmapItem }) {
 export default async function RoadmapPage() {
 	const roadmap = await fetchRoadmap();
 	const openItems = roadmap.items.filter((item) => !item.done);
-	const doneItems = roadmap.items.filter((item) => item.done);
 
 	return (
 		<div className="home-aurora__shell">
@@ -77,36 +76,6 @@ export default async function RoadmapPage() {
 			<article className="roadmap-page">
 				<header className="roadmap-page__header">
 					<h1 className="roadmap-page__title-heading">v1 Roadmap</h1>
-				</header>
-
-				<section
-					className="roadmap-page__progress"
-					aria-labelledby="roadmap-progress-label"
-				>
-					<div
-						className="roadmap-page__bar"
-						role="progressbar"
-						aria-valuemin={0}
-						aria-valuemax={100}
-						aria-valuenow={roadmap.percent}
-						aria-labelledby="roadmap-progress-label"
-					>
-						<div
-							className="roadmap-page__bar-fill"
-							style={{ width: `${roadmap.percent}%` }}
-						/>
-					</div>
-					<p
-						id="roadmap-progress-label"
-						className="roadmap-page__progress-meta"
-					>
-						<span className="roadmap-page__progress-pct">
-							{roadmap.percent}%
-						</span>
-						<span className="roadmap-page__progress-count">
-							{roadmap.doneCount} of {roadmap.totalCount} complete
-						</span>
-					</p>
 					{roadmap.stale ? (
 						<p className="roadmap-page__stale">
 							GitHub did not respond. You are seeing launch extras only. See the{" "}
@@ -120,57 +89,26 @@ export default async function RoadmapPage() {
 							for the full list.
 						</p>
 					) : null}
-				</section>
+				</header>
 
 				<section
-					className="roadmap-page__criteria"
-					aria-labelledby="roadmap-success"
+					className="roadmap-page__section"
+					aria-labelledby="roadmap-open"
 				>
-					<h2 id="roadmap-success" className="roadmap-page__section-title">
-						Stable v1
+					<h2 id="roadmap-open" className="roadmap-page__section-title">
+						Up next
+						<span className="roadmap-page__count">{openItems.length}</span>
 					</h2>
-					<ul className="roadmap-page__criteria-list">
-						<li>Stable API and a written deprecation policy</li>
-						<li>Tests on the core paths</li>
-						<li>Docs with examples and migration notes</li>
-						<li>Clear errors and predictable validation</li>
-						<li>Code that matches the documented MO</li>
-					</ul>
-				</section>
-
-				{openItems.length > 0 ? (
-					<section
-						className="roadmap-page__section"
-						aria-labelledby="roadmap-open"
-					>
-						<h2 id="roadmap-open" className="roadmap-page__section-title">
-							Up next
-							<span className="roadmap-page__count">{openItems.length}</span>
-						</h2>
+					{openItems.length > 0 ? (
 						<ul className="roadmap-page__list">
 							{openItems.map((item) => (
 								<RoadmapRow key={item.id} item={item} />
 							))}
 						</ul>
-					</section>
-				) : null}
-
-				{doneItems.length > 0 ? (
-					<section
-						className="roadmap-page__section"
-						aria-labelledby="roadmap-done"
-					>
-						<h2 id="roadmap-done" className="roadmap-page__section-title">
-							Done
-							<span className="roadmap-page__count">{doneItems.length}</span>
-						</h2>
-						<ul className="roadmap-page__list">
-							{doneItems.map((item) => (
-								<RoadmapRow key={item.id} item={item} />
-							))}
-						</ul>
-					</section>
-				) : null}
+					) : (
+						<p className="roadmap-page__help">Nothing open on the milestone.</p>
+					)}
+				</section>
 
 				<p className="roadmap-page__help">
 					Help with tests, docs, or triage. Open an issue with a clear repro, or

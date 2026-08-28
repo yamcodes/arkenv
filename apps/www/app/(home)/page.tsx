@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { AnnouncementBadge } from "~/components/announcement-badge";
 import {
 	AutocompleteShowcase,
 	BringYourOwnValidator,
@@ -41,12 +40,6 @@ export default async function HomePage() {
 						style={{ animationDelay: "40ms" }}
 					>
 						<RoadmapProgressCard percent={roadmap.percent} />
-						<AnnouncementBadge
-							href="/docs/validating-your-environment/hosting-presets"
-							new
-						>
-							Vercel, Netlify & Cloudflare presets
-						</AnnouncementBadge>
 					</div>
 					<div className="home-aurora__hero-copy">
 						<h1 id="home-hero" className="home-aurora__tagline">
