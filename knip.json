@@ -45,7 +45,6 @@
 				"remark-directive",
 				"remark-gemoji",
 				"require-in-the-middle",
-				"styled-jsx",
 				"unist-util-visit",
 				"valibot"
 			]
