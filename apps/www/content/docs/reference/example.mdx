@@ -1,19 +1,19 @@
 ---
-title: sync
-description: Generate or update .env.example from the env schema.
+title: example
+description: Update .env.example from the schema.
 ---
 
 ArkEnv is designed to keep `.env.example` aligned with the keys you
-declare in schema. ArkEnv provides `arkenv sync` so you can refresh
+declare in schema. ArkEnv provides `arkenv example` so you can refresh
 that file whenever the schema changes — in CI, a pre-commit hook, or
 right after you add a variable.
 
 ```package-install
-npx arkenv@latest sync
+npx arkenv@latest example
 ```
 
 ```package-install
-npx arkenv@latest sync --schema ./src/env.ts
+npx arkenv@latest example --schema ./src/env.ts
 ```
 
 [Global flags](/docs/reference#global-flags) (`--quiet`, `--json`,
@@ -22,26 +22,26 @@ npx arkenv@latest sync --schema ./src/env.ts
 ## Usage
 
 ```txt title="Terminal"
-arkenv sync [options]
+arkenv example [options]
 ```
 
-`sync` loads your schema the same way [`check`](/docs/reference/check)
+`example` loads your schema the same way [`check`](/docs/reference/check)
 does (import the module; do not parse TypeScript by hand). It writes
 `.env.example` in the project root with every declared key.
 
-When the file is missing, `sync` creates it in schema declaration
+When the file is missing, `example` creates it in schema declaration
 order:
 
 ```txt title="Terminal"
 ✔ Created .env.example from env.ts
 ```
 
-When the file already exists, `sync` is merge-aware: comments and
+When the file already exists, `example` is merge-aware: comments and
 values on keys that are still in the schema stay put, keys that left
 the schema are removed, and new keys are appended as `KEY=`. Running
 it twice with no schema change produces no diff.
 
-If the schema cannot be loaded, `sync` prints the cause, exits
+If the schema cannot be loaded, `example` prints the cause, exits
 non-zero, and does not touch `.env.example`.
 
 `arkenv init` reuses this same write path after it scaffolds an
@@ -50,7 +50,7 @@ existing project, so a schema that is already in the tree still seeds
 
 ## Options
 
-These flags are specific to `sync`.
+These flags are specific to `example`.
 
 ### `--schema <path>` / `-s`
 
@@ -58,7 +58,7 @@ Explicit path to the schema module. Overrides `"arkenv"` in
 `package.json` and convention discovery.
 
 ```package-install
-npx arkenv@latest sync --schema ./src/config/env.ts
+npx arkenv@latest example --schema ./src/config/env.ts
 ```
 
 ### `--json` / `-j`
@@ -69,7 +69,7 @@ Write a settlement envelope to stdout. Success is `ok: true` with
 ```json
 {
   "ok": true,
-  "commandId": "sync",
+  "commandId": "example",
   "result": {
     "status": "created",
     "schema": { "path": "env.ts" },
@@ -92,9 +92,9 @@ Suppress normal console output. JSON envelopes still go to stdout when
 
 ## CI and pre-commit
 
-Add `arkenv sync` where `.env.example` must stay honest as the schema
-evolves. A typical pre-commit hook regenerates the file and fails if
-git sees a diff you forgot to commit:
+Add `arkenv example` where `.env.example` must stay honest as the
+schema evolves. A typical pre-commit hook refreshes the file and
+fails if git sees a diff you forgot to commit:
 
 ```yaml title=".github/workflows/ci.yml"
 name: CI
@@ -113,10 +113,10 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Refresh .env.example from the schema
-        run: pnpm exec arkenv sync
+        run: pnpm exec arkenv example
 ```
 
-`sync` only writes `.env.example`. It does not write `.env` or copy
+`example` only writes `.env.example`. It does not write `.env` or copy
 secrets. Pair it with [`check`](/docs/reference/check) when you also
 need the live environment to match the schema.
 

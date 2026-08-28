@@ -35,10 +35,10 @@ describe("HelpUseCase", () => {
 			"  arkenv check                       Validate the environment against the schema",
 		);
 
-		const syncCommandLog = logs.find((l) => l.includes("arkenv sync"));
-		expect(syncCommandLog).toBeDefined();
-		expect(syncCommandLog).toBe(
-			"  arkenv sync                        Generate or update .env.example from the schema",
+		const exampleCommandLog = logs.find((l) => l.includes("arkenv example"));
+		expect(exampleCommandLog).toBeDefined();
+		expect(exampleCommandLog).toBe(
+			"  arkenv example                     Update .env.example from the schema",
 		);
 
 		const presetApplyCommandLog = logs.find((l) =>
@@ -127,10 +127,10 @@ describe("HelpUseCase", () => {
 		const checkHeaderIndex = logs.findIndex((l) =>
 			l.includes(pc.bold("check options:")),
 		);
-		const syncHeaderIndex = logs.findIndex((l) =>
-			l.includes(pc.bold("sync options:")),
+		const exampleHeaderIndex = logs.findIndex((l) =>
+			l.includes(pc.bold("example options:")),
 		);
 		expect(checkHeaderIndex).toBeGreaterThan(initHeaderIndex);
-		expect(syncHeaderIndex).toBeGreaterThan(checkHeaderIndex);
+		expect(exampleHeaderIndex).toBeGreaterThan(checkHeaderIndex);
 	});
 });

@@ -51,9 +51,9 @@ CLI command `arkenv check` that validates the resolved environment (`process.env
 Planned CLI command `arkenv lint` (not yet shipped; epic [#481](https://github.com/yamcodes/arkenv/issues/481), ADR 0017) that lints `.env*` files on disk: cascade-by-mode, coordinate-aware parse, static dotenv rules, and schema issues remapped to `file:line:col`. Reuses Check’s schema loader and `validate()`; grows the dotenv parser to keep coordinates instead of skipping bad lines.
 *Avoid*: treating Lint as a rename of Check; wrapping `dotenv-linter`; a second validation engine; documenting or invoking `arkenv lint` as available on current v1
 
-**Sync**:
-CLI command `arkenv sync` that writes `.env.example` from declared schema keys (same loader as Check). Merge-aware: preserve comments/values for surviving keys, drop stale keys, append new keys. Loader failure does not write a partial file.
-*Avoid*: static-parsing `env.ts`; writing `.env` with real secrets; treating Sync as a replacement for Check
+**Example** (CLI command):
+CLI command `arkenv example` that writes `.env.example` from declared schema keys (same loader as Check). Merge-aware: preserve comments/values for surviving keys, drop stale keys, append new keys. Loader failure does not write a partial file.
+*Avoid*: static-parsing `env.ts`; writing `.env` with real secrets; treating Example as a replacement for Check; calling this command `sync` or `generate`
 
 **Envelope** (also **settlement envelope**):
 CLI `--json` / `--agent` stdout document. Discriminated by `ok`. Success and Check findings use `CompletedEnvelope` (`ok: true`, `diagnostics`, required `nextActions`). Preconditions and crashes use `ErroredEnvelope` (`ok: false`, `error`). Codes are dotted `NAMESPACE.SUBCODE`. `{bin}` in nextActions is resolved to the active runner before serialize.

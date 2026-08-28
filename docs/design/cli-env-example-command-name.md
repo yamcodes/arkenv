@@ -6,8 +6,8 @@ hat. Promoted decisions belong in `docs/adr/`.
 **Status:** working note for
 [#1234](https://github.com/yamcodes/arkenv/issues/1234) /
 [PR #1643](https://github.com/yamcodes/arkenv/pull/1643). **Chosen public
-story:** `arkenv example` with no aliases (stack A3 + B1). The open PR still
-ships `arkenv sync`; renaming is the follow-through if this lean stands.
+story:** `arkenv example` with no aliases (stack A3 + B1). The PR ships
+that name; `sync` is not an alias.
 
 ## Problem
 

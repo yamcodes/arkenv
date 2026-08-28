@@ -1,6 +1,6 @@
 import path from "node:path";
 import { resolveSchemaPath } from "@/features/schema-loader";
-import { mergeEnvExample } from "@/features/sync/merge-env-example";
+import { mergeEnvExample } from "@/features/example/merge-env-example";
 import {
 	type LoggerPort,
 	type ProjectScannerPort,
@@ -15,12 +15,12 @@ import {
 } from "@/shared/protocol";
 
 const EXAMPLE_FILE = ".env.example";
-const DOCS_URL = "https://arkenv.js.org/docs/reference/sync";
+const DOCS_URL = "https://arkenv.js.org/docs/reference/example";
 
 /**
- * Input parameters for the `sync` command.
+ * Input parameters for the `example` command.
  */
-export type SyncInput = {
+export type ExampleInput = {
 	schema?: string;
 	file?: string;
 	isQuiet?: boolean;
@@ -35,11 +35,11 @@ export type SyncInput = {
 };
 
 /**
- * Use case for generating or updating `.env.example` from the project schema.
+ * Use case for updating `.env.example` from the project schema.
  */
-export class SyncUseCase {
+export class ExampleUseCase {
 	/**
-	 * Create a SyncUseCase with the ports used to locate, load, and write files.
+	 * Create an ExampleUseCase with the ports used to locate, load, and write files.
 	 *
 	 * @param logger Port for console logging and structured reporting
 	 * @param workspace Port for reading and writing workspace files
@@ -56,10 +56,10 @@ export class SyncUseCase {
 	/**
 	 * Write `.env.example` from declared schema keys.
 	 *
-	 * @param input Options and overrides for the sync command
+	 * @param input Options and overrides for the example command
 	 * @returns Process exit code (0 for success, 2 when the schema cannot be loaded)
 	 */
-	async execute(input: SyncInput): Promise<number> {
+	async execute(input: ExampleInput): Promise<number> {
 		const cwd = input.cwd ?? process.cwd();
 		const requestedSchema = input.schema ?? input.file;
 		const isJson = Boolean(
@@ -147,7 +147,7 @@ export class SyncUseCase {
 		if (isJson) {
 			this.logger.reportCompleted({
 				ok: true,
-				commandId: "sync",
+				commandId: "example",
 				result: {
 					status,
 					schema: { path: relSchemaPath },
@@ -168,7 +168,7 @@ export class SyncUseCase {
 		} else if (status === "updated") {
 			this.logger.success(`Updated ${EXAMPLE_FILE} from ${relSchemaPath}`);
 		} else {
-			this.logger.success(`${EXAMPLE_FILE} is already in sync with the schema`);
+			this.logger.success(`${EXAMPLE_FILE} already matches the schema`);
 		}
 		return 0;
 	}
@@ -202,7 +202,7 @@ export class SyncUseCase {
 		if (isJson) {
 			this.logger.reportErrored({
 				ok: false,
-				commandId: "sync",
+				commandId: "example",
 				error: {
 					code: PROTOCOL_ERROR_CODES.CLI_SCHEMA_NOT_FOUND,
 					severity: "error",

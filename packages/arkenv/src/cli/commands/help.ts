@@ -43,8 +43,8 @@ export class HelpUseCase {
 				right: "Validate the environment against the schema",
 			},
 			{
-				left: "arkenv sync",
-				right: "Generate or update .env.example from the schema",
+				left: "arkenv example",
+				right: "Update .env.example from the schema",
 			},
 			{
 				left: "arkenv preset apply [provider]",
@@ -115,7 +115,7 @@ export class HelpUseCase {
 			},
 		];
 
-		const syncOptions: HelpItem[] = [
+		const exampleOptions: HelpItem[] = [
 			{
 				left: "--schema, -s <path>",
 				right:
@@ -151,8 +151,8 @@ export class HelpUseCase {
 		for (const line of formatColumns(checkOptions)) {
 			this.logger.log(line);
 		}
-		this.logger.log(`\n${pc.bold("sync options:")}`);
-		for (const line of formatColumns(syncOptions)) {
+		this.logger.log(`\n${pc.bold("example options:")}`);
+		for (const line of formatColumns(exampleOptions)) {
 			this.logger.log(line);
 		}
 		this.logger.log(`\n${pc.bold("preset options:")}`);

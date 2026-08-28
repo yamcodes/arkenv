@@ -15,7 +15,7 @@ The most important rule in this codebase is the strict separation of concerns:
 ```text
 src/
 ├── cli/                      # Driving Adapters (The Shell)
-│   ├── commands/             # Pure Command orchestrators (init, check, sync, help)
+│   ├── commands/             # Pure Command orchestrators (init, check, example, help)
 │   ├── ui/                   # Terminal UI logic (Visuals only)
 │   ├── composition.ts        # Composition Root (Dependency Injection)
 │   └── cli.ts                # Arg parsing and global state
@@ -23,7 +23,7 @@ src/
 ├── features/                 # Pure Business Domains (Headless)
 │   ├── scaffold/             # Generation engine (Planner, Executor)
 │   ├── schema-loader/        # Inspect env.ts schemas without validating env
-│   ├── sync/                 # Merge declared keys into .env.example
+│   ├── example/              # Merge declared keys into .env.example
 │   └── config-mutation/      # AST-based configuration manipulation
 │
 ├── adapters/                 # Driven Adapters (Infrastructure)

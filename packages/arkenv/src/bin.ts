@@ -27,7 +27,7 @@ async function main() {
 		presetUseCase,
 		helpUseCase,
 		checkUseCase,
-		syncUseCase,
+		exampleUseCase,
 	} = compose(process.argv);
 	globalLogger = logger;
 
@@ -50,7 +50,7 @@ async function main() {
 		init: () => initUseCase.execute(shake(cli.initInput)),
 		preset: () => presetUseCase.execute(cli.presetInput),
 		check: () => checkUseCase.execute(cli.checkInput),
-		sync: () => syncUseCase.execute(cli.syncInput),
+		example: () => exampleUseCase.execute(cli.exampleInput),
 	} as const;
 
 	const handler = cli.command

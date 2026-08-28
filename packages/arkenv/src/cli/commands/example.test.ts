@@ -7,19 +7,19 @@ import { Logger } from "@/adapters/logger.adapter";
 import { NodeProjectScannerAdapter } from "@/adapters/node-project-scanner";
 import { NodeWorkspace } from "@/adapters/node-workspace";
 import { MemoryReporter } from "@/adapters/reporters/memory.reporter";
-import { SyncUseCase } from "@/cli/commands/sync";
+import { ExampleUseCase } from "@/cli/commands/example";
 
-describe("SyncUseCase", () => {
+describe("ExampleUseCase", () => {
 	let tempDir: string;
 	let memoryReporter: MemoryReporter;
 	let logger: Logger;
 	let workspace: NodeWorkspace;
 	let scanner: NodeProjectScannerAdapter;
 	let schemaLoader: JitiSchemaLoaderAdapter;
-	let useCase: SyncUseCase;
+	let useCase: ExampleUseCase;
 
 	beforeEach(async () => {
-		tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "arkenv-sync-test-"));
+		tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "arkenv-example-test-"));
 		memoryReporter = new MemoryReporter();
 		logger = new Logger({
 			reporter: memoryReporter,
@@ -37,7 +37,7 @@ describe("SyncUseCase", () => {
 				arkenv: path.resolve(__dirname, "../../../../core/src/index.ts"),
 			},
 		});
-		useCase = new SyncUseCase(logger, workspace, scanner, schemaLoader);
+		useCase = new ExampleUseCase(logger, workspace, scanner, schemaLoader);
 	});
 
 	afterEach(async () => {
@@ -80,7 +80,7 @@ describe("SyncUseCase", () => {
 		);
 		expect(
 			memoryReporter.logs.some(
-				(l) => l.type === "success" && l.message.includes("already in sync"),
+				(l) => l.type === "success" && l.message.includes("already matches"),
 			),
 		).toBe(true);
 	});
@@ -124,7 +124,7 @@ describe("SyncUseCase", () => {
 		expect(created).toHaveLength(1);
 		expect(created[0].data).toMatchObject({
 			ok: true,
-			commandId: "sync",
+			commandId: "example",
 			result: {
 				status: "created",
 				schema: { path: "env.ts" },

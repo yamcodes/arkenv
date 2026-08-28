@@ -108,7 +108,7 @@ Depending on the detected framework and flags, `init` writes:
   `src/`)
 - `.env` / `.env.example` when missing. Init never reads an existing
   `.env`; a missing `.env.example` is filled from detected keys and
-  defaults, then `sync` refreshes `.env.example` from the loaded
+  defaults, then `example` refreshes `.env.example` from the loaded
   schema in an existing project. If `.env` is missing, init may copy
   `.env.example` into it.
 - Next.js: `withArkEnv` in `next.config.*`, `.arkenv/` in `.gitignore`,
@@ -139,7 +139,7 @@ Importing `arkenv` as a library throws and points you at `@arkenv/core`.
 
   <Card href="/docs/reference/preset" title="preset" description="CLI reference for applying and removing provider presets." />
 
-  <Card href="/docs/reference/sync" title="sync" description="Refresh .env.example from the schema." />
+  <Card href="/docs/reference/example" title="example" description="Update .env.example from the schema." />
 
   <Card href="/docs/reference/options" title="options" description="Configuration options passed to arkenv()." />
 </Cards>
