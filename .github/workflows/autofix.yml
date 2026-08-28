@@ -22,13 +22,13 @@ jobs:
       github.event_name == 'pull_request' ||
       (github.event_name == 'push' && github.event.sender.type != 'Bot' && github.event.head_commit != null && !contains(github.event.head_commit.message, 'Version Packages'))
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6
 
       - name: Use Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: "pnpm"

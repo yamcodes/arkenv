@@ -19,7 +19,7 @@ jobs:
     outputs:
       packages: ${{ steps.filter.outputs.packages }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: dorny/paths-filter@v4
@@ -43,7 +43,7 @@ jobs:
         with:
           client-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # Full history needed for change detection
       - name: Set up Turborepo Remote Cache
@@ -51,7 +51,7 @@ jobs:
         with:
           team: ${{ vars.TURBO_TEAM }}
       - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: pnpm
