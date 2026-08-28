@@ -37,7 +37,7 @@ Optional `@arkenv/standard` config callback that supplies JSON Schema for **coer
 
 **Engine** (`@arkenv/core` / `@arkenv/standard`):
 The two first-class validation entry points. Same `arkenv()` runtime options, errors, and framework plugins; different schema authoring style and peers (`@arkenv/standard` offers dedicated `./valibot` and `./zod-mini` subpaths; classic Zod uses root `@arkenv/standard`). Prefer dual examples (Tabs) in docs over core-first prose with a Standard Schema appendix.
-*Avoid*: framing Standard Schema as migration-only or second-class
+*Avoid*: framing Standard Schema as migration-only or second-class; `@arkenv/standard/zod` as a symmetry alias; teaching Valibot via the root import instead of `./valibot`
 
 **Schema/define path**:
 The legacy v0 pattern (`arkenv(schema)` plugin argument with native-accessor `define` rewriting and ambient `.d.ts` augmentations). Dropped in v1 (ADR 0021, #1333) in favor of the unified `import { env } from "./env"` object surface across all frameworks.
