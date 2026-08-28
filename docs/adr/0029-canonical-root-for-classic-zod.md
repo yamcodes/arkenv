@@ -8,7 +8,7 @@ Accepted ([#1609](https://github.com/yamcodes/arkenv/issues/1609))
 
 ## Context
 
-ADR 0025's 2026-08-24 amendment added `@arkenv/standard/valibot` and `@arkenv/standard/zod-mini` because those libraries keep JSON Schema conversion in a standalone function. Classic Zod does not need that binder. The amendment deferred a cosmetic `/zod` alias "for DX symmetry."
+ADR 0025's 2026-08-24 amendment added `@arkenv/standard/valibot` and `@arkenv/standard/zod-mini` because those libraries keep JSON Schema conversion in a standalone function. Classic Zod does not need that binder. The amendment deferred a redundant `@arkenv/standard/zod` alias to separate exploration.
 
 ## Decision
 
@@ -25,3 +25,7 @@ Discoverability is a documentation problem. The Zod guide, `@arkenv/standard` re
 
 - **A — Canonical root (chosen).** Classic Zod uses `@arkenv/standard`. Converter subpaths remain only where JSON Schema is not on the value.
 - **B — Validator aliases.** Add `@arkenv/standard/zod` (and maybe more) as thin re-exports. Rejected: fake specialized tooling, ADR 0019 regression, unbounded subpath checklist.
+
+## Consequences
+
+Searchers should expect Classic Zod on root `@arkenv/standard`; there is no `/zod` subpath. Cosmetic validator aliases are rejected under this precedent. `/valibot` and `/zod-mini` stay as converter binders, not a template for aliases.
