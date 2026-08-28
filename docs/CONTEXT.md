@@ -44,8 +44,12 @@ The legacy v0 pattern (`arkenv(schema)` plugin argument with native-accessor `de
 *Avoid*: recommending schema/define or ambient `.d.ts` augmentations in v1 docs, CLI, or skills; framing SPA mode as a supported v1 path
 
 **Check**:
-CLI command `arkenv check` that validates the resolved environment (`process.env` plus optional `--env-file` overlays) against the project schema. Findings are not a crash: `--json` emits a completed envelope with `ok: true` and exit code `4`.
-*Avoid*: treating validation findings as `ok: false` or exit `1`; calling Check a dotenv loader (it does not load `.env` unless `--env-file` is passed)
+CLI command `arkenv check` that validates the resolved environment (`process.env` plus optional `--env-file` overlays) against the project schema. Findings are not a crash: `--json` emits a completed envelope with `ok: true` and exit code `4`. Complementary to **Lint**: same schema loader and `validate()`, different subject (live env vs files on disk).
+*Avoid*: treating validation findings as `ok: false` or exit `1`; calling Check a dotenv loader (it does not load `.env` unless `--env-file` is passed); folding file lint rules or Unix `path:line:col` onto Check via `--lint` / `--format unix` (that is **Lint**; `--env-file` on Check means overlay, not “lint these files”)
+
+**Lint**:
+Planned CLI command `arkenv lint` (not yet shipped; epic [#481](https://github.com/yamcodes/arkenv/issues/481), ADR 0017) that lints `.env*` files on disk: cascade-by-mode, coordinate-aware parse, static dotenv rules, and schema issues remapped to `file:line:col`. Reuses Check’s schema loader and `validate()`; grows the dotenv parser to keep coordinates instead of skipping bad lines.
+*Avoid*: treating Lint as a rename of Check; wrapping `dotenv-linter`; a second validation engine; documenting or invoking `arkenv lint` as available on current v1
 
 **Sync**:
 CLI command `arkenv sync` that writes `.env.example` from declared schema keys (same loader as Check). Merge-aware: preserve comments/values for surviving keys, drop stale keys, append new keys. Loader failure does not write a partial file.
@@ -306,7 +310,7 @@ pnpm run test:e2e                     # E2E tests
 - "Zod, Valibot, and other Standard Schema validators" pages lead with Standard Mode (`@arkenv/*/standard`); mixing validators into the ArkType path is secondary.
 - FAQ coverage: sharpen the core FAQ (“Do I have to use ArkType?”) and add matching Next/Nuxt FAQ entries that point at `/standard` install + the validators pages.
 - Nuxt docs treat **flat layout** as the canonical DX layout (not “simple”). Validators examples and the Nuxt intro card should point at flat. The leftover `layouts/simple.mdx` page was removed; `/docs/nuxt/layouts/simple` permanently redirects to `/docs/guides/frameworks/nuxt`.
-- Next.js Standard Mode docs lead with the **codegen** happy path (`import arkenv from "./generated/env.gen"`); direct `@arkenv/nextjs/standard` + manual `runtimeEnv` is documented as the no-codegen alternative.
+- Next.js Standard Mode docs lead with the **codegen** happy path (`import arkenv from "@/.arkenv"`); direct `@arkenv/nextjs/standard` + manual `runtimeEnv` is documented as the no-codegen alternative.
 - Same “does not require ArkType” framing applies lightly to Vite and Bun intros (remove the requires-ArkType callout; keep Standard install path). Fumadocs titled callouts use `:::important[Title]` / `:::tip[Title]`, not a bare `:::important` with the title as body text.
 - Package READMEs (`@arkenv/nextjs`, `@arkenv/nuxt`): light touch only — mention Standard Mode + `/standard`; no full README rewrite in this pass.
 - On validators pages, the secondary “Mixing with ArkType” section is short: one flat-layout mixed schema example; no full Zod/Valibot × flat/strict tab matrix.
@@ -478,7 +482,7 @@ A non-interactive muted label that only **groups** sibling **Leaves** under a **
 - **Vite**: Integrated via `@arkenv/vite-plugin`. Validates environment variables at build-time and inlines `import.meta.env` variables for **client-side** (browser) usage.
 - **Next.js**: Integrated via `@arkenv/nextjs`. Provides two layout patterns:
   - **Strict layout**: Uses separate environment files for client, server, and shared scopes (`env/client.ts`, `env/server.ts`, and `env/internal/shared.ts`) for compile-time locking of secrets from browser bundles using package conditional exports (`react-server` vs. `default`) and `server-only`.
-  - **Flat layout** (also called simple layout in older docs): Uses a single `env.ts` schema file. In Next.js, client-side environment variables must be statically destructured in a `runtimeEnv` block to allow static inlining by the Next.js compiler. To automate this, `@arkenv/nextjs/config` exposes a `withArkEnv` wrapper for `next.config.js` that performs static analysis on `env.ts` to locate `client` and `shared` keys, then automatically generates a tailored `arkenv` factory in `generated/env.gen.ts` that pre-fills `runtimeEnv`. It enforces strict client-side prefixing (`NEXT_PUBLIC_`) and prevents server secrets from leaking to client components.
+  - **Flat layout** (also called simple layout in older docs): Uses a single `env.ts` schema file. In Next.js, client-side environment variables must be statically destructured in a `runtimeEnv` block to allow static inlining by the Next.js compiler. To automate this, `@arkenv/nextjs/config` exposes a `withArkEnv` wrapper for `next.config.js` that performs static analysis on `env.ts` to locate `client` and `shared` keys, then automatically generates a tailored `arkenv` factory in `.arkenv/env.gen.ts` (imported as `@/.arkenv`) that pre-fills `runtimeEnv`. It enforces strict client-side prefixing (`NEXT_PUBLIC_`) and prevents server secrets from leaking to client components.
   - **Standard Mode**: Import from `@arkenv/nextjs/standard` (peer: `@arkenv/standard`). ArkType is not required. Flat and strict layouts are both supported.
 - **Nuxt**: Integrated via `@arkenv/nuxt`. Exposes a Nuxt module (`@arkenv/nuxt/module`) that:
   - Automates environment variable validation and codegen (for both simple/flat and strict layouts) during development (with file watching) and build.

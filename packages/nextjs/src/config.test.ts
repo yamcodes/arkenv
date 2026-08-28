@@ -259,6 +259,7 @@ describe("codegen process", () => {
 		runCodegen(schemaPath, customOutputPath);
 
 		expect(fs.existsSync(customOutputPath)).toBe(true);
+		expect(fs.existsSync(path.join(customOutputDir, "index.ts"))).toBe(false);
 		const generatedContent = fs.readFileSync(customOutputPath, "utf-8");
 		expect(generatedContent).toContain("export function arkenv<");
 
@@ -286,6 +287,42 @@ describe("codegen process", () => {
 		// Yes, `arkenv` wrapper takes `options` (which is the schema) and returns `coreArkenv({ ...options, runtimeEnv: { ... } })`.
 		// It has no dependency on the schema file!
 		// This is so beautiful!
+	});
+
+	it("keeps @/.arkenv typecheckable via .arkenv/index.ts for a custom outputPath", () => {
+		const customOutputDir = path.join(tempDir, "src", "generated");
+		const customOutputPath = path.join(customOutputDir, "env.gen.ts");
+
+		if (!fs.existsSync(tempDir)) {
+			fs.mkdirSync(tempDir, { recursive: true });
+		}
+
+		fs.writeFileSync(
+			schemaPath,
+			`
+			export const env = arkenv({
+				client: {
+					NEXT_PUBLIC_API_URL: "string",
+				}
+			});
+			`,
+			"utf-8",
+		);
+
+		runCodegen(
+			schemaPath,
+			customOutputPath,
+			undefined,
+			undefined,
+			undefined,
+			tempDir,
+		);
+
+		const barrelPath = path.join(tempDir, ".arkenv", "index.ts");
+		expect(fs.existsSync(path.join(customOutputDir, "index.ts"))).toBe(false);
+		expect(fs.readFileSync(barrelPath, "utf-8")).toBe(
+			'export * from "../src/generated/env.gen";\nexport { default } from "../src/generated/env.gen";\n',
+		);
 	});
 });
 

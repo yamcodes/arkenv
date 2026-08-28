@@ -17,8 +17,9 @@ Scaffold Next.js integration in an existing project using the CLI:
 npx arkenv@latest init
 ```
 
-The CLI detects Next.js, installs the required packages, wraps `next.config` with
-`withArkEnv`, and creates your initial schema file.
+The CLI detects Next.js, installs the required packages, wraps `next.config`
+with `withArkEnv`, gitignores `.arkenv/`, and creates your initial schema
+file importing from `@/.arkenv`.
 
 ## Manual installation
 
@@ -45,7 +46,8 @@ npm install @arkenv/standard @arkenv/nextjs
 
 Wrap your Next.js configuration object with `withArkEnv`. This plugin runs schema
 validation during development and builds, and generates typed accessors in
-`generated/env.gen.ts`.
+`.arkenv/env.gen.ts`. Import that factory as `@/.arkenv`. Add `.arkenv/`
+to `.gitignore`.
 
 ```ts title="./next.config.ts" twoslash
 import type { NextConfig } from "next";
@@ -79,7 +81,7 @@ The default flat layout uses a single `env.ts` file. Client variables must use
 the `NEXT_PUBLIC_` prefix:
 
 ```ts title="./env.ts" twoslash
-import arkenv from "@/generated/env.gen";
+import arkenv from "@/.arkenv";
 
 export const env = arkenv({
   DATABASE_URL: "string",
@@ -160,7 +162,7 @@ export default withArkEnv(nextConfig);
 Then define your schema in `env.ts` using your validator:
 
 ```ts title="./env.ts" twoslash
-import arkenv from "@/generated/env.gen";
+import arkenv from "@/.arkenv";
 import { z } from "zod";
 
 export const env = arkenv({

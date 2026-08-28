@@ -17,7 +17,10 @@ import {
 	findNuxtConfig,
 	findViteConfig,
 } from "./utils/bootstrappers";
-import { updateTsConfigToStrict } from "./utils/tsconfig";
+import {
+	ensureNextjsArkEnvTsConfig,
+	updateTsConfigToStrict,
+} from "./utils/tsconfig";
 
 /**
  * Adapter implementation for WorkspacePort using Node.js APIs.
@@ -101,6 +104,10 @@ export class NodeWorkspace implements WorkspacePort {
 
 	async updateTsConfigToStrict(filePath?: string) {
 		return updateTsConfigToStrict(this, filePath);
+	}
+
+	async ensureNextjsArkEnvTsConfig(filePath?: string) {
+		return ensureNextjsArkEnvTsConfig(this, filePath);
 	}
 
 	async findViteConfig(cwd?: string): Promise<string | null> {

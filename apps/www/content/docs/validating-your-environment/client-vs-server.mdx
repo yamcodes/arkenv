@@ -33,7 +33,7 @@ client. This is the default when you run the interactive CLI, and the
 right choice for most apps.
 
 ```ts title="./env.ts"
-import arkenv from "@/generated/env.gen";
+import arkenv from "@/.arkenv";
 
 export const env = arkenv({
   DATABASE_URL: "string",
@@ -42,7 +42,9 @@ export const env = arkenv({
 });
 ```
 
-Wire the Next.js config plugin so codegen and build-time exclusion run:
+Wire the Next.js config plugin so codegen and build-time exclusion run.
+The generated client factory lives in gitignored `.arkenv/`, imported as
+`@/.arkenv`.
 
 ```ts title="./next.config.ts"
 import type { NextConfig } from "next";
@@ -85,10 +87,6 @@ Strict layout splits files so the server schema never enters the client module g
 
     <File name="server.ts" />
 
-    <Folder name="generated" defaultOpen>
-      <File name="env.gen.ts" />
-    </Folder>
-
     <Folder name="internal" defaultOpen>
       <File name="shared.ts" />
     </Folder>
@@ -104,7 +102,7 @@ export const SharedSchema = type({
 ```
 
 ```ts title="./env/client.ts"
-import arkenv from "./generated/env.gen";
+import arkenv from "@/.arkenv";
 import { SharedSchema } from "./internal/shared";
 
 export const env = arkenv(

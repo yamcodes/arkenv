@@ -25,6 +25,9 @@ describe("Executor", () => {
 		updateTsConfigToStrict: vi
 			.fn()
 			.mockResolvedValue({ status: "updated", file: "tsconfig.json" }),
+		ensureNextjsArkEnvTsConfig: vi
+			.fn()
+			.mockResolvedValue({ status: "updated", file: "tsconfig.json" }),
 		findViteConfig: vi.fn().mockResolvedValue("vite.config.ts"),
 		findBunConfig: vi.fn().mockResolvedValue("bunfig.toml"),
 		findNextjsConfig: vi.fn().mockResolvedValue("next.config.ts"),
