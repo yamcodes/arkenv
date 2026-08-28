@@ -20,7 +20,7 @@
 		"size-limit": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
-		"vite": "8.0.16",
+		"vite": "8.2.2",
 		"vitest": "catalog:"
 	},
 	"peerDependencies": {

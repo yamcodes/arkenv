@@ -13,7 +13,7 @@
 		"@arkenv/nuxt": "^0.1.1",
 		"arkenv": "^0.12.3",
 		"arktype": "^2.2.0",
-		"nuxt": "4.5.1"
+		"nuxt": "4.5.2"
 	},
 	"devDependencies": {
 		"@types/node": "^24.12.2",
@@ -22,5 +22,5 @@
 	"engines": {
 		"node": ">=22"
 	},
-	"packageManager": "npm@11.9.0"
+	"packageManager": "npm@11.19.0"
 }

@@ -14,13 +14,13 @@
 		"jiti": "catalog:"
 	},
 	"devDependencies": {
-		"@nuxt/kit": "4.4.8",
-		"@nuxt/schema": "4.4.8",
+		"@nuxt/kit": "4.5.2",
+		"@nuxt/schema": "4.5.2",
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@size-limit/preset-small-lib": "catalog:",
 		"arktype": "catalog:",
-		"nuxt": "4.5.1",
+		"nuxt": "4.5.2",
 		"rimraf": "catalog:",
 		"size-limit": "catalog:",
 		"tsdown": "catalog:",

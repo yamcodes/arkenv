@@ -21,5 +21,5 @@
 	"engines": {
 		"node": "24"
 	},
-	"packageManager": "npm@11.9.0"
+	"packageManager": "npm@11.19.0"
 }
