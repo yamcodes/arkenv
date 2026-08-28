@@ -13,7 +13,7 @@ Renovate [#1671](https://github.com/yamcodes/arkenv/pull/1671) rewired `@babel/c
 Three layers compose. Mixing them into “Babel 8 vs remove the plugin” is a false choice:
 
 1. **A — styled-jsx in www Vitest:** compile it, stub internals, or never load it.
-2. **B — `@babel/core` version policy:** pin 7 on www, split 7/8, or drop core from [www](http://www).
+2. **B — `@babel/core` version policy:** pin 7 on www, split 7/8, or drop core from `www`.
 3. **C — www unit-test toolchain:** Vitest+Vite, Next’s compiler in jsdom, or Playwright only.
 
 ## Directions considered
