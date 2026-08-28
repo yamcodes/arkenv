@@ -202,7 +202,7 @@ Stay a living note for now (not an ADR). The override is one `biome.jsonc` edit 
 
 ## Changelog of this note
 
-- 2026-08-28: Escape Biome 2.5 markdown auto-link of bare `www` by writing `` `apps/www` `` so `biome check --write` stays stable.
+- 2026-08-28: Escape mdxlint auto-link of bare `www` by writing `` `apps/www` `` so `pnpm run fix` / autofix.ci stays stable (md files are outside Biome’s includes).
 - 2026-08-28: Keep living note (not ADR); fix autofix mangling of bare `www` into dead links.
 - 2026-08-28: Shipped **B4 + C2** (`biome.jsonc` overrides + `@biomejs/biome` 2.5.10) and titled www `icon.svg`.
 - 2026-08-28: First write-up (layers A/B/C, metrics, hat, tier list) after #1657 `autofix.ci` vs Biome 2.5 a11y.
