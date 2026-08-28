@@ -82,11 +82,13 @@
 
 .roadmap-page__item {
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	gap: var(--space-xs);
 	margin: 0;
+	min-height: 2.75rem;
 	padding-block: 0.7rem;
 	border-block-end: var(--rule-hair) solid var(--color-rule);
+	box-sizing: border-box;
 }
 
 .roadmap-page__check {
@@ -96,7 +98,6 @@
 	justify-content: center;
 	width: 1.05rem;
 	height: 1.05rem;
-	margin-block-start: 0.15rem;
 	border: var(--rule-hair) solid var(--color-rule);
 	border-radius: var(--radius-sm);
 	background: transparent;
@@ -119,6 +120,8 @@
 	min-width: 0;
 	color: var(--color-ink);
 	text-decoration: none;
+	border-bottom: none;
+	padding-bottom: 0;
 	font-size: var(--text-sm);
 	line-height: 1.45;
 	transition: color var(--dur-short) var(--ease-out);
@@ -126,6 +129,7 @@
 
 .roadmap-page__link:hover {
 	color: var(--color-accent);
+	border-bottom-width: 0;
 }
 
 .roadmap-page__link--static {
