@@ -17,18 +17,34 @@ export type RoadmapExtra = {
 export const ROADMAP_MILESTONE_NUMBER = 1;
 
 /**
- * Meta trackers on the milestone that must not appear as checklist rows.
+ * Meta / launch-gate trackers on the milestone that must not appear as
+ * checklist rows (they are represented by `ROADMAP_EXTRAS` instead).
  */
-export const ROADMAP_EXCLUDE_ISSUE_NUMBERS = new Set([683]);
+export const ROADMAP_EXCLUDE_ISSUE_NUMBERS = new Set([
+	683, // former living roadmap issue
+	1306, // README alpha → production links (extra: readme-prod-links)
+	1590, // changelog epoch warnings (extra: changelog-epoch)
+]);
 
 /**
- * Launch / narrative items carried over from the old #683 issue body.
- * Flip `done` when each ships; do not invent parallel issue trackers for these.
+ * Launch / narrative items carried over from the old #683 issue body (plus
+ * launch-meta issues folded out of the milestone checklist).
+ * Flip `done` when each ships; order here is the public “Up next” order.
  */
 export const ROADMAP_EXTRAS: readonly RoadmapExtra[] = [
 	{
 		id: "parity-audit",
 		title: "Final v0 parity audit",
+		done: false,
+	},
+	{
+		id: "readme-prod-links",
+		title: "Update README links from alpha to production",
+		done: false,
+	},
+	{
+		id: "changelog-epoch",
+		title: "Prepend changelog epoch warnings",
 		done: false,
 	},
 	{

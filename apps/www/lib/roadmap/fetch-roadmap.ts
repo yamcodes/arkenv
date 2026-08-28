@@ -22,6 +22,10 @@ type GitHubIssue = {
 	pull_request?: unknown;
 };
 
+const EXTRA_ORDER = new Map(
+	ROADMAP_EXTRAS.map((extra, index) => [`extra:${extra.id}`, index] as const),
+);
+
 function githubHeaders(): HeadersInit {
 	const headers: HeadersInit = {
 		Accept: "application/vnd.github+json",
@@ -104,14 +108,34 @@ function extrasAsItems(): RoadmapItem[] {
 	}));
 }
 
+function extraIndex(id: string): number {
+	return EXTRA_ORDER.get(id) ?? Number.POSITIVE_INFINITY;
+}
+
 function sortItems(items: RoadmapItem[]): RoadmapItem[] {
 	return [...items].sort((a, b) => {
 		if (a.done !== b.done) return a.done ? 1 : -1;
 		const aNum = a.number ?? Number.POSITIVE_INFINITY;
 		const bNum = b.number ?? Number.POSITIVE_INFINITY;
 		if (aNum !== bNum) return aNum - bNum;
+		// Preserve deliberate ROADMAP_EXTRAS order when both lack issue numbers.
+		const aExtra = extraIndex(a.id);
+		const bExtra = extraIndex(b.id);
+		if (aExtra !== bExtra) return aExtra - bExtra;
 		return a.title.localeCompare(b.title);
 	});
+}
+
+function issuesToItems(issues: GitHubIssue[]): RoadmapItem[] {
+	return issues
+		.filter((issue) => !ROADMAP_EXCLUDE_ISSUE_NUMBERS.has(issue.number))
+		.map((issue) => ({
+			id: `issue:${issue.number}`,
+			title: issue.title,
+			done: issue.state === "closed",
+			href: issue.html_url,
+			number: issue.number,
+		}));
 }
 
 function withProgress(
@@ -144,32 +168,27 @@ export async function fetchRoadmap(): Promise<RoadmapData> {
 		url: `https://github.com/${owner}/${repo}/milestone/${ROADMAP_MILESTONE_NUMBER}`,
 	};
 
-	try {
-		const [meta, issues] = await Promise.all([
-			fetchMilestoneMeta(owner, repo, ROADMAP_MILESTONE_NUMBER),
-			fetchMilestoneIssues(owner, repo, ROADMAP_MILESTONE_NUMBER),
-		]);
+	const [metaResult, issuesResult] = await Promise.allSettled([
+		fetchMilestoneMeta(owner, repo, ROADMAP_MILESTONE_NUMBER),
+		fetchMilestoneIssues(owner, repo, ROADMAP_MILESTONE_NUMBER),
+	]);
 
-		const milestoneItems: RoadmapItem[] = issues
-			.filter((issue) => !ROADMAP_EXCLUDE_ISSUE_NUMBERS.has(issue.number))
-			.map((issue) => ({
-				id: `issue:${issue.number}`,
-				title: issue.title,
-				done: issue.state === "closed",
-				href: issue.html_url,
-				number: issue.number,
-			}));
+	const milestone =
+		metaResult.status === "fulfilled"
+			? {
+					number: metaResult.value.number,
+					title: metaResult.value.title,
+					url: metaResult.value.html_url,
+				}
+			: fallbackMilestone;
 
+	if (issuesResult.status === "fulfilled") {
 		return withProgress(
-			[...milestoneItems, ...extrasAsItems()],
-			{
-				number: meta.number,
-				title: meta.title,
-				url: meta.html_url,
-			},
+			[...issuesToItems(issuesResult.value), ...extrasAsItems()],
+			milestone,
 			false,
 		);
-	} catch {
-		return withProgress([...extrasAsItems()], fallbackMilestone, true);
 	}
+
+	return withProgress([...extrasAsItems()], milestone, true);
 }
