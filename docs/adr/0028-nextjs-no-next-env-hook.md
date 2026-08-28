@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Accepted — amended 2026-08-28 by [ADR 0020](./0020-strict-layout-complexity-budget.md) ([#1634](https://github.com/yamcodes/arkenv/issues/1634))
 
 ## Context
 
@@ -45,8 +45,9 @@ Do **not** intercept, replace, or monkey-patch `@next/env`.
    `process.env.SECRET` to `undefined` in Client Components does not
    apply to `import { env } from "./env"`. The imported object is opaque
    to that pass. Value isolation stays conditional exports + proxy.
-   Compile-time hiding of secret *names and types* stays split-file
-   strict layout, not a compiler hook.
+   Compile-time hiding of secret *names and types* is the documented
+   two-module recipe ([ADR 0020](./0020-strict-layout-complexity-budget.md)),
+   not a compiler hook and not a dedicated ArkEnv layout engine.
 3. **Coercion stays in ArkEnv.** Routing values through Next's string
    env transport would undo honest numbers, booleans, and defaults. The
    native pipeline is not a substitute for `arkenv()`.

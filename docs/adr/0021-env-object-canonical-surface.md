@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted
+Accepted — amended 2026-08-28 by [ADR 0020](./0020-strict-layout-complexity-budget.md) ([#1634](https://github.com/yamcodes/arkenv/issues/1634))
+
+Decision items 3–4 originally treated strict layout as the name/type escape hatch and reused ADR 0016’s Vite plugin (this file’s historical “ADR 0013” references mean that compile-time blocker). Value isolation on the transformed/proxied `env.ts` is unchanged.
 
 ## Context
 
@@ -40,8 +42,8 @@ The imported `env` object is the canonical surface for **all** integrations. For
 
 1. **`env.ts` is the single typed source of truth.** The user writes `createEnv` / `arkenv` in `env.ts`; types flow from normal inference. No generated declaration files, no committed codegen artifacts, no user-maintained `runtimeEnv` destructuring.
 2. **Server graph executes `env.ts` as-is.** Validation and coercion run at server boot against the real deployment environment - the fail-fast guarantee fullstack Vite/Bun apps currently lack.
-3. **Client graph gets a transformed module.** The plugin (which already owns validation in Vite's `config` hook / Bun's `setup`) rewrites the env module in client bundles: client-prefixed keys become inlined, build-validated, *coerced* literals; the validator import is stripped; server-only keys become a small throwing guard. No validator ships to the browser and nothing is re-validated client-side. The guard is the same "trust the proxy" stance as ADR 0010, and the flat-layout name/type-leak consequence of ADR 0012 carries over, with the strict layout as the escape hatch.
-4. **Strict layout reuses ADR 0013.** The client-import blocker for `env/server.ts` is already a Vite plugin; Bun gets the equivalent via its resolver hooks.
+3. **Client graph gets a transformed module.** The plugin (which already owns validation in Vite's `config` hook / Bun's `setup`) rewrites the env module in client bundles: client-prefixed keys become inlined, build-validated, *coerced* literals; the validator import is stripped; server-only keys become a small throwing guard. No validator ships to the browser and nothing is re-validated client-side. The guard is the same "trust the proxy" stance as ADR 0010. Flat-layout name/type leak remains; name/type isolation is the documented two-module recipe ([ADR 0020](./0020-strict-layout-complexity-budget.md)), not a plugin escape hatch.
+4. **No compile-time import blocker.** ADR 0020 drops the Vite/Bun/Nuxt client-graph block of `env/server.ts`. Plugin `schemaPath` is the (flat or recipe-client) env module. A second server file using `@arkenv/core` is outside the transform; importing it from client code is user-land.
 5. **Plumbing consolidates in `@arkenv/build`** (layout resolution, key extraction, watching), and `clientPrefix` becomes first-class plugin config for all frameworks per ADR 0014's note.
 6. **Drop schema/define and ambient declarations for v1 (Option 3).** The legacy `arkenv(schema)` plugin argument with native-accessor `define` rewriting and ambient `.d.ts` augmentations (`ImportMetaEnvAugmented`, `ProcessEnvAugmented`) is completely removed from v1. Ambient static rewriting (#1440) is rejected because it cannot overcome the honesty ceiling of dynamic property reads and cannot enforce security boundaries. In v1, `import { env } from "./env"` is the sole supported path.
 7. **The Nuxt proxy preference-order defect is fixed in the same milestone.** The security proxy currently prefers raw `useRuntimeConfig()` / `__NUXT__.config.public` / `process.env` strings over the coerced validation target on *both* the client and server branches - and on the server, `prop in process.env` is almost always true for schema keys, making coerced values near-unreachable in the common path. The aligned model's honesty claim is only as good as its weakest integration. Because Nitro applies `NUXT_PUBLIC_*` overrides as strings at boot, the fix requires a boot-time coercion pass (e.g. a Nitro plugin), not just build-time injection.
