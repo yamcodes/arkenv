@@ -327,7 +327,7 @@ describe("validators templates", () => {
 				'v.optional(v.picklist(["development", "production", "test"]), "development")',
 			);
 			expect(template).toContain(
-				"v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000)",
+				"v.optional(v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000)",
 			);
 			expect(template).toContain("export const env = arkenv({");
 			expect(template).not.toContain("export const Env =");

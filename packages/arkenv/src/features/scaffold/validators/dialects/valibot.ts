@@ -18,7 +18,7 @@ export const valibotDialect: Dialect = {
 			return `${key}: v.optional(v.picklist(["development", "production", "test"]), "development"),`;
 		}
 		if (role === "server" && key === "PORT") {
-			return "PORT: v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),";
+			return "PORT: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),";
 		}
 		const preset = tryFormatPresetFieldValue(
 			valibotDialect,
@@ -45,7 +45,7 @@ export const valibotDialect: Dialect = {
 	},
 
 	defaultSimpleSchemaFields: `\t\tNODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),
-		PORT: v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),`,
+		PORT: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),`,
 
 	formatSimpleSchemaFields(keys, clientPrefix = "", hostPreset = undefined) {
 		return keys

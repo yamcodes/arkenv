@@ -108,7 +108,7 @@ describe("JitiSchemaLoaderAdapter", () => {
 			import * as v from "valibot";
 			export const env = arkenv({
 				HOST: v.optional(v.string(), "localhost"),
-				PORT: v.fallback(v.pipe(v.string(), v.transform(Number)), 3000),
+				PORT: v.optional(v.number(), 3000),
 			});
 			`,
 		);
