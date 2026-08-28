@@ -135,5 +135,5 @@ export function getClientImportPath(context: ScaffoldContext): string {
 	if (isStrictCodegenDisabled(context)) {
 		return `${getFrameworkPackageName(context)}/client`;
 	}
-	return context.nextjsImportPath || "./generated/env.gen";
+	return context.nextjsImportPath || "@/.arkenv";
 }

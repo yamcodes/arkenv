@@ -89,7 +89,7 @@ describe("validators templates", () => {
 				shouldInstall: false,
 			};
 			const template = getSimpleTemplate(options);
-			expect(template).toContain('import arkenv from "./generated/env.gen"');
+			expect(template).toContain('import arkenv from "@/.arkenv"');
 			expect(template).toContain("DATABASE_URL:");
 			expect(template).toContain("NEXT_PUBLIC_API_URL:");
 			expect(template).toContain("NODE_ENV:");
@@ -108,7 +108,7 @@ describe("validators templates", () => {
 				shouldInstall: false,
 			};
 			const template = getSimpleTemplate(options);
-			expect(template).toContain('import arkenv from "./generated/env.gen"');
+			expect(template).toContain('import arkenv from "@/.arkenv"');
 			expect(template).toContain("DATABASE_URL:");
 			expect(template).not.toContain("server:");
 			expect(template).not.toContain("client:");
@@ -147,7 +147,7 @@ describe("validators templates", () => {
 				shouldInstall: false,
 			};
 			const template = getSimpleTemplate(options);
-			expect(template).toContain('import arkenv from "./generated/env.gen"');
+			expect(template).toContain('import arkenv from "@/.arkenv"');
 			expect(template).toContain("server:");
 			expect(template).toContain("client:");
 			expect(template).toContain("shared:");
@@ -162,8 +162,8 @@ describe("validators templates", () => {
 				shouldUpdateTsConfig: false,
 				shouldInstall: false,
 			};
-			const template = getSimpleTemplate(options, "@/generated/env.gen");
-			expect(template).toContain('import arkenv from "@/generated/env.gen"');
+			const template = getSimpleTemplate(options, "@/.arkenv");
+			expect(template).toContain('import arkenv from "@/.arkenv"');
 		});
 
 		it("returns nextjs template with custom envKeys split correctly", () => {
@@ -183,7 +183,7 @@ describe("validators templates", () => {
 				],
 			};
 			const template = getSimpleTemplate(options);
-			expect(template).toContain('import arkenv from "./generated/env.gen"');
+			expect(template).toContain('import arkenv from "@/.arkenv"');
 			expect(template).toContain("DATABASE_URL:");
 			expect(template).toContain("CUSTOM_VAR:");
 			expect(template).toContain("NEXT_PUBLIC_API_KEY:");
@@ -202,7 +202,7 @@ describe("validators templates", () => {
 				shouldInstall: false,
 			};
 			const template = getSimpleTemplate(options);
-			expect(template).toContain('import arkenv from "./generated/env.gen"');
+			expect(template).toContain('import arkenv from "@/.arkenv"');
 			expect(template).toContain('import { z } from "zod"');
 			expect(template).toContain("DATABASE_URL: z.string().url().default(");
 		});
@@ -217,7 +217,7 @@ describe("validators templates", () => {
 				shouldInstall: false,
 			};
 			const template = getSimpleTemplate(options);
-			expect(template).toContain('import arkenv from "./generated/env.gen"');
+			expect(template).toContain('import arkenv from "@/.arkenv"');
 			expect(template).toContain('import * as v from "valibot"');
 			expect(template).toContain(
 				"DATABASE_URL: v.optional(v.pipe(v.string(), v.url())",
@@ -327,7 +327,7 @@ describe("validators templates", () => {
 				'v.optional(v.picklist(["development", "production", "test"]), "development")',
 			);
 			expect(template).toContain(
-				"v.optional(v.pipe(v.string(), v.transform(Number), v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000)",
+				"v.optional(v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000)",
 			);
 			expect(template).toContain("export const env = arkenv({");
 			expect(template).not.toContain("export const Env =");
@@ -381,9 +381,7 @@ describe("validators templates", () => {
 			expect(templates.shared).toContain(
 				"export const SharedSchema = z.object({",
 			);
-			expect(templates.client).toContain(
-				'import arkenv from "./generated/env.gen";',
-			);
+			expect(templates.client).toContain('import arkenv from "@/.arkenv";');
 			expect(templates.client).toContain("export const env = arkenv(");
 			expect(templates.client).not.toContain(
 				"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
@@ -404,10 +402,8 @@ describe("validators templates", () => {
 				shouldInstall: false,
 				disableCodegen: false,
 			};
-			const templates = getStrictTemplates(options, "@/generated/env.gen");
-			expect(templates.client).toContain(
-				'import arkenv from "@/generated/env.gen";',
-			);
+			const templates = getStrictTemplates(options, "@/.arkenv");
+			expect(templates.client).toContain('import arkenv from "@/.arkenv";');
 		});
 
 		it("returns strict templates with codegen disabled", () => {

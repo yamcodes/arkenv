@@ -12,6 +12,9 @@ export function heroTwoslashOptions(engine: HeroTwoslashEngine) {
 		],
 	};
 	if (engine === "standard") {
+		paths["@/.arkenv"] = [
+			path.join(root, "packages/nextjs/src/standard/index.ts"),
+		];
 		paths["@/generated/env.gen"] = [
 			path.join(root, "packages/nextjs/src/standard/index.ts"),
 		];

@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Accepted — amended 2026-08-28 by [ADR 0020](./0020-strict-layout-complexity-budget.md) ([#1634](https://github.com/yamcodes/arkenv/issues/1634))
 
 ## Context
 
@@ -39,5 +39,5 @@ We adopt **Option 2**: the boundary is enforced by Next.js's module resolution o
 - **Reliable isolation.** The boundary is fixed during bundling, so there is no `typeof window` ambiguity during SSR.
 - **Zero user configuration.** Developers do not need to add `customConditions` or change `tsconfig.json`; Next.js resolves the exports automatically.
 - **Dual build maintenance.** `@arkenv/nextjs` must ship and keep in sync two (or more) conditional builds. Changes to shared internals must be reflected across conditions.
-- **Flat layout still leaks names and types.** Because the flat layout's `env.ts` is a single file imported into both server and client graphs, TypeScript sees the full schema everywhere. The conditional export boundary hides values, but variable names and types remain visible in the client bundle. Teams needing compile-time name/type hiding should use the strict layout.
+- **Flat layout still leaks names and types.** Because the flat layout's `env.ts` is a single file imported into both server and client graphs, TypeScript sees the full schema everywhere. The conditional export boundary hides values, but variable names and types remain visible in the client bundle. Teams that need name/type isolation follow the documented two-module recipe ([ADR 0020](./0020-strict-layout-complexity-budget.md)); ArkEnv does not ship a dedicated layout engine for that.
 - **Docs stay user-focused.** The exact export-condition table and module-resolution mechanics are recorded here rather than in user-facing documentation, keeping the security guide focused on guarantees rather than plumbing.

@@ -20,6 +20,19 @@ describe("@arkenv/standard subpaths", () => {
 		expect(env.DEBUG).toBe(true);
 	});
 
+	it("applies the CLI Valibot PORT schema default and coerces a string env value", () => {
+		const port = v.optional(
+			v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(65535)),
+			3000,
+		);
+
+		const withDefault = valibotArkenv({ PORT: port }, { env: {} });
+		expect(withDefault.PORT).toBe(3000);
+
+		const coerced = valibotArkenv({ PORT: port }, { env: { PORT: "3000" } });
+		expect(coerced.PORT).toBe(3000);
+	});
+
 	it("coerces Zod Mini number and boolean fields without a toJsonSchema callback", () => {
 		const env = zodMiniArkenv(
 			{

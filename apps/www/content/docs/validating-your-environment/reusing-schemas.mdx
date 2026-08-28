@@ -124,7 +124,7 @@ Put the shared schema in an internal package, then call the host `arkenv` (or pl
     ```
 
     ```ts title="./apps/web/env.ts"
-    import arkenv from "@/generated/env.gen";
+    import arkenv from "@/.arkenv";
     import { AppEnv } from "@repo/env";
 
     export const env = arkenv(AppEnv);
@@ -142,7 +142,7 @@ Put the shared schema in an internal package, then call the host `arkenv` (or pl
     ```
 
     ```ts title="./apps/web/env.ts"
-    import arkenv from "@/generated/env.gen";
+    import arkenv from "@/.arkenv";
     import { appSchema } from "@repo/env";
 
     export const env = arkenv(appSchema);

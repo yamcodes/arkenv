@@ -5,6 +5,7 @@ import {
 	isHostProvider,
 } from "@/features/scaffold/presets";
 import type { CheckInput } from "./commands/check";
+import type { ExampleInput } from "./commands/example";
 import type { InitInput } from "./commands/init";
 import type { PresetInput } from "./commands/preset";
 
@@ -151,7 +152,7 @@ export class CLI {
 						}
 					}
 				}
-			} else if (this.command === "check") {
+			} else if (this.command === "check" || this.command === "example") {
 				if (positionalArgs.length > 0) {
 					this.validationError = `Unknown argument: ${positionalArgs[0]}`;
 				}
@@ -308,6 +309,17 @@ export class CLI {
 			isAgent: this.isAgent,
 			isYes: this.isYes,
 			isForce: this.isForce,
+		};
+	}
+
+	get exampleInput(): ExampleInput {
+		return {
+			...(this.schema !== undefined
+				? { schema: this.schema, file: this.schema }
+				: {}),
+			isQuiet: this.isQuiet,
+			isJson: this.isJson,
+			isAgent: this.isAgent,
 		};
 	}
 

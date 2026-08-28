@@ -1,5 +1,121 @@
 # @arkenv/core
 
+## 1.0.0-alpha.15
+
+### Major Changes
+
+- #### Replace `--json` payloads with settlement envelopes _[`#1633`](https://github.com/yamcodes/arkenv/pull/1633) [`02a5a32`](https://github.com/yamcodes/arkenv/commit/02a5a3275cd1f38fdfa65a759a4af6667d568b8c) [@yamcodes](https://github.com/yamcodes)_
+
+  `--json` / `--agent` now write an `ok`-discriminated settlement document to stdout instead of `{ status, code, message, retryWith }`. Human-readable output is unchanged. JSON stays on stdout; logs stay on stderr. Secret values are redacted in `meta`, `summary`, and `why`.
+
+  Completed runs use `ok: true` (including `arkenv check` findings, which still set `exitCode: 4`). Aborts use `ok: false` with a dotted `CLI.*` or `ENV.*` code. `nextActions` is always present (`[]` when there is nothing to do). Commands in `nextActions` resolve to the invoked runner (`pnpm arkenv`, `npx arkenv`, `bunx arkenv`, and so on).
+
+  Example refusal:
+
+  ```json
+  {
+    "ok": false,
+    "commandId": "init",
+    "error": {
+      "code": "CLI.GIT_TREE_DIRTY",
+      "severity": "error",
+      "summary": "Git working tree is not clean.",
+      "nextActions": [
+        {
+          "kind": "run-command",
+          "label": "Re-run with --force to bypass this check",
+          "command": "npx arkenv init --force"
+        }
+      ]
+    },
+    "diagnostics": [],
+    "nextActions": [
+      {
+        "kind": "run-command",
+        "label": "Re-run with --force to bypass this check",
+        "command": "npx arkenv init --force"
+      }
+    ]
+  }
+  ```
+
+  **BREAKING CHANGE**: Agents must switch from `status` / `retryWith` to `ok` / `error.code` / `nextActions`. Flat codes such as `GIT_TREE_DIRTY` are now dotted (`CLI.GIT_TREE_DIRTY`).
+
+  ```diff
+  - { "status": "error", "code": "GIT_TREE_DIRTY", "retryWith": ["--force"] }
+  + { "ok": false, "error": { "code": "CLI.GIT_TREE_DIRTY", "nextActions": [{ "kind": "run-command", "command": "npx arkenv init --force" }] } }
+  ```
+
+### Minor Changes
+
+- #### Add `arkenv check` command and cross-module validation detection _[`#1632`](https://github.com/yamcodes/arkenv/pull/1632) [`01a028d`](https://github.com/yamcodes/arkenv/commit/01a028def38f5e440329f7eeef03773d4a76c46a) [@yamcodes](https://github.com/yamcodes)_
+
+  - Add `arkenv check` CLI command to validate the active environment against the project's env schema, supporting `--schema` (`-s`), repeatable `--env-file`, `--json`, `--quiet`, and `--agent` with CI-friendly exit codes.
+  - Add structural `ArkErrors` verification in `@arkenv/core` so cross-module-instance schema evaluation reliably surfaces validation issues.
+
+- #### Add `arkenv example` to update `.env.example` from the schema _[`#1643`](https://github.com/yamcodes/arkenv/pull/1643) [`de8add3`](https://github.com/yamcodes/arkenv/commit/de8add319be8710deb2b83a73442291e65241723) [@yamcodes](https://github.com/yamcodes)_
+
+  `arkenv example` now loads the project schema and writes `.env.example`
+  with every declared key. Existing comments and values are preserved
+  for keys that remain in the schema; removed keys are dropped; new keys
+  are appended. `arkenv init` reuses the same path after scaffolding an
+  existing project.
+
+  Usage:
+
+  ```sh
+  npx arkenv@latest example
+  npx arkenv@latest example --schema ./src/env.ts --json
+  ```
+
+### Patch Changes
+
+- #### Drop default `z.coerce` from Zod product samples and scaffold templates _[`#1631`](https://github.com/yamcodes/arkenv/pull/1631) [`ba9f903`](https://github.com/yamcodes/arkenv/commit/ba9f9030e8291a3bc315b164012eb825693e22ba) [@yamcodes](https://github.com/yamcodes)_
+
+  Scaffolded Zod templates, `@arkenv/standard` JSDoc examples, and official example projects now declare numeric and boolean fields with `z.number()` and `z.boolean()` instead of `z.coerce.number()` or `z.coerce.boolean()`, reflecting ArkEnv's built-in pre-coercion for Standard Schema validators.
+
+  ```ts
+  import arkenv from "@arkenv/standard";
+  import { z } from "zod";
+
+  export const env = arkenv({
+    PORT: z.number().default(3000),
+    DATABASE_URL: z.string().url(),
+    DEBUG: z.boolean().default(false),
+  });
+  ```
+
+- #### Align Next.js onboarding with `@/.arkenv` _[`#1639`](https://github.com/yamcodes/arkenv/pull/1639) [`cc87d51`](https://github.com/yamcodes/arkenv/commit/cc87d51a69d54e43d4c1a11759d78fb97031234f) [@yamcodes](https://github.com/yamcodes)_
+
+  `arkenv init` now scaffolds Next.js schemas that import the codegen factory from `@/.arkenv`, writes that factory to `.arkenv/env.gen.ts`, gitignores `.arkenv/`, and maps the specifier in `tsconfig.json`. Docs, READMEs, and examples match that path instead of `./generated/env.gen`.
+
+  ```ts
+  import arkenv from "@/.arkenv";
+
+  export const env = arkenv({
+    DATABASE_URL: "string",
+    NEXT_PUBLIC_API_URL: "string",
+  });
+  ```
+
+  Existing `outputPath` overrides still work. Keep importing `@/.arkenv`. `withArkEnv` aliases the specifier for bundlers, and codegen keeps `.arkenv/index.ts` re-exporting the file so `tsc --noEmit` resolves it too.
+
+- #### Scaffold Valibot `PORT` as `v.number()` instead of a string transform _[`#1663`](https://github.com/yamcodes/arkenv/pull/1663) [`0cf0e74`](https://github.com/yamcodes/arkenv/commit/0cf0e74e4a2024e21465a55e71ff91711b40c155) [@yamcodes](https://github.com/yamcodes)_
+
+  `arkenv init` with Valibot already imports `@arkenv/standard/valibot`, which binds `@valibot/to-json-schema` for coercion. Generate `PORT` as a numeric schema so the wrapper can coerce `"3000"` instead of requiring `v.transform(Number)`.
+
+  ```ts
+  import { arkenv } from "@arkenv/standard/valibot";
+  import * as v from "valibot";
+
+  export const env = arkenv({
+    PORT: v.optional(
+      v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(65535)),
+      3000
+    ),
+  });
+  ```
+
 ## 1.0.0-alpha.14
 
 ### Minor Changes

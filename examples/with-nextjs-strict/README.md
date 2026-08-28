@@ -20,7 +20,7 @@ The example defines the environment schema across three split files in the `env/
 
 2. **Client variables**: `env/client.ts`
    ```ts
-    import arkenv from "./generated/env.gen";
+    import arkenv from "@/.arkenv";
     import { SharedSchema } from "./internal/shared";
 
     export const env = arkenv(
@@ -47,7 +47,7 @@ The example defines the environment schema across three split files in the `env/
 
 ### Configuration Wrapper
 
-The Next.js configuration `next.config.ts` wraps the config object with `withArkEnv` from `@arkenv/nextjs/config`. This statically scans the split files in `env/`, generates the `env/generated/env.gen.ts` file containing the pre-filled `runtimeEnv` block, and registers the `#arkenv/client-env` alias for server auto-extend.
+The Next.js configuration `next.config.ts` wraps the config object with `withArkEnv` from `@arkenv/nextjs/config`. This statically scans the split files in `env/`, writes `.arkenv/env.gen.ts` (imported as `@/.arkenv`) containing the pre-filled `runtimeEnv` block, and registers the `#arkenv/client-env` alias for server auto-extend.
 
 ## Usage in Components
 

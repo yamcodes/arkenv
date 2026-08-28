@@ -120,15 +120,25 @@ export function planGitignoreFiles(
 	const gitignorePath = path.join(cwd, ".gitignore");
 	const hasGitignore = existingFiles.includes(gitignorePath);
 
+	const ignoreArkEnv = options.framework === "nextjs";
+
 	if (hasGitignore && options.gitignoreContent !== undefined) {
 		const lines = options.gitignoreContent.split(/\r?\n/);
 		const hasEnv = isIgnored(lines, ".env");
 		const hasEnvLocal = isIgnored(lines, ".env.local");
+		const hasArkEnv =
+			isIgnored(lines, ".arkenv") || isIgnored(lines, ".arkenv/");
 
-		if (!hasEnv || !hasEnvLocal) {
-			let suffix = "\n# Environment variables\n";
-			if (!hasEnv) suffix += ".env\n";
-			if (!hasEnvLocal) suffix += ".env.local\n";
+		if (!hasEnv || !hasEnvLocal || (ignoreArkEnv && !hasArkEnv)) {
+			let suffix = "";
+			if (!hasEnv || !hasEnvLocal) {
+				suffix += "\n# Environment variables\n";
+				if (!hasEnv) suffix += ".env\n";
+				if (!hasEnvLocal) suffix += ".env.local\n";
+			}
+			if (ignoreArkEnv && !hasArkEnv) {
+				suffix += "\n# ArkEnv generated factory\n.arkenv/\n";
+			}
 
 			const newContent = options.gitignoreContent.endsWith("\n")
 				? `${options.gitignoreContent}${suffix.trim()}\n`
@@ -141,9 +151,13 @@ export function planGitignoreFiles(
 			});
 		}
 	} else if (!hasGitignore) {
+		let content = "# Environment variables\n.env\n.env.local\n";
+		if (ignoreArkEnv) {
+			content += "\n# ArkEnv generated factory\n.arkenv/\n";
+		}
 		plan.files.push({
 			path: gitignorePath,
-			content: "# Environment variables\n.env\n.env.local\n",
+			content,
 			action: "create",
 			label: ".gitignore file",
 		});

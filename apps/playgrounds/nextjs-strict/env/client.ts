@@ -1,4 +1,4 @@
-import arkenv from "./generated/env.gen";
+import arkenv from "@/.arkenv";
 import { SharedSchema } from "./internal/shared";
 
 export const env = arkenv(

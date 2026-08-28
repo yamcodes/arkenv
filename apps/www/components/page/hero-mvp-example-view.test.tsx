@@ -33,7 +33,7 @@ const examples = HERO_MVP_HOSTS.flatMap((host) =>
 		validator: validator.id,
 		importLine:
 			host.id === "next"
-				? "@/generated/env.gen"
+				? "@/.arkenv"
 				: validator.id === "arktype"
 					? "@arkenv/core"
 					: validator.id === "valibot"
