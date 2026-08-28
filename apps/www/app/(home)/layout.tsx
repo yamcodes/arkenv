@@ -18,7 +18,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 							{ text: "Documentation", url: "/docs/arkenv" },
 							{
 								text: "Roadmap",
-								url: "https://github.com/yamcodes/arkenv/issues/683",
+								url: "https://arkenv-v1.vercel.app/roadmap",
 							},
 						]}
 						actions={[
