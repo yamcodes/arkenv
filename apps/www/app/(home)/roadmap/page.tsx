@@ -52,6 +52,7 @@ function RoadmapRow({ item }: { item: RoadmapItem }) {
 					href={item.href}
 					className="roadmap-page__link"
 					data-no-underline
+					data-no-arrow
 					target="_blank"
 					rel="noopener noreferrer"
 				>
@@ -86,6 +87,7 @@ export default async function RoadmapPage() {
 								target="_blank"
 								rel="noopener noreferrer"
 								data-no-underline
+								data-no-arrow
 							>
 								milestone
 							</a>{" "}
@@ -127,20 +129,6 @@ export default async function RoadmapPage() {
 						</ul>
 					</section>
 				) : null}
-
-				<p className="roadmap-page__help">
-					Help with tests, docs, or triage. Open an issue with a clear repro, or
-					take something from the{" "}
-					<a
-						href={roadmap.milestone.url}
-						target="_blank"
-						rel="noopener noreferrer"
-						data-no-underline
-					>
-						milestone
-					</a>
-					.
-				</p>
 			</article>
 			<SiteFooter reveal />
 		</div>
