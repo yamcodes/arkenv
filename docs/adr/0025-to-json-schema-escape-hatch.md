@@ -2,7 +2,7 @@
 
 ## Status
 
-Amended (2026-08-24 by [#1586](https://github.com/yamcodes/arkenv/issues/1586))
+Amended (2026-08-24 by [#1586](https://github.com/yamcodes/arkenv/issues/1586); 2026-08-28 by [#1609](https://github.com/yamcodes/arkenv/issues/1609))
 
 ## Context
 
@@ -76,7 +76,7 @@ To restore DX symmetry across the Big Three validators while preserving engine p
 1. **First-Class Subpath Exports on `@arkenv/standard`:**
    - `import { arkenv } from "@arkenv/standard/valibot"`: Pre-configures coercion using `@valibot/to-json-schema` (`typeMode: "input"`, `target: "draft-07"`).
    - `import { arkenv } from "@arkenv/standard/zod-mini"`: Pre-configures coercion using `zod/mini`'s `toJSONSchema` helper (`io: "input"`, `target: "draft-07"`).
-   - *Note on Zod*: Classic Zod already exposes JSON Schema on the value (ADR 0002), so root `import { arkenv } from "@arkenv/standard"` works zero-config out of the box. A redundant `@arkenv/standard/zod` alias is deferred to separate exploration.
+   - *Note on Zod*: Classic Zod already exposes JSON Schema on the value (ADR 0002), so root `import { arkenv } from "@arkenv/standard"` works zero-config out of the box. A redundant `@arkenv/standard/zod` alias is **rejected** ([ADR 0028](./0028-canonical-root-for-classic-zod.md), [#1609](https://github.com/yamcodes/arkenv/issues/1609)).
 2. **Optional Peer Dependency Architecture:**
    - `@valibot/to-json-schema` is declared under `peerDependencies` with `peerDependenciesMeta: { "@valibot/to-json-schema": { "optional": true } }`. (Zod Mini uses `zod/mini`'s exported `toJSONSchema` helper without requiring an additional third-party package).
    - The root import `import { arkenv } from "@arkenv/standard"` remains pure with zero runtime dependencies.
@@ -93,3 +93,9 @@ To restore DX symmetry across the Big Three validators while preserving engine p
 - **Zero Runtime Bloat:** Root `@arkenv/standard` remains 100% dependency-free.
 - **Pristine Package Footprint:** No legacy shim files in package roots; build outputs remain contained within `dist/`.
 - **Docs & CLI Alignment:** `arkenv init` will scaffold `@arkenv/standard/valibot` for Valibot ([#1607](https://github.com/yamcodes/arkenv/issues/1607)) and `@arkenv/standard` for Zod directly.
+
+---
+
+## Amendment (2026-08-28): No `@arkenv/standard/zod` alias
+
+The 2026-08-24 note deferred a cosmetic `/zod` re-export. That exploration is closed as **Option A** in [ADR 0028](./0028-canonical-root-for-classic-zod.md): Classic Zod stays on the root import. Converter subpaths (`./valibot`, `./zod-mini`) are unchanged.

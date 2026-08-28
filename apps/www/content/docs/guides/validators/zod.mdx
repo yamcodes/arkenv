@@ -7,6 +7,9 @@ description: Validate environment variables with your existing Zod schemas.
 4.2+ embeds
 [Standard JSON Schema](https://standardschema.dev/json-schema) on schema
 objects, so ArkEnv coerces `"3000"` and `"true"` before validation.
+There is no `@arkenv/standard/zod` subpath — Classic Zod uses the root
+import. `@arkenv/standard/valibot` and `@arkenv/standard/zod-mini` exist
+only to bind JSON Schema converters those libraries keep off the value.
 
 For an overview of engine options, see
 [Choosing an engine](/docs/core-concepts/standard-schema).
