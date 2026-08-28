@@ -60,7 +60,7 @@ jobs:
           echo "short_msg=$(git log -1 --format=%s "$DEPLOY_SHA" | head -n1)" >> "$GITHUB_OUTPUT"
           echo "author_name=$(git log -1 --format=%an "$DEPLOY_SHA")" >> "$GITHUB_OUTPUT"
       - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: lts/*
           cache: pnpm

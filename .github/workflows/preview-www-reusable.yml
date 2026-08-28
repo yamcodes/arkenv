@@ -36,7 +36,7 @@ jobs:
           echo "TURBO_SCM_BASE=${PR_BASE_SHA}" >> "$GITHUB_ENV"
           echo "TURBO_SCM_HEAD=${PR_HEAD_SHA}" >> "$GITHUB_ENV"
       - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: lts/*
           cache: pnpm
