@@ -6,8 +6,7 @@
 	gap: 0.55rem;
 	padding: 0.3rem 0.7rem 0.3rem 0.75rem;
 	border-radius: var(--radius-pill);
-	border: var(--rule-hair) solid
-		color-mix(in oklch, var(--color-accent) 35%, transparent);
+	border: var(--rule-hair) solid color-mix(in oklch, var(--color-accent) 35%, transparent);
 	background: color-mix(in oklch, var(--color-accent) 10%, transparent);
 	color: var(--color-ink);
 	font-family: var(--font-mono);
