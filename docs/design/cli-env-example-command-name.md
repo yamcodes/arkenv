@@ -1,13 +1,13 @@
 # CLI command name for schema → `.env.example`
 
-Living evaluation, not an ADR. Update this file as options enter or leave the
-hat. Promoted decisions belong in `docs/adr/`.
+Locked. See [ADR 0030](../adr/0030-cli-env-example-command-name.md)
+(`cli-env-example-command-name`).
 
-**Status:** working note for
+This file was the living hat for
 [#1234](https://github.com/yamcodes/arkenv/issues/1234) /
 [PR #1643](https://github.com/yamcodes/arkenv/pull/1643). **Chosen public
-story:** `arkenv example` with no aliases (stack A3 + B1). The PR ships
-that name; `sync` is not an alias.
+story:** `arkenv example` with no aliases (stack A3 + B1). Amend the ADR.
+Do not resume scoring here.
 
 ## Problem
 
@@ -354,3 +354,5 @@ A1 vs A5, not as the S stack.
   concern that `sync` blocks a later sync-shaped command.
 - 2026-08-28: Help one-liner locked to `Update .env.example from the
   schema` vs init `--example` as a registry template name.
+- 2026-08-28: Promoted S stack to
+  [ADR 0030](../adr/0030-cli-env-example-command-name.md); hat locked.
