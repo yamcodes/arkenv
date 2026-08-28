@@ -56,9 +56,8 @@ jobs:
         id: changesets
         uses: changesets/action@v2.1.1
         with:
-          publish: pnpm run release
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          publish-script: pnpm run release
+          github-token: ${{ steps.generate-token.outputs.token }}
 
       - name: Sync main branch
         if: steps.changesets.outputs.published == 'true' && github.ref_name == 'dev'
