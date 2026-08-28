@@ -78,7 +78,7 @@ jobs:
             core.setOutput("skip", String(shouldSkip))
       - name: Checkout code
         if: steps.check-pr-source.outputs.skip != 'true'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
       - name: Run agent

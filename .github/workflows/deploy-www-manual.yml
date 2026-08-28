@@ -34,7 +34,7 @@ jobs:
       TARGET: ${{ inputs.target }}
       DEPLOY_SHA: ${{ inputs.sha }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ inputs.sha }}
           fetch-depth: 0

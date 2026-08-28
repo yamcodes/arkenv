@@ -25,7 +25,7 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
@@ -47,7 +47,7 @@ jobs:
   test-typesafety:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
@@ -63,7 +63,7 @@ jobs:
         node-version: [lts/*, latest]
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
@@ -83,7 +83,7 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
@@ -107,7 +107,7 @@ jobs:
         suite: [e2e]
       fail-fast: false
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 2
       - name: Set Turbo base/head for PRs
@@ -152,7 +152,7 @@ jobs:
         node-version: [lts/*, latest]
     continue-on-error: ${{ matrix.node-version == 'latest' }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 2 # for checking against dev and for following the PR history
       - name: Set Turbo base/head for PRs
@@ -203,7 +203,7 @@ jobs:
         node-version: [lts/*, latest]
     continue-on-error: ${{ matrix.node-version == 'latest' }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 2 # for checking against dev and for following the PR history
       - name: Set Turbo base/head for PRs
