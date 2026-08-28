@@ -8,7 +8,7 @@ vi.mock("~/lib/source", () => ({
 			children: [
 				{
 					type: "folder",
-					$ref: "arkenv/meta.json",
+					$ref: { folder: "arkenv", meta: "arkenv/meta.json" },
 					children: [
 						{
 							type: "page",
@@ -24,8 +24,8 @@ vi.mock("~/lib/source", () => ({
 
 vi.mock("fumadocs-core/source", () => ({
 	llms: () => ({
-		indexNode: (node: any) =>
-			`Mocked Folder Index Content: ${node.$ref || node.name}`,
+		indexNode: (node: { $ref?: unknown; name?: string }) =>
+			`Mocked Folder Index Content: ${JSON.stringify(node.$ref) || node.name}`,
 	}),
 }));
 

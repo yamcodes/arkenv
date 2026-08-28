@@ -9,7 +9,6 @@ export const revalidate = false;
  */
 type Node = {
 	type: "page" | "folder" | "separator";
-	$ref?: string;
 	url?: string;
 	index?: {
 		url: string;
@@ -31,15 +30,7 @@ function findFolder(nodes: Node[], packageSlug: string): Node | undefined {
 			if (node.index && node.index.url === `/docs/${packageSlug}`) {
 				return node;
 			}
-			// 2. Or, does its $ref contain the slug?
-			if (
-				node.$ref &&
-				(node.$ref === `${packageSlug}/meta.json` ||
-					node.$ref.startsWith(`${packageSlug}/`))
-			) {
-				return node;
-			}
-			// 3. Or, do any of its child pages have a URL that starts with `/docs/${packageSlug}`?
+			// 2. Or, do any of its child pages have a URL that starts with `/docs/${packageSlug}`?
 			const hasMatchingPage = node.children?.some(
 				(child) =>
 					child.type === "page" &&
