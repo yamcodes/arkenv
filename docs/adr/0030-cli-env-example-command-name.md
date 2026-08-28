@@ -4,7 +4,7 @@ The dedicated CLI command that merges `.env.example` from the loaded schema is `
 
 ## Status
 
-Accepted ([#1234](https://github.com/yamcodes/arkenv/issues/1234), shipped in [#1643](https://github.com/yamcodes/arkenv/pull/1643))
+Accepted ([#1234](https://github.com/yamcodes/arkenv/issues/1234) closed by hand; shipped in [#1643](https://github.com/yamcodes/arkenv/pull/1643))
 
 ## Context
 
