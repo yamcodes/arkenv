@@ -8,12 +8,12 @@ www unit tests run under Vitest + Vite (`@vitejs/plugin-react`), not `next build
 
 Those tests assert behavior (roles, copy, a11y), not hashed `jsx-*` classes (`docs/TESTING.md`). The compiler existed only for silence.
 
-Renovate [#1671](https://github.com/yamcodes/arkenv/pull/1671) rewired `@babel/core` 8 into that graph. `styled-jsx/babel` is Babel 7-only. CI `pnpm test` hung (~2 minutes is a healthy run). Pinning 7 forever taxes the CLI playground’s React Compiler Babel stack (`apps/playgrounds/arkenv-cli`). Bringing `@swc/plugin-styled-jsx` / `@vitejs/plugin-react-swc` back repeats [#408](https://github.com/yamcodes/arkenv/issues/408).
+Renovate [#1671](https://github.com/yamcodes/arkenv/pull/1671) rewired `@babel/core` 8 into that graph. `styled-jsx/babel` is Babel 7-only. CI `pnpm test` hung (\~2 minutes is a healthy run). Pinning 7 forever taxes the CLI playground’s React Compiler Babel stack (`apps/playgrounds/arkenv-cli`). Bringing `@swc/plugin-styled-jsx` / `@vitejs/plugin-react-swc` back repeats [#408](https://github.com/yamcodes/arkenv/issues/408).
 
 Three layers compose. Mixing them into “Babel 8 vs remove the plugin” is a false choice:
 
 1. **A — styled-jsx in www Vitest:** compile it, stub internals, or never load it.
-2. **B — `@babel/core` version policy:** pin 7 on www, split 7/8, or drop core from www.
+2. **B — `@babel/core` version policy:** pin 7 on www, split 7/8, or drop core from [www](http://www).
 3. **C — www unit-test toolchain:** Vitest+Vite, Next’s compiler in jsdom, or Playwright only.
 
 ## Directions considered
@@ -43,5 +43,5 @@ Complete answers are stacks (one pick per layer). Living eval: git history of `d
 - Workspace Vitest no longer hangs because www compiled a Babel 7-only plugin on core 8.
 - `apps/www/package.json.test.ts` guards the empty Babel/`styled-jsx` manifest. Re-adding those packages is the regression to catch.
 - Future contributors who see unknown-`jsx` warnings should mock the public Next/Fumadocs import that pulled styled-jsx in, or move the test to Playwright. They should not add a compiler.
-- #408 stays closed as a path: no SWC styled-jsx plugin in www Vitest.
+- \#408 stays closed as a path: no SWC styled-jsx plugin in www Vitest.
 - Forward-port: the same slug on `v1` will take the next free number there (`0017` on `v1` is already `dotenv-linter-custom-parser-strategy`).
