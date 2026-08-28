@@ -253,7 +253,7 @@ pnpm run test:e2e:package
 
 ### WWW application (`apps/www`)
 
-www Vitest uses Vite + Oxc `@vitejs/plugin-react`, not `next build`. Do not register `styled-jsx/babel` or `@rolldown/plugin-babel`. Mock public `next/*` and Fumadocs APIs so styled-jsx never loads (`vi.mock("styled-jsx")` is not the strategy). Playwright (`apps/playwright-www`) owns real Next CSS and layouts. See [www-vitest-styled-jsx.md](./www-vitest-styled-jsx.md).
+www Vitest uses Vite + Oxc `@vitejs/plugin-react`, not `next build`. Do not register `styled-jsx/babel` or `@rolldown/plugin-babel`. Mock public `next/*` and Fumadocs APIs so styled-jsx never loads (`vi.mock("styled-jsx")` is not the strategy). Playwright (`apps/playwright-www`) owns real Next CSS and layouts. See [ADR 0017](./adr/0017-www-vitest-no-styled-jsx-babel.md).
 
 **Unit Tests:**
 

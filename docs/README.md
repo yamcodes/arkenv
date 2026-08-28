@@ -12,5 +12,4 @@ This directory contains internal contributor-facing documentation and architectu
 - [**`adr/`**](./adr/): Contains sequentially-numbered Architecture Decision Records (ADRs) documenting critical design choices and trade-offs. Start with [adr/README.md](./adr/README.md).
 - [**`CONTRIBUTING.md`**](./CONTRIBUTING.md): Guide on how to set up the local development environment, code conventions, and submit contributions.
 - [**`TESTING.md`**](./TESTING.md): Instructions for running and writing unit, integration, and E2E tests.
-- [**`www-vitest-styled-jsx.md`**](./www-vitest-styled-jsx.md): Living hat (not an ADR) for www Vitest vs Next `styled-jsx` vs `@babel/core`. Shipped stack: C1 + C4 + B4 ([#1679](https://github.com/yamcodes/arkenv/issues/1679)).
 - [**`ACKNOWLEDGEMENTS.md`**](./ACKNOWLEDGEMENTS.md): Credits and thanks to the projects and people who inspired and contributed to ArkEnv.
