@@ -69,6 +69,7 @@ function RoadmapRow({ item }: { item: RoadmapItem }) {
 export default async function RoadmapPage() {
 	const roadmap = await fetchRoadmap();
 	const openItems = roadmap.items.filter((item) => !item.done);
+	const doneItems = roadmap.items.filter((item) => item.done);
 
 	return (
 		<div className="home-aurora__shell">
@@ -91,24 +92,39 @@ export default async function RoadmapPage() {
 					) : null}
 				</header>
 
-				<section
-					className="roadmap-page__section"
-					aria-labelledby="roadmap-open"
-				>
-					<h2 id="roadmap-open" className="roadmap-page__section-title">
-						Up next
-						<span className="roadmap-page__count">{openItems.length}</span>
-					</h2>
-					{openItems.length > 0 ? (
+				{openItems.length > 0 ? (
+					<section
+						className="roadmap-page__section"
+						aria-labelledby="roadmap-open"
+					>
+						<h2 id="roadmap-open" className="roadmap-page__section-title">
+							Up next
+							<span className="roadmap-page__count">{openItems.length}</span>
+						</h2>
 						<ul className="roadmap-page__list">
 							{openItems.map((item) => (
 								<RoadmapRow key={item.id} item={item} />
 							))}
 						</ul>
-					) : (
-						<p className="roadmap-page__help">Nothing open on the milestone.</p>
-					)}
-				</section>
+					</section>
+				) : null}
+
+				{doneItems.length > 0 ? (
+					<section
+						className="roadmap-page__section"
+						aria-labelledby="roadmap-done"
+					>
+						<h2 id="roadmap-done" className="roadmap-page__section-title">
+							Done
+							<span className="roadmap-page__count">{doneItems.length}</span>
+						</h2>
+						<ul className="roadmap-page__list">
+							{doneItems.map((item) => (
+								<RoadmapRow key={item.id} item={item} />
+							))}
+						</ul>
+					</section>
+				) : null}
 
 				<p className="roadmap-page__help">
 					Help with tests, docs, or triage. Open an issue with a clear repro, or
