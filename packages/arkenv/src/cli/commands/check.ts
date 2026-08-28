@@ -8,6 +8,7 @@ import {
 	shouldRedact,
 } from "@repo/utils";
 import { parseDotenv } from "@/features/check/dotenv";
+import { resolveSchemaPath } from "@/features/schema-loader";
 import {
 	type LoggerPort,
 	type ProjectScannerPort,
@@ -80,7 +81,12 @@ export class CheckUseCase {
 		}
 
 		// 2. Locate schema file
-		const schemaPath = await this.resolveSchemaPath(cwd, requestedSchema);
+		const schemaPath = await resolveSchemaPath(
+			cwd,
+			this.workspace,
+			this.scanner,
+			requestedSchema,
+		);
 		if (!schemaPath) {
 			const summary = requestedSchema
 				? `Schema file not found at "${path.resolve(cwd, requestedSchema)}".`
@@ -395,56 +401,5 @@ export class CheckUseCase {
 			);
 		}
 		return 2;
-	}
-
-	/**
-	 * Resolve the path to the schema module.
-	 *
-	 * @param cwd Working directory to search from
-	 * @param explicitPath Optional explicit schema path from `--schema` or `--file`
-	 * @returns Absolute path to an existing schema file, or undefined if none is found
-	 */
-	private async resolveSchemaPath(
-		cwd: string,
-		explicitPath?: string,
-	): Promise<string | undefined> {
-		if (explicitPath) {
-			const resolved = path.resolve(cwd, explicitPath);
-			return (await this.workspace.exists(resolved)) ? resolved : undefined;
-		}
-
-		if (typeof this.scanner.readArkenvConfig === "function") {
-			const arkenvConfig = await this.scanner.readArkenvConfig(cwd);
-			if (arkenvConfig) {
-				const resolved = path.resolve(cwd, arkenvConfig.schema);
-				if (await this.workspace.exists(resolved)) {
-					return resolved;
-				}
-			}
-		}
-
-		const candidates = [
-			path.resolve(cwd, "env.ts"),
-			path.resolve(cwd, "src/env.ts"),
-			path.resolve(cwd, "env.js"),
-			path.resolve(cwd, "src/env.js"),
-			path.resolve(cwd, "env.mjs"),
-			path.resolve(cwd, "src/env.mjs"),
-			path.resolve(cwd, "env/server.ts"),
-			path.resolve(cwd, "src/env/server.ts"),
-		];
-
-		const suggested = await this.scanner.suggestDefaultEnvPath(cwd);
-		if (suggested) {
-			candidates.unshift(path.resolve(cwd, suggested));
-		}
-
-		for (const candidate of candidates) {
-			if (await this.workspace.exists(candidate)) {
-				return candidate;
-			}
-		}
-
-		return undefined;
 	}
 }

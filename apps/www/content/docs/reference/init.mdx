@@ -108,7 +108,9 @@ Depending on the detected framework and flags, `init` writes:
   `src/`)
 - `.env` / `.env.example` when missing. Init never reads an existing
   `.env`; a missing `.env.example` is filled from detected keys and
-  defaults. If `.env` is missing, init may copy `.env.example` into it.
+  defaults, then `example` refreshes `.env.example` from the loaded
+  schema in an existing project. If `.env` is missing, init may copy
+  `.env.example` into it.
 - Next.js: `withArkEnv` in `next.config.*`, `.arkenv/` in `.gitignore`,
   optional `.arkenv/env.gen.ts` (import as `@/.arkenv`)
 - Vite / Bun: type augmentation files (`vite-env.d.ts`, `bun-env.d.ts`)
@@ -136,6 +138,8 @@ Importing `arkenv` as a library throws and points you at `@arkenv/core`.
   <Card href="/docs/getting-started/add-to-existing-repository" title="Add to an existing repository" description="Adopt ArkEnv incrementally in an existing project." />
 
   <Card href="/docs/reference/preset" title="preset" description="CLI reference for applying and removing provider presets." />
+
+  <Card href="/docs/reference/example" title="example" description="Update .env.example from the schema." />
 
   <Card href="/docs/reference/options" title="options" description="Configuration options passed to arkenv()." />
 </Cards>
