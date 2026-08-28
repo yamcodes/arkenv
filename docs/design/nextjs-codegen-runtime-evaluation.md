@@ -2,10 +2,12 @@
 
 Living design evaluation using [the-hat](../../.agents/skills/the-hat/SKILL.md) loop. Update this note as options enter or leave the hat. Promoted decisions belong in `docs/adr/`.
 
-**Status:** Working design note for [#1599](https://github.com/yamcodes/arkenv/issues/1599)
-and [#1402](https://github.com/yamcodes/arkenv/issues/1402). Layer A (`@next/env`) is
-accepted as [ADR 0028](../adr/0028-nextjs-no-next-env-hook.md)
+**Status:** Working design note for [#1599](https://github.com/yamcodes/arkenv/issues/1599).
+Layer A (`@next/env`) is accepted as
+[ADR 0028](../adr/0028-nextjs-no-next-env-hook.md)
 ([#1598](https://github.com/yamcodes/arkenv/issues/1598)).
+[#1402](https://github.com/yamcodes/arkenv/issues/1402) and
+[#1403](https://github.com/yamcodes/arkenv/issues/1403) are closed.
 
 **Chosen public story (S-tier stack):** Next 15/16+ baseline (zero `jiti`) + Virtual `.arkenv/` aliasing + Framework package entry (`@arkenv/nextjs`) + Canonical `env` object with conditional exports + Typed `isEnabled` literal DCE helper + Structured Agent Envelopes.
 
@@ -407,7 +409,9 @@ Because **ArkEnv v1.0.0** is a major SemVer milestone, it introduces a clean pla
 ## 11. Current Lean & Implementation Plan
 
 1. **Target Next 15+ as v1 baseline:** Deprecate Next 13/14 in `@arkenv/nextjs` root entry; remove `jiti`, `mock-server-only`, and `chokidar`.
-2. **Implement Virtual `.arkenv/` ([#1402](https://github.com/yamcodes/arkenv/issues/1402)):** Default `outputPath` to `.arkenv/env.gen.ts` with `.arkenv/index.ts` hybrid barrel; auto-inject `.arkenv` into `.gitignore`.
+2. **[#1402](https://github.com/yamcodes/arkenv/issues/1402) closed.** Virtual
+   `.arkenv/` is the default output (`env.gen.ts` plus `index.ts` hybrid barrel),
+   with `.arkenv` gitignored.
 3. **[#1403](https://github.com/yamcodes/arkenv/issues/1403) closed.** Strict-layout
    auto-extend ships via `#arkenv/client-env` alias resolution in `withArkEnv`.
 4. **Ship `isEnabled` DCE Helper:** Export `isEnabled` from `@arkenv/nextjs` and document feature flag optimization patterns.
@@ -419,9 +423,10 @@ Because **ArkEnv v1.0.0** is a major SemVer milestone, it introduces a clean pla
 
 ## 12. Changelog of this Note
 
+- **2026-08-28:** Status tracks open work only (#1599); #1402 and #1403 are
+  closed.
 - **2026-08-27:** Promoted Layer A (`@next/env` hijack rejected) to
-  [ADR 0028](../adr/0028-nextjs-no-next-env-hook.md); closed #1598. Status
-  tracks open work only (#1599, #1402); #1403 is closed.
+  [ADR 0028](../adr/0028-nextjs-no-next-env-hook.md); closed #1598.
 - **2026-08-25:** Added Section 10 documenting the v0 -> v1 Next 13/14 migration strategy, `.gitignore` automation, and `package.json` exports protection.
 - **2026-08-25:** Added Layer I (Generated Directory Naming: `.arkenv/` vs `__generated__/` vs `gen/`) and Layer J (File Structure: `.gen.ts` vs `index.ts` barrel vs Hybrid J3); added Q3 deep-dive.
 - **2026-08-25:** Added Section 7 addressing TypeScript day-0 typings without prior builds, monorepo shared package interop (`@arkenv/core` in `packages/db`), and Option A/B namespace hygiene.
