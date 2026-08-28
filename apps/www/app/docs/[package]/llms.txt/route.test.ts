@@ -8,12 +8,40 @@ vi.mock("~/lib/source", () => ({
 			children: [
 				{
 					type: "folder",
-					$ref: "arkenv/meta.json",
+					$ref: { folder: "arkenv", meta: "arkenv/meta.json" },
+					index: {
+						type: "page",
+						url: "/docs/arkenv",
+						name: "ArkEnv",
+					},
 					children: [
 						{
 							type: "page",
-							url: "/docs/arkenv",
-							name: "ArkEnv",
+							url: "/docs/arkenv/quickstart",
+							name: "Quickstart",
+						},
+					],
+				},
+				// Index-less package: pages only under a subfolder. Root-only matching
+				// must 404; recursive descent would return the nested folder (200).
+				{
+					type: "folder",
+					$ref: { folder: "nested-only", meta: "nested-only/meta.json" },
+					children: [
+						{
+							type: "folder",
+							index: {
+								type: "page",
+								url: "/docs/nested-only/sub",
+								name: "Sub",
+							},
+							children: [
+								{
+									type: "page",
+									url: "/docs/nested-only/sub/page",
+									name: "Page",
+								},
+							],
 						},
 					],
 				},
@@ -24,8 +52,12 @@ vi.mock("~/lib/source", () => ({
 
 vi.mock("fumadocs-core/source", () => ({
 	llms: () => ({
-		indexNode: (node: any) =>
-			`Mocked Folder Index Content: ${node.$ref || node.name}`,
+		indexNode: (node: {
+			$ref?: unknown;
+			name?: string;
+			index?: { url?: string };
+		}) =>
+			`Mocked Folder Index Content: ${node.index?.url ?? JSON.stringify(node.$ref) ?? node.name}`,
 	}),
 }));
 
@@ -45,7 +77,14 @@ describe("/docs/[package]/llms.txt route", () => {
 
 		const body = await response.text();
 		expect(body).toBeTypeOf("string");
-		expect(body).toContain("arkenv");
+		expect(body).toContain("/docs/arkenv");
+	});
+
+	it("should 404 when a package folder has no index and only nested pages", async () => {
+		const req = new Request("https://arkenv.js.org/docs/nested-only/llms.txt");
+		const params = Promise.resolve({ package: "nested-only" });
+
+		await expect(GET(req, { params })).rejects.toThrow();
 	});
 
 	it("should return 404 for a nonexistent package", async () => {
