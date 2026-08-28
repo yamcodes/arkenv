@@ -56,7 +56,6 @@ jobs:
         id: changesets
         uses: changesets/action@v2.1.1
         with:
-          # v2 renamed `publish` → `publish-script` and no longer reads GITHUB_TOKEN from env.
           publish-script: pnpm run release
           github-token: ${{ steps.generate-token.outputs.token }}
         env:
