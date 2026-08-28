@@ -30,8 +30,8 @@ const NAV_CORE_LINKS: NavLink[] = [
 	},
 	{
 		text: "Roadmap",
-		url: "https://github.com/yamcodes/arkenv/issues/683",
-		external: true,
+		url: "/roadmap",
+		activeMatch: "/roadmap",
 	},
 ];
 
