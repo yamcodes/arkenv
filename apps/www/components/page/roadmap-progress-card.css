@@ -6,12 +6,17 @@
 	gap: 0.55rem;
 	padding: 0.3rem 0.7rem 0.3rem 0.75rem;
 	border-radius: var(--radius-pill);
-	border: var(--rule-hair) solid color-mix(in oklch, var(--color-accent) 35%, transparent);
+	border: var(--rule-hair) solid
+		color-mix(in oklch, var(--color-accent) 35%, transparent);
 	background: color-mix(in oklch, var(--color-accent) 10%, transparent);
 	color: var(--color-ink);
-	font-family: var(--font-display);
-	font-size: var(--text-sm);
+	font-family: var(--font-mono);
+	font-feature-settings: var(--font-feature-mono);
+	font-size: 0.8rem;
 	font-weight: 500;
+	font-variant-numeric: tabular-nums;
+	letter-spacing: 0.02em;
+	line-height: 1;
 	text-decoration: none;
 	backdrop-filter: blur(8px);
 	max-width: 100%;
@@ -36,13 +41,6 @@
 .roadmap-progress-card__label,
 .roadmap-progress-card__pct {
 	flex: none;
-	font-family: var(--font-mono);
-	font-feature-settings: var(--font-feature-mono);
-	font-size: 0.8rem;
-	font-weight: 500;
-	font-variant-numeric: tabular-nums;
-	line-height: 1;
-	letter-spacing: 0.02em;
 	color: var(--color-ink);
 }
 
