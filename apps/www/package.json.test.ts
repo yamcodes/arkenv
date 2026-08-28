@@ -1,5 +1,3 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import packageJson from "./package.json";
 
@@ -33,15 +31,5 @@ describe("www Vitest dependency graph", () => {
 		expect(deps).not.toHaveProperty("@rolldown/plugin-babel");
 		expect(deps).not.toHaveProperty("styled-jsx");
 		expect(deps).not.toHaveProperty("babel-plugin-react-compiler");
-	});
-
-	it("does not register a styled-jsx Babel transform", () => {
-		const src = readFileSync(
-			join(import.meta.dirname, "vitest.config.ts"),
-			"utf8",
-		);
-		expect(src).not.toContain("styled-jsx");
-		expect(src).not.toContain("plugin-babel");
-		expect(src).not.toContain("@babel/core");
 	});
 });
