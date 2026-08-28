@@ -123,7 +123,7 @@ Solutions ranked as **answers to the whole problem**. Complete answers are **sta
 - **A9** — When styled-jsx declares Babel 8, A1 could return. Not the www test strategy.
 - **B2/B3** — Playground-only Babel 8 if React Compiler ever *requires* it. www no longer pins the repo to 7.
 - **Revisit #1671** — After C4, www is not on the `styled-jsx/babel` graph. Still a separate PR; do not reintroduce A1 to merge it.
-- **Renovate `allowedVersions` / ignore majors for `@babel/core`** — Optional if the playground still hangs on a core 8 major. Not required for www.
+- **Renovate `allowedVersions` / ignore majors for `@babel/core`** — Optional if the playground still hangs on a core 8 major. Not required for [www](http://www).
 
 **B**
 
