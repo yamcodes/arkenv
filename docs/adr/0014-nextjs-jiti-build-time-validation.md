@@ -4,6 +4,10 @@
 
 Accepted
 
+v1 follow-on: prefer native `next.config.ts` execution (hat A2) so Jiti
+can leave `@arkenv/nextjs`. That does not include hooking `@next/env`;
+see [ADR 0028](0028-nextjs-no-next-env-hook.md).
+
 ## Context
 
 To define the architecture for executing build-time environment variable validation in `@arkenv/nextjs` using `jiti`, balancing backwards compatibility, ease of use (developer experience), and cleaner codebase design.
