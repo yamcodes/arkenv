@@ -12,7 +12,7 @@
 	},
 	"packageManager": "bun@1.2.22",
 	"dependencies": {
-		"arkregex": "0.0.5",
+		"arkregex": "0.0.8",
 		"glob": "^13.0.0",
 		"typescript": "6.0.3"
 	}
