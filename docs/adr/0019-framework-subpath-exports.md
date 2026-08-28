@@ -26,12 +26,12 @@ We evaluated three postures for the export surface:
 
 **Standing (ADR 0020):** Option 3 for the layout-engine subpaths. Keep the default entry. Remove `./client` and `./server` (and Standard Schema twins) in the v1 alpha hard cut. Split-recipe server modules import `@arkenv/core`; Next users may add `import "server-only"` themselves. Do not present `/server` as an ArkEnv product.
 
-| Export                                      | Verdict (standing) | Rationale                                                                                                                                                          |
-| :------------------------------------------ | :----------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@arkenv/nextjs` / `@arkenv/nuxt` (default) | **Keep**           | Flat layout entry; bundler resolves server vs client build ([ADR 0015](./0015-nextjs-conditional-exports-boundary.md) / Nuxt proxy)                                |
-| `./client`                                  | **Remove**         | Layout-engine subpath; withdrawn with dedicated strict ([ADR 0020](./0020-strict-layout-complexity-budget.md))                                                     |
-| `./server`                                  | **Remove**         | Same. Split-recipe server modules use `@arkenv/core` (+ optional Next `server-only`). [ADR 0016](./0016-nuxt-vite-compile-time-boundary.md) is superseded          |
-| `./shared`                                  | **Remove**         | Schema-only; `@arkenv/core` already exports `type`                                                                                                                 |
+| Export                                      | Verdict (standing) | Rationale                                                                                                                                                 |
+| :------------------------------------------ | :----------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@arkenv/nextjs` / `@arkenv/nuxt` (default) | **Keep**           | Flat layout entry; bundler resolves server vs client build ([ADR 0015](./0015-nextjs-conditional-exports-boundary.md) / Nuxt proxy)                       |
+| `./client`                                  | **Remove**         | Layout-engine subpath; withdrawn with dedicated strict ([ADR 0020](./0020-strict-layout-complexity-budget.md))                                            |
+| `./server`                                  | **Remove**         | Same. Split-recipe server modules use `@arkenv/core` (+ optional Next `server-only`). [ADR 0016](./0016-nuxt-vite-compile-time-boundary.md) is superseded |
+| `./shared`                                  | **Remove**         | Schema-only; `@arkenv/core` already exports `type`                                                                                                        |
 
 ### Mental model
 
