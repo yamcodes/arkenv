@@ -11,8 +11,8 @@
 		"@arkenv/vite-plugin": "^0.1.6",
 		"@solidjs/start": "1.3.2",
 		"arkenv": "^0.12.3",
-		"arktype": "^2.2.0",
-		"solid-js": "1.9.12",
+		"arktype": "^2.2.3",
+		"solid-js": "1.9.15",
 		"vinxi": "0.5.11"
 	},
 	"engines": {
