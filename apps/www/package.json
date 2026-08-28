@@ -18,7 +18,7 @@
 		"twoslash": "tsx scripts/twoslash-mdx.ts"
 	},
 	"dependencies": {
-		"@ark/util": "0.56.0",
+		"@ark/util": "0.56.2",
 		"@arkenv/bun-plugin": "workspace:*",
 		"@arkenv/fumadocs-ui": "workspace:*",
 		"@arkenv/nextjs": "workspace:*",

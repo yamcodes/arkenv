@@ -569,8 +569,8 @@ importers:
   apps/www:
     dependencies:
       '@ark/util':
-        specifier: 0.56.0
-        version: 0.56.0
+        specifier: 0.56.2
+        version: 0.56.2
       '@arkenv/bun-plugin':
         specifier: workspace:*
         version: link:../../packages/bun-plugin
