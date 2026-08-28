@@ -20,18 +20,26 @@ vi.mock("~/lib/source", () => ({
 							url: "/docs/arkenv/quickstart",
 							name: "Quickstart",
 						},
+					],
+				},
+				// Index-less package: pages only under a subfolder. Root-only matching
+				// must 404; recursive descent would return the nested folder (200).
+				{
+					type: "folder",
+					$ref: { folder: "nested-only", meta: "nested-only/meta.json" },
+					children: [
 						{
 							type: "folder",
 							index: {
 								type: "page",
-								url: "/docs/arkenv/integrations",
-								name: "Integrations",
+								url: "/docs/nested-only/sub",
+								name: "Sub",
 							},
 							children: [
 								{
 									type: "page",
-									url: "/docs/arkenv/integrations/ide/vscode",
-									name: "VS Code",
+									url: "/docs/nested-only/sub/page",
+									name: "Page",
 								},
 							],
 						},
@@ -70,8 +78,15 @@ describe("/docs/[package]/llms.txt route", () => {
 		const body = await response.text();
 		expect(body).toBeTypeOf("string");
 		expect(body).toContain("/docs/arkenv");
-		// Must be the package folder (index.url), not a nested /docs/arkenv/… subtree
-		expect(body).not.toContain("/docs/arkenv/integrations");
+	});
+
+	it("should 404 when a package folder has no index and only nested pages", async () => {
+		const req = new Request(
+			"https://arkenv.js.org/docs/nested-only/llms.txt",
+		);
+		const params = Promise.resolve({ package: "nested-only" });
+
+		await expect(GET(req, { params })).rejects.toThrow();
 	});
 
 	it("should return 404 for a nonexistent package", async () => {
