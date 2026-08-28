@@ -22,22 +22,28 @@ concurrency:
   group: deploy-www-manual-${{ inputs.target }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   Deploy-Manual:
     runs-on: ubuntu-latest
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       TARGET: ${{ inputs.target }}
       DEPLOY_SHA: ${{ inputs.sha }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ inputs.sha }}
           fetch-depth: 0
+      - name: Set up Turborepo Remote Cache
+        uses: ./.github/actions/setup-turbo-remote-cache
+        with:
+          team: ${{ vars.TURBO_TEAM }}
       - name: Resolve git metadata for the deployed commit
         id: meta
         run: |
@@ -54,7 +60,7 @@ jobs:
           echo "short_msg=$(git log -1 --format=%s "$DEPLOY_SHA" | head -n1)" >> "$GITHUB_OUTPUT"
           echo "author_name=$(git log -1 --format=%an "$DEPLOY_SHA")" >> "$GITHUB_OUTPUT"
       - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: lts/*
           cache: pnpm

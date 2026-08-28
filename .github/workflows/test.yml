@@ -13,9 +13,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+permissions:
+  contents: read
+  id-token: write
+  actions: write
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -25,9 +26,13 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
+      - name: Set up Turborepo Remote Cache
+        uses: ./.github/actions/setup-turbo-remote-cache
+        with:
+          team: ${{ vars.TURBO_TEAM }}
       - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
@@ -47,9 +52,13 @@ jobs:
   test-typesafety:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
+      - name: Set up Turborepo Remote Cache
+        uses: ./.github/actions/setup-turbo-remote-cache
+        with:
+          team: ${{ vars.TURBO_TEAM }}
       - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: pnpm
@@ -63,9 +72,13 @@ jobs:
         node-version: [lts/*, latest]
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
+      - name: Set up Turborepo Remote Cache
+        uses: ./.github/actions/setup-turbo-remote-cache
+        with:
+          team: ${{ vars.TURBO_TEAM }}
       - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
@@ -83,9 +96,13 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
+      - name: Set up Turborepo Remote Cache
+        uses: ./.github/actions/setup-turbo-remote-cache
+        with:
+          team: ${{ vars.TURBO_TEAM }}
       - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: lts/*
           cache: pnpm
@@ -107,16 +124,20 @@ jobs:
         suite: [e2e]
       fail-fast: false
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 2
+      - name: Set up Turborepo Remote Cache
+        uses: ./.github/actions/setup-turbo-remote-cache
+        with:
+          team: ${{ vars.TURBO_TEAM }}
       - name: Set Turbo base/head for PRs
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
           echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
       - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: lts/*
           cache: pnpm
@@ -152,16 +173,20 @@ jobs:
         node-version: [lts/*, latest]
     continue-on-error: ${{ matrix.node-version == 'latest' }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 2 # for checking against dev and for following the PR history
+      - name: Set up Turborepo Remote Cache
+        uses: ./.github/actions/setup-turbo-remote-cache
+        with:
+          team: ${{ vars.TURBO_TEAM }}
       - name: Set Turbo base/head for PRs
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
           echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
       - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
@@ -203,16 +228,20 @@ jobs:
         node-version: [lts/*, latest]
     continue-on-error: ${{ matrix.node-version == 'latest' }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 2 # for checking against dev and for following the PR history
+      - name: Set up Turborepo Remote Cache
+        uses: ./.github/actions/setup-turbo-remote-cache
+        with:
+          team: ${{ vars.TURBO_TEAM }}
       - name: Set Turbo base/head for PRs
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
           echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
       - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
