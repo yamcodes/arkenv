@@ -13,7 +13,7 @@
 </p>
 
 > [!IMPORTANT]
-> You are viewing the **v1 branch**, a pre-release (alpha) version of ArkEnv. Track progress on the [v1 roadmap](https://github.com/yamcodes/arkenv/issues/683).
+> You are viewing the **v1 branch**, a pre-release (alpha) version of ArkEnv. Track progress on the [v1 roadmap](https://arkenv-v1.vercel.app/roadmap).
 >
 > TypeScript consumers must set `moduleResolution` to `"bundler"`, `"node16"`, or `"nodenext"`. Legacy `"node"` resolution does not load package `exports` subpaths such as `@arkenv/standard/valibot`.
 

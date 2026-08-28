@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { AnnouncementBadge } from "~/components/announcement-badge";
 import {
 	AutocompleteShowcase,
 	BringYourOwnValidator,
@@ -11,12 +10,14 @@ import {
 	HeroPlaygroundProvider,
 	InstallPanel,
 	QuickstartButton,
+	RoadmapProgressCard,
 	SecureBoundary,
 	SocialProof,
 	StarUsButton,
 	WorksWith,
 } from "~/components/page";
 import { SiteFooter } from "~/components/site-footer";
+import { fetchRoadmap } from "~/lib/roadmap/fetch-roadmap";
 
 export const metadata: Metadata = {
 	title: "ArkEnv - Typesafe environment variables for TypeScript",
@@ -24,7 +25,11 @@ export const metadata: Metadata = {
 		"Typesafe environment variables with ArkType, Zod, Valibot, or any Standard Schema. Get a strictly typed env object using your existing TypeScript validator. No boilerplate. Zero runtime dependencies.",
 };
 
-export default function HomePage() {
+export const revalidate = 300;
+
+export default async function HomePage() {
+	const roadmap = await fetchRoadmap();
+
 	return (
 		<div className="home-aurora__shell">
 			<div className="home-aurora__rails" aria-hidden="true" />
@@ -34,12 +39,7 @@ export default function HomePage() {
 						className="home-aurora__badge rise"
 						style={{ animationDelay: "40ms" }}
 					>
-						<AnnouncementBadge
-							href="/docs/validating-your-environment/hosting-presets"
-							new
-						>
-							Vercel, Netlify & Cloudflare presets
-						</AnnouncementBadge>
+						<RoadmapProgressCard percent={roadmap.percent} />
 					</div>
 					<div className="home-aurora__hero-copy">
 						<h1 id="home-hero" className="home-aurora__tagline">

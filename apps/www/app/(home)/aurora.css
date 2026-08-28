@@ -31,7 +31,8 @@
 	.home-aurora__browser-omnibox,
 	.home-aurora__tty,
 	.home-aurora__footer-license,
-	.home-aurora__footer-grid h3
+	.home-aurora__footer-grid h3,
+	.roadmap-progress-card
 ) {
 	font-feature-settings: var(--font-feature-mono);
 }
