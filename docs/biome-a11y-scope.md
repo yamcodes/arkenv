@@ -27,52 +27,52 @@ Items on different layers compose. Do not flatten into “turn a11y off vs keep 
 
 ## Metrics
 
-| Metric | Question |
-| ------ | -------- |
-| Honesty | Do we treat lint on fixtures as the WCAG suite? |
-| Product coverage | Does a real docs-route regression still fail CI? |
-| Cheap catch | Do authors of `apps/www` still get a11y lint before a Playwright run? |
-| Tax fairness | Can a Vite default SVG block the whole pnpm group? |
-| Footguns | Will the next Biome minor light up another scaffold file? |
-| Simplicity | Pin forever vs one override vs editing generated logos? |
-| Teachability | Can someone edit a playground without learning WCAG for clip-path sprites? |
-| Maintenance hell | Ignore sprawl, per-file `biome-ignore`, or a forever 2.4 pin? |
+| Metric           | Question                                                                   |
+| ---------------- | -------------------------------------------------------------------------- |
+| Honesty          | Do we treat lint on fixtures as the WCAG suite?                            |
+| Product coverage | Does a real docs-route regression still fail CI?                           |
+| Cheap catch      | Do authors of `apps/www` still get a11y lint before a Playwright run?      |
+| Tax fairness     | Can a Vite default SVG block the whole pnpm group?                         |
+| Footguns         | Will the next Biome minor light up another scaffold file?                  |
+| Simplicity       | Pin forever vs one override vs editing generated logos?                    |
+| Teachability     | Can someone edit a playground without learning WCAG for clip-path sprites? |
+| Maintenance hell | Ignore sprawl, per-file `biome-ignore`, or a forever 2.4 pin?              |
 
 ## The hat
 
 ### A — product WCAG gate
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| A1 | Playwright + axe on www routes | Current (`apps/playwright-www/tests/utils/a11y.ts`, smoke routes). |
-| A2 | Axe **and** Biome a11y on `apps/www` | Current for www: Biome `recommended` already includes a11y; axe is extra. |
-| A3 | Drop axe; Biome a11y only | Out of scope for #1657. Loses runtime DOM, Fumadocs chrome, contrast in the real tree. |
-| A4 | Neither | Rejected. Docs site would have no CI WCAG gate. |
-| A5 | Axe only; Biome `a11y: off` at repo root | Removes the cheap catch on www. |
+| #  | Option                                   | Notes                                                                                  |
+| -- | ---------------------------------------- | -------------------------------------------------------------------------------------- |
+| A1 | Playwright + axe on www routes           | Current (`apps/playwright-www/tests/utils/a11y.ts`, smoke routes).                     |
+| A2 | Axe **and** Biome a11y on `apps/www`     | Current for www: Biome `recommended` already includes a11y; axe is extra.              |
+| A3 | Drop axe; Biome a11y only                | Out of scope for #1657. Loses runtime DOM, Fumadocs chrome, contrast in the real tree. |
+| A4 | Neither                                  | Rejected. Docs site would have no CI WCAG gate.                                        |
+| A5 | Axe only; Biome `a11y: off` at repo root | Removes the cheap catch on [www](http://www).                                          |
 
 ### B — Biome a11y scope
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| B1 | Keep a11y on for the whole includes glob | Status quo. Breaks `autofix.ci` on 2.5. |
-| B2 | Off only for `**/*.svg` | Misses `app.tsx` “Learn more” and `viewer.html`. |
-| B3 | Off for `**/playgrounds/**` and `**/examples/**` only | Matches the existing `noConsole` override glob. Misses `skills/create-skill/eval-viewer`. |
-| B4 | B3 plus `skills/create-skill/eval-viewer/**` | Covers every 2.5 error on #1657. |
-| B5 | `a11y: off` under root `linter.rules` | Also silences `apps/www`. |
-| B6 | Drop those paths from `files.includes` | Stops format + other lints too (tabs, unused vars). |
-| B7 | Fix the files (titles, `aria-hidden`, link text, `button` + keyboard) | Honest for first-party HTML; tax on Vite-generated SVGs that regenerate. |
-| B8 | `biome-ignore` at the top of each failing file | Survives 2.5; spreads; next new SVG needs another comment. |
+| #  | Option                                                                | Notes                                                                                     |
+| -- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| B1 | Keep a11y on for the whole includes glob                              | Status quo. Breaks `autofix.ci` on 2.5.                                                   |
+| B2 | Off only for `**/*.svg`                                               | Misses `app.tsx` “Learn more” and `viewer.html`.                                          |
+| B3 | Off for `**/playgrounds/**` and `**/examples/**` only                 | Matches the existing `noConsole` override glob. Misses `skills/create-skill/eval-viewer`. |
+| B4 | B3 plus `skills/create-skill/eval-viewer/**`                          | Covers every 2.5 error on #1657.                                                          |
+| B5 | `a11y: off` under root `linter.rules`                                 | Also silences `apps/www`.                                                                 |
+| B6 | Drop those paths from `files.includes`                                | Stops format + other lints too (tabs, unused vars).                                       |
+| B7 | Fix the files (titles, `aria-hidden`, link text, `button` + keyboard) | Honest for first-party HTML; tax on Vite-generated SVGs that regenerate.                  |
+| B8 | `biome-ignore` at the top of each failing file                        | Survives 2.5; spreads; next new SVG needs another comment.                                |
 
 ### C — how #1657 takes Biome 2.5
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| C1 | Pin `@biomejs/biome` at `2.4.14` | No `biome.jsonc` policy. Repeat fight on 2.6. |
-| C2 | Take `2.5.10` + a B override (not B1) | Policy in the same repo file that already relaxes playgrounds. |
-| C3 | Take `2.5.10` + B7 (edit fixtures) | No override. Churn on logos. |
+| #  | Option                                            | Notes                                                                                                                         |
+| -- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| C1 | Pin `@biomejs/biome` at `2.4.14`                  | No `biome.jsonc` policy. Repeat fight on 2.6.                                                                                 |
+| C2 | Take `2.5.10` + a B override (not B1)             | Policy in the same repo file that already relaxes playgrounds.                                                                |
+| C3 | Take `2.5.10` + B7 (edit fixtures)                | No override. Churn on logos.                                                                                                  |
 | C4 | Split Biome out of the pnpm group; merge the rest | Unblocks Fumadocs after [#1682](https://github.com/yamcodes/arkenv/pull/1682); leaves autofix red if Biome still bumps later. |
-| C5 | Keep 2.5; set the new rules to `warn` globally | `autofix.ci` / `check:errors` may pass; `pnpm check` still noisy; www cheap-catch becomes warn. |
-| C6 | Change `scripts/fix.js` to ignore a11y | Autofix green, `pnpm check` still red. Lies about “fixed.” |
+| C5 | Keep 2.5; set the new rules to `warn` globally    | `autofix.ci` / `check:errors` may pass; `pnpm check` still noisy; www cheap-catch becomes warn.                               |
+| C6 | Change `scripts/fix.js` to ignore a11y            | Autofix green, `pnpm check` still red. Lies about “fixed.”                                                                    |
 
 ## Evaluation
 
@@ -92,7 +92,7 @@ Items on different layers compose. Do not flatten into “turn a11y off vs keep 
 
 **B3 Playgrounds + examples** — Honesty: same trees we already relax (`noConsole`). Misses eval-viewer (skills, not playground). Incomplete for this PR.
 
-**B4 Playgrounds + examples + eval-viewer** — Honesty: lint off where axe never runs. Product coverage: www unchanged. Cheap catch: www kept. Tax fairness: pnpm group unblocked. Footguns: a *new* tree outside those globs can still fail autofix (pay then, same as today). Simplicity: one more `includes` on the existing override, plus a small override for the viewer. Teachability: “fixtures are not www.” Maintenance: two globs, not N `biome-ignore`s.
+**B4 Playgrounds + examples + eval-viewer** — Honesty: lint off where axe never runs. Product coverage: www unchanged. Cheap catch: www kept. Tax fairness: pnpm group unblocked. Footguns: a *new* tree outside those globs can still fail autofix (pay then, same as today). Simplicity: one more `includes` on the existing override, plus a small override for the viewer. Teachability: “fixtures are not [www.”](http://www.”) Maintenance: two globs, not N `biome-ignore`s.
 
 **B5 Root off** — See A5. Scores well on tax fairness, poorly on cheap catch and honesty if we still say “we lint a11y.”
 
