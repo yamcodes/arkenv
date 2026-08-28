@@ -54,10 +54,13 @@ jobs:
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
-        uses: changesets/action@v2.1.0
+        uses: changesets/action@v2.1.1
         with:
-          publish: pnpm run release
+          # v2 renamed `publish` → `publish-script` and no longer reads GITHUB_TOKEN from env.
+          publish-script: pnpm run release
+          github-token: ${{ steps.generate-token.outputs.token }}
         env:
+          # Used by changesets-changelog-clean when the action runs `changeset version`.
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
 
       - name: Sync main branch
