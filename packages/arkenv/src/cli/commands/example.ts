@@ -1,6 +1,6 @@
 import path from "node:path";
-import { resolveSchemaPath } from "@/features/schema-loader";
 import { mergeEnvExample } from "@/features/example/merge-env-example";
+import { resolveSchemaPath } from "@/features/schema-loader";
 import {
 	type LoggerPort,
 	type ProjectScannerPort,
