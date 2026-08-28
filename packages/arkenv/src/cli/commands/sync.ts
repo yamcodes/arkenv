@@ -26,7 +26,6 @@ export type SyncInput = {
 	isQuiet?: boolean;
 	isJson?: boolean;
 	isAgent?: boolean;
-	isYes?: boolean;
 	cwd?: string;
 	/**
 	 * Skip JSON envelopes so a parent command (init) can own stdout.

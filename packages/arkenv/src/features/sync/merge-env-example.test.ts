@@ -16,6 +16,14 @@ describe("mergeEnvExample", () => {
 		});
 	});
 
+	it("does not rewrite a matching file that lacks a trailing newline", () => {
+		const existing = "DATABASE_URL=\nPORT=";
+		expect(mergeEnvExample(existing, ["DATABASE_URL", "PORT"])).toEqual({
+			content: existing,
+			status: "unchanged",
+		});
+	});
+
 	it("appends new keys and removes stale keys while preserving comments and values", () => {
 		const existing = `# App
 # Database connection

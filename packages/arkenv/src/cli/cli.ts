@@ -320,7 +320,6 @@ export class CLI {
 			isQuiet: this.isQuiet,
 			isJson: this.isJson,
 			isAgent: this.isAgent,
-			isYes: this.isYes,
 		};
 	}
 

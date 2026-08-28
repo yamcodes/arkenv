@@ -193,12 +193,7 @@ export function mergeEnvExample(
 		output.pop();
 	}
 
-	const trailingNewline = keys.length > 0 || existing.endsWith("\n");
-	const content = joinLines(
-		output,
-		parsed.newline,
-		trailingNewline && output.length > 0,
-	);
+	const content = joinLines(output, parsed.newline, parsed.trailingNewline);
 
 	if (content === existing) {
 		return { content, status: "unchanged" };
