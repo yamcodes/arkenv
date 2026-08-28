@@ -102,12 +102,21 @@
 			"includes": ["**/examples/**/*", "**/playgrounds/**/*"],
 			"linter": {
 				"rules": {
+					"a11y": "off",
 					"suspicious": {
 						"noConsole": "off"
 					},
 					"style": {
 						"noNonNullAssertion": "off"
 					}
+				}
+			}
+		},
+		{
+			"includes": ["skills/create-skill/eval-viewer/**"],
+			"linter": {
+				"rules": {
+					"a11y": "off"
 				}
 			}
 		},

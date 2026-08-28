@@ -13,27 +13,27 @@
 		"@arkenv/vite-plugin": "workspace:*",
 		"arkenv": "workspace:*",
 		"arktype": "catalog:",
-		"react": "19.2.5",
-		"react-dom": "19.2.5",
+		"react": "19.2.8",
+		"react-dom": "19.2.8",
 		"zod": "catalog:"
 	},
 	"devDependencies": {
 		"@arkenv/cli": "workspace:*",
-		"@babel/core": "7.29.6",
+		"@babel/core": "7.29.7",
 		"@eslint/js": "10.0.1",
 		"@rolldown/plugin-babel": "0.2.3",
 		"@types/babel__core": "7.20.5",
-		"@types/node": "25.6.0",
-		"@types/react": "19.2.14",
-		"@types/react-dom": "19.2.3",
-		"@vitejs/plugin-react": "6.0.1",
+		"@types/node": "25.9.5",
+		"@types/react": "19.2.18",
+		"@types/react-dom": "19.2.5",
+		"@vitejs/plugin-react": "6.1.0",
 		"babel-plugin-react-compiler": "1.0.0",
-		"eslint": "10.3.0",
+		"eslint": "10.9.0",
 		"eslint-plugin-react-hooks": "7.1.1",
 		"eslint-plugin-react-refresh": "0.5.5",
-		"globals": "17.5.0",
+		"globals": "17.11.0",
 		"typescript": "6.0.3",
-		"typescript-eslint": "8.59.2",
-		"vite": "8.0.16"
+		"typescript-eslint": "8.67.0",
+		"vite": "8.2.2"
 	}
 }

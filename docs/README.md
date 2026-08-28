@@ -12,4 +12,5 @@ This directory contains internal contributor-facing documentation and architectu
 - [**`adr/`**](./adr/): Contains sequentially-numbered Architecture Decision Records (ADRs) documenting critical design choices and trade-offs. Start with [adr/README.md](./adr/README.md).
 - [**`CONTRIBUTING.md`**](./CONTRIBUTING.md): Guide on how to set up the local development environment, code conventions, and submit contributions.
 - [**`TESTING.md`**](./TESTING.md): Instructions for running and writing unit, integration, and E2E tests.
+- [**`biome-a11y-scope.md`**](./biome-a11y-scope.md): Living hat (not an ADR) for Biome `lint/a11y` vs Playwright axe vs Biome 2.5 ([#1657](https://github.com/yamcodes/arkenv/pull/1657)).
 - [**`ACKNOWLEDGEMENTS.md`**](./ACKNOWLEDGEMENTS.md): Credits and thanks to the projects and people who inspired and contributed to ArkEnv.

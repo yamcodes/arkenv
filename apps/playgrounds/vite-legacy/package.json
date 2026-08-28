@@ -12,16 +12,16 @@
 		"@arkenv/vite-plugin": "workspace:*",
 		"arkenv": "workspace:*",
 		"arktype": "catalog:",
-		"react": "19.2.5",
-		"react-dom": "19.2.5"
+		"react": "19.2.8",
+		"react-dom": "19.2.8"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:",
-		"@types/react": "19.2.14",
-		"@types/react-dom": "19.2.3",
-		"@vitejs/plugin-react": "6.0.1",
-		"globals": "17.5.0",
+		"@types/react": "19.2.18",
+		"@types/react-dom": "19.2.5",
+		"@vitejs/plugin-react": "6.1.0",
+		"globals": "17.11.0",
 		"typescript": "catalog:",
-		"vite": "8.0.16"
+		"vite": "8.2.2"
 	}
 }

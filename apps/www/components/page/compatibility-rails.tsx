@@ -121,12 +121,10 @@ function MarqueeRow({
 							href={item.url}
 							target="_blank"
 							rel="noopener noreferrer"
-							className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-500/5 dark:bg-gray-400/5 border border-gray-500/10 dark:border-gray-400/10 text-xs text-gray-500 dark:text-gray-400 transition-all hover:bg-gray-500/10 dark:hover:bg-gray-400/10 hover:border-gray-500/20 dark:hover:border-gray-400/20 hover:text-gray-600 dark:hover:text-gray-300 pointer-events-auto"
+							className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-500/5 dark:bg-gray-400/5 border border-gray-500/10 dark:border-gray-400/10 text-xs text-gray-600 dark:text-gray-300 transition-all hover:bg-gray-500/10 dark:hover:bg-gray-400/10 hover:border-gray-500/20 dark:hover:border-gray-400/20 hover:text-gray-700 dark:hover:text-gray-200 pointer-events-auto"
 						>
-							<item.icon className="w-3.5 h-3.5 opacity-70 group-hover/rail:opacity-100 transition-opacity" />
-							<span className="font-medium tracking-tight opacity-80 group-hover/rail:opacity-100 transition-opacity">
-								{item.name}
-							</span>
+							<item.icon className="w-3.5 h-3.5" />
+							<span className="font-medium tracking-tight">{item.name}</span>
 						</a>
 					))}
 				</div>
