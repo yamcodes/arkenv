@@ -16,7 +16,7 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           # pull_request_target defaults to the base ref; use the base repo's pull head

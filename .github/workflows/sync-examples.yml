@@ -28,7 +28,7 @@ jobs:
     if: github.actor != 'renovate[bot]'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6
@@ -61,7 +61,7 @@ jobs:
           client-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           token: ${{ steps.generate-token.outputs.token }}
           ref: ${{ github.head_ref }}
