@@ -58,9 +58,6 @@ jobs:
         with:
           publish-script: pnpm run release
           github-token: ${{ steps.generate-token.outputs.token }}
-        env:
-          # Used by changesets-changelog-clean when the action runs `changeset version`.
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
 
       - name: Sync main branch
         if: steps.changesets.outputs.published == 'true' && github.ref_name == 'dev'
