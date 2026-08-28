@@ -36,6 +36,7 @@ These groups share a theme. They remain separate ADRs (no nesting or history rew
 | Framework server/client boundaries | `nextjs-runtime-env`, `nextjs-conditional-exports-boundary`, `nuxt-vite-compile-time-boundary`, `flat-layout-codegen-type-strategy`, `framework-subpath-exports`, `strict-layout-complexity-budget` |
 | Packaging & module graph           | `export-surface-tiers`, `standard-mode-packaging-strategy`, `bundle-isolation-over-dryness`, `runtime-shared-logic-strategy`, `shared-build-package`                                                |
 | CLI / scaffold IR                  | `cli-hosting-preset-field-metadata`, `dotenv-linter-custom-parser-strategy`                                                                                                                         |
+| www test toolchain                 | `www-vitest-no-styled-jsx-babel`                                                                                                                                                                    |
 
 ## Tooling & agent skills
 

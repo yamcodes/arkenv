@@ -19,3 +19,17 @@ describe("www package scripts", () => {
 		expect(packageJson.scripts.predev).not.toContain("--watch");
 	});
 });
+
+describe("www Vitest dependency graph", () => {
+	const deps = {
+		...packageJson.dependencies,
+		...packageJson.devDependencies,
+	};
+
+	it("does not depend on Babel or styled-jsx for tests", () => {
+		expect(deps).not.toHaveProperty("@babel/core");
+		expect(deps).not.toHaveProperty("@rolldown/plugin-babel");
+		expect(deps).not.toHaveProperty("styled-jsx");
+		expect(deps).not.toHaveProperty("babel-plugin-react-compiler");
+	});
+});
