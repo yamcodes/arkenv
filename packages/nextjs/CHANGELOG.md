@@ -1,5 +1,37 @@
 # @arkenv/nextjs
 
+## 1.0.0-alpha.13
+
+### Patch Changes
+
+- #### Align Next.js onboarding with `@/.arkenv` _[`#1639`](https://github.com/yamcodes/arkenv/pull/1639) [`cc87d51`](https://github.com/yamcodes/arkenv/commit/cc87d51a69d54e43d4c1a11759d78fb97031234f) [@yamcodes](https://github.com/yamcodes)_
+
+  `arkenv init` now scaffolds Next.js schemas that import the codegen factory from `@/.arkenv`, writes that factory to `.arkenv/env.gen.ts`, gitignores `.arkenv/`, and maps the specifier in `tsconfig.json`. Docs, READMEs, and examples match that path instead of `./generated/env.gen`.
+
+  ```ts
+  import arkenv from "@/.arkenv";
+
+  export const env = arkenv({
+    DATABASE_URL: "string",
+    NEXT_PUBLIC_API_URL: "string",
+  });
+  ```
+
+  Existing `outputPath` overrides still work. Keep importing `@/.arkenv`. `withArkEnv` aliases the specifier for bundlers, and codegen keeps `.arkenv/index.ts` re-exporting the file so `tsc --noEmit` resolves it too.
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`01a028d`](https://github.com/yamcodes/arkenv/commit/01a028def38f5e440329f7eeef03773d4a76c46a) [`ba9f903`](https://github.com/yamcodes/arkenv/commit/ba9f9030e8291a3bc315b164012eb825693e22ba)
+
+</small>
+
+- `@arkenv/core@1.0.0-alpha.7`
+- `@arkenv/standard@1.0.0-alpha.7`
+
+</details>
+
 ## 1.0.0-alpha.12
 
 ### Minor Changes
