@@ -14,7 +14,7 @@ This page shows why `process.env` is a weak contract, how ArkEnv's typed
 
 ## The `process.env` problem
 
-Environment variables are available via the `process.env` (or `import.meta.env`) object. This object is loosely typed - all values are `string | undefined`. 
+Environment variables are available via the `process.env` (or `import.meta.env`) object. This object is loosely typed - all values are `string | undefined`.
 
 The problem with a loosely typed object is that you have **no** runtime guarantee about a given value: Is it correct type? Does it match our constraints? Does the value even exist?
 
