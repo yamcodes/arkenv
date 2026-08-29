@@ -1,0 +1,142 @@
+---
+title: Migrating from a getEnv helper
+description: Graduate from a 12-line presence check helper to typed coercion and boundary enforcement.
+---
+
+ArkEnv is designed to replace handwritten environment variable helpers with zero boilerplate. ArkEnv provides declarative parsing, automatic coercion, and framework boundaries using the TypeScript validator you already know.
+
+A lightweight presence check is often the first thing teams write to validate `process.env`. It installs zero dependencies and types keys as `string`. But as soon as an application introduces booleans, port numbers, or browser bundles, presence-only checks fail quietly.
+
+## The DIY helper
+
+Most handwritten helpers check whether required keys exist in `process.env`:
+
+```ts title="./env.ts"
+export function getEnv() {
+  const { PORT, DEBUG, DATABASE_URL, STRIPE_SECRET } = process.env;
+
+  if (
+    PORT === undefined ||
+    DEBUG === undefined ||
+    DATABASE_URL === undefined ||
+    STRIPE_SECRET === undefined
+  ) {
+    throw new Error("Missing required environment variables");
+  }
+
+  return { PORT, DEBUG, DATABASE_URL, STRIPE_SECRET };
+}
+```
+
+This helper works when all variables are required strings. The breakdown happens when values need coercion or client/server separation.
+
+## Failure classes comparison
+
+The table below contrasts how a presence helper behaves compared to ArkEnv:
+
+| Failure class                   | Helper                                                                                  | ArkEnv                                                                                                                                                                           |
+| ------------------------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Boolean (`DEBUG=false`)         | Truthy string `"false"`                                                                 | Coerces to boolean `false`                                                                                                                                                       |
+| Number (`PORT` + 1)             | Concatenation `"30001"`                                                                 | Integer arithmetic `3001`                                                                                                                                                        |
+| Empty strings (`DATABASE_URL=`) | Presence check passes; returns `""`                                                     | Fails the `string.url` rule at boot (invalid URL), **not** a generic presence / “missing” check. Note: `emptyAsUndefined` is **opt-in**; default does not treat `""` as missing. |
+| Client/server secrets           | No boundary; a server secret imported on the client can leak or silently go `undefined` | Framework plugins enforce the public prefix and block server-key access / server-schema import on the client                                                                     |
+
+## Forensic breakdown
+
+### 1. Boolean coercion
+
+In JavaScript, any non-empty string is truthy—including `"false"`:
+
+```ts title="./server.ts"
+function getEnv() {
+  const debug = process.env.DEBUG;
+  if (debug === undefined) {
+    throw new Error("missing DEBUG");
+  }
+  return { debug };
+}
+
+const { debug } = getEnv();
+
+if (debug) {
+  // always runs when DEBUG is set — including DEBUG=false
+}
+```
+
+ArkEnv automatically coerces `"true"` and `"false"` into boolean primitives before validation.
+
+### 2. Numeric operations
+
+Because `process.env` only holds strings, numeric operations without coercion lead to concatenation:
+
+```ts title="./server.ts"
+const { port } = getEnv();
+// port: string
+
+listen(port);
+port + 1; // "30001"
+port > 1024; // lexicographic, not numeric
+```
+
+ArkEnv parses integers and numbers directly, validating ranges (`number.port` or `0 <= number <= 65535`) at boot.
+
+### 3. Empty string values
+
+When an environment variable is set to an empty string in `.env`:
+
+```ini title=".env"
+DATABASE_URL=
+```
+
+A helper checking `=== undefined` lets `""` pass without error. In ArkEnv, declaring `DATABASE_URL: "string.url"` fails the URL validation rule at boot because `""` is not a valid URL. Note that ArkEnv defaults to preserving empty strings; ignoring them requires the opt-in `emptyAsUndefined: true` option.
+
+### 4. Client/server secret boundary
+
+When a helper exports `STRIPE_SECRET` from a shared module:
+
+```ts title="./env.ts"
+export const env = getEnv();
+// env.STRIPE_SECRET accessed in a client component
+```
+
+Bundlers importing this helper into the browser either bundle the plaintext secret or evaluate it as `undefined`. ArkEnv's framework plugins (Next.js, Nuxt, Vite, Bun) enforce client prefixes (such as `NEXT_PUBLIC_` or `NUXT_PUBLIC_`) and block server keys from leaking to browser bundles.
+
+## Graduating to ArkEnv
+
+Replace the helper with a single declarative schema in `./env.ts`:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  NAME: "string",
+  PORT: "number.port",
+  DEBUG: "boolean = false",
+  DATABASE_URL: "string.url",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+
+env.PORT; // number
+env.DEBUG; // boolean
+```
+
+<Callout type="info" title="Using Zod or Valibot?">
+  You can use `@arkenv/standard` with Zod (`z.number()`, `z.boolean()`) or
+  Valibot schemas with the same zero-config coercion.
+</Callout>
+
+To scaffold ArkEnv in your project:
+
+```package-install
+npx arkenv@latest init
+```
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/getting-started" title="Getting started" description="Install ArkEnv and configure your schema." />
+
+  <Card href="/docs/core-concepts/coercion-and-parsing" title="Coercion and parsing" description="Learn how ArkEnv converts strings to booleans, numbers, and objects." />
+
+  <Card href="/docs/core-concepts/client-vs-server" title="Client vs. server" description="How ArkEnv protects secrets from leaking to client bundles." />
+</Cards>

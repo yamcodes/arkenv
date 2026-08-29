@@ -65,6 +65,10 @@ Jiti-import of a flat `env.ts` under unpublished schema capture ([ADR 0027](./ad
 CLI `--json` / `--agent` stdout document. Discriminated by `ok`. Success and Check findings use `CompletedEnvelope` (`ok: true`, `diagnostics`, required `nextActions`). Preconditions and crashes use `ErroredEnvelope` (`ok: false`, `error`). Codes are dotted `NAMESPACE.SUBCODE`. `{bin}` in nextActions is resolved to the active runner before serialize.
 *Avoid*: `{ status, message, retryWith }`; `ERR_*` codes on envelopes (loader `ERR_INSPECT_*` is a different layer); custom nextAction kinds such as `type: set_env`
 
+**The 0-dep `getEnv` user**:
+A developer who already has a working \~12-line zero-install presence-check helper that types keys as `string`. Convert them with an honest snippet showing where string-only presence checks fail (booleans, numbers, client/server boundaries) and graduation triggers, not by claiming "zero dependencies" (which does not distinguish a peer-free engine from having installed nothing) or pitching copy-in core.
+*Avoid*: using "zero dependencies" as the sales pitch against an uninstalled helper; selling shadcn-style copy-in of `@arkenv/core` or standalone validator codegen as 0-dep; catastrophe/outage copy or fictional incident narratives
+
 ### Site chrome (www)
 
 **Logo top-left**:
