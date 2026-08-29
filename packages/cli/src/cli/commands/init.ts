@@ -405,20 +405,6 @@ export class InitUseCase {
 			if (await this.workspace.exists(p)) existingFiles.push(p);
 		}
 
-		let typeFileName: string | undefined;
-		if (options.framework === "vite") {
-			typeFileName = "vite-env.d.ts";
-		} else if (options.framework === "bun-fullstack") {
-			typeFileName = "bun-env.d.ts";
-		}
-
-		if (typeFileName) {
-			const targetDirOfSchema = path.dirname(finalTargetPath);
-			const typeFilePath = path.join(targetDirOfSchema, typeFileName);
-			if (await this.workspace.exists(typeFilePath))
-				existingFiles.push(typeFilePath);
-		}
-
 		const envPath = path.join(targetDir, ".env");
 		const envExamplePath = path.join(targetDir, ".env.example");
 

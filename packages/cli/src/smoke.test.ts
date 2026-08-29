@@ -87,7 +87,7 @@ describe("cli smoke tests", () => {
 		}
 	});
 
-	it("scaffolds Vite and Bun projects without generating ambient d.ts files", async () => {
+	it("scaffolds Vite projects without generating ambient d.ts files", async () => {
 		const uuid = Math.random().toString(36).substring(7);
 		const tempDir = path.resolve(__dirname, `../tmp-smoke-vite-${uuid}`);
 		await fs.mkdir(tempDir, { recursive: true });
@@ -133,6 +133,51 @@ describe("cli smoke tests", () => {
 				.then(() => true)
 				.catch(() => false);
 			expect(viteEnvExists).toBe(false);
+		} finally {
+			await fs.rm(tempDir, { recursive: true, force: true });
+		}
+	});
+
+	it("scaffolds Bun projects without generating ambient d.ts files", async () => {
+		const uuid = Math.random().toString(36).substring(7);
+		const tempDir = path.resolve(__dirname, `../tmp-smoke-bun-${uuid}`);
+		await fs.mkdir(tempDir, { recursive: true });
+		await fs.writeFile(
+			path.join(tempDir, "package.json"),
+			JSON.stringify(
+				{
+					name: `temp-bun-pkg-${uuid}`,
+					private: true,
+					devDependencies: { "@types/bun": "^1.0.0" },
+				},
+				null,
+				2,
+			),
+		);
+		await fs.writeFile(
+			path.join(tempDir, "bunfig.toml"),
+			"# Bun configuration\n",
+		);
+
+		try {
+			const { stdout } = await exec(
+				`node ${cliPath} init --agent --yes --force`,
+				{
+					env: {
+						...process.env,
+						INIT_CWD: tempDir,
+						SKIP_INSTALL: "true",
+					},
+				},
+			);
+
+			expect(stdout).toContain('"status": "success"');
+
+			const envFileExists = await fs
+				.access(path.join(tempDir, "env.ts"))
+				.then(() => true)
+				.catch(() => false);
+			expect(envFileExists).toBe(true);
 
 			const bunEnvExists = await fs
 				.access(path.join(tempDir, "bun-env.d.ts"))
