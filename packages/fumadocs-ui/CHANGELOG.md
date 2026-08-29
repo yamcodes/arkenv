@@ -1,5 +1,14 @@
 # @arkenv/fumadocs-ui
 
+## 1.0.0-alpha.4
+
+### Patch Changes
+
+- #### Make markdown table wrappers keyboard-focusable _[`#1701`](https://github.com/yamcodes/arkenv/pull/1701) [`61c79f6`](https://github.com/yamcodes/arkenv/commit/61c79f6846a4accff8985733884a271b69466436) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Wide docs tables use an `overflow-auto` wrapper. That wrapper is now focusable (`tabIndex={0}`) so axe `scrollable-region-focusable` passes and keyboard users can scroll the region in Safari.
+
 ## 1.0.0-alpha.3
 
 ### Major Changes
