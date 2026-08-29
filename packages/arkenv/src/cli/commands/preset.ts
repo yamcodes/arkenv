@@ -10,7 +10,6 @@ import {
 	type HostPreset,
 	type HostProvider,
 	PRESETS,
-	partitionPresetKeys,
 } from "@/features/scaffold/presets";
 import { ERROR_CODES } from "@/shared/errors";
 import type {
@@ -134,7 +133,7 @@ export class PresetUseCase {
 
 			const providerName = PRESETS[provider]?.label || provider;
 
-			// 3. Discover schema file(s) and layout
+			// 3. Discover schema file
 			const discovery = await this.discoverSchema(cwd, input.file);
 			if (!discovery) {
 				return false;
@@ -148,98 +147,6 @@ export class PresetUseCase {
 			const allPresetKeys = getPresetKeys(provider, prefix);
 
 			if (input.action === "apply") {
-				if (discovery.layout === "strict") {
-					const clientPath = path.join(discovery.dir, "client.ts");
-					const serverPath = path.join(discovery.dir, "server.ts");
-					const relClientPath = path.relative(cwd, clientPath);
-					const relServerPath = path.relative(cwd, serverPath);
-
-					if (
-						!(await this.workspace.exists(clientPath)) ||
-						!(await this.workspace.exists(serverPath))
-					) {
-						this.logger.error(
-							`Strict layout files not found in ${path.relative(cwd, discovery.dir)}.`,
-						);
-						return false;
-					}
-
-					const clientCode = await this.workspace.readFile(clientPath);
-					const serverCode = await this.workspace.readFile(serverPath);
-
-					const clientValidator = detectValidator(clientCode);
-					const serverValidator = detectValidator(serverCode);
-
-					const { clientKeys, serverKeys } = partitionPresetKeys(
-						provider,
-						prefix,
-					);
-
-					const clientResult = applyPresetToSchema(clientCode, {
-						preset: provider,
-						framework,
-						validator: clientValidator,
-						markerId: `${provider}:client`,
-						targetKeys: clientKeys,
-					});
-
-					const serverResult = applyPresetToSchema(serverCode, {
-						preset: provider,
-						framework,
-						validator: serverValidator,
-						markerId: `${provider}:server`,
-						targetKeys: serverKeys,
-					});
-
-					if (!clientResult.success || !clientResult.code) {
-						this.logger.error(
-							clientResult.error ||
-								`Failed to apply preset to ${relClientPath}.`,
-						);
-						return false;
-					}
-
-					if (!serverResult.success || !serverResult.code) {
-						this.logger.error(
-							serverResult.error ||
-								`Failed to apply preset to ${relServerPath}.`,
-						);
-						return false;
-					}
-
-					let anyUpdated = false;
-					if (clientResult.updated) {
-						await this.workspace.writeFile(clientPath, clientResult.code);
-						anyUpdated = true;
-					}
-					if (serverResult.updated) {
-						await this.workspace.writeFile(serverPath, serverResult.code);
-						anyUpdated = true;
-					}
-
-					if (
-						typeof this.workspace.appendMissingEnvExampleKeys === "function"
-					) {
-						await this.workspace.appendMissingEnvExampleKeys(
-							cwd,
-							allPresetKeys,
-						);
-					}
-
-					if (anyUpdated) {
-						this.logger.success(
-							`Applied ${providerName} preset to ${relClientPath} and ${relServerPath}`,
-						);
-					} else {
-						this.logger.info(
-							`${providerName} preset is already up-to-date in ${relClientPath} and ${relServerPath}`,
-						);
-					}
-
-					return true;
-				}
-
-				// Flat layout
 				const envPath = discovery.filePath;
 				const relEnvPath = path.relative(cwd, envPath);
 
@@ -282,105 +189,6 @@ export class PresetUseCase {
 			}
 
 			// input.action === "remove"
-			if (discovery.layout === "strict") {
-				const clientPath = path.join(discovery.dir, "client.ts");
-				const serverPath = path.join(discovery.dir, "server.ts");
-				const relClientPath = path.relative(cwd, clientPath);
-				const relServerPath = path.relative(cwd, serverPath);
-
-				if (
-					!(await this.workspace.exists(clientPath)) ||
-					!(await this.workspace.exists(serverPath))
-				) {
-					this.logger.error(
-						`Strict layout files not found in ${path.relative(cwd, discovery.dir)}.`,
-					);
-					return false;
-				}
-
-				const clientCode = await this.workspace.readFile(clientPath);
-				const serverCode = await this.workspace.readFile(serverPath);
-
-				const clientResult = removePresetFromSchema(clientCode, {
-					preset: provider,
-				});
-				const serverResult = removePresetFromSchema(serverCode, {
-					preset: provider,
-				});
-
-				if (!clientResult.success || !clientResult.code) {
-					this.logger.error(
-						clientResult.error ||
-							`Failed to remove preset from ${relClientPath}.`,
-					);
-					return false;
-				}
-
-				if (!serverResult.success || !serverResult.code) {
-					this.logger.error(
-						serverResult.error ||
-							`Failed to remove preset from ${relServerPath}.`,
-					);
-					return false;
-				}
-
-				let anyUpdated = false;
-				const removedKeys: string[] = [];
-				if (clientResult.updated) {
-					await this.workspace.writeFile(clientPath, clientResult.code);
-					anyUpdated = true;
-					if (clientResult.removedKeys) {
-						removedKeys.push(...clientResult.removedKeys);
-					}
-				}
-				if (serverResult.updated) {
-					await this.workspace.writeFile(serverPath, serverResult.code);
-					anyUpdated = true;
-					if (serverResult.removedKeys) {
-						removedKeys.push(...serverResult.removedKeys);
-					}
-				}
-
-				if (anyUpdated) {
-					// Find remaining preset keys across both files
-					const validationClient = validateAndFindPresetBlocks(
-						clientResult.code || clientCode,
-					);
-					const remainingBlocksClient = validationClient.success
-						? validationClient.blocks
-						: [];
-					const validationServer = validateAndFindPresetBlocks(
-						serverResult.code || serverCode,
-					);
-					const remainingBlocksServer = validationServer.success
-						? validationServer.blocks
-						: [];
-					const remainingKeys = [
-						...remainingBlocksClient.flatMap((b) => b.keys),
-						...remainingBlocksServer.flatMap((b) => b.keys),
-					];
-
-					if (typeof this.workspace.removeEnvExampleKeys === "function") {
-						await this.workspace.removeEnvExampleKeys(
-							cwd,
-							removedKeys,
-							remainingKeys,
-						);
-					}
-
-					this.logger.success(
-						`Removed ${providerName} preset from ${relClientPath} and ${relServerPath}`,
-					);
-				} else {
-					this.logger.info(
-						`${providerName} preset was not present in ${relClientPath} and ${relServerPath}`,
-					);
-				}
-
-				return true;
-			}
-
-			// Flat layout remove
 			const envPath = discovery.filePath;
 			const relEnvPath = path.relative(cwd, envPath);
 
@@ -432,53 +240,21 @@ export class PresetUseCase {
 	}
 
 	/**
-	 * Discovers the schema target file or directory and layout strategy.
+	 * Discovers the flat schema file path.
 	 */
 	private async discoverSchema(
 		cwd: string,
 		fileOverride?: string,
-	): Promise<
-		| { layout: "strict"; dir: string }
-		| { layout: "flat"; filePath: string }
-		| null
-	> {
+	): Promise<{ filePath: string } | null> {
 		if (fileOverride) {
-			const resolved = path.resolve(cwd, fileOverride);
-			// Check if it's a directory with client.ts and server.ts
-			const clientFile = path.join(resolved, "client.ts");
-			const serverFile = path.join(resolved, "server.ts");
-			if (
-				(await this.workspace.exists(clientFile)) &&
-				(await this.workspace.exists(serverFile))
-			) {
-				return { layout: "strict", dir: resolved };
-			}
-			return { layout: "flat", filePath: resolved };
+			return { filePath: path.resolve(cwd, fileOverride) };
 		}
 
 		// Read pointer from nearest package.json
 		if (typeof this.scanner.readArkenvConfig === "function") {
 			const arkenvConfig = await this.scanner.readArkenvConfig(cwd);
 			if (arkenvConfig) {
-				const resolved = path.resolve(cwd, arkenvConfig.schema);
-				if (arkenvConfig.layout === "strict") {
-					return { layout: "strict", dir: resolved };
-				}
-				return { layout: "flat", filePath: resolved };
-			}
-		}
-
-		// Fallback: check convention locations
-		const strictCandidates = [
-			path.resolve(cwd, "env"),
-			path.resolve(cwd, "src/env"),
-		];
-		for (const dir of strictCandidates) {
-			if (
-				(await this.workspace.exists(path.join(dir, "client.ts"))) &&
-				(await this.workspace.exists(path.join(dir, "server.ts")))
-			) {
-				return { layout: "strict", dir };
+				return { filePath: path.resolve(cwd, arkenvConfig.schema) };
 			}
 		}
 
@@ -488,7 +264,7 @@ export class PresetUseCase {
 		];
 		for (const file of flatCandidates) {
 			if (await this.workspace.exists(file)) {
-				return { layout: "flat", filePath: file };
+				return { filePath: file };
 			}
 		}
 

@@ -1,12 +1,9 @@
-import path from "node:path";
 import { shake } from "radashi";
 import type { CodegenFrameworkConfig } from "./codegen-config";
 import {
 	getEnvDefaultsFromKeys,
 	planSimpleSchemaFile,
-	planStrictSchemaFiles,
 	resolveSimpleImportPath,
-	resolveStrictImportPath,
 } from "./shared";
 import type { FrameworkStrategy } from "./types";
 
@@ -59,17 +56,6 @@ export function createCodegenFrameworkStrategy(
 		},
 
 		getSchemaFiles(validator, options, params) {
-			if (options.layout === "strict") {
-				const ext = path.extname(params.targetPath);
-				const baseWithoutExt = params.targetPath.slice(0, -ext.length);
-				const importPath = resolveStrictImportPath(
-					params,
-					baseWithoutExt,
-					options,
-				);
-				return planStrictSchemaFiles(validator, options, params, importPath);
-			}
-
 			const importPath = resolveSimpleImportPath(params, options);
 			return planSimpleSchemaFile(validator, options, params, importPath);
 		},

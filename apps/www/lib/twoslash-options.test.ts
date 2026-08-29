@@ -67,26 +67,21 @@ const apiUrl = env.NEXT_PUBLIC_API_URL;
 		).toBe(true);
 	});
 
-	it("resolves '@/env/client' without TS2307 errors", {
+	it("resolves flat @arkenv/nextjs env without TS2307 errors", {
 		timeout: 15_000,
 	}, () => {
 		const resultNextjs = twoslasher(
 			`// @errors: 2339
-// @filename: env/internal/shared.ts
-import { type } from "@arkenv/core";
-export const SharedSchema = type({ NODE_ENV: "'development' | 'production' | 'test'" });
-
-// @filename: env/client.ts
-import arkenv from "@arkenv/nextjs/client";
-import { SharedSchema } from "./internal/shared";
+// @filename: env.ts
+import arkenv from "@arkenv/nextjs";
 export const env = arkenv(
-	{ NEXT_PUBLIC_API_URL: "string" },
-	{ extends: [SharedSchema], runtimeEnv: { NEXT_PUBLIC_API_URL: "https://api.example.com", NODE_ENV: "development" } }
+	{ NEXT_PUBLIC_API_URL: "string", DATABASE_URL: "string" },
+	{ runtimeEnv: { NEXT_PUBLIC_API_URL: "https://api.example.com", DATABASE_URL: "postgres://localhost" } }
 );
 
 // @filename: client-component.ts
 // ---cut---
-import { env } from "@/env/client";
+import { env } from "./env";
 const db = env.DATABASE_URL;
 `,
 			"ts",
@@ -99,27 +94,21 @@ const db = env.DATABASE_URL;
 		expect(errors).not.toContain(2307);
 	});
 
-	it("resolves '~~/env/client' without TS2307 errors", {
+	it("resolves flat @arkenv/nuxt env without TS2307 errors", {
 		timeout: 15_000,
 	}, () => {
 		const resultNuxt = twoslasher(
 			`// @errors: 2339
-// @filename: env/internal/shared.ts
-import { type } from "@arkenv/core";
-export const SharedSchema = type({ NODE_ENV: "'development' | 'production' | 'test'" });
-
-// @filename: env/client.ts
-import arkenv from "@arkenv/nuxt/client";
-import { SharedSchema } from "./internal/shared";
+// @filename: env.ts
+import arkenv from "@arkenv/nuxt";
 export const env = arkenv(
-	{ NUXT_PUBLIC_API_URL: "string" },
-	{ extends: [SharedSchema] }
+	{ NUXT_PUBLIC_API_URL: "string", DATABASE_URL: "string" }
 );
 
-// @filename: pages/index.ts
+// @filename: app.ts
 // ---cut---
-import { env } from "~~/env/client";
-const db = env.DATABASE_URL;
+import { env } from "./env";
+const missing = env.DOES_NOT_EXIST;
 `,
 			"ts",
 			arktypeTwoslashOptions.twoslashOptions,

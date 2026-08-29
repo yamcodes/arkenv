@@ -25,9 +25,9 @@ export default defineNuxtConfig({
 });
 ```
 
-### 2. Define your schema in `env.ts` (Flat Layout)
+### 2. Define your schema in `env.ts`
 
-The easiest way to get started is the **flat layout**, which uses a single `env.ts` file in your project root:
+Use a single `env.ts` file in your project root:
 
 ```typescript
 // env.ts
@@ -42,20 +42,7 @@ export const env = arkenv({
 
 Variables prefixed with `NUXT_PUBLIC_` and `NODE_ENV` are automatically exposed to the client. Use `exposeToClient` for custom keys that do not follow the prefix convention.
 
-### 3. Strict Layout (Optional)
-
-If you require physical file separation for security-critical applications, `@arkenv/nuxt` supports the **strict layout**. Place your environment files in an `env/` directory:
-
-```text
-/
-├── env/
-│   ├── client.ts
-│   ├── server.ts
-│   └── internal/
-│       └── shared.ts
-```
-
-The Nuxt module automatically detects the strict layout and generates a unified factory that seamlessly integrates with Nuxt.
+Never import a server-only env module from client code. Prefer one flat `env.ts`; if you split into two modules for isolation, keep the server module off the client import graph and use `extends` to merge validated outputs.
 
 ---
 
@@ -72,6 +59,4 @@ This allows you to safely swap public configuration values in production without
 
 ## Client-Side Security
 
-The `@arkenv/nuxt` module includes a custom Vite plugin that strictly prevents any server-side environment definitions from leaking into the client bundle. If you attempt to import `@arkenv/nuxt/server` or a userland server schema file (for example, `~/env/server.ts` in the strict layout) in a client component, the bundler will throw a compile-time error.
-
-In flat layout, a runtime proxy throws if server-only keys are accessed in browser code.
+In the flat layout, a runtime proxy throws if server-only keys are accessed in browser code.

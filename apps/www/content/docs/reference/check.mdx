@@ -46,6 +46,11 @@ Errors found while validating environment variables
   PORT must be a number (was a string)
 ```
 
+Before validating, `check` loads the schema the same way
+[`example`](/docs/reference/example#schema-module-contract) does
+(import under capture; hollow `{}` stub). Keep the schema module
+declarative — see that page for supported and unsupported shapes.
+
 ## Options
 
 These flags are specific to `check`.

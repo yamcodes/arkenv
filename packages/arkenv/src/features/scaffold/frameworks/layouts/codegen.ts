@@ -8,7 +8,7 @@ import {
 import type { Dialect } from "@/features/scaffold/validators/dialects";
 
 /**
- * Options for assembling a Next.js / Nuxt single-file (flat or nested) template.
+ * Options for assembling a Next.js / Nuxt single-file flat template.
  */
 export type CodegenLayoutOptions = {
 	envKeys?: string[] | undefined;
@@ -19,11 +19,6 @@ export type CodegenLayoutOptions = {
 	 */
 	importPath?: string | undefined;
 	disableCodegen?: boolean | undefined;
-	/**
-	 * Layout selection. `"simple"` is a quarantined nested (server/client/shared)
-	 * path kept for test parity; primary codegen path is flat when unset/flat.
-	 */
-	layout?: "strict" | "simple" | "flat" | undefined;
 	/**
 	 * Hosting provider preset - appended to defaults when `envKeys` is empty.
 	 */
@@ -132,11 +127,10 @@ function buildNoCodegenRuntimeEnvFields(
 }
 
 /**
- * Assemble a Next.js / Nuxt env schema template (flat or nested).
+ * Assemble a Next.js / Nuxt flat env schema template.
  *
- * Owns structural assembly - key categorisation, imports, JSDoc, flat vs nested
- * (`layout === "simple"`), and runtimeEnv injection. The dialect supplies only
- * field lines and extra imports.
+ * Owns structural assembly - key categorisation, imports, JSDoc, and
+ * runtimeEnv injection. The dialect supplies only field lines and extra imports.
  *
  * @param options Layout and dialect inputs
  * @returns Generated TypeScript source
@@ -148,7 +142,6 @@ export function assembleCodegenTemplate(options: CodegenLayoutOptions): string {
 		config,
 		importPath: nextjsImportPath,
 		disableCodegen,
-		layout,
 		hostPreset,
 	} = options;
 
@@ -187,23 +180,7 @@ export function assembleCodegenTemplate(options: CodegenLayoutOptions): string {
 		);
 	}
 
-	const useFlatLayout = layout !== "simple" && layout !== "strict";
-
-	if (useFlatLayout) {
-		return assembleFlatLayout({
-			serverFields,
-			clientFields,
-			sharedFields,
-			envKeys,
-			dialect,
-			config,
-			nextjsImportPath,
-			disableCodegen,
-			hostPreset,
-		});
-	}
-
-	return assembleNestedLayout({
+	return assembleFlatLayout({
 		serverFields,
 		clientFields,
 		sharedFields,
@@ -212,7 +189,6 @@ export function assembleCodegenTemplate(options: CodegenLayoutOptions): string {
 		config,
 		nextjsImportPath,
 		disableCodegen,
-		layout,
 		hostPreset,
 	});
 }
@@ -226,7 +202,6 @@ type FieldBuckets = {
 	config: CodegenFrameworkConfig;
 	nextjsImportPath?: string | undefined;
 	disableCodegen?: boolean | undefined;
-	layout?: "strict" | "simple" | "flat" | undefined;
 	hostPreset?: HostPreset | undefined;
 };
 
@@ -344,82 +319,5 @@ function assembleFlatLayout(params: FieldBuckets): string {
 export const env = arkenv({
 ${flatFields.join("\n")}
 }${optionsStr});
-`;
-}
-
-function assembleNestedLayout(params: FieldBuckets): string {
-	const {
-		serverFields,
-		clientFields,
-		sharedFields,
-		envKeys,
-		dialect,
-		config,
-		nextjsImportPath,
-		disableCodegen,
-		layout,
-	} = params;
-	const {
-		clientPrefix,
-		packageName: pkgName,
-		displayName: frameworkName,
-	} = config;
-	const framework = config.id;
-	const extraImports = dialect.extraImport;
-
-	const sections: string[] = [];
-	if (serverFields.length > 0) {
-		sections.push(`\tserver: {\n${serverFields.join("\n")}\n\t}`);
-	}
-	if (clientFields.length > 0) {
-		sections.push(`\tclient: {\n${clientFields.join("\n")}\n\t}`);
-	}
-	if (sharedFields.length > 0) {
-		sections.push(`\tshared: {\n${sharedFields.join("\n")}\n\t}`);
-	}
-
-	if (disableCodegen || (framework === "nuxt" && layout === "simple")) {
-		const runtimeEnvFields = buildNoCodegenRuntimeEnvFields(
-			envKeys,
-			clientPrefix,
-			clientFields,
-		);
-		if (framework !== "nuxt") {
-			sections.push(`\truntimeEnv: {\n${runtimeEnvFields.join("\n")}\n\t}`);
-		}
-
-		const imports = [
-			`import arkenv from "${pkgName}";`,
-			...(extraImports ? [extraImports] : []),
-		].join("\n");
-
-		return `${imports}
-
-/**
- * Environment variable schema.
- * In ${frameworkName}, use \`${pkgName}\` to validate variables at build-time and runtime.
- * Enforces client/server separation and prevents secret leaks.
- */
-export const env = arkenv({
-${sections.join(",\n")},
-});
-`;
-	}
-
-	const imports = [
-		`import arkenv from "${nextjsImportPath || "@/.arkenv"}";`,
-		...(extraImports ? [extraImports] : []),
-	].join("\n");
-
-	return `${imports}
-
-/**
- * Environment variable schema.
- * In ${frameworkName}, import the generated \`arkenv\` from \`@/.arkenv\` to validate variables.
- * Enforces client/server separation and prevents secret leaks.
- */
-export const env = arkenv({
-${sections.join(",\n")},
-});
 `;
 }

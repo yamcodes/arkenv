@@ -21,9 +21,6 @@ export type InitInput = {
 	isForce: boolean;
 	isQuiet: boolean;
 	isAgent: boolean;
-	isStrict?: boolean;
-	isSimple?: boolean;
-	isFlat?: boolean;
 	example?: string;
 	name?: string;
 	noCodegen?: boolean;
@@ -286,12 +283,6 @@ export class InitUseCase {
 			targetDir,
 			tsConfig.parsed,
 		);
-		if (input.isSimple && detectedFramework === "nextjs") {
-			this.logger.error(
-				"❌ Error: The --simple layout is deprecated and no longer supported by the CLI. Arkenv now exclusively uses the Flat Layout. Run npx arkenv init without this flag.",
-			);
-			return null;
-		}
 		const detectedBunFeatures =
 			detectedFramework === "bun-fullstack"
 				? await this.scanner.detectBunFeatures(targetDir, tsConfig.parsed)
@@ -308,24 +299,7 @@ export class InitUseCase {
 			targetPath,
 		);
 
-		const hasEnvSchemaFile = await (async () => {
-			// For strict layout, we need to check the variant paths, not the base path.
-			// When isStrict is requested via flag, peek at those paths before the wizard runs.
-			if (input.isStrict) {
-				const ext = path.extname(targetPath);
-				const baseWithoutExt = targetPath.slice(0, -ext.length);
-				const strictPaths = [
-					path.join(baseWithoutExt, "internal", `shared${ext}`),
-					path.join(baseWithoutExt, `client${ext}`),
-					path.join(baseWithoutExt, `server${ext}`),
-				];
-				const checks = await Promise.all(
-					strictPaths.map((p) => this.workspace.exists(p)),
-				);
-				if (checks.some(Boolean)) return true;
-			}
-			return this.workspace.exists(targetPath);
-		})();
+		const hasEnvSchemaFile = await this.workspace.exists(targetPath);
 
 		const options = await this.prompt.runWizard(
 			shake({
@@ -337,9 +311,6 @@ export class InitUseCase {
 				envKeys: envRes?.keys,
 				envKeysSource: envRes?.source,
 				hasEnvSchemaFile,
-				isStrict: input.isStrict,
-				isSimple: input.isSimple,
-				isFlat: input.isFlat,
 				disableCodegen: input.noCodegen,
 				hostPreset: input.hostPreset,
 			}),
@@ -381,32 +352,10 @@ export class InitUseCase {
 		const finalTargetPath = path.resolve(targetDir, options.path);
 
 		if (options.overwriteEnvSchemaFile === undefined) {
-			// For strict layout, check whether any of the three variant files already exist
-			const existsCheck =
-				options.layout === "strict"
-					? await (async () => {
-							const ext = path.extname(finalTargetPath);
-							const baseWithoutExt = finalTargetPath.slice(0, -ext.length);
-							const checks = await Promise.all([
-								this.workspace.exists(
-									path.join(baseWithoutExt, "internal", `shared${ext}`),
-								),
-								this.workspace.exists(
-									path.join(baseWithoutExt, `client${ext}`),
-								),
-								this.workspace.exists(
-									path.join(baseWithoutExt, `server${ext}`),
-								),
-							]);
-							return checks.some(Boolean);
-						})()
-					: await this.workspace.exists(finalTargetPath);
+			const existsCheck = await this.workspace.exists(finalTargetPath);
 
 			if (existsCheck) {
-				const label =
-					options.layout === "strict"
-						? "Strict layout files (client, server, internal/shared)"
-						: path.basename(finalTargetPath);
+				const label = path.basename(finalTargetPath);
 				const confirmOverwrite = await this.prompt.confirm(
 					`${label} already exist. Overwrite?`,
 					false,
@@ -430,18 +379,7 @@ export class InitUseCase {
 			tsConfig.parsed,
 		);
 
-		const ext = path.extname(finalTargetPath);
-		const baseWithoutExt = finalTargetPath.slice(0, -ext.length);
-
-		// Determine which paths we actually care about based on the resolved layout
-		const pathsToCheck =
-			options.layout === "strict"
-				? [
-						path.join(baseWithoutExt, "internal", `shared${ext}`),
-						path.join(baseWithoutExt, `client${ext}`),
-						path.join(baseWithoutExt, `server${ext}`),
-					]
-				: [finalTargetPath];
+		const pathsToCheck = [finalTargetPath];
 
 		const existingFiles: string[] = [];
 		for (const p of pathsToCheck) {

@@ -1,5 +1,4 @@
 import { assembleSimpleFromDialect } from "./assemble-simple";
-import { assembleStrictFromDialect } from "./assemble-strict";
 import type { Dialect } from "./dialects";
 import { DIALECTS } from "./dialects";
 import type { ValidatorStrategy } from "./types";
@@ -8,25 +7,12 @@ import type { ValidatorStrategy } from "./types";
  * Build a {@link ValidatorStrategy} from a dialect.
  *
  * @param dialect Validator dialect supplying field formatting and wrappers.
- * @returns Strategy implementing simple and strict template generation.
+ * @returns Strategy implementing single-file template generation.
  */
 export function createValidatorStrategy(dialect: Dialect): ValidatorStrategy {
 	return {
-		formatField(key, role, context) {
-			return dialect.formatStrictField(
-				key,
-				role,
-				context.clientPrefix,
-				context.hostPreset,
-			);
-		},
-
 		getSimpleTemplate(keys, context) {
 			return assembleSimpleFromDialect(dialect, keys, context);
-		},
-
-		getStrictTemplates(keys, context) {
-			return assembleStrictFromDialect(dialect, keys, context);
 		},
 	};
 }

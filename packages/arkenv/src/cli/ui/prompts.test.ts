@@ -48,20 +48,6 @@ describe("runPromptWizard", () => {
 		expect(result?.bunFeatures).toEqual(["serve"]);
 	});
 
-	it("should default layout to flat for nextjs in isYes mode", async () => {
-		const result = await runPromptWizard({ framework: "nextjs" }, true);
-
-		expect(result?.framework).toBe("nextjs");
-		expect(result?.layout).toBe("flat");
-	});
-
-	it("should default layout to flat for nuxt in isYes mode", async () => {
-		const result = await runPromptWizard({ framework: "nuxt" }, true);
-
-		expect(result?.framework).toBe("nuxt");
-		expect(result?.layout).toBe("flat");
-	});
-
 	it("should default wrapNextjsConfig to true for nextjs in isYes mode", async () => {
 		const result = await runPromptWizard({ framework: "nextjs" }, true);
 
@@ -85,7 +71,6 @@ describe("runPromptWizard", () => {
 
 	it("should allow validator selection for nextjs", async () => {
 		vi.mocked(prompts.select).mockResolvedValueOnce("nextjs"); // framework
-		vi.mocked(prompts.select).mockResolvedValueOnce("strict"); // layout
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // nextjsCodegen
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // wrapNextjsConfig
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
@@ -96,7 +81,6 @@ describe("runPromptWizard", () => {
 		const result = await runPromptWizard({ framework: "nextjs" });
 
 		expect(result?.framework).toBe("nextjs");
-		expect(result?.layout).toBe("strict");
 		expect(result?.validator).toBe("zod");
 		expect(result?.wrapNextjsConfig).toBe(true);
 		expect(result?.disableCodegen).toBe(false);
@@ -104,7 +88,6 @@ describe("runPromptWizard", () => {
 
 	it("should skip wrapNextjsConfig when user disables codegen", async () => {
 		vi.mocked(prompts.select).mockResolvedValueOnce("nextjs"); // framework
-		vi.mocked(prompts.select).mockResolvedValueOnce("simple"); // layout
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(false); // nextjsCodegen
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
 		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
@@ -120,7 +103,6 @@ describe("runPromptWizard", () => {
 
 	it("should set wrapNextjsConfig to false when user declines", async () => {
 		vi.mocked(prompts.select).mockResolvedValueOnce("nextjs"); // framework
-		vi.mocked(prompts.select).mockResolvedValueOnce("simple"); // layout
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // nextjsCodegen
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(false); // wrapNextjsConfig
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath

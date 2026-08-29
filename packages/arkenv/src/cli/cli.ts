@@ -20,9 +20,6 @@ const FLAG_CONFIG = {
 	// elsewhere, so it must never be aliased to `--example` (or any other flag).
 	// Keeping it unassigned makes `-e` fail fast as an unknown argument.
 	example: { long: "--example", short: "", kind: "value" },
-	isStrict: { long: "--strict", short: "", kind: "boolean" },
-	isSimple: { long: "--simple", short: "", kind: "boolean" },
-	isFlat: { long: "--flat", short: "", kind: "boolean" },
 	noCodegen: { long: "--no-codegen", short: "", kind: "boolean" },
 	preset: { long: "--preset", short: "-P", kind: "value" },
 	hostPreset: { long: "--host-preset", short: "-H", kind: "value" },
@@ -203,18 +200,6 @@ export class CLI {
 		return this.getFlagValue(flag.long, flag.short);
 	}
 
-	get isStrict(): boolean {
-		return this.hasFlag("isStrict");
-	}
-
-	get isSimple(): boolean {
-		return this.hasFlag("isSimple");
-	}
-
-	get isFlat(): boolean {
-		return this.hasFlag("isFlat");
-	}
-
 	get noCodegen(): boolean {
 		return this.hasFlag("noCodegen");
 	}
@@ -264,9 +249,6 @@ export class CLI {
 			isForce: this.isForce,
 			isQuiet: this.isQuiet,
 			isAgent: this.isAgent,
-			isStrict: this.isStrict,
-			isSimple: this.isSimple,
-			isFlat: this.isFlat,
 		};
 		if (this.example !== undefined) {
 			input.example = this.example;

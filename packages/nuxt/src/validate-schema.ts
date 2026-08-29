@@ -6,15 +6,11 @@ import { resolveCoreArkenv } from "./resolve-core-arkenv";
  * Validate the project schema at build/dev time by loading schema via capture
  * and calling core directly against the build environment.
  *
- * @param schemaPath Absolute path to the schema file or directory
- * @param resolvedLayout Detected or configured layout mode
- * @param baseDir Strict-layout env directory, or empty for flat layout
+ * @param schemaPath Absolute path to the schema file
  * @param internalOptions Optional engine / Jiti alias overrides
  */
 export function validateSchema(
 	schemaPath: string,
-	resolvedLayout: "simple" | "strict",
-	baseDir: string,
 	internalOptions?: {
 		_jitiAliases?: Record<string, string>;
 		engine?: BootGateEngine;
@@ -24,8 +20,6 @@ export function validateSchema(
 	const { schema } = loadSchemaViaCapture(
 		{
 			schemaPath,
-			layout: resolvedLayout,
-			baseDir,
 			engine,
 		},
 		internalOptions,

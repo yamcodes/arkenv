@@ -78,7 +78,7 @@ export function isCapturing(): boolean {
  *
  * @param schemaOrOptions The schema definition or nested options object
  * @param optionsOrIsServer Flat options, legacy boolean, or undefined
- * @param context Optional server/client/strict-layout context
+ * @param context Optional server/client layout context
  */
 export function recordCapture(
 	schemaOrOptions: SchemaShape | LegacyNestedSchema | null | undefined,

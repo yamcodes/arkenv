@@ -7,214 +7,65 @@ import {
 	extractKeys,
 	findSchemaPath,
 	formatMissingSchemaError,
-	isServerSchemaImport,
-	isStrictLayoutDir,
-	resolveLayout,
 } from "./core";
 
-describe("@arkenv/build layout resolution", () => {
-	it("treats flat as simple layout", () => {
-		const tempDir = path.join(__dirname, "temp-flat-layout-test");
-		fs.mkdirSync(tempDir, { recursive: true });
+describe("@arkenv/build schema discovery", () => {
+	const makeTempDir = () =>
+		fs.mkdtempSync(path.join(os.tmpdir(), "arkenv-build-schema-"));
+
+	it("findSchemaPath discovers src/env.ts", () => {
+		const tempDir = makeTempDir();
 		try {
-			const schemaPath = path.join(tempDir, "env.ts");
-			fs.writeFileSync(schemaPath, "export const env = {}");
-			const res = resolveLayout(schemaPath, "flat");
-			expect(res.layout).toBe("simple");
-			expect(res.baseDir).toBe(schemaPath);
+			const srcDir = path.join(tempDir, "src");
+			fs.mkdirSync(srcDir, { recursive: true });
+			const envFile = path.join(srcDir, "env.ts");
+			fs.writeFileSync(envFile, "export const env = {}");
+			expect(findSchemaPath(tempDir)).toBe(envFile);
 		} finally {
 			fs.rmSync(tempDir, { recursive: true, force: true });
 		}
 	});
 
-	describe("strict layout detection", () => {
-		const makeTempDir = () =>
-			fs.mkdtempSync(path.join(os.tmpdir(), "arkenv-build-layout-"));
+	it("findSchemaPath discovers env.ts at project root", () => {
+		const tempDir = makeTempDir();
+		try {
+			const envFile = path.join(tempDir, "env.ts");
+			fs.writeFileSync(envFile, "export const env = {}");
+			expect(findSchemaPath(tempDir)).toBe(envFile);
+		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
 
-		it("treats client.ts + server.ts as strict without internal/shared.ts", () => {
-			const tempDir = makeTempDir();
-			try {
-				fs.writeFileSync(
-					path.join(tempDir, "client.ts"),
-					"export const env = {}",
-				);
-				fs.writeFileSync(
-					path.join(tempDir, "server.ts"),
-					"export const env = {}",
-				);
+	it("findSchemaPath does not discover env/ directories", () => {
+		const tempDir = makeTempDir();
+		try {
+			const envDir = path.join(tempDir, "env");
+			fs.mkdirSync(envDir, { recursive: true });
+			fs.writeFileSync(path.join(envDir, "client.ts"), "export const env = {}");
+			fs.writeFileSync(path.join(envDir, "server.ts"), "export const env = {}");
+			expect(findSchemaPath(tempDir)).toBeNull();
+		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
 
-				expect(isStrictLayoutDir(tempDir)).toBe(true);
-				expect(resolveLayout(tempDir)).toEqual({
-					layout: "strict",
-					baseDir: tempDir,
-				});
-				expect(resolveLayout(path.join(tempDir, "client.ts"))).toEqual({
-					layout: "strict",
-					baseDir: tempDir,
-				});
-				expect(
-					resolveLayout(path.join(tempDir, "client.ts"), "strict"),
-				).toEqual({
-					layout: "strict",
-					baseDir: tempDir,
-				});
-			} finally {
-				fs.rmSync(tempDir, { recursive: true, force: true });
-			}
-		});
-
-		it("findSchemaPath discovers env/ without requiring shared.ts", () => {
-			const tempDir = makeTempDir();
-			try {
-				const envDir = path.join(tempDir, "env");
-				fs.mkdirSync(envDir, { recursive: true });
-				fs.writeFileSync(
-					path.join(envDir, "client.ts"),
-					"export const env = {}",
-				);
-				fs.writeFileSync(
-					path.join(envDir, "server.ts"),
-					"export const env = {}",
-				);
-
-				expect(findSchemaPath(tempDir)).toBe(envDir);
-			} finally {
-				fs.rmSync(tempDir, { recursive: true, force: true });
-			}
-		});
-
-		it("findSchemaPath discovers src/env/ without requiring shared.ts", () => {
-			const tempDir = makeTempDir();
-			try {
-				const envDir = path.join(tempDir, "src", "env");
-				fs.mkdirSync(envDir, { recursive: true });
-				fs.writeFileSync(
-					path.join(envDir, "client.ts"),
-					"export const env = {}",
-				);
-				fs.writeFileSync(
-					path.join(envDir, "server.ts"),
-					"export const env = {}",
-				);
-
-				expect(findSchemaPath(tempDir)).toBe(envDir);
-			} finally {
-				fs.rmSync(tempDir, { recursive: true, force: true });
-			}
-		});
-
-		it("throws for explicit strict when client.ts is missing", () => {
-			const tempDir = makeTempDir();
-			try {
-				fs.writeFileSync(
-					path.join(tempDir, "server.ts"),
-					"export const env = {}",
-				);
-				expect(() =>
-					resolveLayout(path.join(tempDir, "missing.ts"), "strict"),
-				).toThrow(
-					`[ArkEnv] Strict layout requires "${path.join(tempDir, "client.ts")}" to exist`,
-				);
-			} finally {
-				fs.rmSync(tempDir, { recursive: true, force: true });
-			}
-		});
-
-		it("assertFlatSchemaFile rejects strict layout directories", () => {
-			const tempDir = makeTempDir();
-			try {
-				fs.writeFileSync(
-					path.join(tempDir, "client.ts"),
-					"export const env = {}",
-				);
-				fs.writeFileSync(
-					path.join(tempDir, "server.ts"),
-					"export const env = {}",
-				);
-				expect(() =>
-					assertFlatSchemaFile(tempDir, "ArkEnv Vite plugin:"),
-				).toThrow(/only supports a flat env module file/);
-			} finally {
-				fs.rmSync(tempDir, { recursive: true, force: true });
-			}
-		});
-
-		it("isServerSchemaImport correctly flags server schema imports", () => {
-			const baseDir = "/app/src/env";
-			expect(isServerSchemaImport("@arkenv/nuxt/server")).toBe(true);
-			expect(isServerSchemaImport("@arkenv/nuxt/standard/server")).toBe(true);
-			expect(isServerSchemaImport("@arkenv/nextjs/server")).toBe(true);
-			expect(
-				isServerSchemaImport(
-					"./env/server",
-					"/app/src/main.ts",
-					baseDir,
-					"/app",
-				),
-			).toBe(true);
-			expect(
-				isServerSchemaImport(
-					"./server.ts",
-					"/app/src/env/client.ts",
-					baseDir,
-					"/app",
-				),
-			).toBe(true);
-			expect(
-				isServerSchemaImport("/app/src/env/server.ts", undefined, baseDir),
-			).toBe(true);
-			expect(
-				isServerSchemaImport("@/env/server", undefined, baseDir, "/app"),
-			).toBe(true);
-			expect(
-				isServerSchemaImport(
-					"~/env/server",
-					undefined,
-					baseDir,
-					"/app",
-					"/app/src",
-				),
-			).toBe(true);
-			expect(
-				isServerSchemaImport("env/server", undefined, baseDir, "/app"),
-			).toBe(true);
-
-			expect(
-				isServerSchemaImport("/app/src/env/server.mts", undefined, baseDir),
-			).toBe(true);
-			expect(
-				isServerSchemaImport("/app/src/env/server.tsx", undefined, baseDir),
-			).toBe(true);
-
-			// Allowed imports (including sibling packages and unrelated packages ending with /env/server)
-			expect(
-				isServerSchemaImport(
-					"./env/client",
-					"/app/src/main.ts",
-					baseDir,
-					"/app",
-				),
-			).toBe(false);
-			expect(
-				isServerSchemaImport("/app/src/env/client.ts", undefined, baseDir),
-			).toBe(false);
-			expect(
-				isServerSchemaImport("other-pkg/server", undefined, baseDir, "/app"),
-			).toBe(false);
-			expect(
-				isServerSchemaImport(
-					"/other/pkgs/tool/env/server.ts",
-					undefined,
-					baseDir,
-				),
-			).toBe(false);
-			expect(
-				isServerSchemaImport("some-pkg/env/server", undefined, baseDir, "/app"),
-			).toBe(false);
-			expect(isServerSchemaImport("lodash", undefined, baseDir, "/app")).toBe(
-				false,
+	it("assertFlatSchemaFile rejects directories", () => {
+		const tempDir = makeTempDir();
+		try {
+			fs.writeFileSync(
+				path.join(tempDir, "client.ts"),
+				"export const env = {}",
 			);
-		});
+			expect(() =>
+				assertFlatSchemaFile(tempDir, "ArkEnv Vite plugin:"),
+			).toThrow(/only supports a flat env module file/);
+			expect(() =>
+				assertFlatSchemaFile(tempDir, "ArkEnv Vite plugin:"),
+			).toThrow(/Point schemaPath at that file\./);
+		} finally {
+			fs.rmSync(tempDir, { recursive: true, force: true });
+		}
 	});
 
 	it("extracts keys from flat layout schema with NUXT_PUBLIC_ prefix", () => {

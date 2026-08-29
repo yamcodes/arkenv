@@ -1,5 +1,20 @@
 # @arkenv/standard
 
+## 1.0.0-alpha.8
+
+### Patch Changes
+
+- #### Fail closed when the CLI cannot inspect your schema _[`#1702`](https://github.com/yamcodes/arkenv/pull/1702) [`dcabf1f`](https://github.com/yamcodes/arkenv/commit/dcabf1fce08367529cb9a3de3101f0e6b2209901) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`arkenv example` and `arkenv check` now fail with a clear error when the schema module never calls `arkenv()`, the installed runtime is too old for inspect, the definition cannot be read as keys, or the module uses `env` values at load time — instead of treating those cases as an empty schema.
+	
+	Upgrade `@arkenv/core` or `@arkenv/standard` alongside the CLI so inspect works. Keep the schema declarative (`export const env = arkenv({ ... })`) and do not read `env` at module scope. `arkenv({})` remains a valid empty schema.
+- #### Retry Standard JSON Schema `draft-2020-12` and surface converter failures _[`#1701`](https://github.com/yamcodes/arkenv/pull/1701) [`61c79f6`](https://github.com/yamcodes/arkenv/commit/61c79f6846a4accff8985733884a271b69466436) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	On-value Standard JSON Schema converters are now probed with `draft-07`, then `draft-2020-12`. Validators that only implement `draft-2020-12` participate in ArkEnv pre-coercion — for example Joi, which can now use root `@arkenv/standard` with the same pre-coercion pipeline as Zod. When a converter is present but every target fails — throws or returns a non-schema — the key fails with `INVALID_SCHEMA` and the underlying message instead of looking like missing JSON Schema support or falling through to `toJsonSchema`.
+
 ## 1.0.0-alpha.7
 
 ### Patch Changes

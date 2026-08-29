@@ -193,7 +193,6 @@ describe("PresetUseCase", () => {
 		it("uses package.json arkenv schema pointer when discovered", async () => {
 			vi.mocked(scanner.readArkenvConfig).mockResolvedValue({
 				schema: "./src/config/env.ts",
-				layout: "flat",
 			});
 			vi.mocked(workspace.exists).mockImplementation(async (p: string) =>
 				p.includes("src/config/env.ts"),
@@ -221,7 +220,6 @@ describe("PresetUseCase", () => {
 		it("honors --file override over package.json pointer", async () => {
 			vi.mocked(scanner.readArkenvConfig).mockResolvedValue({
 				schema: "./src/config/env.ts",
-				layout: "flat",
 			});
 			const customFile = path.resolve(process.cwd(), "custom/env.ts");
 			vi.mocked(workspace.exists).mockImplementation(
@@ -245,63 +243,6 @@ describe("PresetUseCase", () => {
 			expect(workspace.writeFile).toHaveBeenCalledWith(
 				customFile,
 				expect.stringContaining("// @arkenv-preset-start vercel"),
-			);
-		});
-
-		it("applies role-suffixed blocks to strict layout", async () => {
-			const clientPath = path.resolve(process.cwd(), "env/client.ts");
-			const serverPath = path.resolve(process.cwd(), "env/server.ts");
-
-			vi.mocked(workspace.exists).mockImplementation(
-				async (p: string) => p === clientPath || p === serverPath,
-			);
-
-			vi.mocked(workspace.readFile).mockImplementation(async (p: string) => {
-				if (p === clientPath) {
-					return `import arkenv from "@arkenv/nextjs/client";
-import { SharedSchema } from "./internal/shared";
-
-export const env = arkenv(
-	{
-		NEXT_PUBLIC_URL: "string",
-	},
-	{
-		extends: [SharedSchema],
-	},
-);`;
-				}
-				if (p === serverPath) {
-					return `import arkenv from "@arkenv/nextjs/server";
-
-export const env = arkenv(
-	{
-		DATABASE_URL: "string",
-	},
-);`;
-				}
-				return "";
-			});
-
-			vi.mocked(scanner.detectFramework).mockResolvedValue("nextjs");
-
-			const result = await useCase.execute({
-				action: "apply",
-				provider: "vercel",
-			});
-
-			expect(result).toBe(true);
-			expect(workspace.writeFile).toHaveBeenCalledWith(
-				clientPath,
-				expect.stringContaining("// @arkenv-preset-start vercel:client"),
-			);
-			expect(workspace.writeFile).toHaveBeenCalledWith(
-				serverPath,
-				expect.stringContaining("// @arkenv-preset-start vercel:server"),
-			);
-			expect(logger.success).toHaveBeenCalledWith(
-				expect.stringContaining(
-					"Applied Vercel preset to env/client.ts and env/server.ts",
-				),
 			);
 		});
 
@@ -389,60 +330,6 @@ export const env = arkenv(
 			);
 			expect(logger.success).toHaveBeenCalledWith(
 				expect.stringContaining("Removed Vercel preset from env.ts"),
-			);
-		});
-
-		it("removes role-suffixed managed preset blocks from strict layout", async () => {
-			const clientPath = path.resolve(process.cwd(), "env/client.ts");
-			const serverPath = path.resolve(process.cwd(), "env/server.ts");
-
-			vi.mocked(workspace.exists).mockImplementation(
-				async (p: string) => p === clientPath || p === serverPath,
-			);
-
-			vi.mocked(workspace.readFile).mockImplementation(async (p: string) => {
-				if (p === clientPath) {
-					return dedent`
-						import arkenv from "./generated/env.gen";
-						export const env = arkenv({
-							// @arkenv-preset-start vercel:client
-							NEXT_PUBLIC_VERCEL_ENV: "string?",
-							// @arkenv-preset-end vercel:client
-						});
-					`;
-				}
-				if (p === serverPath) {
-					return dedent`
-						import arkenv from "./generated/env.gen";
-						export const env = arkenv({
-							DATABASE_URL: "string",
-							// @arkenv-preset-start vercel:server
-							VERCEL: "string?",
-							// @arkenv-preset-end vercel:server
-						});
-					`;
-				}
-				return "";
-			});
-
-			const result = await useCase.execute({
-				action: "remove",
-				provider: "vercel",
-			});
-
-			expect(result).toBe(true);
-			expect(workspace.writeFile).toHaveBeenCalledWith(
-				clientPath,
-				expect.not.stringContaining("NEXT_PUBLIC_VERCEL_ENV"),
-			);
-			expect(workspace.writeFile).toHaveBeenCalledWith(
-				serverPath,
-				expect.not.stringContaining("VERCEL:"),
-			);
-			expect(logger.success).toHaveBeenCalledWith(
-				expect.stringContaining(
-					"Removed Vercel preset from env/client.ts and env/server.ts",
-				),
 			);
 		});
 

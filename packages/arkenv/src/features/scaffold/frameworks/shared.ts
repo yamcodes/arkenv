@@ -23,15 +23,7 @@ const GENERATED_ENV_MODULE = "env.gen";
  */
 export const NEXTJS_VIRTUAL_FACTORY_IMPORT = "@/.arkenv";
 
-const STRICT_INTERNAL_DIR = "internal";
-const STRICT_SHARED_BASENAME = "shared";
-const STRICT_CLIENT_BASENAME = "client";
-const STRICT_SERVER_BASENAME = "server";
-
 const SCHEMA_FILE_LABEL = "environment schema";
-const SHARED_SCHEMA_FILE_LABEL = "shared environment schema";
-const CLIENT_SCHEMA_FILE_LABEL = "client environment schema";
-const SERVER_SCHEMA_FILE_LABEL = "server environment schema";
 
 /**
  * Build default env var values from explicit keys.
@@ -100,9 +92,15 @@ export function resolveAliasImportPath(
 	return undefined;
 }
 
-function resolveCodegenImportPath(
+/**
+ * Resolve the Next.js/Nuxt generated env import path for flat schemas.
+ *
+ * @param params File planning parameters.
+ * @param options Framework and codegen options.
+ * @returns The resolved import path when codegen is enabled.
+ */
+export function resolveSimpleImportPath(
 	params: FrameworkGetFilesParams,
-	generatedDir: string,
 	options: { framework: Framework; disableCodegen?: boolean },
 ): string | undefined {
 	if (!isCodegenFramework(options.framework) || options.disableCodegen) {
@@ -119,46 +117,8 @@ function resolveCodegenImportPath(
 
 	return resolveAliasImportPath(
 		params.cwd,
-		generatedDir,
-		params.tsConfig.parsed,
-	);
-}
-
-/**
- * Resolve the Next.js/Nuxt generated env import path for simple layouts.
- *
- * @param params File planning parameters.
- * @param options Framework and codegen options.
- * @returns The resolved import path when codegen is enabled.
- */
-export function resolveSimpleImportPath(
-	params: FrameworkGetFilesParams,
-	options: { framework: Framework; disableCodegen?: boolean },
-): string | undefined {
-	return resolveCodegenImportPath(
-		params,
 		path.join(params.targetDir, GENERATED_ENV_DIR),
-		options,
-	);
-}
-
-/**
- * Resolve the Next.js/Nuxt generated env import path for strict layouts.
- *
- * @param params File planning parameters.
- * @param baseWithoutExt Absolute path to the env schema base without extension.
- * @param options Framework and codegen options.
- * @returns The resolved import path when codegen is enabled.
- */
-export function resolveStrictImportPath(
-	params: FrameworkGetFilesParams,
-	baseWithoutExt: string,
-	options: { framework: Framework; disableCodegen?: boolean },
-): string | undefined {
-	return resolveCodegenImportPath(
-		params,
-		path.join(baseWithoutExt, GENERATED_ENV_DIR),
-		options,
+		params.tsConfig.parsed,
 	);
 }
 
@@ -196,75 +156,4 @@ export function planSimpleSchemaFile(
 	}
 
 	return [];
-}
-
-/**
- * Plan strict-layout env schema files using the validator's strict templates.
- *
- * @param validator The validator strategy providing template generation.
- * @param options The selected project options.
- * @param params File planning parameters.
- * @param importPath Optional generated env import path.
- * @returns Planned shared, client, and server schema file actions.
- */
-export function planStrictSchemaFiles(
-	validator: ValidatorStrategy,
-	options: ProjectOptions,
-	params: FrameworkGetFilesParams,
-	importPath?: string,
-) {
-	const ext = path.extname(params.targetPath);
-	const baseWithoutExt = params.targetPath.slice(0, -ext.length);
-	const sharedPath = path.join(
-		baseWithoutExt,
-		STRICT_INTERNAL_DIR,
-		`${STRICT_SHARED_BASENAME}${ext}`,
-	);
-	const clientPath = path.join(
-		baseWithoutExt,
-		`${STRICT_CLIENT_BASENAME}${ext}`,
-	);
-	const serverPath = path.join(
-		baseWithoutExt,
-		`${STRICT_SERVER_BASENAME}${ext}`,
-	);
-
-	const context = createScaffoldContext(options, importPath);
-	const templates = validator.getStrictTemplates(
-		options.envKeys ?? [],
-		context,
-	);
-
-	const sharedExists = params.existingFiles.includes(sharedPath);
-	const clientExists = params.existingFiles.includes(clientPath);
-	const serverExists = params.existingFiles.includes(serverPath);
-
-	const files = [];
-
-	if (!sharedExists || options.overwriteEnvSchemaFile !== false) {
-		files.push({
-			path: sharedPath,
-			content: templates.shared,
-			action: sharedExists ? ("overwrite" as const) : ("create" as const),
-			label: SHARED_SCHEMA_FILE_LABEL,
-		});
-	}
-	if (!clientExists || options.overwriteEnvSchemaFile !== false) {
-		files.push({
-			path: clientPath,
-			content: templates.client,
-			action: clientExists ? ("overwrite" as const) : ("create" as const),
-			label: CLIENT_SCHEMA_FILE_LABEL,
-		});
-	}
-	if (!serverExists || options.overwriteEnvSchemaFile !== false) {
-		files.push({
-			path: serverPath,
-			content: templates.server,
-			action: serverExists ? ("overwrite" as const) : ("create" as const),
-			label: SERVER_SCHEMA_FILE_LABEL,
-		});
-	}
-
-	return files;
 }

@@ -1,5 +1,3 @@
-import path from "node:path";
-
 function generateRuntimeEnvLines(
 	clientKeys: string[],
 	sharedKeys: string[],
@@ -101,85 +99,6 @@ export function arkenv<
 		},
 	} as any);
 	return env${castReturn};
-}
-${GENERATED_FOOTER}`;
-}
-
-/**
- * Ambient module declaration so `#arkenv/client-env` resolves to the project's
- * `env/client.ts` for `AutoClientEnv` type inference on `@arkenv/nextjs/server`.
- *
- * @returns Generated `.d.ts` source
- */
-export function generateClientEnvAmbientDeclaration(
-	clientPath?: string,
-	outputPath?: string,
-): string {
-	let importTarget = "../client";
-	if (clientPath && outputPath) {
-		const ambientDir = path.dirname(outputPath);
-		const rel = path.relative(ambientDir, clientPath).replace(/\\/g, "/");
-		const cleanRel = rel.replace(/\.tsx?$/, "");
-		importTarget = cleanRel.startsWith(".") ? cleanRel : `./${cleanRel}`;
-	}
-	return `${GENERATED_HEADER}
-declare module "#arkenv/client-env" {
-	export { env } from "${importTarget}";
-}
-`;
-}
-
-export function generateClientFactoryCode(
-	clientKeys: string[],
-	sharedKeys: string[],
-	isStandard?: boolean,
-): string {
-	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
-	const importPath = isStandard
-		? "@arkenv/nextjs/standard/client"
-		: "@arkenv/nextjs/client";
-	const coreName = "arkenv";
-	const typeImport = isStandard
-		? ""
-		: '\nimport type { Infer } from "@arkenv/core";';
-	const callPrefix = "coreArkenv";
-	const returnType = isStandard
-		? "Readonly<TSchema & MergeExtends<TExtends>>"
-		: "Readonly<Infer<TSchema> & MergeExtends<TExtends>>";
-
-	return `${GENERATED_HEADER}
-import { ${coreName} as coreArkenv } from "${importPath}";${typeImport}
-
-type ResolveExtend<T> = [Infer<T>] extends [never] ? T : Infer<T>;
-
-type UnionToIntersection<U> = (
-	U extends any ? (k: U) => void : never
-) extends (k: infer I) => void
-	? I
-	: never;
-
-type MergeExtends<TExtends extends readonly unknown[] | undefined> =
-	TExtends extends readonly unknown[]
-		? UnionToIntersection<ResolveExtend<TExtends[number]>>
-		: {};
-
-export function arkenv<
-	const TSchema extends Record<string, any> = {},
-	const TExtends extends readonly unknown[] = [],
->(
-	schema: TSchema & {
-		[K in keyof TSchema]: K extends \`NEXT_PUBLIC_\${string}\` ? unknown : never;
-	},
-	options?: {
-		extends?: [...TExtends];
-	},
-): ${returnType} {
-	return ${callPrefix}(schema as any, {
-		...options,
-		runtimeEnv: {
-			${runtimeEnvLines}
-		},
-	} as any);
 }
 ${GENERATED_FOOTER}`;
 }

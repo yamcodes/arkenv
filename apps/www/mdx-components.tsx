@@ -47,8 +47,10 @@ async function AutoTypeTable(
 }
 
 export function getMDXComponents(components: MDXComponents): MDXComponents {
-	// biome-ignore lint/suspicious/noExplicitAny: arkenvComponents type is complex but we know it might have table
-	const Table = (arkenvComponents as any).table ?? "table";
+	// `@arkenv/fumadocs-ui` already wraps tables with a focusable
+	// `fd-scroll-container` (axe scrollable-region-focusable). Keep that and
+	// only add docs-site column/code cell styling on the inner table.
+	const Table = arkenvComponents.table ?? "table";
 	return {
 		...arkenvComponents,
 		...twoslashComponents,

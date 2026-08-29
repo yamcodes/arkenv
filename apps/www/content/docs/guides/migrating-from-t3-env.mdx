@@ -11,16 +11,17 @@ For a feature cheatsheet, see [Why ArkEnv?](/docs/why-arkenv).
 
 The table below is the mapping you need while you edit files.
 
-| Feature          | T3 Env                                  | ArkEnv                                                    |
-| ---------------- | --------------------------------------- | --------------------------------------------------------- |
-| Core function    | `createEnv` from `@t3-oss/env-nextjs`   | `arkenv` from `@arkenv/nextjs` or `@arkenv/core`          |
-| Schema structure | Nested `{ server, client, runtimeEnv }` | Flat schema, or a `--strict` file split                   |
-| Client inlining  | Manual `runtimeEnv` object              | `withArkEnv` writes the mapping                           |
-| Validator        | Zod only                                | ArkType via `@arkenv/core`, or Zod via `@arkenv/standard` |
+| Feature          | T3 Env                                  | ArkEnv                                                      |
+| ---------------- | --------------------------------------- | ----------------------------------------------------------- |
+| Core function    | `createEnv` from `@t3-oss/env-nextjs`   | `arkenv` from `@arkenv/nextjs` or `@arkenv/core`            |
+| Schema structure | Nested `{ server, client, runtimeEnv }` | Flat schema (optional two-module recipe for name isolation) |
+| Client inlining  | Manual `runtimeEnv` object              | `withArkEnv` writes the mapping                             |
+| Validator        | Zod only                                | ArkType via `@arkenv/core`, or Zod via `@arkenv/standard`   |
 
 A flat layout still infers types and throws if client code reads a
-server key. Scaffold `--strict` when secret **names** must stay out of
-the client graph.
+server key. Use the
+[two-module recipe](/docs/core-concepts/client-vs-server#advanced-two-module-recipe)
+when secret **names** must stay out of the client graph.
 
 ## Next.js migration steps
 
@@ -119,23 +120,19 @@ Work through these steps on an existing Next.js app.
   </Step>
 
   <Step>
-    ### Optional: strict layout
+    ### Optional: two-module recipe
 
-    Split client and server modules when you need compile-time isolation:
-
-    ```package-install
-    npx arkenv@latest init --strict
-    ```
-
-    Put keys in `env/server.ts` and `env/client.ts`. See
-    [Client vs. server](/docs/core-concepts/client-vs-server).
+    If you used two `createEnv` calls in T3 Env for name/type isolation,
+    mirror that with two ArkEnv modules and two imports — not a CLI
+    `--strict` flag. See
+    [Client vs. server](/docs/core-concepts/client-vs-server#advanced-two-module-recipe).
   </Step>
 </Steps>
 
 ## Next steps
 
 <Cards>
-  <Card href="/docs/frameworks/nextjs" title="Next.js guide" description="@arkenv/nextjs configuration, layouts, and codegen." />
+  <Card href="/docs/frameworks/nextjs" title="Next.js guide" description="@arkenv/nextjs configuration and codegen." />
 
   <Card href="/docs/why-arkenv" title="Why ArkEnv?" description="ArkEnv versus Varlock, T3 Env, znv, Envalid, and a DIY schema." />
 

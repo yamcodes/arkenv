@@ -210,10 +210,43 @@ After you switch the runtime import from `arkenv` to `@arkenv/core` (or
 the framework package), keep using `withArkEnv` or the Nuxt module.
 
 Nested `arkenv({ server, client, shared })` still runs. Prefer a flat
-schema or a `--strict` layout. See
+schema. See
 [Client vs. server](/docs/core-concepts/client-vs-server)
 and the [Next.js](/docs/frameworks/nextjs) /
 [Nuxt](/docs/frameworks/nuxt) guides.
+
+## Strict layout removed (alpha hard cut)
+
+Earlier alphas shipped `npx arkenv@latest init --strict` plus
+`@arkenv/nextjs/server` / `@arkenv/nuxt/client` (and related subpaths).
+That layout engine is gone. Flat `env.ts` is the only first-class path.
+
+If you relied on `--strict` for name/type isolation, keep two modules by
+hand — the same shape as two T3 `createEnv` calls:
+
+```ts title="./env/client.ts"
+import arkenv from "@/.arkenv";
+
+export const env = arkenv({
+  NEXT_PUBLIC_API_URL: "string",
+});
+```
+
+```ts title="./env/server.ts"
+import "server-only";
+import arkenv from "@arkenv/core";
+import { env as clientEnv } from "./client";
+
+export const env = arkenv(
+  { DATABASE_URL: "string" },
+  { extends: [clientEnv] },
+);
+```
+
+On Nuxt, use `@arkenv/nuxt` for the client module and `@arkenv/core` for
+the server module. Never import the server module from client code.
+Full recipe:
+[Client vs. server](/docs/core-concepts/client-vs-server#advanced-two-module-recipe).
 
 ## Dead-code elimination
 

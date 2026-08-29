@@ -59,13 +59,13 @@ export function isEnvModuleId(id: string, schemaPath: string): boolean {
 }
 
 /**
- * Resolve the absolute env-module or layout path from options and a project root.
+ * Resolve the absolute env-module path from options and a project root.
  *
  * @param root The project root directory
  * @param schemaPath An optional relative or absolute schema path from config
  * @param prefix Brand prefix for diagnostics (e.g. `"[ArkEnv]"`, `"ArkEnv Vite plugin:"`, `"ArkEnv Bun plugin:"`)
- * @returns The absolute path to the env module or strict schema directory
- * @throws If no env module can be found or if schemaPath does not exist
+ * @returns The absolute path to the env module file
+ * @throws If no env module can be found, if schemaPath does not exist, or if the path is a directory
  */
 export function resolveEnvModulePath(
 	root: string,
@@ -84,7 +84,7 @@ export function resolveEnvModulePath(
 				`${cleanPrefix} schemaPath "${schemaPath}" does not exist (resolved to "${resolved}").`,
 			);
 		}
-		return resolved;
+		return assertFlatSchemaFile(resolved, cleanPrefix);
 	}
 
 	const discovered = findSchemaPath(root);
@@ -97,7 +97,7 @@ export function resolveEnvModulePath(
 			}),
 		);
 	}
-	return discovered;
+	return assertFlatSchemaFile(discovered, cleanPrefix);
 }
 
 /**

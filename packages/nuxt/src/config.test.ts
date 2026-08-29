@@ -1,83 +1,14 @@
-import fs from "node:fs";
-import path from "node:path";
-import { resolveBuildLog } from "@repo/log";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import {
 	extractClientKeys,
 	extractKeys,
 	extractServerKeys,
 	extractSharedKeys,
-	normalizeLayout,
-	resolveLayout,
 } from "./config";
 
-describe("Nuxt config parser & codegen", () => {
-	describe("normalizeLayout", () => {
-		beforeEach(() => {
-			vi.stubEnv("NODE_ENV", "development");
-		});
-
-		afterEach(() => {
-			vi.unstubAllEnvs();
-		});
-
-		it("maps flat to simple internally", () => {
-			expect(normalizeLayout("flat", resolveBuildLog())).toBe("simple");
-		});
-
-		it("maps simple to simple and emits a deprecation warning", () => {
-			const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-
-			expect(normalizeLayout("simple", resolveBuildLog())).toBe("simple");
-			expect(warnSpy).toHaveBeenCalledWith(
-				expect.stringContaining("'simple' layout option is deprecated"),
-			);
-
-			warnSpy.mockRestore();
-		});
-	});
-
-	it("should resolve simple layout", () => {
-		const tempDir = path.join(__dirname, "temp-simple-test");
-		fs.mkdirSync(tempDir, { recursive: true });
-		try {
-			const schemaPath = path.join(tempDir, "env.ts");
-			fs.writeFileSync(schemaPath, "export const Env = {}");
-			const res = resolveLayout(schemaPath);
-			expect(res.layout).toBe("simple");
-		} finally {
-			fs.rmSync(tempDir, { recursive: true, force: true });
-		}
-	});
-
-	it("should resolve strict layout", () => {
-		const tempDir = path.join(__dirname, "temp-strict-test");
-		fs.mkdirSync(tempDir, { recursive: true });
-		fs.mkdirSync(path.join(tempDir, "internal"), { recursive: true });
-		try {
-			fs.writeFileSync(
-				path.join(tempDir, "client.ts"),
-				"export const env = {}",
-			);
-			fs.writeFileSync(
-				path.join(tempDir, "server.ts"),
-				"export const env = {}",
-			);
-			fs.writeFileSync(
-				path.join(tempDir, "internal", "shared.ts"),
-				"export const SharedSchema = {}",
-			);
-
-			const res = resolveLayout(path.join(tempDir, "client.ts"));
-			expect(res.layout).toBe("strict");
-			expect(res.baseDir).toBe(tempDir);
-		} finally {
-			fs.rmSync(tempDir, { recursive: true, force: true });
-		}
-	});
-
-	it("should extract keys in simple layout", () => {
+describe("Nuxt config parser", () => {
+	it("should extract keys in nested layout", () => {
 		const content = `
 			export const env = arkenv({
 				server: {
@@ -151,7 +82,7 @@ describe("Nuxt config parser & codegen", () => {
 		expect(res.sharedKeys).toEqual(["NODE_ENV"]);
 	});
 
-	it("should extract client, server, and shared keys in strict layout", () => {
+	it("should extract client, server, and shared keys from separate file contents", () => {
 		const clientContent = `
 			import arkenv from "./generated/env.gen";
 			export const env = arkenv({
@@ -159,7 +90,7 @@ describe("Nuxt config parser & codegen", () => {
 			});
 		`;
 		const serverContent = `
-			import arkenv from "@arkenv/nuxt/server";
+			import arkenv from "@arkenv/nuxt";
 			export const env = arkenv({
 				DATABASE_URL: "string"
 			});

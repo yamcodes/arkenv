@@ -9,7 +9,6 @@ type TemplateOptions = {
 	path?: string;
 	language?: "ts";
 	envKeys?: string[];
-	layout?: ProjectOptions["layout"];
 	disableCodegen?: boolean;
 	hostPreset?: ProjectOptions["hostPreset"];
 };
@@ -27,21 +26,6 @@ function getSimpleTemplate(
 		nextjsImportPath,
 	);
 	return validator.getSimpleTemplate(options.envKeys ?? [], context);
-}
-
-/**
- * Exercise strict template generation through the production VALIDATORS seam.
- */
-function getStrictTemplates(
-	options: TemplateOptions,
-	nextjsImportPath?: string,
-) {
-	const validator = VALIDATORS[options.validator];
-	const context = createScaffoldContext(
-		options as ProjectOptions,
-		nextjsImportPath,
-	);
-	return validator.getStrictTemplates(options.envKeys ?? [], context);
 }
 
 describe("validators templates", () => {
@@ -97,11 +81,10 @@ describe("validators templates", () => {
 			expect(template).not.toContain("runtimeEnv:");
 		});
 
-		it("returns nextjs flat layout template when layout is flat", () => {
+		it("returns nextjs flat template", () => {
 			const options = {
 				validator: "arktype" as const,
 				framework: "nextjs" as const,
-				layout: "flat" as const,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
@@ -115,11 +98,10 @@ describe("validators templates", () => {
 			expect(template).not.toContain("shared:");
 		});
 
-		it("returns nuxt flat layout template when layout is flat", () => {
+		it("returns nuxt flat template", () => {
 			const options = {
 				validator: "arktype" as const,
 				framework: "nuxt" as const,
-				layout: "flat" as const,
 				path: "env.ts",
 				language: "ts" as const,
 				shouldUpdateTsConfig: false,
@@ -134,23 +116,6 @@ describe("validators templates", () => {
 			expect(template).not.toContain("client:");
 			expect(template).not.toContain("shared:");
 			expect(template).not.toContain("runtimeEnv:");
-		});
-
-		it("returns nextjs nested layout template when layout is simple", () => {
-			const options = {
-				validator: "arktype" as const,
-				framework: "nextjs" as const,
-				layout: "simple" as const,
-				path: "env.ts",
-				language: "ts" as const,
-				shouldUpdateTsConfig: false,
-				shouldInstall: false,
-			};
-			const template = getSimpleTemplate(options);
-			expect(template).toContain('import arkenv from "@/.arkenv"');
-			expect(template).toContain("server:");
-			expect(template).toContain("client:");
-			expect(template).toContain("shared:");
 		});
 
 		it("returns nextjs template with custom nextjsImportPath", () => {
@@ -203,7 +168,7 @@ describe("validators templates", () => {
 			};
 			const template = getSimpleTemplate(options);
 			expect(template).toContain('import arkenv from "@/.arkenv"');
-			expect(template).toContain('import { z } from "zod"');
+			expect(template).toContain('import * as z from "zod"');
 			expect(template).toContain("DATABASE_URL: z.url().default(");
 		});
 
@@ -271,7 +236,7 @@ describe("validators templates", () => {
 			};
 			const template = getSimpleTemplate(options);
 			expect(template).toContain('import arkenv from "@arkenv/standard"');
-			expect(template).toContain('import { z } from "zod"');
+			expect(template).toContain('import * as z from "zod"');
 			expect(template).toContain('.default("development")');
 			expect(template).toContain(".default(3000)");
 			expect(template).toContain("export const env = arkenv({");
@@ -289,7 +254,7 @@ describe("validators templates", () => {
 			};
 			const template = getSimpleTemplate(options);
 			expect(template).toContain('import arkenv from "@arkenv/standard"');
-			expect(template).toContain('import { z } from "zod"');
+			expect(template).toContain('import * as z from "zod"');
 			expect(template).toContain("export const env = arkenv({");
 		});
 
@@ -366,173 +331,6 @@ describe("validators templates", () => {
 		});
 	});
 
-	describe("getStrictTemplates", () => {
-		it("returns strict templates with codegen enabled", () => {
-			const options = {
-				validator: "zod" as const,
-				framework: "nextjs" as const,
-				path: "env.ts",
-				language: "ts" as const,
-				shouldUpdateTsConfig: false,
-				shouldInstall: false,
-				disableCodegen: false,
-			};
-			const templates = getStrictTemplates(options);
-			expect(templates.shared).toContain(
-				"export const SharedSchema = z.object({",
-			);
-			expect(templates.client).toContain('import arkenv from "@/.arkenv";');
-			expect(templates.client).toContain("export const env = arkenv(");
-			expect(templates.client).not.toContain(
-				"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
-			);
-			expect(templates.server).not.toContain("extends: [clientEnv]");
-			expect(templates.server).not.toContain(
-				'import { env as clientEnv } from "./client"',
-			);
-		});
-
-		it("returns strict templates with custom nextjsImportPath", () => {
-			const options = {
-				validator: "zod" as const,
-				framework: "nextjs" as const,
-				path: "env.ts",
-				language: "ts" as const,
-				shouldUpdateTsConfig: false,
-				shouldInstall: false,
-				disableCodegen: false,
-			};
-			const templates = getStrictTemplates(options, "@/.arkenv");
-			expect(templates.client).toContain('import arkenv from "@/.arkenv";');
-		});
-
-		it("returns strict templates with codegen disabled", () => {
-			const options = {
-				validator: "zod" as const,
-				framework: "nextjs" as const,
-				path: "env.ts",
-				language: "ts" as const,
-				shouldUpdateTsConfig: false,
-				shouldInstall: false,
-				disableCodegen: true,
-			};
-			const templates = getStrictTemplates(options);
-			expect(templates.shared).toContain(
-				"export const SharedSchema = z.object({",
-			);
-			expect(templates.client).not.toContain(
-				'import { runtimeEnv } from "./generated/env.gen";',
-			);
-			expect(templates.client).toContain("runtimeEnv: {");
-			expect(templates.client).toContain(
-				"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
-			);
-			expect(templates.server).not.toContain("extends: [clientEnv]");
-			expect(templates.server).not.toContain(
-				'import { env as clientEnv } from "./client"',
-			);
-		});
-
-		it("returns simplified Next.js strict server template without manual extends", () => {
-			const options = {
-				validator: "arktype" as const,
-				framework: "nextjs" as const,
-				path: "env.ts",
-				language: "ts" as const,
-				shouldUpdateTsConfig: false,
-				shouldInstall: false,
-			};
-			const templates = getStrictTemplates(options);
-			expect(templates.server).toContain(
-				'import arkenv from "@arkenv/nextjs/server"',
-			);
-			expect(templates.server).not.toContain("extends: [clientEnv]");
-			expect(templates.server).not.toContain(
-				'import { env as clientEnv } from "./client"',
-			);
-			expect(templates.server).toContain("export const env = arkenv(");
-		});
-
-		it("returns simplified Nuxt strict server template without manual extends", () => {
-			const options = {
-				validator: "arktype" as const,
-				framework: "nuxt" as const,
-				path: "env.ts",
-				language: "ts" as const,
-				shouldUpdateTsConfig: false,
-				shouldInstall: false,
-			};
-			const templates = getStrictTemplates(options);
-			expect(templates.server).toContain(
-				'import arkenv from "@arkenv/nuxt/server"',
-			);
-			expect(templates.server).not.toContain("extends: [clientEnv]");
-			expect(templates.server).not.toContain(
-				'import { env as clientEnv } from "./client"',
-			);
-			expect(templates.server).toContain("export const env = arkenv(");
-		});
-
-		it("returns simplified Nuxt strict client template without SharedSchema extends", () => {
-			const options = {
-				validator: "arktype" as const,
-				framework: "nuxt" as const,
-				path: "env.ts",
-				language: "ts" as const,
-				shouldUpdateTsConfig: false,
-				shouldInstall: false,
-			};
-			const templates = getStrictTemplates(options);
-			expect(templates.client).toContain(
-				'import arkenv from "@arkenv/nuxt/client"',
-			);
-			expect(templates.client).not.toContain("SharedSchema");
-			expect(templates.client).not.toContain("extends:");
-			expect(templates.client).toContain("export const env = arkenv(");
-			expect(templates.shared).toContain("export const SharedSchema");
-			expect(templates.shared).toContain(
-				"Automatically picked up by `@arkenv/nuxt/client`",
-			);
-		});
-
-		it("keeps Next.js strict client SharedSchema extends unchanged", () => {
-			const options = {
-				validator: "zod" as const,
-				framework: "nextjs" as const,
-				path: "env.ts",
-				language: "ts" as const,
-				shouldUpdateTsConfig: false,
-				shouldInstall: false,
-				disableCodegen: false,
-			};
-			const templates = getStrictTemplates(options);
-			expect(templates.client).toContain(
-				'import { SharedSchema } from "./internal/shared"',
-			);
-			expect(templates.client).toContain("extends: [SharedSchema]");
-		});
-
-		it("generates cleanly formatted empty objects when no client keys are present", () => {
-			const options = {
-				validator: "zod" as const,
-				framework: "nextjs" as const,
-				path: "env.ts",
-				language: "ts" as const,
-				shouldUpdateTsConfig: false,
-				shouldInstall: false,
-				disableCodegen: false,
-				envKeys: ["DATABASE_URL"], // Only a server key, no client keys, no shared keys
-			};
-			const templates = getStrictTemplates(options);
-			expect(templates.client).toContain(
-				"arkenv(\n\t{},\n\t{\n\t\textends: [SharedSchema],",
-			);
-			expect(templates.shared).toContain(
-				"export const SharedSchema = z.object({});",
-			);
-		});
-	});
-
 	describe("hosting presets", () => {
 		it("includes Vercel preset with ArkType validator", () => {
 			const options = {
@@ -552,11 +350,10 @@ describe("validators templates", () => {
 			expect(template).toContain("// @arkenv-preset-end vercel");
 		});
 
-		it("includes Vercel preset with Zod validator in flat Next.js layout", () => {
+		it("includes Vercel preset with Zod validator for Next.js", () => {
 			const options = {
 				validator: "zod" as const,
 				framework: "nextjs" as const,
-				layout: "flat" as const,
 				path: "env.ts",
 				language: "ts" as const,
 				hostPreset: "vercel" as const,
@@ -574,52 +371,6 @@ describe("validators templates", () => {
 				"NEXT_PUBLIC_VERCEL_URL: z.string().optional()",
 			);
 			expect(template).toContain("// @arkenv-preset-end vercel");
-		});
-
-		it("includes role-suffixed markers in strict layout templates", () => {
-			const options = {
-				validator: "arktype" as any,
-				framework: "nextjs" as any,
-				layout: "strict" as const,
-				path: "env.ts",
-				language: "ts" as const,
-				shouldUpdateTsConfig: false,
-				shouldInstall: false,
-				hostPreset: "vercel" as const,
-			};
-			const templates = getStrictTemplates(options);
-
-			expect(templates.client).toContain(
-				"// @arkenv-preset-start vercel:client",
-			);
-			expect(templates.client).toContain("// @arkenv-preset-end vercel:client");
-			expect(templates.server).toContain(
-				"// @arkenv-preset-start vercel:server",
-			);
-			expect(templates.server).toContain("// @arkenv-preset-end vercel:server");
-		});
-
-		it("includes Netlify preset with Valibot in strict Next.js layout", () => {
-			const options = {
-				validator: "valibot" as const,
-				framework: "nextjs" as const,
-				layout: "strict" as const,
-				path: "env.ts",
-				language: "ts" as const,
-				disableCodegen: true,
-				hostPreset: "netlify" as const,
-			};
-			const templates = getStrictTemplates(options);
-			expect(templates.server).toContain("NETLIFY: v.optional(v.string())");
-			expect(templates.server).toContain(
-				'CONTEXT: v.optional(v.picklist(["production", "deploy-preview", "branch-deploy"]))',
-			);
-			expect(templates.client).toContain(
-				'NEXT_PUBLIC_CONTEXT: v.optional(v.picklist(["production", "deploy-preview", "branch-deploy"]))',
-			);
-			expect(templates.client).toContain(
-				"NEXT_PUBLIC_URL: v.optional(v.string())",
-			);
 		});
 
 		it("prefixes Vite client keys via framework clientPrefix", () => {
@@ -640,7 +391,6 @@ describe("validators templates", () => {
 			const options = {
 				validator: "zod" as const,
 				framework: "nextjs" as const,
-				layout: "flat" as const,
 				path: "env.ts",
 				language: "ts" as const,
 				disableCodegen: true,
@@ -656,26 +406,6 @@ describe("validators templates", () => {
 			);
 			expect(template).toContain(
 				"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
-			);
-		});
-
-		it("includes preset client keys in no-codegen runtimeEnv for nested Next.js", () => {
-			const options = {
-				validator: "arktype" as const,
-				framework: "nextjs" as const,
-				layout: "simple" as const,
-				path: "env.ts",
-				language: "ts" as const,
-				disableCodegen: true,
-				hostPreset: "vercel" as const,
-			};
-			const template = getSimpleTemplate(options);
-			expect(template).toContain("runtimeEnv: {");
-			expect(template).toContain(
-				"NEXT_PUBLIC_VERCEL_ENV: process.env.NEXT_PUBLIC_VERCEL_ENV,",
-			);
-			expect(template).toContain(
-				"NEXT_PUBLIC_VERCEL_URL: process.env.NEXT_PUBLIC_VERCEL_URL,",
 			);
 		});
 

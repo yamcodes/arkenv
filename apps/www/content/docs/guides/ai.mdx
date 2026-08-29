@@ -94,7 +94,7 @@ We already have a .env.example. Run `npx arkenv@latest init --agent` and accept 
 **Migrate raw process.env usage**
 
 ```text
-Find direct `process.env` and `import.meta.env` reads and route them through the typed `env` export from env.ts (or strict env/client.ts and env/server.ts). Do not add a runtimeEnv map. Match the framework public prefix (NEXT_PUBLIC_, NUXT_PUBLIC_, VITE_, BUN_PUBLIC_).
+Find direct `process.env` and `import.meta.env` reads and route them through the typed `env` export from env.ts. Do not add a runtimeEnv map. Match the framework public prefix (NEXT_PUBLIC_, NUXT_PUBLIC_, VITE_, BUN_PUBLIC_).
 ```
 
 **Add a variable**
