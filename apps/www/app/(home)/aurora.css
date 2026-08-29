@@ -1884,24 +1884,50 @@
 }
 
 /* Edge fades: bottom when more below, top once scrolled away from the start */
-.home-aurora__mvp-body[data-fade-top="true"]::before,
-.home-aurora__mvp-body[data-fade-bottom="true"]::after {
+.home-aurora__mvp-body::before,
+.home-aurora__mvp-body::after {
 	content: "";
 	position: absolute;
 	inset-inline: 0;
-	height: 2.75rem;
+	height: 3rem;
 	pointer-events: none;
 	z-index: 1;
+	opacity: 0;
+	transition: opacity 0.35s var(--ease-out);
 }
 
-.home-aurora__mvp-body[data-fade-top="true"]::before {
+.home-aurora__mvp-body::before {
 	top: 0;
-	background: linear-gradient(to top, transparent, var(--color-paper-2));
+	/* Avoid color-mix(…, transparent) in oklch — it muddies into magenta.
+	   Steeper than a pure linear: solid paper arrives sooner near the edge. */
+	background: linear-gradient(
+		to top,
+		transparent 0%,
+		var(--color-paper-2) 80%,
+		var(--color-paper-2) 100%
+	);
 }
 
-.home-aurora__mvp-body[data-fade-bottom="true"]::after {
+.home-aurora__mvp-body::after {
 	bottom: 0;
-	background: linear-gradient(to bottom, transparent, var(--color-paper-2));
+	background: linear-gradient(
+		to bottom,
+		transparent 0%,
+		var(--color-paper-2) 80%,
+		var(--color-paper-2) 100%
+	);
+}
+
+.home-aurora__mvp-body[data-fade-top="true"]::before,
+.home-aurora__mvp-body[data-fade-bottom="true"]::after {
+	opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.home-aurora__mvp-body::before,
+	.home-aurora__mvp-body::after {
+		transition: none;
+	}
 }
 
 .home-aurora__mvp-pane {
