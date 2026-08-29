@@ -1,13 +1,13 @@
 {
 	"pages": [
 		"index",
-		"comparison",
+		"why-arkenv",
 		"getting-started",
-		"validating-your-environment",
+		"core-concepts",
+		"frameworks",
+		"validators",
 		"guides",
 		"reference",
-		"compatibility",
-		"faq",
 		"community",
 		"external:[Changelog](https://github.com/yamcodes/arkenv/releases)"
 	]

@@ -31,8 +31,9 @@ These flags are specific to `init`.
 ### `--force` / `-f`
 
 Bypass dirty-git and other safety checks, then force scaffolding. The
-CLI refuses a dirty working tree unless you pass this flag. Commit or
-stash first if you don't want to overwrite generated files.
+CLI refuses a dirty working tree so a run cannot silently overwrite
+uncommitted work. Commit or stash first, or pass `--force` when you
+accept that risk (for example in CI).
 
 ### `--flat`
 
@@ -53,7 +54,7 @@ Pre-populate provider system variables. Values: `none`, `vercel`,
 `netlify`, `cloudflare`, `railway`, `render`, `fly`. The CLI also accepts
 `--host-preset` and `-H` as aliases.
 
-See [Hosting presets](/docs/validating-your-environment/hosting-presets).
+See [Hosting presets](/docs/core-concepts/hosting-presets).
 To apply or remove presets later, use [`preset`](/docs/reference/preset).
 
 ### `--agent`

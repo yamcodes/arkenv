@@ -8,7 +8,7 @@ routes, maps public keys onto Nuxt runtime config, and keeps server
 secrets off the browser.
 
 For high-level architectural trade-offs, see
-[Frameworks](/docs/guides/frameworks).
+[Frameworks](/docs/frameworks).
 
 ## Quickstart
 
@@ -89,7 +89,7 @@ npx arkenv@latest init --strict
 
 This configuration uses `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. Nuxt virtual
 aliases automatically merge shared schemas when you omit `extends`. Learn more in
-[Client vs. server](/docs/validating-your-environment/client-vs-server).
+[Client vs. server](/docs/core-concepts/client-vs-server).
 
 ## Read `env` in application code
 
@@ -133,14 +133,18 @@ Vite and Bun inline literals at build time through compile-time transforms. `@ar
 2. **Runtime configuration hydration:** An internal Nitro plugin passes validated public variables (`NUXT_PUBLIC_*`) into `useRuntimeConfig().public`.
 3. **Client access:** Client components read public values from runtime configuration during browser rendering and hydration, avoiding hardcoded build-time literals.
 
-You can update environment variables across deployment stages without rebuilding client JavaScript bundles.
+You can update environment variables across deployment stages without rebuilding client JavaScript bundles. Ship one image and change env at container start for staging versus production.
+
+Unlike Next.js `env.gen.ts`, `@arkenv/nuxt` writes no generated files to
+commit or gitignore. The module validates at boot and registers public
+keys on `runtimeConfig`.
 
 ## Next steps
 
 <Cards>
   <Card href="/docs/reference/nuxt" title="@arkenv/nuxt reference" description="Module options, virtual aliases, and subpath exports." />
 
-  <Card href="/docs/validating-your-environment/hosting-presets" title="Hosting presets" description="Inject hosting provider system variables into your Nuxt schema." />
+  <Card href="/docs/core-concepts/hosting-presets" title="Hosting presets" description="Inject hosting provider system variables into your Nuxt schema." />
 
-  <Card href="/docs/validating-your-environment/client-vs-server" title="Client vs. server" description="Understand flat versus strict client/server isolation." />
+  <Card href="/docs/core-concepts/client-vs-server" title="Client vs. server" description="Understand flat versus strict client/server isolation." />
 </Cards>

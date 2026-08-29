@@ -1,6 +1,6 @@
 ---
-title: Choosing an engine
-description: Choose between the ArkType core engine and the Standard Schema adapter.
+title: Validators
+description: Choose between @arkenv/core and @arkenv/standard, then wire ArkType, Zod, or Valibot.
 ---
 
 ArkEnv ships two engines. Both call `arkenv()`, share fail-fast errors,
@@ -20,8 +20,8 @@ dependencies.
 | Coercion                                    | Built-in                               | Built-in when fields expose Standard JSON Schema v1, via `/valibot` or `/zod-mini`, or via `toJsonSchema` |
 | Framework plugins                           | `@arkenv/nextjs`, …                    | Same packages via `/standard` subpaths                                                                    |
 
-Pick the engine that matches the schema library you write. Cookbooks:
-[Validators](/docs/guides/validators).
+Pick the engine that matches the schema library you write, then follow
+the cookbook below.
 
 ## Side by side
 
@@ -104,29 +104,37 @@ ArkEnv's pre-coercion step for `@arkenv/standard` prefers **Standard
 JSON Schema v1** on the value (`~standard.jsonSchema.input` /
 `.output`). When a library keeps conversion outside the schema, use a
 first-class subpath or the optional
-[`toJsonSchema`](/docs/validating-your-environment/coercion-and-parsing#valibot-tojsonschema)
+[`toJsonSchema`](/docs/core-concepts/coercion-and-parsing#valibot-tojsonschema)
 escape hatch.
 
-| Library                                        | How ArkEnv gets JSON Schema                                                                                         |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Zod (v4.2+)                                    | On the value (Standard JSON Schema v1)                                                                              |
-| VineJS (v4.3+)                                 | On the value (Standard JSON Schema v1)                                                                              |
-| Valibot (v1.2+ with `@valibot/to-json-schema`) | `@arkenv/standard/valibot` (see [Valibot](/docs/guides/validators/valibot))                                         |
-| Zod Mini                                       | `@arkenv/standard/zod-mini` ([mixing](/docs/validating-your-environment/coercion-and-parsing#mixing-with-zod-mini)) |
-| Other Standard JSON Schema v1 validators       | On the value                                                                                                        |
+| Library                                        | How ArkEnv gets JSON Schema                                                                           |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Zod (v4.2+)                                    | On the value (Standard JSON Schema v1)                                                                |
+| VineJS (v4.3+)                                 | On the value (Standard JSON Schema v1)                                                                |
+| Valibot (v1.2+ with `@valibot/to-json-schema`) | `@arkenv/standard/valibot` (see [Valibot](/docs/validators/valibot))                                  |
+| Zod Mini                                       | `@arkenv/standard/zod-mini` ([mixing](/docs/core-concepts/coercion-and-parsing#mixing-with-zod-mini)) |
+| Other Standard JSON Schema v1 validators       | On the value                                                                                          |
 
-See [Coercion and parsing](/docs/validating-your-environment/coercion-and-parsing).
+See [Coercion and parsing](/docs/core-concepts/coercion-and-parsing).
 
-## Related
+A one-file `Env.assert(process.env)` works for a hello-world Node
+script. ArkEnv adds env-specific errors, automatic coercion, a CLI, and
+framework plugins that keep server secrets out of the client graph. See
+[Why ArkEnv?](/docs/why-arkenv) for DIY, Varlock, T3 Env, znv, Envalid, and
+related tools.
+
+## Cookbooks
 
 <Cards>
-  <Card href="/docs/guides/validators" title="Validators" description="ArkType, Zod, and Valibot cookbooks." />
+  <Card href="/docs/validators/arktype" title="ArkType" description="@arkenv/core, ArkType DSL, and built-in coercion." />
+
+  <Card href="/docs/validators/zod" title="Zod" description="@arkenv/standard with Zod 4.2+, Zod Mini, or Zod v3." />
+
+  <Card href="/docs/validators/valibot" title="Valibot" description="@arkenv/standard/valibot with zero-boilerplate coercion." />
 
   <Card href="/docs/reference/core" title="@arkenv/core" description="ArkType engine package reference." />
 
   <Card href="/docs/reference/standard" title="@arkenv/standard" description="Standard Schema engine package reference." />
 
-  <Card href="/docs/validating-your-environment/defining-your-schema" title="Defining your schema" description="Declare field types for either engine." />
-
-  <Card href="/docs/reference/schema" title="schema" description="The schema object you pass to arkenv()." />
+  <Card href="/docs/core-concepts/defining-your-schema" title="Defining your schema" description="Declare field types for either engine." />
 </Cards>

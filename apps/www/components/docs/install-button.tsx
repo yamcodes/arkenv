@@ -8,21 +8,21 @@ import { useIsFirstSession } from "~/hooks/use-is-first-session";
 
 function useInstallContext(pathname: string | null) {
 	if (
-		pathname?.includes("/docs/guides/frameworks/vite") ||
+		pathname?.includes("/docs/frameworks/vite") ||
 		pathname?.includes("/docs/reference/vite-plugin")
 	)
 		return {
 			key: "vite-plugin",
-			href: "/docs/guides/frameworks/vite",
+			href: "/docs/frameworks/vite",
 			label: "Install ArkEnv for Vite",
 		};
 	if (
-		pathname?.includes("/docs/guides/frameworks/bun") ||
+		pathname?.includes("/docs/frameworks/bun") ||
 		pathname?.includes("/docs/reference/bun-plugin")
 	)
 		return {
 			key: "bun-plugin",
-			href: "/docs/guides/frameworks/bun",
+			href: "/docs/frameworks/bun",
 			label: "Install ArkEnv for Bun",
 		};
 	return {

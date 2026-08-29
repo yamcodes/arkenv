@@ -56,109 +56,161 @@ const config = {
 			},
 			{
 				source: "/faq",
-				destination: "/docs/faq",
+				destination: "/docs/getting-started",
+				permanent: true,
+			},
+			{
+				source: "/docs/faq",
+				destination: "/docs/getting-started",
 				permanent: true,
 			},
 			{
 				source: "/docs/cli/faq",
-				destination: "/docs/faq",
+				destination: "/docs/getting-started",
 				permanent: true,
 			},
 			{
 				source: "/docs/nextjs/faq",
-				destination: "/docs/faq",
+				destination: "/docs/getting-started",
 				permanent: true,
 			},
 			{
 				source: "/docs/nuxt/faq",
-				destination: "/docs/faq",
+				destination: "/docs/getting-started",
 				permanent: true,
 			},
 			{
 				source: "/docs/nextjs/security",
-				destination: "/docs/validating-your-environment/client-vs-server",
+				destination: "/docs/core-concepts/client-vs-server",
 				permanent: true,
 			},
 			{
 				source: "/docs/nuxt/security",
-				destination: "/docs/validating-your-environment/client-vs-server",
+				destination: "/docs/core-concepts/client-vs-server",
 				permanent: true,
 			},
 			{
 				source: "/docs/support-policy",
-				destination: "/docs/compatibility",
+				destination: "/docs/getting-started/installation#prerequisites",
+				permanent: true,
+			},
+			{
+				source: "/docs/compatibility",
+				destination: "/docs/getting-started/installation#prerequisites",
+				permanent: true,
+			},
+			{
+				source: "/docs/getting-started/compatibility",
+				destination: "/docs/getting-started/installation#prerequisites",
+				permanent: true,
+			},
+			{
+				source: "/docs/comparison",
+				destination: "/docs/why-arkenv",
 				permanent: true,
 			},
 			{
 				source: "/docs/standard-schema",
-				destination: "/docs/guides/validators/choosing-an-engine",
+				destination: "/docs/validators",
 				permanent: true,
 			},
 
-			// --- core-concepts → validating-your-environment (v1 IA fold) ---
+			// --- Sidebar IA: elevate frameworks/validators; core-concepts reclaim ---
 			{
-				source: "/docs/core-concepts",
-				destination: "/docs/validating-your-environment",
+				source: "/docs/guides/frameworks",
+				destination: "/docs/frameworks",
 				permanent: true,
 			},
 			{
+				source: "/docs/guides/frameworks/:path*",
+				destination: "/docs/frameworks/:path*",
+				permanent: true,
+			},
+			{
+				source: "/docs/guides/validators",
+				destination: "/docs/validators",
+				permanent: true,
+			},
+			{
+				source: "/docs/guides/validators/choosing-an-engine",
+				destination: "/docs/validators",
+				permanent: true,
+			},
+			{
+				source: "/docs/guides/validators/:path*",
+				destination: "/docs/validators/:path*",
+				permanent: true,
+			},
+			{
+				source: "/docs/validators/choosing-an-engine",
+				destination: "/docs/validators",
+				permanent: true,
+			},
+			// Orphaned pre-fold leaf slugs under core-concepts (pages that no longer exist)
+			{
 				source: "/docs/core-concepts/coercion",
-				destination: "/docs/validating-your-environment/coercion-and-parsing",
+				destination: "/docs/core-concepts/coercion-and-parsing",
 				permanent: true,
 			},
 			{
 				source: "/docs/core-concepts/transformation",
-				destination: "/docs/validating-your-environment/coercion-and-parsing",
+				destination: "/docs/core-concepts/coercion-and-parsing",
 				permanent: true,
 			},
 			{
 				source: "/docs/core-concepts/morphs",
-				destination: "/docs/validating-your-environment/coercion-and-parsing",
+				destination: "/docs/core-concepts/coercion-and-parsing",
 				permanent: true,
 			},
 			{
 				source: "/docs/core-concepts/transforms",
-				destination: "/docs/validating-your-environment/coercion-and-parsing",
+				destination: "/docs/core-concepts/coercion-and-parsing",
 				permanent: true,
 			},
 			{
 				source: "/docs/core-concepts/typesafety",
-				destination: "/docs/validating-your-environment/defining-your-schema",
+				destination: "/docs/core-concepts/defining-your-schema",
 				permanent: true,
 			},
 			{
 				source: "/docs/core-concepts/validation",
-				destination: "/docs/validating-your-environment/defining-your-schema",
+				destination: "/docs/core-concepts/defining-your-schema",
 				permanent: true,
 			},
 			{
 				source: "/docs/core-concepts/standard-schema",
-				destination: "/docs/guides/validators/choosing-an-engine",
+				destination: "/docs/validators",
 				permanent: true,
 			},
-			{
-				source: "/docs/core-concepts/:path*",
-				destination: "/docs/validating-your-environment",
-				permanent: true,
-			},
+			// validating-your-environment → core-concepts (post-fold rename)
 			{
 				source: "/docs/validating-your-environment/defining-types",
-				destination: "/docs/validating-your-environment/defining-your-schema",
+				destination: "/docs/core-concepts/defining-your-schema",
 				permanent: true,
 			},
 			{
 				source: "/docs/validating-your-environment/structuring-your-schema",
-				destination: "/docs/validating-your-environment/defining-your-schema",
+				destination: "/docs/core-concepts/defining-your-schema",
 				permanent: true,
 			},
 			{
 				source: "/docs/validating-your-environment/framework-integration",
-				destination: "/docs/guides/frameworks",
+				destination: "/docs/frameworks",
 				permanent: true,
 			},
 			{
 				source: "/docs/validating-your-environment/choosing-an-engine",
-				destination: "/docs/guides/validators/choosing-an-engine",
+				destination: "/docs/validators",
+				permanent: true,
+			},
+			{
+				source: "/docs/validating-your-environment",
+				destination: "/docs/core-concepts",
+				permanent: true,
+			},
+			{
+				source: "/docs/validating-your-environment/:path*",
+				destination: "/docs/core-concepts/:path*",
 				permanent: true,
 			},
 			{
@@ -192,17 +244,17 @@ const config = {
 			},
 			{
 				source: "/docs/arkenv/faq",
-				destination: "/docs/faq",
+				destination: "/docs/getting-started",
 				permanent: true,
 			},
 			{
 				source: "/docs/arkenv/comparison",
-				destination: "/docs/comparison",
+				destination: "/docs/why-arkenv",
 				permanent: true,
 			},
 			{
 				source: "/docs/arkenv/coercion",
-				destination: "/docs/validating-your-environment/coercion-and-parsing",
+				destination: "/docs/core-concepts/coercion-and-parsing",
 				permanent: true,
 			},
 			{
@@ -227,7 +279,7 @@ const config = {
 			},
 			{
 				source: "/docs/arkenv/integrations/standard-schema",
-				destination: "/docs/guides/validators/choosing-an-engine",
+				destination: "/docs/validators",
 				permanent: true,
 			},
 			{
@@ -252,17 +304,17 @@ const config = {
 			},
 			{
 				source: "/docs/arkenv/how-to/reuse-schemas",
-				destination: "/docs/validating-your-environment/reusing-schemas",
+				destination: "/docs/core-concepts/reusing-schemas",
 				permanent: true,
 			},
 			{
 				source: "/docs/arkenv/how-to/load-environment-variables",
-				destination: "/docs/guides/frameworks",
+				destination: "/docs/frameworks",
 				permanent: true,
 			},
 			{
 				source: "/docs/arkenv/how-to/:path*",
-				destination: "/docs/validating-your-environment",
+				destination: "/docs/core-concepts",
 				permanent: true,
 			},
 			{
@@ -274,7 +326,7 @@ const config = {
 			// --- @arkenv/nextjs ---
 			{
 				source: "/docs/nextjs",
-				destination: "/docs/guides/frameworks/nextjs",
+				destination: "/docs/frameworks/nextjs",
 				permanent: true,
 			},
 			{
@@ -284,24 +336,24 @@ const config = {
 			},
 			{
 				source: "/docs/nextjs/layouts/simple",
-				destination: "/docs/guides/frameworks/nextjs",
+				destination: "/docs/frameworks/nextjs",
 				permanent: true,
 			},
 			{
 				source: "/docs/nextjs/migration/nested-to-flat",
-				destination: "/docs/guides/frameworks/nextjs",
+				destination: "/docs/frameworks/nextjs",
 				permanent: true,
 			},
 			{
 				source: "/docs/nextjs/:path*",
-				destination: "/docs/guides/frameworks/nextjs",
+				destination: "/docs/frameworks/nextjs",
 				permanent: true,
 			},
 
 			// --- @arkenv/nuxt ---
 			{
 				source: "/docs/nuxt",
-				destination: "/docs/guides/frameworks/nuxt",
+				destination: "/docs/frameworks/nuxt",
 				permanent: true,
 			},
 			{
@@ -311,19 +363,19 @@ const config = {
 			},
 			{
 				source: "/docs/nuxt/layouts/simple",
-				destination: "/docs/guides/frameworks/nuxt",
+				destination: "/docs/frameworks/nuxt",
 				permanent: true,
 			},
 			{
 				source: "/docs/nuxt/:path*",
-				destination: "/docs/guides/frameworks/nuxt",
+				destination: "/docs/frameworks/nuxt",
 				permanent: true,
 			},
 
 			// --- @arkenv/vite-plugin ---
 			{
 				source: "/docs/vite-plugin",
-				destination: "/docs/guides/frameworks/vite",
+				destination: "/docs/frameworks/vite",
 				permanent: true,
 			},
 			{
@@ -333,14 +385,14 @@ const config = {
 			},
 			{
 				source: "/docs/vite-plugin/:path*",
-				destination: "/docs/guides/frameworks/vite",
+				destination: "/docs/frameworks/vite",
 				permanent: true,
 			},
 
 			// --- @arkenv/bun-plugin ---
 			{
 				source: "/docs/bun-plugin",
-				destination: "/docs/guides/frameworks/bun",
+				destination: "/docs/frameworks/bun",
 				permanent: true,
 			},
 			{
@@ -350,7 +402,7 @@ const config = {
 			},
 			{
 				source: "/docs/bun-plugin/:path*",
-				destination: "/docs/guides/frameworks/bun",
+				destination: "/docs/frameworks/bun",
 				permanent: true,
 			},
 
@@ -367,7 +419,7 @@ const config = {
 			},
 			{
 				source: "/docs/cli/hosting-presets",
-				destination: "/docs/validating-your-environment/hosting-presets",
+				destination: "/docs/core-concepts/hosting-presets",
 				permanent: true,
 			},
 			{

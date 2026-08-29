@@ -18,11 +18,11 @@ test.describe("Documentation sections", () => {
 	});
 
 	test("should drill into a Nested Folder page", async ({ page }) => {
-		await page.goto("/docs/guides/frameworks/nextjs");
+		await page.goto("/docs/frameworks/nextjs");
 		await page.waitForLoadState("networkidle");
 
 		await expect(page.locator("h1").first()).toBeVisible();
-		await expect(page).toHaveURL(/\/docs\/guides\/frameworks\/nextjs\/?$/);
+		await expect(page).toHaveURL(/\/docs\/frameworks\/nextjs\/?$/);
 	});
 
 	test("desktop sidebar drills into a Section", async ({ page }) => {

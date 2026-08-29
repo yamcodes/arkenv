@@ -309,7 +309,7 @@ pnpm run test:e2e                     # E2E tests
 - Framework intros must not say the integration "requires ArkType". Users install either `@arkenv/core` (+ `arktype`) or `@arkenv/standard` (+ their validator).
 - "Zod, Valibot, and other Standard Schema validators" pages lead with Standard Mode (`@arkenv/*/standard`); mixing validators into the ArkType path is secondary.
 - FAQ coverage: sharpen the core FAQ (“Do I have to use ArkType?”) and add matching Next/Nuxt FAQ entries that point at `/standard` install + the validators pages.
-- Nuxt docs treat **flat layout** as the canonical DX layout (not “simple”). Validators examples and the Nuxt intro card should point at flat. The leftover `layouts/simple.mdx` page was removed; `/docs/nuxt/layouts/simple` permanently redirects to `/docs/guides/frameworks/nuxt`.
+- Nuxt docs treat **flat layout** as the canonical DX layout (not “simple”). Validators examples and the Nuxt intro card should point at flat. The leftover `layouts/simple.mdx` page was removed; `/docs/nuxt/layouts/simple` permanently redirects to `/docs/frameworks/nuxt`.
 - Next.js Standard Mode docs lead with the **codegen** happy path (`import arkenv from "@/.arkenv"`); direct `@arkenv/nextjs/standard` + manual `runtimeEnv` is documented as the no-codegen alternative.
 - Same “does not require ArkType” framing applies lightly to Vite and Bun intros (remove the requires-ArkType callout; keep Standard install path). Fumadocs titled callouts use `:::important[Title]` / `:::tip[Title]`, not a bare `:::important` with the title as body text.
 - Package READMEs (`@arkenv/nextjs`, `@arkenv/nuxt`): light touch only — mention Standard Mode + `/standard`; no full README rewrite in this pass.
@@ -414,7 +414,7 @@ A root-level folder in the docs page tree. On desktop it drills into its own **S
 *Avoid*: Category, group, accordion, folder (in UX copy)
 
 **Nested Folder**:
-A real folder under a **Section** (true URL depth n=2, e.g. `/docs/guides/frameworks/nextjs`). Does not drill: title navigates to the folder’s overview page; a separate chevron toggles **indented** child **Leaves** (starts expanded). Max one Nested Folder level inside a Section (no n=3). Same on desktop **Sidebar Page** and mobile **Sidebar Tree**.
+A real folder under a **Section** (true URL depth n=2, e.g. `/docs/frameworks/nextjs`). Does not drill: title navigates to the folder’s overview page; a separate chevron toggles **indented** child **Leaves** (starts expanded). Max one Nested Folder level inside a Section (no n=3). Same on desktop **Sidebar Page** and mobile **Sidebar Tree**.
 *Avoid*: Nested Group (retired — conflated with Separator), Section (root only), sub-section (vague)
 
 **Leaf**:

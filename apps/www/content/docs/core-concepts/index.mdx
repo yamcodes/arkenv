@@ -1,0 +1,45 @@
+---
+title: Core concepts
+description: Design, parse, and secure environment variables with ArkEnv.
+---
+
+Missing or malformed environment variables fail as early as ArkEnv can
+see them: in `next build`, during Vite or Bun plugin runs, on server
+boot, and anywhere else you call `arkenv()`.
+
+These guides take you through designing a schema, parsing values, and
+keeping secrets off the client. They are meant to be read in order the
+first time. Skip ahead once you know which slice you need.
+
+By the time you've read this section, you'll have a typed `env` object
+and a clear client/server split.
+
+<Callout type="info">
+  ArkEnv validates and types your environment. Loading `.env` files is
+  still your runtime or framework's job. See
+  [Loading `.env` files](/docs/frameworks#loading-env-files).
+</Callout>
+
+## From schema to `env`
+
+Start here if you're writing a schema for the first time.
+
+<Cards>
+  <Card href="/docs/core-concepts/defining-your-schema" title="1. Defining your schema" description="Where env.ts lives, field types, fail-fast validation, and the typed env object." />
+
+  <Card href="/docs/core-concepts/client-vs-server" title="2. Client vs. server" description="Keep public keys and private secrets in separate buckets." />
+
+  <Card href="/docs/core-concepts/coercion-and-parsing" title="3. Coercion and parsing" description="Numbers, booleans, arrays, objects, and transforms." />
+
+  <Card href="/docs/core-concepts/error-reporting" title="4. Error reporting" description="Fail fast with clear console output and issue codes." />
+
+  <Card href="/docs/core-concepts/reusing-schemas" title="5. Reusing schemas" description="Share one schema across runtimes and packages." />
+
+  <Card href="/docs/core-concepts/hosting-presets" title="6. Hosting presets" description="Add Vercel, Netlify, Cloudflare, and other provider vars." />
+</Cards>
+
+## Next steps
+
+Wire a runtime with the [framework](/docs/frameworks) guides, pick an
+engine under [validators](/docs/validators), or skim the thinner
+[Guides](/docs/guides) section for AI and migrations.

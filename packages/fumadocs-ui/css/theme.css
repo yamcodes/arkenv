@@ -99,6 +99,33 @@ kbd {
 }
 
 /*
+ * Permalink icons hang into the sidebar gutter (`left: -1.5rem`). The sticky
+ * sidebar track is z-20, so elevate the article while a heading contains
+ * focus — otherwise the end rail paints over the ring.
+ */
+#nd-page:has([data-arkenv-heading]:focus-within) {
+	position: relative;
+	z-index: 30;
+}
+
+/*
+ * Same Turbo dual ring as sidebar items. Kill the UA outline (tinted by
+ * global `outline-ring/50`) so box-shadow owns the shape.
+ */
+[data-arkenv-heading-link]:focus-visible {
+	outline: none;
+	border-radius: 0.375rem;
+	box-shadow:
+		0 0 0 2px var(--color-fd-background),
+		0 0 0 4px var(--color-fd-ring);
+}
+
+[data-arkenv-heading-icon]:has(a:focus-visible) {
+	opacity: 1;
+	z-index: 2;
+}
+
+/*
  * Docs type scale — geistdocs / turborepo.dev.
  * Geist 450 is the Vercel "book" weight: larger than regular, lighter than
  * medium/semibold, so 40px titles stay refined instead of heavy.
