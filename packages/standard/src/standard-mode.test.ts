@@ -255,6 +255,168 @@ describe("Standard Mode Coercion", () => {
 		expect(t).not.toThrow(/Hint/);
 	});
 
+	it("retries draft-2020-12 when draft-07 throws and coerces the value", () => {
+		vi.stubEnv("PORT", "3000");
+
+		const mockDraft2020Only = {
+			"~standard": {
+				version: 1 as const,
+				vendor: "mock",
+				types: {} as { input: unknown; output: number },
+				validate: (value: unknown) => {
+					if (typeof value !== "number") {
+						return {
+							issues: [
+								{ message: `Expected number, received ${typeof value}` },
+							],
+						};
+					}
+					return { value };
+				},
+				jsonSchema: {
+					input: ({ target }: { target: string }) => {
+						if (target === "draft-07") {
+							throw new Error("Unsupported JSON Schema target: draft-07");
+						}
+						if (target === "draft-2020-12") {
+							return { type: "number" };
+						}
+						throw new Error(`Unsupported JSON Schema target: ${target}`);
+					},
+				},
+			},
+		};
+
+		const env = arkenv({ PORT: mockDraft2020Only as any }, { coerce: true });
+
+		expect(env.PORT).toBe(3000);
+	});
+
+	it("fails with INVALID_SCHEMA when jsonSchema.input exists but every target fails", () => {
+		vi.stubEnv("PORT", "3000");
+
+		const converterError = "broken converter: always fails";
+		const mockBrokenConverter = {
+			"~standard": {
+				version: 1 as const,
+				vendor: "mock",
+				types: {} as { input: unknown; output: number },
+				validate: (value: unknown) => {
+					if (typeof value !== "number") {
+						return {
+							issues: [
+								{ message: `Expected number, received ${typeof value}` },
+							],
+						};
+					}
+					return { value };
+				},
+				jsonSchema: {
+					input: () => {
+						throw new Error(converterError);
+					},
+				},
+			},
+		};
+
+		try {
+			arkenv({ PORT: mockBrokenConverter as any }, { coerce: true });
+			expect.fail("Should throw");
+		} catch (error) {
+			expect(error).toBeInstanceOf(ArkEnvError);
+			expect((error as ArkEnvError).issues[0].code).toBe("INVALID_SCHEMA");
+			expect((error as ArkEnvError).issues[0].message).toContain(
+				converterError,
+			);
+			expect((error as ArkEnvError).issues[0].message).not.toMatch(
+				/lacks Standard JSON Schema support/,
+			);
+		}
+	});
+
+	it("fails with INVALID_SCHEMA when jsonSchema.input returns a non-schema for every target", () => {
+		vi.stubEnv("PORT", "3000");
+
+		const mockFalsyConverter = {
+			"~standard": {
+				version: 1 as const,
+				vendor: "mock",
+				types: {} as { input: unknown; output: number },
+				validate: (value: unknown) => {
+					if (typeof value !== "number") {
+						return {
+							issues: [
+								{ message: `Expected number, received ${typeof value}` },
+							],
+						};
+					}
+					return { value };
+				},
+				jsonSchema: {
+					input: () => undefined,
+				},
+			},
+		};
+
+		try {
+			arkenv(
+				{ PORT: mockFalsyConverter as any },
+				{
+					coerce: true,
+					// Would coerce if the present on-value converter fell through
+					toJsonSchema: () => ({ type: "number" }),
+				},
+			);
+			expect.fail("Should throw");
+		} catch (error) {
+			expect(error).toBeInstanceOf(ArkEnvError);
+			expect((error as ArkEnvError).issues[0].code).toBe("INVALID_SCHEMA");
+			expect((error as ArkEnvError).issues[0].message).toContain(
+				"converter returned a non-schema",
+			);
+			expect((error as ArkEnvError).issues[0].message).not.toMatch(
+				/lacks Standard JSON Schema support/,
+			);
+		}
+	});
+
+	it("retries draft-2020-12 on direct validator.jsonSchema.input", () => {
+		vi.stubEnv("PORT", "3000");
+
+		const mockDirectJsonSchema = {
+			"~standard": {
+				version: 1 as const,
+				vendor: "mock",
+				types: {} as { input: unknown; output: number },
+				validate: (value: unknown) => {
+					if (typeof value !== "number") {
+						return {
+							issues: [
+								{ message: `Expected number, received ${typeof value}` },
+							],
+						};
+					}
+					return { value };
+				},
+			},
+			jsonSchema: {
+				input: ({ target }: { target: string }) => {
+					if (target === "draft-07") {
+						throw new Error("Unsupported JSON Schema target: draft-07");
+					}
+					if (target === "draft-2020-12") {
+						return { type: "number" };
+					}
+					throw new Error(`Unsupported JSON Schema target: ${target}`);
+				},
+			},
+		};
+
+		const env = arkenv({ PORT: mockDirectJsonSchema as any }, { coerce: true });
+
+		expect(env.PORT).toBe(3000);
+	});
+
 	it("should support fallback coercion triggers: toJSONSchema and toStandardJSONSchema.v1", () => {
 		vi.stubEnv("INSTANCE_JSON_SCHEMA_VAR", "42");
 		vi.stubEnv("STNL_VAR", "true");

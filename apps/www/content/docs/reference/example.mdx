@@ -48,6 +48,40 @@ non-zero, and does not touch `.env.example`.
 existing project, so a schema that is already in the tree still seeds
 `.env.example`.
 
+## Schema module contract
+
+`example` and [`check`](/docs/reference/check) import your schema module
+under capture mode. They do not fill `process.env`. `arkenv()` records
+the definition and returns a hollow `{}` stub — not a Proxy. Property
+access is `undefined` (`env.NODE_ENV === "production"` is fine); method
+calls or treating keys as real values at module scope throw.
+
+**Supported**
+
+- Top-level `export const env = arkenv({ ... })` with ArkType strings,
+  compiled `type({ ... })`, or Standard Schema maps (including unknown
+  vendors)
+- Spreads from other modules
+- `arkenv({})` (valid empty schema)
+- Comparisons against the stub (`env.NODE_ENV === "production"`)
+
+**Unsupported or incomplete**
+
+- Using `env` values at module scope (`createClient(env.X)`,
+  `if (!env.X) throw`, `env.PORT.toString()`)
+- `{ safe: true }` then reading `env.success`
+- Lazy `export const env = () => arkenv(...)`
+- `arkenv()` behind a runtime branch
+- An installed `@arkenv/core` / `@arkenv/standard` that is too old to
+  honor capture
+- Import-time side effects
+- Pointing `--schema` at only one file of a strict `env/server.ts` +
+  `env/client.ts` layout (multi-file load is not merged yet)
+
+Every declared key is written to `.env.example`. Detected defaults are
+advisory only — a key is never omitted because the sniffer missed a
+default.
+
 ## Options
 
 These flags are specific to `example`.

@@ -213,7 +213,7 @@ describe("JitiSchemaLoaderAdapter", () => {
 		expect(result.keys.map((key) => key.name)).toEqual(["HOST", "PORT"]);
 	});
 
-	it("returns a structured error when the module throws", async () => {
+	it("returns ERR_INSPECT_EVAL_THROW when the module throws", async () => {
 		const schemaPath = path.join(tempDir, "env.ts");
 		await fsp.writeFile(
 			schemaPath,
@@ -227,11 +227,11 @@ describe("JitiSchemaLoaderAdapter", () => {
 
 		expect(result.ok).toBe(false);
 		if (result.ok) return;
-		expect(result.code).toBe("MODULE_LOAD_FAILED");
+		expect(result.code).toBe("ERR_INSPECT_EVAL_THROW");
 		expect(result.message).toContain("schema exploded");
 	});
 
-	it("returns a structured error when arkenv() is never called", async () => {
+	it("returns ERR_INSPECT_NO_CALL when arkenv() is never called", async () => {
 		const schemaPath = path.join(tempDir, "env.ts");
 		await fsp.writeFile(schemaPath, "export const env = { PORT: 3000 };");
 
@@ -240,11 +240,66 @@ describe("JitiSchemaLoaderAdapter", () => {
 
 		expect(result.ok).toBe(false);
 		if (result.ok) return;
-		expect(result.code).toBe("NO_SCHEMA");
-		expect(result.message).toContain("upgrade @arkenv/core");
+		expect(result.code).toBe("ERR_INSPECT_NO_CALL");
+		expect(result.message).toContain("called at the top level");
+		expect(result.message).not.toContain("Upgrade @arkenv/core");
 	});
 
-	it("hints when the module requires env values at load time", async () => {
+	it("returns ERR_INSPECT_UNSUPPORTED when validation runs despite capture", async () => {
+		const fakeCorePath = path.join(tempDir, "fake-core.ts");
+		await fsp.writeFile(
+			fakeCorePath,
+			`
+			export default function arkenv() {
+				const error = new Error("Errors found while validating environment variables");
+				error.name = "ArkEnvError";
+				throw error;
+			}
+			`,
+		);
+		const schemaPath = path.join(tempDir, "env.ts");
+		await fsp.writeFile(
+			schemaPath,
+			`
+			import arkenv from "@arkenv/core";
+			export const env = arkenv({ DATABASE_URL: "string" });
+			`,
+		);
+
+		const loader = new JitiSchemaLoaderAdapter({
+			jitiAliases: {
+				...jitiAliases,
+				"@arkenv/core": fakeCorePath,
+			},
+		});
+		const result = await loader.load({ schemaPath });
+
+		expect(result.ok).toBe(false);
+		if (result.ok) return;
+		expect(result.code).toBe("ERR_INSPECT_UNSUPPORTED");
+		expect(result.message).toContain("Upgrade @arkenv/core");
+	});
+
+	it("returns ERR_INSPECT_UNEXTRACTABLE for a non-object captured definition", async () => {
+		const schemaPath = path.join(tempDir, "env.ts");
+		await fsp.writeFile(
+			schemaPath,
+			`
+			import arkenv from "@arkenv/core";
+			export const env = arkenv(null as never);
+			`,
+		);
+
+		const loader = new JitiSchemaLoaderAdapter({ jitiAliases });
+		const result = await loader.load({ schemaPath });
+
+		expect(result.ok).toBe(false);
+		if (result.ok) return;
+		expect(result.code).toBe("ERR_INSPECT_UNEXTRACTABLE");
+		expect(result.message).toContain("Cannot extract keys");
+	});
+
+	it("returns ERR_INSPECT_EVAL_THROW when the module requires env values at load time", async () => {
 		const schemaPath = path.join(tempDir, "env.ts");
 		await fsp.writeFile(
 			schemaPath,
@@ -260,7 +315,7 @@ describe("JitiSchemaLoaderAdapter", () => {
 
 		expect(result.ok).toBe(false);
 		if (result.ok) return;
-		expect(result.code).toBe("MODULE_LOAD_FAILED");
+		expect(result.code).toBe("ERR_INSPECT_EVAL_THROW");
 		expect(result.message).toContain("does not populate env values");
 	});
 

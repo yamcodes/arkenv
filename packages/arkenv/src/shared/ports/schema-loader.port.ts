@@ -12,11 +12,16 @@ export type SchemaLoadTarget = {
 };
 
 /**
- * Stable codes for structured schema-loader failures.
+ * Stable inspect failure codes for {@link SchemaLoaderPort.load}.
+ *
+ * Protocol envelopes still use dotted `CLI.*` codes; these identify the
+ * inspect failure mode so commands can choose hints and next actions.
  */
 export const SCHEMA_LOAD_ERROR_CODES = {
-	MODULE_LOAD_FAILED: "MODULE_LOAD_FAILED",
-	NO_SCHEMA: "NO_SCHEMA",
+	ERR_INSPECT_NO_CALL: "ERR_INSPECT_NO_CALL",
+	ERR_INSPECT_UNSUPPORTED: "ERR_INSPECT_UNSUPPORTED",
+	ERR_INSPECT_UNEXTRACTABLE: "ERR_INSPECT_UNEXTRACTABLE",
+	ERR_INSPECT_EVAL_THROW: "ERR_INSPECT_EVAL_THROW",
 } as const;
 
 export type SchemaLoadErrorCode =

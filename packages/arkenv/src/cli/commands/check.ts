@@ -163,7 +163,7 @@ export class CheckUseCase {
 		const loadResult = await this.schemaLoader.load({ schemaPath });
 		if (!loadResult.ok) {
 			const summary = sanitizeSecretText(loadResult.message);
-			if (loadResult.code === SCHEMA_LOAD_ERROR_CODES.NO_SCHEMA) {
+			if (loadResult.code === SCHEMA_LOAD_ERROR_CODES.ERR_INSPECT_NO_CALL) {
 				const nextActions: NextAction[] = [
 					{
 						kind: "run-command",

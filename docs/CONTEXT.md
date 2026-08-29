@@ -52,12 +52,18 @@ Planned CLI command `arkenv lint` (not yet shipped; epic [#481](https://github.c
 *Avoid*: treating Lint as a rename of Check; wrapping `dotenv-linter`; a second validation engine; documenting or invoking `arkenv lint` as available on current v1
 
 **Example** (CLI command):
-CLI command `arkenv example` that writes `.env.example` from declared schema keys (same loader as Check). Merge-aware: preserve comments/values for surviving keys, drop stale keys, append new keys. Loader failure does not write a partial file.
-*Avoid*: static-parsing `env.ts`; writing `.env` with real secrets; treating Example as a replacement for Check; calling this command `sync` or `generate`
+CLI command `arkenv example` that writes `.env.example` from declared schema keys (same loader as Check). Merge-aware: preserve comments/values for surviving keys, drop stale keys, append new keys. Loader failure does not write a partial file. Emits every declared key; `hasDefault` is advisory only (never omit a key because the sniffer missed a default).
+*Avoid*: static-parsing `env.ts`; writing `.env` with real secrets; treating Example as a replacement for Check; calling this command `sync` or `generate`; omitting keys when `hasDefault` is false
+
+**Schema inspect** (CLI loader):
+Jiti-import of a flat `env.ts` under unpublished schema capture ([ADR 0027](./adr/0027-cli-schema-inspection.md)). `arkenv()` records the definition and returns a hollow `{}` stub (not a Proxy). Handshake is `Symbol.for("arkenv.schemaCapture.v1")` on `globalThis` (CLI / `@arkenv/core` / `@arkenv/standard`); Nuxt keeps `__ARKENV_SCHEMA_CAPTURE__`. Fail closed: `arkenv({})` → success `keys: []`; never treat “no call”, “runtime too old”, or “unreadable def” as an empty schema. Loader codes: `ERR_INSPECT_NO_CALL`, `ERR_INSPECT_UNSUPPORTED`, `ERR_INSPECT_UNEXTRACTABLE`, `ERR_INSPECT_EVAL_THROW` (protocol envelopes stay dotted `CLI.*`).
+*Supported*: top-level `export const env = arkenv({ ... })` (ArkType strings, compiled `type({...})`, Standard Schema maps including unknown vendors); spreads from other modules; `arkenv({})`; comparisons like `env.NODE_ENV === "production"` (property access is `undefined`).
+*Unsupported / incomplete*: using `env` values at module scope (`createClient(env.X)`, `if (!env.X) throw`, `env.PORT.toString()`); `{ safe: true }` then reading `env.success`; lazy `export const env = () => arkenv(...)`; `arkenv()` behind a runtime branch; old core/standard that ignores capture; import-time side effects; pointing the loader at only one strict-layout file.
+*Avoid*: public `schemaMode` / `dryRun` on `ArkEnvConfig`; publishing `beginSchemaCapture` on the app barrel; `{ safe: true }` as the inspect loader; treating capture stub as a Proxy; sharing Nuxt’s string capture key with the CLI bag
 
 **Envelope** (also **settlement envelope**):
 CLI `--json` / `--agent` stdout document. Discriminated by `ok`. Success and Check findings use `CompletedEnvelope` (`ok: true`, `diagnostics`, required `nextActions`). Preconditions and crashes use `ErroredEnvelope` (`ok: false`, `error`). Codes are dotted `NAMESPACE.SUBCODE`. `{bin}` in nextActions is resolved to the active runner before serialize.
-*Avoid*: `{ status, message, retryWith }`; `ERR_*` codes; custom nextAction kinds such as `type: set_env`
+*Avoid*: `{ status, message, retryWith }`; `ERR_*` codes on envelopes (loader `ERR_INSPECT_*` is a different layer); custom nextAction kinds such as `type: set_env`
 
 ### Site chrome (www)
 

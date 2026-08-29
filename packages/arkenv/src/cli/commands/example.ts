@@ -100,7 +100,7 @@ export class ExampleUseCase {
 				: undefined;
 
 			const nextActions: NextAction[] =
-				loadResult.code === SCHEMA_LOAD_ERROR_CODES.NO_SCHEMA
+				loadResult.code === SCHEMA_LOAD_ERROR_CODES.ERR_INSPECT_NO_CALL
 					? [
 							{
 								kind: "run-command",
