@@ -32,7 +32,7 @@ This runbook outlines the operational, DNS, npm registry, and deployment steps r
    ```bash
    pnpm exec changeset version
    ```
-3. Commit and merge the Version Packages PR to `main`.
+3. Commit and merge the Version Packages PR to `v1`.
 
 ### Step 2.2: Promote Packages to `@latest`
 
@@ -40,7 +40,8 @@ When GitHub Actions triggers the release workflow, verify on npm that:
 
 - `arkenv@1.0.0` is published under the `latest` tag (as the CLI).
 - `@arkenv/core@1.0.0` is published under the `latest` tag (as the core runtime).
-- `@arkenv/standard`, `@arkenv/nextjs`, `@arkenv/nuxt`, `@arkenv/vite-plugin`, `@arkenv/bun-plugin`, `@arkenv/build` are published under `latest`.
+- `@arkenv/standard`, `@arkenv/nextjs`, `@arkenv/nuxt`, `@arkenv/vite-plugin`, `@arkenv/bun-plugin`, `@arkenv/build`, `@arkenv/fumadocs-ui` are published under `latest`.
+- Note: `@arkenv/agent-plugin` is versioned independently on its own `0.x` cadence.
 
 ### Step 2.3: Deprecate `@arkenv/cli`
 
@@ -94,8 +95,8 @@ npm deprecate @arkenv/cli "This package was renamed to 'arkenv' in v1. Please up
 If an emergency regression occurs immediately following publish:
 
 1. **Docs Rollback**: Point `arkenv.js.org` back to the v0 project in Vercel.
-2. **npm Rollback**: Repoint dist-tags on npm:
+2. **npm Rollback**: Check existing dist-tags (`npm view @arkenv/core dist-tags`) and repoint dist-tags on npm:
    ```bash
    npm dist-tag add arkenv@<last-v0-version> latest
-   npm dist-tag add arkenv@1.0.0-rc.x next
+   npm dist-tag add arkenv@<last-alpha-version> alpha
    ```
