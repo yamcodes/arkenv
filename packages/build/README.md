@@ -6,7 +6,7 @@ This package is published to npm solely to support the ArkEnv framework plugins 
 
 ## What it does
 
-- **Layout resolution:** Detects simple vs. strict multi-file schema layouts.
+- **Schema discovery:** Locates flat `env.ts` / `src/env.ts` modules for transform plugins.
 - **Key extraction:** Statically parses schema files to extract environment variable keys without executing them.
 - **File watching:** Watches schema files during development and triggers codegen.
 

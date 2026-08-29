@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
-	formatBuildError,
 	type Logger,
 	logErrorWithCauseVia,
 	logWatcherErrorWithCause,
@@ -14,250 +13,8 @@ export {
 	formatMissingSchemaError,
 } from "./missing-schema-error";
 
-/**
- * Standard build-time error thrown when client-graph code imports a server-only schema.
- */
-export const CLIENT_SECURITY_ERROR = formatBuildError(
-	"Importing server-only environment schema on the client is not allowed!",
-);
-
-/**
- * Check whether an imported module ID / path refers to a server schema file
- * that must be blocked from client-graph bundles (ADR 0013 / ADR 0016).
- *
- * @param id The module identifier or file path being imported
- * @param importer The module path that initiated the import (if available)
- * @param baseDir The strict-layout base directory (e.g. `/project/env` or `/project/src/env`)
- * @param rootDir Optional project root directory for resolving aliases
- * @param srcDir Optional source directory for resolving aliases
- * @returns `true` if the import targets a server-only schema file
- */
-export function isServerSchemaImport(
-	id: string,
-	importer?: string,
-	baseDir?: string,
-	rootDir?: string,
-	srcDir?: string,
-): boolean {
-	if (!id || !id.includes("server")) return false;
-
-	const isKnownServerModule =
-		id === "@arkenv/nuxt/server" ||
-		id === "@arkenv/nuxt/standard/server" ||
-		id === "@arkenv/nextjs/server" ||
-		id === "@arkenv/nextjs/standard/server" ||
-		/[/\\]@arkenv[/\\](?:nuxt|nextjs)[/\\](?:src|dist)[/\\](?:standard[/\\])?server(?:\.[mc]?[jt]sx?)?$/.test(
-			id,
-		);
-
-	if (isKnownServerModule) {
-		return true;
-	}
-
-	if (!baseDir) {
-		return false;
-	}
-
-	const normalizedBaseDir = path.resolve(baseDir);
-
-	let cleanId = id;
-	if (cleanId.startsWith("\0")) {
-		cleanId = cleanId.slice(1);
-	}
-	const queryIndex = cleanId.indexOf("?");
-	if (queryIndex !== -1) {
-		cleanId = cleanId.slice(0, queryIndex);
-	}
-
-	const isTargetUnderBase = (target: string): boolean => {
-		if (!path.isAbsolute(target)) return false;
-
-		let realTarget = target;
-		let realBase = normalizedBaseDir;
-		try {
-			if (fs.existsSync(target)) realTarget = fs.realpathSync(target);
-			if (fs.existsSync(normalizedBaseDir))
-				realBase = fs.realpathSync(normalizedBaseDir);
-		} catch {
-			// ignore
-		}
-
-		for (const [base, candidate] of [
-			[normalizedBaseDir, target],
-			[realBase, realTarget],
-		]) {
-			const relativePath = path.relative(base, candidate);
-			const isUnderBaseDir =
-				!relativePath.startsWith("..") && !path.isAbsolute(relativePath);
-			const isServerFile = /(^|[/\\])server(?:\.[mc]?[jt]sx?|[/\\]|$)/.test(
-				relativePath,
-			);
-
-			if (isUnderBaseDir && isServerFile) {
-				return true;
-			}
-		}
-
-		return false;
-	};
-
-	let targetId = cleanId;
-	if ((cleanId.startsWith(".") || !path.isAbsolute(cleanId)) && importer) {
-		targetId = path.resolve(path.dirname(importer), cleanId);
-	} else if (rootDir) {
-		if (cleanId.startsWith("~~/")) {
-			targetId = path.resolve(rootDir, cleanId.slice(3));
-		} else if (cleanId.startsWith("~/") || cleanId.startsWith("@/")) {
-			const subPath = cleanId.slice(2);
-			if (isTargetUnderBase(path.resolve(rootDir, subPath))) return true;
-			if (isTargetUnderBase(path.resolve(rootDir, "src", subPath))) return true;
-			if (srcDir && isTargetUnderBase(path.resolve(srcDir, subPath)))
-				return true;
-		} else if (cleanId.startsWith("/")) {
-			targetId = path.resolve(rootDir, cleanId.slice(1));
-		}
-	}
-
-	if (isTargetUnderBase(targetId)) {
-		return true;
-	}
-
-	// Also check bare specifiers resolved against candidate roots (e.g. rootDir, srcDir, parent of baseDir)
-	const candidateRoots: string[] = [];
-	if (rootDir) {
-		candidateRoots.push(rootDir, path.resolve(rootDir, "src"));
-		if (srcDir) candidateRoots.push(srcDir);
-	}
-	candidateRoots.push(path.dirname(normalizedBaseDir));
-
-	const normalizedTarget = path.normalize(cleanId);
-	for (const candRoot of candidateRoots) {
-		const candPath = path.resolve(candRoot, normalizedTarget);
-		if (isTargetUnderBase(candPath)) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
 // Global watcher reference isolated to this bundle's scope
 let activeWatcher: FSWatcher | undefined;
-
-export type LayoutMode = "simple" | "strict";
-
-/**
- * Layout values accepted by {@link resolveLayout}.
- */
-export type LayoutInput = LayoutMode | "flat";
-
-export type ResolvedLayout = {
-	layout: LayoutMode;
-	baseDir: string;
-};
-
-/**
- * Return whether a directory looks like a strict split layout.
- *
- * Strict auto-detection requires `client.ts` and `server.ts`.
- * `internal/shared.ts` is optional and treated as empty when absent.
- *
- * @param dir Absolute path to a candidate env directory
- * @returns `true` when both `client.ts` and `server.ts` exist
- */
-export function isStrictLayoutDir(dir: string): boolean {
-	return (
-		fs.existsSync(path.join(dir, "client.ts")) &&
-		fs.existsSync(path.join(dir, "server.ts"))
-	);
-}
-
-/**
- * Resolve the layout mode and base directory for a given schema file path.
- *
- * @param schemaPath The absolute path to the schema file or directory
- * @param layoutOption An optional explicit layout configuration ("flat", "simple", or "strict")
- * @returns An object containing the resolved layout mode and the base directory path
- * @throws An error if explicit "strict" layout is requested but `client.ts` is missing
- */
-export function resolveLayout(
-	schemaPath: string,
-	layoutOption?: LayoutInput,
-): ResolvedLayout {
-	const layout = layoutOption === "flat" ? "simple" : layoutOption;
-
-	const resolveBaseDir = (p: string): string => {
-		const ext = path.extname(p);
-		const baseWithoutExt = ext ? p.slice(0, -ext.length) : p;
-		if (
-			fs.existsSync(baseWithoutExt) &&
-			fs.statSync(baseWithoutExt).isDirectory()
-		) {
-			return baseWithoutExt;
-		}
-		return p;
-	};
-
-	if (!layout) {
-		const resolved = resolveBaseDir(schemaPath);
-		if (fs.existsSync(resolved) && fs.statSync(resolved).isDirectory()) {
-			if (isStrictLayoutDir(resolved)) {
-				return { layout: "strict", baseDir: resolved };
-			}
-			return { layout: "simple", baseDir: resolved };
-		}
-
-		const parent = path.dirname(schemaPath);
-		const ext = path.extname(schemaPath);
-		const baseWithoutExt = ext ? schemaPath.slice(0, -ext.length) : schemaPath;
-		if (
-			fs.existsSync(baseWithoutExt) &&
-			fs.statSync(baseWithoutExt).isDirectory() &&
-			isStrictLayoutDir(baseWithoutExt)
-		) {
-			return { layout: "strict", baseDir: baseWithoutExt };
-		}
-		if (isStrictLayoutDir(parent)) {
-			return { layout: "strict", baseDir: parent };
-		}
-		if (
-			path.basename(parent) === "internal" &&
-			isStrictLayoutDir(path.dirname(parent))
-		) {
-			return { layout: "strict", baseDir: path.dirname(parent) };
-		}
-		return { layout: "simple", baseDir: schemaPath };
-	}
-
-	if (layout === "strict") {
-		let baseDir: string;
-		const resolved = resolveBaseDir(schemaPath);
-		if (fs.existsSync(resolved) && fs.statSync(resolved).isDirectory()) {
-			baseDir = resolved;
-		} else {
-			const parent = path.dirname(schemaPath);
-			if (path.basename(parent) === "internal") {
-				baseDir = path.dirname(parent);
-			} else {
-				baseDir = parent;
-			}
-		}
-
-		const clientPath = path.join(baseDir, "client.ts");
-		if (!fs.existsSync(clientPath)) {
-			throw new Error(
-				formatBuildError(
-					`Strict layout requires "${clientPath}" to exist. ` +
-						`Ensure it is present or remove the 'layout: "strict"' option to let ArkEnv auto-detect.`,
-				),
-			);
-		}
-
-		return { layout: "strict", baseDir };
-	}
-
-	return { layout: "simple", baseDir: schemaPath };
-}
 
 /**
  * Return the default absolute schema file candidates for a project root.
@@ -270,21 +27,14 @@ export function getDefaultSchemaFileCandidates(cwd = process.cwd()): string[] {
 }
 
 /**
- * Find the path to the schema file or directory in the project.
+ * Find the path to the schema file in the project.
  *
  * @param cwd The working directory to search from (defaults to process.cwd())
- * @returns The absolute path to the schema file/directory, or null if not found
+ * @returns The absolute path to the schema file, or null if not found
  */
 export function findSchemaPath(cwd = process.cwd()): string | null {
 	for (const p of getDefaultSchemaFileCandidates(cwd)) {
 		if (fs.existsSync(p)) return p;
-	}
-
-	const possibleDirs = [path.join(cwd, "src", "env"), path.join(cwd, "env")];
-	for (const d of possibleDirs) {
-		if (fs.existsSync(d) && isStrictLayoutDir(d)) {
-			return d;
-		}
 	}
 	return null;
 }
@@ -292,14 +42,13 @@ export function findSchemaPath(cwd = process.cwd()): string | null {
 /**
  * Ensure a discovered schema path is a flat env module file.
  *
- * Vite/Bun plugins only support a single `env.ts` module. Strict layout
- * directories discovered by {@link findSchemaPath} are rejected with a clear
- * host-specific diagnostic.
+ * Vite/Bun plugins only support a single `env.ts` module. Directories are
+ * rejected with a clear host-specific diagnostic.
  *
  * @param schemaPath Absolute path returned by discovery or plugin options
  * @param prefix Brand prefix for the error (e.g. `"ArkEnv Vite plugin:"`)
  * @returns The same `schemaPath` when it is an existing file
- * @throws When `schemaPath` is a directory (typically a strict layout)
+ * @throws When `schemaPath` is a directory
  */
 export function assertFlatSchemaFile(
 	schemaPath: string,
@@ -309,7 +58,7 @@ export function assertFlatSchemaFile(
 		throw new Error(
 			`${prefix} discovered a schema directory at "${schemaPath}". ` +
 				"This integration only supports a flat env module file (env.ts). " +
-				"Point schemaPath at that file, or use @arkenv/nextjs / @arkenv/nuxt for strict layout.",
+				"Point schemaPath at that file.",
 		);
 	}
 	return schemaPath;

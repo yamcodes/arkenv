@@ -54,10 +54,6 @@ export const env = arkenv({
 });
 ```
 
-In strict split-file layouts, role-suffixed markers are used:
-- `// @arkenv-preset-start vercel:client` ... `// @arkenv-preset-end vercel:client` in `client.ts`
-- `// @arkenv-preset-start vercel:server` ... `// @arkenv-preset-end vercel:server` in `server.ts`
-
 #### Safe Refresh & Collision Handling
 - **User-Owned Space**: Everything outside `@arkenv-preset-start/end` markers is strictly user-owned.
 - **Fail-Closed on Collision**: If a preset tries to add a key that already exists outside managed blocks (unmarked) or inside another preset's block, the CLI fails closed with an actionable collision error rather than silently overwriting.
@@ -109,9 +105,6 @@ pnpm dlx arkenv@latest init [options]
 ```
 
 #### Options:
-- `--strict`: Use strict 3-file split layout.
-- `--simple`: Use simple 1-file layout.
-- `--flat`: Use flat single-file layout (default).
 - `--preset, -P <preset>`: Specify hosting provider preset (none, vercel, netlify, cloudflare, railway, render, fly).
 - `--no-codegen`: Disable Next.js codegen configuration setup.
 
@@ -259,7 +252,7 @@ await Bun.build({
 ## Security Boundaries & Layouts
 
 - **Flat layout (default)**: `src/env.ts` contains all keys. Server graph runs full validation at boot; client graph receives inlined public literals while access to private server keys throws a runtime error.
-- **Strict layout**: Split into `env/server.ts`, `env/client.ts`, and `env/internal/shared.ts`. Build plugins block server file imports from client bundles at compile time.
+- **Optional two-module recipe**: When secret names/types must stay off the client type graph, use two modules (client + server) with two imports and optional `extends: [clientEnv]`. Next can use `import "server-only"` + `@arkenv/core` for the server module. Nuxt: never import the server module from client code. Not a CLI `--strict` flag or package `/client` `/server` surface.
 
 ---
 

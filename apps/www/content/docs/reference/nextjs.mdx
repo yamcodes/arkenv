@@ -21,15 +21,12 @@ npm install @arkenv/standard @arkenv/nextjs zod
 
 ## Subpaths
 
-| Subpath                                                       | Role                                                                        |
-| ------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `.`                                                           | Unified `arkenv` (`react-server` condition for RSC, default for client/SSR) |
-| `./server`                                                    | Server-only `arkenv` (`server-only`)                                        |
-| `./client`                                                    | Client `arkenv`                                                             |
-| `./config`                                                    | `withArkEnv`, `runCodegen`, config types                                    |
-| `./standard`                                                  | Standard Schema unified entry                                               |
-| `./standard/server`, `./standard/client`, `./standard/shared` | Split Standard entries                                                      |
-| `./standard/config`                                           | Standard `withArkEnv` (forces Standard codegen)                             |
+| Subpath             | Role                                                                        |
+| ------------------- | --------------------------------------------------------------------------- |
+| `.`                 | Unified `arkenv` (`react-server` condition for RSC, default for client/SSR) |
+| `./config`          | `withArkEnv`, `runCodegen`, config types                                    |
+| `./standard`        | Standard Schema unified entry                                               |
+| `./standard/config` | Standard `withArkEnv` (forces Standard codegen)                             |
 
 ## `withArkEnv` options
 
@@ -42,18 +39,44 @@ const nextConfig: NextConfig = {};
 export default withArkEnv(nextConfig);
 ```
 
-Pass a second argument to change codegen, layout, or validation.
+Function-form `next.config` is supported. ArkEnv awaits the factory and
+applies aliases to the resolved object:
 
-| Option       | Default  | Meaning                      |
-| ------------ | -------- | ---------------------------- |
-| `codegen`    | `true`   | Write `env.gen.ts`           |
-| `validate`   | `true`   | Validate during config/build |
-| `layout`     | `"flat"` | `"flat"` or `"strict"`       |
-| `schemaPath` | auto     | Schema entry path            |
-| `outputPath` | auto     | Generated file path          |
-| `standard`   | `false`  | Standard Schema codegen      |
-| `logger`     | console  | Build-time logger            |
-| `logLevel`   | (none)   | Minimum log level            |
+```ts title="./next.config.ts"
+import type { NextConfig } from "next";
+import { withArkEnv } from "@arkenv/nextjs/config";
+
+export default withArkEnv(async (phase, { defaultConfig }): Promise<NextConfig> => ({
+  ...defaultConfig,
+  reactStrictMode: phase !== "phase-test",
+}));
+```
+
+Your app schema imports the generated factory:
+
+```ts title="./env.ts"
+import arkenv from "@/.arkenv";
+
+export const env = arkenv({
+  DATABASE_URL: "string",
+  NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+### `withArkEnv` options
+
+Pass a second argument to change codegen or validation.
+
+| Option       | Default | Meaning                      |
+| ------------ | ------- | ---------------------------- |
+| `codegen`    | `true`  | Write `env.gen.ts`           |
+| `validate`   | `true`  | Validate during config/build |
+| `schemaPath` | auto    | Schema entry path            |
+| `outputPath` | auto    | Generated file path          |
+| `standard`   | `false` | Standard Schema codegen      |
+| `logger`     | console | Build-time logger            |
+| `logLevel`   | (none)  | Minimum log level            |
 
 A custom `outputPath` still imports as `@/.arkenv`. Next.js aliases the
 specifier; codegen keeps `.arkenv/index.ts` re-exporting that file so
@@ -75,8 +98,22 @@ await runCodegen(schemaPath, outputPath);
 Import `withArkEnv` from `@arkenv/nextjs/standard/config` to force
 Standard Schema-compatible generated imports.
 
+```ts title="./next.config.ts"
+import { withArkEnv } from "@arkenv/nextjs/standard/config";
+
+export default withArkEnv(nextConfig);
+```
+
+## Client and server keys
+
+Public keys use the `NEXT_PUBLIC_` prefix. One schema file plus a runtime
+Proxy blocks server-key reads on the client.
+
+For name/type isolation beyond values, see the
+[two-module recipe](/docs/core-concepts/client-vs-server#advanced-two-module-recipe).
+
 ## Next steps
 
 <Cards>
-  <Card href="/docs/frameworks/nextjs" title="Next.js framework guide" description="Quickstart, schema layouts, and reading env in application code." />
+  <Card href="/docs/frameworks/nextjs" title="Next.js framework guide" description="Quickstart, flat schema, and reading env in application code." />
 </Cards>

@@ -16,4 +16,4 @@ export const VALIDATORS = {
 
 export type { Dialect } from "./dialects";
 export { DIALECTS } from "./dialects";
-export type { StrictEnvTemplates, ValidatorStrategy } from "./types";
+export type { ValidatorStrategy } from "./types";

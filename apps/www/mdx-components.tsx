@@ -47,6 +47,10 @@ async function AutoTypeTable(
 }
 
 export function getMDXComponents(components: MDXComponents): MDXComponents {
+	// `@arkenv/fumadocs-ui` already wraps tables with a focusable
+	// `fd-scroll-container` (axe scrollable-region-focusable). Keep that and
+	// only add docs-site column/code cell styling on the inner table.
+	const Table = arkenvComponents.table ?? "table";
 	return {
 		...arkenvComponents,
 		...twoslashComponents,
@@ -63,21 +67,14 @@ export function getMDXComponents(components: MDXComponents): MDXComponents {
 		Folder,
 		File,
 		...components,
-		/**
-		 * Fumadocs' default MDX table is `overflow-auto` without a focus target.
-		 * Wrap here (docs site only) with `fd-scroll-container` so Playwright
-		 * a11y excludes it like scrollable code blocks.
-		 */
 		table: (props) => (
-			<div className="relative overflow-auto prose-no-margin my-6 fd-scroll-container">
-				<table
-					{...props}
-					className={cn(
-						"[&_td_code]:whitespace-nowrap [&_td:first-child]:w-max",
-						props.className,
-					)}
-				/>
-			</div>
+			<Table
+				{...props}
+				className={cn(
+					"[&_td_code]:whitespace-nowrap [&_td:first-child]:w-max",
+					props.className,
+				)}
+			/>
 		),
 	};
 }

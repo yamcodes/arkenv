@@ -25,26 +25,11 @@ export const arktypeTwoslashVfs = {
 				path.join(root, "packages/standard/src/zod-mini.ts"),
 			],
 			"@arkenv/nextjs": [path.join(root, "packages/nextjs/src/index.ts")],
-			"@arkenv/nextjs/server": [
-				path.join(root, "packages/nextjs/src/server.ts"),
-			],
-			"@arkenv/nextjs/client": [
-				path.join(root, "packages/nextjs/src/client.ts"),
-			],
 			"@arkenv/nextjs/config": [
 				path.join(root, "packages/nextjs/src/config/index.ts"),
 			],
 			"@arkenv/nextjs/standard": [
 				path.join(root, "packages/nextjs/src/standard/index.ts"),
-			],
-			"@arkenv/nextjs/standard/server": [
-				path.join(root, "packages/nextjs/src/standard/server.ts"),
-			],
-			"@arkenv/nextjs/standard/client": [
-				path.join(root, "packages/nextjs/src/standard/client.ts"),
-			],
-			"@arkenv/nextjs/standard/shared": [
-				path.join(root, "packages/nextjs/src/standard/shared.ts"),
 			],
 			"@arkenv/nextjs/standard/config": [
 				path.join(root, "packages/nextjs/src/standard/config.ts"),
@@ -64,19 +49,8 @@ export const arktypeTwoslashVfs = {
 				path.join(root, "packages/bun-plugin/src/standard.ts"),
 			],
 			"@arkenv/nuxt": [path.join(root, "packages/nuxt/src/index.ts")],
-			"@arkenv/nuxt/server": [path.join(root, "packages/nuxt/src/server.ts")],
-			"@arkenv/nuxt/client": [path.join(root, "packages/nuxt/src/client.ts")],
 			"@arkenv/nuxt/standard": [
 				path.join(root, "packages/nuxt/src/standard/index.ts"),
-			],
-			"@arkenv/nuxt/standard/server": [
-				path.join(root, "packages/nuxt/src/standard/server.ts"),
-			],
-			"@arkenv/nuxt/standard/client": [
-				path.join(root, "packages/nuxt/src/standard/client.ts"),
-			],
-			"@arkenv/nuxt/standard/shared": [
-				path.join(root, "packages/nuxt/src/standard/shared.ts"),
 			],
 			"@arkenv/nuxt/standard/module": [
 				path.join(root, "packages/nuxt/src/standard/module.ts"),
@@ -92,10 +66,6 @@ export const arktypeTwoslashVfs = {
 				path.join(root, "packages/internal/keywords/src/index.ts"),
 			],
 			"@/*": [path.join(root, "packages/arkenv/src/*"), "./*"],
-			"@/env/client": ["env/client.ts"],
-			"@/env/server": ["env/server.ts"],
-			"~~/env/client": ["env/client.ts"],
-			"~~/env/server": ["env/server.ts"],
 			zod: [
 				"node_modules/zod/index.d.ts",
 				"node_modules/zod/index.d.cts",

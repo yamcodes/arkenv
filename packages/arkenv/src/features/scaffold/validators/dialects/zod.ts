@@ -13,23 +13,6 @@ export const zodDialect: Dialect = {
 		return `z.enum([${values.map((v) => `"${v}"`).join(", ")}]).optional()`;
 	},
 
-	formatStrictField(key, role, clientPrefix = "", hostPreset = undefined) {
-		if (role === "shared") {
-			return `${key}: z.enum(["development", "production", "test"]).default("development"),`;
-		}
-		if (role === "server" && key === "PORT") {
-			return "PORT: z.int().min(1).max(65535).default(3000),";
-		}
-		const preset = tryFormatPresetFieldValue(
-			zodDialect,
-			key,
-			clientPrefix,
-			hostPreset,
-		);
-		if (preset) return `${key}: ${preset},`;
-		return `${key}: z.string().optional(),`;
-	},
-
 	formatCodegenField(key, role, clientPrefix = "", hostPreset = undefined) {
 		if (role === "shared") {
 			return `${key}: z.enum(["development", "production", "test"]).default("development"),`;
@@ -61,25 +44,6 @@ export const zodDialect: Dialect = {
 			.join("\n");
 	},
 
-	getDefaultStrictFields(clientPrefix) {
-		const defaultClientKey = `${clientPrefix}API_URL`;
-		return {
-			serverFields: [
-				`DATABASE_URL: z.url().default("postgres://localhost:5432/mydb"),`,
-			],
-			clientFields: [
-				`${defaultClientKey}: z.url().default("https://api.example.com"),`,
-			],
-			sharedFields: [
-				`NODE_ENV: z.enum(["development", "production", "test"]).default("development"),`,
-			],
-			runtimeEnvFields: [
-				`${defaultClientKey}: process.env.${defaultClientKey},`,
-				"NODE_ENV: process.env.NODE_ENV,",
-			],
-		};
-	},
-
 	getDefaultCodegenFields(clientPrefix) {
 		return {
 			serverFields: [
@@ -93,14 +57,6 @@ export const zodDialect: Dialect = {
 			],
 		};
 	},
-
-	sharedImports: `import * as z from "zod";`,
-
-	wrapSharedSchema(schemaObject) {
-		return `z.object(${schemaObject})`;
-	},
-
-	strictExtraImports: `import * as z from "zod";\n`,
 
 	assembleVanilla(schemaFields) {
 		return dedent /* ts */`

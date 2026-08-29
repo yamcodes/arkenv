@@ -44,7 +44,6 @@ export function assembleSimpleFromDialect(
 				importPath: context.nextjsImportPath,
 			}),
 			disableCodegen: context.disableCodegen,
-			...(context.layout !== undefined && { layout: context.layout }),
 			...(context.hostPreset !== undefined && {
 				hostPreset: context.hostPreset,
 			}),

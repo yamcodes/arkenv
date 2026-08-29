@@ -3,8 +3,6 @@ import { describe, expectTypeOf, it } from "vitest";
 // Bindings are referenced so @ts-expect-error is only satisfied by a missing export
 // (not by noUnusedLocals / TS6133). If a directive ever becomes unused, a re-export
 // was accidentally re-introduced.
-// @ts-expect-error `type` is not exported from @arkenv/nextjs/client — import from @arkenv/core
-import { type as typeFromClient } from "./client";
 import { withArkEnv } from "./config";
 // @ts-expect-error `Infer` is not exported from @arkenv/nextjs root — import from @arkenv/core
 import type { Infer as InferFromRoot } from "./index";
@@ -14,14 +12,10 @@ import { arkenv, type as typeFromRoot } from "./index";
 import type { Infer as InferFromReactServer } from "./react-server";
 // @ts-expect-error `type` is not exported from @arkenv/nextjs/react-server — import from @arkenv/core
 import { type as typeFromReactServer } from "./react-server";
-// @ts-expect-error `type` is not exported from @arkenv/nextjs/server — import from @arkenv/core
-import { type as typeFromServer } from "./server";
 import arkenvStandard from "./standard";
 import { withArkEnv as withArkEnvStandard } from "./standard/config";
 
-void typeFromClient;
 void typeFromRoot;
-void typeFromServer;
 void typeFromReactServer;
 
 type _InferFromRootGuard = InferFromRoot<Record<string, never>>;
@@ -173,45 +167,6 @@ describe("@arkenv/nextjs type regression", () => {
 
 		// @ts-expect-error server-only variable is omitted/never on the client
 		env.DATABASE_URL;
-	});
-});
-
-declare module "#arkenv/client-env" {
-	// biome-ignore lint/style/useConsistentTypeDefinitions: declaration merging requires an interface
-	interface ClientEnv {
-		NEXT_PUBLIC_API_URL: string;
-		NODE_ENV: string;
-	}
-}
-
-describe("@arkenv/nextjs server auto-extend types (strict layout)", () => {
-	it("includes auto-extended client keys in type when extends is omitted", () => {
-		// Import via require-cast so the module augmentation above is in scope
-		const { arkenv: serverArkenv } =
-			require("./server") as typeof import("./server");
-		const env = serverArkenv({ DATABASE_URL: "string" });
-
-		expectTypeOf(env.DATABASE_URL).toBeString();
-		expectTypeOf(env.NEXT_PUBLIC_API_URL).toBeString();
-		expectTypeOf(env.NODE_ENV).toBeString();
-	});
-
-	it("keeps explicit extends override types", () => {
-		const { arkenv: serverArkenv } =
-			require("./server") as typeof import("./server");
-		const clientEnv = {
-			NEXT_PUBLIC_API_URL: "https://api.example.com",
-			CUSTOM_CLIENT: "value",
-		};
-
-		const env = serverArkenv(
-			{ DATABASE_URL: "string" },
-			{ extends: [clientEnv] },
-		);
-
-		expectTypeOf(env.DATABASE_URL).toBeString();
-		expectTypeOf(env.NEXT_PUBLIC_API_URL).toBeString();
-		expectTypeOf(env.CUSTOM_CLIENT).toBeString();
 	});
 });
 

@@ -319,7 +319,7 @@ pnpm run test:e2e                     # E2E tests
 - Next.js Standard Mode docs lead with the **codegen** happy path (`import arkenv from "@/.arkenv"`); direct `@arkenv/nextjs/standard` + manual `runtimeEnv` is documented as the no-codegen alternative.
 - Same “does not require ArkType” framing applies lightly to Vite and Bun intros (remove the requires-ArkType callout; keep Standard install path). Fumadocs titled callouts use `:::important[Title]` / `:::tip[Title]`, not a bare `:::important` with the title as body text.
 - Package READMEs (`@arkenv/nextjs`, `@arkenv/nuxt`): light touch only — mention Standard Mode + `/standard`; no full README rewrite in this pass.
-- On validators pages, the secondary “Mixing with ArkType” section is short: one flat-layout mixed schema example; no full Zod/Valibot × flat/strict tab matrix.
+- On validators pages, the secondary “Mixing with ArkType” section is short: one flat-layout mixed schema example; no full Zod/Valibot × layout tab matrix.
 - Core FAQ: keep “Do I have to use ArkType?” for validator choice; add a dedicated “Do I need to install `arktype`?” for the `@arkenv/standard` / `/standard` packaging story.
 - Validators page descriptions (and intro cards): “Use Zod, Valibot, or any Standard Schema validator — with or without ArkType.” Title stays “Zod, Valibot, and other Standard Schema validators.” Core `integrations/standard-schema` remains the mix-with-`@arkenv/core` guide.
 - Nuxt FAQ gets peer-engine parity with Next (“Why install `@arkenv/core` or `@arkenv/standard` alongside `@arkenv/nuxt`?”) plus the dedicated arktype-install FAQ on both framework FAQs.
@@ -352,7 +352,7 @@ Nitro boot-time coercion writes coerced schema values into `runtimeConfig` (incl
 *Avoid*: hybrid Vite-literal + Nitro dual sources of truth; “make Nuxt like #1328”
 
 **Thin client path** (resolved):
-Same userland import (`./env` / `@arkenv/nuxt` client entries). On the client, `arkenv` does not run `createEnv` / ship the validator; it reads the already-coerced public payload and keeps server-key guards. No separate virtual client module for users to import.
+Same userland import (`./env` / `@arkenv/nuxt`). On the client, `arkenv` does not run `createEnv` / ship the validator; it reads the already-coerced public payload and keeps server-key guards. No separate virtual client module for users to import.
 *Avoid*: “client imports `arkenv/gen/...`”; second client specifier as the default DX
 
 **Nuxt boot gate** (resolved):
@@ -364,7 +364,7 @@ On Nuxt, both server and client `arkenv()` paths are thin readers of the coerced
 *Avoid*: “server still validates on import, client is thin”; asymmetric honesty
 
 **Boot gate schema load** (resolved):
-The module loads the configured `schemaPath` and the **Nuxt boot gate** (and build-time validate) call **core** validation against that schema. Public thin `arkenv()` is never used as the validator entry. Dedicated strict-layout multi-file load is withdrawn ([ADR 0020](./adr/0020-strict-layout-complexity-budget.md)); it remains in tree until the removal issue.
+The module loads the configured `schemaPath` and the **Nuxt boot gate** (and build-time validate) call **core** validation against that schema. Public thin `arkenv()` is never used as the validator entry. Dedicated strict-layout multi-file load was removed ([ADR 0020](./adr/0020-strict-layout-complexity-budget.md) / [#1690](https://github.com/yamcodes/arkenv/issues/1690)).
 *Avoid*: requiring a user-exported `schema`; validating by side-effect of executing fat `arkenv()` in `env.ts`
 
 **Boot gate scheduling** (resolved):
@@ -372,7 +372,7 @@ Eager Nitro plugin at server startup for fail-fast, plus idempotent `ensureBootG
 *Avoid*: lazy-only gate; dual independent `createEnv` calls
 
 **Client validator isolation** (resolved):
-`@arkenv/nuxt` client entries must not import `@arkenv/core` / `arktype`. Default ArkType string schemas are plain data. No Vite transform for stripping or inlining. Userland imports of `type` / Zod / other validators into a client-imported env module are the user’s bundle cost.
+`@arkenv/nuxt` must not import `@arkenv/core` / `arktype` on the client path. Default ArkType string schemas are plain data. No Vite transform for stripping or inlining. Userland imports of `type` / Zod / other validators into a client-imported env module are the user’s bundle cost.
 *Avoid*: “rewrite env.ts to guarantee a validator-free graph”; blaming the integration for user-imported validators
 
 **Build-time schema check** (resolved):
@@ -388,7 +388,7 @@ Module setup / `nuxt build` may still run core validation against the build envi
 - A **Nitro boot override** happens after Vite build and before the `__NUXT__` / `runtimeConfig` payload is served to the client
 - **Vite transform mode** is appropriate for hosts whose public env is build-time (e.g. Solid Start); it is not sufficient alone for Nuxt
 - **Canonical env object** is shared; the *transport* that materializes client values is host-specific
-- On Nuxt, the **Nuxt honesty transport** owns public client values. The Vite compile-time import blocker remains in tree until the layout-engine removal ([ADR 0016](./adr/0016-nuxt-vite-compile-time-boundary.md) superseded by [ADR 0020](./adr/0020-strict-layout-complexity-budget.md)); it is not value transport
+- On Nuxt, the **Nuxt honesty transport** owns public client values. The Vite compile-time import blocker was removed with the layout engine ([ADR 0016](./adr/0016-nuxt-vite-compile-time-boundary.md) superseded by [ADR 0020](./adr/0020-strict-layout-complexity-budget.md) / [#1690](https://github.com/yamcodes/arkenv/issues/1690)); it was never value transport
 - The **Nuxt boot gate** runs after **Nitro boot overrides** and before honest **Canonical env object** reads on either side
 - **Boot gate scheduling** ensures the gate precedes thin server reads; the serialized public payload then precedes thin client reads
 - **Client validator isolation** is a package-entry concern, not a transform-mode concern, on Nuxt
@@ -397,7 +397,7 @@ Module setup / `nuxt build` may still run core validation against the build envi
 **Example dialogue**:
 
 > **Dev:** “Can we make Nuxt completely Vite-plugin-based like Solid Start?”
-> **Domain expert:** “Not as the only transport. Solid Start’s public keys are build-time; Nuxt’s can change via a **Nitro boot override**. Honesty requires the **Nuxt honesty transport** — the **Nuxt boot gate** (module-loaded schema, **boot gate scheduling**) coerces into `runtimeConfig` after that override, then **symmetric thin accessors**. The Vite import blocker stays only until the layout-engine removal ([ADR 0020](./adr/0020-strict-layout-complexity-budget.md)); **client validator isolation** is a thin package entry, not a #1328-style rewrite. Keep the **Build-time schema check** for CI, but don’t confuse it with deploy honesty.”
+> **Domain expert:** “Not as the only transport. Solid Start’s public keys are build-time; Nuxt’s can change via a **Nitro boot override**. Honesty requires the **Nuxt honesty transport** — the **Nuxt boot gate** (module-loaded schema, **boot gate scheduling**) coerces into `runtimeConfig` after that override, then **symmetric thin accessors**. The Vite import blocker was removed with the layout engine ([ADR 0020](./adr/0020-strict-layout-complexity-budget.md) / [#1690](https://github.com/yamcodes/arkenv/issues/1690)); **client validator isolation** is a thin package entry, not a #1328-style rewrite. Keep the **Build-time schema check** for CI, but don’t confuse it with deploy honesty.”
 
 ### Docs site navigation
 
@@ -486,13 +486,13 @@ A non-interactive muted label that only **groups** sibling **Leaves** under a **
 
 - **Vanilla**: The default runtime-only core module for Node.js, Bun, and Deno. Uses `import { env } from "./env"`. Validated environment variables are accessed directly from the returned `env` object for typesafety. Primarily used for **server-side** or runtime-only validation. No plugins are required.
 - **Vite**: Integrated via `@arkenv/vite-plugin`. Validates during Vite dev/build and rewrites the client copy of `env.ts` so public `VITE_*` keys inline as literals and server secrets become throwing stubs. Application code uses `import { env } from "./env"` — not `import.meta.env`.
-- **Next.js**: Integrated via `@arkenv/nextjs`. **Flat layout** is the only first-class pattern: a single `env.ts`. Client-side keys must be statically destructured in a `runtimeEnv` block for Next inlining; `withArkEnv` generates a tailored factory in `.arkenv/env.gen.ts` (imported as `@/.arkenv`) that pre-fills `runtimeEnv`, enforces `NEXT_PUBLIC_` prefixing, and keeps server **values** off client components (conditional exports + proxy). Name/type isolation is a documented two-module recipe ([ADR 0020](./adr/0020-strict-layout-complexity-budget.md)), not a layout engine — client module via codegen, server module via `@arkenv/core` plus optional `import "server-only"`. Dedicated `--strict` / `/client` `/server` still exist in the tree until the follow-up removal issue.
+- **Next.js**: Integrated via `@arkenv/nextjs`. **Flat layout** is the only first-class pattern: a single `env.ts`. Client-side keys must be statically destructured in a `runtimeEnv` block for Next inlining; `withArkEnv` generates a tailored factory in `.arkenv/env.gen.ts` (imported as `@/.arkenv`) that pre-fills `runtimeEnv`, enforces `NEXT_PUBLIC_` prefixing, and keeps server **values** off client components (conditional exports + proxy). Name/type isolation is a documented two-module recipe ([ADR 0020](./adr/0020-strict-layout-complexity-budget.md) / [#1690](https://github.com/yamcodes/arkenv/issues/1690)), not a layout engine — client module via codegen, server module via `@arkenv/core` plus optional `import "server-only"`. Dedicated `--strict` / `/client` `/server` were removed.
   - **Standard Mode**: Import from `@arkenv/nextjs/standard` (peer: `@arkenv/standard`). ArkType is not required. Flat is the happy path; the split recipe applies the same as ArkType mode.
 - **Nuxt**: Integrated via `@arkenv/nuxt`. Exposes a Nuxt module (`@arkenv/nuxt/module`) that:
   - Automates environment variable validation during development (with file watching) and build for the configured `schemaPath` (flat `env.ts`).
   - Dynamically populates Nuxt's `runtimeConfig` with environment variable keys defined in the schema (public keys only in `runtimeConfig.public`).
   - Enforces client-side environment variable prefixing (`NUXT_PUBLIC_`).
-  - Does **not** (as of ADR 0020) keep a Vite compile-time import blocker or `/server` `/client` subpaths. Split-recipe users must not import the server module from client/Vue code. The in-tree blocker remains until the removal issue.
+  - Does **not** keep a Vite compile-time import blocker or `/server` `/client` subpaths ([ADR 0020](./adr/0020-strict-layout-complexity-budget.md) / [#1690](https://github.com/yamcodes/arkenv/issues/1690)). Split-recipe users must not import the server module from client/Vue code.
   - **Standard Mode**: Register `@arkenv/nuxt/standard/module` and import from `@arkenv/nuxt/standard` (peer: `@arkenv/standard`). ArkType is not required.
 - **Bun fullstack dev server**:
   - **Bun.serve**: An HTTP server runtime that integrates with Bun's built-in bundler to scan HTML files, trigger on-demand bundling, and serve resulting assets. It does not perform bundling itself; rather, it coordinates with Bun's bundler (configured via `@arkenv/bun-plugin` in `bunfig.toml`) to inline environment variables (e.g., using a `PUBLIC_` prefix) via static replacement. Primarily used for **client-side** bundling integration.

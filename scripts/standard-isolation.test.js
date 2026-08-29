@@ -34,13 +34,7 @@ describe("standard-isolation helpers", () => {
 		);
 		const exportPaths = nextEntries.map((entry) => entry.exportPath).sort();
 
-		expect(exportPaths).toEqual([
-			"./standard",
-			"./standard/client",
-			"./standard/config",
-			"./standard/server",
-			"./standard/shared",
-		]);
+		expect(exportPaths).toEqual(["./standard", "./standard/config"]);
 	});
 });
 

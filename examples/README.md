@@ -7,8 +7,7 @@ This directory contains a collection of example projects that demonstrate variou
 | Name                                                                                             | Description                                                                                                                                     |
 | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | [basic](https://github.com/yamcodes/arkenv/tree/main/examples/basic)                             | Minimal example of *using ArkEnv in a [Node.js](https://nodejs.org/) app* for learning the fundamentals.                                        |
-| [with-nextjs](https://github.com/yamcodes/arkenv/tree/main/examples/with-nextjs)                 | Minimal example of *using ArkEnv in a [Next.js](https://nextjs.org/) app* (Simple layout).                                                      |
-| [with-nextjs-strict](https://github.com/yamcodes/arkenv/tree/main/examples/with-nextjs-strict)   | Minimal example of *using ArkEnv in a [Next.js](https://nextjs.org/) app* (Strict split 3-file layout).                                         |
+| [with-nextjs](https://github.com/yamcodes/arkenv/tree/main/examples/with-nextjs)                 | Minimal example of *using ArkEnv in a [Next.js](https://nextjs.org/) app*.                                                                      |
 | [with-nextjs-zod](https://github.com/yamcodes/arkenv/tree/main/examples/with-nextjs-zod)         | Example of *using ArkEnv with [@arkenv/nextjs/standard](https://arkenv.js.org/docs/nextjs) and [Zod](https://zod.dev/)*.                        |
 | [with-nuxt](https://github.com/yamcodes/arkenv/tree/main/examples/with-nuxt)                     | Minimal example of *using ArkEnv in a [Nuxt](https://nuxt.com/) app*.                                                                           |
 | [with-vite-react](https://github.com/yamcodes/arkenv/tree/main/examples/with-vite-react)         | Minimal example of *using ArkEnv in a [Vite](https://vite.dev/) + [React](https://react.dev/) app*.                                             |
@@ -32,16 +31,15 @@ All examples are automatically synced from their corresponding playgrounds.
 
 Some examples of this mapping (not comprehensive):
 
-| Example              | Playground                       |
-| -------------------- | -------------------------------- |
-| `basic`              | `apps/playgrounds/node`          |
-| `basic-js`           | `apps/playgrounds/js`            |
-| `with-bun`           | `apps/playgrounds/bun`           |
-| `with-nextjs`        | `apps/playgrounds/nextjs`        |
-| `with-nextjs-strict` | `apps/playgrounds/nextjs-strict` |
-| `with-nuxt`          | `apps/playgrounds/nuxt`          |
-| `with-bun-react`     | `apps/playgrounds/bun-react`     |
-| `with-vite-react`    | `apps/playgrounds/vite`          |
+| Example           | Playground                   |
+| ----------------- | ---------------------------- |
+| `basic`           | `apps/playgrounds/node`      |
+| `basic-js`        | `apps/playgrounds/js`        |
+| `with-bun`        | `apps/playgrounds/bun`       |
+| `with-nextjs`     | `apps/playgrounds/nextjs`    |
+| `with-nuxt`       | `apps/playgrounds/nuxt`      |
+| `with-bun-react`  | `apps/playgrounds/bun-react` |
+| `with-vite-react` | `apps/playgrounds/vite`      |
 
 To modify an example:
 

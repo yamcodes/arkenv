@@ -63,26 +63,10 @@ export type ArkEnvConfigOptions = {
 	outputPath?: string;
 
 	/**
-	 * Specify the configuration layout.
-	 *
-	 * - `"flat"` (default): A single `env.ts` schema file.
-	 * - `"strict"`: A split schema layout (`env/client.ts`, `env/server.ts`, and optionally `env/internal/shared.ts`).
-	 *
-	 * @default "flat"
-	 */
-	layout?:
-		| "flat"
-		| "strict"
-		/**
-		 * @deprecated Use `"flat"` instead. `"simple"` will be removed in the next major version.
-		 */
-		| "simple";
-
-	/**
 	 * Force standard mode code generation.
 	 *
-	 * When `true`, the generated `env.gen.ts` imports from `@arkenv/nextjs/standard/*`
-	 * instead of `@arkenv/nextjs/*`, ensuring the Standard Schema engine (`@arkenv/standard`)
+	 * When `true`, the generated `env.gen.ts` imports from `@arkenv/nextjs/standard`
+	 * instead of `@arkenv/nextjs`, ensuring the Standard Schema engine (`@arkenv/standard`)
 	 * is used and `arktype` is never bundled. This is set automatically when importing from
 	 * `@arkenv/nextjs/standard/config`, but can be toggled manually for custom setups.
 	 *

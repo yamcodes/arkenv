@@ -24,11 +24,6 @@ export const exampleEnvDefaults: Record<string, Record<string, string>> = {
 		NEXT_PUBLIC_API_URL: "https://api.example.com",
 		NODE_ENV: "development",
 	},
-	"with-nextjs-strict": {
-		DATABASE_URL: "postgres://localhost:5432/mydb",
-		NEXT_PUBLIC_API_URL: "https://api.example.com",
-		NODE_ENV: "development",
-	},
 	"with-nextjs-zod": {
 		DATABASE_URL: "postgres://localhost:5432/mydb",
 		NEXT_PUBLIC_API_URL: "https://api.example.com",

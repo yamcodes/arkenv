@@ -55,8 +55,6 @@ export class ClackPromptAdapter implements PromptPort {
 			}) => boolean | Promise<boolean>;
 			hasTypeFile?: boolean;
 			hasEnvSchemaFile?: boolean;
-			isStrict?: boolean;
-			isSimple?: boolean;
 		},
 		isYes = false,
 	): Promise<ProjectOptions | null> {

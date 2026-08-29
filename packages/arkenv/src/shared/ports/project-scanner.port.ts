@@ -108,7 +108,5 @@ export type ProjectScannerPort = {
 	/**
 	 * Reads and parses the arkenv configuration field from the nearest package.json.
 	 */
-	readArkenvConfig(
-		cwd?: string,
-	): Promise<{ schema: string; layout: "flat" | "strict" } | null>;
+	readArkenvConfig(cwd?: string): Promise<{ schema: string } | null>;
 };

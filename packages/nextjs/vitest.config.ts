@@ -19,10 +19,6 @@ export default defineProject({
 				find: /^arkenv$/,
 				replacement: path.resolve(__dirname, "../arkenv/src/index.ts"),
 			},
-			{
-				find: "#arkenv/client-env",
-				replacement: path.resolve(__dirname, "./src/empty-client-env.ts"),
-			},
 		],
 	},
 });

@@ -51,16 +51,6 @@
 		}
 	},
 	"exports": {
-		"./server": {
-			"types": "./dist/server.d.ts",
-			"import": "./dist/server.js",
-			"require": "./dist/server.cjs"
-		},
-		"./client": {
-			"types": "./dist/client.d.ts",
-			"import": "./dist/client.js",
-			"require": "./dist/client.cjs"
-		},
 		".": {
 			"react-server": {
 				"types": "./dist/react-server.d.ts",
@@ -77,21 +67,6 @@
 			"types": "./dist/config/index.d.ts",
 			"import": "./dist/config/index.js",
 			"require": "./dist/config/index.cjs"
-		},
-		"./standard/shared": {
-			"types": "./dist/standard/shared.d.ts",
-			"import": "./dist/standard/shared.js",
-			"require": "./dist/standard/shared.cjs"
-		},
-		"./standard/server": {
-			"types": "./dist/standard/server.d.ts",
-			"import": "./dist/standard/server.js",
-			"require": "./dist/standard/server.cjs"
-		},
-		"./standard/client": {
-			"types": "./dist/standard/client.d.ts",
-			"import": "./dist/standard/client.js",
-			"require": "./dist/standard/client.cjs"
 		},
 		"./standard": {
 			"types": "./dist/standard/index.d.ts",
@@ -135,41 +110,11 @@
 	},
 	"type": "module",
 	"types": "./dist/index.d.ts",
-	"imports": {
-		"#arkenv/client-env": {
-			"types": "./dist/empty-client-env.d.ts",
-			"import": "./dist/empty-client-env.js",
-			"require": "./dist/empty-client-env.cjs"
-		}
-	},
 	"size-limit": [
 		{
 			"name": "@arkenv/nextjs",
 			"path": "dist/index.js",
 			"limit": "3 kB",
-			"import": "*",
-			"ignore": [
-				"next",
-				"arktype",
-				"arkenv"
-			]
-		},
-		{
-			"name": "@arkenv/nextjs/server",
-			"path": "dist/server.js",
-			"limit": "2 kB",
-			"import": "*",
-			"ignore": [
-				"next",
-				"arktype",
-				"server-only",
-				"arkenv"
-			]
-		},
-		{
-			"name": "@arkenv/nextjs/client",
-			"path": "dist/client.js",
-			"limit": "2 kB",
 			"import": "*",
 			"ignore": [
 				"next",

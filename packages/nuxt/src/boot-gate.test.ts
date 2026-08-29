@@ -147,8 +147,6 @@ describe("Nuxt boot gate - runBootGate (capture + apply integration)", () => {
 			runBootGate(
 				{
 					schemaPath,
-					layout: "simple",
-					baseDir: "",
 					engine: "arktype",
 				},
 				runtimeConfig,
@@ -193,8 +191,6 @@ describe("Nuxt boot gate - runBootGate (capture + apply integration)", () => {
 				runBootGate(
 					{
 						schemaPath,
-						layout: "simple",
-						baseDir: "",
 						engine: "arktype",
 					},
 					runtimeConfig,
@@ -231,8 +227,6 @@ describe("Nuxt boot gate - runBootGate (capture + apply integration)", () => {
 			runBootGate(
 				{
 					schemaPath,
-					layout: "simple",
-					baseDir: "",
 					engine: "arktype",
 				},
 				runtimeConfig,
@@ -286,8 +280,6 @@ describe("Nuxt boot gate - runBootGate (capture + apply integration)", () => {
 			runBootGate(
 				{
 					schemaPath,
-					layout: "simple",
-					baseDir: "",
 					engine: "standard",
 				},
 				runtimeConfig,

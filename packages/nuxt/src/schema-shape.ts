@@ -32,12 +32,11 @@ export type FlatSchemaOptions = {
 };
 
 /**
- * Context flags describing the execution environment and strict layout entrypoint.
+ * Context flags describing the execution environment.
  */
 export type SchemaLayoutContext = {
 	isServer: boolean;
 	isShared?: boolean;
-	strictLayout?: "client" | "server";
 };
 
 /**
@@ -117,10 +116,6 @@ export function parseSchemaShape(
 
 		if (context?.isShared) {
 			shared = flatSchema;
-		} else if (context?.strictLayout === "client") {
-			client = flatSchema;
-		} else if (context?.strictLayout === "server") {
-			server = flatSchema;
 		} else {
 			const exposedKeys =
 				options.exposeToClient || options.expose || options.shared || [];
@@ -142,11 +137,9 @@ export function parseSchemaShape(
 
 	const publicKeys = isLegacy
 		? [...Object.keys(client), ...Object.keys(shared)]
-		: context?.strictLayout === "server"
-			? []
-			: context?.isShared || context?.strictLayout === "client"
-				? Object.keys((schemaOrOptions || {}) as SchemaShape)
-				: [...Object.keys(client), ...Object.keys(shared)];
+		: context?.isShared
+			? Object.keys((schemaOrOptions || {}) as SchemaShape)
+			: [...Object.keys(client), ...Object.keys(shared)];
 
 	return {
 		isLegacy,

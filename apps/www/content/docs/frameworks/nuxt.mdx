@@ -50,20 +50,12 @@ runtime configuration and validates variables during build and development.
 ```ts title="./nuxt.config.ts"
 export default defineNuxtConfig({
   modules: ["@arkenv/nuxt/module"],
-  arkenv: {
-    layout: "flat",
-  },
 });
 ```
 
-## Schema layout
+## Schema
 
-ArkEnv supports two schema layouts depending on your team's isolation needs.
-
-### Flat layout (default)
-
-The default flat layout uses a single `env.ts` file. Public keys must use the
-`NUXT_PUBLIC_` prefix:
+Use a single `env.ts`. Public keys must use the `NUXT_PUBLIC_` prefix:
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/nuxt";
@@ -78,22 +70,13 @@ export const env = arkenv({
 Unlike Next.js, Nuxt does not emit an `env.gen.ts` file; `@arkenv/nuxt` acts as
 the primary entrypoint.
 
-### Strict layout
-
-For compile-time separation between client and server code, scaffold a strict
-structure:
-
-```package-install
-npx arkenv@latest init --strict
-```
-
-This configuration uses `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. Nuxt virtual
-aliases automatically merge shared schemas when you omit `extends`. Learn more in
-[Client vs. server](/docs/core-concepts/client-vs-server).
+If you split client and server modules for name/type isolation, **never import
+the server module from client or Vue code**. See the
+[two-module recipe](/docs/core-concepts/client-vs-server#advanced-two-module-recipe).
 
 ## Read `env` in application code
 
-Import `{ env } from "./env"` (or the client/server modules in a strict layout).
+Import `{ env } from "./env"`.
 
 :::warning[Do not read `process.env` directly]
 Reading `process.env` skips ArkEnv. Import `{ env }` so public keys stay
@@ -142,9 +125,9 @@ keys on `runtimeConfig`.
 ## Next steps
 
 <Cards>
-  <Card href="/docs/reference/nuxt" title="@arkenv/nuxt reference" description="Module options, virtual aliases, and subpath exports." />
+  <Card href="/docs/reference/nuxt" title="@arkenv/nuxt reference" description="Module options and subpath exports." />
 
   <Card href="/docs/core-concepts/hosting-presets" title="Hosting presets" description="Inject hosting provider system variables into your Nuxt schema." />
 
-  <Card href="/docs/core-concepts/client-vs-server" title="Client vs. server" description="Understand flat versus strict client/server isolation." />
+  <Card href="/docs/core-concepts/client-vs-server" title="Client vs. server" description="Flat env.ts and the optional two-module recipe." />
 </Cards>

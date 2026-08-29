@@ -67,34 +67,6 @@ describe("schema-shape helper", () => {
 			expect(parsed.publicKeys).toEqual(["PUBLIC_NAME"]);
 		});
 
-		it("parses strict client layout as all public", () => {
-			const schema = {
-				NUXT_PUBLIC_SITE_NAME: "string",
-			};
-
-			const parsed = parseSchemaShape(schema, undefined, {
-				isServer: false,
-				strictLayout: "client",
-			});
-
-			expect(Object.keys(parsed.client)).toEqual(["NUXT_PUBLIC_SITE_NAME"]);
-			expect(parsed.publicKeys).toEqual(["NUXT_PUBLIC_SITE_NAME"]);
-		});
-
-		it("parses strict server layout with no public keys", () => {
-			const schema = {
-				SECRET_KEY: "string",
-			};
-
-			const parsed = parseSchemaShape(schema, undefined, {
-				isServer: true,
-				strictLayout: "server",
-			});
-
-			expect(Object.keys(parsed.server)).toEqual(["SECRET_KEY"]);
-			expect(parsed.publicKeys).toEqual([]);
-		});
-
 		it("parses isShared context as all shared/public", () => {
 			const schema = {
 				SHARED_VAR: "string",

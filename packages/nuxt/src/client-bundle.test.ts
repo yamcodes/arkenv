@@ -18,11 +18,7 @@ async function assertClientEntryIsValidatorFree(entryRelativePath: string) {
 			format: "esm",
 			platform: "browser",
 			packages: "bundle",
-			external: [
-				"#arkenv/shared-schema",
-				"#arkenv/client-env",
-				"#arkenv/server-boot",
-			],
+			external: ["#arkenv/server-boot"],
 			logLevel: "silent",
 		});
 
@@ -38,11 +34,11 @@ async function assertClientEntryIsValidatorFree(entryRelativePath: string) {
 }
 
 describe("client entry bundle isolation", () => {
-	it("does not include @arkenv/core or arktype in the client package entry", async () => {
-		await assertClientEntryIsValidatorFree("client.ts");
+	it("does not include @arkenv/core or arktype in the package entry", async () => {
+		await assertClientEntryIsValidatorFree("index.ts");
 	});
 
-	it("does not include @arkenv/standard or arktype in the standard client entry", async () => {
-		await assertClientEntryIsValidatorFree("standard/client.ts");
+	it("does not include @arkenv/standard or arktype in the standard entry", async () => {
+		await assertClientEntryIsValidatorFree("standard/index.ts");
 	});
 });

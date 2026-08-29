@@ -1,9 +1,6 @@
 import { ArkEnvError } from "@arkenv/core";
 import { describe, expect, it } from "vitest";
 import arkenvStandard, { arkenv as namedArkenvStandard } from "./standard";
-import { arkenv as clientArkenv } from "./standard/client";
-import { arkenv as serverArkenv } from "./standard/server";
-import { arkenv as sharedArkenv } from "./standard/shared";
 
 // Mock Standard Schema validator
 const mockSchema = <TOutput>(outputValue: TOutput) => ({
@@ -20,12 +17,6 @@ const mockSchema = <TOutput>(outputValue: TOutput) => ({
 describe("Nuxt Standard Mode Flat Layout", () => {
 	it("exports arkenv as both named and default", () => {
 		expect(arkenvStandard).toBe(namedArkenvStandard);
-	});
-
-	it("exports arkenv from all standard subpaths", () => {
-		expect(clientArkenv).toBeDefined();
-		expect(serverArkenv).toBeDefined();
-		expect(sharedArkenv).toBeDefined();
 	});
 
 	it("correctly handles flat layout and splits keys by prefix / options at runtime", () => {
@@ -48,7 +39,7 @@ describe("Nuxt Standard Mode Flat Layout", () => {
 			},
 		);
 
-		// On the server (by default isServer is true under test process.env check if isServer is true or mock)
+		// On the server (no window) thin accessor surfaces all keys from runtimeConfig/env
 		expect((env as any).DATABASE_URL).toBe("postgres://localhost:5432/db");
 		expect(env.NUXT_PUBLIC_API_URL).toBe("https://api.example.com");
 		expect(env.NODE_ENV).toBe("test");
@@ -58,7 +49,6 @@ describe("Nuxt Standard Mode Flat Layout", () => {
 	});
 
 	it("prevents accessing server-only variables on the client", () => {
-		// Mock client context
 		const origWindow = globalThis.window;
 		(globalThis as any).window = {};
 
@@ -83,10 +73,7 @@ describe("Nuxt Standard Mode Flat Layout", () => {
 			} catch (error) {
 				expect(error).toBeInstanceOf(Error);
 				expect(error).not.toBeInstanceOf(ArkEnvError);
-				expect((error as Error).name).toBe("Error");
-				expect((error as Error).message).toBe(
-					"Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)",
-				);
+				expect((error as Error).message).toContain("DATABASE_URL");
 			}
 		} finally {
 			(globalThis as any).window = origWindow;

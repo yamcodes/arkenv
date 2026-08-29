@@ -1,19 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import {
-	extractClientKeys,
-	extractSharedKeys,
-	resolveLayout,
-} from "@arkenv/build";
-import { resolveBuildLog } from "@repo/log";
 import { extractKeys } from "./extract";
-import {
-	generateClientEnvAmbientDeclaration,
-	generateClientFactoryCode,
-	generateFactoryCode,
-	generateFlatFactoryCode,
-} from "./generate";
-import { normalizeLayout } from "./layout";
+import { generateFactoryCode, generateFlatFactoryCode } from "./generate";
 import type { ArkEnvConfigOptions } from "./types";
 
 function detectStandard(content: string, forceStandard?: boolean): boolean {
@@ -76,71 +64,26 @@ function projectRootFromDefaultOutput(outputPath: string): string | undefined {
 /**
  * Run code generation to read the schema file and generate the env.gen.ts factory.
  *
- * @param schemaPath The absolute path to the schema file or directory
+ * @param schemaPath The absolute path to the schema file
  * @param outputPath The absolute path to the generated output file
- * @param layoutOption The explicit layout to use; auto-detected from the filesystem when omitted
  * @param forceStandard Force standard mode code generation
- * @param logOptions Logger options forwarded to layout resolution
+ * @param _logOptions Reserved for logger options (unused in flat-only codegen)
  * @param projectRoot App root used to keep `.arkenv/index.ts` as the `@/.arkenv` TypeScript entry
- * @throws An error if strict layout files are missing when `layoutOption` is `"strict"`
  */
 export function runCodegen(
 	schemaPath: string,
 	outputPath: string,
-	layoutOption?: ArkEnvConfigOptions["layout"],
 	forceStandard?: boolean,
-	logOptions?: Pick<ArkEnvConfigOptions, "logger" | "logLevel">,
+	_logOptions?: Pick<ArkEnvConfigOptions, "logger" | "logLevel">,
 	projectRoot?: string,
 ) {
-	const normalizedLayout = normalizeLayout(
-		layoutOption,
-		resolveBuildLog(logOptions),
-	);
+	const fileContent = fs.readFileSync(schemaPath, "utf-8");
+	const isStandard = detectStandard(fileContent, forceStandard);
 
-	const { layout: resolvedLayout, baseDir } = resolveLayout(
-		schemaPath,
-		normalizedLayout,
-	);
-
-	let generatedCode = "";
-	if (resolvedLayout === "strict") {
-		const clientPath = path.join(baseDir, "client.ts");
-		const sharedPath = path.join(baseDir, "internal", "shared.ts");
-
-		const clientContent = fs.existsSync(clientPath)
-			? fs.readFileSync(clientPath, "utf-8")
-			: "";
-		const sharedContent = fs.existsSync(sharedPath)
-			? fs.readFileSync(sharedPath, "utf-8")
-			: "";
-
-		const isStandard =
-			detectStandard(clientContent, forceStandard) ||
-			detectStandard(sharedContent, forceStandard);
-
-		const clientKeys = extractClientKeys(clientContent);
-		const sharedKeys = extractSharedKeys(sharedContent);
-
-		generatedCode = generateClientFactoryCode(
-			clientKeys,
-			sharedKeys,
-			isStandard,
-		);
-	} else {
-		const fileContent = fs.readFileSync(schemaPath, "utf-8");
-		const isStandard = detectStandard(fileContent, forceStandard);
-
-		const { clientKeys, sharedKeys, isLegacy } = extractKeys(fileContent);
-		if (isLegacy) {
-			generatedCode = generateFactoryCode(clientKeys, sharedKeys, isStandard);
-		} else {
-			generatedCode = generateFlatFactoryCode(
-				clientKeys,
-				sharedKeys,
-				isStandard,
-			);
-		}
-	}
+	const { clientKeys, sharedKeys, isLegacy } = extractKeys(fileContent);
+	const generatedCode = isLegacy
+		? generateFactoryCode(clientKeys, sharedKeys, isStandard)
+		: generateFlatFactoryCode(clientKeys, sharedKeys, isStandard);
 
 	const outputDir = path.dirname(outputPath);
 	if (!fs.existsSync(outputDir)) {
@@ -162,26 +105,5 @@ export function runCodegen(
 	const tsEntryRoot = projectRoot ?? projectRootFromDefaultOutput(outputPath);
 	if (tsEntryRoot) {
 		writeFactoryBarrel(path.join(tsEntryRoot, ".arkenv"), outputPath);
-	}
-
-	if (resolvedLayout === "strict" && baseDir) {
-		const ambientPath = path.join(
-			path.dirname(outputPath),
-			"arkenv-client-env.d.ts",
-		);
-		const clientPath = path.join(baseDir, "client.ts");
-		const ambientCode = generateClientEnvAmbientDeclaration(
-			clientPath,
-			outputPath,
-		);
-		let shouldWriteAmbient = true;
-		if (fs.existsSync(ambientPath)) {
-			if (fs.readFileSync(ambientPath, "utf-8") === ambientCode) {
-				shouldWriteAmbient = false;
-			}
-		}
-		if (shouldWriteAmbient) {
-			fs.writeFileSync(ambientPath, ambientCode, "utf-8");
-		}
 	}
 }
