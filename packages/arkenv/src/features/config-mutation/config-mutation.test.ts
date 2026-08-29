@@ -416,7 +416,7 @@ describe("config-mutation", () => {
 		it("mutates flat env.ts with Zod correctly", () => {
 			const initialContent = dedent`
 				import arkenv from "./generated/env.gen";
-				import { z } from "zod";
+				import * as z from "zod";
 
 				export const env = arkenv({
 					DATABASE_URL: z.string(),
@@ -702,7 +702,7 @@ describe("config-mutation", () => {
 
 		it("mutates SharedSchema exported as z.object", () => {
 			const initialContent = dedent`
-				import { z } from "zod";
+				import * as z from "zod";
 
 				export const SharedSchema = z.object({
 					DATABASE_URL: z.string(),

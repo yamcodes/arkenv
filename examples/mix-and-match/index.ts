@@ -1,6 +1,6 @@
 import arkenv from "@arkenv/core";
 import * as v from "valibot";
-import { z } from "zod";
+import * as z from "zod";
 
 export const env = arkenv({
 	// ArkType DSL (compact TypeScript-like syntax)

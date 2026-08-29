@@ -8,7 +8,7 @@ When `@arkenv/bun-plugin/standard` cannot find `env.ts`, show an illustrative Zo
 
 ```ts
 import arkenv from "@arkenv/standard";
-import { z } from "zod";
+import * as z from "zod";
 
 export default arkenv({
   BUN_PUBLIC_API_URL: z.string(),

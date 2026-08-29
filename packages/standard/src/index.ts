@@ -46,7 +46,7 @@ type StandardEnvOutput<T extends Record<string, StandardSchemaV1>> = {
  * @example
  * ```ts
  * import arkenv from "@arkenv/standard";
- * import { z } from "zod";
+ * import * as z from "zod";
  *
  * const env = arkenv({
  *   PORT: z.number(),

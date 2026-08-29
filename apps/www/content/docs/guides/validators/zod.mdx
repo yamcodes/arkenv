@@ -28,7 +28,7 @@ Declare environment variables in an `env.ts` file using your standard Zod schema
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/standard";
-import { z } from "zod";
+import * as z from "zod";
 
 export const env = arkenv({
   DATABASE_URL: z.string().url(),

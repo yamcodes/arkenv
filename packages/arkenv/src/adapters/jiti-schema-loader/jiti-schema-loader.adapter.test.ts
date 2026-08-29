@@ -165,7 +165,7 @@ describe("JitiSchemaLoaderAdapter", () => {
 			schemaPath,
 			`
 			import arkenv from "@arkenv/standard";
-			import { z } from "zod";
+			import * as z from "zod";
 
 			const shared = { DATABASE_URL: z.string() };
 			export const env = arkenv({
@@ -323,7 +323,7 @@ describe("JitiSchemaLoaderAdapter", () => {
 				schemaPath,
 				`
 				import arkenv from "@arkenv/standard";
-				import { z } from "zod";
+				import * as z from "zod";
 				export const env = arkenv({
 					API_KEY: z.string(),
 					PORT: z.coerce.number().default(3000),

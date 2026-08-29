@@ -3,17 +3,14 @@ title: "@arkenv/core"
 description: ArkType-powered environment validation for TypeScript projects.
 ---
 
-`@arkenv/core` is the ArkType validation library. It exports `arkenv()`
-and an ArkType `type()` bound to ArkEnv keywords. No runtime
-dependencies; ArkType is a required peer.
+`@arkenv/core` is the ArkType validation engine. It exports `arkenv()`
+and a `type()` function which includes all of ArkType's keywords and [additional ones](/docs/reference/keywords). **`arktype` is a required peer. There are no runtime dependencies.**
 
 ## Installation
 
 ```package-install
 npm install @arkenv/core arktype
 ```
-
-Peer dependency: `arktype` (^2.1.22).
 
 ## Usage
 
@@ -28,8 +25,6 @@ export const env = arkenv({
 ```
 
 ## Exports
-
-The package's export surface is `"."` only.
 
 | Export             | Kind                       | Role                                                       |
 | ------------------ | -------------------------- | ---------------------------------------------------------- |

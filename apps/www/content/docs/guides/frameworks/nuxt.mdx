@@ -1,6 +1,6 @@
 ---
 title: Nuxt
-description: Validate Nuxt environment variables with @arkenv/nuxt.
+description: Learn how to use ArkEnv in a Nuxt project.
 ---
 
 `@arkenv/nuxt` validates environment variables on server and client
@@ -106,7 +106,7 @@ Then define your schema in `env.ts` using your validator:
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/nuxt/standard";
-import { z } from "zod";
+import * as z from "zod";
 
 export const env = arkenv({
   DATABASE_URL: z.string().url(),

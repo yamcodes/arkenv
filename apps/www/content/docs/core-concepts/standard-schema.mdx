@@ -44,7 +44,7 @@ The same keys, two declaration styles. Zod 4.2+ does not need
   <Tab value="Zod (@arkenv/standard)">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
-    import { z } from "zod";
+    import * as z from "zod";
 
     export const env = arkenv({
     	DATABASE_URL: z.string().url(),

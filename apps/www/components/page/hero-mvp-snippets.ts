@@ -50,7 +50,7 @@ function importBlock(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
 	if (host === "next") {
 		if (validator === "zod") {
 			return `import arkenv from "@/.arkenv";
-import { z } from "zod";`;
+import * as z from "zod";`;
 		}
 		if (validator === "valibot") {
 			return `import arkenv from "@/.arkenv";
@@ -66,7 +66,7 @@ import * as v from "valibot";`;
 import * as v from "valibot";`;
 	}
 	return `import arkenv from "@arkenv/standard";
-import { z } from "zod";`;
+import * as z from "zod";`;
 }
 
 function schemaFields(host: HeroMvpHostId, validator: HeroMvpValidatorId) {

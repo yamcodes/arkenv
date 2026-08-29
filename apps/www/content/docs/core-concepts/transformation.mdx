@@ -27,7 +27,7 @@ Trim and normalize a string field. `PORT` still uses built-in
   <Tab value="Zod (@arkenv/standard)">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
-    import { z } from "zod";
+    import * as z from "zod";
 
     export const env = arkenv({
     	BUILD_ID: z
@@ -65,7 +65,7 @@ your pipe runs:
   <Tab value="Zod (@arkenv/standard)">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
-    import { z } from "zod";
+    import * as z from "zod";
 
     export const env = arkenv(
     	{

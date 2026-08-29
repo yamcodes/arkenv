@@ -157,7 +157,7 @@
 
   ```ts
   import arkenv from "arkenv/standard";
-  import { z } from "zod";
+  import * as z from "zod";
 
   const env = arkenv(
     { PORT: z.coerce.number().default(3000) },
@@ -180,7 +180,7 @@
 
   ```ts
   import arkenv from "arkenv/standard";
-  import { z } from "zod";
+  import * as z from "zod";
 
   const env = arkenv({ PORT: z.number() }, { coerce: false });
   ```
@@ -240,13 +240,13 @@
   ```ts
   // ❌ Before
   import arkenv from "arkenv";
-  import { z } from "zod";
+  import * as z from "zod";
 
   const env = arkenv({ PORT: z.coerce.number() }, { validator: "standard" });
 
   // ✅ After
   import arkenv from "arkenv/standard";
-  import { z } from "zod";
+  import * as z from "zod";
 
   const env = arkenv({ PORT: z.coerce.number() });
   ```

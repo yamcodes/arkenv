@@ -529,7 +529,7 @@ export const env = arkenv(
 
 	describe("detectValidator", () => {
 		it("detects zod from import statements", () => {
-			const code = 'import { z } from "zod";\nexport const env = arkenv({});';
+			const code = 'import * as z from "zod";\nexport const env = arkenv({});';
 			expect(detectValidator(code)).toBe("zod");
 		});
 

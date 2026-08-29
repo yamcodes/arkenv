@@ -33,7 +33,7 @@ Install either engine, then create `env.ts` next to the code that boots first. R
 
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
-    import { z } from "zod";
+    import * as z from "zod";
 
     export const env = arkenv({
     	HOST: z.string().default("localhost"),

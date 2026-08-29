@@ -68,7 +68,7 @@ Work through these steps on an existing Next.js app.
 
     ```ts title="./src/env.js"
     import { createEnv } from "@t3-oss/env-nextjs";
-    import { z } from "zod";
+    import * as z from "zod";
 
     export const env = createEnv({
       server: {
@@ -99,7 +99,7 @@ Work through these steps on an existing Next.js app.
 
     ```ts title="./env.ts" twoslash
     import arkenv from "@/.arkenv";
-    import { z } from "zod";
+    import * as z from "zod";
 
     export const env = arkenv({
       DATABASE_URL: z.string().url(),

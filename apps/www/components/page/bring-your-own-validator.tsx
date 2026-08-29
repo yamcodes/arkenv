@@ -2,7 +2,7 @@ import { BringYourOwnValidatorView } from "./bring-your-own-validator-view";
 import { highlightTwoslash } from "./highlight-hero-twoslash";
 
 export const BYOV_CODE = `import arkenv from "@arkenv/core";
-import { z } from "zod";
+import * as z from "zod";
 import * as v from "valibot";
 // ---cut---
 export const env = arkenv({

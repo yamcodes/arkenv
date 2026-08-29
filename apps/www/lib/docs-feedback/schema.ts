@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod";
 import { docsFeedbackEmotions } from "./emotions";
 
 const emotionNames = docsFeedbackEmotions.map((e) => e.name) as [

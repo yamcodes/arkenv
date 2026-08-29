@@ -1,6 +1,6 @@
 ---
 title: Next.js
-description: Validate Next.js environment variables with @arkenv/nextjs and withArkEnv.
+description: Learn how to use ArkEnv in a Next.js project.
 ---
 
 `@arkenv/nextjs` validates Next.js environment variables, generates
@@ -163,7 +163,7 @@ Then define your schema in `env.ts` using your validator:
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@/.arkenv";
-import { z } from "zod";
+import * as z from "zod";
 
 export const env = arkenv({
   DATABASE_URL: z.string().url(),

@@ -11,7 +11,7 @@ Usage:
 
 ```ts
 import arkenv from "@arkenv/nextjs/standard";
-import { z } from "zod";
+import * as z from "zod";
 
 export const env = arkenv({
   DATABASE_URL: z.string().url(),

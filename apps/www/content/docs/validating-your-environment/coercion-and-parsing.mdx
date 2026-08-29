@@ -143,7 +143,7 @@ Custom transforms reshape values during validation. Both engines support them; e
   <Tab value="Zod (@arkenv/standard)">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
-    import { z } from "zod";
+    import * as z from "zod";
 
     export const env = arkenv(
     	{
@@ -168,7 +168,7 @@ The same `coerce` option works with `@arkenv/standard` when each field exposes [
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/standard";
-import { z } from "zod";
+import * as z from "zod";
 
 export const env = arkenv(
   {

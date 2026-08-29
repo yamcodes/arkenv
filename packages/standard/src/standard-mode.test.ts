@@ -2,7 +2,7 @@ import { toJsonSchema } from "@valibot/to-json-schema";
 import type { GenericSchema } from "valibot";
 import * as v from "valibot";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
-import { z } from "zod";
+import * as z from "zod";
 import * as zMini from "zod/mini";
 import { z as z3 } from "zod/v3";
 import { zodToJsonSchema } from "zod-to-json-schema";

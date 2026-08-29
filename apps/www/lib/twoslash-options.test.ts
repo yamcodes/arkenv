@@ -187,7 +187,7 @@ export const env = arkenv(
 			`import arkenv from "@arkenv/standard";
 import { toJsonSchema } from "@valibot/to-json-schema";
 import * as v from "valibot";
-import { z } from "zod";
+import * as z from "zod";
 
 export const env = arkenv(
   { PORT: z.number(), DEBUG: v.boolean() },

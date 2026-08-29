@@ -12,7 +12,7 @@ The example defines the environment schema in `env.ts` with Zod:
 
 ```ts title="env.ts"
 import arkenv from "@/.arkenv";
-import { z } from "zod";
+import * as z from "zod";
 
 export const env = arkenv({
   DATABASE_URL: z.string().default("postgres://localhost:5432/mydb"),

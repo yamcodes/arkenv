@@ -180,7 +180,7 @@
 
   ```ts
   import arkenv from "@arkenv/standard";
-  import { z } from "zod";
+  import * as z from "zod";
 
   export default arkenv({
     BUN_PUBLIC_API_URL: z.string(),
@@ -267,7 +267,7 @@
 
   ```ts
   import arkenv from "@arkenv/standard";
-  import { z } from "zod";
+  import * as z from "zod";
 
   export const env = arkenv({
     PORT: z.coerce.number().default(3000),
@@ -547,7 +547,7 @@
   Add support for an optional configuration object as the second argument. This allows you to set the `validator` mode to `"standard"`, enabling support for libraries like Zod or Valibot without an ArkType dependency.
 
   ```ts
-  import { z } from "zod";
+  import * as z from "zod";
   import arkenv from "@arkenv/bun-plugin";
 
   arkenv(

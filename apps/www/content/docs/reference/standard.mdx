@@ -3,30 +3,26 @@ title: "@arkenv/standard"
 description: ArkType-free environment validation via Standard Schema.
 ---
 
-`@arkenv/standard` validates environment variables with any
+`@arkenv/standard` is the Standard Schema validation engine. It validates environment variables with any
 [Standard Schema](https://standardschema.dev/) validator (Zod, Valibot,
-and others). The root import has no runtime dependencies or peers. Install
-your validator yourself. Valibot and Zod Mini use optional subpaths that
-bind JSON Schema converters.
+and others). The root import has no runtime dependencies or peers.
 
-Choose `@arkenv/core` when you want ArkType. Choose `@arkenv/standard`
-when you migrate from Zod/Valibot or keep the tree ArkType-free.
+* **If you use ArkType**, use [`@arkenv/core`](/docs/reference/core). It also supports Zod and Valibot. **You do not need to install both engines**.
+* **If you don't use ArkType**, use `@arkenv/standard`. This will keep your tree free of the ArkType dependency.
 
 TypeScript must use `moduleResolution: "bundler" | "node16" | "nodenext"`.
 
 ## Installation
 
 ```package-install
-npm install @arkenv/standard zod
+npm install @arkenv/standard
 ```
-
-Swap `zod` for your validator of choice.
 
 ## Usage
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/standard";
-import { z } from "zod";
+import * as z from "zod";
 
 export const env = arkenv({
   PORT: z.number().int().min(0).max(65535).default(3000),

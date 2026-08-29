@@ -29,7 +29,7 @@ the call site.
   <Tab value="Zod (@arkenv/standard)">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
-    import { z } from "zod";
+    import * as z from "zod";
 
     export const env = arkenv({
     	DATABASE_URL: z.string().url(),

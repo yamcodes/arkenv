@@ -1,18 +1,16 @@
 ---
 title: Bun
-description: Validate Bun environment variables with @arkenv/bun-plugin.
+description: Learn how to use ArkEnv in a Bun project.
 ---
 
-`@arkenv/bun-plugin` is for Bun builds or fullstack servers that inline
-public `BUN_PUBLIC_` keys. Plain Bun backends skip the plugin and call
-`@arkenv/core` directly.
+ArkEnv supports most Bun apps out of the box, no further configuration required.
 
-For high-level architectural trade-offs, see
-[Integrations](/docs/validating-your-environment/framework-integration).
+However, some Bun apps use Bun's fullstack dev server (`Bun.serve()`) or Bun's bundler (`Bun.build()`) to build their bundle. The Bun integration was built to support these use cases.
 
+Continue reading if you're using `Bun.serve()` or `Bun.build()`. Otherwise, the [Getting started](/docs/getting-started) guide is a good place to start.
 ## Quickstart
 
-Scaffold Bun integration in an existing project using the CLI:
+Scaffold Bun integration in an existing project using the interactiveCLI:
 
 ```package-install
 npx arkenv@latest init
@@ -43,7 +41,7 @@ npm install @arkenv/standard
 npm install -D @arkenv/bun-plugin
 ```
 
-If you aren't using ArkType, import the plugin from `@arkenv/bun-plugin/standard`.
+Then, import the plugin from `@arkenv/bun-plugin/standard`.
 
 ## Full-stack setup
 

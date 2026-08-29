@@ -46,7 +46,7 @@ Coercion is **on** by default (`coerce: true`). Zod 4.2+ uses
   <Tab value="Zod (@arkenv/standard)">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
-    import { z } from "zod";
+    import * as z from "zod";
 
     export const env = arkenv(
     	{
@@ -244,7 +244,7 @@ the schema library to parse it.
   <Tab value="Zod (@arkenv/standard)">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
-    import { z } from "zod";
+    import * as z from "zod";
 
     export const env = arkenv(
     	{ PORT: z.string() },

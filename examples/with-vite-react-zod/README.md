@@ -12,7 +12,7 @@ Define your environment schema with Zod in `src/env.ts`:
 
 ```ts title="src/env.ts"
 import arkenv from "@arkenv/standard";
-import { z } from "zod";
+import * as z from "zod";
 
 export const env = arkenv({
   PORT: z.number().default(3000),

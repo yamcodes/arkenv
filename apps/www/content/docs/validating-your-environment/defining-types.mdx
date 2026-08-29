@@ -32,7 +32,7 @@ Your schema is a map from env key names to validators. `@arkenv/core` uses the A
   <Tab value="Zod (@arkenv/standard)">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
-    import { z } from "zod";
+    import * as z from "zod";
 
     export const env = arkenv({
     	API_URL: z.string(),
@@ -92,7 +92,7 @@ For transforms, function defaults, or reuse across files:
   <Tab value="Zod">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
-    import { z } from "zod";
+    import * as z from "zod";
 
     export const env = arkenv({
     	PORT: z.number().int().min(0).max(65535).default(3000),

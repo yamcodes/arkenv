@@ -243,7 +243,7 @@
 
   ```ts
   import arkenv from "@arkenv/standard";
-  import { z } from "zod";
+  import * as z from "zod";
 
   export const env = arkenv({
     PORT: z.coerce.number().default(3000),
@@ -475,13 +475,13 @@
   ```ts
   // ❌ Before
   import arkenv from "arkenv";
-  import { z } from "zod";
+  import * as z from "zod";
 
   const env = arkenv({ PORT: z.coerce.number() }, { validator: "standard" });
 
   // ✅ After
   import arkenv from "arkenv/standard";
-  import { z } from "zod";
+  import * as z from "zod";
 
   const env = arkenv({ PORT: z.coerce.number() });
   ```
@@ -550,7 +550,7 @@
   Add support for an optional configuration object as the second argument. This allows you to set the `validator` mode to `"standard"`, enabling support for libraries like Zod or Valibot without an ArkType dependency.
 
   ```ts
-  import { z } from "zod";
+  import * as z from "zod";
   import arkenvVitePlugin from "@arkenv/vite-plugin";
 
   arkenvVitePlugin(

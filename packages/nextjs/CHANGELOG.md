@@ -298,7 +298,7 @@
 
   ```ts
   import arkenv from "@arkenv/nextjs/standard";
-  import { z } from "zod";
+  import * as z from "zod";
 
   export const env = arkenv(
     {
@@ -327,7 +327,7 @@
 
   ```ts
   import arkenv from "@arkenv/standard";
-  import { z } from "zod";
+  import * as z from "zod";
 
   export const env = arkenv({
     PORT: z.coerce.number().default(3000),

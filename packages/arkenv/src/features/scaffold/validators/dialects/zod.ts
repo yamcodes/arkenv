@@ -3,7 +3,7 @@ import type { Dialect } from "./types";
 import { tryFormatPresetFieldValue } from "./types";
 
 export const zodDialect: Dialect = {
-	extraImport: `import { z } from "zod";`,
+	extraImport: `import * as z from "zod";`,
 
 	formatOptionalString() {
 		return "z.string().optional()";
@@ -94,18 +94,18 @@ export const zodDialect: Dialect = {
 		};
 	},
 
-	sharedImports: `import { z } from "zod";`,
+	sharedImports: `import * as z from "zod";`,
 
 	wrapSharedSchema(schemaObject) {
 		return `z.object(${schemaObject})`;
 	},
 
-	strictExtraImports: `import { z } from "zod";\n`,
+	strictExtraImports: `import * as z from "zod";\n`,
 
 	assembleVanilla(schemaFields) {
 		return dedent /* ts */`
 	import arkenv from "@arkenv/standard";
-	import { z } from "zod";
+	import * as z from "zod";
 
 	/**
 	 * Environment variable schema for server-side or runtime-only validation.

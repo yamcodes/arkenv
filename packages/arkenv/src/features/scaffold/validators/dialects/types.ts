@@ -13,7 +13,7 @@ import {
  */
 export type Dialect = {
 	/**
-	 * Extra import for codegen layouts, e.g. `import { z } from "zod";`.
+	 * Extra import for codegen layouts, e.g. `import * as z from "zod";`.
 	 */
 	extraImport?: string;
 

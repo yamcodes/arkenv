@@ -50,7 +50,7 @@ strings fail.
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/standard";
-import { z } from "zod";
+import * as z from "zod";
 
 export const env = arkenv({
   PORT: z.number().int().min(0).max(65535),

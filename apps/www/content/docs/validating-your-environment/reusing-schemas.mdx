@@ -54,7 +54,7 @@ Export the schema once, then call `arkenv()` (or the framework/plugin entry) whe
 
   <Tab value="Zod (@arkenv/standard)">
     ```ts title="./env-schema.ts"
-    import { z } from "zod";
+    import * as z from "zod";
 
     export const schema = {
     	HOST: z.string().default("localhost"),
@@ -133,7 +133,7 @@ Put the shared schema in an internal package, then call the host `arkenv` (or pl
 
   <Tab value="Zod (@arkenv/standard)">
     ```ts title="./packages/env/src/schema.ts"
-    import { z } from "zod";
+    import * as z from "zod";
 
     export const appSchema = {
     	DATABASE_URL: z.string().url(),
