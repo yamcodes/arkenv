@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import {
 	AutocompleteShowcase,
 	BringYourOwnValidator,
+	DeclarativeShowcase,
 	DotGrid,
 	FailFastShowcase,
+	FaqSection,
 	HeroEnvHoverSlot,
 	HeroMvpExampleSlot,
 	HeroNameCycle,
@@ -97,6 +99,8 @@ export default async function HomePage() {
 				<AutocompleteShowcase />
 				<SecureBoundary />
 				<BringYourOwnValidator />
+				<DeclarativeShowcase />
+				<FaqSection />
 			</div>
 
 			<div className="home-aurora__stripe" aria-hidden="true" />
