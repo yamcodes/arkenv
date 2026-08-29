@@ -2,6 +2,7 @@ import "./roadmap.css";
 import type { Metadata } from "next";
 import { SiteFooter } from "~/components/site-footer";
 import { fetchRoadmap } from "~/lib/roadmap/fetch-roadmap";
+import { groupByTopic } from "~/lib/roadmap/topics";
 import type { RoadmapItem } from "~/lib/roadmap/types";
 
 export const metadata: Metadata = {
@@ -68,6 +69,36 @@ function RoadmapRow({ item }: { item: RoadmapItem }) {
 	);
 }
 
+function RoadmapTopicGroups({
+	items,
+	sectionId,
+}: {
+	items: RoadmapItem[];
+	sectionId: string;
+}) {
+	const groups = groupByTopic(items);
+	return (
+		<div className="roadmap-page__topics">
+			{groups.map(({ topic, items: topicItems }) => {
+				const topicId = `${sectionId}-${topic.toLowerCase()}`;
+				return (
+					<div key={topic} className="roadmap-page__topic">
+						<h3 id={topicId} className="roadmap-page__topic-title">
+							{topic}
+							<span className="roadmap-page__count">{topicItems.length}</span>
+						</h3>
+						<ul className="roadmap-page__list" aria-labelledby={topicId}>
+							{topicItems.map((item) => (
+								<RoadmapRow key={item.id} item={item} />
+							))}
+						</ul>
+					</div>
+				);
+			})}
+		</div>
+	);
+}
+
 export default async function RoadmapPage() {
 	const roadmap = await fetchRoadmap();
 	const openItems = roadmap.items.filter((item) => !item.done);
@@ -105,11 +136,7 @@ export default async function RoadmapPage() {
 							Up next
 							<span className="roadmap-page__count">{openItems.length}</span>
 						</h2>
-						<ul className="roadmap-page__list">
-							{openItems.map((item) => (
-								<RoadmapRow key={item.id} item={item} />
-							))}
-						</ul>
+						<RoadmapTopicGroups items={openItems} sectionId="roadmap-open" />
 					</section>
 				) : null}
 
@@ -122,11 +149,7 @@ export default async function RoadmapPage() {
 							Done
 							<span className="roadmap-page__count">{doneItems.length}</span>
 						</h2>
-						<ul className="roadmap-page__list">
-							{doneItems.map((item) => (
-								<RoadmapRow key={item.id} item={item} />
-							))}
-						</ul>
+						<RoadmapTopicGroups items={doneItems} sectionId="roadmap-done" />
 					</section>
 				) : null}
 			</article>

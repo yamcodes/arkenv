@@ -8,6 +8,7 @@ export function AnnouncementBadge({
 	arrow = true,
 	new: newBadge = false,
 	href,
+	"aria-label": ariaLabel,
 	children,
 }: PropsWithChildren<{
 	/**
@@ -22,9 +23,18 @@ export function AnnouncementBadge({
 	 * The link to navigate to when clicking the badge.
 	 */
 	href: ArkenvUrl;
+	/**
+	 * Optional accessible name when children are visual-only (e.g. a meter).
+	 */
+	"aria-label"?: string;
 }>) {
 	return (
-		<Link href={href} data-no-underline className="home-aurora__announce">
+		<Link
+			href={href}
+			data-no-underline
+			className="home-aurora__announce"
+			aria-label={ariaLabel}
+		>
 			{newBadge ? (
 				<NewBadge className="home-aurora__announce-new rounded-full" />
 			) : null}

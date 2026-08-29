@@ -1,3 +1,5 @@
+import type { RoadmapTopic } from "~/lib/roadmap/topics";
+
 /**
  * Manual roadmap rows that are not GitHub issues (launch gates, audits).
  * Milestone issues remain the source of truth for tracked work; these append.
@@ -9,6 +11,7 @@ export type RoadmapExtra = {
 	id: string;
 	title: string;
 	done: boolean;
+	topic: RoadmapTopic;
 };
 
 /**
@@ -36,25 +39,30 @@ export const ROADMAP_EXTRAS: readonly RoadmapExtra[] = [
 		id: "parity-audit",
 		title: "Final v0 parity audit",
 		done: false,
+		topic: "Core",
 	},
 	{
 		id: "readme-prod-links",
 		title: "Update README links from alpha to production",
 		done: false,
+		topic: "Docs",
 	},
 	{
 		id: "changelog-epoch",
 		title: "Prepend changelog epoch warnings",
 		done: false,
+		topic: "Docs",
 	},
 	{
 		id: "release-v1",
 		title: "Release v1",
 		done: false,
+		topic: "Core",
 	},
 	{
 		id: "v1-announcement",
 		title: "Document v1 announcement",
 		done: false,
+		topic: "Docs",
 	},
 ];

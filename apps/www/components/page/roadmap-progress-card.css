@@ -1,46 +1,20 @@
-/* Roadmap progress chip — announcement-badge chrome, green bar fill */
+/* Progress meter inside AnnouncementBadge — chrome/arrow live on the badge */
 
 .roadmap-progress-card {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.55rem;
-	padding: 0.3rem 0.7rem 0.3rem 0.75rem;
-	border-radius: var(--radius-pill);
-	border: var(--rule-hair) solid color-mix(in oklch, var(--color-accent) 35%, transparent);
-	background: color-mix(in oklch, var(--color-accent) 10%, transparent);
-	color: var(--color-ink);
+	min-width: 0;
 	font-family: var(--font-mono);
 	font-feature-settings: var(--font-feature-mono);
-	font-size: 0.8rem;
-	font-weight: 500;
 	font-variant-numeric: tabular-nums;
 	letter-spacing: 0.02em;
 	line-height: 1;
-	text-decoration: none;
-	backdrop-filter: blur(8px);
-	max-width: 100%;
-	min-width: 0;
-	white-space: nowrap;
-	box-sizing: border-box;
-	transition:
-		background-color var(--dur-micro) var(--ease-out),
-		border-color var(--dur-micro) var(--ease-out);
-}
-
-.roadmap-progress-card:hover {
-	background: color-mix(in oklch, var(--color-accent) 16%, transparent);
-	border-color: color-mix(in oklch, var(--color-accent) 50%, transparent);
-}
-
-.roadmap-progress-card:focus-visible {
-	outline: 2px solid var(--color-focus);
-	outline-offset: 2px;
 }
 
 .roadmap-progress-card__label,
 .roadmap-progress-card__pct {
 	flex: none;
-	color: var(--color-ink);
 }
 
 .roadmap-progress-card__track {
@@ -53,6 +27,10 @@
 	border-radius: var(--radius-pill);
 	background: color-mix(in oklch, var(--color-accent) 18%, var(--color-paper));
 	overflow: hidden;
+}
+
+.roadmap-progress-card__track--stale {
+	background: color-mix(in oklch, var(--color-muted) 28%, var(--color-paper));
 }
 
 .roadmap-progress-card__fill {
