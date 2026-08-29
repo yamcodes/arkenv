@@ -3,26 +3,29 @@ title: Why ArkEnv?
 description: See how ArkEnv compares to other environment variable validation libraries and techniques.
 ---
 
-This page is a cheatsheet of how ArkEnv compares to Varlock, T3 Env,
-vite-plugin-validate-env, znv, Envalid, and a DIY schema.
+ArkEnv is designed for teams that already validate data in TypeScript.
+ArkEnv provides a typed `env` object from the same schemas you use for
+the rest of the app. Use this page to compare it with Varlock, T3 Env,
+vite-plugin-validate-env, znv, Envalid, and a DIY assert.
+
 If you are migrating from T3 Env, start at
 [Migrating from T3 Env](/docs/guides/migrating-from-t3-env).
 
 ## Comparison cheatsheet
 
-| Feature                                    | **ArkEnv** | Varlock | T3 Env | vite-plugin-validate-env | znv | Envalid |
-| :----------------------------------------- | :--------: | :-----: | :----: | :----------------------: | :-: | :-----: |
-| **Native ArkType support\***               |      ✅     |    ❌    |    ❌   |             ❌            |  ❌  |    ❌    |
-| **Standard Schema**                        |      ✅     |    ❌    |    ✅   |             ✅            |  ❌  |    ❌    |
-| **Automatic coercion**                     |      ✅     |    ✅    |    ❌   |             ❌            |  ✅  |    ✅    |
-| **First-class Vite support**               |      ✅     |    ✅    |    ❌   |             ✅            |  ❌  |    ❌    |
-| **First-class Next.js support**            |      ✅     |    ✅    |    ✅   |             ❌            |  ❌  |    ❌    |
-| **First-class Nuxt support**               |      ✅     |    ✅    |    ✅   |             ❌            |  ❌  |    ❌    |
-| **Bun fullstack dev server**               |      ✅     |    ✅    |    ❌   |             ❌            |  ❌  |    ❌    |
-| **Command Line Interface**                 |      ✅     |    ✅    |    ❌   |             ❌            |  ❌  |    ❌    |
-| **Remote secret providers**                |      ❌     |    ✅    |    ❌   |             ❌            |  ❌  |    ❌    |
-| **AI credential proxy & log redaction**    |      ❌     |    ✅    |    ❌   |             ❌            |  ❌  |    ❌    |
-| **Multi-env orchestration & dynamic config** |    ❌     |    ✅    |    ❌   |             ❌            |  ❌  |    ❌    |
+| Feature                                      | **ArkEnv** | Varlock | T3 Env | vite-plugin-validate-env | znv | Envalid |
+| :------------------------------------------- | :--------: | :-----: | :----: | :----------------------: | :-: | :-----: |
+| **Pure TypeScript schemas**                  |      ✅     |    ❌    |    ✅   |             ✅            |  ✅  |    ✅    |
+| **Native ArkType support\***                 |      ✅     |    ❌    |    ❌   |             ❌            |  ❌  |    ❌    |
+| **Standard Schema (Zod / Valibot)**           |      ✅     |    ❌    |    ✅   |             ✅            |  ❌  |    ❌    |
+| **Automatic coercion**                       |      ✅     |    ✅    |    ❌   |             ❌            |  ✅  |    ✅    |
+| **First-class Vite support**                 |      ✅     |    ✅    |    ❌   |             ✅            |  ❌  |    ❌    |
+| **First-class Next.js support**              |      ✅     |    ✅    |    ✅   |             ❌            |  ❌  |    ❌    |
+| **First-class Nuxt support**                 |      ✅     |    ✅    |    ✅   |             ❌            |  ❌  |    ❌    |
+| **Command Line Interface**                   |      ✅     |    ✅    |    ❌   |             ❌            |  ❌  |    ❌    |
+| **Remote secret providers**                  |      ❌     |    ✅    |    ❌   |             ❌            |  ❌  |    ❌    |
+| **AI credential proxy & log redaction**      |      ❌     |    ✅    |    ❌   |             ❌            |  ❌  |    ❌    |
+| **Multi-env orchestration & dynamic config** |      ❌     |    ✅    |    ❌   |             ❌            |  ❌  |    ❌    |
 
 \* ArkType is supported directly without wrapping each key in ArkType's
 `type()`.
@@ -72,20 +75,23 @@ If that list is the work you wanted to skip, start at
 
 ### Varlock
 
-[Varlock](https://varlock.dev) is the heavyweight env orchestrator in
-this space: a commit-safe `.env.schema`, plugins that fetch secrets from
-1Password / Vault / cloud secret managers, encrypted local values,
-multi-environment file selection, dynamic config functions, log
-redaction, and an AI credential proxy so agents never see real secrets.
+[Varlock](https://varlock.dev) is a heavy-duty env orchestrator: remote
+secret providers, [encrypted deployments](https://varlock.dev/guides/encrypted-deployments/),
+multi-env file selection, log redaction, and an AI credential proxy.
 
-ArkEnv deliberately does **not** do that work. We leave loading,
-rotation, and remote fetching to your host, runner, or secret manager,
-and focus on one job: the leanest Typesafe `env` object with deep
-framework plugins and the validator you already use (ArkType, Zod,
-Valibot, or any Standard Schema). If you need orchestration and
-AI-safe secret plumbing, use Varlock. If you want a tiny validation
-layer that plugs into Next.js, Nuxt, Vite, and Bun without owning the
-secrets pipeline, use ArkEnv.
+Those features use a different schema model. Rules live in a
+`.env.schema` file as [env-spec](https://varlock.dev/env-spec/reference/)
+decorators (for example
+[`# @type=string(startsWith="postgresql://")`](https://varlock.dev/reference/item-decorators/#type)),
+not in the TypeScript validators you already use for request bodies and
+config.
+
+ArkEnv does not own that orchestration. You keep loading and secrets
+with your host or secret manager, and you define the schema in `env.ts`
+with ArkType, Zod, Valibot, or any Standard Schema library. Choose
+Varlock when you want the orchestrator. Choose ArkEnv when you want
+environment variables validated the same way as the rest of your
+TypeScript app.
 
 ### T3 Env
 
