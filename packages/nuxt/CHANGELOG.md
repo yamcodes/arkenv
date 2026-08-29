@@ -1,5 +1,14 @@
 # @arkenv/nuxt
 
+## 1.0.0-alpha.15
+
+### Patch Changes
+
+- #### Migrate Nuxt schema capture to isolated Symbol state _[`#1705`](https://github.com/yamcodes/arkenv/pull/1705) [`fc86350`](https://github.com/yamcodes/arkenv/commit/fc863501c02358c08b07188fe7944ec847d85277) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Schema capture in `@arkenv/nuxt` now lives on `Symbol.for("arkenv.nuxt.schemaCapture.v1")` instead of the legacy string key `__ARKENV_SCHEMA_CAPTURE__`. This isolates Nuxt's schema capture lifecycle from process-level collisions with other capture workflows.
+
 ## 1.0.0-alpha.14
 
 ### Major Changes

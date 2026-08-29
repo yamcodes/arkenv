@@ -1,5 +1,14 @@
 # @arkenv/core
 
+## 1.0.0-alpha.17
+
+### Patch Changes
+
+- #### Remove ambient `.d.ts` append for Vite and Bun _[`#1714`](https://github.com/yamcodes/arkenv/pull/1714) [`d206baf`](https://github.com/yamcodes/arkenv/commit/d206baf31329a881bb3972e23c4cc8d4dc07a366) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Scaffolding for Vite and Bun projects now configures `env.ts` directly without creating or modifying ambient type definition files (`vite-env.d.ts` / `bun-env.d.ts`).
+
 ## 1.0.0-alpha.16
 
 ### Major Changes
