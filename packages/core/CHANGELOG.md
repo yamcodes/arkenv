@@ -1,5 +1,16 @@
 # @arkenv/core
 
+## 1.0.0-alpha.8
+
+### Patch Changes
+
+- #### Fail closed when the CLI cannot inspect your schema _[`#1702`](https://github.com/yamcodes/arkenv/pull/1702) [`dcabf1f`](https://github.com/yamcodes/arkenv/commit/dcabf1fce08367529cb9a3de3101f0e6b2209901) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`arkenv example` and `arkenv check` now fail with a clear error when the schema module never calls `arkenv()`, the installed runtime is too old for inspect, the definition cannot be read as keys, or the module uses `env` values at load time — instead of treating those cases as an empty schema.
+	
+	Upgrade `@arkenv/core` or `@arkenv/standard` alongside the CLI so inspect works. Keep the schema declarative (`export const env = arkenv({ ... })`) and do not read `env` at module scope. `arkenv({})` remains a valid empty schema.
+
 ## 1.0.0-alpha.7
 
 ### Patch Changes
