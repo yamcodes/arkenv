@@ -1,4 +1,5 @@
 export {
+	type DeclaredKeysResult,
 	type DeclaredSchemaKey,
 	declaredKeyName,
 	declaredKeysFromDefinitions,

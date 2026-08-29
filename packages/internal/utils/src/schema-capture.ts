@@ -1,21 +1,25 @@
-const SCHEMA_CAPTURE_KEY = "__ARKENV_SCHEMA_CAPTURE__";
+const SCHEMA_CAPTURE_KEY = Symbol.for("arkenv.schemaCapture.v1");
 
 type SchemaCaptureState = {
 	capturing: boolean;
 	definitions: unknown[];
 };
 
+type GlobalWithSchemaCapture = typeof globalThis & {
+	[SCHEMA_CAPTURE_KEY]?: SchemaCaptureState;
+};
+
 /**
  * Read the process-global schema-capture bag so separately loaded copies of
  * `@arkenv/core` / `@arkenv/standard` (for example via Jiti) share one flag.
  *
+ * Uses `Symbol.for("arkenv.schemaCapture.v1")` so the bag does not collide with
+ * Nuxt's legacy `__ARKENV_SCHEMA_CAPTURE__` string key.
+ *
  * @returns The shared capture state
  */
 function getSchemaCaptureState(): SchemaCaptureState {
-	const globals = globalThis as unknown as Record<
-		string,
-		SchemaCaptureState | undefined
-	>;
+	const globals = globalThis as GlobalWithSchemaCapture;
 	if (!globals[SCHEMA_CAPTURE_KEY]) {
 		globals[SCHEMA_CAPTURE_KEY] = { capturing: false, definitions: [] };
 	}
