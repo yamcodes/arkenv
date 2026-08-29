@@ -40,9 +40,10 @@ secrets become throwing stubs. Next.js and Nuxt use host adapters
 codegen or `runtimeConfig` hydration.
 
 ArkEnv keeps the **validation engine** (`@arkenv/core` /
-`@arkenv/standard`) as a peer of the host adapter so you do not ship a
-second runtime and can pair any adapter with ArkType or a Standard
-Schema validator.
+`@arkenv/standard`) as an **optional peer** of each host adapter. You
+install the engine you use; the adapter does not bundle either runtime.
+That keeps host packages lean and lets you pair any adapter with ArkType
+or a Standard Schema validator.
 
 ## Loading `.env` files
 

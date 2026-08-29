@@ -31,7 +31,6 @@ test.describe("Smoke Tests", () => {
 		"/docs/guides/frameworks",
 		"/docs/guides/frameworks/nextjs",
 		"/docs/guides/validators/choosing-an-engine",
-		"/docs/faq",
 		"/docs/community",
 		"/docs/compatibility",
 	];

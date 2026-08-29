@@ -63,7 +63,7 @@ export function SiteFooter({
 							<a href="/docs/comparison">Comparison</a>
 						</li>
 						<li>
-							<a href="/docs/faq">FAQ</a>
+							<a href="/docs/community">Community</a>
 						</li>
 					</ul>
 				</nav>

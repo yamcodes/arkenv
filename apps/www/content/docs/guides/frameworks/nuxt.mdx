@@ -133,7 +133,11 @@ Vite and Bun inline literals at build time through compile-time transforms. `@ar
 2. **Runtime configuration hydration:** An internal Nitro plugin passes validated public variables (`NUXT_PUBLIC_*`) into `useRuntimeConfig().public`.
 3. **Client access:** Client components read public values from runtime configuration during browser rendering and hydration, avoiding hardcoded build-time literals.
 
-You can update environment variables across deployment stages without rebuilding client JavaScript bundles.
+You can update environment variables across deployment stages without rebuilding client JavaScript bundles. Ship one image and change env at container start for staging versus production.
+
+Unlike Next.js `env.gen.ts`, `@arkenv/nuxt` writes no generated files to
+commit or gitignore. The module validates at boot and registers public
+keys on `runtimeConfig`.
 
 ## Next steps
 

@@ -56,22 +56,27 @@ const config = {
 			},
 			{
 				source: "/faq",
-				destination: "/docs/faq",
+				destination: "/docs/getting-started",
+				permanent: true,
+			},
+			{
+				source: "/docs/faq",
+				destination: "/docs/getting-started",
 				permanent: true,
 			},
 			{
 				source: "/docs/cli/faq",
-				destination: "/docs/faq",
+				destination: "/docs/getting-started",
 				permanent: true,
 			},
 			{
 				source: "/docs/nextjs/faq",
-				destination: "/docs/faq",
+				destination: "/docs/getting-started",
 				permanent: true,
 			},
 			{
 				source: "/docs/nuxt/faq",
-				destination: "/docs/faq",
+				destination: "/docs/getting-started",
 				permanent: true,
 			},
 			{
@@ -192,7 +197,7 @@ const config = {
 			},
 			{
 				source: "/docs/arkenv/faq",
-				destination: "/docs/faq",
+				destination: "/docs/getting-started",
 				permanent: true,
 			},
 			{

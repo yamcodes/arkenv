@@ -83,8 +83,17 @@ export const env = arkenv(
 
 Default: `false`
 
-Treat `""` as missing so schema defaults apply. With `PORT=` in a `.env`
-file, `PORT` becomes `undefined` before validation.
+An empty assignment in a `.env` file still sets the key. ArkEnv sees
+`""`, so defaults do not apply and non-string types fail:
+
+```ini title=".env"
+PORT=
+DEBUG=
+```
+
+Set `emptyAsUndefined: true` to treat empty strings as missing before
+validation. Then `PORT=` behaves like an unset key and the default
+applies:
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/core";
@@ -106,6 +115,10 @@ export const env = arkenv(
 env.PORT; // 3000
 env.DEBUG; // false
 ```
+
+The `env` option above only simulates a loaded `.env` for the snippet.
+In an app, your runner or framework loads `.env*` into `process.env`
+first; you pass `{ emptyAsUndefined: true }` alone.
 
 ### onUndeclaredKey
 
