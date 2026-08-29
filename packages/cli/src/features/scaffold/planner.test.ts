@@ -12,6 +12,7 @@ describe("Planner", () => {
 			framework: "vanilla",
 			path: "env.ts",
 			language: "ts",
+			installTypeDefinitions: true,
 		},
 		detectedFramework: "vanilla",
 		packageManager: "pnpm",
@@ -40,9 +41,7 @@ describe("Planner", () => {
 		};
 		const plan = createPlan(state);
 		expect(plan.install?.dependencies).toContain("@arkenv/vite-plugin");
-		expect(plan.files.some((f) => f.path.endsWith("vite-env.d.ts"))).toBe(
-			false,
-		);
+		expect(plan.files.some((f) => f.path.endsWith("vite-env.d.ts"))).toBe(true);
 		expect(plan.bootstrap?.framework).toBe("vite");
 	});
 
@@ -146,7 +145,7 @@ describe("Planner", () => {
 		};
 		const plan = createPlan(state);
 		expect(plan.install?.dependencies).toContain("@arkenv/bun-plugin");
-		expect(plan.files.some((f) => f.path.endsWith("bun-env.d.ts"))).toBe(false);
+		expect(plan.files.some((f) => f.path.endsWith("bun-env.d.ts"))).toBe(true);
 		expect(plan.bootstrap?.framework).toBe("bun-fullstack");
 		expect(plan.bootstrap?.bunFeatures).toContain("serve");
 	});
@@ -190,20 +189,20 @@ describe("Planner", () => {
 		expect(plan.files[0].action).toBe("overwrite");
 	});
 
-	it("does not plan type definitions or safeAppend for vite framework", () => {
+	it("plans append when type definition exists and requested", () => {
 		const typePath = path.resolve("/test", "vite-env.d.ts");
 		const state: CollectedState = {
 			...defaultState,
 			options: {
 				...defaultState.options,
 				framework: "vite",
+				envDtsHandling: "append",
 			},
 			existingFiles: [typePath],
 		};
 		const plan = createPlan(state);
-		expect(plan.files.some((f) => f.path.endsWith("vite-env.d.ts"))).toBe(
-			false,
-		);
+		const typeFile = plan.files.find((f) => f.path === typePath);
+		expect(typeFile?.action).toBe("append");
 	});
 
 	it("plans skill installation", () => {

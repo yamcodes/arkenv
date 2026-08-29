@@ -40,6 +40,34 @@ export class Executor {
 
 			// 1. Create directories and write files
 			for (const file of plan.files) {
+				if (file.action === "append") {
+					if (
+						!plan.bootstrap ||
+						(plan.bootstrap.framework !== "vite" &&
+							plan.bootstrap.framework !== "bun-fullstack")
+					) {
+						this.reporter.warn(
+							`Skipping safe-append for ${code(path.basename(file.path))}: unsupported framework.`,
+						);
+						continue;
+					}
+					const success = await this.workspace.safeAppend(
+						file.path,
+						file.content,
+						plan.bootstrap.framework,
+					);
+					if (success) {
+						this.reporter.info(
+							`Appended ArkEnv types to ${code(path.basename(file.path))}.`,
+						);
+					} else {
+						this.reporter.info(
+							`${code(path.basename(file.path))} already contains ArkEnv types.`,
+						);
+					}
+					continue;
+				}
+
 				if (
 					file.action === "create" &&
 					(await this.workspace.exists(file.path))
@@ -49,6 +77,16 @@ export class Executor {
 
 				await this.workspace.mkdir(path.dirname(file.path), true);
 				await this.workspace.writeFile(file.path, file.content);
+
+				if (file.label === "environment schema") {
+					// We'll report this at the end or as we go
+				} else if (file.label?.includes("types")) {
+					const actionLabel =
+						file.action === "overwrite" ? "Updated" : "Created";
+					this.reporter.info(
+						`${actionLabel} ${code(path.basename(file.path))} for typesafe environment variables.`,
+					);
+				}
 			}
 
 			s.stop("Configuration scaffolded!");

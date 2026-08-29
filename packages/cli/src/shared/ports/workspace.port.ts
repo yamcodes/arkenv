@@ -54,6 +54,11 @@ export type ConfigPort = {
 		disableCodegen?: boolean,
 	): Promise<BootstrapResult>;
 	bootstrapNuxtConfig(path: string): Promise<BootstrapResult>;
+	safeAppend(
+		path: string,
+		schemaPath: string,
+		framework: "vite" | "bun-fullstack",
+	): Promise<boolean>;
 };
 
 /**

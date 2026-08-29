@@ -94,7 +94,7 @@ describe("scaffold utils", () => {
 			);
 		});
 
-		it("returns vite instructions when skill is not installed/detected", () => {
+		it("returns vite-specific instructions when skill is not installed/detected", () => {
 			const plan: ScaffoldingPlan = {
 				...basePlan,
 				metadata: {
@@ -107,11 +107,11 @@ describe("scaffold utils", () => {
 				`Check ${code("./src/env.ts")} and refine your environment schema.`,
 			);
 			expect(note.message).toContain(
-				`Import and use: ${code('import { env } from "./src/env"')}`,
+				`Access via ${code("import.meta.env.YOUR_VAR")}`,
 			);
 		});
 
-		it("returns bun-fullstack instructions when skill is not installed/detected", () => {
+		it("returns bun-fullstack-specific instructions when skill is not installed/detected", () => {
 			const plan: ScaffoldingPlan = {
 				...basePlan,
 				metadata: {
@@ -121,7 +121,7 @@ describe("scaffold utils", () => {
 			};
 			const note = getNextStepsNote(plan, false);
 			expect(note.message).toContain(
-				`Import and use: ${code('import { env } from "./src/env"')}`,
+				`Access via ${code("process.env.YOUR_VAR")}`,
 			);
 		});
 

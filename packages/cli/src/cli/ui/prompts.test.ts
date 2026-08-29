@@ -66,6 +66,7 @@ describe("runPromptWizard", () => {
 		vi.mocked(prompts.select).mockResolvedValueOnce("bun-fullstack"); // framework
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // bunBuild
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // installTypeDefinitions
 		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
 		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // hostPreset
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
@@ -131,6 +132,7 @@ describe("runPromptWizard", () => {
 	it("should include envKeys if user accepts prompt", async () => {
 		vi.mocked(prompts.select).mockResolvedValueOnce("vanilla"); // framework
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // installTypeDefinitions
 		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
 		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // hostPreset
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
@@ -138,6 +140,31 @@ describe("runPromptWizard", () => {
 		const result = await runPromptWizard({ envKeys: ["API_KEY"] });
 
 		expect(result?.envKeys).toEqual(["API_KEY"]);
+	});
+
+	it("should check type definitions beside the selected custom path", async () => {
+		const hasTypeFileAtPath = vi.fn().mockResolvedValue(true);
+
+		vi.mocked(prompts.select).mockResolvedValueOnce("vite"); // framework
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(false); // useDefaultPath
+		vi.mocked(prompts.text).mockResolvedValueOnce("./app/env.ts"); // path
+		vi.mocked(prompts.select).mockResolvedValueOnce("append"); // envDtsHandling
+		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
+		vi.mocked(prompts.select).mockResolvedValueOnce("none"); // hostPreset
+
+		const result = await runPromptWizard({
+			framework: "vite",
+			defaultEnvPath: "./src/env.ts",
+			hasTypeFile: false,
+			hasTypeFileAtPath,
+		});
+
+		expect(hasTypeFileAtPath).toHaveBeenCalledWith({
+			framework: "vite",
+			envPath: "./app/env.ts",
+		});
+		expect(result?.path).toBe("./app/env.ts");
+		expect(result?.envDtsHandling).toBe("append");
 	});
 
 	it("should NOT include envKeys if user declines prompt", async () => {
@@ -155,6 +182,7 @@ describe("runPromptWizard", () => {
 	it("should include hostPreset if selected in wizard", async () => {
 		vi.mocked(prompts.select).mockResolvedValueOnce("vanilla"); // framework
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // installTypeDefinitions
 		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
 		vi.mocked(prompts.select).mockResolvedValueOnce("vercel"); // hostPreset
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample
@@ -172,6 +200,7 @@ describe("runPromptWizard", () => {
 	it("should bypass hostPreset prompt if already provided in defaults", async () => {
 		vi.mocked(prompts.select).mockResolvedValueOnce("vanilla"); // framework
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useDefaultPath
+		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // installTypeDefinitions
 		vi.mocked(prompts.select).mockResolvedValueOnce("arktype"); // validator
 		// No select mock for hostPreset because it should be bypassed
 		vi.mocked(prompts.confirm).mockResolvedValueOnce(true); // useEnvExample

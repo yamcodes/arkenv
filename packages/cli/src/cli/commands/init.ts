@@ -284,6 +284,28 @@ export class InitUseCase {
 			return this.workspace.exists(targetPath);
 		})();
 
+		const hasTypeFileAtPath = async ({
+			framework,
+			envPath,
+		}: {
+			framework: Framework;
+			envPath: string;
+		}) => {
+			if (framework !== "vite" && framework !== "bun-fullstack") {
+				return false;
+			}
+
+			const typeFile = framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
+			const targetPath = path.resolve(targetDir, envPath);
+			const targetDirOfSchema = path.dirname(targetPath);
+			const typeFilePath = path.join(targetDirOfSchema, typeFile);
+			return this.workspace.exists(typeFilePath);
+		};
+		const hasTypeFile = await hasTypeFileAtPath({
+			framework: detectedFramework,
+			envPath: defaultEnvPath,
+		});
+
 		const options = await this.prompt.runWizard(
 			shake({
 				mode: "existing" as const,
@@ -293,6 +315,8 @@ export class InitUseCase {
 				tsConfig: tsConfig.parsed ?? null,
 				envKeys: envRes?.keys,
 				envKeysSource: envRes?.source,
+				hasTypeFileAtPath,
+				hasTypeFile,
 				hasEnvSchemaFile,
 				isStrict: input.isStrict,
 				isSimple: input.isSimple,
@@ -403,6 +427,20 @@ export class InitUseCase {
 		const existingFiles: string[] = [];
 		for (const p of pathsToCheck) {
 			if (await this.workspace.exists(p)) existingFiles.push(p);
+		}
+
+		let typeFileName: string | undefined;
+		if (options.framework === "vite") {
+			typeFileName = "vite-env.d.ts";
+		} else if (options.framework === "bun-fullstack") {
+			typeFileName = "bun-env.d.ts";
+		}
+
+		if (typeFileName) {
+			const targetDirOfSchema = path.dirname(finalTargetPath);
+			const typeFilePath = path.join(targetDirOfSchema, typeFileName);
+			if (await this.workspace.exists(typeFilePath))
+				existingFiles.push(typeFilePath);
 		}
 
 		const envPath = path.join(targetDir, ".env");
