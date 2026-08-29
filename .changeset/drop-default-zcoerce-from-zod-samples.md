@@ -13,7 +13,7 @@ import * as z from "zod";
 
 export const env = arkenv({
   PORT: z.number().default(3000),
-  DATABASE_URL: z.string().url(),
+  DATABASE_URL: z.url(),
   DEBUG: z.boolean().default(false),
 });
 ```

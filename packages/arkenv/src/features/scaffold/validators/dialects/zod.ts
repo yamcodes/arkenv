@@ -65,10 +65,10 @@ export const zodDialect: Dialect = {
 		const defaultClientKey = `${clientPrefix}API_URL`;
 		return {
 			serverFields: [
-				`DATABASE_URL: z.string().url().default("postgres://localhost:5432/mydb"),`,
+				`DATABASE_URL: z.url().default("postgres://localhost:5432/mydb"),`,
 			],
 			clientFields: [
-				`${defaultClientKey}: z.string().url().default("https://api.example.com"),`,
+				`${defaultClientKey}: z.url().default("https://api.example.com"),`,
 			],
 			sharedFields: [
 				`NODE_ENV: z.enum(["development", "production", "test"]).default("development"),`,
@@ -83,10 +83,10 @@ export const zodDialect: Dialect = {
 	getDefaultCodegenFields(clientPrefix) {
 		return {
 			serverFields: [
-				`\t\tDATABASE_URL: z.string().url().default("postgres://localhost:5432/mydb"),`,
+				`\t\tDATABASE_URL: z.url().default("postgres://localhost:5432/mydb"),`,
 			],
 			clientFields: [
-				`\t\t${clientPrefix}API_URL: z.string().url().default("https://api.example.com"),`,
+				`\t\t${clientPrefix}API_URL: z.url().default("https://api.example.com"),`,
 			],
 			sharedFields: [
 				`\t\tNODE_ENV: z.enum(["development", "production", "test"]).default("development"),`,

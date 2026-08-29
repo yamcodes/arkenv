@@ -166,8 +166,8 @@ import arkenv from "@/.arkenv";
 import * as z from "zod";
 
 export const env = arkenv({
-  DATABASE_URL: z.string().url(),
-  NEXT_PUBLIC_API_URL: z.string().url().default("https://api.example.com"),
+  DATABASE_URL: z.url(),
+  NEXT_PUBLIC_API_URL: z.url().default("https://api.example.com"),
 });
 ```
 

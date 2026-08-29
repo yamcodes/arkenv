@@ -302,8 +302,8 @@
 
   export const env = arkenv(
     {
-      DATABASE_URL: z.string().url(),
-      NEXT_PUBLIC_API_URL: z.string().url(),
+      DATABASE_URL: z.url(),
+      NEXT_PUBLIC_API_URL: z.url(),
     },
     {
       runtimeEnv: {

@@ -165,7 +165,7 @@ import * as z from "zod";
 export const env = arkenv({
   PORT: z.number().default(3000),
   DATABASE_URL: z.string(),
-  VITE_API_URL: z.string().url(),
+  VITE_API_URL: z.url(),
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
 });
 ```

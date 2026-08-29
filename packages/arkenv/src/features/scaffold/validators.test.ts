@@ -204,7 +204,7 @@ describe("validators templates", () => {
 			const template = getSimpleTemplate(options);
 			expect(template).toContain('import arkenv from "@/.arkenv"');
 			expect(template).toContain('import { z } from "zod"');
-			expect(template).toContain("DATABASE_URL: z.string().url().default(");
+			expect(template).toContain("DATABASE_URL: z.url().default(");
 		});
 
 		it("returns nextjs template for valibot when validator is valibot", () => {
