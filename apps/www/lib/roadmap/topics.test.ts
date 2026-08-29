@@ -32,17 +32,13 @@ describe("displayTitle", () => {
 			"Hosting presets Phase 4",
 		);
 		expect(
-			displayTitle(
-				"(v1) Forward-port: hosting presets Phase 4 (#1450)",
-			),
+			displayTitle("(v1) Forward-port: hosting presets Phase 4 (#1450)"),
 		).toBe("Hosting presets Phase 4");
 		expect(displayTitle("Coercion (string→number)")).toBe(
 			"Coercion (string→number)",
 		);
 		expect(
-			displayTitle(
-				"RFC: arkenv init: interactive scaffold CLI for onboarding",
-			),
+			displayTitle("RFC: arkenv init: interactive scaffold CLI for onboarding"),
 		).toBe("arkenv init: interactive scaffold CLI for onboarding");
 	});
 });
