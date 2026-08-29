@@ -32,12 +32,12 @@ export function Heading<T extends Types = "h1">({
 			{...props}
 		>
 			<div
-				className="absolute top-1/2 -translate-y-1/2 hidden md:flex items-center justify-end pr-2 opacity-0 group-hover:opacity-100 w-7"
+				className="absolute top-1/2 -translate-y-1/2 hidden md:flex items-center justify-end pr-2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 w-7"
 				data-arkenv-heading-icon
 			>
 				<a
 					href={`#${props.id}`}
-					className="p-1 rounded-md text-fd-primary focus:outline-none opacity-100 hover:opacity-100 hover:text-fd-primary active:ring-2 active:ring-fd-primary"
+					className="p-1 rounded-md text-fd-primary focus:outline-none opacity-100 hover:opacity-100 hover:text-fd-primary"
 					aria-label="Link to section"
 					data-no-underline
 					data-arkenv-heading-link

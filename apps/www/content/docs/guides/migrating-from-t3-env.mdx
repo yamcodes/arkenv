@@ -5,7 +5,7 @@ description: Replace createEnv and runtimeEnv with a flat ArkEnv schema.
 
 T3 Env is a major inspiration for ArkEnv's Next.js security model. On
 ArkEnv you drop the manual `runtimeEnv` map and keep a flat schema.
-For a feature cheatsheet, see [Comparison](/docs/comparison).
+For a feature cheatsheet, see [Why ArkEnv?](/docs/why-arkenv).
 
 ## What changes
 
@@ -20,7 +20,7 @@ The table below is the mapping you need while you edit files.
 
 A flat layout still infers types and throws if client code reads a
 server key. Use the
-[two-module recipe](/docs/validating-your-environment/client-vs-server#advanced-two-module-recipe)
+[two-module recipe](/docs/core-concepts/client-vs-server#advanced-two-module-recipe)
 when secret **names** must stay out of the client graph.
 
 ## Next.js migration steps
@@ -125,18 +125,18 @@ Work through these steps on an existing Next.js app.
     If you used two `createEnv` calls in T3 Env for name/type isolation,
     mirror that with two ArkEnv modules and two imports — not a CLI
     `--strict` flag. See
-    [Client vs. server](/docs/validating-your-environment/client-vs-server#advanced-two-module-recipe).
+    [Client vs. server](/docs/core-concepts/client-vs-server#advanced-two-module-recipe).
   </Step>
 </Steps>
 
 ## Next steps
 
 <Cards>
-  <Card href="/docs/guides/frameworks/nextjs" title="Next.js guide" description="@arkenv/nextjs configuration and codegen." />
+  <Card href="/docs/frameworks/nextjs" title="Next.js guide" description="@arkenv/nextjs configuration and codegen." />
 
-  <Card href="/docs/comparison" title="Comparison" description="ArkEnv versus T3 Env, znv, Envalid, and a DIY schema." />
+  <Card href="/docs/why-arkenv" title="Why ArkEnv?" description="ArkEnv versus Varlock, T3 Env, znv, Envalid, and a DIY schema." />
 
-  <Card href="/docs/guides/validators/zod" title="Using ArkEnv with Zod" description="Zod 4.2+, Mini, and v3 on @arkenv/standard." />
+  <Card href="/docs/validators/zod" title="Zod" description="Zod 4.2+, Mini, and v3 on @arkenv/standard." />
 
-  <Card href="/docs/validating-your-environment/hosting-presets" title="Hosting presets" description="Inject hosting provider system variables into your schema." />
+  <Card href="/docs/core-concepts/hosting-presets" title="Hosting presets" description="Inject hosting provider system variables into your schema." />
 </Cards>

@@ -23,7 +23,7 @@ describe("BringYourOwnValidatorView", () => {
 		);
 		expect(
 			screen.getByRole("link", { name: "Standard Schema" }),
-		).toHaveAttribute("href", "/docs/core-concepts/standard-schema");
+		).toHaveAttribute("href", "/docs/validators");
 		expect(screen.getByRole("button", { name: "Copy" })).toBeInTheDocument();
 		expect(document.querySelector(".home-aurora__mvp-shiki")).toBeTruthy();
 	});

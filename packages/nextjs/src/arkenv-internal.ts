@@ -64,7 +64,7 @@ export function arkenvInternal(
 		if (process.env.NODE_ENV === "development" && !hasWarnedLegacy) {
 			hasWarnedLegacy = true;
 			logBuildWarning(
-				"Deprecated: The nested layout structure (specifying 'server', 'client', or 'shared' keys in arkenv) is deprecated and will be removed in the next major version. Please migrate to the flat layout. See guide: https://arkenv.js.org/docs/guides/frameworks/nextjs",
+				"Deprecated: The nested layout structure (specifying 'server', 'client', or 'shared' keys in arkenv) is deprecated and will be removed in the next major version. Please migrate to the flat layout. See guide: https://arkenv.js.org/docs/frameworks/nextjs",
 			);
 		}
 		// Old nested schema behavior (backward compatible)

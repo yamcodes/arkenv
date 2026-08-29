@@ -70,14 +70,14 @@ describe("/docs/[package]/llms.txt route", () => {
 				data: { title: "init" },
 			},
 			{
-				slugs: ["guides", "frameworks", "bun"],
-				url: "/docs/guides/frameworks/bun",
+				slugs: ["frameworks", "bun"],
+				url: "/docs/frameworks/bun",
 				data: { title: "Bun" },
 			},
 			{
-				slugs: ["core-concepts", "coercion"],
-				url: "/docs/core-concepts/coercion",
-				data: { title: "Coercion" },
+				slugs: ["core-concepts", "coercion-and-parsing"],
+				url: "/docs/core-concepts/coercion-and-parsing",
+				data: { title: "Coercion and parsing" },
 			},
 		] as any);
 
@@ -86,7 +86,7 @@ describe("/docs/[package]/llms.txt route", () => {
 		expect(params).toEqual([
 			{ package: "getting-started" },
 			{ package: "reference" },
-			{ package: "guides" },
+			{ package: "frameworks" },
 			{ package: "core-concepts" },
 		]);
 

@@ -17,7 +17,7 @@ metadata:
 
 ArkEnv docs sound like [turborepo.dev](https://turborepo.dev/docs) plus
 the pages already in that register: getting-started, Introduction,
-Compatibility, Community, and a framework guide (for example Vite).
+Installation, Community, and a framework guide (for example Vite).
 `docs-writer` is Gemini CLI boilerplate for mechanics. This skill is the
 register. `stop-slop` cuts AI tells after the meat is in; it must not
 strip why.
@@ -47,7 +47,7 @@ is API reference.
 Pick a default path. Fallbacks are "instead," not "or also." Put that
 fork in a fumadocs `<Callout>` (usually `type="info"` with a title),
 not a body sentence. Match
-`apps/www/content/docs/validating-your-environment/structuring-your-schema.mdx`
+`apps/www/content/docs/core-concepts/defining-your-schema.mdx`
 (`title="Already on ArkType?"`). Use `warn` / `error` for risk, not
 for navigation. Do not use GitHub `> [!NOTE]` alerts on the docs site.
 
@@ -78,7 +78,7 @@ Commands the reader runs (`init`, `npm install`, `npx …`) use
 fumadocs `package-install` fences, not `bash`. Author **npm** form only:
 `npx …` or `npm install …`. Never `npm i`, `pnpm add`, `yarn add`, or
 `bun add` in the source. The site tabs the other managers. See
-`apps/www/content/docs/guides/frameworks/nextjs.mdx` and
+`apps/www/content/docs/frameworks/nextjs.mdx` and
 `apps/www/lib/package-install-fences.test.ts`.
 
 Leave `bash` for non-install shell (git, curl, file copies). Leave

@@ -5,7 +5,7 @@ test.describe("Docs table of contents", () => {
 		page,
 	}) => {
 		await page.setViewportSize({ width: 1400, height: 800 });
-		await page.goto("/docs/validating-your-environment/error-reporting");
+		await page.goto("/docs/core-concepts/error-reporting");
 		await page.waitForLoadState("networkidle");
 
 		const toc = page.locator("#nd-toc");
@@ -77,7 +77,7 @@ test.describe("Docs table of contents", () => {
 		page,
 	}) => {
 		await page.setViewportSize({ width: 1400, height: 800 });
-		await page.goto("/docs/validating-your-environment/error-reporting");
+		await page.goto("/docs/core-concepts/error-reporting");
 		await page.waitForLoadState("networkidle");
 
 		const footer = page.locator(".site-footer-bleed");

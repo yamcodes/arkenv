@@ -1,11 +1,11 @@
 ---
-title: Coercion
-description: Automatically parse string environment variables into numbers, booleans, and arrays.
+title: Coercion and parsing
+description: Turn string environment variables into numbers, booleans, arrays, and objects.
 ---
 
-Environment variables arrive as strings. Coercion is ArkEnv's built-in
-step that converts those strings toward the types your schema declares,
-so `PORT` is a `number` and `DEBUG` is a `boolean` in application code.
+Environment variables arrive as strings. ArkEnv coerces those strings
+toward the types your schema declares so application code can treat
+`PORT` as a `number` and `DEBUG` as a `boolean`.
 
 The same `coerce` option and pre-coercion pipeline apply to
 [`@arkenv/core`](/docs/reference/core) and
@@ -70,6 +70,125 @@ Coercion is **on** by default (`coerce: true`). Zod 4.2+ uses
   </Tab>
 </Tabs>
 
+## Numbers
+
+Any field typed as `number` or a numeric subtype (including
+[`number.port`](/docs/reference/keywords)) is parsed from the string
+form:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  {
+    PORT: "number.port",
+    RETRY_COUNT: "number.integer = 3",
+    AGE: "0 <= number.integer <= 120",
+  },
+  {
+    env: {
+      PORT: "8080",
+      RETRY_COUNT: "5",
+      AGE: "30",
+    },
+  },
+);
+
+env.PORT;
+// ^?
+```
+
+## Booleans
+
+`boolean` accepts the lowercase strings `"true"` and `"false"` only.
+Values like `"0"`, `"1"`, `"True"`, `"YES"`, or `"on"` are **not**
+coerced and fail validation.
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  { DEBUG: "boolean = false" },
+  { env: { DEBUG: "true" } },
+);
+
+env.DEBUG;
+// ^?
+```
+
+Need a wider truthy set? Normalize with a [transform](#transforms)
+(ArkType morph or Zod/Valibot `.transform`), or keep the field as
+`string` and map it in application code.
+
+## Arrays
+
+By default ArkEnv splits on commas and trims each entry:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  {
+    TAGS: "string[]",
+    PORTS: "number[]",
+  },
+  {
+    env: {
+      TAGS: "web, app, api",
+      PORTS: "3000, 8080",
+    },
+  },
+);
+
+env.TAGS;
+// ^?
+env.PORTS;
+// ^?
+```
+
+Switch to JSON arrays with `arrayFormat: "json"`:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  { TAGS: "string[]" },
+  {
+    arrayFormat: "json",
+    env: { TAGS: '["web", "app"]' },
+  },
+);
+
+env.TAGS;
+// ^?
+```
+
+## Objects
+
+JSON strings map onto nested object schemas. Nested fields are coerced
+too:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  {
+    DATABASE: {
+      HOST: "string",
+      PORT: "number",
+    },
+  },
+  {
+    env: {
+      DATABASE: '{"HOST": "localhost", "PORT": "5432"}',
+    },
+  },
+);
+
+env.DATABASE;
+// ^?
+```
+
 ## Pre-coercion model
 
 ArkEnv does not wrap your schema in a coercion pipe. It uses a shared
@@ -83,19 +202,8 @@ pre-coercion pipeline for both engines:
 3. **Copy** the input record and coerce only those paths on the copy
 4. **Validate** the copy with the original, unmodified schema
 
-`process.env` is never mutated. Schema
-[transforms](/docs/core-concepts/transformation) and refinements still
+`process.env` is never mutated. Schema transforms and refinements still
 see the coerced values.
-
-## Arrays and objects
-
-| Shape   | Default parsing                                                |
-| ------- | -------------------------------------------------------------- |
-| Arrays  | Comma-separated (`"a, b"`), or JSON when `arrayFormat: "json"` |
-| Objects | JSON strings; nested fields are coerced recursively            |
-
-Cookbook examples:
-[Coercion and parsing](/docs/validating-your-environment/coercion-and-parsing).
 
 <Callout type="info" title="Standard Schema ≠ Standard JSON Schema">
   Automatic coercion with `@arkenv/standard` needs [Standard JSON Schema
@@ -105,9 +213,96 @@ Cookbook examples:
   use first-class subpaths (`@arkenv/standard/valibot`,
   `@arkenv/standard/zod-mini`). Zod v3 typically uses `zod-to-json-schema`
   through the [`toJsonSchema`](#valibot-tojsonschema) escape hatch. See
-  [Valibot](/docs/guides/validators/valibot) and
-  [Zod](/docs/guides/validators/zod).
+  [Valibot](/docs/validators/valibot) and
+  [Zod](/docs/validators/zod).
 </Callout>
+
+## Transforms
+
+A transform reshapes a value after it is a valid input: trim a string,
+clamp a number, map an enum. Schema libraries call these transforms,
+morphs, or pipes. ArkEnv runs them as part of parsing.
+
+`PORT` still uses built-in coercion, not a custom pipe:
+
+<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
+  <Tab value="ArkType (@arkenv/core)">
+    ```ts title="./env.ts" twoslash
+    import arkenv, { type } from "@arkenv/core";
+
+    export const env = arkenv(
+    	{
+    		BUILD_ID: type("string").pipe((value) => value.trim().toUpperCase()),
+    		PORT: "number.port = 3000",
+    	},
+    	{ env: { BUILD_ID: "  abc  " } },
+    );
+
+    env.BUILD_ID; // "ABC"
+    ```
+  </Tab>
+
+  <Tab value="Zod (@arkenv/standard)">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv(
+    	{
+    		BUILD_ID: z
+    			.string()
+    			.transform((value) => value.trim().toUpperCase()),
+    		PORT: z.int().min(0).max(65535).default(3000),
+    	},
+    	{ env: { BUILD_ID: "  abc  " } },
+    );
+
+    env.BUILD_ID; // "ABC"
+    ```
+  </Tab>
+</Tabs>
+
+Coercion can feed a transformation. The string `"3"` becomes a number
+before your pipe runs:
+
+<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
+  <Tab value="ArkType (@arkenv/core)">
+    ```ts title="./env.ts" twoslash
+    import arkenv, { type } from "@arkenv/core";
+
+    export const env = arkenv(
+    	{
+    		RETRY_COUNT: type("number").pipe((n) => Math.max(0, n)),
+    	},
+    	{ env: { RETRY_COUNT: "3" } },
+    );
+
+    env.RETRY_COUNT; // 3
+    ```
+  </Tab>
+
+  <Tab value="Zod (@arkenv/standard)">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv(
+    	{
+    		RETRY_COUNT: z.number().transform((n) => Math.max(0, n)),
+    	},
+    	{ env: { RETRY_COUNT: "3" } },
+    );
+
+    env.RETRY_COUNT; // 3
+    ```
+  </Tab>
+</Tabs>
+
+| Need                                      | Prefer                                         |
+| ----------------------------------------- | ---------------------------------------------- |
+| `"3000"` → `number`, `"true"` → `boolean` | Coercion (on by default)                       |
+| Trim, normalize, clamp, map enums         | Transform on the field schema                  |
+| Multi-step pipelines                      | ArkType `.pipe` / Zod `.pipe` / Valibot `pipe` |
 
 ## Valibot (`toJsonSchema`)
 
@@ -123,7 +318,7 @@ export const env = arkenv({ PORT: v.number(), DEBUG: v.boolean() });
 
 Install `@valibot/to-json-schema` yourself; it is an optional peer of
 `@arkenv/standard`. Recipe:
-[Valibot](/docs/guides/validators/valibot).
+[Valibot](/docs/validators/valibot).
 
 The optional `toJsonSchema` callback on root `@arkenv/standard` remains
 the escape hatch for custom converters. ArkEnv calls it when it can't
@@ -151,9 +346,7 @@ export const env = arkenv(
   type. A bare `{ toJsonSchema }` function reference uses Valibot's
   default `typeMode: "ignore"`.
 - Valibot's converter does not accept Standard Schema, so assert
-  `as v.GenericSchema` at the call. Valibot-only maps and Zod + Valibot
-  maps use the same wrapper.
-- Recipe: [Valibot](/docs/guides/validators/valibot).
+  `as v.GenericSchema` at the call.
 
 ### Zod v3
 
@@ -178,7 +371,7 @@ export const env = arkenv(
 );
 ```
 
-Recipe: [Zod](/docs/guides/validators/zod#zod-v3).
+Recipe: [Zod](/docs/validators/zod#zod-v3).
 
 ### Mixing with Zod Mini
 
@@ -187,8 +380,7 @@ Prefer `@arkenv/standard/zod-mini` for Mini-only maps. Mini has no
 Valibot and Mini on root `@arkenv/standard`, switch on
 `schema["~standard"].vendor` and return `undefined` for anything else.
 Mini reports vendor `"zod"`. Classic Zod keys never reach the callback
-at runtime. Assert at each host-converter call: `vendor` does not
-narrow Mini vs Valibot.
+at runtime.
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/standard";
@@ -257,17 +449,15 @@ the schema library to parse it.
 </Tabs>
 
 With `coerce: false`, a numeric schema rejects `"3000"` unless you
-[transform](/docs/core-concepts/transformation) the string yourself (or
-use a helper such as `z.coerce.number()`).
+transform the string yourself (or use a helper such as
+`z.coerce.number()`).
 
-## Related
+## Next steps
 
 <Cards>
-  <Card href="/docs/core-concepts/transformation" title="Transformation" description="Reshape values after coercion with morphs or Zod transforms." />
+  <Card href="/docs/core-concepts/defining-your-schema" title="Defining your schema" description="Where env.ts lives, field types, and fail-fast validation." />
 
   <Card href="/docs/reference/options#coerce" title="options.coerce" description="Toggle ArkEnv's built-in string coercion." />
 
-  <Card href="/docs/guides/validators" title="Validators" description="ArkType, Zod, and Valibot cookbooks." />
-
-  <Card href="/docs/core-concepts/validation" title="Validation" description="Boot and build-time checks with either engine." />
+  <Card href="/docs/validators" title="Validators" description="ArkType, Zod, and Valibot cookbooks." />
 </Cards>

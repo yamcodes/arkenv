@@ -1,27 +1,14 @@
 ---
 title: init
-description: Scaffold ArkEnv schemas and hosting presets with the CLI.
----
+description: CLI flags and output for arkenv init.---
 
 `arkenv` on npm is the CLI. It scaffolds schemas and wires framework
-config. Validation lives in `@arkenv/core` or `@arkenv/standard`.
+config. Validation lives in `@arkenv/core` or `@arkenv/standard`. For
+the walkthrough, see
+[Installation](/docs/getting-started/installation).
 
 ```package-install
 npx arkenv@latest init
-```
-
-```package-install
-npx arkenv@latest init my-app --example with-vite-react -H vercel
-```
-
-```package-install
-npx arkenv@latest init --agent --flat
-```
-
-Install locally when you want a project binary:
-
-```package-install
-npm install -D arkenv
 ```
 
 ## Usage
@@ -43,8 +30,9 @@ These flags are specific to `init`.
 ### `--force` / `-f`
 
 Bypass dirty-git and other safety checks, then force scaffolding. The
-CLI refuses a dirty working tree unless you pass this flag. Commit or
-stash first if you don't want to overwrite generated files.
+CLI refuses a dirty working tree so a run cannot silently overwrite
+uncommitted work. Commit or stash first, or pass `--force` when you
+accept that risk (for example in CI).
 
 ### `--flat`
 
@@ -60,7 +48,7 @@ Pre-populate provider system variables. Values: `none`, `vercel`,
 `netlify`, `cloudflare`, `railway`, `render`, `fly`. The CLI also accepts
 `--host-preset` and `-H` as aliases.
 
-See [Hosting presets](/docs/validating-your-environment/hosting-presets).
+See [Hosting presets](/docs/core-concepts/hosting-presets).
 To apply or remove presets later, use [`preset`](/docs/reference/preset).
 
 ### `--agent`
@@ -130,7 +118,7 @@ Importing `arkenv` as a library throws and points you at `@arkenv/core`.
 ## Next steps
 
 <Cards>
-  <Card href="/docs/getting-started/add-to-existing-repository" title="Add to an existing repository" description="Adopt ArkEnv incrementally in an existing project." />
+  <Card href="/docs/getting-started/installation" title="Installation" description="CLI walkthrough and manual install." />
 
   <Card href="/docs/reference/preset" title="preset" description="CLI reference for applying and removing provider presets." />
 

@@ -95,7 +95,7 @@ TypeScript keeps full inference on every call site.
 ## Extending schemas in frameworks
 
 Compose two modules with `extends` when you need the optional
-[two-module recipe](/docs/validating-your-environment/client-vs-server#advanced-two-module-recipe):
+[two-module recipe](/docs/core-concepts/client-vs-server#advanced-two-module-recipe):
 
 ```ts title="./env/server.ts"
 import "server-only";
@@ -110,7 +110,7 @@ export const env = arkenv(
 
 `extends` merges the client env into the server env object. On Nuxt, use
 `@arkenv/nuxt` for the client module and never import the server module
-from client code.
+from client code. See [client vs. server](/docs/core-concepts/client-vs-server#advanced-two-module-recipe).
 
 ## Monorepo packages
 
@@ -159,7 +159,7 @@ Each app still owns its `env` export. Shared packages export schemas, not a proc
 ## Next steps
 
 <Cards>
-  <Card href="/docs/validating-your-environment/framework-integration" title="Integrations" description="Connect ArkEnv to Next.js, Nuxt, Vite, Bun, or coding agents." />
+  <Card href="/docs/frameworks" title="Frameworks" description="Connect ArkEnv to Next.js, Nuxt, Vite, Bun, or coding agents." />
 
-  <Card href="/docs/validating-your-environment/hosting-presets" title="Hosting presets" description="Pre-populate provider environment variables for Vercel, Netlify, and Cloudflare." />
+  <Card href="/docs/core-concepts/hosting-presets" title="Hosting presets" description="Pre-populate provider environment variables for Vercel, Netlify, and Cloudflare." />
 </Cards>

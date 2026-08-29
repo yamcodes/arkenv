@@ -2,10 +2,11 @@
 	"title": "Core concepts",
 	"pages": [
 		"index",
-		"validation",
-		"transformation",
-		"coercion",
-		"typesafety",
-		"standard-schema"
+		"defining-your-schema",
+		"client-vs-server",
+		"coercion-and-parsing",
+		"error-reporting",
+		"reusing-schemas",
+		"hosting-presets"
 	]
 }

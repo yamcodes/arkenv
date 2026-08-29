@@ -1,5 +1,5 @@
 ---
-title: Using ArkEnv with Zod
+title: Zod
 description: Validate environment variables with your existing Zod schemas.
 ---
 
@@ -12,7 +12,7 @@ import. `@arkenv/standard/valibot` and `@arkenv/standard/zod-mini` exist
 only to bind JSON Schema converters those libraries keep off the value.
 
 For an overview of engine options, see
-[Choosing an engine](/docs/core-concepts/standard-schema).
+[Validators](/docs/validators).
 
 ## Installation
 
@@ -75,7 +75,7 @@ export const env = arkenv({
 
 TypeScript must use `moduleResolution: "bundler" | "node16" | "nodenext"`.
 The root `toJsonSchema` callback remains available for mixed maps; see
-[Coercion](/docs/core-concepts/coercion#mixing-with-zod-mini).
+[Coercion](/docs/core-concepts/coercion-and-parsing#mixing-with-zod-mini).
 
 ## Zod v3
 
@@ -111,7 +111,7 @@ the `toJsonSchema` callback.
 <Cards>
   <Card href="/docs/reference/standard" title="@arkenv/standard reference" description="Standard Schema engine package reference and options." />
 
-  <Card href="/docs/core-concepts/coercion" title="Coercion" description="Learn how ArkEnv converts incoming strings into typed outputs." />
+  <Card href="/docs/core-concepts/coercion-and-parsing" title="Coercion" description="Learn how ArkEnv converts incoming strings into typed outputs." />
 
-  <Card href="/docs/guides/frameworks" title="Framework guides" description="Integrate your Zod schema with Next.js, Nuxt, Vite, or Bun." />
+  <Card href="/docs/frameworks" title="Framework guides" description="Integrate your Zod schema with Next.js, Nuxt, Vite, or Bun." />
 </Cards>

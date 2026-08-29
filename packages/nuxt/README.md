@@ -8,7 +8,7 @@ ArkEnv integration for Nuxt. Provides a typesafe environment variable parser and
 npm install @arkenv/nuxt @arkenv/core arktype
 ```
 
-For Zod, Valibot, or other Standard Schema validators **without** ArkType, install `@arkenv/standard` instead of `@arkenv/core`/`arktype`, register `@arkenv/nuxt/standard/module`, and import from `@arkenv/nuxt/standard`. See the [Standard Schema docs](https://arkenv.js.org/docs/core-concepts/standard-schema).
+For Zod, Valibot, or other Standard Schema validators **without** ArkType, install `@arkenv/standard` instead of `@arkenv/core`/`arktype`, register `@arkenv/nuxt/standard/module`, and import from `@arkenv/nuxt/standard`. See the [Standard Schema docs](https://arkenv.js.org/docs/validators).
 
 ## Setup
 

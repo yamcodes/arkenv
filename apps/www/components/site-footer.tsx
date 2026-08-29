@@ -56,14 +56,14 @@ export function SiteFooter({
 								target="_blank"
 								rel="noopener noreferrer"
 							>
-								Releases
+								Changelog
 							</a>
 						</li>
 						<li>
-							<a href="/docs/comparison">Comparison</a>
+							<a href="/docs/why-arkenv">Why ArkEnv?</a>
 						</li>
 						<li>
-							<a href="/docs/faq">FAQ</a>
+							<a href="/docs/community">Community</a>
 						</li>
 					</ul>
 				</nav>
@@ -72,16 +72,16 @@ export function SiteFooter({
 					<h3 id="footer-validators">Validators</h3>
 					<ul>
 						<li>
-							<a href="/docs/guides/validators/arktype">ArkType</a>
+							<a href="/docs/validators/arktype">ArkType</a>
 						</li>
 						<li>
-							<a href="/docs/guides/validators/zod">Zod</a>
+							<a href="/docs/validators/zod">Zod</a>
 						</li>
 						<li>
-							<a href="/docs/guides/validators/valibot">Valibot</a>
+							<a href="/docs/validators/valibot">Valibot</a>
 						</li>
 						<li>
-							<a href="/docs/core-concepts/standard-schema">Standard Schema</a>
+							<a href="/docs/validators">Standard Schema</a>
 						</li>
 					</ul>
 				</nav>
@@ -90,13 +90,13 @@ export function SiteFooter({
 					<h3 id="footer-frameworks">Frameworks</h3>
 					<ul>
 						<li>
-							<a href="/docs/guides/frameworks/nextjs">Next.js</a>
+							<a href="/docs/frameworks/nextjs">Next.js</a>
 						</li>
 						<li>
-							<a href="/docs/guides/frameworks/vite">Vite</a>
+							<a href="/docs/frameworks/vite">Vite</a>
 						</li>
 						<li>
-							<a href="/docs/guides/frameworks/nuxt">Nuxt</a>
+							<a href="/docs/frameworks/nuxt">Nuxt</a>
 						</li>
 						<li>
 							<a href="/docs/getting-started">Vanilla TS</a>

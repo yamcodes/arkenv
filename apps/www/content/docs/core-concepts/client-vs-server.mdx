@@ -145,6 +145,35 @@ export const env = arkenv(
 Register `@arkenv/nuxt/module` and point the module schema path at the
 client (or flat) entry your app actually loads on both sides.
 
+## Next.js runtime protection
+
+`@arkenv/nextjs` uses package export conditions plus a runtime proxy:
+
+| Export condition | Next.js context                 | Accessible keys        |
+| ---------------- | ------------------------------- | ---------------------- |
+| `react-server`   | Server Components and routes    | All schema keys        |
+| `default`        | Client Components (SSR/browser) | Public and shared keys |
+
+Reading a server-only key from client code throws. The two-module recipe
+can also use `import "server-only"` so the server schema cannot enter the
+client graph at compile time.
+
+Public keys (`NEXT_PUBLIC_*`, `NUXT_PUBLIC_*`, and the other prefixes)
+are meant to be readable everywhere, including on the server. The proxy
+only blocks the reverse: a **server-only** key on the client.
+
+Next.js `withArkEnv` generates the client `runtimeEnv` mapping in
+`env.gen.ts`. You do not maintain that map by hand unless you pass
+`{ codegen: false }` — then you own `runtimeEnv` and must keep it in
+sync. Details: [`@arkenv/nextjs` reference](/docs/reference/nextjs).
+
+Why is only `NODE_ENV` shared besides `NEXT_PUBLIC_*`? Next.js inlines
+`process.env.NODE_ENV` on both sides. Other non-prefixed keys are
+stripped from the client bundle. Keep non-public keys off
+`exposeToClient` or the server and client can disagree after hydration.
+See the
+[Next.js env docs](https://nextjs.org/docs/app/guides/environment-variables).
+
 ## Dead-code elimination and constant folding
 
 Bundlers (like Next.js, Vite, and Bun) replace direct identifier expressions such as `process.env.NEXT_PUBLIC_FEATURE_FLAG` or `import.meta.env.VITE_FEATURE_FLAG` with literal strings during compilation. If a condition evaluates to `if (false)` or `if ("")`, minifiers drop the dead branch and omit modules imported inside it.
@@ -168,7 +197,9 @@ Because `env` is an exported object reference, minifiers cannot guarantee that p
 ## Next steps
 
 <Cards>
-  <Card href="/docs/validating-your-environment/coercion-and-parsing" title="Coercion and parsing" description="Handle numbers, booleans, arrays, and objects from environment strings." />
+  <Card href="/docs/frameworks" title="Framework guides" description="Next.js, Nuxt, Vite, and Bun recipes." />
 
-  <Card href="/docs/validating-your-environment/error-reporting" title="Error reporting" description="Understand fail-fast boot errors and structured failure output." />
+  <Card href="/docs/core-concepts/coercion-and-parsing" title="Coercion and parsing" description="Numbers, booleans, arrays, objects, and transforms." />
+
+  <Card href="/docs/core-concepts/error-reporting" title="Error reporting" description="Fail-fast boot errors and structured failure output." />
 </Cards>

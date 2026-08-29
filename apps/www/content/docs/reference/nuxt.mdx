@@ -1,10 +1,10 @@
 ---
 title: "@arkenv/nuxt"
-description: Nuxt module and environment entries.
+description: Subpath exports and module options for the Nuxt package.
 ---
 
-`@arkenv/nuxt` registers a Nuxt module and provides `arkenv()` helpers
-that respect `NUXT_PUBLIC_` boundaries.
+API reference for `@arkenv/nuxt`. Setup recipes:
+[Nuxt guide](/docs/frameworks/nuxt).
 
 ## Installation
 
@@ -12,10 +12,10 @@ that respect `NUXT_PUBLIC_` boundaries.
 npm install @arkenv/core @arkenv/nuxt arktype
 ```
 
-Or with Standard Schema:
+Or if you use Zod, Valibot, or another Standard Schema validator:
 
 ```package-install
-npm install @arkenv/standard @arkenv/nuxt zod
+npm install @arkenv/standard @arkenv/nuxt
 ```
 
 ## Subpaths
@@ -62,13 +62,11 @@ export const env = arkenv({
 ```
 
 For an optional client/server module split, see
-[Client vs. server](/docs/validating-your-environment/client-vs-server#advanced-two-module-recipe).
+[Client vs. server](/docs/core-concepts/client-vs-server#advanced-two-module-recipe).
 Never import a server env module from client or Vue code.
 
 ## Next steps
 
 <Cards>
-  <Card href="/docs/guides/frameworks/nuxt" title="Nuxt framework guide" description="Step-by-step Nuxt module recipes and runtime config." />
-
-  <Card href="/docs/reference/core" title="@arkenv/core" description="Core runtime package exports and utilities." />
+  <Card href="/docs/frameworks/nuxt" title="Nuxt framework guide" description="Quickstart, flat schema, and runtimeConfig hydration." />
 </Cards>

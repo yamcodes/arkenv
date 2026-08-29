@@ -8,7 +8,7 @@ Transform mode inlines public `VITE_` keys into the client bundle and
 keeps server secrets out.
 
 For high-level architectural trade-offs, see
-[Integrations](/docs/validating-your-environment/framework-integration).
+[Frameworks](/docs/frameworks).
 
 ## Quickstart
 
@@ -110,13 +110,18 @@ export default defineConfig(({ mode }) => {
 });
 ```
 
-Learn more in [Reusing schemas](/docs/validating-your-environment/reusing-schemas).
+Learn more in [Reusing schemas](/docs/core-concepts/reusing-schemas).
 
 ## Client access
 
-Import the validated `env` object from your schema module. Prefer that over reading
-`import.meta.env` for schema keys so server secrets still validate at boot. Types
-and options: [`@arkenv/vite-plugin`](/docs/reference/vite-plugin).
+Import the validated `env` object from your schema module.
+
+:::warning[Do not read `import.meta.env` directly]
+Reading `import.meta.env` skips ArkEnv. Import `{ env }` so public keys stay
+typed and coerced and server secrets stay out of the client bundle.
+:::
+
+Types and options: [`@arkenv/vite-plugin`](/docs/reference/vite-plugin).
 
 ## SSR and dual-graph execution
 
@@ -130,7 +135,7 @@ Vite maintains two distinct module graphs when building and serving full-stack o
 <Cards>
   <Card href="/docs/reference/vite-plugin" title="@arkenv/vite-plugin reference" description="Transform modes, configuration options, and plugin exports." />
 
-  <Card href="/docs/validating-your-environment/hosting-presets" title="Hosting presets" description="Inject hosting provider system variables into your Vite schema." />
+  <Card href="/docs/core-concepts/hosting-presets" title="Hosting presets" description="Inject hosting provider system variables into your Vite schema." />
 
-  <Card href="/docs/validating-your-environment/client-vs-server" title="Client vs. server" description="Understand how ArkEnv protects server keys in client bundles." />
+  <Card href="/docs/core-concepts/client-vs-server" title="Client vs. server" description="Understand how ArkEnv protects server keys in client bundles." />
 </Cards>

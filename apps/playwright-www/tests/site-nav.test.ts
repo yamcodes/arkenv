@@ -120,7 +120,7 @@ test.describe("Site Nav", () => {
 		page,
 	}) => {
 		await page.setViewportSize({ width: 1400, height: 900 });
-		await page.goto("/docs/validating-your-environment/error-reporting");
+		await page.goto("/docs/core-concepts/error-reporting");
 		await page.locator(".site-nav").waitFor();
 
 		await page.setViewportSize({ width: 529, height: 900 });

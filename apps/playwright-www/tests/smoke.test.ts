@@ -21,18 +21,17 @@ test.describe("Smoke Tests", () => {
 	const topRoutes = [
 		"/",
 		"/docs",
-		"/docs/comparison",
+		"/docs/why-arkenv",
 		"/docs/getting-started",
 		"/docs/getting-started/installation",
-		"/docs/validating-your-environment",
-		"/docs/reference",
 		"/docs/core-concepts",
+		"/docs/core-concepts/defining-your-schema",
+		"/docs/reference",
 		"/docs/guides",
-		"/docs/guides/frameworks",
-		"/docs/guides/frameworks/nextjs",
-		"/docs/faq",
+		"/docs/frameworks",
+		"/docs/frameworks/nextjs",
+		"/docs/validators",
 		"/docs/community",
-		"/docs/compatibility",
 	];
 
 	for (const url of topRoutes) {

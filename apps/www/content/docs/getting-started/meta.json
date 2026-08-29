@@ -1,11 +1,5 @@
 {
 	"title": "Getting started",
 	"defaultOpen": true,
-	"pages": [
-		"index",
-		"installation",
-		"examples",
-		"add-to-existing-repository",
-		"editor-integration"
-	]
+	"pages": ["index", "installation", "examples", "editor-integration"]
 }

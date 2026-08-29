@@ -1,10 +1,11 @@
 ---
 title: "@arkenv/nextjs"
-description: "Next.js integration: withArkEnv and .arkenv codegen."
+description: Next.js integration framework for ArkEnv.
 ---
 
 `@arkenv/nextjs` adds Next.js-aware `arkenv()` entries, build-time
-validation, and `.arkenv` codegen.
+validation, and `.arkenv` codegen. Setup recipes:
+[Next.js guide](/docs/frameworks/nextjs).
 
 ## Installation
 
@@ -12,14 +13,11 @@ validation, and `.arkenv` codegen.
 npm install @arkenv/core @arkenv/nextjs arktype
 ```
 
-Or with Standard Schema:
+Or if you use Zod, Valibot, or another Standard Schema validator:
 
 ```package-install
 npm install @arkenv/standard @arkenv/nextjs zod
 ```
-
-Peers: `next`, `react`. `@arkenv/core` / `@arkenv/standard` / `arktype`
-are optional depending on dialect.
 
 ## Subpaths
 
@@ -30,12 +28,7 @@ are optional depending on dialect.
 | `./standard`        | Standard Schema unified entry                                               |
 | `./standard/config` | Standard `withArkEnv` (forces Standard codegen)                             |
 
-## Config plugin
-
-Wrap your Next.js config with `withArkEnv`. By default this writes
-`.arkenv/env.gen.ts` and validates the schema during config/build. Import
-the factory as `@/.arkenv`. Gitignore `.arkenv/`; regenerate by running Next
-or `arkenv init`.
+## `withArkEnv` options
 
 ```ts title="./next.config.ts"
 import type { NextConfig } from "next";
@@ -94,9 +87,6 @@ Skip generation during CLI scaffolds with
 
 ### Programmatic codegen
 
-Call `runCodegen` from custom tooling. Apps wire generation through
-`withArkEnv`.
-
 ```ts
 import { runCodegen } from "@arkenv/nextjs/config";
 
@@ -105,7 +95,7 @@ await runCodegen(schemaPath, outputPath);
 
 ### Standard Schema codegen
 
-Import `withArkEnv` from the Standard config entry to force
+Import `withArkEnv` from `@arkenv/nextjs/standard/config` to force
 Standard Schema-compatible generated imports.
 
 ```ts title="./next.config.ts"
@@ -120,14 +110,10 @@ Public keys use the `NEXT_PUBLIC_` prefix. One schema file plus a runtime
 Proxy blocks server-key reads on the client.
 
 For name/type isolation beyond values, see the
-[two-module recipe](/docs/validating-your-environment/client-vs-server#advanced-two-module-recipe).
+[two-module recipe](/docs/core-concepts/client-vs-server#advanced-two-module-recipe).
 
 ## Next steps
 
 <Cards>
-  <Card href="/docs/guides/frameworks/nextjs" title="Next.js framework guide" description="Step-by-step Next.js recipes and configuration." />
-
-  <Card href="/docs/validating-your-environment/hosting-presets" title="Hosting presets" description="Pre-populate provider environment variables." />
-
-  <Card href="/docs/reference/preset" title="preset" description="CLI reference for managing hosting presets." />
+  <Card href="/docs/frameworks/nextjs" title="Next.js framework guide" description="Quickstart, flat schema, and reading env in application code." />
 </Cards>

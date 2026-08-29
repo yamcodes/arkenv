@@ -100,26 +100,29 @@ Everything works like our manual solution, but the parsing logic is written decl
 
 In a full-stack app, we **must keep secrets off the client**. The Next.js,
 Nuxt, Vite, and Bun packages enforce that split. See
-[Client vs. server](/docs/validating-your-environment/client-vs-server).
+[Client vs. server](/docs/core-concepts/client-vs-server).
 
-ArkEnv uses ArkType by default. However, **it works with Zod, Valibot, and any other [standard schema](https://standardschema.dev/)**. See the [Using ArkEnv with Zod](/docs/guides/validators/zod) guide for one such example.
+ArkEnv uses ArkType by default. However, **it works with Zod, Valibot, and any other [standard schema](https://standardschema.dev/)**. See the [Zod](/docs/validators/zod) guide for one such example.
 
 ## How to use these docs
 
-Start with [Getting started](/docs/getting-started) to add ArkEnv to a new or existing project. [Core concepts](/docs/core-concepts) covers the `env` object, engines, and coercion if those concepts are new. Some other useful reads:
+Start with [Getting started](/docs/getting-started) to add ArkEnv to a
+new or existing project. [Core concepts](/docs/core-concepts) covers the
+schema, the typed `env` object, engines, and coercion. Some other useful
+reads:
 
 <Cards>
-  <Card href="/docs/comparison" title="Comparison" description="How ArkEnv stacks up against T3 Env, znv, Envalid, and a DIY schema." />
+  <Card href="/docs/why-arkenv" title="Why ArkEnv?" description="How ArkEnv stacks up against Varlock, T3 Env, znv, Envalid, and a DIY schema." />
 
-  <Card href="/docs/validating-your-environment" title="Validating your environment" description="Design a schema, parse values, and keep secrets off the client." />
+  <Card href="/docs/core-concepts" title="Core concepts" description="Design a schema, parse values, and keep secrets off the client." />
 
-  <Card href="/docs/guides" title="Guides" description="Framework recipes, validators, AI assistants, and migrating from T3 Env." />
+  <Card href="/docs/frameworks" title="Frameworks" description="Next.js, Nuxt, Vite, and Bun integrations." />
+
+  <Card href="/docs/validators" title="Validators" description="ArkType, Zod, and Valibot cookbooks." />
+
+  <Card href="/docs/guides" title="Guides" description="AI assistants and migrating from T3 Env or v0." />
 
   <Card href="/docs/reference" title="API reference" description="Options, CLI commands, and package APIs." />
-
-  <Card href="/docs/guides/ai" title="Using AI with ArkEnv" description="How to use AI to help you write ArkEnv schemas and validate environment variables." />
-
-  <Card href="/docs/faq" title="FAQ" description="Short answers about validators, .env files, and AI tools." />
 </Cards>
 
 If you're a human, the search bar at the top will help you find your way around.
