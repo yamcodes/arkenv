@@ -58,5 +58,5 @@ export const env = arkenv({
 import { env } from "./env";
 
 console.log(`Server is running on port ${env.PORT}`);
-// @annotate: Always use env.PORT. process.env.PORT is string | undefined.
+// @annotate: Always use env.PORT rather than process.env.PORT to preserve typesafety.
 ```

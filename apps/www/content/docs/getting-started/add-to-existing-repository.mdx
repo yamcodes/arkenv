@@ -37,7 +37,7 @@ integrations.
   <Step>
     ### Review generated files
 
-    After the CLI, a Next.js app looks like this:
+    After the CLI, a Next.js app (for example) looks like this:
 
     <Files>
       <Folder name="my-app" defaultOpen>
@@ -47,8 +47,10 @@ integrations.
 
         <File name=".env" />
 
-        <Folder name="generated" defaultOpen>
+        <Folder name=".arkenv">
           <File name="env.gen.ts" />
+
+          <File name="index.ts" />
         </Folder>
 
         <Folder name="app" defaultOpen>
@@ -65,9 +67,6 @@ integrations.
 
   <Step>
     ### Import `env` in your app
-
-    Your framework loads `.env` into `process.env` (or `import.meta.env`), which ArkEnv validates. See
-    [Loading .env files](/docs/validating-your-environment/framework-integration#loading-env-files).
 
     If you don't have a `.env` file yet, copy the example and fill in values:
 

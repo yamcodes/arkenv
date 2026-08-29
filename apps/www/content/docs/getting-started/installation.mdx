@@ -1,6 +1,6 @@
 ---
 title: Installation
-description: Install ArkEnv and configure your package manager.
+description: Learn how to get started with ArkEnv.
 ---
 
 Get started with ArkEnv in a few moments using:
@@ -26,17 +26,17 @@ npm install @arkenv/core arktype
 ```
 
 If you aren't using ArkType, install
-[`@arkenv/standard`](/docs/guides/validators) instead.
+[`@arkenv/standard`](/docs/guides/validators) instead alongside your existing Standard Schema library (Zod, Valibot, etc.):
 
-<Callout type="info">
-  `@arkenv/core` can also be used with Zod or Valibot, since ArkType itself is a Standard Schema adapter. The decision is simple: if you have ArkType (or don't mind the dependency), use `@arkenv/core`. If you don't have ArkType and don't need it, use `@arkenv/standard`. The engines have **feature parity**.
-</Callout>
+```package-install
+npm install @arkenv/standard
+```
 
 ### Framework integrations
 
 Next.js, Nuxt, Vite, and Bun have **first-party** integrations. The CLI detects your stack and installs the matching one. To add them manually, see the [framework guides](/docs/guides/frameworks).
 
-## TypeScript module resolution
+### TypeScript module resolution
 
 `@arkenv/standard` subpath exports (`/valibot`, `/zod-mini`) and the
 framework plugin subpaths require modern TypeScript module resolution.
