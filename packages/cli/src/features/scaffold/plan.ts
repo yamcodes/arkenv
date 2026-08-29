@@ -37,8 +37,6 @@ export type ProjectOptions = {
 	bunFeatures?: ("serve" | "build")[];
 	language: "ts"; // TODO: Support JS
 	overwriteEnvSchemaFile?: boolean;
-	envDtsHandling?: "overwrite" | "append" | "skip";
-	installTypeDefinitions?: boolean;
 	envKeys?: string[];
 	installSkill?: boolean;
 	skillDetected?: boolean;
@@ -60,7 +58,7 @@ export type ScaffoldingPlan = {
 	files: {
 		path: string;
 		content: string;
-		action: "create" | "overwrite" | "append";
+		action: "create" | "overwrite";
 		label?: string;
 	}[];
 	/** TypeScript configuration updates */
