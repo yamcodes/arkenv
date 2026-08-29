@@ -12,14 +12,11 @@ validation, and `.arkenv` codegen.
 npm install @arkenv/core @arkenv/nextjs arktype
 ```
 
-Or with Standard Schema:
+Or if you use Zod, Valibot, or another Standard Schema validator:
 
 ```package-install
 npm install @arkenv/standard @arkenv/nextjs zod
 ```
-
-Peers: `next`, `react`. `@arkenv/core` / `@arkenv/standard` / `arktype`
-are optional depending on dialect.
 
 ## Subpaths
 
@@ -39,8 +36,7 @@ Import from the subpath that matches where the code runs.
 
 Wrap your Next.js config with `withArkEnv`. By default this writes
 `.arkenv/env.gen.ts` and validates the schema during config/build. Import
-the factory as `@/.arkenv`. Gitignore `.arkenv/`; regenerate by running Next
-or `arkenv init`.
+the factory as `@/.arkenv`. Gitignore `.arkenv/`; regenerate by running Next.
 
 ```ts title="./next.config.ts"
 import type { NextConfig } from "next";

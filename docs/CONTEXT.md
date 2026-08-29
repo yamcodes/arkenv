@@ -324,11 +324,11 @@ pnpm run test:e2e                     # E2E tests
 
 **Canonical env object**:
 The imported `env` object (`import { env } from "./env"`) is the one supported way to read validated env across Next, Nuxt, Vite, and Bun.
-*Avoid*: treating `import.meta.env` / ambient `.d.ts` as a second canonical surface (that is **SPA mode** only)
+*Avoid*: treating `import.meta.env` / ambient `.d.ts` as a supported ArkEnv surface
 
-**SPA mode**:
-Vite/Bun-only path that keeps plugin + native accessors + `.d.ts`; honest for static access, not the default fullstack surface.
-*Avoid*: “plugin-env as equal peer to the object surface”
+**SPA mode** (legacy, dropped in v1):
+Former Vite/Bun-only path that kept plugin + native accessors + ambient `.d.ts` (`ImportMetaEnvAugmented` / `ProcessEnvAugmented`). Removed by ADR 0021; not a supported v1 path.
+*Avoid*: framing SPA mode or `import.meta.env` as available in v1
 
 **Vite transform mode**:
 Client-graph rewrite of `env.ts` that inlines build-validated coerced literals and strips the validator (Solid Start / `#1328` shape). Values are fixed at **build time**.
@@ -479,7 +479,7 @@ A non-interactive muted label that only **groups** sibling **Leaves** under a **
 **Framework & Runtime Integrations:**
 
 - **Vanilla**: The default runtime-only core module for Node.js, Bun, and Deno. Uses `import { env } from "./env"`. Validated environment variables are accessed directly from the returned `env` object for typesafety. Primarily used for **server-side** or runtime-only validation. No plugins are required.
-- **Vite**: Integrated via `@arkenv/vite-plugin`. Validates environment variables at build-time and inlines `import.meta.env` variables for **client-side** (browser) usage.
+- **Vite**: Integrated via `@arkenv/vite-plugin`. Validates during Vite dev/build and rewrites the client copy of `env.ts` so public `VITE_*` keys inline as literals and server secrets become throwing stubs. Application code uses `import { env } from "./env"` — not `import.meta.env`.
 - **Next.js**: Integrated via `@arkenv/nextjs`. **Flat layout** is the only first-class pattern: a single `env.ts`. Client-side keys must be statically destructured in a `runtimeEnv` block for Next inlining; `withArkEnv` generates a tailored factory in `.arkenv/env.gen.ts` (imported as `@/.arkenv`) that pre-fills `runtimeEnv`, enforces `NEXT_PUBLIC_` prefixing, and keeps server **values** off client components (conditional exports + proxy). Name/type isolation is a documented two-module recipe ([ADR 0020](./adr/0020-strict-layout-complexity-budget.md)), not a layout engine — client module via codegen, server module via `@arkenv/core` plus optional `import "server-only"`. Dedicated `--strict` / `/client` `/server` still exist in the tree until the follow-up removal issue.
   - **Standard Mode**: Import from `@arkenv/nextjs/standard` (peer: `@arkenv/standard`). ArkType is not required. Flat is the happy path; the split recipe applies the same as ArkType mode.
 - **Nuxt**: Integrated via `@arkenv/nuxt`. Exposes a Nuxt module (`@arkenv/nuxt/module`) that:

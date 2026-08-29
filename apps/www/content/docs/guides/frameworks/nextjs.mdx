@@ -174,7 +174,12 @@ export const env = arkenv({
 ## Read `env` in application code
 
 Import `{ env } from "./env"` in Server Components, route handlers, and
-Client Components. Do not read `process.env` for schema keys.
+Client Components.
+
+:::warning[Do not read `process.env` directly]
+Reading `process.env` skips ArkEnv. Import `{ env }` so public keys stay
+typed and coerced and server secrets stay out of the client bundle.
+:::
 
 ```ts title="./app/page.tsx"
 import { env } from "../env";

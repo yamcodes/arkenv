@@ -114,9 +114,14 @@ Learn more in [Reusing schemas](/docs/validating-your-environment/reusing-schema
 
 ## Client access
 
-Import the validated `env` object from your schema module. Prefer that over reading
-`import.meta.env` for schema keys so server secrets still validate at boot. Types
-and options: [`@arkenv/vite-plugin`](/docs/reference/vite-plugin).
+Import the validated `env` object from your schema module.
+
+:::warning[Do not read `import.meta.env` directly]
+Reading `import.meta.env` skips ArkEnv. Import `{ env }` so public keys stay
+typed and coerced and server secrets stay out of the client bundle.
+:::
+
+Types and options: [`@arkenv/vite-plugin`](/docs/reference/vite-plugin).
 
 ## SSR and dual-graph execution
 

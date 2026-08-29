@@ -91,6 +91,15 @@ This configuration uses `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. Nuxt vi
 aliases automatically merge shared schemas when you omit `extends`. Learn more in
 [Client vs. server](/docs/validating-your-environment/client-vs-server).
 
+## Read `env` in application code
+
+Import `{ env } from "./env"` (or the client/server modules in a strict layout).
+
+:::warning[Do not read `process.env` directly]
+Reading `process.env` skips ArkEnv. Import `{ env }` so public keys stay
+typed and coerced and server secrets stay out of the client bundle.
+:::
+
 ## Standard Schema
 
 If you aren't using ArkType, point the module at the standard module path and

@@ -10,14 +10,16 @@ fullstack apps that inline client env. Backend-only Bun scripts use
 ## Installation
 
 ```package-install
+npm install -D @arkenv/bun-plugin
 npm install @arkenv/core arktype
 ```
 
+Or if you use Zod, Valibot, or another Standard Schema validator:
+
 ```package-install
 npm install -D @arkenv/bun-plugin
+npm install @arkenv/standard
 ```
-
-Standard Schema entry: `@arkenv/bun-plugin/standard`.
 
 ## Exports
 
@@ -83,8 +85,12 @@ the bundle.
 
 ## Types
 
-Import the validated `env` object from your schema module. Prefer that
-over reading `process.env` for schema keys in fullstack apps.
+Import the validated `env` object from your schema module.
+
+:::warning[Do not read `process.env` directly]
+Reading `process.env` skips ArkEnv. Import `{ env }` so public keys stay
+typed and coerced and server secrets stay out of the client bundle.
+:::
 
 ## Next steps
 

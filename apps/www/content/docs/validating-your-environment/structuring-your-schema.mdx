@@ -54,12 +54,12 @@ import { env } from "../env";
 console.log(`listening on ${env.HOST}:${env.PORT}`);
 ```
 
-<Callout type="info">
-  The validated `env` object is the product. Read `env.DATABASE_URL`, not
-  `process.env.DATABASE_URL` or `import.meta.env.DATABASE_URL`. Raw env maps stay
-  untyped strings; `env` is coerced, defaulted, and typed. That surface is
-  canonical across Node, Next.js, Nuxt, Vite, and Bun ([typesafety](/docs/core-concepts/typesafety)).
-</Callout>
+:::warning[Do not read `process.env` or `import.meta.env` directly]
+Reading `process.env` or `import.meta.env` skips ArkEnv. Import `{ env }` so
+public keys stay typed and coerced and server secrets stay out of the client
+bundle. That surface is canonical across Node, Next.js, Nuxt, Vite, and Bun
+([typesafety](/docs/core-concepts/typesafety)).
+:::
 
 ## What belongs in the schema
 

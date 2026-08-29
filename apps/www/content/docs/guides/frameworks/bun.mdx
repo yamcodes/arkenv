@@ -105,11 +105,14 @@ export const env = arkenv({
 
 ## Client access
 
-Import the validated `env` object from your schema module. Do not read `process.env`
-for schema keys in full-stack apps — the plugin rewrites the client copy of `env.ts`
-so public keys stay typed and coerced. For full-stack applications, prefer exporting
-the typed `env` object so validation runs reliably at process boot. See
-[`@arkenv/bun-plugin`](/docs/reference/bun-plugin).
+Import the validated `env` object from your schema module.
+
+:::warning[Do not read `process.env` directly]
+Reading `process.env` skips ArkEnv. Import `{ env }` so public keys stay
+typed and coerced and server secrets stay out of the client bundle.
+:::
+
+Types and options: [`@arkenv/bun-plugin`](/docs/reference/bun-plugin).
 
 ## SSR and bundling execution
 

@@ -9,14 +9,16 @@ and build. Only public keys (default `VITE_*`) reach the client.
 ## Installation
 
 ```package-install
+npm install -D @arkenv/vite-plugin
 npm install @arkenv/core arktype
 ```
 
+Or if you use Zod, Valibot, or another Standard Schema validator:
+
 ```package-install
 npm install -D @arkenv/vite-plugin
+npm install @arkenv/standard
 ```
-
-Standard Schema entry: `@arkenv/vite-plugin/standard`.
 
 ## Exports
 
@@ -96,9 +98,12 @@ export default defineConfig(({ mode }) => {
 
 ## Types
 
-Import the validated `env` object from your schema module. Treat
-`import.meta.env` as a secondary surface; prefer `import { env } from
-"./env"` for schema keys.
+Import the validated `env` object from your schema module.
+
+:::warning[Do not read `import.meta.env` directly]
+Reading `import.meta.env` skips ArkEnv. Import `{ env }` so public keys stay
+typed and coerced and server secrets stay out of the client bundle.
+:::
 
 ## Next steps
 

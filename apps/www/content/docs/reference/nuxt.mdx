@@ -12,15 +12,13 @@ that respect `NUXT_PUBLIC_` boundaries.
 npm install @arkenv/core @arkenv/nuxt arktype
 ```
 
-Or with Standard Schema:
+Or if you use Zod, Valibot, or another Standard Schema validator:
 
 ```package-install
 npm install @arkenv/standard @arkenv/nuxt zod
 ```
 
 ## Subpaths
-
-Import from the subpath that matches where the code runs.
 
 | Subpath                         | Role                                                     |
 | ------------------------------- | -------------------------------------------------------- |
@@ -32,9 +30,6 @@ Import from the subpath that matches where the code runs.
 | `./standard` and `./standard/*` | Standard Schema variants (including `./standard/module`) |
 
 ## Module setup
-
-Register the module in `nuxt.config`. The schema module is the surface.
-Nuxt leaves `env.gen.ts` to Next.js.
 
 ```ts title="./nuxt.config.ts"
 export default defineNuxtConfig({

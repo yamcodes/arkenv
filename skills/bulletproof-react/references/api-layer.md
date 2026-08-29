@@ -7,9 +7,10 @@ Use a single, pre-configured API client instance throughout the application. Thi
 ```typescript
 // src/lib/api-client.ts
 import axios from "axios";
+import { env } from "../env";
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL: env.VITE_API_URL,
     headers: { "Content-Type": "application/json" },
 });
 
