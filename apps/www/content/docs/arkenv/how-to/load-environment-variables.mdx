@@ -82,19 +82,11 @@ dotenv.config();
 const app = express();
 ```
 
-#### Nest.js
+#### NestJS
 
-```typescript title="src/app.module.ts"
-import { ConfigModule } from '@nestjs/config';
-
-@Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-  ],
-})
-```
+:::important[Using NestJS?]
+Do not validate env with `ConfigModule`. Follow [Use with NestJS](/docs/arkenv/how-to/use-with-nestjs): a fail-fast `env` object, imported at the top of `main.ts`, started with `--env-file`.
+:::
 
 ### Runtime arguments
 
