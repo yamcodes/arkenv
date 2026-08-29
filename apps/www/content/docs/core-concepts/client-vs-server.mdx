@@ -90,6 +90,13 @@ Client module via codegen (`@/.arkenv`). Server module via
 `@arkenv/core` plus optional `import "server-only"` so Next fails the
 build if that file enters a client graph.
 
+<Files>
+  <Folder name="env" defaultOpen>
+    <File name="client.ts" />
+    <File name="server.ts" />
+  </Folder>
+</Files>
+
 ```ts title="./env/client.ts"
 import arkenv from "@/.arkenv";
 
@@ -118,9 +125,18 @@ module (or keep a flat root `env.ts` if you do not need this split).
 
 ### Nuxt
 
-Same two-module shape. There is no compile-time import blocker: **never
-import the server module from client or Vue code.** Discipline is the
-fence.
+In Nuxt, place the server module inside `server/utils/env.ts`. Nitro automatically auto-imports `env` across server routes (`server/api/*`), while Nuxt's build pipeline ensures `server/` files are never bundled into the client Vue application.
+
+<Files>
+  <Folder name="env" defaultOpen>
+    <File name="client.ts" />
+  </Folder>
+  <Folder name="server" defaultOpen>
+    <Folder name="utils" defaultOpen>
+      <File name="env.ts" />
+    </Folder>
+  </Folder>
+</Files>
 
 ```ts title="./env/client.ts"
 import arkenv from "@arkenv/nuxt";
@@ -130,10 +146,11 @@ export const env = arkenv({
 });
 ```
 
-```ts title="./env/server.ts"
+```ts title="./server/utils/env.ts"
 import arkenv from "@arkenv/core";
-import { env as clientEnv } from "./client";
+import { env as clientEnv } from "~~/env/client";
 
+// Auto-imported by Nitro across server/api/* and server/routes/*
 export const env = arkenv(
   {
     DATABASE_URL: "string",
@@ -142,8 +159,7 @@ export const env = arkenv(
 );
 ```
 
-Register `@arkenv/nuxt/module` and point the module schema path at the
-client (or flat) entry your app actually loads on both sides.
+Point `@arkenv/nuxt/module` at your client schema (`./env/client.ts`), and import `{ env } from "~/env/client"` inside Vue components.
 
 ## Next.js runtime protection
 

@@ -62,6 +62,7 @@ Past a hello-world script, the DIY path gets tedious:
   fails in Vite and Bun, where variables are statically replaced.
   ArkEnv's plugins rewrite `env.ts` in the client graph and still
   validate at boot on the server.
+- **Silent degradation.** Accessing an unconfigured or server-only variable on a plain object returns `undefined`. Code silently falls back to defaults or degrades until an obscure error surfaces downstream. ArkEnv wraps client environments in a fail-fast proxy that throws immediately on boundary violations.
 - **Repeated boilerplate.** Copying the same assert across projects
   gets old. ArkEnv is one declarative `arkenv()` call and
   `import { env } from "./env"`.
@@ -106,7 +107,8 @@ and how much of the stack each tool covers:
   reads public values from `useRuntimeConfig()` at runtime, with no
   generated files.
 - **Flat by default, still safe.** A runtime proxy throws when a server
-  variable is accessed on the client. You skip mandatory `server:` /
+  variable is accessed on the client instead of returning `undefined`
+  or allowing silent fallback logic. You skip mandatory `server:` /
   `client:` blocks unless you need compile-time isolation of sensitive
   *names*. See [Client vs. server](/docs/core-concepts/client-vs-server)
   and [Migrating from T3 Env](/docs/guides/migrating-from-t3-env).
