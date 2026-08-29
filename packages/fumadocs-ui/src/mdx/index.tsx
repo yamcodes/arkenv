@@ -22,6 +22,19 @@ export const arkenvComponents = {
 	img: (props) => (
 		<ImageZoom {...(props as React.ComponentProps<typeof ImageZoom>)} />
 	),
+	/**
+	 * Fumadocs wraps MDX tables in `overflow-auto` without a keyboard focus
+	 * target. Add `tabIndex={0}` so Safari axe `scrollable-region-focusable`
+	 * passes on wide tables (for example `/docs/guides/frameworks`).
+	 */
+	table: (props: React.TableHTMLAttributes<HTMLTableElement>) => (
+		<div
+			className="relative overflow-auto prose-no-margin my-6"
+			tabIndex={0}
+		>
+			<table {...props} />
+		</div>
+	),
 	Step,
 	Steps,
 	File,

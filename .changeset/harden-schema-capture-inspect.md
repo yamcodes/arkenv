@@ -2,6 +2,7 @@
 "arkenv": minor
 "@arkenv/core": patch
 "@arkenv/standard": patch
+"@arkenv/fumadocs-ui": patch
 ---
 
 #### Harden schema capture for fail-closed inspect
@@ -14,3 +15,5 @@ The CLI schema loader now fails closed when it cannot honestly report keys, and 
 - `ERR_INSPECT_EVAL_THROW` — the module threw while using env values at load time
 
 `arkenv({})` remains a valid empty schema. Capture state for core, standard, and the CLI now lives on `Symbol.for("arkenv.schemaCapture.v1")` so it does not collide with Nuxt’s legacy string key. Upgrade `@arkenv/core` / `@arkenv/standard` alongside the CLI so inspect can see the capture flag.
+
+MDX tables in `@arkenv/fumadocs-ui` are now keyboard-focusable so wide comparison tables pass `scrollable-region-focusable`.

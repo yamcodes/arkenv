@@ -57,7 +57,7 @@ describe("hero MVP snippets", () => {
 		);
 
 		for (const snippet of zod) {
-			expect(snippet.code).toContain("z.number()");
+			expect(snippet.code).toContain("z.int()");
 			expect(snippet.code).not.toContain("z.coerce");
 		}
 

@@ -203,7 +203,7 @@ describe("validators templates", () => {
 			};
 			const template = getSimpleTemplate(options);
 			expect(template).toContain('import arkenv from "@/.arkenv"');
-			expect(template).toContain('import { z } from "zod"');
+			expect(template).toContain('import * as z from "zod"');
 			expect(template).toContain("DATABASE_URL: z.url().default(");
 		});
 
@@ -271,7 +271,7 @@ describe("validators templates", () => {
 			};
 			const template = getSimpleTemplate(options);
 			expect(template).toContain('import arkenv from "@arkenv/standard"');
-			expect(template).toContain('import { z } from "zod"');
+			expect(template).toContain('import * as z from "zod"');
 			expect(template).toContain('.default("development")');
 			expect(template).toContain(".default(3000)");
 			expect(template).toContain("export const env = arkenv({");
@@ -289,7 +289,7 @@ describe("validators templates", () => {
 			};
 			const template = getSimpleTemplate(options);
 			expect(template).toContain('import arkenv from "@arkenv/standard"');
-			expect(template).toContain('import { z } from "zod"');
+			expect(template).toContain('import * as z from "zod"');
 			expect(template).toContain("export const env = arkenv({");
 		});
 
