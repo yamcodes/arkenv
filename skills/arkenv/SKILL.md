@@ -105,7 +105,6 @@ pnpm dlx arkenv@latest init [options]
 ```
 
 #### Options:
-- `--flat`: Use flat single-file layout (default).
 - `--preset, -P <preset>`: Specify hosting provider preset (none, vercel, netlify, cloudflare, railway, render, fly).
 - `--no-codegen`: Disable Next.js codegen configuration setup.
 

@@ -47,8 +47,6 @@ async function AutoTypeTable(
 }
 
 export function getMDXComponents(components: MDXComponents): MDXComponents {
-	// biome-ignore lint/suspicious/noExplicitAny: arkenvComponents type is complex but we know it might have table
-	const Table = (arkenvComponents as any).table ?? "table";
 	return {
 		...arkenvComponents,
 		...twoslashComponents,
@@ -65,14 +63,21 @@ export function getMDXComponents(components: MDXComponents): MDXComponents {
 		Folder,
 		File,
 		...components,
+		// Own wrapper: fumadocs-ui's table scroll region lacks tabindex
+		// (scrollable-region-focusable). Match code-block a11y treatment.
 		table: (props) => (
-			<Table
-				{...props}
-				className={cn(
-					"[&_td_code]:whitespace-nowrap [&_td:first-child]:w-max",
-					props.className,
-				)}
-			/>
+			<div
+				className="relative my-6 overflow-auto prose-no-margin fd-scroll-container focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-fd-ring"
+				tabIndex={0}
+			>
+				<table
+					{...props}
+					className={cn(
+						"[&_td_code]:whitespace-nowrap [&_td:first-child]:w-max",
+						props.className,
+					)}
+				/>
+			</div>
 		),
 	};
 }
