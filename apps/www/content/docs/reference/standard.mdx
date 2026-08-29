@@ -8,7 +8,7 @@ description: ArkType-free environment validation via Standard Schema.
 and others). The root import has no runtime dependencies or peers.
 
 - **If you use ArkType**, use [`@arkenv/core`](/docs/reference/core). It also supports Zod and Valibot. **You do not need to install both engines**.
-- **If you don't use ArkType**, use `@arkenv/standard`. This will keep your tree free of the ArkType dependency.
+- **If you don't use ArkType**, use `@arkenv/standard`. This will keep your tree free of the `arktype` dependency.
 
 TypeScript must use `moduleResolution: "bundler" | "node16" | "nodenext"`.
 
@@ -58,11 +58,11 @@ These are the public names from `@arkenv/standard`.
 
 ### Subpaths
 
-| Import                      | Role                                                                                       |
-| --------------------------- | ------------------------------------------------------------------------------------------ |
-| `@arkenv/standard`          | Root engine. Dependency-free. Classic Zod works zero-config.                               |
-| `@arkenv/standard/valibot`  | Same `arkenv`, pre-bound to `@valibot/to-json-schema`. Install that optional peer.         |
-| `@arkenv/standard/zod-mini` | Same `arkenv`, pre-bound to `zod/mini`'s `toJSONSchema` helper. `zod` is an optional peer. |
+| Import                      | Role                                                                                           |
+| --------------------------- | ---------------------------------------------------------------------------------------------- |
+| `@arkenv/standard`          | Root engine. Dependency-free. Zod works zero-config.                                           |
+| `@arkenv/standard/valibot`  | Same `arkenv`, pre-configured for Valibot. `valibot` + `@valibot/to-json-schema` are required. |
+| `@arkenv/standard/zod-mini` | Same `arkenv`, pre-configured for Zod Mini. `zod` is required.                                 |
 
 ```ts title="./env.ts" twoslash
 import { arkenv } from "@arkenv/standard/valibot";

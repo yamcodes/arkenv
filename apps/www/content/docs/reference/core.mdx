@@ -6,6 +6,9 @@ description: ArkType-powered environment validation for TypeScript projects.
 `@arkenv/core` is the ArkType validation engine. It exports `arkenv()`
 and a `type()` function which includes all of ArkType's keywords and [additional ones](/docs/reference/keywords). **`arktype` is a required peer. There are no runtime dependencies.**
 
+- **If you use ArkType**, use `@arkenv/core`. It also supports Zod and Valibot. **You do not need to install both engines**.
+- **If you don't use ArkType**, use [`@arkenv/standard`](/docs/reference/standard). This will keep your tree free of the `arktype` dependency.
+
 ## Installation
 
 ```package-install
