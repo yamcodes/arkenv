@@ -156,7 +156,7 @@ describe("cli smoke tests", () => {
 		);
 		await fs.writeFile(
 			path.join(tempDir, "bunfig.toml"),
-			"# Bun configuration\n",
+			"[serve]\nport = 3000\n",
 		);
 
 		try {
