@@ -58,8 +58,8 @@ executes TypeScript and injects `.env` files before your process starts.
 nub src/index.ts
 ```
 
-Node's `node --env-file=.env` (and `nest start --env-file=.env` for NestJS) also works. You name each file yourself,
-and it does not run TypeScript. For NestJS applications, follow the [Use with NestJS](/docs/guides/use-with-nestjs) guide.
+Plain Node's `node --env-file=.env` also works (you name each file yourself,
+and plain `node` does not run TypeScript). For NestJS applications, `@nestjs/cli` 11+ supports `nest start --env-file .env` — follow the [Use with NestJS](/docs/guides/use-with-nestjs) guide.
 
 After values are in `process.env` (or a custom record), `arkenv()`
 validates them.
