@@ -1900,22 +1900,12 @@
 	top: 0;
 	/* Avoid color-mix(…, transparent) in oklch — it muddies into magenta.
 	   Steeper than a pure linear: solid paper arrives sooner near the edge. */
-	background: linear-gradient(
-		to top,
-		transparent 0%,
-		var(--color-paper-2) 80%,
-		var(--color-paper-2) 100%
-	);
+	background: linear-gradient(to top, transparent 0%, var(--color-paper-2) 80%, var(--color-paper-2) 100%);
 }
 
 .home-aurora__mvp-body::after {
 	bottom: 0;
-	background: linear-gradient(
-		to bottom,
-		transparent 0%,
-		var(--color-paper-2) 80%,
-		var(--color-paper-2) 100%
-	);
+	background: linear-gradient(to bottom, transparent 0%, var(--color-paper-2) 80%, var(--color-paper-2) 100%);
 }
 
 .home-aurora__mvp-body[data-fade-top="true"]::before,
