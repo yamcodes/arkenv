@@ -14,14 +14,9 @@ This page shows why `process.env` is a weak contract, how ArkEnv's typed
 
 ## The `process.env` problem
 
-In JavaScript and TypeScript apps, environment variables are the primary
-way to configure a process. The problem is that TypeScript only types
-those values as `string | undefined`, so anything beyond that is **your
-responsibility**, including checking the type and making sure the value is
-defined.
+Environment variables are available via the `process.env` (or `import.meta.env`) object. This object is loosely typed - all values are `string | undefined`. 
 
-Let's see how this can get messy if not done carefully. Can you spot the
-problem with this code?
+The problem with a loosely typed object is that you have **no** runtime guarantee about a given value: Is it correct type? Does it match our constraints? Does the value even exist?
 
 ```ini title=".env"
 PORT=3000
@@ -40,20 +35,14 @@ if (debug) {
 console.log(`listening on ${port}`);
 ```
 
-**Does it log the message?**
-
-Spoiler alert: **yes, it does.** `process.env.DEBUG` is the string `"false"`,
-not the boolean `false`. In JavaScript, a non-empty string is truthy, so
-`if (debug)` runs even though you turned logging off. `PORT` is the
-string `"3000"` for the same reason.
-
-You might reach for a `=== "true"` check and start parsing environment
-variables by hand. You might also assign a default. At this point, your
-code looks like this:
+In this example, `port` can be anything (even a negative number), and `verbose logging enabled` is logged to the console, even though we set `DEBUG=false` in our `.env` file. We can fix this by manually parsing the value:
 
 ```ts title="./server.ts" twoslash
-const port = Number(process.env.PORT ?? "3000");
-const debug = process.env.DEBUG === "true";
+const port = Number(process.env.PORT ?? "3000"); // [!code ++]
+if (port < 0 || port > 65535) { // [!code ++]
+  throw new Error("PORT must be between 0 and 65535"); // [!code ++]
+} // [!code ++]
+const debug = process.env.DEBUG === "true"; // [!code ++]
 
 if (debug) {
   console.log("verbose logging enabled");
@@ -62,16 +51,15 @@ if (debug) {
 console.log(`listening on ${port}`);
 ```
 
-It works, but you've just written **a bunch of boilerplate**. As soon as
-the project scales, that becomes a **maintenance burden** across more
-environments, files, and apps, and between the client and the server.
+Now the process correctly skips the `verbose logging enabled` message, matching the `DEBUG=false` in our `.env` file.
+
+ArkEnv does this out of the box, and much more. Let's see how:
 
 ## The `env` solution
 
-**ArkEnv solves your environment variable scaling problem.** `arkenv()`
-parses your values against a schema you define in a separate `env.ts`
-file, so you don't handle the loose `process.env` object in application
-code.
+**ArkEnv solves the environment variable scaling problem.** Declare a
+schema in `env.ts`; `arkenv()` validates against it so application code never
+touches loose `process.env`:
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/core";
@@ -82,7 +70,7 @@ export const env = arkenv({
 });
 ```
 
-The same `if` as above, after ArkEnv, looks like this:
+The same `if` as above, after ArkEnv:
 
 ```ts title="./server.ts" twoslash
 // @filename: env.ts
@@ -108,25 +96,13 @@ if (debug) {
 console.log(`listening on ${port}`);
 ```
 
-Here `debug` is `boolean` and `port` is a number, by definition. ArkEnv's
-coercion turns `"false"` into `false` and `"3000"` into `3000`, so the
-`if` does not run and verbose logging stays off. As a bonus,
-`number.port` also guarantees that `port` is in the valid 0-65535 range.
+Everything works like our manual solution, but the parsing logic is written declaratively in a single file. This makes the code simpler and more maintainable.
 
-In a full-stack app, you **must keep secrets off the client**. The
-Next.js, Nuxt, Vite, and Bun packages **enforce that split** so server
-values stay out of the client graph. See
+In a full-stack app, we **must keep secrets off the client**. The Next.js,
+Nuxt, Vite, and Bun packages enforce that split. See
 [Client vs. server](/docs/validating-your-environment/client-vs-server).
 
-ArkEnv can be **adopted incrementally**. If you already validate forms or
-API data with [ArkType](https://arktype.io), [Zod](https://zod.dev),
-[Valibot](https://valibot.dev), or any
-[Standard Schema](https://standardschema.dev/), run the interactive CLI to
-**get started right away**.
-
-```package-install
-npx arkenv@latest init
-```
+ArkEnv uses ArkType by default. However, **it works with Zod, Valibot, and any other [standard schema](https://standardschema.dev/)**. See the [Using ArkEnv with Zod](/docs/guides/validators/zod) guide for one such example.
 
 ## How to use these docs
 
@@ -148,8 +124,9 @@ Start with [Getting started](/docs/getting-started) to add ArkEnv to a new or ex
 
 If you're a human, the search bar at the top will help you find your way around.
 
-If you happen to be an AI agent, see [/llms.txt](/llms.txt) for an index of all available documentation.
-For the full concatenated docs, see [/llms-full.txt](/llms-full.txt).
+If you happen to be an AI agent, see [/llms.txt](/llms.txt) for an index of all available documentation, or [/llms-full.txt](/llms-full.txt) for the full concatenated docs.
+
+See the [Using AI with ArkEnv](/docs/guides/ai) guide to learn how to use AI tools to improve your development workflow.
 
 ## Join the community
 
