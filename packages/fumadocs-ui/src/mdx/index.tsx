@@ -22,16 +22,6 @@ export const arkenvComponents = {
 	img: (props) => (
 		<ImageZoom {...(props as React.ComponentProps<typeof ImageZoom>)} />
 	),
-	/**
-	 * Fumadocs wraps MDX tables in `overflow-auto` without a focus target.
-	 * Reuse `fd-scroll-container` so Playwright a11y excludes them the same way
-	 * as scrollable code blocks (`scrollable-region-focusable`).
-	 */
-	table: (props: React.TableHTMLAttributes<HTMLTableElement>) => (
-		<div className="relative overflow-auto prose-no-margin my-6 fd-scroll-container">
-			<table {...props} />
-		</div>
-	),
 	Step,
 	Steps,
 	File,
