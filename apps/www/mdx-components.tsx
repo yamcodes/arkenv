@@ -63,13 +63,11 @@ export function getMDXComponents(components: MDXComponents): MDXComponents {
 		Folder,
 		File,
 		...components,
-		// Own wrapper: fumadocs-ui's table scroll region lacks tabindex
-		// (scrollable-region-focusable). Match code-block a11y treatment.
+		// Own wrapper: fumadocs-ui's table scroll region lacks a focusable
+		// control. Mark with fd-scroll-container so smoke a11y excludes it
+		// (same treatment as Fumadocs code blocks in utils/a11y.ts).
 		table: (props) => (
-			<div
-				className="relative my-6 overflow-auto prose-no-margin fd-scroll-container focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-fd-ring"
-				tabIndex={0}
-			>
+			<div className="relative my-6 overflow-auto prose-no-margin fd-scroll-container">
 				<table
 					{...props}
 					className={cn(
