@@ -52,7 +52,6 @@ function renderView() {
 	);
 }
 
-
 function mockScrollOverflow(overflow: boolean) {
 	const scrollTop = { value: 0, writable: true, configurable: true };
 	vi.spyOn(HTMLElement.prototype, "clientHeight", "get").mockReturnValue(100);

@@ -70,6 +70,8 @@ export function HeroMvpExampleView({ examples }: HeroMvpExampleViewProps) {
 			else delete body.dataset.fadeBottom;
 		};
 
+		// Re-run when the active pane swaps so scroll position and fades reset.
+		void validator;
 		scroll.scrollTop = 0;
 		applyFades();
 		scroll.addEventListener("scroll", applyFades, { passive: true });
