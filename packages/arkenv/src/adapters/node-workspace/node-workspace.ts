@@ -151,15 +151,6 @@ export class NodeWorkspace implements WorkspacePort {
 		return bootstrapNuxtConfig(this, filePath);
 	}
 
-	async safeAppend(
-		filePath: string,
-		schemaPath: string,
-		framework: "vite" | "bun-fullstack",
-	) {
-		const { safeAppend } = await import("../injection");
-		return safeAppend(filePath, schemaPath, framework, this.logger);
-	}
-
 	async appendMissingEnvExampleKeys(
 		cwd: string,
 		keys: string[],
