@@ -107,13 +107,13 @@ first-class subpath or the optional
 [`toJsonSchema`](/docs/core-concepts/coercion-and-parsing#valibot-tojsonschema)
 escape hatch.
 
-| Library                                        | How ArkEnv gets JSON Schema                                                                                         |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Zod (v4.2+)                                    | On the value (Standard JSON Schema v1)                                                                              |
-| VineJS (v4.3+)                                 | On the value (Standard JSON Schema v1)                                                                              |
-| Valibot (v1.2+ with `@valibot/to-json-schema`) | `@arkenv/standard/valibot` (see [Valibot](/docs/validators/valibot))                                                 |
-| Zod Mini                                       | `@arkenv/standard/zod-mini` ([mixing](/docs/core-concepts/coercion-and-parsing#mixing-with-zod-mini))               |
-| Other Standard JSON Schema v1 validators       | On the value                                                                                                        |
+| Library                                        | How ArkEnv gets JSON Schema                                                                           |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Zod (v4.2+)                                    | On the value (Standard JSON Schema v1)                                                                |
+| VineJS (v4.3+)                                 | On the value (Standard JSON Schema v1)                                                                |
+| Valibot (v1.2+ with `@valibot/to-json-schema`) | `@arkenv/standard/valibot` (see [Valibot](/docs/validators/valibot))                                  |
+| Zod Mini                                       | `@arkenv/standard/zod-mini` ([mixing](/docs/core-concepts/coercion-and-parsing#mixing-with-zod-mini)) |
+| Other Standard JSON Schema v1 validators       | On the value                                                                                          |
 
 See [Coercion and parsing](/docs/core-concepts/coercion-and-parsing).
 
