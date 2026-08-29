@@ -1,6 +1,7 @@
 ---
 title: init
-description: CLI flags and output for arkenv init.---
+description: CLI flags and output for arkenv init.
+---
 
 `arkenv` on npm is the CLI. It scaffolds schemas and wires framework
 config. Validation lives in `@arkenv/core` or `@arkenv/standard`. For
@@ -33,10 +34,6 @@ Bypass dirty-git and other safety checks, then force scaffolding. The
 CLI refuses a dirty working tree so a run cannot silently overwrite
 uncommitted work. Commit or stash first, or pass `--force` when you
 accept that risk (for example in CI).
-
-### `--flat`
-
-Scaffold a single `env.ts`. This is the default layout.
 
 ### `--no-codegen`
 
@@ -79,9 +76,8 @@ reserved and rejected.
 See [Start with an example](/docs/getting-started/examples).
 
 <Callout type="warn">
-  `--strict` and `--simple` are removed. Scaffold is always a single
-  `env.ts`. Use `--flat` only if you need an explicit flag; it is the
-  default.
+  `--strict`, `--simple`, and `--flat` are removed. Scaffold is always a
+  single `env.ts`.
 </Callout>
 
 ## Output
