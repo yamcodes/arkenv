@@ -3,10 +3,7 @@ import {
 	ROADMAP_EXTRAS,
 	ROADMAP_MILESTONE_NUMBER,
 } from "~/lib/roadmap/config";
-import {
-	displayTitle,
-	topicFromIssue,
-} from "~/lib/roadmap/topics";
+import { displayTitle, topicFromIssue } from "~/lib/roadmap/topics";
 import type { RoadmapData, RoadmapItem } from "~/lib/roadmap/types";
 import { breakDownGithubUrl } from "~/lib/utils/github";
 

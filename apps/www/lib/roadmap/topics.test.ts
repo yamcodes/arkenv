@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-	displayTitle,
-	groupByTopic,
-	topicFromIssue,
-} from "./topics";
+import { displayTitle, groupByTopic, topicFromIssue } from "./topics";
 
 describe("displayTitle", () => {
 	it("strips (v1) markers and category prefixes, then capitalizes", () => {
@@ -58,16 +54,14 @@ describe("topicFromIssue", () => {
 				'(v1) RFC: Revisit Valibot DX so "No boilerplate" stays honest',
 			),
 		).toBe("Standard");
-		expect(
-			topicFromIssue([], "Validator mode (make ArkType optional)"),
-		).toBe("Standard");
+		expect(topicFromIssue([], "Validator mode (make ArkType optional)")).toBe(
+			"Standard",
+		);
 	});
 
 	it("falls back to Core", () => {
 		expect(topicFromIssue([], "Unify error normalization")).toBe("Core");
-		expect(
-			topicFromIssue(["arkenv"], "Coercion (string→number)"),
-		).toBe("Core");
+		expect(topicFromIssue(["arkenv"], "Coercion (string→number)")).toBe("Core");
 	});
 
 	it("infers Integrations from conventional-commit scopes", () => {

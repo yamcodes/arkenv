@@ -84,9 +84,7 @@ export function topicFromIssue(
 	}
 
 	if (
-		/standard schema|validator mode|@arkenv\/standard|\/standard\b/i.test(
-			title,
-		)
+		/standard schema|validator mode|@arkenv\/standard|\/standard\b/i.test(title)
 	) {
 		return "Standard";
 	}
