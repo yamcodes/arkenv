@@ -1,5 +1,11 @@
+export const CAPTURE_NO_CALL_HINT =
+	"No arkenv() definition was found. Ensure arkenv() is called at the top level of the schema module.";
+
 export const CAPTURE_UPGRADE_HINT =
-	"If this file calls arkenv(), upgrade @arkenv/core or @arkenv/standard so the CLI can inspect the schema without validating the environment.";
+	"Upgrade @arkenv/core or @arkenv/standard so the CLI can inspect the schema without validating the environment.";
+
+export const CAPTURE_UNEXTRACTABLE_HINT =
+	"Cannot extract keys from the captured definition. Ensure the schema is a supported static map.";
 
 export const CAPTURE_CONTRACT_HINT =
 	"Capture mode does not populate env values. Keep the schema module declarative (`export const env = arkenv({...})`) and do not read `env` at module scope.";
@@ -42,35 +48,57 @@ export function isCaptureStubReadCause(cause: unknown): boolean {
 }
 
 /**
- * Build a NO_SCHEMA error message, including an upgrade hint for version skew.
+ * Build an ERR_INSPECT_NO_CALL error message.
  *
  * @param schemaPath Absolute path to the schema module
  * @returns The structured error message
  */
-export function formatNoSchemaMessage(schemaPath: string): string {
-	return `No arkenv() schema definition was found in "${schemaPath}". ${CAPTURE_UPGRADE_HINT}`;
+export function formatNoCallMessage(schemaPath: string): string {
+	return `No arkenv() schema definition was found in "${schemaPath}". ${CAPTURE_NO_CALL_HINT}`;
 }
 
 /**
- * Build a MODULE_LOAD_FAILED error message with a contextual hint.
+ * Build an ERR_INSPECT_UNSUPPORTED error message for runtimes that ignore capture.
  *
  * @param schemaPath Absolute path to the schema module
  * @param cause The thrown value
  * @returns The structured error message
  */
-export function formatModuleLoadFailedMessage(
+export function formatUnsupportedMessage(
+	schemaPath: string,
+	cause: unknown,
+): string {
+	const detail = cause instanceof Error ? cause.message : String(cause);
+	return `Failed to inspect schema module at "${schemaPath}": ${detail} ${CAPTURE_UPGRADE_HINT}`;
+}
+
+/**
+ * Build an ERR_INSPECT_UNEXTRACTABLE error message.
+ *
+ * @param schemaPath Absolute path to the schema module
+ * @returns The structured error message
+ */
+export function formatUnextractableMessage(schemaPath: string): string {
+	return `Failed to inspect schema module at "${schemaPath}": ${CAPTURE_UNEXTRACTABLE_HINT}`;
+}
+
+/**
+ * Build an ERR_INSPECT_EVAL_THROW error message with a contextual hint.
+ *
+ * @param schemaPath Absolute path to the schema module
+ * @param cause The thrown value
+ * @returns The structured error message
+ */
+export function formatEvalThrowMessage(
 	schemaPath: string,
 	cause: unknown,
 ): string {
 	const detail = cause instanceof Error ? cause.message : String(cause);
 	const prefix = `Failed to load schema module at "${schemaPath}": ${detail}`;
-	if (isEnvValidationCause(cause)) {
-		return `${prefix} ${CAPTURE_UPGRADE_HINT}`;
-	}
-	if (isCaptureStubReadCause(cause)) {
-		return `${prefix} ${CAPTURE_CONTRACT_HINT}`;
-	}
-	if (/missing [A-Z_][A-Z0-9_]*/.test(detail)) {
+	if (
+		isCaptureStubReadCause(cause) ||
+		/missing [A-Z_][A-Z0-9_]*/.test(detail)
+	) {
 		return `${prefix} ${CAPTURE_CONTRACT_HINT}`;
 	}
 	return prefix;

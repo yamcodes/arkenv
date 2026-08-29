@@ -21,9 +21,10 @@ Ship **mechanism A1 + B1 + C1 + D1** and **export-surface A1 + B1**:
 1. **Import** the schema module in-process (Jiti). Do not parse schema source text.
 2. **Skip validation and record** the object (or compiled type) passed to `arkenv()`. `arkenv()` returns a value-less `{}`. Schema modules stay declarative; they must not require real env values at module scope.
 3. **Extract** ordered keys, per-key schema, and best-effort `hasDefault` from that recorded definition (including compiled ArkType `json` and Zod/Valibot shapes). This is what `example` writes and what `check` can re-`parse` against an arbitrary env dict.
-4. **Handshake** through `globalThis.__ARKENV_SCHEMA_CAPTURE__` so a Jiti-loaded user `arkenv()` sees the CLI’s capture flag.
+4. **Handshake** through `globalThis[Symbol.for("arkenv.schemaCapture.v1")]` so a Jiti-loaded user `arkenv()` sees the CLI’s capture flag. Nuxt keeps the legacy string key `__ARKENV_SCHEMA_CAPTURE__` (different bag shape); CLI/core/standard do not share it ([#1636](https://github.com/yamcodes/arkenv/issues/1636)).
 5. **Do not export** `beginSchemaCapture` / `endSchemaCapture` / `isCapturingSchema` from `@arkenv/core` or `@arkenv/standard`. The CLI starts/stops capture via unpublished `@repo/utils`. App authors keep `export const env = arkenv({ ... })`.
-6. **Production Jiti has no aliases** onto the CLI’s core. Tests may alias workspace source. A new CLI with an old installed core fails inspect with an upgrade hint — do not “fix” that by substituting the CLI’s runtime.
+6. **Production Jiti has no aliases** onto the CLI’s core. Tests may alias workspace source. A new CLI with an old installed core fails inspect with `ERR_INSPECT_UNSUPPORTED` — do not “fix” that by substituting the CLI’s runtime.
+7. **Fail closed** on dishonest empty extracts: `arkenv({})` is success with `keys: []`; zero `arkenv()` calls, unreadable captured defs, and load-time env use are distinct `ERR_INSPECT_*` failures ([#1636](https://github.com/yamcodes/arkenv/issues/1636)).
 
 `check` may later *also* boot `env.ts` against a populated env (no loader). That is optional. It does not replace recording for `example`.
 
@@ -42,6 +43,7 @@ Ship **mechanism A1 + B1 + C1 + D1** and **export-surface A1 + B1**:
 
 - Core and standard gain a short-circuit that is **not** a public API. Releases still need a patch so installed copies honor the flag.
 - `example` and `check` share one loader that returns schema, not boot output.
-- Capture-mode `env` is empty: `env.NODE_ENV === "production"` is fine; guards that need a real value fail with a contract hint.
-- Version skew is accepted and hinted, not solved, until `example`/`check` consume the loader.
+- Capture-mode `env` is a hollow `{}` stub (**not** a Proxy): `env.NODE_ENV === "production"` is fine (`undefined`); method calls or using missing keys as real values at module scope fail with `ERR_INSPECT_EVAL_THROW`.
+- Version skew is accepted and coded as `ERR_INSPECT_UNSUPPORTED`, not solved, by substituting the CLI’s runtime.
 - Future reviews should not re-propose env stubbing or schema parsing for this primitive unless the product drops “keys + schema with empty env” or “one loader for `example` and `check`.”
+- Inspect error codes stay on the loader (`ERR_INSPECT_*`); protocol envelopes keep dotted `CLI.*` codes.

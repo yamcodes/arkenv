@@ -7,7 +7,7 @@ import {
 
 describe("declaredKeysFromDefinitions", () => {
 	it("preserves declaration order and default metadata", () => {
-		const { keys, schema } = declaredKeysFromDefinitions([
+		const result = declaredKeysFromDefinitions([
 			{
 				DATABASE_URL: "string",
 				"PORT?": "number = 3000",
@@ -15,23 +15,47 @@ describe("declaredKeysFromDefinitions", () => {
 			},
 		]);
 
-		expect(keys.map((key) => key.name)).toEqual(["DATABASE_URL", "PORT", "CI"]);
-		expect(keys.map((key) => key.hasDefault)).toEqual([false, true, true]);
-		expect(schema.PORT).toBe("number = 3000");
+		expect(result.extractable).toBe(true);
+		if (!result.extractable) return;
+		expect(result.keys.map((key) => key.name)).toEqual([
+			"DATABASE_URL",
+			"PORT",
+			"CI",
+		]);
+		expect(result.keys.map((key) => key.hasDefault)).toEqual([
+			false,
+			true,
+			true,
+		]);
+		expect(result.schema.PORT).toBe("number = 3000");
 	});
 
 	it("merges multiple captured definitions in call order", () => {
-		const { keys } = declaredKeysFromDefinitions([
+		const result = declaredKeysFromDefinitions([
 			{ FIRST: "string" },
 			{ SECOND: "string" },
 		]);
-		expect(keys.map((key) => key.name)).toEqual(["FIRST", "SECOND"]);
+		expect(result.extractable).toBe(true);
+		if (!result.extractable) return;
+		expect(result.keys.map((key) => key.name)).toEqual(["FIRST", "SECOND"]);
 	});
 
 	it("treats an empty captured object as an empty schema", () => {
-		const { keys, schema } = declaredKeysFromDefinitions([{}]);
-		expect(keys).toEqual([]);
-		expect(schema).toEqual({});
+		const result = declaredKeysFromDefinitions([{}]);
+		expect(result.extractable).toBe(true);
+		if (!result.extractable) return;
+		expect(result.keys).toEqual([]);
+		expect(result.schema).toEqual({});
+	});
+
+	it("fails closed on non-object captured definitions", () => {
+		expect(declaredKeysFromDefinitions([null]).extractable).toBe(false);
+		expect(declaredKeysFromDefinitions([42]).extractable).toBe(false);
+		expect(declaredKeysFromDefinitions(["string"]).extractable).toBe(false);
+	});
+
+	it("fails closed on function definitions without extractable keys", () => {
+		expect(declaredKeysFromDefinitions([() => ({})]).extractable).toBe(false);
 	});
 
 	it("reads defaults from compiled ArkType json entries", () => {
@@ -42,11 +66,16 @@ describe("declaredKeysFromDefinitions", () => {
 				optional: [{ key: "DATABASE_URL", value: "string", default: "foo" }],
 			},
 		};
-		const { keys, schema } = declaredKeysFromDefinitions([compiled]);
-		expect(keys.map((key) => key.name)).toEqual(["PORT", "DATABASE_URL"]);
-		expect(keys.map((key) => key.hasDefault)).toEqual([false, true]);
-		expect(schema.PORT).toBe("number");
-		expect(schema.DATABASE_URL).toBe("string");
+		const result = declaredKeysFromDefinitions([compiled]);
+		expect(result.extractable).toBe(true);
+		if (!result.extractable) return;
+		expect(result.keys.map((key) => key.name)).toEqual([
+			"PORT",
+			"DATABASE_URL",
+		]);
+		expect(result.keys.map((key) => key.hasDefault)).toEqual([false, true]);
+		expect(result.schema.PORT).toBe("number");
+		expect(result.schema.DATABASE_URL).toBe("string");
 	});
 });
 

@@ -15,9 +15,11 @@ export type DeclaredSchemaKey = {
 	/**
 	 * Whether a default is detectable on this key.
 	 *
-	 * Standard Schema v1 has no default concept, so this is best-effort: ArkType
-	 * DSL/`json.default`, Zod `_def.defaultValue` / `type: "default"`, and
-	 * Valibot own `default` / `fallback` fields. Unknown validators report false.
+	 * Best-effort / advisory only (ArkType DSL/`json.default`, Zod
+	 * `_def.defaultValue` / `type: "default"`, Valibot own `default` /
+	 * `fallback`). Unknown Standard Schema vendors report `false`. Consumers such
+	 * as `arkenv example` must still emit the key when this is `false` — never
+	 * omit a declared key because the sniffer missed a default.
 	 */
 	hasDefault: boolean;
 };
@@ -143,18 +145,49 @@ function pushCompiledEntries(
 }
 
 /**
+ * Result of extracting declared keys from captured `arkenv()` definitions.
+ *
+ * `extractable: false` means at least one captured value was not a readable
+ * static map — callers must fail closed rather than treat that as `arkenv({})`.
+ */
+export type DeclaredKeysResult =
+	| {
+			extractable: true;
+			keys: DeclaredSchemaKey[];
+			schema: Record<string, unknown>;
+	  }
+	| {
+			extractable: false;
+	  };
+
+/**
+ * Report whether a captured definition is an honest empty schema map.
+ *
+ * @param definition A value recorded by schema capture
+ * @returns `true` when the definition is a plain empty object
+ */
+function isHonestEmptySchema(definition: unknown): boolean {
+	return (
+		typeof definition === "object" &&
+		definition !== null &&
+		!Array.isArray(definition) &&
+		Object.keys(definition as object).length === 0
+	);
+}
+
+/**
  * Convert captured `arkenv()` definitions into ordered key metadata.
  *
  * An empty captured object (`arkenv({})`) yields `keys: []` — that is a valid
- * empty schema, not a load failure.
+ * empty schema, not a load failure. Non-object or otherwise unreadable
+ * definitions are not skipped: the result is `extractable: false`.
  *
  * @param definitions Schema objects recorded during capture
- * @returns Ordered keys and a combined schema map
+ * @returns Ordered keys when every definition is extractable, otherwise failure
  */
-export function declaredKeysFromDefinitions(definitions: unknown[]): {
-	keys: DeclaredSchemaKey[];
-	schema: Record<string, unknown>;
-} {
+export function declaredKeysFromDefinitions(
+	definitions: unknown[],
+): DeclaredKeysResult {
 	const keys: DeclaredSchemaKey[] = [];
 	const schema: Record<string, unknown> = {};
 
@@ -163,7 +196,7 @@ export function declaredKeysFromDefinitions(definitions: unknown[]): {
 			!definition ||
 			(typeof definition !== "object" && typeof definition !== "function")
 		) {
-			continue;
+			return { extractable: false };
 		}
 
 		const record = definition as Record<string, unknown>;
@@ -204,7 +237,16 @@ export function declaredKeysFromDefinitions(definitions: unknown[]): {
 		}
 
 		if (typeof definition === "function") {
+			return { extractable: false };
+		}
+
+		if (isHonestEmptySchema(definition)) {
 			continue;
+		}
+
+		const ownKeys = Object.keys(record);
+		if (ownKeys.length === 0) {
+			return { extractable: false };
 		}
 
 		for (const [rawKey, value] of Object.entries(record)) {
@@ -218,5 +260,5 @@ export function declaredKeysFromDefinitions(definitions: unknown[]): {
 		}
 	}
 
-	return { keys, schema };
+	return { extractable: true, keys, schema };
 }

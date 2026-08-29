@@ -47,8 +47,6 @@ async function AutoTypeTable(
 }
 
 export function getMDXComponents(components: MDXComponents): MDXComponents {
-	// biome-ignore lint/suspicious/noExplicitAny: arkenvComponents type is complex but we know it might have table
-	const Table = (arkenvComponents as any).table ?? "table";
 	return {
 		...arkenvComponents,
 		...twoslashComponents,
@@ -65,14 +63,21 @@ export function getMDXComponents(components: MDXComponents): MDXComponents {
 		Folder,
 		File,
 		...components,
+		/**
+		 * Fumadocs' default MDX table is `overflow-auto` without a focus target.
+		 * Wrap here (docs site only) with `fd-scroll-container` so Playwright
+		 * a11y excludes it like scrollable code blocks.
+		 */
 		table: (props) => (
-			<Table
-				{...props}
-				className={cn(
-					"[&_td_code]:whitespace-nowrap [&_td:first-child]:w-max",
-					props.className,
-				)}
-			/>
+			<div className="relative overflow-auto prose-no-margin my-6 fd-scroll-container">
+				<table
+					{...props}
+					className={cn(
+						"[&_td_code]:whitespace-nowrap [&_td:first-child]:w-max",
+						props.className,
+					)}
+				/>
+			</div>
 		),
 	};
 }

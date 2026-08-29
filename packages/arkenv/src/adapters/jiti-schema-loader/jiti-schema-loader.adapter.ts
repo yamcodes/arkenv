@@ -10,8 +10,10 @@ import {
 	type SchemaValidationResult,
 } from "@/shared/ports";
 import {
-	formatModuleLoadFailedMessage,
-	formatNoSchemaMessage,
+	formatEvalThrowMessage,
+	formatNoCallMessage,
+	formatUnextractableMessage,
+	formatUnsupportedMessage,
 	isEnvValidationCause,
 } from "./schema-load-errors";
 
@@ -32,7 +34,7 @@ export class JitiSchemaLoaderAdapter implements SchemaLoaderPort {
 	 * Import the schema module under capture mode and return declared keys.
 	 *
 	 * @param target The schema module to load
-	 * @returns Declared keys or a structured error
+	 * @returns Declared keys or a structured inspect error
 	 */
 	async load(target: SchemaLoadTarget): Promise<SchemaLoadResult> {
 		beginSchemaCapture();
@@ -42,11 +44,18 @@ export class JitiSchemaLoaderAdapter implements SchemaLoaderPort {
 			if (definitions.length === 0) {
 				return {
 					ok: false,
-					code: SCHEMA_LOAD_ERROR_CODES.NO_SCHEMA,
-					message: formatNoSchemaMessage(target.schemaPath),
+					code: SCHEMA_LOAD_ERROR_CODES.ERR_INSPECT_NO_CALL,
+					message: formatNoCallMessage(target.schemaPath),
 				};
 			}
 			const declared = declaredKeysFromDefinitions(definitions);
+			if (!declared.extractable) {
+				return {
+					ok: false,
+					code: SCHEMA_LOAD_ERROR_CODES.ERR_INSPECT_UNEXTRACTABLE,
+					message: formatUnextractableMessage(target.schemaPath),
+				};
+			}
 			return {
 				ok: true,
 				keys: declared.keys,
@@ -54,10 +63,18 @@ export class JitiSchemaLoaderAdapter implements SchemaLoaderPort {
 			};
 		} catch (cause) {
 			endSchemaCapture();
+			if (isEnvValidationCause(cause)) {
+				return {
+					ok: false,
+					code: SCHEMA_LOAD_ERROR_CODES.ERR_INSPECT_UNSUPPORTED,
+					message: formatUnsupportedMessage(target.schemaPath, cause),
+					cause,
+				};
+			}
 			return {
 				ok: false,
-				code: SCHEMA_LOAD_ERROR_CODES.MODULE_LOAD_FAILED,
-				message: formatModuleLoadFailedMessage(target.schemaPath, cause),
+				code: SCHEMA_LOAD_ERROR_CODES.ERR_INSPECT_EVAL_THROW,
+				message: formatEvalThrowMessage(target.schemaPath, cause),
 				cause,
 			};
 		}
@@ -107,8 +124,8 @@ export class JitiSchemaLoaderAdapter implements SchemaLoaderPort {
 			return {
 				ok: false,
 				kind: "load",
-				code: SCHEMA_LOAD_ERROR_CODES.MODULE_LOAD_FAILED,
-				message: formatModuleLoadFailedMessage(target.schemaPath, cause),
+				code: SCHEMA_LOAD_ERROR_CODES.ERR_INSPECT_EVAL_THROW,
+				message: formatEvalThrowMessage(target.schemaPath, cause),
 				cause,
 			};
 		} finally {
