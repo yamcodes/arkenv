@@ -23,6 +23,7 @@ This runbook outlines the operational, DNS, npm registry, and deployment steps r
 ## 2. Launch Day: Package Publication & Swaps
 
 ### Step 2.1: Exit Pre-Release Mode in Changesets
+
 1. Exit pre-release mode:
    ```bash
    pnpm exec changeset pre exit
@@ -34,18 +35,23 @@ This runbook outlines the operational, DNS, npm registry, and deployment steps r
 3. Commit and merge the Version Packages PR to `main`.
 
 ### Step 2.2: Promote Packages to `@latest`
+
 When GitHub Actions triggers the release workflow, verify on npm that:
+
 - `arkenv@1.0.0` is published under the `latest` tag (as the CLI).
 - `@arkenv/core@1.0.0` is published under the `latest` tag (as the core runtime).
 - `@arkenv/standard`, `@arkenv/nextjs`, `@arkenv/nuxt`, `@arkenv/vite-plugin`, `@arkenv/bun-plugin`, `@arkenv/build` are published under `latest`.
 
 ### Step 2.3: Deprecate `@arkenv/cli`
+
 Execute npm deprecation for the old v0 CLI package name:
+
 ```bash
 npm deprecate @arkenv/cli "This package was renamed to 'arkenv' in v1. Please update your dependencies: 'npm i -D arkenv' and use '@arkenv/core' for runtime validation."
 ```
 
 ### Step 2.4: Validate CLI Postinstall & Import Guards
+
 - Verify that `npm install arkenv` / `import arkenv from "arkenv"` throws the clear runtime error guiding users to `@arkenv/core`.
 - Test running `npx arkenv init` in a fresh project to ensure it executes without errors.
 
@@ -54,6 +60,7 @@ npm deprecate @arkenv/cli "This package was renamed to 'arkenv' in v1. Please up
 ## 3. Launch Day: Website & Domain Cutover
 
 ### Step 3.1: Switch Domain in Vercel
+
 1. In Vercel Project Settings for the v1 Docs app (`arkenv-v1`):
    - Add Domain: `arkenv.js.org` (and set as primary domain).
 2. Remove/redirect old domain mapping from the v0 project:
@@ -65,6 +72,7 @@ npm deprecate @arkenv/cli "This package was renamed to 'arkenv' in v1. Please up
    ```
 
 ### Step 3.2: Verify Key Routes & Redirects
+
 - [ ] Homepage: `https://arkenv.js.org`
 - [ ] Migration Guide: `https://arkenv.js.org/docs/guides/migrating-to-v1`
 - [ ] Getting Started: `https://arkenv.js.org/docs/getting-started`
@@ -84,6 +92,7 @@ npm deprecate @arkenv/cli "This package was renamed to 'arkenv' in v1. Please up
 ## 5. Rollback / Emergency Response
 
 If an emergency regression occurs immediately following publish:
+
 1. **Docs Rollback**: Point `arkenv.js.org` back to the v0 project in Vercel.
 2. **npm Rollback**: Repoint dist-tags on npm:
    ```bash
