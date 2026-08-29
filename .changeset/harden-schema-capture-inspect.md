@@ -16,4 +16,4 @@ The CLI schema loader now fails closed when it cannot honestly report keys, and 
 
 `arkenv({})` remains a valid empty schema. Capture state for core, standard, and the CLI now lives on `Symbol.for("arkenv.schemaCapture.v1")` so it does not collide with Nuxt’s legacy string key. Upgrade `@arkenv/core` / `@arkenv/standard` alongside the CLI so inspect can see the capture flag.
 
-MDX tables in `@arkenv/fumadocs-ui` are now keyboard-focusable so wide comparison tables pass `scrollable-region-focusable`.
+MDX table wrappers in `@arkenv/fumadocs-ui` now include `fd-scroll-container` so wide comparison tables are excluded from `scrollable-region-focusable` the same way as code blocks.
