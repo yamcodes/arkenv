@@ -108,26 +108,22 @@ const config = {
 			},
 			{
 				source: "/docs/core-concepts/transformation",
-				destination:
-					"/docs/validating-your-environment/coercion-and-parsing",
+				destination: "/docs/validating-your-environment/coercion-and-parsing",
 				permanent: true,
 			},
 			{
 				source: "/docs/core-concepts/morphs",
-				destination:
-					"/docs/validating-your-environment/coercion-and-parsing",
+				destination: "/docs/validating-your-environment/coercion-and-parsing",
 				permanent: true,
 			},
 			{
 				source: "/docs/core-concepts/transforms",
-				destination:
-					"/docs/validating-your-environment/coercion-and-parsing",
+				destination: "/docs/validating-your-environment/coercion-and-parsing",
 				permanent: true,
 			},
 			{
 				source: "/docs/core-concepts/typesafety",
-				destination:
-					"/docs/validating-your-environment/defining-your-schema",
+				destination: "/docs/validating-your-environment/defining-your-schema",
 				permanent: true,
 			},
 			{

@@ -15,11 +15,11 @@ required keys or values that fail the schema throw
 [`ArkEnvError`](/docs/validating-your-environment/error-reporting) at
 the call site.
 
-| Moment               | What runs                                                                             |
-| -------------------- | ------------------------------------------------------------------------------------- |
-| Module load          | `arkenv()` validates the current `env` source (default `process.env`)                 |
-| Next.js / Nuxt build | Framework wrappers validate during config or module setup                             |
-| Vite / Bun build     | Plugins validate in the bundler pipeline                                              |
+| Moment               | What runs                                                                               |
+| -------------------- | --------------------------------------------------------------------------------------- |
+| Module load          | `arkenv()` validates the current `env` source (default `process.env`)                   |
+| Next.js / Nuxt build | Framework wrappers validate during config or module setup                               |
+| Vite / Bun build     | Plugins validate in the bundler pipeline                                                |
 | Client bundle        | Public keys are already validated at build time; server secrets are stripped or guarded |
 
 Framework adapters validate in builds by default. Only keys you declare

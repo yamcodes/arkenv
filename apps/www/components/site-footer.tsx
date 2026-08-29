@@ -81,7 +81,9 @@ export function SiteFooter({
 							<a href="/docs/guides/validators/valibot">Valibot</a>
 						</li>
 						<li>
-							<a href="/docs/validating-your-environment/choosing-an-engine">Standard Schema</a>
+							<a href="/docs/validating-your-environment/choosing-an-engine">
+								Standard Schema
+							</a>
 						</li>
 					</ul>
 				</nav>

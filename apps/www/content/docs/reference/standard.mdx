@@ -36,12 +36,12 @@ export const env = arkenv({
 Both engines share `arkenv()` options, errors, and framework plugins.
 They differ in schema style and peers.
 
-|                                         | `@arkenv/core`              | `@arkenv/standard`                                                                                                                                   |
-| --------------------------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Validator                               | ArkType DSL + `type()`      | Standard Schema map only                                                                                                                             |
-| Keywords (`string.host`, `number.port`) | Yes                         | No                                                                                                                                                   |
-| Peer `arktype`                          | Required                    | None                                                                                                                                                 |
-| [Options](/docs/reference/options)      | `ArkEnvConfig`              | `StandardEnvConfig` (`ArkEnvConfig` plus `toJsonSchema`)                                                                                             |
+|                                         | `@arkenv/core`              | `@arkenv/standard`                                                                                                                                                             |
+| --------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Validator                               | ArkType DSL + `type()`      | Standard Schema map only                                                                                                                                                       |
+| Keywords (`string.host`, `number.port`) | Yes                         | No                                                                                                                                                                             |
+| Peer `arktype`                          | Required                    | None                                                                                                                                                                           |
+| [Options](/docs/reference/options)      | `ArkEnvConfig`              | `StandardEnvConfig` (`ArkEnvConfig` plus `toJsonSchema`)                                                                                                                       |
 | Coercion                                | Built-in for ArkType shapes | Standard JSON Schema on the value, or `@arkenv/standard/valibot` / `/zod-mini` / [`toJsonSchema`](/docs/validating-your-environment/coercion-and-parsing#valibot-tojsonschema) |
 
 ## Exports
