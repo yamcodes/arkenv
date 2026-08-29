@@ -52,6 +52,10 @@
 			"name": "🎁 @arkenv/build"
 		},
 		{
+			"path": "packages/agent-plugin",
+			"name": "🎁 @arkenv/agent-plugin"
+		},
+		{
 			"path": "packages/internal/types",
 			"name": "📦 @repo/types"
 		},
