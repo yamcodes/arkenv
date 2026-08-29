@@ -22,6 +22,8 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
  *
  * Tries `draft-07`, then `draft-2020-12`. Returns the first plain-object schema.
  * When every attempt throws or returns a non-schema, returns the last failure detail.
+ * A present converter that declines every target is a hard failure for the caller —
+ * it must not be treated as “no converter” (no `toJsonSchema` / missing-keys fallthrough).
  *
  * @param input The converter's `jsonSchema.input` (or equivalent) function
  * @returns A successful schema or the last failure detail
@@ -69,8 +71,11 @@ function throwJsonSchemaConversionFailed(key: string, detail: string): never {
  * Extract JSON Schema definitions from standard schema validators.
  *
  * On-value `jsonSchema.input` probes try `draft-07`, then `draft-2020-12`.
- * When a converter is present but every target fails, the key fails with
- * `INVALID_SCHEMA` instead of being treated as missing JSON Schema.
+ * When a converter is present but every target fails (throws or returns a
+ * non-schema), the key fails with `INVALID_SCHEMA` — unlike the optional
+ * `toJsonSchema` callback, which treats a falsy return as “skip this key”.
+ * `toJsonSchema` and the missing-JSON-Schema hint only apply when no on-value
+ * converter exists (and later method probes also miss).
  *
  * @param def The schema dictionary mapping keys to validators
  * @param toJsonSchema Optional fallback converter when a key has no Standard JSON Schema on the value
