@@ -13,23 +13,6 @@ export const valibotDialect: Dialect = {
 		return `v.optional(v.picklist([${values.map((v) => `"${v}"`).join(", ")}]))`;
 	},
 
-	formatStrictField(key, role, clientPrefix = "", hostPreset = undefined) {
-		if (role === "shared") {
-			return `${key}: v.optional(v.picklist(["development", "production", "test"]), "development"),`;
-		}
-		if (role === "server" && key === "PORT") {
-			return "PORT: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(65535)), 3000),";
-		}
-		const preset = tryFormatPresetFieldValue(
-			valibotDialect,
-			key,
-			clientPrefix,
-			hostPreset,
-		);
-		if (preset) return `${key}: ${preset},`;
-		return `${key}: v.optional(v.string()),`;
-	},
-
 	formatCodegenField(key, role, clientPrefix = "", hostPreset = undefined) {
 		if (role === "shared") {
 			return `${key}: v.optional(v.picklist(["development", "production", "test"]), "development"),`;
@@ -61,25 +44,6 @@ export const valibotDialect: Dialect = {
 			.join("\n");
 	},
 
-	getDefaultStrictFields(clientPrefix) {
-		const defaultClientKey = `${clientPrefix}API_URL`;
-		return {
-			serverFields: [
-				`DATABASE_URL: v.optional(v.pipe(v.string(), v.url()), "postgres://localhost:5432/mydb"),`,
-			],
-			clientFields: [
-				`${defaultClientKey}: v.optional(v.pipe(v.string(), v.url()), "https://api.example.com"),`,
-			],
-			sharedFields: [
-				`NODE_ENV: v.optional(v.picklist(["development", "production", "test"]), "development"),`,
-			],
-			runtimeEnvFields: [
-				`${defaultClientKey}: process.env.${defaultClientKey},`,
-				"NODE_ENV: process.env.NODE_ENV,",
-			],
-		};
-	},
-
 	getDefaultCodegenFields(clientPrefix) {
 		return {
 			serverFields: [
@@ -93,14 +57,6 @@ export const valibotDialect: Dialect = {
 			],
 		};
 	},
-
-	sharedImports: `import * as v from "valibot";`,
-
-	wrapSharedSchema(schemaObject) {
-		return `v.object(${schemaObject})`;
-	},
-
-	strictExtraImports: `import * as v from "valibot";\n`,
 
 	assembleVanilla(schemaFields) {
 		return dedent /* ts */`

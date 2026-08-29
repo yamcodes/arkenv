@@ -1,9 +1,5 @@
 import { FRAMEWORK_CLIENT_PREFIXES } from "./client-prefixes";
-import {
-	getEnvDefaultsFromKeys,
-	planSimpleSchemaFile,
-	planStrictSchemaFiles,
-} from "./shared";
+import { getEnvDefaultsFromKeys, planSimpleSchemaFile } from "./shared";
 import type { FrameworkStrategy } from "./types";
 
 export const vanillaStrategy: FrameworkStrategy = {
@@ -32,9 +28,6 @@ export const vanillaStrategy: FrameworkStrategy = {
 	},
 
 	getSchemaFiles(validator, options, params) {
-		if (options.layout === "strict") {
-			return planStrictSchemaFiles(validator, options, params);
-		}
 		return planSimpleSchemaFile(validator, options, params);
 	},
 

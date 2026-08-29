@@ -15,8 +15,6 @@ export type BootGateEngine = "arktype" | "standard";
 
 export type BootGateConfig = {
 	schemaPath: string;
-	layout: "simple" | "strict";
-	baseDir: string;
 	engine: BootGateEngine;
 };
 
@@ -24,15 +22,11 @@ export type BootGateConfig = {
  * Build Jiti aliases that point package entry points at this package's source/dist.
  *
  * @param packageDir Absolute directory containing this package's entry files
- * @param resolvedLayout Detected layout mode
- * @param baseDir Strict-layout env directory, or empty for flat
  * @param internalOptions Optional alias overrides for tests
  * @returns Alias map for Jiti
  */
 export function buildSchemaJitiAliases(
 	packageDir: string,
-	resolvedLayout: "simple" | "strict",
-	baseDir: string,
 	internalOptions?: { _jitiAliases?: Record<string, string> },
 ): Record<string, string> {
 	const packageJsonPath = path.resolve(packageDir, "../package.json");
@@ -69,47 +63,17 @@ export function buildSchemaJitiAliases(
 		return fallbackFile;
 	};
 
-	const sharedPath = resolveExportPath(
-		"./shared",
-		fs.existsSync(path.join(packageDir, "shared.ts"))
-			? path.join(packageDir, "shared.ts")
-			: path.join(packageDir, "shared.js"),
-	);
 	const indexPath = resolveExportPath(
 		".",
 		fs.existsSync(path.join(packageDir, "index.ts"))
 			? path.join(packageDir, "index.ts")
 			: path.join(packageDir, "index.js"),
 	);
-	const clientPath = resolveExportPath(
-		"./client",
-		fs.existsSync(path.join(packageDir, "client.ts"))
-			? path.join(packageDir, "client.ts")
-			: path.join(packageDir, "client.js"),
-	);
-	const serverPath = resolveExportPath(
-		"./server",
-		fs.existsSync(path.join(packageDir, "server.ts"))
-			? path.join(packageDir, "server.ts")
-			: path.join(packageDir, "server.js"),
-	);
 	const standardIndexPath = resolveExportPath(
 		"./standard",
 		fs.existsSync(path.join(packageDir, "standard/index.ts"))
 			? path.join(packageDir, "standard/index.ts")
 			: path.join(packageDir, "standard/index.js"),
-	);
-	const standardClientPath = resolveExportPath(
-		"./standard/client",
-		fs.existsSync(path.join(packageDir, "standard/client.ts"))
-			? path.join(packageDir, "standard/client.ts")
-			: path.join(packageDir, "standard/client.js"),
-	);
-	const standardServerPath = resolveExportPath(
-		"./standard/server",
-		fs.existsSync(path.join(packageDir, "standard/server.ts"))
-			? path.join(packageDir, "standard/server.ts")
-			: path.join(packageDir, "standard/server.js"),
 	);
 
 	const mockImportsPath = fs.existsSync(
@@ -120,52 +84,17 @@ export function buildSchemaJitiAliases(
 			? path.join(packageDir, "mock-imports.js")
 			: path.join(packageDir, "mock-imports.cjs");
 
-	const emptyClientEnvPath = fs.existsSync(
-		path.join(packageDir, "empty-client-env.ts"),
-	)
-		? path.join(packageDir, "empty-client-env.ts")
-		: path.join(packageDir, "empty-client-env.js");
-
-	const emptySharedSchemaPath = fs.existsSync(
-		path.join(packageDir, "empty-shared-schema.ts"),
-	)
-		? path.join(packageDir, "empty-shared-schema.ts")
-		: path.join(packageDir, "empty-shared-schema.js");
-
 	const emptyServerBootPath = fs.existsSync(
 		path.join(packageDir, "empty-server-boot.ts"),
 	)
 		? path.join(packageDir, "empty-server-boot.ts")
 		: path.join(packageDir, "empty-server-boot.js");
 
-	const strictUserClientPath =
-		resolvedLayout === "strict" && baseDir
-			? path.join(baseDir, "client.ts")
-			: undefined;
-
-	const strictUserSharedPath =
-		resolvedLayout === "strict" && baseDir
-			? path.join(baseDir, "internal", "shared.ts")
-			: undefined;
-
 	return {
-		"@arkenv/nuxt/shared": sharedPath,
 		"@arkenv/nuxt": indexPath,
-		"@arkenv/nuxt/client": clientPath,
-		"@arkenv/nuxt/server": serverPath,
 		"@arkenv/nuxt/standard": standardIndexPath,
-		"@arkenv/nuxt/standard/client": standardClientPath,
-		"@arkenv/nuxt/standard/server": standardServerPath,
 		"#imports": mockImportsPath,
 		"#arkenv/server-boot": emptyServerBootPath,
-		"#arkenv/client-env":
-			strictUserClientPath && fs.existsSync(strictUserClientPath)
-				? strictUserClientPath
-				: emptyClientEnvPath,
-		"#arkenv/shared-schema":
-			strictUserSharedPath && fs.existsSync(strictUserSharedPath)
-				? strictUserSharedPath
-				: emptySharedSchemaPath,
 		...internalOptions?._jitiAliases,
 	};
 }
@@ -197,17 +126,9 @@ export function loadSchemaViaCapture(
 	internalOptions?: { _jitiAliases?: Record<string, string> },
 ): { schema: SchemaShape; publicKeys: Set<string> } {
 	const packageDir = resolvePackageDir();
-	const fileToEvaluate =
-		config.layout === "strict" && config.baseDir
-			? path.join(config.baseDir, "server.ts")
-			: config.schemaPath;
+	const fileToEvaluate = config.schemaPath;
 
-	const aliases = buildSchemaJitiAliases(
-		packageDir,
-		config.layout,
-		config.baseDir,
-		internalOptions,
-	);
+	const aliases = buildSchemaJitiAliases(packageDir, internalOptions);
 
 	const jitiOptions = {
 		moduleCache: false,
@@ -216,51 +137,10 @@ export function loadSchemaViaCapture(
 		alias: aliases,
 	} as const;
 
-	const g = globalThis as {
-		__ARKENV_STRICT_LAYOUT__?: boolean;
-		__ARKENV_CLIENT_ENV__?: unknown;
-		__ARKENV_SHARED_SCHEMA__?: unknown;
-	};
-
 	return withForceServer(() => {
 		beginCapture();
 		try {
 			const evaluateSchema = (jiti: ReturnType<typeof createJiti>) => {
-				if (config.layout === "strict" && config.baseDir) {
-					const strictUserSharedPath = path.join(
-						config.baseDir,
-						"internal",
-						"shared.ts",
-					);
-					// Absent shared.ts → empty merge (aliases already point at
-					// empty-shared-schema). A present file must export SharedSchema.
-					if (fs.existsSync(strictUserSharedPath)) {
-						const sharedMod = jiti(strictUserSharedPath) as {
-							SharedSchema?: SchemaShape;
-							default?: { SharedSchema?: SchemaShape };
-						};
-						const sharedSchema =
-							sharedMod.SharedSchema ?? sharedMod.default?.SharedSchema;
-						if (sharedSchema === undefined || sharedSchema === null) {
-							throw new Error(
-								`[arkenv] Strict layout requires a usable SharedSchema export from "${strictUserSharedPath}".`,
-							);
-						}
-						g.__ARKENV_SHARED_SCHEMA__ = sharedSchema;
-					}
-
-					const strictUserClientPath = path.join(config.baseDir, "client.ts");
-					if (fs.existsSync(strictUserClientPath)) {
-						g.__ARKENV_STRICT_LAYOUT__ = true;
-						const clientMod = jiti(strictUserClientPath) as {
-							env?: unknown;
-							default?: { env?: unknown };
-						};
-						g.__ARKENV_CLIENT_ENV__ =
-							clientMod.env ?? clientMod.default?.env ?? clientMod;
-					}
-				}
-
 				jiti(fileToEvaluate);
 			};
 
@@ -293,9 +173,6 @@ export function loadSchemaViaCapture(
 			};
 		} finally {
 			endCapture();
-			delete g.__ARKENV_STRICT_LAYOUT__;
-			delete g.__ARKENV_CLIENT_ENV__;
-			delete g.__ARKENV_SHARED_SCHEMA__;
 		}
 	});
 }

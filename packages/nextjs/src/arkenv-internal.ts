@@ -42,7 +42,6 @@ export function arkenvInternal(
 		| {
 				isServer: boolean;
 				isShared?: boolean;
-				strictLayout?: "client" | "server";
 		  }
 		| undefined,
 	/**
@@ -93,10 +92,6 @@ export function arkenvInternal(
 
 		if (context?.isShared) {
 			shared = flatSchema;
-		} else if (context?.strictLayout === "client") {
-			client = flatSchema;
-		} else if (context?.strictLayout === "server") {
-			server = flatSchema;
 		} else {
 			const exposedKeys =
 				options.exposeToClient || options.expose || options.shared || [];

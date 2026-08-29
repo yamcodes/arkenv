@@ -9,7 +9,7 @@ import {
  *
  * Dialects supply field formatting and import/wrapper differences.
  * Layout assemblers own framework structure (Vite/Bun comments, Next/Nuxt
- * flat/nested, vanilla arkenv calls).
+ * flat templates, vanilla arkenv calls).
  */
 export type Dialect = {
 	/**
@@ -18,26 +18,10 @@ export type Dialect = {
 	extraImport?: string;
 
 	/**
-	 * Format a schema field for strict (3-file) layouts.
+	 * Format a field for codegen flat layouts (single-file Next/Nuxt).
 	 *
-	 * @param key Environment variable name
-	 * @param role Field scope within the strict layout
-	 * @param clientPrefix Framework client prefix for preset field lookup
-	 * @param hostPreset Active hosting preset for scoped field metadata lookup
-	 * @returns Field line without leading indentation (trailing comma)
-	 */
-	formatStrictField(
-		key: string,
-		role: "client" | "server" | "shared",
-		clientPrefix?: string,
-		hostPreset?: HostPreset,
-	): string;
-
-	/**
-	 * Format a field for codegen flat/nested layouts (single-file Next/Nuxt).
-	 *
-	 * Unlike {@link formatStrictField}, PORT and similar keys stay as optional
-	 * strings - only `shared` (NODE_ENV) uses a richer type.
+	 * PORT and similar keys stay as optional strings - only `shared`
+	 * (NODE_ENV) uses a richer type.
 	 *
 	 * @param key Environment variable name
 	 * @param role Field scope within the codegen layout
@@ -92,18 +76,6 @@ export type Dialect = {
 	formatOptionalEnum(values: readonly string[]): string;
 
 	/**
-	 * Default strict-layout fields when no env keys are provided.
-	 *
-	 * @param clientPrefix Framework client prefix (`NEXT_PUBLIC_` / `NUXT_PUBLIC_`)
-	 */
-	getDefaultStrictFields(clientPrefix: string): {
-		serverFields: string[];
-		clientFields: string[];
-		sharedFields: string[];
-		runtimeEnvFields: string[];
-	};
-
-	/**
 	 * Default codegen-layout field lines (with `\t\t` indent) when no keys.
 	 *
 	 * @param clientPrefix Framework client prefix
@@ -113,24 +85,6 @@ export type Dialect = {
 		clientFields: string[];
 		sharedFields: string[];
 	};
-
-	/**
-	 * Import block for the strict shared schema file.
-	 */
-	sharedImports: string;
-
-	/**
-	 * Wrap a formatted object literal as the SharedSchema value.
-	 *
-	 * @param schemaObject Object literal from {@link formatSchemaObject}
-	 */
-	wrapSharedSchema(schemaObject: string): string;
-
-	/**
-	 * Extra imports for strict client/server files (after the arkenv import).
-	 * Empty for arktype; zod/valibot add their package import.
-	 */
-	strictExtraImports: string;
 
 	/**
 	 * Assemble a vanilla (runtime arkenv) single-file template body.

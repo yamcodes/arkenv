@@ -75,10 +75,8 @@ describe("env-module-path utilities", () => {
 		);
 	});
 
-	it("resolveEnvModulePath discovers and resolves strict layout directories", () => {
-		const tmp = fs.mkdtempSync(
-			path.join(os.tmpdir(), "arkenv-resolve-strict-"),
-		);
+	it("resolveEnvModulePath rejects schema directories", () => {
+		const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "arkenv-resolve-dir-"));
 		tempDirs.push(tmp);
 
 		const envDir = path.join(tmp, "env");
@@ -86,7 +84,11 @@ describe("env-module-path utilities", () => {
 		fs.writeFileSync(path.join(envDir, "client.ts"), "export const env = {};");
 		fs.writeFileSync(path.join(envDir, "server.ts"), "export const env = {};");
 
-		expect(resolveEnvModulePath(tmp)).toBe(envDir);
-		expect(resolveEnvModulePath(tmp, "env")).toBe(envDir);
+		expect(() => resolveEnvModulePath(tmp)).toThrow(
+			/Could not find schema file/,
+		);
+		expect(() => resolveEnvModulePath(tmp, "env")).toThrow(
+			/only supports a flat env module file/,
+		);
 	});
 });

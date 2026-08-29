@@ -182,7 +182,6 @@ function createBaseMetadata(
 		mode,
 		example: options.example,
 		name: projectName,
-		layout: options.layout,
 		skillDetected: options.skillDetected,
 		disableCodegen: options.disableCodegen,
 	}) as ScaffoldingPlan["metadata"];

@@ -1,6 +1,6 @@
 ---
 title: init
-description: Scaffold ArkEnv schemas, layouts, and hosting presets with the CLI.
+description: Scaffold ArkEnv schemas and hosting presets with the CLI.
 ---
 
 `arkenv` on npm is the CLI. It scaffolds schemas and wires framework
@@ -50,11 +50,6 @@ stash first if you don't want to overwrite generated files.
 
 Scaffold a single `env.ts`. This is the default layout.
 
-### `--strict`
-
-Scaffold `env/client.ts`, `env/server.ts`, and
-`env/internal/shared.ts`.
-
 ### `--no-codegen`
 
 Skip Next.js `env.gen.ts` generation and related `withArkEnv` wiring.
@@ -96,16 +91,16 @@ reserved and rejected.
 See [Start with an example](/docs/getting-started/examples).
 
 <Callout type="warn">
-  `--simple` is deprecated and no longer supported. The CLI errors if you
-  pass it. Use `--flat` (the default) instead.
+  `--strict` and `--simple` are removed. Scaffold is always a single
+  `env.ts`. Use `--flat` only if you need an explicit flag; it is the
+  default.
 </Callout>
 
 ## Output
 
 Depending on the detected framework and flags, `init` writes:
 
-- Schema file(s): `env.ts` or the strict `env/` tree (often under
-  `src/`)
+- Schema file: `env.ts` (often under `src/`)
 - `.env` / `.env.example` when missing. Init never reads an existing
   `.env`; a missing `.env.example` is filled from detected keys and
   defaults, then `example` refreshes `.env.example` from the loaded

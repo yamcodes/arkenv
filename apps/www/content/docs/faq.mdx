@@ -219,18 +219,15 @@ Details: [`@arkenv/nextjs` reference](/docs/reference/nextjs).
 | `react-server`   | Server Components and routes    | All schema keys        |
 | `default`        | Client Components (SSR/browser) | Public and shared keys |
 
-Reading a server-only key from client code throws. Strict layout also
-imports `server-only` so the server schema cannot enter the client
-graph at compile time.
+Reading a server-only key from client code throws.
 
-## When should I use the strict layout?
+## Why might I split client and server env modules?
 
-Use flat layout unless you need compile-time isolation. Strict layout
-splits `env/client.ts` and `env/server.ts` so secret **names and types**
-never enter the client module graph. Scaffold with
-`npx arkenv@latest init --strict`.
-
-See [Client vs. server](/docs/validating-your-environment/client-vs-server).
+Use one `env.ts` unless secret **names or types** must stay out of the
+client type graph. The optional two-module recipe (two files, two
+imports, optional `extends: [clientEnv]`) is documented under
+[Client vs. server](/docs/validating-your-environment/client-vs-server) —
+it is not a CLI layout or package subpath.
 
 ## Why is only `NODE_ENV` shared on Next.js besides `NEXT_PUBLIC_*` keys?
 

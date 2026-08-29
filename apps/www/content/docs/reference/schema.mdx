@@ -77,10 +77,10 @@ export type Env = Infer<typeof schema>;
 
 ## Client and server schemas
 
-Framework packages add layouts and prefixes:
+Framework packages enforce public prefixes on a flat schema:
 
 - **Flat:** one schema; public prefixes decide client exposure
-- **Strict:** separate client, server, and shared modules with `extends`
+- **Optional recipe:** two modules with `extends` when names must stay off the client type graph
 
 Details:
 [Client vs. server](/docs/validating-your-environment/client-vs-server),

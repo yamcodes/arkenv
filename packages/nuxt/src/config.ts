@@ -6,51 +6,18 @@ import {
 	extractSharedKeys,
 	findSchemaPath,
 	formatMissingSchemaError,
-	resolveLayout,
 } from "@arkenv/build";
-import {
-	type BuildLogHelpers,
-	type Logger,
-	type LogLevel,
-	resolveBuildLog,
-} from "@repo/log";
+import { type Logger, type LogLevel, resolveBuildLog } from "@repo/log";
 import { validateSchema } from "./validate-schema";
 
-export type {
-	LayoutInput,
-	LayoutMode,
-	Logger,
-	ResolvedLayout,
-} from "@arkenv/build";
+export type { Logger } from "@arkenv/build";
 export {
 	extractArkenvBlock,
 	extractServerKeys,
 	findSchemaPath,
 	formatMissingSchemaError,
-	resolveLayout,
 } from "@arkenv/build";
 export { extractClientKeys, extractSharedKeys, validateSchema };
-
-let hasWarnedSimpleLayout = false;
-
-export function normalizeLayout(
-	layout: ArkEnvConfigOptions["layout"],
-	buildLog: BuildLogHelpers,
-): "simple" | "strict" | undefined {
-	if (layout === "simple") {
-		if (process.env.NODE_ENV === "development" && !hasWarnedSimpleLayout) {
-			hasWarnedSimpleLayout = true;
-			buildLog.logBuildWarning(
-				"The 'simple' layout option is deprecated and will be removed in the next major version. Use 'flat' instead.",
-			);
-		}
-		return "simple";
-	}
-	if (layout === "flat") {
-		return "simple";
-	}
-	return layout;
-}
 
 /**
  * Configuration options for the ArkEnv Nuxt module.
@@ -59,32 +26,12 @@ export function normalizeLayout(
  */
 export type ArkEnvConfigOptions = {
 	/**
-	 * Specify the path to the schema definition file or directory.
+	 * Specify the path to the schema definition file.
 	 *
 	 * When omitted, ArkEnv auto-discovers the schema, searching for `"env.ts"` or
-	 * `"src/env.ts"` (flat layout) or the `"env/"` / `"src/env/"` directory
-	 * (strict layout) in the project root.
+	 * `"src/env.ts"` in the project root.
 	 */
 	schemaPath?: string;
-
-	/**
-	 * Specify the configuration layout.
-	 *
-	 * When omitted, the layout is auto-detected from the schema structure: it is
-	 * `"strict"` when `env/client.ts` and `env/server.ts` are present (with
-	 * optional `env/internal/shared.ts`), and falls back to `"flat"` (a single
-	 * `env.ts`) otherwise.
-	 *
-	 * - `"flat"`: A single `env.ts` schema file.
-	 * - `"strict"`: A split schema layout (`env/client.ts`, `env/server.ts`, and optionally `env/internal/shared.ts`).
-	 */
-	layout?:
-		| "flat"
-		| "strict"
-		/**
-		 * @deprecated Use `"flat"` instead.
-		 */
-		| "simple";
 
 	/**
 	 * Enable or disable environment variable validation during dev startup and build.
@@ -138,17 +85,10 @@ export function setupArkEnv(
 		);
 	}
 
-	const normalizedLayout = normalizeLayout(options?.layout, buildLog);
-
-	const { layout: resolvedLayout, baseDir } = resolveLayout(
-		schemaPath,
-		normalizedLayout,
-	);
-
 	const runValidation = options?.validate ?? true;
 	if (runValidation) {
 		try {
-			validateSchema(schemaPath, resolvedLayout, baseDir, internalOptions);
+			validateSchema(schemaPath, internalOptions);
 		} catch (error: unknown) {
 			buildLog.logBuildError("Environment validation failed:");
 			buildLog.logBuildErrorDetail(

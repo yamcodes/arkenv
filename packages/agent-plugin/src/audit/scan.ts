@@ -112,7 +112,7 @@ export function auditSource(
 					ruleId: "unvalidated-access",
 					message: `Unvalidated ${via} access${key ? ` of '${key}'` : ""}. Use the canonical env object.`,
 					suggestedFix: key
-						? `Replace with \`env.${key}\` after \`import { env } from "./env"\` (or env/client.ts / env/server.ts in strict layout).`
+						? `Replace with \`env.${key}\` after \`import { env } from "./env"\`.`
 						: 'Replace with `import { env } from "./env"` and read named keys from `env`.',
 				});
 			}

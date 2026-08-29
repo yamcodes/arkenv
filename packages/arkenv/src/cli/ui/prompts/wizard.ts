@@ -18,9 +18,6 @@ type ExistingProjectDefaults = Partial<
 	envKeys?: string[];
 	envKeysSource?: ".env.example" | "project";
 	hasEnvSchemaFile?: boolean;
-	isStrict?: boolean;
-	isSimple?: boolean;
-	isFlat?: boolean;
 };
 
 /**
@@ -165,25 +162,12 @@ async function runExistingProjectWizard(
 
 	if (isYes) {
 		const framework = defaults?.framework || "vanilla";
-		let layout: "strict" | "simple" | "flat" | undefined;
-		if (framework === "nextjs" || framework === "nuxt") {
-			if (defaults?.isStrict) {
-				layout = "strict";
-			} else if (defaults?.isSimple) {
-				layout = "simple";
-			} else if (defaults?.isFlat) {
-				layout = "flat";
-			} else {
-				layout = "flat";
-			}
-		}
 
 		return shake({
 			mode: "existing",
 			path: defaultEnvPath,
 			validator: "arktype",
 			framework,
-			layout,
 			bunFeatures:
 				framework === "bun-fullstack"
 					? (defaults?.bunFeatures ?? ["serve"])
@@ -213,20 +197,6 @@ async function runExistingProjectWizard(
 				framework: defaults?.framework,
 			}),
 		);
-
-		// Next.js & Nuxt layout prompt
-		let layout: "strict" | "simple" | "flat" | undefined;
-		if (framework === "nextjs" || framework === "nuxt") {
-			if (defaults?.isStrict) {
-				layout = "strict";
-			} else if (defaults?.isSimple) {
-				layout = "simple";
-			} else if (defaults?.isFlat) {
-				layout = "flat";
-			} else {
-				layout = unwrapPrompt(await steps.layout({ framework }));
-			}
-		}
 
 		// 3. bunBuild
 		let bunBuild: boolean | undefined;
@@ -316,7 +286,6 @@ async function runExistingProjectWizard(
 			mode: "existing",
 			overwriteEnvSchemaFile,
 			framework,
-			layout,
 			path: envPath,
 			validator,
 			hostPreset,

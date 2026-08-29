@@ -287,20 +287,6 @@ export class Executor {
 			);
 			this.reporter.note(note.message, note.title);
 
-			if (plan.metadata.layout === "strict") {
-				const oldEnvPath = path.resolve(plan.cwd, plan.metadata.displayPath);
-				if (await this.workspace.exists(oldEnvPath)) {
-					const displayFile = plan.metadata.displayPath;
-					const baseName = path.basename(
-						displayFile,
-						path.extname(displayFile),
-					);
-					this.reporter.warn(
-						`Found existing single-file schema at ${code(displayFile)}. You can delete it after updating your imports to point to your new ${code(`${baseName}/client`)} and ${code(`${baseName}/server`)}.`,
-					);
-				}
-			}
-
 			this.reporter.finish(
 				`${symbol} ArkEnv scaffolding complete. Happy coding!`,
 				{
@@ -398,7 +384,7 @@ export class Executor {
 	}
 
 	/**
-	 * Persist the arkenv schema entry and layout strategy to package.json.
+	 * Persist the arkenv schema entry to package.json.
 	 *
 	 * @param installCwd The directory containing package.json.
 	 * @param metadata The scaffolding plan metadata.
@@ -414,7 +400,6 @@ export class Executor {
 				const pkg = JSON.parse(pkgContent);
 				pkg.arkenv = {
 					schema: metadata.displayPath,
-					layout: metadata.layout === "strict" ? "strict" : "flat",
 				};
 				await this.workspace.writeFile(
 					packageJsonPath,

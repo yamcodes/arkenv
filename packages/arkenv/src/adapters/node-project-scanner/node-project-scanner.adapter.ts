@@ -233,7 +233,7 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 	 */
 	async readArkenvConfig(
 		cwd = process.cwd(),
-	): Promise<{ schema: string; layout: "flat" | "strict" } | null> {
+	): Promise<{ schema: string } | null> {
 		const pkgPath = await this.findPackageJson(cwd);
 		if (!pkgPath) return null;
 
@@ -245,7 +245,6 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 			if (typeof pkg.arkenv === "string") {
 				return {
 					schema: pkg.arkenv,
-					layout: "flat",
 				};
 			}
 
@@ -255,7 +254,6 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 			) {
 				return {
 					schema: pkg.arkenv.schema,
-					layout: pkg.arkenv.layout === "strict" ? "strict" : "flat",
 				};
 			}
 

@@ -64,15 +64,13 @@ export function isPrefixViolation(key: string): boolean {
  * Return whether `filePath` is a canonical ArkEnv env module.
  *
  * @param filePath Absolute or repo-relative path
- * @returns True for `env.ts` and strict-layout env files
+ * @returns True for `env.ts` and optional two-module recipe files
  */
 export function isEnvModule(filePath: string): boolean {
 	const normalized = filePath.replace(/\\/g, "/");
 	return (
 		/(?:^|\/)env\.(?:[cm]?[jt]sx?)$/.test(normalized) ||
-		/(?:^|\/)env\/(?:client|server|internal\/shared)\.(?:[cm]?[jt]sx?)$/.test(
-			normalized,
-		)
+		/(?:^|\/)env\/(?:client|server)\.(?:[cm]?[jt]sx?)$/.test(normalized)
 	);
 }
 

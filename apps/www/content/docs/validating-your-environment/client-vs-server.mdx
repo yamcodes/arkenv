@@ -11,8 +11,7 @@ Public keys belong in the client-visible set. Secrets stay server-only. Mixing t
 
 <Callout type="error">
   ArkEnv treats a server secret read from client code as a hard failure. The
-  runtime proxy throws; strict layouts also keep the server schema out of the
-  client module graph. Do not soften that into a warning.
+  runtime proxy throws. Do not soften that into a warning.
 </Callout>
 
 ## Public prefixes
@@ -29,8 +28,8 @@ Keys without the prefix stay server-only. `NODE_ENV` is treated as shared on Nex
 ## Flat layout (recommended)
 
 Flat layout uses one `env.ts`. Prefixes decide which keys reach the
-client. This is the default when you run the interactive CLI, and the
-right choice for most apps.
+client. This is the default when you run the CLI, and the right choice
+for most apps.
 
 ```ts title="./env.ts"
 import arkenv from "@/.arkenv";
@@ -55,66 +54,54 @@ const nextConfig: NextConfig = {};
 export default withArkEnv(nextConfig);
 ```
 
-On Nuxt flat layout, import from `@arkenv/nuxt` and register `@arkenv/nuxt/module`. Vite and Bun plugins read the same schema and only inline public keys into the client.
+On Nuxt, import from `@arkenv/nuxt` and register `@arkenv/nuxt/module`. Vite and Bun plugins read the same schema and only inline public keys into the client.
 
 ### What flat layout protects
 
-|               | Secret **value** in client bundle | Variable **name + type** in client       |
-| ------------- | --------------------------------- | ---------------------------------------- |
-| Flat layout   | Blocked                           | Visible (schema ships with client types) |
-| Strict layout | Blocked                           | Blocked (separate modules)               |
+|             | Secret **value** in client bundle | Variable **name + type** in client       |
+| ----------- | --------------------------------- | ---------------------------------------- |
+| Flat layout | Blocked                           | Visible (schema ships with client types) |
 
 Values stay off the wire. Flat layout still types the full schema in one file, so TypeScript may autocomplete server keys in Client Components and the **names and types** of those keys can appear in the client type graph. A runtime proxy throws if you read a server key on the client.
 
-[`@t3-oss/env-nextjs`](https://env.t3.gg) uses the same single-file pattern for DX, and both projects recommend a split-file layout when you need names and types out of the client graph as well as values.
+[`@t3-oss/env-nextjs`](https://env.t3.gg) uses the same single-file pattern for DX. When you also need names and types out of the client graph, use the two-module recipe below — the same shape T3 Env uses with two `createEnv` calls.
 
-Pick strict layout when secret **names or types** reveal infrastructure you refuse to ship in client types (internal hostnames, vendor-shaped keys, and similar).
+## Advanced: two-module recipe
 
-## Strict layout
+Most apps never need this. Use it only when secret **names or types**
+reveal infrastructure you refuse to ship in client types (internal
+hostnames, vendor-shaped keys, and similar).
 
-Strict layout splits files so the server schema never enters the client module graph:
-
-<Callout type="info">
-  Most apps do not need this. Flat layout already blocks secret values and
-  throws on misuse. Strict layout costs more files and import discipline for a
-  tighter TypeScript boundary. Use it when that boundary is a requirement, not
-  by default.
-</Callout>
+Split into two modules and two imports. The client module holds public
+keys. The server module holds secrets and optionally `extends` the
+client env so server code sees one object.
 
 <Files>
   <Folder name="env" defaultOpen>
     <File name="client.ts" />
 
     <File name="server.ts" />
-
-    <Folder name="internal" defaultOpen>
-      <File name="shared.ts" />
-    </Folder>
   </Folder>
 </Files>
 
-```ts title="./env/internal/shared.ts"
-import { type } from "@arkenv/core";
+### Next.js
 
-export const SharedSchema = type({
+Client module via codegen (`@/.arkenv`). Server module via
+`@arkenv/core` plus optional `import "server-only"` so Next fails the
+build if that file enters a client graph.
+
+```ts title="./env/client.ts"
+import arkenv from "@/.arkenv";
+
+export const env = arkenv({
+  NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
   NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
 ```
 
-```ts title="./env/client.ts"
-import arkenv from "@/.arkenv";
-import { SharedSchema } from "./internal/shared";
-
-export const env = arkenv(
-  {
-    NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-  },
-  { extends: [SharedSchema] },
-);
-```
-
 ```ts title="./env/server.ts"
-import arkenv from "@arkenv/nextjs/server";
+import "server-only";
+import arkenv from "@arkenv/core";
 import { env as clientEnv } from "./client";
 
 export const env = arkenv(
@@ -125,13 +112,38 @@ export const env = arkenv(
 );
 ```
 
-Scaffold with:
+Import from `./env/client` in Client Components and from `./env/server`
+on the server. Point `withArkEnv` / your schema path at the client
+module (or keep a flat root `env.ts` if you do not need this split).
 
-```package-install
-npx arkenv@latest init --strict
+### Nuxt
+
+Same two-module shape. There is no compile-time import blocker: **never
+import the server module from client or Vue code.** Discipline is the
+fence.
+
+```ts title="./env/client.ts"
+import arkenv from "@arkenv/nuxt";
+
+export const env = arkenv({
+  NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+});
 ```
 
-Nuxt strict layout uses `@arkenv/nuxt/client` and `@arkenv/nuxt/server`. Omitting `extends` can auto-merge shared and client schemas via Nuxt virtual aliases. Details live in the [Next.js](/docs/guides/frameworks/nextjs) and [Nuxt](/docs/guides/frameworks/nuxt) guides.
+```ts title="./env/server.ts"
+import arkenv from "@arkenv/core";
+import { env as clientEnv } from "./client";
+
+export const env = arkenv(
+  {
+    DATABASE_URL: "string",
+  },
+  { extends: [clientEnv] },
+);
+```
+
+Register `@arkenv/nuxt/module` and point the module schema path at the
+client (or flat) entry your app actually loads on both sides.
 
 ## Dead-code elimination and constant folding
 

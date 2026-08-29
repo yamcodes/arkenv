@@ -4,16 +4,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { setupArkEnv as originalSetupArkEnv } from "./config";
 
 const nextjsSrc = path.resolve(__dirname);
-const arkenvSrc = path.resolve(nextjsSrc, "../../arkenv/src");
 
 const testAliases = {
-	"@arkenv/nextjs/server": path.join(nextjsSrc, "server.ts"),
-	"@arkenv/nextjs/client": path.join(nextjsSrc, "client.ts"),
 	"@arkenv/nextjs/config": path.join(nextjsSrc, "config/index.ts"),
 	"@arkenv/nextjs": path.join(nextjsSrc, "index.ts"),
-	"arkenv/standard": path.join(arkenvSrc, "standard.ts"),
-	"arkenv/core": path.join(arkenvSrc, "core.ts"),
-	arkenv: path.join(arkenvSrc, "index.ts"),
+	"@arkenv/core": path.join(nextjsSrc, "../../core/src/index.ts"),
 	"@repo/scope": path.join(nextjsSrc, "../../internal/scope/src/index.ts"),
 	"@repo/types": path.join(nextjsSrc, "../../internal/types/src/index.ts"),
 };
@@ -90,7 +85,6 @@ describe("build-time environment validation", () => {
 			setupArkEnv({
 				schemaPath,
 				outputPath,
-				layout: "flat",
 				validate: false,
 			});
 
@@ -99,7 +93,6 @@ describe("build-time environment validation", () => {
 				setupArkEnv({
 					schemaPath,
 					outputPath,
-					layout: "flat",
 					validate: true,
 				});
 			}).not.toThrow();
@@ -128,7 +121,6 @@ describe("build-time environment validation", () => {
 			setupArkEnv({
 				schemaPath,
 				outputPath,
-				layout: "flat",
 				validate: false,
 			});
 
@@ -137,7 +129,6 @@ describe("build-time environment validation", () => {
 				setupArkEnv({
 					schemaPath,
 					outputPath,
-					layout: "flat",
 					validate: true,
 				});
 			}).toThrow("process.exit called with 1");
@@ -164,7 +155,6 @@ describe("build-time environment validation", () => {
 			setupArkEnv({
 				schemaPath,
 				outputPath,
-				layout: "flat",
 				validate: false,
 			});
 
@@ -173,253 +163,12 @@ describe("build-time environment validation", () => {
 				setupArkEnv({
 					schemaPath,
 					outputPath,
-					layout: "flat",
 					validate: true,
 				});
 			}).toThrow("process.exit called with 1");
 
 			expect(exitSpy).toHaveBeenCalledWith(1);
 			expect(consoleErrorSpy).toHaveBeenCalled();
-		});
-	});
-
-	describe("strict layout", () => {
-		const strictBaseDir = path.join(tempDir, "env");
-		const clientPath = path.join(strictBaseDir, "client.ts");
-		const serverPath = path.join(strictBaseDir, "server.ts");
-		const sharedPath = path.join(strictBaseDir, "internal", "shared.ts");
-		const strictOutputPath = path.join(
-			strictBaseDir,
-			"generated",
-			"env.gen.ts",
-		);
-
-		beforeEach(() => {
-			fs.mkdirSync(path.join(strictBaseDir, "internal"), { recursive: true });
-		});
-
-		it("should pass when strict layout variables are all valid", () => {
-			fs.writeFileSync(
-				sharedPath,
-				`
-				import { type } from "@arkenv/core";
-				export const SharedSchema = type({
-					NODE_ENV: "'development' | 'production'",
-				});
-				`,
-				"utf-8",
-			);
-
-			fs.writeFileSync(
-				clientPath,
-				`
-				import arkenv from "./generated/env.gen";
-				import { SharedSchema } from "./internal/shared";
-				export const env = arkenv({
-					NEXT_PUBLIC_API_URL: "string",
-				}, {
-					extends: [SharedSchema],
-					runtimeEnv: {
-						NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-						NODE_ENV: process.env.NODE_ENV,
-					}
-				});
-				`,
-				"utf-8",
-			);
-
-			fs.writeFileSync(
-				serverPath,
-				`
-				import arkenv from "${path.resolve(__dirname, "./server.ts")}";
-				import { env as clientEnv } from "./client";
-				export const env = arkenv({
-					DATABASE_URL: "string",
-				}, {
-					extends: [clientEnv],
-				});
-				`,
-				"utf-8",
-			);
-
-			process.env.DATABASE_URL = "postgres://localhost/db";
-			process.env.NEXT_PUBLIC_API_URL = "https://api.example.com";
-			process.env.NODE_ENV = "development";
-
-			// First run setup to generate the template file (env.gen.ts) so clientPath can import it
-			// We disable validation on first pass to let the file compile
-			setupArkEnv({
-				schemaPath: strictBaseDir,
-				outputPath: strictOutputPath,
-				layout: "strict",
-				validate: false,
-			});
-
-			// Now enable validation for the second pass
-			expect(() => {
-				setupArkEnv({
-					schemaPath: strictBaseDir,
-					outputPath: strictOutputPath,
-					layout: "strict",
-					validate: true,
-				});
-			}).not.toThrow();
-
-			expect(exitSpy).not.toHaveBeenCalled();
-		});
-
-		it("should pass strict layout validation when server omits extends (auto-extend)", () => {
-			fs.writeFileSync(
-				sharedPath,
-				`
-				import { type } from "@arkenv/core";
-				export const SharedSchema = type({
-					NODE_ENV: "'development' | 'production'",
-				});
-				`,
-				"utf-8",
-			);
-
-			fs.writeFileSync(
-				clientPath,
-				`
-				import arkenv from "./generated/env.gen";
-				import { SharedSchema } from "./internal/shared";
-				export const env = arkenv({
-					NEXT_PUBLIC_API_URL: "string",
-				}, {
-					extends: [SharedSchema],
-					runtimeEnv: {
-						NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-						NODE_ENV: process.env.NODE_ENV,
-					}
-				});
-				`,
-				"utf-8",
-			);
-
-			fs.writeFileSync(
-				serverPath,
-				`
-				import arkenv from "${path.resolve(__dirname, "./server.ts")}";
-				export const env = arkenv({
-					DATABASE_URL: "string",
-				});
-				`,
-				"utf-8",
-			);
-
-			process.env.DATABASE_URL = "postgres://localhost/db";
-			process.env.NEXT_PUBLIC_API_URL = "https://api.example.com";
-			process.env.NODE_ENV = "development";
-
-			setupArkEnv({
-				schemaPath: strictBaseDir,
-				outputPath: strictOutputPath,
-				layout: "strict",
-				validate: false,
-			});
-
-			expect(() => {
-				setupArkEnv({
-					schemaPath: strictBaseDir,
-					outputPath: strictOutputPath,
-					layout: "strict",
-					validate: true,
-				});
-			}).not.toThrow();
-
-			expect(exitSpy).not.toHaveBeenCalled();
-		});
-
-		it("should exit build when a server variable is missing in strict layout", () => {
-			fs.writeFileSync(
-				sharedPath,
-				`
-				import { type } from "@arkenv/core";
-				export const SharedSchema = type({
-					NODE_ENV: "'development' | 'production'",
-				});
-				`,
-				"utf-8",
-			);
-
-			fs.writeFileSync(
-				clientPath,
-				`
-				import arkenv from "./generated/env.gen";
-				import { SharedSchema } from "./internal/shared";
-				export const env = arkenv({
-					NEXT_PUBLIC_API_URL: "string",
-				}, {
-					extends: [SharedSchema],
-					runtimeEnv: {
-						NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-						NODE_ENV: process.env.NODE_ENV,
-					}
-				});
-				`,
-				"utf-8",
-			);
-
-			fs.writeFileSync(
-				serverPath,
-				`
-				import arkenv from "${path.resolve(__dirname, "./server.ts")}";
-				import { env as clientEnv } from "./client";
-				export const env = arkenv({
-					DATABASE_URL: "string",
-				}, {
-					extends: [clientEnv],
-				});
-				`,
-				"utf-8",
-			);
-
-			process.env.NEXT_PUBLIC_API_URL = "https://api.example.com";
-			process.env.NODE_ENV = "development";
-			// DATABASE_URL is missing
-
-			// First pass codegen
-			setupArkEnv({
-				schemaPath: strictBaseDir,
-				outputPath: strictOutputPath,
-				layout: "strict",
-				validate: false,
-			});
-
-			// Second pass validation
-			expect(() => {
-				setupArkEnv({
-					schemaPath: strictBaseDir,
-					outputPath: strictOutputPath,
-					layout: "strict",
-					validate: true,
-				});
-			}).toThrow("process.exit called with 1");
-
-			expect(exitSpy).toHaveBeenCalledWith(1);
-		});
-		it("should throw a friendly error when strict layout is missing client.ts", () => {
-			// Only server.ts present — client.ts is intentionally absent
-			fs.writeFileSync(
-				serverPath,
-				`
-				import arkenv from "${path.resolve(__dirname, "./server.ts")}";
-				export const env = arkenv({
-					DATABASE_URL: "string",
-				});
-				`,
-				"utf-8",
-			);
-
-			expect(() => {
-				setupArkEnv({
-					schemaPath: strictBaseDir,
-					outputPath: strictOutputPath,
-					layout: "strict",
-				});
-			}).toThrow(/client\.ts/);
 		});
 	});
 
@@ -445,7 +194,6 @@ describe("build-time environment validation", () => {
 				setupArkEnv({
 					schemaPath,
 					outputPath,
-					layout: "flat",
 					codegen: false,
 					validate: true,
 				});
@@ -462,7 +210,6 @@ describe("build-time environment validation", () => {
 				setupArkEnv({
 					schemaPath,
 					outputPath,
-					layout: "flat",
 					codegen: false,
 					validate: true,
 				});

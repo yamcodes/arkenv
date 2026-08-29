@@ -20,14 +20,6 @@ export default defineProject({
 				replacement: path.resolve(__dirname, "../core/src/index.ts"),
 			},
 			{
-				find: "#arkenv/client-env",
-				replacement: path.resolve(__dirname, "./src/empty-client-env.ts"),
-			},
-			{
-				find: "#arkenv/shared-schema",
-				replacement: path.resolve(__dirname, "./src/empty-shared-schema.ts"),
-			},
-			{
 				find: "#arkenv/server-boot",
 				replacement: path.resolve(__dirname, "./src/server-boot.ts"),
 			},

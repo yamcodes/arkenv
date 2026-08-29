@@ -576,9 +576,9 @@ describe("config-mutation", () => {
 			expect(result.error).toContain("Malformed preset markers");
 		});
 
-		it("supports custom markerId for strict role blocks", () => {
+		it("supports custom markerId for preset blocks", () => {
 			const initialContent = dedent`
-				import arkenv from "@arkenv/nextjs/client";
+				import arkenv from "@arkenv/nextjs";
 
 				export const env = arkenv({
 					NEXT_PUBLIC_API_URL: "string",
@@ -589,16 +589,16 @@ describe("config-mutation", () => {
 				preset: "vercel",
 				framework: "nextjs",
 				validator: "arktype",
-				markerId: "vercel:client",
+				markerId: "vercel:public",
 				targetKeys: ["NEXT_PUBLIC_VERCEL_ENV", "NEXT_PUBLIC_VERCEL_URL"],
 			});
 
 			expect(result.success).toBe(true);
-			expect(result.code).toContain("// @arkenv-preset-start vercel:client");
+			expect(result.code).toContain("// @arkenv-preset-start vercel:public");
 			expect(result.code).toContain(
 				"NEXT_PUBLIC_VERCEL_ENV: \"'production' | 'preview' | 'development'?\"",
 			);
-			expect(result.code).toContain("// @arkenv-preset-end vercel:client");
+			expect(result.code).toContain("// @arkenv-preset-end vercel:public");
 		});
 	});
 
@@ -850,16 +850,15 @@ describe("config-mutation", () => {
 			expect(result.code).toContain("// @arkenv-preset-end vercel");
 		});
 
-		it("mutates multiline arkenv(\\n  { ... }\\n) schema as emitted by strict init", () => {
-			const initialContent = `import arkenv from "@arkenv/nextjs/client";
-import { SharedSchema } from "./internal/shared";
+		it("mutates multiline arkenv(\\n  { ... }\\n) schema call", () => {
+			const initialContent = `import arkenv from "@arkenv/nextjs";
 
 export const env = arkenv(
 	{
 		NEXT_PUBLIC_URL: "string",
 	},
 	{
-		extends: [SharedSchema],
+		emptyAsUndefined: true,
 	},
 );`;
 
@@ -867,25 +866,24 @@ export const env = arkenv(
 				preset: "vercel",
 				framework: "nextjs",
 				validator: "arktype",
-				markerId: "vercel:client",
+				markerId: "vercel:public",
 				targetKeys: ["NEXT_PUBLIC_VERCEL_ENV", "NEXT_PUBLIC_VERCEL_URL"],
 			});
 
 			expect(result.success).toBe(true);
 			expect(result.updated).toBe(true);
-			expect(result.code).toBe(`import arkenv from "@arkenv/nextjs/client";
-import { SharedSchema } from "./internal/shared";
+			expect(result.code).toBe(`import arkenv from "@arkenv/nextjs";
 
 export const env = arkenv(
 	{
 		NEXT_PUBLIC_URL: "string",
-		// @arkenv-preset-start vercel:client
+		// @arkenv-preset-start vercel:public
 		NEXT_PUBLIC_VERCEL_ENV: "'production' | 'preview' | 'development'?",
 		NEXT_PUBLIC_VERCEL_URL: "string?",
-		// @arkenv-preset-end vercel:client
+		// @arkenv-preset-end vercel:public
 	},
 	{
-		extends: [SharedSchema],
+		emptyAsUndefined: true,
 	},
 );`);
 		});

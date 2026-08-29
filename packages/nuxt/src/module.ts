@@ -2,27 +2,17 @@ import fs from "node:fs";
 import path from "node:path";
 import { addServerPlugin, createResolver, defineNuxtModule } from "@nuxt/kit";
 import type { NuxtModule } from "@nuxt/schema";
-import { formatBuildError, resolveBuildLog } from "@repo/log";
+import { formatBuildError } from "@repo/log";
 import { name, peerDependencies, version } from "../package.json";
 import type { BootGateEngine } from "./boot-gate";
 import {
 	type ArkEnvConfigOptions,
-	extractClientKeys,
 	extractKeys,
-	extractServerKeys,
-	extractSharedKeys,
 	findSchemaPath,
 	formatMissingSchemaError,
-	normalizeLayout,
-	resolveLayout,
 	validateSchema,
 } from "./config";
 import { getDefaultBootGateEngine } from "./module-engine";
-import { missingClientTsError } from "./strict-client-env";
-import {
-	registerStrictLayoutHooks,
-	registerViteExtendHook,
-} from "./strict-layout-hooks";
 
 /**
  * Configuration options for the ArkEnv Nuxt module.
@@ -41,6 +31,10 @@ import {
  */
 export type ModuleOptions = ArkEnvConfigOptions;
 
+type NitroConfigHook = {
+	alias?: Record<string, string>;
+};
+
 declare module "@nuxt/schema" {
 	// biome-ignore lint/style/useConsistentTypeDefinitions: module augmentation requires an interface for declaration merging
 	interface NuxtConfig {
@@ -50,11 +44,11 @@ declare module "@nuxt/schema" {
 	interface NuxtOptions {
 		arkenv?: ModuleOptions;
 	}
+	// biome-ignore lint/style/useConsistentTypeDefinitions: module augmentation requires an interface for declaration merging
+	interface NuxtHooks {
+		"nitro:config": (nitroConfig: NitroConfigHook) => void;
+	}
 }
-
-const CLIENT_SECURITY_ERROR = formatBuildError(
-	"Importing server-only environment schema on the client is not allowed!",
-);
 
 const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 	meta: {
@@ -69,8 +63,6 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 		validate: true,
 	},
 	setup(options, nuxt) {
-		const buildLog = resolveBuildLog(options);
-
 		const schemaPath = options.schemaPath
 			? path.resolve(nuxt.options.rootDir, options.schemaPath)
 			: findSchemaPath(nuxt.options.rootDir);
@@ -115,56 +107,16 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			nitroConfig.alias["#arkenv/server-boot"] = realServerBoot;
 		});
 
-		const normalizedLayout = normalizeLayout(options.layout, buildLog);
-
-		const { layout: resolvedLayout, baseDir } = resolveLayout(
-			schemaPath,
-			normalizedLayout,
-		);
-
-		const srcDir = path.resolve(
-			nuxt.options.rootDir,
-			nuxt.options.srcDir ?? nuxt.options.rootDir,
-		);
-
-		const emptySharedSchema = resolver.resolve("./empty-shared-schema");
-
-		let strictClientPath: string | undefined;
-		let strictSharedPath: string | undefined;
-		let userSharedPath: string | undefined;
-		if (resolvedLayout === "strict" && baseDir) {
-			const clientPath = path.join(baseDir, "client.ts");
-			if (!fs.existsSync(clientPath)) {
-				throw new Error(missingClientTsError(clientPath, baseDir));
-			}
-			const sharedPath = path.join(baseDir, "internal", "shared.ts");
-			userSharedPath = fs.existsSync(sharedPath) ? sharedPath : undefined;
-			strictClientPath = clientPath;
-			// Missing shared.ts is intentional empty; alias to the package stub.
-			strictSharedPath = userSharedPath ?? emptySharedSchema;
-		}
-
 		if (nuxt.options.dev) {
-			const watchPaths =
-				resolvedLayout === "strict" && baseDir
-					? [
-							path.join(baseDir, "internal", "shared.ts"),
-							path.join(baseDir, "client.ts"),
-							path.join(baseDir, "server.ts"),
-						].filter(fs.existsSync)
-					: [schemaPath];
-
 			nuxt.options.watch = nuxt.options.watch || [];
-			for (const p of watchPaths) {
-				nuxt.options.watch.push(p);
-			}
+			nuxt.options.watch.push(schemaPath);
 		}
 
 		const validate = options.validate ?? true;
 
 		if (validate) {
 			try {
-				validateSchema(schemaPath, resolvedLayout, baseDir ?? "", {
+				validateSchema(schemaPath, {
 					engine,
 				});
 			} catch (error: unknown) {
@@ -175,38 +127,11 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			}
 		}
 
-		let serverKeys: string[] = [];
-		let clientKeys: string[] = [];
-		let sharedKeys: string[] = [];
-
-		if (
-			resolvedLayout === "strict" &&
-			baseDir &&
-			strictClientPath &&
-			strictSharedPath
-		) {
-			const serverPath = path.join(baseDir, "server.ts");
-
-			const clientContent = fs.readFileSync(strictClientPath, "utf-8");
-			const sharedContent = userSharedPath
-				? fs.readFileSync(userSharedPath, "utf-8")
-				: "";
-			const serverContent = fs.existsSync(serverPath)
-				? fs.readFileSync(serverPath, "utf-8")
-				: "";
-
-			clientKeys = extractClientKeys(clientContent);
-			sharedKeys = extractSharedKeys(sharedContent);
-			serverKeys = extractServerKeys(serverContent);
-
-			registerStrictLayoutHooks(nuxt, strictClientPath, strictSharedPath);
-		} else {
-			const fileContent = fs.readFileSync(schemaPath, "utf-8");
-			const extracted = extractKeys(fileContent);
-			serverKeys = extracted.serverKeys;
-			clientKeys = extracted.clientKeys;
-			sharedKeys = extracted.sharedKeys;
-		}
+		const fileContent = fs.readFileSync(schemaPath, "utf-8");
+		const extracted = extractKeys(fileContent);
+		const serverKeys = extracted.serverKeys;
+		const clientKeys = extracted.clientKeys;
+		const sharedKeys = extracted.sharedKeys;
 
 		nuxt.options.runtimeConfig = nuxt.options.runtimeConfig || {};
 		nuxt.options.runtimeConfig.public = nuxt.options.runtimeConfig.public || {};
@@ -227,22 +152,10 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 
 		(nuxt.options.runtimeConfig as { arkenvGate?: unknown }).arkenvGate = {
 			schemaPath,
-			layout: resolvedLayout,
-			baseDir: baseDir ?? "",
 			engine,
 		};
 
 		addServerPlugin(resolver.resolve("./runtime/nitro-boot-plugin"));
-
-		registerViteExtendHook(nuxt, {
-			resolvedLayout,
-			baseDir,
-			strictClientPath,
-			strictSharedPath,
-			rootDir: nuxt.options.rootDir,
-			srcDir,
-			clientSecurityError: CLIENT_SECURITY_ERROR,
-		});
 	},
 });
 

@@ -100,8 +100,6 @@ describe("Nuxt coercion honesty regressions", () => {
 			runBootGate(
 				{
 					schemaPath,
-					layout: "simple",
-					baseDir: "",
 					engine: "arktype",
 				},
 				runtimeConfig,

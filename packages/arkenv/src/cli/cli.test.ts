@@ -220,27 +220,20 @@ describe("CLI parser", () => {
 		});
 	});
 
-	describe("Strict and Simple flags", () => {
-		it("should parse --strict flag", () => {
+	describe("Removed layout flags", () => {
+		it("treats --strict as an unknown argument", () => {
 			const cli = new CLI(["node", "arkenv", "init", "--strict"]);
-			expect(cli.isStrict).toBe(true);
-			expect(cli.isSimple).toBe(false);
-			expect(cli.validationError).toBeUndefined();
+			expect(cli.validationError).toBe("Unknown argument: --strict");
 		});
 
-		it("should parse --simple flag", () => {
+		it("treats --simple as an unknown argument", () => {
 			const cli = new CLI(["node", "arkenv", "init", "--simple"]);
-			expect(cli.isStrict).toBe(false);
-			expect(cli.isSimple).toBe(true);
-			expect(cli.validationError).toBeUndefined();
+			expect(cli.validationError).toBe("Unknown argument: --simple");
 		});
 
-		it("should parse --flat flag", () => {
+		it("treats --flat as an unknown argument", () => {
 			const cli = new CLI(["node", "arkenv", "init", "--flat"]);
-			expect(cli.isStrict).toBe(false);
-			expect(cli.isSimple).toBe(false);
-			expect(cli.isFlat).toBe(true);
-			expect(cli.validationError).toBeUndefined();
+			expect(cli.validationError).toBe("Unknown argument: --flat");
 		});
 	});
 

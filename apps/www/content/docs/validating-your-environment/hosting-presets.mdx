@@ -7,14 +7,13 @@ Hosting providers inject their own system environment variables at build and
 runtime. Presets teach the ArkEnv CLI which variables to generate into your
 schema, pre-typed and optional, so you do not look them up manually.
 
-Presets work with ArkType, Zod, and Valibot across both
-[flat and strict](/docs/validating-your-environment/client-vs-server) layouts.
+Presets work with ArkType, Zod, and Valibot on a flat `env.ts` schema.
 
 {/* prettier-ignore */}
 
 > [!NOTE]
 > ArkEnv is **code-first**. Presets write readable TypeScript schema code
-> directly into your `./env.ts` (or `env/client.ts` and `env/server.ts`).
+> directly into your `./env.ts`.
 > There are no runtime dependencies on CLI presets or black-box configuration
 > loaders.
 
@@ -85,10 +84,6 @@ export const env = arkenv({
   // @arkenv-preset-end vercel
 });
 ```
-
-In strict layouts (`env/client.ts` and `env/server.ts`), the CLI generates
-role-suffixed markers (`vercel:client` and `vercel:server`) targeted to the
-matching runtime boundary.
 
 ### Why comment markers exist
 
@@ -226,5 +221,5 @@ Every preset field is **optional** (present only when deployed on that provider)
 <Cards>
   <Card href="/docs/reference/preset" title="preset reference" description="CLI reference for arkenv preset apply and arkenv preset remove." />
 
-  <Card href="/docs/validating-your-environment/client-vs-server" title="Client vs Server" description="Learn how flat and strict layouts manage runtime boundaries." />
+  <Card href="/docs/validating-your-environment/client-vs-server" title="Client vs Server" description="Flat env.ts and the optional two-module recipe." />
 </Cards>

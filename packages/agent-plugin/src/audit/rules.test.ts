@@ -12,7 +12,7 @@ describe("rules", () => {
 		expect(isEnvModule("src/env.ts")).toBe(true);
 		expect(isEnvModule("env/client.ts")).toBe(true);
 		expect(isEnvModule("env/server.ts")).toBe(true);
-		expect(isEnvModule("env/internal/shared.ts")).toBe(true);
+		expect(isEnvModule("env/internal/shared.ts")).toBe(false);
 		expect(isEnvModule("src/app.ts")).toBe(false);
 	});
 

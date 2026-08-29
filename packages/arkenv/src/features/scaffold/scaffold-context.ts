@@ -17,7 +17,6 @@ export type ScaffoldContext = {
 	 */
 	packageName?: string;
 	disableCodegen: boolean;
-	layout?: "strict" | "simple" | "flat";
 	nextjsImportPath?: string;
 	/**
 	 * Hosting provider preset for schema field enrichment.
@@ -49,7 +48,6 @@ export function createScaffoldContext(
 			packageName: codegen.packageName,
 		}),
 		disableCodegen: options.disableCodegen === true,
-		...(options.layout !== undefined && { layout: options.layout }),
 		...(nextjsImportPath !== undefined && { nextjsImportPath }),
 		...(options.hostPreset !== undefined && {
 			hostPreset: options.hostPreset,
