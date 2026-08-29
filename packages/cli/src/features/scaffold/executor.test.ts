@@ -41,6 +41,7 @@ describe("Executor", () => {
 		bootstrapNuxtConfig: vi
 			.fn()
 			.mockResolvedValue({ success: true, updated: true }),
+		safeAppend: vi.fn().mockResolvedValue(true),
 	};
 
 	const mockReporter: Reporter = {
@@ -254,6 +255,22 @@ describe("Executor", () => {
 		expect(mockWorkspace.bootstrapViteConfig).toHaveBeenCalledWith(
 			"vite.config.ts",
 			"./env",
+		);
+	});
+
+	it("appends to files when planned", async () => {
+		const plan: ScaffoldingPlan = {
+			...defaultPlan,
+			files: [
+				{ path: "vite-env.d.ts", content: "schema-path", action: "append" },
+			],
+			bootstrap: { framework: "vite" },
+		};
+		await executor.execute(plan);
+		expect(mockWorkspace.safeAppend).toHaveBeenCalledWith(
+			"vite-env.d.ts",
+			"schema-path",
+			"vite",
 		);
 	});
 

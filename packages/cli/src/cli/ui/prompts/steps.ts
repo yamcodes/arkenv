@@ -2,6 +2,10 @@ import {
 	overwriteEnvSchemaFileStep,
 	useEnvExampleStep,
 } from "./steps/env-example";
+import {
+	envDtsHandlingStep,
+	installTypeDefinitionsStep,
+} from "./steps/env-types";
 import { exampleStep } from "./steps/example";
 import {
 	bunBuildStep,
@@ -25,6 +29,8 @@ export const steps = {
 	nextjsCodegen: nextjsCodegenStep,
 	useDefaultPath: useDefaultPathStep,
 	path: pathStep,
+	installTypeDefinitions: installTypeDefinitionsStep,
+	envDtsHandling: envDtsHandlingStep,
 	validator: validatorStep,
 	hostPreset: hostPresetStep,
 	useEnvExample: useEnvExampleStep,
