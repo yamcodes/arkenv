@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { HeroMvpExampleView } from "./hero-mvp-example-view";
 import {
 	HERO_MVP_HOSTS,
@@ -52,6 +52,20 @@ function renderView() {
 	);
 }
 
+
+function mockScrollOverflow(overflow: boolean) {
+	const scrollTop = { value: 0, writable: true, configurable: true };
+	vi.spyOn(HTMLElement.prototype, "clientHeight", "get").mockReturnValue(100);
+	vi.spyOn(HTMLElement.prototype, "scrollHeight", "get").mockReturnValue(
+		overflow ? 240 : 100,
+	);
+	Object.defineProperty(HTMLElement.prototype, "scrollTop", scrollTop);
+}
+
+afterEach(() => {
+	vi.restoreAllMocks();
+});
+
 describe("HeroMvpExampleView", () => {
 	it("starts on ArkType with validator tabs and no host switcher", () => {
 		renderView();
@@ -95,6 +109,7 @@ describe("HeroMvpExampleView", () => {
 			screen.getByRole("tabpanel").querySelector("[data-active='true']"),
 		).not.toHaveTextContent("VITE_API_URL");
 
+		mockScrollOverflow(true);
 		await user.click(screen.getByRole("tab", { name: "Valibot" }));
 		expect(
 			screen.getByRole("tabpanel").querySelector("[data-active='true']"),
@@ -106,6 +121,11 @@ describe("HeroMvpExampleView", () => {
 			"data-overflow",
 			"true",
 		);
+		expect(screen.getByRole("tabpanel")).toHaveAttribute(
+			"data-fade-bottom",
+			"true",
+		);
+		expect(screen.getByRole("tabpanel")).not.toHaveAttribute("data-fade-top");
 	});
 
 	it("copies the visible tab source", async () => {

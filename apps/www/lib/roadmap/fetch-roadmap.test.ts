@@ -4,9 +4,24 @@ vi.mock("~/lib/roadmap/config", () => ({
 	ROADMAP_MILESTONE_NUMBER: 1,
 	ROADMAP_EXCLUDE_ISSUE_NUMBERS: new Set([683, 1306, 1590]),
 	ROADMAP_EXTRAS: [
-		{ id: "zebra-first", title: "Zebra launch step", done: false },
-		{ id: "alpha-second", title: "Alpha launch step", done: false },
-		{ id: "done-extra", title: "Already done extra", done: true },
+		{
+			id: "zebra-first",
+			title: "Zebra launch step",
+			done: false,
+			topic: "Core",
+		},
+		{
+			id: "alpha-second",
+			title: "Alpha launch step",
+			done: false,
+			topic: "Docs",
+		},
+		{
+			id: "done-extra",
+			title: "Already done extra",
+			done: true,
+			topic: "Docs",
+		},
 	],
 }));
 
@@ -46,15 +61,25 @@ describe("fetchRoadmap", () => {
 						},
 						{
 							number: 10,
-							title: "Open work",
+							title: "(v1) Open work",
 							state: "open",
 							html_url: "https://github.com/yamcodes/arkenv/issues/10",
+							labels: [{ name: "@arkenv/nextjs" }],
 						},
 						{
 							number: 9,
 							title: "Shipped work",
 							state: "closed",
 							html_url: "https://github.com/yamcodes/arkenv/issues/9",
+							labels: [{ name: "docs" }],
+						},
+						{
+							number: 1259,
+							title: "documentation",
+							state: "closed",
+							html_url: "https://github.com/yamcodes/arkenv/issues/1259",
+							parent_issue_url:
+								"https://api.github.com/repos/yamcodes/arkenv/issues/1241",
 						},
 						{
 							number: 11,
@@ -73,7 +98,8 @@ describe("fetchRoadmap", () => {
 		const roadmap = await fetchRoadmap();
 
 		expect(roadmap.stale).toBe(false);
-		expect(roadmap.totalCount).toBe(5); // 2 issues + 3 extras (meta issues + PR skipped)
+		expect(roadmap.totalCount).toBe(5); // 2 issues + 3 extras (meta, PR, sub-issue skipped)
+		expect(roadmap.items.map((item) => item.id)).not.toContain("issue:1259");
 		expect(roadmap.doneCount).toBe(2);
 		expect(roadmap.percent).toBe(40);
 		// Open issues first, then extras in config order (not alphabetical).
@@ -84,6 +110,13 @@ describe("fetchRoadmap", () => {
 			"issue:9",
 			"extra:done-extra",
 		]);
+		expect(roadmap.items.find((i) => i.id === "issue:10")).toMatchObject({
+			title: "Open work",
+			topic: "Integrations",
+		});
+		expect(roadmap.items.find((i) => i.id === "issue:9")).toMatchObject({
+			topic: "Docs",
+		});
 	});
 
 	it("keeps milestone issues when only meta fails", async () => {

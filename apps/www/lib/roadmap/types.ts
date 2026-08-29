@@ -1,3 +1,5 @@
+import type { RoadmapTopic } from "~/lib/roadmap/topics";
+
 /**
  * One row on the public roadmap checklist.
  */
@@ -6,8 +8,15 @@ export type RoadmapItem = {
 	 * Stable key for React lists (`issue:123` or `extra:release-v1`).
 	 */
 	id: string;
+	/**
+	 * Display title (milestone `(v1)` markers stripped).
+	 */
 	title: string;
 	done: boolean;
+	/**
+	 * Topic bucket for grouping under Up next / Done.
+	 */
+	topic: RoadmapTopic;
 	/**
 	 * GitHub issue URL when the row comes from the milestone.
 	 */

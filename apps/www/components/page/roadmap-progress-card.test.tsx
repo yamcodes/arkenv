@@ -13,4 +13,14 @@ describe("RoadmapProgressCard", () => {
 		expect(screen.getByText("v1.0")).toBeInTheDocument();
 		expect(screen.getByText("94%")).toBeInTheDocument();
 	});
+
+	it("hides the percent when GitHub data is stale", () => {
+		render(<RoadmapProgressCard percent={0} stale />);
+
+		expect(
+			screen.getByRole("link", { name: "v1 roadmap (progress unavailable)" }),
+		).toHaveAttribute("href", "/roadmap");
+		expect(screen.getByText("v1.0")).toBeInTheDocument();
+		expect(screen.queryByText("0%")).not.toBeInTheDocument();
+	});
 });

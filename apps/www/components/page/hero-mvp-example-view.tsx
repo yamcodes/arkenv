@@ -24,6 +24,27 @@ type HeroMvpExampleViewProps = {
 	examples: HeroMvpExample[];
 };
 
+type ScrollEdgeFades = {
+	overflow: boolean;
+	fadeTop: boolean;
+	fadeBottom: boolean;
+};
+
+function readScrollEdgeFades(scroll: HTMLElement): ScrollEdgeFades {
+	const canScroll = scroll.scrollHeight > scroll.clientHeight + 1;
+	if (!canScroll) {
+		return { overflow: false, fadeTop: false, fadeBottom: false };
+	}
+	const atTop = scroll.scrollTop <= 1;
+	const atBottom =
+		scroll.scrollTop + scroll.clientHeight >= scroll.scrollHeight - 1;
+	return {
+		overflow: true,
+		fadeTop: !atTop,
+		fadeBottom: !atBottom,
+	};
+}
+
 /**
  * Validator tabs over a vanilla env.ts window. Hosts live in the ticker, not here.
  */
@@ -31,12 +52,38 @@ export function HeroMvpExampleView({ examples }: HeroMvpExampleViewProps) {
 	const { validator, setValidator } = useHeroPlayground();
 	const baseId = useId();
 	const bodyRef = useRef<HTMLDivElement>(null);
+	const scrollRef = useRef<HTMLDivElement>(null);
 	const panes = examples.filter((item) => item.host === "vanilla");
-	// biome-ignore lint/correctness/useExhaustiveDependencies: tab switch must reset shared pane scroll
+
 	useLayoutEffect(() => {
 		const body = bodyRef.current;
-		if (body) body.scrollTop = 0;
+		const scroll = scrollRef.current;
+		if (!body || !scroll) return;
+
+		const applyFades = () => {
+			const edges = readScrollEdgeFades(scroll);
+			if (edges.overflow) body.dataset.overflow = "true";
+			else delete body.dataset.overflow;
+			if (edges.fadeTop) body.dataset.fadeTop = "true";
+			else delete body.dataset.fadeTop;
+			if (edges.fadeBottom) body.dataset.fadeBottom = "true";
+			else delete body.dataset.fadeBottom;
+		};
+
+		scroll.scrollTop = 0;
+		applyFades();
+		scroll.addEventListener("scroll", applyFades, { passive: true });
+		const ro = new ResizeObserver(applyFades);
+		ro.observe(scroll);
+		for (const child of scroll.children) {
+			if (child instanceof HTMLElement) ro.observe(child);
+		}
+		return () => {
+			scroll.removeEventListener("scroll", applyFades);
+			ro.disconnect();
+		};
 	}, [validator]);
+
 	if (panes.length === 0) return null;
 	const panelId = `${baseId}-panel`;
 	const active = panes.find((item) => item.validator === validator) ?? panes[0];
@@ -62,12 +109,12 @@ export function HeroMvpExampleView({ examples }: HeroMvpExampleViewProps) {
 			<figure className="home-aurora__code-window home-aurora__mvp-frame">
 				<WindowChrome title="./env.ts" copyText={active.code} />
 				<div
+					ref={bodyRef}
 					role="tabpanel"
 					id={panelId}
 					className="home-aurora__mvp-body"
-					data-overflow={active.validator === "valibot" ? "true" : undefined}
 				>
-					<div ref={bodyRef} className="home-aurora__mvp-scroll">
+					<div ref={scrollRef} className="home-aurora__mvp-scroll">
 						{panes.map((item) => {
 							const active = item.validator === validator;
 							return (

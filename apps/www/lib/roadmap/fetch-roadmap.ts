@@ -3,6 +3,7 @@ import {
 	ROADMAP_EXTRAS,
 	ROADMAP_MILESTONE_NUMBER,
 } from "~/lib/roadmap/config";
+import { displayTitle, topicFromIssue } from "~/lib/roadmap/topics";
 import type { RoadmapData, RoadmapItem } from "~/lib/roadmap/types";
 import { breakDownGithubUrl } from "~/lib/utils/github";
 
@@ -19,6 +20,12 @@ type GitHubIssue = {
 	title: string;
 	state: "open" | "closed";
 	html_url: string;
+	labels?: Array<string | { name: string }>;
+	/**
+	 * Present when this issue is a GitHub sub-issue of another issue.
+	 * Sub-issues are omitted from the public roadmap (parents only).
+	 */
+	parent_issue_url?: string | null;
 	pull_request?: unknown;
 };
 
@@ -44,6 +51,12 @@ function repoCoords(): { owner: string; repo: string } {
 	const githubUrl =
 		process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/yamcodes/arkenv";
 	return breakDownGithubUrl(githubUrl);
+}
+
+function labelNames(issue: GitHubIssue): string[] {
+	return (issue.labels ?? []).map((label) =>
+		typeof label === "string" ? label : label.name,
+	);
 }
 
 /**
@@ -77,7 +90,9 @@ async function fetchMilestoneIssues(
 		if (batch.length < 100) break;
 		page += 1;
 	}
-	return issues.filter((issue) => issue.pull_request == null);
+	return issues.filter(
+		(issue) => issue.pull_request == null && issue.parent_issue_url == null,
+	);
 }
 
 async function fetchMilestoneMeta(
@@ -105,6 +120,7 @@ function extrasAsItems(): RoadmapItem[] {
 		id: `extra:${extra.id}`,
 		title: extra.title,
 		done: extra.done,
+		topic: extra.topic,
 	}));
 }
 
@@ -129,13 +145,17 @@ function sortItems(items: RoadmapItem[]): RoadmapItem[] {
 function issuesToItems(issues: GitHubIssue[]): RoadmapItem[] {
 	return issues
 		.filter((issue) => !ROADMAP_EXCLUDE_ISSUE_NUMBERS.has(issue.number))
-		.map((issue) => ({
-			id: `issue:${issue.number}`,
-			title: issue.title,
-			done: issue.state === "closed",
-			href: issue.html_url,
-			number: issue.number,
-		}));
+		.map((issue) => {
+			const labels = labelNames(issue);
+			return {
+				id: `issue:${issue.number}`,
+				title: displayTitle(issue.title),
+				done: issue.state === "closed",
+				topic: topicFromIssue(labels, issue.title),
+				href: issue.html_url,
+				number: issue.number,
+			};
+		});
 }
 
 function withProgress(

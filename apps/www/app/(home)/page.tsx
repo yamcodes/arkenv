@@ -39,7 +39,10 @@ export default async function HomePage() {
 						className="home-aurora__badge rise"
 						style={{ animationDelay: "40ms" }}
 					>
-						<RoadmapProgressCard percent={roadmap.percent} />
+						<RoadmapProgressCard
+							percent={roadmap.percent}
+							stale={roadmap.stale}
+						/>
 					</div>
 					<div className="home-aurora__hero-copy">
 						<h1 id="home-hero" className="home-aurora__tagline">
