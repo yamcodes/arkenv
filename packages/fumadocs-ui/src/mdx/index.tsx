@@ -26,12 +26,12 @@ import { cn } from "@/utils/cn";
  */
 function Table(props: ComponentProps<"table">) {
 	return (
-		// biome-ignore lint/a11y/noNoninteractiveTabindex: overflow region must be focusable for axe scrollable-region-focusable
 		<div
 			className={cn(
 				"relative overflow-auto prose-no-margin my-6 fd-scroll-container",
 				"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-fd-ring",
 			)}
+			// biome-ignore lint/a11y/noNoninteractiveTabindex: overflow region must be focusable for axe scrollable-region-focusable
 			tabIndex={0}
 		>
 			<table {...props} />
