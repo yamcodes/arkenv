@@ -213,8 +213,8 @@ see the coerced values.
   use first-class subpaths (`@arkenv/standard/valibot`,
   `@arkenv/standard/zod-mini`). Zod v3 typically uses `zod-to-json-schema`
   through the [`toJsonSchema`](#valibot-tojsonschema) escape hatch. See
-  [Valibot](/docs/guides/validators/valibot) and
-  [Zod](/docs/guides/validators/zod).
+  [Valibot](/docs/validators/valibot) and
+  [Zod](/docs/validators/zod).
 </Callout>
 
 ## Transforms
@@ -318,7 +318,7 @@ export const env = arkenv({ PORT: v.number(), DEBUG: v.boolean() });
 
 Install `@valibot/to-json-schema` yourself; it is an optional peer of
 `@arkenv/standard`. Recipe:
-[Valibot](/docs/guides/validators/valibot).
+[Valibot](/docs/validators/valibot).
 
 The optional `toJsonSchema` callback on root `@arkenv/standard` remains
 the escape hatch for custom converters. ArkEnv calls it when it can't
@@ -371,7 +371,7 @@ export const env = arkenv(
 );
 ```
 
-Recipe: [Zod](/docs/guides/validators/zod#zod-v3).
+Recipe: [Zod](/docs/validators/zod#zod-v3).
 
 ### Mixing with Zod Mini
 
@@ -455,9 +455,9 @@ transform the string yourself (or use a helper such as
 ## Next steps
 
 <Cards>
-  <Card href="/docs/validating-your-environment/defining-your-schema" title="Defining your schema" description="Where env.ts lives, field types, and fail-fast validation." />
+  <Card href="/docs/core-concepts/defining-your-schema" title="Defining your schema" description="Where env.ts lives, field types, and fail-fast validation." />
 
   <Card href="/docs/reference/options#coerce" title="options.coerce" description="Toggle ArkEnv's built-in string coercion." />
 
-  <Card href="/docs/guides/validators" title="Validators" description="ArkType, Zod, and Valibot cookbooks." />
+  <Card href="/docs/validators" title="Validators" description="ArkType, Zod, and Valibot cookbooks." />
 </Cards>

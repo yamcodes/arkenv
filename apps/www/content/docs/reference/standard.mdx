@@ -42,7 +42,7 @@ They differ in schema style and peers.
 | Keywords (`string.host`, `number.port`) | Yes                         | No                                                                                                                                                                             |
 | Peer `arktype`                          | Required                    | None                                                                                                                                                                           |
 | [Options](/docs/reference/options)      | `ArkEnvConfig`              | `StandardEnvConfig` (`ArkEnvConfig` plus `toJsonSchema`)                                                                                                                       |
-| Coercion                                | Built-in for ArkType shapes | Standard JSON Schema on the value, or `@arkenv/standard/valibot` / `/zod-mini` / [`toJsonSchema`](/docs/validating-your-environment/coercion-and-parsing#valibot-tojsonschema) |
+| Coercion                                | Built-in for ArkType shapes | Standard JSON Schema on the value, or `@arkenv/standard/valibot` / `/zod-mini` / [`toJsonSchema`](/docs/core-concepts/coercion-and-parsing#valibot-tojsonschema) |
 
 ## Exports
 
@@ -81,9 +81,7 @@ pair with this package. See each package reference for import paths.
 ## Next steps
 
 <Cards>
-  <Card href="/docs/guides/validators" title="Validators" description="ArkType, Zod, and Valibot cookbooks." />
+  <Card href="/docs/validators" title="Validators" description="When to use @arkenv/core vs @arkenv/standard, plus cookbooks." />
 
-  <Card href="/docs/validating-your-environment/coercion-and-parsing" title="Coercion" description="How ArkEnv turns env strings into typed outputs." />
-
-  <Card href="/docs/guides/validators/choosing-an-engine" title="Choosing an engine" description="When to use @arkenv/core vs @arkenv/standard." />
+  <Card href="/docs/core-concepts/coercion-and-parsing" title="Coercion" description="How ArkEnv turns env strings into typed outputs." />
 </Cards>

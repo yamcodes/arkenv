@@ -70,13 +70,13 @@ describe("/docs/[package]/llms.txt route", () => {
 				data: { title: "init" },
 			},
 			{
-				slugs: ["guides", "frameworks", "bun"],
-				url: "/docs/guides/frameworks/bun",
+				slugs: ["frameworks", "bun"],
+				url: "/docs/frameworks/bun",
 				data: { title: "Bun" },
 			},
 			{
-				slugs: ["validating-your-environment", "coercion-and-parsing"],
-				url: "/docs/validating-your-environment/coercion-and-parsing",
+				slugs: ["core-concepts", "coercion-and-parsing"],
+				url: "/docs/core-concepts/coercion-and-parsing",
 				data: { title: "Coercion and parsing" },
 			},
 		] as any);
@@ -86,8 +86,8 @@ describe("/docs/[package]/llms.txt route", () => {
 		expect(params).toEqual([
 			{ package: "getting-started" },
 			{ package: "reference" },
-			{ package: "guides" },
-			{ package: "validating-your-environment" },
+			{ package: "frameworks" },
+			{ package: "core-concepts" },
 		]);
 
 		spy.mockRestore();

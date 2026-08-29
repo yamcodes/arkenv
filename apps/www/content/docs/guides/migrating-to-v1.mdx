@@ -6,7 +6,7 @@ description: Move a v0 project to the v1 packages and the canonical env object.
 v1 splits the old `arkenv` library from the CLI, and it uses the same
 `import { env } from "./env"` surface on every host. Vite and Bun no
 longer take a schema in the plugin call. v1 is still
-`1.0.0-alpha.x`; see [Compatibility](/docs/compatibility).
+`1.0.0-alpha.x`; see [Compatibility](/docs/getting-started/compatibility).
 
 If you are coming from T3 Env rather than ArkEnv v0, use
 [Migrating from T3 Env](/docs/guides/migrating-from-t3-env).
@@ -40,7 +40,7 @@ Importing `arkenv` as a library throws. Swap packages first.
     ```
 
     If you want Zod or Valibot without ArkType, install
-    [`@arkenv/standard`](/docs/guides/validators) instead of
+    [`@arkenv/standard`](/docs/validators) instead of
     `@arkenv/core` and `arktype`.
   </Step>
 
@@ -142,7 +142,7 @@ Follow these steps if the v0 plugin still receives a schema argument.
   </Step>
 </Steps>
 
-See the [Vite guide](/docs/guides/frameworks/vite) for transform mode and
+See the [Vite guide](/docs/frameworks/vite) for transform mode and
 reusing a compiled schema in `vite.config.ts`.
 
 ## Bun
@@ -168,7 +168,7 @@ Same shape as Vite: schema in `env.ts`, plugin with no schema argument.
 
     Keep the plugin in `bunfig.toml` or `Bun.build`. Do not pass the
     schema object. Backend-only processes can skip the plugin and call
-    `@arkenv/core` directly. See the [Bun guide](/docs/guides/frameworks/bun).
+    `@arkenv/core` directly. See the [Bun guide](/docs/frameworks/bun).
   </Step>
 
   <Step>
@@ -210,9 +210,9 @@ the framework package), keep using `withArkEnv` or the Nuxt module.
 
 Nested `arkenv({ server, client, shared })` still runs. Prefer a flat
 schema or a `--strict` layout. See
-[Client vs. server](/docs/validating-your-environment/client-vs-server)
-and the [Next.js](/docs/guides/frameworks/nextjs) /
-[Nuxt](/docs/guides/frameworks/nuxt) guides.
+[Client vs. server](/docs/core-concepts/client-vs-server)
+and the [Next.js](/docs/frameworks/nextjs) /
+[Nuxt](/docs/frameworks/nuxt) guides.
 
 ## Dead-code elimination
 
@@ -230,7 +230,7 @@ release.
 - Nested `arkenv({ server, client, shared })`. Use
   `arkenv(schema, options)` instead.
 - Options `expose` and `shared`. Use `exposeToClient`. See
-  [Client vs. server](/docs/validating-your-environment/client-vs-server).
+  [Client vs. server](/docs/core-concepts/client-vs-server).
 - Config `layout: "simple"`. Use `"flat"`.
 
 The [changelog](https://github.com/yamcodes/arkenv/releases) lists what
@@ -239,9 +239,9 @@ changed in each release.
 ## Next steps
 
 <Cards>
-  <Card href="/docs/guides/frameworks" title="Framework guides" description="Wire the v1 plugin or module for Next.js, Nuxt, Vite, or Bun." />
+  <Card href="/docs/frameworks" title="Framework guides" description="Wire the v1 plugin or module for Next.js, Nuxt, Vite, or Bun." />
 
-  <Card href="/docs/guides/validators" title="Validators" description="ArkType, Zod, and Valibot cookbooks on @arkenv/core or @arkenv/standard." />
+  <Card href="/docs/validators" title="Validators" description="ArkType, Zod, and Valibot cookbooks on @arkenv/core or @arkenv/standard." />
 
-  <Card href="/docs/compatibility" title="Compatibility" description="Alpha tag, supported runtimes, and package managers." />
+  <Card href="/docs/getting-started/compatibility" title="Compatibility" description="Alpha tag, supported runtimes, and package managers." />
 </Cards>

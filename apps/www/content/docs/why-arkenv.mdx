@@ -1,5 +1,5 @@
 ---
-title: Comparison
+title: Why ArkEnv?
 description: See how ArkEnv compares to other environment variable validation libraries and techniques.
 ---
 
@@ -65,7 +65,7 @@ Past a hello-world script, the DIY path gets tedious:
 
 - **Manual parsing.** `process.env` is strings only, so every number or
   boolean needs a parse. ArkEnv handles this with built-in
-  [coercion](/docs/validating-your-environment/coercion-and-parsing).
+  [coercion](/docs/core-concepts/coercion-and-parsing).
 - **Verbose errors.** Most validation libraries log as if you sent a
   nested API payload. ArkEnv prints a concise env-var dump.
 - **Boilerplate fatigue.** Repeating the same assert across projects
@@ -104,7 +104,7 @@ differ in design and boilerplate:
   forcing `server:` and `client:` blocks. Both libraries ship the schema
   (not the values) to the client in single-file mode. If variable
   *names* are sensitive, scaffold a strict layout for compile-time
-  isolation. See [Client vs. server](/docs/validating-your-environment/client-vs-server)
+  isolation. See [Client vs. server](/docs/core-concepts/client-vs-server)
   and [Migrating from T3 Env](/docs/guides/migrating-from-t3-env).
 
 ### vite-plugin-validate-env
@@ -115,9 +115,9 @@ good tool for focused Vite projects and supports any Standard Schema
 validator.
 
 ArkEnv is a broader solution. The
-[Vite plugin](/docs/guides/frameworks/vite) covers the same build-time
+[Vite plugin](/docs/frameworks/vite) covers the same build-time
 check, plus global coercion and native ArkType. You can also
-[reuse the schema in `vite.config.ts`](/docs/guides/frameworks/vite#reuse-the-schema-in-vite-config)
+[reuse the schema in `vite.config.ts`](/docs/frameworks/vite#reuse-the-schema-in-vite-config)
 with `loadEnv`, which `@julr/vite-plugin-validate-env` does not
 emphasize.
 
@@ -156,5 +156,5 @@ ArkEnv covers those in a similarly small core with a higher ceiling.
 <Cards>
   <Card href="/docs/getting-started" title="Getting started" description="Install ArkEnv and configure your first environment schema." />
 
-  <Card href="/docs/validating-your-environment" title="Validating your environment" description="Schema design, coercion, and client/server boundaries." />
+  <Card href="/docs/core-concepts" title="Core concepts" description="Schema design, coercion, and client/server boundaries." />
 </Cards>

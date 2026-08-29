@@ -5,7 +5,7 @@ description: Replace createEnv and runtimeEnv with a flat ArkEnv schema.
 
 T3 Env is a major inspiration for ArkEnv's Next.js security model. On
 ArkEnv you drop the manual `runtimeEnv` map and keep a flat schema.
-For a feature cheatsheet, see [Comparison](/docs/comparison).
+For a feature cheatsheet, see [Why ArkEnv?](/docs/why-arkenv).
 
 ## What changes
 
@@ -128,18 +128,18 @@ Work through these steps on an existing Next.js app.
     ```
 
     Put keys in `env/server.ts` and `env/client.ts`. See
-    [Client vs. server](/docs/validating-your-environment/client-vs-server).
+    [Client vs. server](/docs/core-concepts/client-vs-server).
   </Step>
 </Steps>
 
 ## Next steps
 
 <Cards>
-  <Card href="/docs/guides/frameworks/nextjs" title="Next.js guide" description="@arkenv/nextjs configuration, layouts, and codegen." />
+  <Card href="/docs/frameworks/nextjs" title="Next.js guide" description="@arkenv/nextjs configuration, layouts, and codegen." />
 
-  <Card href="/docs/comparison" title="Comparison" description="ArkEnv versus T3 Env, znv, Envalid, and a DIY schema." />
+  <Card href="/docs/why-arkenv" title="Why ArkEnv?" description="ArkEnv versus T3 Env, znv, Envalid, and a DIY schema." />
 
-  <Card href="/docs/guides/validators/zod" title="Using ArkEnv with Zod" description="Zod 4.2+, Mini, and v3 on @arkenv/standard." />
+  <Card href="/docs/validators/zod" title="Zod" description="Zod 4.2+, Mini, and v3 on @arkenv/standard." />
 
-  <Card href="/docs/validating-your-environment/hosting-presets" title="Hosting presets" description="Inject hosting provider system variables into your schema." />
+  <Card href="/docs/core-concepts/hosting-presets" title="Hosting presets" description="Inject hosting provider system variables into your schema." />
 </Cards>

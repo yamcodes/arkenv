@@ -31,7 +31,7 @@
 
 
 <h3 align="center">
-  Bring your own validator: <a href="https://arktype.io/">ArkType</a>, <a href="https://zod.dev/">Zod</a>, <a href="https://valibot.dev/">Valibot</a>, or <a href="https://arkenv-v1.vercel.app/docs/guides/validators/choosing-an-engine">any Standard Schema library</a>
+  Bring your own validator: <a href="https://arktype.io/">ArkType</a>, <a href="https://zod.dev/">Zod</a>, <a href="https://valibot.dev/">Valibot</a>, or <a href="https://arkenv-v1.vercel.app/docs/validators">any Standard Schema library</a>
 </h3>
 
 <br />

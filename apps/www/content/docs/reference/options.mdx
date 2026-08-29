@@ -57,7 +57,7 @@ env.PORT; // "3000"
 ```
 
 See
-[Coercion and parsing](/docs/validating-your-environment/coercion-and-parsing).
+[Coercion and parsing](/docs/core-concepts/coercion-and-parsing).
 
 ### arrayFormat
 
@@ -188,17 +188,17 @@ Schema on the value (Valibot, Zod Mini, Zod v3 via `zod-to-json-schema`,
 and similar). ArkEnv calls it per key when it can't read JSON Schema from
 that value.
 
-Wiring: prefer [`@arkenv/standard/valibot`](/docs/guides/validators/valibot)
-and [`@arkenv/standard/zod-mini`](/docs/guides/validators/zod#zod-mini).
+Wiring: prefer [`@arkenv/standard/valibot`](/docs/validators/valibot)
+and [`@arkenv/standard/zod-mini`](/docs/validators/zod#zod-mini).
 The callback remains the escape hatch for Zod v3 and mixed maps. See
-[Coercion](/docs/validating-your-environment/coercion-and-parsing#valibot-tojsonschema).
+[Coercion](/docs/core-concepts/coercion-and-parsing#valibot-tojsonschema).
 
 ## Framework-only options
 
 Next.js and Nuxt wrappers accept `extends` to merge shared or client env
 objects into a server schema. That field lives outside core
 `ArkEnvConfig`. See
-[Client vs. server](/docs/validating-your-environment/client-vs-server).
+[Client vs. server](/docs/core-concepts/client-vs-server).
 
 ## Next steps
 
