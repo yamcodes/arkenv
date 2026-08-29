@@ -1,10 +1,5 @@
 {
 	"title": "Getting started",
 	"defaultOpen": true,
-	"pages": [
-		"index",
-		"installation",
-		"examples",
-		"editor-integration"
-	]
+	"pages": ["index", "installation", "examples", "editor-integration"]
 }
