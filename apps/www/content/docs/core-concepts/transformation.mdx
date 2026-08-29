@@ -33,7 +33,7 @@ Trim and normalize a string field. `PORT` still uses built-in
     	BUILD_ID: z
     		.string()
     		.transform((value) => value.trim().toUpperCase()),
-    	PORT: z.number().int().min(0).max(65535).default(3000),
+    	PORT: z.int().min(0).max(65535).default(3000),
     });
     ```
   </Tab>

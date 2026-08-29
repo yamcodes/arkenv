@@ -25,7 +25,7 @@ import arkenv from "@arkenv/standard";
 import * as z from "zod";
 
 export const env = arkenv({
-  PORT: z.number().int().min(0).max(65535).default(3000),
+  PORT: z.int().min(0).max(65535).default(3000),
   DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
 });

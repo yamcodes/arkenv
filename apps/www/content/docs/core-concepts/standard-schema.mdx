@@ -48,7 +48,7 @@ The same keys, two declaration styles. Zod 4.2+ does not need
 
     export const env = arkenv({
     	DATABASE_URL: z.string().url(),
-    	PORT: z.number().int().min(0).max(65535).default(3000),
+    	PORT: z.int().min(0).max(65535).default(3000),
     	NODE_ENV: z
     		.enum(["development", "production", "test"])
     		.default("development"),

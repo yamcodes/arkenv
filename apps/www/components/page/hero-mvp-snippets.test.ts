@@ -89,7 +89,7 @@ describe("hero MVP snippets", () => {
 		expect(arktype?.code).not.toContain("LOG_LEVEL");
 		expect(zod?.code).toContain("DATABASE_URL: z.url()");
 		expect(zod?.code).toContain(
-			"PORT: z.number().int().min(0).max(65535).default(3000)",
+			"PORT: z.int().min(0).max(65535).default(3000)",
 		);
 		expect(zod?.code).toContain("CI: z.boolean().default(false)");
 		expect(zod?.code).not.toContain("NODE_ENV");

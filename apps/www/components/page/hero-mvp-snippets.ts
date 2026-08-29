@@ -95,7 +95,7 @@ function schemaFields(host: HeroMvpHostId, validator: HeroMvpValidatorId) {
 	}
 	const fields = ["  DATABASE_URL: z.url(),"];
 	if (publicKey) fields.push(`  ${publicKey}: z.url(),`);
-	fields.push("  PORT: z.number().int().min(0).max(65535).default(3000),");
+	fields.push("  PORT: z.int().min(0).max(65535).default(3000),");
 	fields.push("  CI: z.boolean().default(false),");
 	return fields.join("\n");
 }

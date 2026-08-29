@@ -172,7 +172,7 @@ import * as z from "zod";
 
 export const env = arkenv(
   {
-    PORT: z.number().int(),
+    PORT: z.int(),
     DEBUG: z.boolean(),
   },
   { env: { PORT: "3000", DEBUG: "true" } },

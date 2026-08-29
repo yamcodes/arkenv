@@ -36,7 +36,7 @@ the app.
 
     const schema = {
     	DATABASE_URL: z.string().url(),
-    	PORT: z.number().int().min(0).max(65535).default(3000),
+    	PORT: z.int().min(0).max(65535).default(3000),
     };
 
     export const env = arkenv(schema);
