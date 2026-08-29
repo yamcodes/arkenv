@@ -3,6 +3,12 @@ import { ArkEnvError } from "@/core";
 import { buildEnvIssue } from "./errors";
 
 /**
+ * Standard JSON Schema targets probed in order for on-value converters.
+ * @see https://standard-schema.dev
+ */
+const JSON_SCHEMA_TARGETS = ["draft-07", "draft-2020-12"] as const;
+
+/**
  * Whether `value` is a plain object (`{}` / Object.create(null) style).
  * Rejects arrays, `Date`, functions, boxed primitives, etc.
  * @internal
@@ -12,13 +18,66 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 }
 
 /**
+ * Probe an on-value Standard JSON Schema converter across recommended targets.
+ *
+ * Tries `draft-07`, then `draft-2020-12`. Returns the first plain-object schema.
+ * When every attempt throws or returns a non-schema, returns the last failure detail.
+ *
+ * @param input The converter's `jsonSchema.input` (or equivalent) function
+ * @returns A successful schema or the last failure detail
+ */
+function probeJsonSchemaInput(
+	input: (options: { target: (typeof JSON_SCHEMA_TARGETS)[number] }) => unknown,
+):
+	| { ok: true; schema: Record<string, unknown> }
+	| { ok: false; detail: string } {
+	let lastDetail = "converter returned a non-schema";
+
+	for (const target of JSON_SCHEMA_TARGETS) {
+		try {
+			const schema = input({ target });
+			if (isPlainObject(schema)) {
+				return { ok: true, schema };
+			}
+			lastDetail = "converter returned a non-schema";
+		} catch (error) {
+			lastDetail = error instanceof Error ? error.message : String(error);
+		}
+	}
+
+	return { ok: false, detail: lastDetail };
+}
+
+/**
+ * Fail the parse when an on-value JSON Schema converter exists but every target fails.
+ *
+ * @param key The environment variable key whose converter failed
+ * @param detail The underlying converter error or non-schema detail
+ * @throws {ArkEnvError} Always throws with `INVALID_SCHEMA`
+ */
+function throwJsonSchemaConversionFailed(key: string, detail: string): never {
+	throw new ArkEnvError([
+		buildEnvIssue(
+			key,
+			`JSON Schema conversion failed for '${key}': ${detail}`,
+			"INVALID_SCHEMA",
+		),
+	]);
+}
+
+/**
  * Extract JSON Schema definitions from standard schema validators.
+ *
+ * On-value `jsonSchema.input` probes try `draft-07`, then `draft-2020-12`.
+ * When a converter is present but every target fails, the key fails with
+ * `INVALID_SCHEMA` instead of being treated as missing JSON Schema.
  *
  * @param def The schema dictionary mapping keys to validators
  * @param toJsonSchema Optional fallback converter when a key has no Standard JSON Schema on the value
  * @returns The generated JSON Schema, a flag indicating if any JSON Schema was found,
  *          and a list of keys that do not support JSON Schema
- * @throws {ArkEnvError} When `toJsonSchema` throws or returns a non-plain object for a key
+ * @throws {ArkEnvError} When an on-value converter fails every target, or when
+ *   `toJsonSchema` throws or returns a non-plain object for a key
  */
 export function extractJsonSchema(
 	def: Record<string, unknown>,
@@ -42,26 +101,24 @@ export function extractJsonSchema(
 		// 1. Standard way via ~standard property
 		const std = validator["~standard"];
 		if (typeof std?.jsonSchema?.input === "function") {
-			try {
-				const schema = std.jsonSchema.input({ target: "draft-07" });
-				if (schema) {
-					jsonSchema.properties[key] = schema;
-					hasJsonSchema = true;
-					continue;
-				}
-			} catch {}
+			const probed = probeJsonSchemaInput(std.jsonSchema.input);
+			if (probed.ok) {
+				jsonSchema.properties[key] = probed.schema;
+				hasJsonSchema = true;
+				continue;
+			}
+			throwJsonSchemaConversionFailed(key, probed.detail);
 		}
 
 		// 2. Direct jsonSchema.input on validator
 		if (typeof validator.jsonSchema?.input === "function") {
-			try {
-				const schema = validator.jsonSchema.input({ target: "draft-07" });
-				if (schema) {
-					jsonSchema.properties[key] = schema;
-					hasJsonSchema = true;
-					continue;
-				}
-			} catch {}
+			const probed = probeJsonSchemaInput(validator.jsonSchema.input);
+			if (probed.ok) {
+				jsonSchema.properties[key] = probed.schema;
+				hasJsonSchema = true;
+				continue;
+			}
+			throwJsonSchemaConversionFailed(key, probed.detail);
 		}
 
 		// 3. toJSONSchema method (e.g. classic Zod instance method, zod-to-json-schema)
