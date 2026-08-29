@@ -5,7 +5,7 @@
 		"ai",
 		"use-with-nestjs",
 		"migrating-to-v1",
-		"migrating-from-t3-env"
+		"migrating-from-t3-env",
 		"migrating-from-a-getenv-helper"
 	]
 }
