@@ -2,18 +2,10 @@
 "arkenv": minor
 "@arkenv/core": patch
 "@arkenv/standard": patch
-"@arkenv/fumadocs-ui": patch
 ---
 
-#### Harden schema capture for fail-closed inspect
+#### Fail closed when the CLI cannot inspect your schema
 
-The CLI schema loader now fails closed when it cannot honestly report keys, and returns distinct inspect codes:
+`arkenv example` and `arkenv check` now fail with a clear error when the schema module never calls `arkenv()`, the installed runtime is too old for inspect, the definition cannot be read as keys, or the module uses `env` values at load time — instead of treating those cases as an empty schema.
 
-- `ERR_INSPECT_NO_CALL` — `arkenv()` was never invoked at module load
-- `ERR_INSPECT_UNSUPPORTED` — an installed runtime ignored capture and validated instead
-- `ERR_INSPECT_UNEXTRACTABLE` — a captured definition was not a readable static map
-- `ERR_INSPECT_EVAL_THROW` — the module threw while using env values at load time
-
-`arkenv({})` remains a valid empty schema. Capture state for core, standard, and the CLI now lives on `Symbol.for("arkenv.schemaCapture.v1")` so it does not collide with Nuxt’s legacy string key. Upgrade `@arkenv/core` / `@arkenv/standard` alongside the CLI so inspect can see the capture flag.
-
-MDX table wrappers in `@arkenv/fumadocs-ui` now include `fd-scroll-container` so wide comparison tables are excluded from `scrollable-region-focusable` the same way as code blocks.
+Upgrade `@arkenv/core` or `@arkenv/standard` alongside the CLI so inspect works. Keep the schema declarative (`export const env = arkenv({ ... })`) and do not read `env` at module scope. `arkenv({})` remains a valid empty schema.
