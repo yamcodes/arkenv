@@ -1,0 +1,92 @@
+---
+title: Use with NestJS
+description: Validate and type environment variables in NestJS with a fail-fast env module.
+---
+
+ArkEnv validates and types your environment variables when the module is imported. In a NestJS application, validating environment variables at module evaluation time gives you fail-fast runtime safety before the Nest IoC container bootstraps.
+
+## 1. Setup
+
+Define and validate your environment variables in `src/env.ts`. Export the typed `env` object:
+
+```ts title="src/env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+  PORT: "number.port = 3000",
+  DATABASE_URL: "string",
+});
+```
+
+Import `env` directly across your controllers, services, and modules:
+
+```ts title="src/app.service.ts"
+import { Injectable } from "@nestjs/common";
+import { env } from "./env";
+
+@Injectable()
+export class AppService {
+  getDatabaseUrl(): string {
+    return env.DATABASE_URL;
+  }
+}
+```
+
+## 2. Fail-fast entrypoint
+
+Import `env` at the top of `src/main.ts` before calling `NestFactory.create()`. If any required environment variables are missing or invalid, the process terminates immediately before initializing NestJS modules, providers, or database connections.
+
+```ts title="src/main.ts"
+import { env } from "./env";
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  await app.listen(env.PORT);
+}
+bootstrap();
+```
+
+## 3. Execution
+
+Load your `.env` file before executing Node.js so that `process.env` is populated before `src/env.ts` evaluates. With Node.js 20.6+ and `@nestjs/cli` 11+, use the native `--env-file` flag with the Nest CLI:
+
+```bash
+nest start --env-file .env
+```
+
+On `@nestjs/cli` 10 and earlier, build the app first and run `node --env-file=.env dist/main.js`, or use a runner like [Nub](https://nubjs.com/docs/runtime/env).
+
+For production builds, ensure environment variables are injected by your deployment platform or container runner before the Node process boots.
+
+## 4. Optional DI provider
+
+If you prefer dependency injection over module-scoped imports, register `env` with a `Symbol` injection token using a custom provider:
+
+```ts title="src/env.provider.ts"
+import { env } from "./env";
+
+export const ENV = Symbol("ENV");
+export type Env = typeof env;
+
+export const EnvProvider = {
+  provide: ENV,
+  useValue: env,
+};
+```
+
+Register `EnvProvider` in your module's `providers` array (and `exports` if used across modules), then inject `ENV` into services using `@Inject(ENV) private readonly env: Env`.
+
+## 5. Why avoid ConfigModule validation
+
+Do not pass an ArkEnv schema shape into `@nestjs/config`'s `ConfigModule.forRoot({ validationSchema })`.
+
+Starting in `@nestjs/config` 12, `validationSchema` supports Standard Schema validators, but `@nestjs/config` passes raw string environment variables directly to the schema without automatic type coercion. A non-coercing validator (like ArkType's `number.port` or Zod's `z.number()`) rejects `"3000"` with a type error instead of parsing it. In `@nestjs/config` 11 and earlier, `validationSchema` only accepts Joi schemas.
+
+Using ArkEnv directly in `src/env.ts` handles string coercion automatically and fails immediately before NestJS initializes.
+
+<Callout type="warn" title="HTTP validation vs. environment validation">
+  NestJS 12 supports Standard Schema pipes (such as `StandardSchemaValidationPipe`) for HTTP request payloads (`@Body()`, `@Query()`). HTTP validation pipes validate incoming requests at runtime and are distinct from application environment variable validation.
+</Callout>

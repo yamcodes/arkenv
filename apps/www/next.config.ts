@@ -313,6 +313,11 @@ const config = {
 				permanent: true,
 			},
 			{
+				source: "/docs/arkenv/how-to/use-with-nestjs",
+				destination: "/docs/guides/use-with-nestjs",
+				permanent: true,
+			},
+			{
 				source: "/docs/arkenv/how-to/:path*",
 				destination: "/docs/core-concepts",
 				permanent: true,
