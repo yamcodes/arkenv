@@ -9,7 +9,7 @@ import {
 	SERVER_ONLY_KEYS,
 } from "./schema-shape";
 
-const CAPTURE_STATE_KEY = "__ARKENV_SCHEMA_CAPTURE__";
+const CAPTURE_STATE_KEY = Symbol.for("arkenv.nuxt.schemaCapture.v1");
 
 type CaptureState = {
 	capturing: boolean;
@@ -32,11 +32,16 @@ export type CapturedSchemaCall = {
  * @returns The shared capture state bag
  */
 function getCaptureState(): CaptureState {
-	const g = globalThis as unknown as Record<string, CaptureState | undefined>;
-	if (!g[CAPTURE_STATE_KEY]) {
-		g[CAPTURE_STATE_KEY] = { capturing: false, captures: [] };
+	const g = globalThis as unknown as Record<
+		string | symbol,
+		CaptureState | undefined
+	>;
+	let state = g[CAPTURE_STATE_KEY];
+	if (!state) {
+		state = { capturing: false, captures: [] };
+		g[CAPTURE_STATE_KEY] = state;
 	}
-	return g[CAPTURE_STATE_KEY];
+	return state;
 }
 
 /**
