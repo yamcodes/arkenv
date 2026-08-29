@@ -51,7 +51,7 @@ bootstrap();
 
 ## 3. Execution
 
-Load your `.env` file before executing Node.js so that `process.env` is populated before `src/env.ts` evaluates. With Node.js 20+, use the native `--env-file` flag with the Nest CLI:
+Load your `.env` file before executing Node.js so that `process.env` is populated before `src/env.ts` evaluates. With Node.js 20.6+, use the native `--env-file` flag with the Nest CLI:
 
 ```bash
 nest start --env-file .env
@@ -81,7 +81,7 @@ Register `EnvProvider` in your module's `providers` array (and `exports` if used
 
 Do not pass an ArkEnv schema shape into `@nestjs/config`'s `ConfigModule.forRoot({ validationSchema })`.
 
-NestJS's `validationSchema` option is designed for standard object schemas and does not perform ArkEnv's automatic string coercion (such as converting `"3000"` to a number for `number.port` or `"true"` to a boolean). Without coercion, values remain raw strings unless you manually write custom coercion transforms.
+Although NestJS's `validationSchema` option accepts Standard Schema validators, `@nestjs/config` does not perform automatic string coercion. Without coercion, values remain raw strings unless you explicitly define coercion in your schema (e.g., `z.coerce` in Zod). Passing a standard ArkEnv schema will leave values like `PORT` as the string `"3000"` instead of converting them to numbers.
 
 :::warning[HTTP validation vs. environment validation]
 NestJS 12 supports Standard Schema pipes (such as `StandardSchemaValidationPipe`) for HTTP request payloads (`@Body()`, `@Query()`). HTTP validation pipes validate incoming requests at runtime and are distinct from application environment variable validation.
