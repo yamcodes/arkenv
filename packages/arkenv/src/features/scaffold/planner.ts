@@ -346,10 +346,6 @@ export function createExistingProjectPlan(
 		};
 	}
 
-	plan.files.push(
-		...frameworkStrategy.getTypeDefinitionFiles(options, fileParams),
-	);
-
 	const bootstrap = frameworkStrategy.bootstrap(options);
 	if (bootstrap) {
 		plan.bootstrap = bootstrap;

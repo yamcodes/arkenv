@@ -92,7 +92,7 @@ Depending on the detected framework and flags, `init` writes:
   `.env.example` into it.
 - Next.js: `withArkEnv` in `next.config.*`, `.arkenv/` in `.gitignore`,
   optional `.arkenv/env.gen.ts` (import as `@/.arkenv`)
-- Vite / Bun: type augmentation files (`vite-env.d.ts`, `bun-env.d.ts`)
+- Vite / Bun: plugin configuration in `vite.config.*` / `bunfig.toml`
 - Dependency installs for the chosen dialect (`@arkenv/core`, plugins,
   Zod/Valibot)
 

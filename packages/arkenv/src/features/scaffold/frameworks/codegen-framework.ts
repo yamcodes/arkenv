@@ -59,9 +59,5 @@ export function createCodegenFrameworkStrategy(
 			const importPath = resolveSimpleImportPath(params, options);
 			return planSimpleSchemaFile(validator, options, params, importPath);
 		},
-
-		getTypeDefinitionFiles() {
-			return [];
-		},
 	};
 }

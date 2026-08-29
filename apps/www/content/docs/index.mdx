@@ -14,46 +14,32 @@ This page shows why `process.env` is a weak contract, how ArkEnv's typed
 
 ## The `process.env` problem
 
-Environment variables are available via the `process.env` (or `import.meta.env`) object. This object is loosely typed - all values are `string | undefined`.
-
-The problem with a loosely typed object is that you have **no** runtime guarantee about a given value: Is it correct type? Does it match our constraints? Does the value even exist?
+Environment variables arrive as `process.env` (or `import.meta.env`), where all values are `string | undefined`. Most teams start with a presence-check helper that verifies required keys:
 
 ```ini title=".env"
 PORT=3000
 DEBUG=false
 ```
 
-```ts title="./server.ts" twoslash
-const port = process.env.PORT;
-const debug = process.env.DEBUG;
-//    ^?
+```ts title="./env.ts" twoslash
+export function getEnv() {
+  const port = process.env.PORT;
+  const debug = process.env.DEBUG;
 
-if (debug) {
-  console.log("verbose logging enabled");
+  if (port === undefined || debug === undefined) {
+    throw new Error("Missing required environment variables");
+  }
+
+  return { port, debug };
 }
-
-console.log(`listening on ${port}`);
 ```
 
-In this example, `port` can be anything (even a negative number), and `verbose logging enabled` is logged to the console, even though we set `DEBUG=false` in our `.env` file. We can fix this by manually parsing the value:
+For presence-only strings, this helper installs nothing and gets the job done. But it breaks when variables need types and coercion:
 
-```ts title="./server.ts" twoslash
-const port = Number(process.env.PORT ?? "3000"); // [!code ++]
-if (port < 0 || port > 65535) { // [!code ++]
-  throw new Error("PORT must be between 0 and 65535"); // [!code ++]
-} // [!code ++]
-const debug = process.env.DEBUG === "true"; // [!code ++]
+- **Booleans (`DEBUG=false`):** `process.env.DEBUG` is the string `"false"`. The presence check passes and returns `{ debug: "false" }`. Because non-empty strings are truthy in JavaScript, `if (debug)` runs even when set to `false`.
+- **Numbers (`PORT=3000`):** `port` remains a `string`. Arithmetic like `port + 1` evaluates to `"30001"`, and comparisons like `port > 1024` perform lexicographical checks rather than numeric ones.
 
-if (debug) {
-  console.log("verbose logging enabled");
-}
-
-console.log(`listening on ${port}`);
-```
-
-Now the process correctly skips the `verbose logging enabled` message, matching the `DEBUG=false` in our `.env` file.
-
-ArkEnv does this out of the box, and much more. Let's see how:
+ArkEnv replaces manual presence checks and ad-hoc parsing with declarative schema validation and zero-config coercion.
 
 ## The `env` solution
 

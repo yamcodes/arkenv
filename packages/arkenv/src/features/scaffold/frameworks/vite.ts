@@ -32,8 +32,4 @@ export const viteStrategy: FrameworkStrategy = {
 	getSchemaFiles(validator, options, params) {
 		return planSimpleSchemaFile(validator, options, params);
 	},
-
-	getTypeDefinitionFiles() {
-		return [];
-	},
 };

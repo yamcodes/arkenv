@@ -12,7 +12,6 @@ describe("Planner", () => {
 			framework: "vanilla",
 			path: "env.ts",
 			language: "ts",
-			installTypeDefinitions: true,
 		},
 		detectedFramework: "vanilla",
 		packageManager: "pnpm",
