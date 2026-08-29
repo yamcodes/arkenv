@@ -74,18 +74,6 @@ export type FrameworkStrategy = {
 		options: ProjectOptions,
 		params: FrameworkGetFilesParams,
 	): ScaffoldingPlan["files"];
-
-	/**
-	 * Plan framework-specific type definition files, if any.
-	 *
-	 * @param options The selected project options.
-	 * @param params File planning parameters including paths and existing files.
-	 * @returns Planned type definition file actions.
-	 */
-	getTypeDefinitionFiles(
-		options: ProjectOptions,
-		params: FrameworkGetFilesParams,
-	): ScaffoldingPlan["files"];
 };
 
 /**
