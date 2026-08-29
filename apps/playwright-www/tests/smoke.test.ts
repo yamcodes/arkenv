@@ -32,7 +32,6 @@ test.describe("Smoke Tests", () => {
 		"/docs/frameworks/nextjs",
 		"/docs/validators",
 		"/docs/community",
-		"/docs/getting-started/compatibility",
 	];
 
 	for (const url of topRoutes) {

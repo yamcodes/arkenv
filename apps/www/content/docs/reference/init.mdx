@@ -31,8 +31,9 @@ These flags are specific to `init`.
 ### `--force` / `-f`
 
 Bypass dirty-git and other safety checks, then force scaffolding. The
-CLI refuses a dirty working tree unless you pass this flag. Commit or
-stash first if you don't want to overwrite generated files.
+CLI refuses a dirty working tree so a run cannot silently overwrite
+uncommitted work. Commit or stash first, or pass `--force` when you
+accept that risk (for example in CI).
 
 ### `--flat`
 

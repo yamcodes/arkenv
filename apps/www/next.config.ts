@@ -91,12 +91,17 @@ const config = {
 			},
 			{
 				source: "/docs/support-policy",
-				destination: "/docs/getting-started/compatibility",
+				destination: "/docs/getting-started/installation#prerequisites",
 				permanent: true,
 			},
 			{
 				source: "/docs/compatibility",
-				destination: "/docs/getting-started/compatibility",
+				destination: "/docs/getting-started/installation#prerequisites",
+				permanent: true,
+			},
+			{
+				source: "/docs/getting-started/compatibility",
+				destination: "/docs/getting-started/installation#prerequisites",
 				permanent: true,
 			},
 			{

@@ -17,7 +17,7 @@ metadata:
 
 ArkEnv docs sound like [turborepo.dev](https://turborepo.dev/docs) plus
 the pages already in that register: getting-started, Introduction,
-Compatibility, Community, and a framework guide (for example Vite).
+Installation, Community, and a framework guide (for example Vite).
 `docs-writer` is Gemini CLI boilerplate for mechanics. This skill is the
 register. `stop-slop` cuts AI tells after the meat is in; it must not
 strip why.

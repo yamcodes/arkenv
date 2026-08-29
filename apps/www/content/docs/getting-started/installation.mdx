@@ -3,6 +3,12 @@ title: Installation
 description: Install ArkEnv with the CLI or by hand in a new or existing project.
 ---
 
+## Prerequisites
+
+- **Node.js**: [Active or Maintenance LTS](https://nodejs.org/en/about/previous-releases).
+- **Package manager**: npm, pnpm, Yarn, or Bun (required for the
+  interactive CLI).
+
 ArkEnv is designed to drop into a new or existing TypeScript app.
 ArkEnv provides an interactive CLI that detects your stack, writes a
 schema, and wires framework config.
@@ -46,7 +52,8 @@ When the CLI finds a `package.json`, it adopts the repo incrementally.
     ```
 
     The CLI refuses a dirty git working tree. Commit or stash
-    (`git stash -u`) first, or pass `--force` if you accept overwriting
+    (`git stash -u`) first, or pass
+    [`--force`](/docs/reference/init#force--f) if you accept overwriting
     generated files.
 
     <Callout type="warn">
