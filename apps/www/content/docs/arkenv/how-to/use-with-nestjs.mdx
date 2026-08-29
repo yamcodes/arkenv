@@ -64,6 +64,8 @@ For production builds, ensure environment variables are injected by your deploym
 If you prefer dependency injection over module-scoped imports, register `env` with a `Symbol` injection token using a custom provider:
 
 ```ts title="src/env.provider.ts"
+import { env } from "./env";
+
 export const ENV = Symbol("ENV");
 export type Env = typeof env;
 
@@ -73,7 +75,7 @@ export const EnvProvider = {
 };
 ```
 
-You can then inject `ENV` into services using `@Inject(ENV) private readonly env: Env`.
+Register `EnvProvider` in your module's `providers` array (and `exports` if used across modules), then inject `ENV` into services using `@Inject(ENV) private readonly env: Env`.
 
 ## 5. Why avoid ConfigModule validation
 
