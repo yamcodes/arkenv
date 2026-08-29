@@ -2,13 +2,11 @@
 	"title": "Validating your environment",
 	"pages": [
 		"index",
-		"structuring-your-schema",
-		"defining-types",
+		"defining-your-schema",
 		"client-vs-server",
 		"coercion-and-parsing",
 		"error-reporting",
 		"reusing-schemas",
-		"framework-integration",
 		"hosting-presets"
 	]
 }

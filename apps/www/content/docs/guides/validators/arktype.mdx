@@ -7,7 +7,7 @@ description: Validate environment variables with @arkenv/core and ArkType.
 `number.port` and `string.host`, and built-in string coercion.
 
 For an overview of available engines, see
-[Choosing an engine](/docs/core-concepts/standard-schema).
+[Choosing an engine](/docs/guides/validators/choosing-an-engine).
 
 ## Installation
 
@@ -66,7 +66,7 @@ env.TAGS; // string[]
 ```
 
 To disable automatic string conversion and preserve raw strings for custom morphs,
-pass `{ coerce: false }`. Learn more in [Coercion](/docs/core-concepts/coercion).
+pass `{ coerce: false }`. Learn more in [Coercion](/docs/validating-your-environment/coercion-and-parsing).
 
 ## Defaults and optionals
 
@@ -80,14 +80,14 @@ ArkType syntax supports inline default values and optional properties:
 
 For specialized validators like `string.host` and `number.port`, see
 [Keywords](/docs/reference/keywords). To build complex custom schemas or morphs,
-see [Defining types](/docs/validating-your-environment/defining-types).
+see [Defining types](/docs/validating-your-environment/defining-your-schema).
 
 ## Next steps
 
 <Cards>
   <Card href="/docs/reference/core" title="@arkenv/core reference" description="Package exports, ArkEnvConfig options, and type definitions." />
 
-  <Card href="/docs/core-concepts/standard-schema" title="Choosing an engine" description="Compare @arkenv/core with the @arkenv/standard adapter." />
+  <Card href="/docs/guides/validators/choosing-an-engine" title="Choosing an engine" description="Compare @arkenv/core with the @arkenv/standard adapter." />
 
   <Card href="/docs/guides/frameworks" title="Framework guides" description="Integrate your ArkType schema with Next.js, Nuxt, Vite, or Bun." />
 </Cards>

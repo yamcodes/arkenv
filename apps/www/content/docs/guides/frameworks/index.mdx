@@ -3,9 +3,10 @@ title: Frameworks
 description: Validate environment variables in Next.js, Nuxt, Vite, and Bun with ArkEnv.
 ---
 
-ArkEnv works in any JavaScript or TypeScript project. When you build full-stack
-applications, client bundles must never receive server secrets. The framework
-packages below enforce that boundary during development and production builds.
+ArkEnv works in any JavaScript or TypeScript project. When you build
+full-stack applications, client bundles must never receive server
+secrets. The framework packages below enforce that boundary during
+development and production builds.
 
 Choose your framework to get started:
 
@@ -18,3 +19,46 @@ Choose your framework to get started:
 
   <Card href="/docs/guides/frameworks/bun" title="Bun" description="@arkenv/bun-plugin for Bun bundler and fullstack apps." />
 </Cards>
+
+## How hosts enforce the boundary
+
+Frameworks use **compile-time AST transforms** or **host runtime
+adapters**:
+
+| Framework | Integration strategy                         | Client bundle output                     | SSR and server validation          | Public env without rebuild (Docker)  |
+| --------- | -------------------------------------------- | ---------------------------------------- | ---------------------------------- | ------------------------------------ |
+| Next.js   | Host adapter + codegen (`@arkenv/nextjs`)    | Generated runtime proxy                  | Process boot (`process.env`)       | Requires rebuild for `NEXT_PUBLIC_*` |
+| Nuxt      | Nitro plugin (`@arkenv/nuxt`)                | Dynamic `runtimeConfig` hydration        | Nitro server boot gate             | Yes (via Nitro `runtimeConfig`)      |
+| Vite      | AST build transform (`@arkenv/vite-plugin`)  | Inlined public literals + throwing stubs | Full `@arkenv/core` at server boot | Requires rebuild for `VITE_*`        |
+| Bun       | Bundler AST transform (`@arkenv/bun-plugin`) | Inlined public literals + throwing stubs | Full `@arkenv/core` at server boot | Requires rebuild for `BUN_PUBLIC_*`  |
+
+Vite and Bun evaluate two module graphs in full-stack and SSR apps.
+Application code imports `@arkenv/core` (or `@arkenv/standard`); the
+plugin rewrites the **client** graph so public keys inline and server
+secrets become throwing stubs. Next.js and Nuxt use host adapters
+(`@arkenv/nextjs`, `@arkenv/nuxt`) with dedicated entrypoints and
+codegen or `runtimeConfig` hydration.
+
+ArkEnv keeps the **validation engine** (`@arkenv/core` /
+`@arkenv/standard`) as a peer of the host adapter so you do not ship a
+second runtime and can pair any adapter with ArkType or a Standard
+Schema validator.
+
+## Loading `.env` files
+
+ArkEnv does not read `.env` files. Something else must load them before
+`arkenv()` runs.
+
+Next.js, Nuxt, Vite, and Bun already load `.env*` files. On plain Node,
+[Nub](https://nubjs.com/docs/runtime/env) is the recommended runner: it
+executes TypeScript and injects `.env` files before your process starts.
+
+```bash title="Terminal"
+nub src/index.ts
+```
+
+Node's `node --env-file=.env` also works. You name each file yourself,
+and it does not run TypeScript.
+
+After values are in `process.env` (or a custom record), `arkenv()`
+validates them.

@@ -1,0 +1,348 @@
+---
+title: Defining your schema
+description: Put env.ts in place, declare field types, and fail fast with a typed env object.
+---
+
+ArkEnv is designed around one schema file and one typed `env` object.
+ArkEnv proves the process has the configuration it claims before
+application code runs, whether you use ArkType, Zod, or another Standard
+Schema validator.
+
+## Fail fast
+
+Calling `arkenv()` parses the configured source immediately. Missing
+required keys or values that fail the schema throw
+[`ArkEnvError`](/docs/validating-your-environment/error-reporting) at
+the call site.
+
+| Moment               | What runs                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------- |
+| Module load          | `arkenv()` validates the current `env` source (default `process.env`)                 |
+| Next.js / Nuxt build | Framework wrappers validate during config or module setup                             |
+| Vite / Bun build     | Plugins validate in the bundler pipeline                                              |
+| Client bundle        | Public keys are already validated at build time; server secrets are stripped or guarded |
+
+Framework adapters validate in builds by default. Only keys you declare
+appear on the returned object (`onUndeclaredKey` defaults to
+`"delete"`). `env` is a closed set of known fields, not leftover process
+variables.
+
+## Where `env.ts` lives
+
+Install either engine, then create `env.ts` next to the code that boots
+first. Root of the app or package is common; `src/env.ts` is fine when
+the rest of your entrypoints already live under `src/`.
+
+<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
+  <Tab value="ArkType (@arkenv/core)">
+    ```package-install
+    npm install @arkenv/core arktype
+    ```
+
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/core";
+
+    export const env = arkenv({
+    	HOST: "string.host = 'localhost'",
+    	PORT: "number.port = 3000",
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod (@arkenv/standard)">
+    ```package-install
+    npm install @arkenv/standard zod
+    ```
+
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	HOST: z.string().default("localhost"),
+    	PORT: z.int().min(0).max(65535).default(3000),
+    	NODE_ENV: z
+    		.enum(["development", "production", "test"])
+    		.default("development"),
+    });
+    ```
+  </Tab>
+</Tabs>
+
+Import that object from application code:
+
+```ts title="./src/server.ts"
+import { env } from "../env";
+
+console.log(`listening on ${env.HOST}:${env.PORT}`);
+```
+
+:::warning[Do not read `process.env` or `import.meta.env` directly]
+Reading `process.env` or `import.meta.env` skips ArkEnv. Import `{ env }`
+so public keys stay typed and coerced and server secrets stay out of the
+client bundle. That surface is canonical across Node, Next.js, Nuxt,
+Vite, and Bun.
+:::
+
+<Callout type="info" title="Already on ArkType?">
+  ArkType implements Standard Schema, but if you already depend on ArkType
+  stay on `@arkenv/core` rather than wrapping it through
+  `@arkenv/standard`. See
+  [Choosing an engine](/docs/guides/validators/choosing-an-engine).
+</Callout>
+
+## What belongs in the schema
+
+Put every variable your process reads into the schema: secrets, public
+keys, tunables, and platform vars you rely on.
+
+- Required secrets (`DATABASE_URL`, `API_KEY`)
+- Tunables with defaults (`PORT`, `LOG_LEVEL`)
+- Framework public keys (`NEXT_PUBLIC_*`, `VITE_*`, `NUXT_PUBLIC_*`,
+  `BUN_PUBLIC_*`)
+- Hosting provider system variables (`VERCEL_ENV`, `CONTEXT`, …) when
+  you use them
+
+The [ArkEnv CLI](/docs/getting-started/installation) and
+[hosting presets](/docs/validating-your-environment/hosting-presets) can
+inject the provider fields for you. You can still declare them by hand.
+
+A single `env.ts` is the default layout for Node apps and
+[flat layout](/docs/validating-your-environment/client-vs-server#flat-layout-recommended)
+frameworks:
+
+<Files>
+  <Folder name="my-app" defaultOpen>
+    <File name="env.ts" />
+
+    <File name=".env" />
+
+    <File name=".env.example" />
+
+    <Folder name="src">
+      <File name="index.ts" />
+    </Folder>
+  </Folder>
+</Files>
+
+Keep `.env.example` in sync with the schema so new contributors know
+which keys to set.
+
+## Strings, numbers, booleans, enums
+
+Your schema is a map from env key names to validators.
+`@arkenv/core` uses the ArkType DSL (and ArkEnv keywords).
+`@arkenv/standard` accepts Zod, Valibot, and other
+[Standard Schema](https://standardschema.dev/) validators. Pick one
+stack per project; both paths produce a typed `env` object.
+
+[Coercion and parsing](/docs/validating-your-environment/coercion-and-parsing)
+covers how strings become numbers and booleans. This section is about
+declaring the shape.
+
+<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
+  <Tab value="ArkType (@arkenv/core)">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/core";
+
+    export const env = arkenv({
+    	API_URL: "string",
+    	APP_NAME: "string = 'My App'",
+    	OPTIONAL_NOTE: "string | undefined",
+    	PORT: "number.port = 3000",
+    	RETRY_COUNT: "number.integer = 3",
+    	DEBUG: "boolean = false",
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    	LOG_LEVEL: "'debug' | 'info' | 'warn' | 'error' = 'info'",
+    });
+    ```
+
+    A bare `string` requires the key. Append `= 'value'` for a default.
+    `string | undefined` accepts a missing key. An empty string (`NOTE=`)
+    still counts as present unless you set
+    [`emptyAsUndefined`](/docs/reference/options).
+  </Tab>
+
+  <Tab value="Zod (@arkenv/standard)">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	API_URL: z.string(),
+    	APP_NAME: z.string().default("My App"),
+    	OPTIONAL_NOTE: z.string().optional(),
+    	PORT: z.int().min(0).max(65535).default(3000),
+    	RETRY_COUNT: z.int().default(3),
+    	DEBUG: z.boolean().default(false),
+    	NODE_ENV: z
+    		.enum(["development", "production", "test"])
+    		.default("development"),
+    	LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
+    });
+    ```
+
+    Pass each field's schema as the map value for Valibot and other
+    Standard Schema libraries. Valibot:
+    [`@arkenv/standard/valibot`](/docs/guides/validators/valibot).
+    Package: [`@arkenv/standard`](/docs/reference/standard).
+  </Tab>
+</Tabs>
+
+## ArkEnv keywords (ArkType)
+
+`@arkenv/core` adds env-oriented keywords on top of
+[ArkType's primitives](https://arktype.io/docs/primitives). They are not
+available on `@arkenv/standard`.
+
+| Keyword       | Meaning                        |
+| ------------- | ------------------------------ |
+| `string.host` | An IP address or `"localhost"` |
+| `number.port` | An integer from `0` to `65535` |
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  HOST: "string.host = 'localhost'",
+  PORT: "number.port = 3000",
+});
+```
+
+Full details: [keywords](/docs/reference/keywords).
+
+## Typesafety
+
+The schema is the single source of truth for runtime checks and
+TypeScript types.
+
+<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
+  <Tab value="ArkType (@arkenv/core)">
+    ```ts title="./env.ts" twoslash
+    import arkenv, { type Infer } from "@arkenv/core";
+
+    const schema = {
+    	DATABASE_URL: "string",
+    	PORT: "number.port = 3000",
+    } as const;
+
+    export const env = arkenv(schema);
+    export type Env = Infer<typeof schema>;
+
+    env.PORT; // number
+    ```
+  </Tab>
+
+  <Tab value="Zod (@arkenv/standard)">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    const schema = {
+    	DATABASE_URL: z.url(),
+    	PORT: z.int().min(0).max(65535).default(3000),
+    };
+
+    export const env = arkenv(schema);
+    export type Env = typeof env;
+
+    env.PORT; // number
+    ```
+  </Tab>
+</Tabs>
+
+| Input                                          | Result                                                                    |
+| ---------------------------------------------- | ------------------------------------------------------------------------- |
+| ArkType declarative map (`{ PORT: "number" }`) | `Infer<typeof schema>` from `@arkenv/core`                                |
+| Compiled `type({ ... })`                       | `typeof Env.infer` / `Infer<typeof Env>`                                  |
+| Standard Schema field map (Zod, Valibot, …)    | `typeof env` after `arkenv(schema)`, or each validator's own infer helper |
+
+Typesafety holds when application code imports `env` and validation runs
+at boot or build. Casting `process.env`, or skipping the import, bypasses
+it. Types do not load `.env` files.
+
+Flat layouts may expose server **key names** to client TypeScript while
+blocking values. Strict layouts keep server modules out of the client
+graph. See
+[Client vs. server](/docs/validating-your-environment/client-vs-server).
+
+## Richer field definitions
+
+For transforms, function defaults, or reuse across files:
+
+<Tabs items={["ArkType type()", "Zod"]}>
+  <Tab value="ArkType type()">
+    ```ts title="./env.ts" twoslash
+    import arkenv, { type } from "@arkenv/core";
+
+    export const env = arkenv({
+    	PORT: "number.port = 3000",
+    	FEATURE_FLAGS: type("string[]").default(() => []),
+    	BUILD_ID: type("string").pipe((value) => value.trim()),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	PORT: z.int().min(0).max(65535).default(3000),
+    	BUILD_ID: z.string().transform((value) => value.trim()),
+    });
+    ```
+  </Tab>
+</Tabs>
+
+See
+[Transforms](/docs/validating-your-environment/coercion-and-parsing#transforms)
+for morph vs Zod `.transform`, and
+[reusing schemas](/docs/validating-your-environment/reusing-schemas)
+when the whole schema should be shared.
+
+## Custom env source
+
+By default `arkenv()` reads `process.env`. Pass a custom record for
+tests, Workers bindings, or any host that injects env outside
+`process.env`:
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv(
+  { PORT: "number.port" },
+  { env: { PORT: "3000" } },
+);
+```
+
+Framework plugins (Next.js, Nuxt, Vite, Bun) wire the usual sources for
+you. See [options](/docs/reference/options) for `coerce`, `arrayFormat`,
+`emptyAsUndefined`, and `safe`.
+
+## What ArkEnv owns vs your schema library
+
+ArkEnv loads the input record, optionally
+[coerces](/docs/validating-your-environment/coercion-and-parsing)
+strings, then hands the result to your schema library. Field rules
+always come from that library:
+
+| Package                                        | You supply                                            | Shared with both engines                                             |
+| ---------------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------- |
+| [`@arkenv/core`](/docs/reference/core)         | ArkType DSL strings or `type()` definitions           | `arkenv()` options, `ArkEnvError`, fail-fast boot, framework plugins |
+| [`@arkenv/standard`](/docs/reference/standard) | A map of Standard Schema validators (Zod, Valibot, …) | Same, plus `toJsonSchema`                                            |
+
+See [Choosing an engine](/docs/guides/validators/choosing-an-engine) for
+packaging and peer-dependency differences.
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/validating-your-environment/client-vs-server" title="Client vs. server" description="Keep public keys and private secrets in separate buckets." />
+
+  <Card href="/docs/validating-your-environment/coercion-and-parsing" title="Coercion and parsing" description="Numbers, booleans, arrays, objects, and transforms." />
+
+  <Card href="/docs/guides/validators/choosing-an-engine" title="Choosing an engine" description="When to use @arkenv/core vs @arkenv/standard." />
+</Cards>

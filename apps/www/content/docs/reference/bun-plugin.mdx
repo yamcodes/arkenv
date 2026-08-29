@@ -1,11 +1,11 @@
 ---
 title: "@arkenv/bun-plugin"
-description: Bun bundler plugin for build-time validation and BUN_PUBLIC_ isolation.
+description: Exports and transform options for the Bun plugin.
 ---
 
-`@arkenv/bun-plugin` validates environment variables for Bun builds and
-fullstack apps that inline client env. Backend-only Bun scripts use
-[`@arkenv/core`](/docs/reference/core).
+API reference for `@arkenv/bun-plugin`. Setup recipes:
+[Bun guide](/docs/guides/frameworks/bun). Backend-only Bun scripts use
+[`@arkenv/core`](/docs/reference/core) without this plugin.
 
 ## Installation
 
@@ -23,9 +23,6 @@ npm install @arkenv/standard
 
 ## Exports
 
-The default export is a hybrid `arkenvPlugin` instance. Named exports
-are explicit aliases.
-
 | Export                  | Role                                     |
 | ----------------------- | ---------------------------------------- |
 | default                 | `arkenvPlugin` hybrid plugin instance    |
@@ -35,67 +32,28 @@ are explicit aliases.
 | `./standard`            | Standard Schema plugin entry             |
 
 `arkenvPlugin` is both a factory (`arkenvPlugin({ schemaPath })`) and a
-`BunPlugin` object with `name`, `target`, and `setup`. You can:
-
-- Preload in `bunfig.toml`: `plugins = ["@arkenv/bun-plugin"]`
-- Register in `Bun.build`: `plugins: [arkenvPlugin]`
-- Pass transform options:
-  `plugins: [arkenvPlugin({ schemaPath: "./src/env.ts" })]`
-
-`arkenvBunPlugin` is the host-explicit alias for monorepos that load
-more than one bundler plugin.
-
-Default client prefix: `BUN_PUBLIC_`.
-
-## Usage
-
-Register the plugin in `Bun.build` (or your fullstack server setup).
-
-```ts title="./build.ts"
-import arkenvPlugin from "@arkenv/bun-plugin";
-
-await Bun.build({
-  entrypoints: ["./src/index.ts"],
-  plugins: [arkenvPlugin()],
-});
-```
-
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/core";
-
-export const env = arkenv({
-  DATABASE_URL: "string",
-  BUN_PUBLIC_API_URL: "string",
-});
-```
+`BunPlugin` object with `name`, `target`, and `setup`. You can preload
+in `bunfig.toml` (`plugins = ["@arkenv/bun-plugin"]`), register in
+`Bun.build`, or pass transform options. Default client prefix:
+`BUN_PUBLIC_`.
 
 ## Transform options
 
 Same transform call shape as
 [`@arkenv/vite-plugin`](/docs/reference/vite-plugin):
 
-- `arkenvPlugin()` or
-  `arkenvPlugin({ schemaPath, clientPrefix, ... })` rewrites the schema
-  module in the client graph.
-- A schema argument is rejected. Define the schema in `env.ts` and
-  import `{ env }` from there.
+| Option                | Default         | Meaning                                                            |
+| --------------------- | --------------- | ------------------------------------------------------------------ |
+| `schemaPath`          | auto (`env.ts`) | Schema module to transform                                         |
+| `clientPrefix`        | `BUN_PUBLIC_`   | Keys exposed to the client                                         |
+| Plus                  | (none)          | All [`ArkEnvConfig`](/docs/reference/options) fields except `safe` |
+| `logger` / `logLevel` | (none)          | Logging                                                            |
 
-Plugin config omits `safe` so failed validation cannot soft-fail into
-the bundle.
-
-## Types
-
-Import the validated `env` object from your schema module.
-
-:::warning[Do not read `process.env` directly]
-Reading `process.env` skips ArkEnv. Import `{ env }` so public keys stay
-typed and coerced and server secrets stay out of the client bundle.
-:::
+A schema argument is rejected. Plugin config omits `safe` so failed
+validation cannot soft-fail into the bundle.
 
 ## Next steps
 
 <Cards>
-  <Card href="/docs/guides/frameworks/bun" title="Bun framework guide" description="Step-by-step Bun runtime and bundler recipes." />
-
-  <Card href="/docs/validating-your-environment/client-vs-server" title="Client vs. server" description="Set up security boundaries between public and private keys." />
+  <Card href="/docs/guides/frameworks/bun" title="Bun framework guide" description="Quickstart, fullstack setup, and reading env in application code." />
 </Cards>

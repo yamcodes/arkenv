@@ -26,7 +26,7 @@
 
 
 <h3 align="center">
-  Bring your own validator: <a href="https://arktype.io/">ArkType</a>, <a href="https://zod.dev/">Zod</a>, <a href="https://valibot.dev/">Valibot</a>, or <a href="https://arkenv.js.org/docs/core-concepts/standard-schema">any Standard Schema validator</a>
+  Bring your own validator: <a href="https://arktype.io/">ArkType</a>, <a href="https://zod.dev/">Zod</a>, <a href="https://valibot.dev/">Valibot</a>, or <a href="https://arkenv.js.org/docs/guides/validators/choosing-an-engine">any Standard Schema validator</a>
 </h3>
 
 <br />

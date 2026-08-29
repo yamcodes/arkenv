@@ -75,9 +75,9 @@ describe("/docs/[package]/llms.txt route", () => {
 				data: { title: "Bun" },
 			},
 			{
-				slugs: ["core-concepts", "coercion"],
-				url: "/docs/core-concepts/coercion",
-				data: { title: "Coercion" },
+				slugs: ["validating-your-environment", "coercion-and-parsing"],
+				url: "/docs/validating-your-environment/coercion-and-parsing",
+				data: { title: "Coercion and parsing" },
 			},
 		] as any);
 
@@ -87,7 +87,7 @@ describe("/docs/[package]/llms.txt route", () => {
 			{ package: "getting-started" },
 			{ package: "reference" },
 			{ package: "guides" },
-			{ package: "core-concepts" },
+			{ package: "validating-your-environment" },
 		]);
 
 		spy.mockRestore();

@@ -1,25 +1,139 @@
 ---
 title: Installation
-description: Learn how to get started with ArkEnv.
+description: Install ArkEnv with the CLI or by hand in a new or existing project.
 ---
 
-Get started with ArkEnv in a few moments using:
+ArkEnv is designed to drop into a new or existing TypeScript app.
+ArkEnv provides an interactive CLI that detects your stack, writes a
+schema, and wires framework config.
 
 ```package-install
 npx arkenv@latest init
 ```
 
-The interactive CLI detects your stack, installs the matching packages, and writes a
-schema. Use it to [start with an example](/docs/getting-started/examples)
-or [add ArkEnv to an existing repository](/docs/getting-started/add-to-existing-repository).
+Omit a project name to mutate the current directory. Pass a name to
+create a new folder (optionally from `--example`):
+
+```package-install
+npx arkenv@latest init my-app --example with-vite-react -H vercel
+```
+
+For agent sessions, use `--agent` (implies `--yes --quiet --json`):
+
+```package-install
+npx arkenv@latest init --agent --flat
+```
+
+Install a local binary when you want `arkenv` on the project PATH:
+
+```package-install
+npm install -D arkenv
+```
+
+Flags, output files, and refusal codes live in
+[`init` reference](/docs/reference/init).
+
+## Add to an existing repository
+
+When the CLI finds a `package.json`, it adopts the repo incrementally.
+
+<Steps>
+  <Step>
+    ### Run the interactive CLI
+
+    ```package-install
+    npx arkenv@latest init
+    ```
+
+    The CLI refuses a dirty git working tree. Commit or stash
+    (`git stash -u`) first, or pass `--force` if you accept overwriting
+    generated files.
+
+    <Callout type="warn">
+      The CLI **never** reads your actual `.env` files. Suggested schema
+      key names come from `.env.example` if you have one, otherwise from
+      `process.env` / `import.meta.env` usage in source.
+    </Callout>
+  </Step>
+
+  <Step>
+    ### Answer the wizard
+
+    The CLI asks about framework, layout, validator, and hosting preset.
+    If `compilerOptions.strict` is off in `tsconfig.json`, the wizard
+    offers to enable it (recommended).
+  </Step>
+
+  <Step>
+    ### Review generated files
+
+    After the CLI, a Next.js app (for example) looks like this:
+
+    <Files>
+      <Folder name="my-app" defaultOpen>
+        <File name="env.ts" />
+
+        <File name=".env.example" />
+
+        <File name=".env" />
+
+        <Folder name=".arkenv">
+          <File name="env.gen.ts" />
+
+          <File name="index.ts" />
+        </Folder>
+
+        <Folder name="app" defaultOpen>
+          <File name="page.tsx" />
+        </Folder>
+
+        <File name="next.config.ts" />
+      </Folder>
+    </Files>
+
+    If the project has a `src/` directory, the schema lands at
+    `src/env.ts` instead.
+  </Step>
+
+  <Step>
+    ### Import `env` in your app
+
+    If you don't have a `.env` file yet, copy the example and fill in
+    values:
+
+    ```bash title="Terminal"
+    cp .env.example .env
+    ```
+
+    Import `env` **instead of** `process.env` (or `import.meta.env`):
+
+    ```ts title="./app/page.tsx" twoslash
+    // @filename: env.ts
+    import arkenv from "@arkenv/core";
+
+    export const env = arkenv({
+      DATABASE_URL: "string",
+    });
+
+    // @filename: app/page.tsx
+    // ---cut---
+    import { env } from "../env";
+
+    console.log(env.DATABASE_URL);
+    ```
+  </Step>
+</Steps>
 
 ## Manual installation
 
-ArkEnv can be installed manually if you prefer a more hands-on approach.
+Prefer a hands-on setup? Install the validation engine yourself, then
+add a framework package from the
+[framework guides](/docs/guides/frameworks).
 
 ### Validation engine
 
-[`@arkenv/core`](/docs/reference/core) is the core ArkType-powered validation engine. `arktype` is a **required** peer.
+[`@arkenv/core`](/docs/reference/core) is the ArkType-powered engine.
+`arktype` is a **required** peer.
 
 ```package-install
 npm install @arkenv/core arktype
@@ -32,13 +146,21 @@ If you aren't using ArkType, install
 npm install @arkenv/standard
 ```
 
-### Framework integrations
-
-Next.js, Nuxt, Vite, and Bun have **first-party** integrations. The CLI detects your stack and installs the matching one. To add them manually, see the [framework guides](/docs/guides/frameworks).
-
 ### TypeScript module resolution
 
 `@arkenv/standard` subpath exports (`/valibot`, `/zod-mini`) and the
 framework plugin subpaths require modern TypeScript module resolution.
 Set `compilerOptions.moduleResolution` to `"bundler"`, `"node16"`, or
 `"nodenext"`. Legacy `"node"` resolution is not supported.
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/validating-your-environment/defining-your-schema" title="Defining your schema" description="Declare field types and export a typed env object." />
+
+  <Card href="/docs/guides/frameworks" title="Framework guides" description="Next.js, Nuxt, Vite, and Bun recipes." />
+
+  <Card href="/docs/getting-started/editor-integration" title="Editor integration" description="Autocomplete, type inspection, and diagnostics." />
+
+  <Card href="/docs/reference/init" title="init reference" description="CLI flags, --agent payloads, and output files." />
+</Cards>

@@ -91,7 +91,83 @@ const config = {
 			},
 			{
 				source: "/docs/standard-schema",
-				destination: "/docs/core-concepts/standard-schema",
+				destination: "/docs/guides/validators/choosing-an-engine",
+				permanent: true,
+			},
+
+			// --- core-concepts → validating-your-environment (v1 IA fold) ---
+			{
+				source: "/docs/core-concepts",
+				destination: "/docs/validating-your-environment",
+				permanent: true,
+			},
+			{
+				source: "/docs/core-concepts/coercion",
+				destination: "/docs/validating-your-environment/coercion-and-parsing",
+				permanent: true,
+			},
+			{
+				source: "/docs/core-concepts/transformation",
+				destination:
+					"/docs/validating-your-environment/coercion-and-parsing",
+				permanent: true,
+			},
+			{
+				source: "/docs/core-concepts/morphs",
+				destination:
+					"/docs/validating-your-environment/coercion-and-parsing",
+				permanent: true,
+			},
+			{
+				source: "/docs/core-concepts/transforms",
+				destination:
+					"/docs/validating-your-environment/coercion-and-parsing",
+				permanent: true,
+			},
+			{
+				source: "/docs/core-concepts/typesafety",
+				destination:
+					"/docs/validating-your-environment/defining-your-schema",
+				permanent: true,
+			},
+			{
+				source: "/docs/core-concepts/validation",
+				destination: "/docs/validating-your-environment/defining-your-schema",
+				permanent: true,
+			},
+			{
+				source: "/docs/core-concepts/standard-schema",
+				destination: "/docs/guides/validators/choosing-an-engine",
+				permanent: true,
+			},
+			{
+				source: "/docs/core-concepts/:path*",
+				destination: "/docs/validating-your-environment",
+				permanent: true,
+			},
+			{
+				source: "/docs/validating-your-environment/defining-types",
+				destination: "/docs/validating-your-environment/defining-your-schema",
+				permanent: true,
+			},
+			{
+				source: "/docs/validating-your-environment/structuring-your-schema",
+				destination: "/docs/validating-your-environment/defining-your-schema",
+				permanent: true,
+			},
+			{
+				source: "/docs/validating-your-environment/framework-integration",
+				destination: "/docs/guides/frameworks",
+				permanent: true,
+			},
+			{
+				source: "/docs/validating-your-environment/choosing-an-engine",
+				destination: "/docs/guides/validators/choosing-an-engine",
+				permanent: true,
+			},
+			{
+				source: "/docs/getting-started/add-to-existing-repository",
+				destination: "/docs/getting-started/installation",
 				permanent: true,
 			},
 
@@ -130,17 +206,7 @@ const config = {
 			},
 			{
 				source: "/docs/arkenv/coercion",
-				destination: "/docs/core-concepts/coercion",
-				permanent: true,
-			},
-			{
-				source: "/docs/core-concepts/morphs",
-				destination: "/docs/core-concepts/transformation",
-				permanent: true,
-			},
-			{
-				source: "/docs/core-concepts/transforms",
-				destination: "/docs/core-concepts/transformation",
+				destination: "/docs/validating-your-environment/coercion-and-parsing",
 				permanent: true,
 			},
 			{
@@ -165,7 +231,7 @@ const config = {
 			},
 			{
 				source: "/docs/arkenv/integrations/standard-schema",
-				destination: "/docs/core-concepts/standard-schema",
+				destination: "/docs/guides/validators/choosing-an-engine",
 				permanent: true,
 			},
 			{
@@ -195,7 +261,7 @@ const config = {
 			},
 			{
 				source: "/docs/arkenv/how-to/load-environment-variables",
-				destination: "/docs/validating-your-environment/framework-integration",
+				destination: "/docs/guides/frameworks",
 				permanent: true,
 			},
 			{

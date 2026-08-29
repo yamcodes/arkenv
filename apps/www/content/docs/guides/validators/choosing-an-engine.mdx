@@ -104,7 +104,7 @@ ArkEnv's pre-coercion step for `@arkenv/standard` prefers **Standard
 JSON Schema v1** on the value (`~standard.jsonSchema.input` /
 `.output`). When a library keeps conversion outside the schema, use a
 first-class subpath or the optional
-[`toJsonSchema`](/docs/core-concepts/coercion#valibot-tojsonschema)
+[`toJsonSchema`](/docs/validating-your-environment/coercion-and-parsing#valibot-tojsonschema)
 escape hatch.
 
 | Library                                        | How ArkEnv gets JSON Schema                                                               |
@@ -112,10 +112,10 @@ escape hatch.
 | Zod (v4.2+)                                    | On the value (Standard JSON Schema v1)                                                    |
 | VineJS (v4.3+)                                 | On the value (Standard JSON Schema v1)                                                    |
 | Valibot (v1.2+ with `@valibot/to-json-schema`) | `@arkenv/standard/valibot` (see [Valibot](/docs/guides/validators/valibot))               |
-| Zod Mini                                       | `@arkenv/standard/zod-mini` ([mixing](/docs/core-concepts/coercion#mixing-with-zod-mini)) |
+| Zod Mini                                       | `@arkenv/standard/zod-mini` ([mixing](/docs/validating-your-environment/coercion-and-parsing#mixing-with-zod-mini)) |
 | Other Standard JSON Schema v1 validators       | On the value                                                                              |
 
-See [Coercion](/docs/core-concepts/coercion).
+See [Coercion and parsing](/docs/validating-your-environment/coercion-and-parsing).
 
 ## Related
 
@@ -126,7 +126,7 @@ See [Coercion](/docs/core-concepts/coercion).
 
   <Card href="/docs/reference/standard" title="@arkenv/standard" description="Standard Schema engine package reference." />
 
-  <Card href="/docs/validating-your-environment/defining-types" title="Defining types" description="Declare field types for either engine." />
+  <Card href="/docs/validating-your-environment/defining-your-schema" title="Defining your schema" description="Declare field types for either engine." />
 
   <Card href="/docs/reference/schema" title="schema" description="The schema object you pass to arkenv()." />
 </Cards>

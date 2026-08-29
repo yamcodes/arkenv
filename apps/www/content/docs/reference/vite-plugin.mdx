@@ -1,10 +1,10 @@
 ---
 title: "@arkenv/vite-plugin"
-description: Vite plugin for build-time validation and client env isolation.
+description: Exports and transform options for the Vite plugin.
 ---
 
-`@arkenv/vite-plugin` validates environment variables during Vite dev
-and build. Only public keys (default `VITE_*`) reach the client.
+API reference for `@arkenv/vite-plugin`. Setup recipes:
+[Vite guide](/docs/guides/frameworks/vite).
 
 ## Installation
 
@@ -22,9 +22,6 @@ npm install @arkenv/standard
 
 ## Exports
 
-The default export is the Vite plugin factory. Named exports are
-explicit aliases.
-
 | Export                   | Role                          |
 | ------------------------ | ----------------------------- |
 | default                  | `arkenvPlugin` plugin factory |
@@ -32,30 +29,7 @@ explicit aliases.
 | named `arkenvVitePlugin` | Host-explicit named alias     |
 | `./standard`             | Standard Schema plugin entry  |
 
-## Transform mode
-
-Point the plugin at your `env.ts`. The client graph is rewritten so
-server secrets never inline.
-
-```ts title="./vite.config.ts"
-import { defineConfig } from "vite";
-import arkenvPlugin from "@arkenv/vite-plugin";
-
-export default defineConfig({
-  plugins: [arkenvPlugin()],
-});
-```
-
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/core";
-
-export const env = arkenv({
-  DATABASE_URL: "string",
-  VITE_API_URL: "string",
-});
-```
-
-### Transform options
+## Transform options
 
 Pass transform options only. A schema argument is rejected.
 
@@ -70,45 +44,8 @@ Call `arkenvPlugin()` with no args, or an options object that includes
 transform fields (`schemaPath`, `clientPrefix`, logging). Do not pass a
 schema map or compiled `type()` to the plugin.
 
-## Values inside `vite.config.ts`
-
-When the config file needs typed values, validate them with core
-`arkenv()` and Vite's `loadEnv`. Keep the plugin on transform options
-only:
-
-```ts title="./vite.config.ts"
-import { defineConfig, loadEnv } from "vite";
-import arkenvPlugin from "@arkenv/vite-plugin";
-import arkenv from "@arkenv/core";
-
-export default defineConfig(({ mode }) => {
-  const env = arkenv(
-    {
-      PORT: "number.port",
-      VITE_API_URL: "string",
-    },
-    { env: loadEnv(mode, process.cwd(), "") },
-  );
-  return {
-    plugins: [arkenvPlugin()],
-    server: { port: env.PORT },
-  };
-});
-```
-
-## Types
-
-Import the validated `env` object from your schema module.
-
-:::warning[Do not read `import.meta.env` directly]
-Reading `import.meta.env` skips ArkEnv. Import `{ env }` so public keys stay
-typed and coerced and server secrets stay out of the client bundle.
-:::
-
 ## Next steps
 
 <Cards>
-  <Card href="/docs/guides/frameworks/vite" title="Vite framework guide" description="Step-by-step Vite plugin recipes and configuration." />
-
-  <Card href="/docs/validating-your-environment/reusing-schemas" title="Reusing schemas" description="Share validation schemas across multiple applications and packages." />
+  <Card href="/docs/guides/frameworks/vite" title="Vite framework guide" description="Quickstart, transform mode, and reading env in application code." />
 </Cards>

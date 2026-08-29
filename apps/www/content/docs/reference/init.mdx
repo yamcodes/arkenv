@@ -1,27 +1,15 @@
 ---
 title: init
-description: Scaffold ArkEnv schemas, layouts, and hosting presets with the CLI.
+description: CLI flags and output for arkenv init.
 ---
 
 `arkenv` on npm is the CLI. It scaffolds schemas and wires framework
-config. Validation lives in `@arkenv/core` or `@arkenv/standard`.
+config. Validation lives in `@arkenv/core` or `@arkenv/standard`. For
+the walkthrough, see
+[Installation](/docs/getting-started/installation).
 
 ```package-install
 npx arkenv@latest init
-```
-
-```package-install
-npx arkenv@latest init my-app --example with-vite-react -H vercel
-```
-
-```package-install
-npx arkenv@latest init --agent --flat
-```
-
-Install locally when you want a project binary:
-
-```package-install
-npm install -D arkenv
 ```
 
 ## Usage
@@ -135,7 +123,7 @@ Importing `arkenv` as a library throws and points you at `@arkenv/core`.
 ## Next steps
 
 <Cards>
-  <Card href="/docs/getting-started/add-to-existing-repository" title="Add to an existing repository" description="Adopt ArkEnv incrementally in an existing project." />
+  <Card href="/docs/getting-started/installation" title="Installation" description="CLI walkthrough and manual install." />
 
   <Card href="/docs/reference/preset" title="preset" description="CLI reference for applying and removing provider presets." />
 
