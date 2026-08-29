@@ -3,7 +3,6 @@ import { shake } from "radashi";
 import { getEnvTemplate, getStrictEnvTemplates } from "./env-template";
 import type { CollectedState, ScaffoldingPlan } from "./plan";
 import { getDlxCommand } from "./scaffold";
-import { bunTypesTemplate, viteTypesTemplate } from "./templates";
 import { getFrameworkPrefix, getPresetKeys } from "./templates/presets";
 import { exampleEnvDefaults, getEnvDefaultsFromKeys } from "./utils";
 
@@ -430,44 +429,7 @@ export function createPlan(state: CollectedState): ScaffoldingPlan {
 		};
 	}
 
-	// 4. Type Definitions
-	if (
-		(options.framework === "vite" ||
-			(options.framework === "bun-fullstack" && options.bunFeatures?.length)) &&
-		options.installTypeDefinitions !== false
-	) {
-		const typeFileName =
-			options.framework === "vite" ? "vite-env.d.ts" : "bun-env.d.ts";
-		const typeFilePath = path.join(targetDir, typeFileName);
-		const typeFileExists = existingFiles.includes(typeFilePath);
-
-		if (options.envDtsHandling !== "skip") {
-			if (
-				options.envDtsHandling === "append" ||
-				(!options.envDtsHandling && typeFileExists)
-			) {
-				plan.files.push({
-					path: typeFilePath,
-					content: targetPath, // We pass the schema path to append logic
-					action: "append",
-					label: `${options.framework} types`,
-				});
-			} else {
-				const content =
-					options.framework === "vite"
-						? viteTypesTemplate(options.path)
-						: bunTypesTemplate(options.path);
-				plan.files.push({
-					path: typeFilePath,
-					content,
-					action: typeFileExists ? "overwrite" : "create",
-					label: `${options.framework} types`,
-				});
-			}
-		}
-	}
-
-	// 5. Framework-specific bootstrapping
+	// 4. Framework-specific bootstrapping
 	if (
 		options.framework === "vite" ||
 		options.framework === "bun-fullstack" ||

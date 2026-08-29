@@ -137,13 +137,4 @@ export class NodeWorkspace implements WorkspacePort {
 	async bootstrapNuxtConfig(filePath: string): Promise<BootstrapResult> {
 		return bootstrapNuxtConfig(this, filePath);
 	}
-
-	async safeAppend(
-		filePath: string,
-		schemaPath: string,
-		framework: "vite" | "bun-fullstack",
-	) {
-		const { safeAppend } = await import("../injection");
-		return safeAppend(filePath, schemaPath, framework);
-	}
 }

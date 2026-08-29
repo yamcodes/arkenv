@@ -7,11 +7,6 @@ import type { ParsedTsConfig } from "@/shared/ports";
 import { code } from "@/shared/visuals";
 import { steps } from "./steps";
 
-type HasTypeFileAtPath = (options: {
-	framework: ProjectOptions["framework"];
-	envPath: string;
-}) => boolean | Promise<boolean>;
-
 type ExistingProjectDefaults = Partial<
 	Pick<
 		ProjectOptions,
@@ -22,8 +17,6 @@ type ExistingProjectDefaults = Partial<
 	tsConfig?: ParsedTsConfig | null;
 	envKeys?: string[];
 	envKeysSource?: ".env.example" | "project";
-	hasTypeFileAtPath?: HasTypeFileAtPath;
-	hasTypeFile?: boolean;
 	hasEnvSchemaFile?: boolean;
 	isStrict?: boolean;
 	isSimple?: boolean;
@@ -55,8 +48,6 @@ export async function runPromptWizard(
 		tsConfig?: ParsedTsConfig | null;
 		envKeys?: string[];
 		envKeysSource?: ".env.example" | "project";
-		hasTypeFileAtPath?: HasTypeFileAtPath;
-		hasTypeFile?: boolean;
 		hasEnvSchemaFile?: boolean;
 	},
 	isYes = false,
@@ -186,17 +177,6 @@ async function runExistingProjectWizard(
 				layout = framework === "nextjs" ? "flat" : "simple";
 			}
 		}
-		const hasTypeFile = await getHasTypeFile(
-			defaults,
-			framework,
-			defaultEnvPath,
-		);
-		let envDtsHandling: ProjectOptions["envDtsHandling"];
-
-		if (framework === "vite" || framework === "bun-fullstack") {
-			envDtsHandling = hasTypeFile ? "append" : "overwrite";
-		}
-
 		return shake({
 			mode: "existing",
 			path: defaultEnvPath,
@@ -209,10 +189,7 @@ async function runExistingProjectWizard(
 					: undefined,
 			language: "ts",
 			overwriteEnvSchemaFile: true,
-			installTypeDefinitions:
-				framework === "vite" || framework === "bun-fullstack",
 			installSkill: false,
-			envDtsHandling,
 			envKeys: detectedKeys ?? undefined,
 			disableCodegen: defaults?.disableCodegen ?? false,
 			wrapNextjsConfig: framework === "nextjs" ? true : undefined,
@@ -305,29 +282,11 @@ async function runExistingProjectWizard(
 				defaultEnvPath,
 			}),
 		);
-		const hasTypeFile = await getHasTypeFile(defaults, framework, envPath);
 
-		// 6. installTypeDefinitions
-		const installTypeDefinitions = unwrapPrompt(
-			await steps.installTypeDefinitions({
-				framework,
-				hasTypeFile,
-			}),
-		);
-
-		// 7. envDtsHandling
-		const envDtsHandling = unwrapPrompt(
-			await steps.envDtsHandling({
-				framework,
-				installTypeDefinitions,
-				hasTypeFile,
-			}),
-		);
-
-		// 8. validator
+		// 6. validator
 		const validator = unwrapPrompt(await steps.validator());
 
-		// 9. hostPreset
+		// 7. hostPreset
 		const hostPreset =
 			defaults?.hostPreset !== undefined
 				? defaults.hostPreset
@@ -337,7 +296,7 @@ async function runExistingProjectWizard(
 						}),
 					);
 
-		// 10. useEnvExample
+		// 8. useEnvExample
 		const useEnvExample = unwrapPrompt(
 			await steps.useEnvExample({
 				detectedKeys,
@@ -358,8 +317,6 @@ async function runExistingProjectWizard(
 			framework,
 			layout,
 			path: envPath,
-			installTypeDefinitions,
-			envDtsHandling,
 			validator,
 			hostPreset,
 			bunFeatures,
@@ -375,18 +332,6 @@ async function runExistingProjectWizard(
 		}
 		throw error;
 	}
-}
-
-async function getHasTypeFile(
-	defaults: ExistingProjectDefaults | undefined,
-	framework: ProjectOptions["framework"],
-	envPath: string,
-): Promise<boolean> {
-	return (
-		(await defaults?.hasTypeFileAtPath?.({ framework, envPath })) ??
-		defaults?.hasTypeFile ??
-		false
-	);
 }
 
 /**
