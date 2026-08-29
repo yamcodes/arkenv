@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { displayTitle, groupByTopic, topicFromIssue } from "./topics";
 
 describe("displayTitle", () => {
-	it("strips (v1) markers and category prefixes, then capitalizes", () => {
+	it("strips (v1) markers and leading Label: prefixes, then capitalizes", () => {
 		expect(displayTitle("(v1) docs: populate Getting started")).toBe(
 			"Populate Getting started",
 		);
@@ -13,11 +13,37 @@ describe("displayTitle", () => {
 			"Introduce @arkenv/nuxt package",
 		);
 		expect(displayTitle("RFC(v1): Replace strict layout")).toBe(
-			"RFC: Replace strict layout",
+			"Replace strict layout",
 		);
+		expect(displayTitle("RFC: Next.js integration")).toBe(
+			"Next.js integration",
+		);
+		expect(
+			displayTitle(
+				"API: Rename underlying core function to arkenv and expose as default export",
+			),
+		).toBe(
+			"Rename underlying core function to arkenv and expose as default export",
+		);
+		expect(displayTitle("Tracking: Nuxt Integration Parity")).toBe(
+			"Nuxt Integration Parity",
+		);
+		expect(displayTitle("Hosting presets Phase 4 (#1450)")).toBe(
+			"Hosting presets Phase 4",
+		);
+		expect(
+			displayTitle(
+				"(v1) Forward-port: hosting presets Phase 4 (#1450)",
+			),
+		).toBe("Hosting presets Phase 4");
 		expect(displayTitle("Coercion (string→number)")).toBe(
 			"Coercion (string→number)",
 		);
+		expect(
+			displayTitle(
+				"RFC: arkenv init: interactive scaffold CLI for onboarding",
+			),
+		).toBe("arkenv init: interactive scaffold CLI for onboarding");
 	});
 });
 

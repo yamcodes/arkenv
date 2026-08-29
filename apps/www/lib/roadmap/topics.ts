@@ -31,21 +31,29 @@ const DOCS_LABELS = new Set([
 ]);
 
 /**
- * Strip repetitive milestone markers and conventional-commit category
- * prefixes from titles shown on `/roadmap`. Raw GitHub titles are unchanged
- * on GitHub itself.
+ * Strip repetitive milestone markers, leading label / conventional-commit
+ * prefixes, and trailing issue/PR refs from titles shown on `/roadmap`. Raw
+ * GitHub titles are unchanged on GitHub itself.
  *
- * Examples: `(v1) docs: populate…` → `Populate…`; `feat(nuxt): add…` → `Add…`.
+ * Examples: `(v1) docs: populate…` → `Populate…`; `feat(nuxt): add…` → `Add…`;
+ * `RFC: …` / `API: …` / `Tracking: …` → body only;
+ * `Hosting presets Phase 4 (#1450)` → `Hosting presets Phase 4`.
+ * Titles that start with the `arkenv` CLI keep lowercase command casing.
  */
 export function displayTitle(title: string): string {
 	const cleaned = title
-		.replace(/\s*RFC\s*\(\s*v1\s*\)\s*:/gi, "RFC:")
 		.replace(/\(\s*v1\s*\)/gi, " ")
 		.replace(/\s+/g, " ")
 		.trim()
-		.replace(/^[a-z][\w-]*(?:\([^)]*\))?:\s*/, "")
+		// docs:, feat(nuxt):, RFC:, API:, Tracking:, …
+		.replace(/^[A-Za-z][\w-]*(?:\([^)]*\))?\s*:\s*/, "")
+		// Trailing cross-ref: "… (#1450)" / "…(#1450)"
+		.replace(/\s*\(#\d+\)\s*$/, "")
 		.trim();
 	if (cleaned.length === 0) return cleaned;
+	// CLI invocations stay lowercase (`arkenv init: …`, not `Arkenv init: …`)
+	const cli = cleaned.match(/^arkenv\b(.*)$/i);
+	if (cli) return `arkenv${cli[1]}`;
 	return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
 }
 

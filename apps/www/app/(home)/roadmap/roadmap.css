@@ -1,13 +1,28 @@
 /* Roadmap page — home chrome, checklist; type scale matches docs (#nd-page) */
 
+/*
+ * Marketing shell pads for the homepage hero. Roadmap is a reading page, so
+ * cancel that top inset and use the same article pad as #nd-page.
+ */
+.home-aurora__shell:has(> .roadmap-page) {
+	padding-top: 0;
+}
+
 .roadmap-page {
+	--fd-page-pad-top: 1.5rem;
 	display: flex;
 	flex-direction: column;
-	gap: var(--space-xl);
-	padding-block: var(--space-2xl) var(--space-3xl);
+	/* Tight title → first section; major sections add their own top margin */
+	gap: var(--space-sm);
+	padding-block: var(--fd-page-pad-top) var(--space-3xl);
+	/*
+	 * Full-bleed pad like .home-aurora__intro — --home-content-inset grows with
+	 * the viewport to keep content inside the rails. Reading measure lives on
+	 * children so the growing inset cannot eat a max-width on this box.
+	 */
 	padding-inline: var(--home-content-inset);
-	max-width: 48rem;
 	width: 100%;
+	max-width: none;
 	margin-inline: 0;
 	box-sizing: border-box;
 	/* Same Geist “book” rendering as docs article titles */
@@ -18,6 +33,22 @@
 		"calt" 0,
 		"rlig",
 		"ss11";
+}
+
+@media (min-width: 48rem) {
+	.roadmap-page {
+		--fd-page-pad-top: 2.5rem;
+	}
+}
+
+.roadmap-page__header,
+.roadmap-page__section {
+	max-width: 48rem;
+	width: 100%;
+}
+
+.roadmap-page__section + .roadmap-page__section {
+	margin-block-start: var(--space-sm);
 }
 
 .roadmap-page__header {
@@ -86,7 +117,7 @@
 .roadmap-page__topics {
 	display: flex;
 	flex-direction: column;
-	gap: var(--space-lg);
+	gap: var(--space-md);
 }
 
 .roadmap-page h3.roadmap-page__topic-title {

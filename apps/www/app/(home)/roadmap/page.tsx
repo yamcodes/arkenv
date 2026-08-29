@@ -32,8 +32,8 @@ function RoadmapRow({ item }: { item: RoadmapItem }) {
 	const label =
 		item.number != null ? (
 			<>
-				<span className="roadmap-page__num">#{item.number}</span>
 				<span className="roadmap-page__title">{item.title}</span>
+				<span className="roadmap-page__num">#{item.number}</span>
 			</>
 		) : (
 			<span className="roadmap-page__title">{item.title}</span>
