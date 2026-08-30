@@ -44,7 +44,7 @@
 <summary>npm</summary>
 
 ```sh
-npx @arkenv/cli@latest init
+npx @arkenv/cli init
 ```
 
 </details>
@@ -53,7 +53,7 @@ npx @arkenv/cli@latest init
 <summary>pnpm</summary>
 
 ```sh
-pnx @arkenv/cli@latest init
+pnpm dlx @arkenv/cli init
 ```
 
 </details>
@@ -62,7 +62,7 @@ pnx @arkenv/cli@latest init
 <summary>Yarn</summary>
 
 ```sh
-yarn dlx @arkenv/cli@latest init
+yarn dlx @arkenv/cli init
 ```
 
 </details>
@@ -71,7 +71,7 @@ yarn dlx @arkenv/cli@latest init
 <summary>Bun</summary>
 
 ```sh
-bunx @arkenv/cli@latest init
+bunx @arkenv/cli init
 ```
 
 </details>

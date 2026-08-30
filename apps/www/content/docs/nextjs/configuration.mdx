@@ -82,7 +82,7 @@ By default, ArkEnv generates an `env.gen.ts` helper so you don't have to write a
 Pass the `--no-codegen` flag when bootstrapping with the CLI:
 
 ```bash
-npx @arkenv/cli@latest init --no-codegen
+npx @arkenv/cli init --no-codegen
 ```
 
 Or set it up manually by passing the `{ codegen: false }` option to `withArkEnv` in `next.config.ts`, and importing `createEnv` directly from `@arkenv/nextjs` in your schema file. You then become responsible for keeping `runtimeEnv` in sync with your schema.

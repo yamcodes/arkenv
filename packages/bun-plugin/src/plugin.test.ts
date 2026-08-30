@@ -101,7 +101,7 @@ describe("Bun Plugin", () => {
 
 		expect(message).toMatch(/@arkenv\/bun-plugin: Could not find schema file/);
 		expect(message).toMatch(/Checked paths:/);
-		expect(message).toMatch(/npx @arkenv\/cli@latest init/);
+		expect(message).toMatch(/npx @arkenv\/cli init/);
 		expect(message).not.toMatch(/Example `src\/env\.ts`/);
 		expect(message).not.toMatch(/```/);
 		expect(message).not.toMatch(/import \{ type \} from "arktype"/);

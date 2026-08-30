@@ -314,7 +314,7 @@ describe("withArkEnv wrapper", () => {
 		}
 
 		expect(message).toMatch(/\[ArkEnv\] Could not find schema file/);
-		expect(message).toMatch(/npx @arkenv\/cli@latest init/);
+		expect(message).toMatch(/npx @arkenv\/cli init/);
 		expect(message).not.toMatch(/Example `src\/env\.ts`/);
 		expect(message).not.toMatch(/```/);
 	});

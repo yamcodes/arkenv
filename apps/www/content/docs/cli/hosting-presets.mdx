@@ -34,13 +34,13 @@ Choosing **None** (the default) leaves your schema untouched.
 To skip the prompt - for example in scripts or with `--agent` - pass the `--host-preset` flag (or its `-H` alias):
 
 ```npm
-npx @arkenv/cli@latest init --host-preset vercel
+npx @arkenv/cli init --host-preset vercel
 ```
 
 The flag accepts `none`, `vercel`, `netlify`, `cloudflare`, `railway`, `render`, or `fly`. The following is equivalent:
 
 ```npm
-npx @arkenv/cli@latest init -H vercel
+npx @arkenv/cli init -H vercel
 ```
 
 ## Add host to an existing schema
@@ -48,13 +48,13 @@ npx @arkenv/cli@latest init -H vercel
 If you already ran `init` (or hand-wrote a schema) and want to add a hosting preset later, use `add host`:
 
 ```npm
-npx @arkenv/cli@latest add host vercel
+npx @arkenv/cli add host vercel
 ```
 
 Omit the provider to pick interactively:
 
 ```npm
-npx @arkenv/cli@latest add host
+npx @arkenv/cli add host
 ```
 
 The command auto-detects your layout ([flat](#layouts) or [strict](#layouts)), framework prefix, and validator (ArkType, Zod, or Valibot), then merges the preset fields into your schema. If the schema is missing or unparseable, it prints the proposed fields so you can paste them in manually. Keys that are already present are left unchanged.
