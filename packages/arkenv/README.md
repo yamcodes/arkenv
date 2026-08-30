@@ -19,7 +19,8 @@ npx arkenv init
 ### Local installation (Daily driver & CI)
 
 ```sh
-npm install -D arkenv @arkenv/core
+npm install @arkenv/core
+npm install -D arkenv
 ```
 
 ## Related

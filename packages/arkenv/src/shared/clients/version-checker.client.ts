@@ -48,6 +48,9 @@ export class VersionCheckerClient {
 
 		try {
 			const parsed = parseSemver(currentVersion);
+			// Infer the dist-tag from the first prerelease identifier (e.g. "alpha" from "1.0.0-alpha.18")
+			// so pre-release users check against their active release track on npm. Defaults to "latest"
+			// for stable releases or non-string prereleases.
 			const defaultTag =
 				typeof parsed?.prerelease[0] === "string"
 					? parsed.prerelease[0]

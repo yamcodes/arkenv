@@ -32,16 +32,18 @@ npx arkenv init --agent
 
 ## Local installation (recommended workflow)
 
-Installing the CLI as a `devDependency` alongside the runtime validation engine is the recommended standard for team repositories and CI/CD pipelines:
+Install the runtime validation engine as a dependency, and the `arkenv` CLI as a `devDependency`:
 
 ```package-install
-npm install -D arkenv @arkenv/core
+npm install @arkenv/core
+npm install -D arkenv
 ```
 
 If you are using Standard Schema (Zod or Valibot):
 
 ```package-install
-npm install -D arkenv @arkenv/standard
+npm install @arkenv/standard
+npm install -D arkenv
 ```
 
 ### Why install locally?

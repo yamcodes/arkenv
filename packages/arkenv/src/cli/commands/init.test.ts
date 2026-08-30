@@ -681,6 +681,7 @@ describe("InitUseCase", () => {
 			versionChecker.checkFreshness.mockResolvedValue({
 				isOutdated: true,
 				latestVersion: "1.0.0-alpha.18",
+				distTag: "alpha",
 			});
 			vi.mocked(prompt.confirm).mockResolvedValue(true);
 
@@ -713,6 +714,7 @@ describe("InitUseCase", () => {
 				expect.objectContaining({
 					packageName: "arkenv",
 					args: expect.arrayContaining(["init"]),
+					tag: "alpha",
 				}),
 			);
 			expect(exit).toHaveBeenCalledWith(0);
