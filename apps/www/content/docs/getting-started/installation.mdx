@@ -52,6 +52,8 @@ npm install -D arkenv
 - **Zero latency & offline execution**: Executions run instantly from `node_modules/.bin/arkenv` without querying npm, working completely offline.
 - **CI/CD reliability**: Pipelines execute the version frozen in the lockfile instead of dynamically resolving `@latest`.
 
+Once installed locally, running `npx arkenv <command>` (or `pnpm arkenv`, `bun arkenv`) inside your project automatically executes your locked local binary from `node_modules/.bin`.
+
 ### Wire into `package.json` scripts
 
 Add `arkenv check` to your project scripts to validate environment variables before builds:
