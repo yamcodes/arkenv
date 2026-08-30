@@ -8,7 +8,7 @@ description: "Use when setting up or changing environment variable validation wi
 ArkEnv v1's only application surface is `import { env } from "./env"`.
 
 - Runtime: `@arkenv/core` (ArkType) or `@arkenv/standard` (Zod, Valibot, Standard Schema).
-- CLI: `npx arkenv@latest init --agent`. Parse JSON on stdout. Never pass `--force` unless `retryWith` lists it after a refusal.
+- CLI: `npx arkenv init --agent`. Parse JSON on stdout. Never pass `--force` unless `retryWith` lists it after a refusal.
 - Do not read `process.env` or `import.meta.env` in application components.
 - Do not add ambient `.d.ts` `ProcessEnv` / `ImportMetaEnv` augmentations.
 - Public prefixes: `NEXT_PUBLIC_`, `NUXT_PUBLIC_`, `VITE_`, `BUN_PUBLIC_`. Never put secrets behind those prefixes.

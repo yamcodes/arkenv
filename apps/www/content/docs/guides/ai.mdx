@@ -82,13 +82,13 @@ public prefixes, and skip a `runtimeEnv` map.
 **Greenfield setup**
 
 ```text
-Add ArkEnv to this repo. Run `npx arkenv@latest init --agent`, parse the JSON on stdout, and only retry with flags from `retryWith` if a refusal is safe to bypass. Do not hand-write next.config or env.ts unless init fails.
+Add ArkEnv to this repo. Run `npx arkenv init --agent`, parse the JSON on stdout, and only retry with flags from `retryWith` if a refusal is safe to bypass. Do not hand-write next.config or env.ts unless init fails.
 ```
 
 **Existing keys**
 
 ```text
-We already have a .env.example. Run `npx arkenv@latest init --agent` and accept the detected keys for the schema. Keep .env.example values empty or placeholder-only; never copy secrets from .env into git.
+We already have a .env.example. Run `npx arkenv init --agent` and accept the detected keys for the schema. Keep .env.example values empty or placeholder-only; never copy secrets from .env into git.
 ```
 
 **Migrate raw process.env usage**
@@ -106,7 +106,7 @@ Add DATABASE_URL to the ArkEnv schema with the right type, update .env.example w
 **Hosting preset**
 
 ```text
-Add the Vercel hosting preset with `npx arkenv@latest preset apply vercel --agent` and merge any new system vars into the schema.
+Add the Vercel hosting preset with `npx arkenv preset apply vercel --agent` and merge any new system vars into the schema.
 ```
 
 ## Machine-readable documentation

@@ -4,7 +4,7 @@ description: Scaffold ArkEnv with the CLI in agent mode.
 
 Scaffold ArkEnv in the current project.
 
-1. Prefer the MCP `init` tool. If MCP is unavailable, run `npx arkenv@latest init --agent` in the project root.
+1. Prefer the MCP `init` tool. If MCP is unavailable, run `npx arkenv init --agent` in the project root.
 2. Parse JSON on stdout. Success is `"status": "success"`.
 3. On `"status": "error"`, branch on `code` and only retry with flags listed in `retryWith`. Never pass `--force` unless the user accepts that refusal.
 4. Do not hand-write `env.ts` or framework config unless init fails.
