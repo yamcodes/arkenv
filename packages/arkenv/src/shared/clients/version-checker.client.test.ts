@@ -14,7 +14,7 @@ describe("VersionCheckerClient", () => {
 		vi.restoreAllMocks();
 	});
 
-	it("returns isOutdated: true when registry version is newer", async () => {
+	it("returns isOutdated: true when registry version is newer for pre-release tag", async () => {
 		globalThis.fetch = vi.fn().mockResolvedValue({
 			ok: true,
 			json: async () => ({ version: "1.0.0-alpha.18" }),
@@ -28,12 +28,35 @@ describe("VersionCheckerClient", () => {
 		expect(result).toEqual({
 			isOutdated: true,
 			latestVersion: "1.0.0-alpha.18",
+			distTag: "alpha",
 		});
 		expect(globalThis.fetch).toHaveBeenCalledWith(
-			"https://registry.npmjs.org/arkenv/latest",
+			"https://registry.npmjs.org/arkenv/alpha",
 			expect.objectContaining({
 				headers: { Accept: "application/json" },
 			}),
+		);
+	});
+
+	it("uses latest dist-tag for stable versions", async () => {
+		globalThis.fetch = vi.fn().mockResolvedValue({
+			ok: true,
+			json: async () => ({ version: "1.1.0" }),
+		} as Response);
+
+		const result = await client.checkFreshness({
+			currentVersion: "1.0.0",
+			packageName: "arkenv",
+		});
+
+		expect(result).toEqual({
+			isOutdated: true,
+			latestVersion: "1.1.0",
+			distTag: "latest",
+		});
+		expect(globalThis.fetch).toHaveBeenCalledWith(
+			"https://registry.npmjs.org/arkenv/latest",
+			expect.any(Object),
 		);
 	});
 
@@ -51,6 +74,7 @@ describe("VersionCheckerClient", () => {
 		expect(result).toEqual({
 			isOutdated: false,
 			latestVersion: "1.0.0-alpha.17",
+			distTag: "alpha",
 		});
 	});
 
@@ -68,6 +92,7 @@ describe("VersionCheckerClient", () => {
 		expect(result).toEqual({
 			isOutdated: true,
 			latestVersion: "1.0.0-beta.11",
+			distTag: "beta",
 		});
 	});
 

@@ -3,8 +3,9 @@ import { spawn } from "node:child_process";
 export type SpawnLatestOptions = {
 	packageName: string;
 	args: string[];
-	userAgent?: string;
-	spawnFn?: typeof spawn;
+	tag?: string | undefined;
+	userAgent?: string | undefined;
+	spawnFn?: typeof spawn | undefined;
 };
 
 export type SpawnerPort = {
@@ -17,14 +18,16 @@ export type SpawnerPort = {
  * @param packageName Target package name (e.g. "arkenv").
  * @param args Initial CLI arguments to forward.
  * @param userAgent The `npm_config_user_agent` string.
+ * @param tag The dist-tag or version to spawn (defaults to "latest").
  * @returns The executable command and its arguments.
  */
 export function resolveDlxCommand(
 	packageName: string,
 	args: string[],
 	userAgent = process.env.npm_config_user_agent || "",
+	tag = "latest",
 ): { command: string; dlxArgs: string[] } {
-	const target = `${packageName}@latest`;
+	const target = `${packageName}@${tag}`;
 
 	if (userAgent.includes("pnpm")) {
 		return {
@@ -58,7 +61,7 @@ export function resolveDlxCommand(
  * Spawns the latest version of the CLI using the active package manager's DLX tool,
  * inheriting stdio and forwarding termination signals.
  *
- * @param options Spawn options containing package name, args, optional user agent, and optional spawnFn.
+ * @param options Spawn options containing package name, args, optional tag, optional user agent, and optional spawnFn.
  * @returns A promise resolving to the exit code of the spawned child process.
  */
 export async function spawnLatest(
@@ -68,6 +71,7 @@ export async function spawnLatest(
 		options.packageName,
 		options.args,
 		options.userAgent,
+		options.tag,
 	);
 	const spawnFn = options.spawnFn ?? spawn;
 

@@ -1,4 +1,4 @@
-import { compareSemver } from "@/shared/semver";
+import { compareSemver, parseSemver } from "@/shared/semver";
 
 /**
  * Options for performing a version freshness check.
@@ -10,6 +10,8 @@ export type FreshnessCheckOptions = {
 	packageName?: string;
 	/** Abort timeout in milliseconds (defaults to 1000ms). */
 	timeoutMs?: number;
+	/** Dist tag to check (defaults to the pre-release tag e.g. "alpha" or "latest"). */
+	distTag?: string;
 };
 
 /**
@@ -20,6 +22,8 @@ export type FreshnessCheckResult = {
 	isOutdated: boolean;
 	/** Latest version available on npm if successfully fetched and evaluated. */
 	latestVersion?: string;
+	/** Tag that was queried. */
+	distTag?: string;
 };
 
 /**
@@ -43,8 +47,14 @@ export class VersionCheckerClient {
 		} = options;
 
 		try {
+			const parsed = parseSemver(currentVersion);
+			const defaultTag =
+				typeof parsed?.prerelease[0] === "string"
+					? parsed.prerelease[0]
+					: "latest";
+			const distTag = options.distTag || defaultTag;
 			const encodedName = encodeURIComponent(packageName);
-			const url = `https://registry.npmjs.org/${encodedName}/latest`;
+			const url = `https://registry.npmjs.org/${encodedName}/${encodeURIComponent(distTag)}`;
 
 			const response = await fetch(url, {
 				signal: AbortSignal.timeout(timeoutMs),
@@ -68,6 +78,7 @@ export class VersionCheckerClient {
 			return {
 				isOutdated,
 				latestVersion,
+				distTag,
 			};
 		} catch {
 			// Fail open on timeouts, offline environments, DNS errors, etc.
