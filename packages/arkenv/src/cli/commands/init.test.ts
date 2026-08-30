@@ -1,5 +1,5 @@
 import path from "node:path";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ERROR_CODES } from "@/shared/errors";
 import type {
 	LoggerPort,
@@ -652,8 +652,12 @@ describe("InitUseCase", () => {
 		let versionChecker: any;
 		let spawner: any;
 		let exit: any;
+		let originalCI: string | undefined;
+		let originalTTY: boolean | undefined;
 
 		beforeEach(() => {
+			originalCI = process.env.CI;
+			originalTTY = process.stdout.isTTY;
 			versionChecker = {
 				checkFreshness: vi.fn().mockResolvedValue({ isOutdated: false }),
 			};
@@ -661,9 +665,16 @@ describe("InitUseCase", () => {
 			exit = vi.fn();
 		});
 
+		afterEach(() => {
+			if (originalCI !== undefined) {
+				process.env.CI = originalCI;
+			} else {
+				delete process.env.CI;
+			}
+			process.stdout.isTTY = originalTTY as boolean;
+		});
+
 		it("prompts to run latest and spawns dlx runner when user confirms", async () => {
-			const originalCI = process.env.CI;
-			const originalTTY = process.stdout.isTTY;
 			delete process.env.CI;
 			process.stdout.isTTY = true;
 
@@ -706,14 +717,9 @@ describe("InitUseCase", () => {
 			);
 			expect(exit).toHaveBeenCalledWith(0);
 			expect(success).toBe(true);
-
-			process.env.CI = originalCI;
-			process.stdout.isTTY = originalTTY;
 		});
 
 		it("proceeds with current version when user declines upgrade prompt", async () => {
-			const originalCI = process.env.CI;
-			const originalTTY = process.stdout.isTTY;
 			delete process.env.CI;
 			process.stdout.isTTY = true;
 
@@ -752,14 +758,9 @@ describe("InitUseCase", () => {
 			expect(spawner).not.toHaveBeenCalled();
 			expect(exit).not.toHaveBeenCalled();
 			expect(success).toBe(true);
-
-			process.env.CI = originalCI;
-			process.stdout.isTTY = originalTTY;
 		});
 
 		it("cancels operation cleanly when user aborts the prompt", async () => {
-			const originalCI = process.env.CI;
-			const originalTTY = process.stdout.isTTY;
 			delete process.env.CI;
 			process.stdout.isTTY = true;
 
@@ -792,13 +793,9 @@ describe("InitUseCase", () => {
 			expect(spawner).not.toHaveBeenCalled();
 			expect(exit).not.toHaveBeenCalled();
 			expect(success).toBe(false);
-
-			process.env.CI = originalCI;
-			process.stdout.isTTY = originalTTY;
 		});
 
 		it("skips check in CI environment", async () => {
-			const originalCI = process.env.CI;
 			process.env.CI = "true";
 
 			const customUseCase = new InitUseCase(
@@ -829,8 +826,6 @@ describe("InitUseCase", () => {
 
 			expect(versionChecker.checkFreshness).not.toHaveBeenCalled();
 			expect(spawner).not.toHaveBeenCalled();
-
-			process.env.CI = originalCI;
 		});
 	});
 });

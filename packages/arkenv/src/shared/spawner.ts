@@ -4,6 +4,7 @@ export type SpawnLatestOptions = {
 	packageName: string;
 	args: string[];
 	userAgent?: string;
+	spawnFn?: typeof spawn;
 };
 
 export type SpawnerPort = {
@@ -57,7 +58,7 @@ export function resolveDlxCommand(
  * Spawns the latest version of the CLI using the active package manager's DLX tool,
  * inheriting stdio and forwarding termination signals.
  *
- * @param options Spawn options containing package name, args, and optional user agent.
+ * @param options Spawn options containing package name, args, optional user agent, and optional spawnFn.
  * @returns A promise resolving to the exit code of the spawned child process.
  */
 export async function spawnLatest(
@@ -68,9 +69,10 @@ export async function spawnLatest(
 		options.args,
 		options.userAgent,
 	);
+	const spawnFn = options.spawnFn ?? spawn;
 
 	return new Promise<number>((resolve, reject) => {
-		const child = spawn(command, dlxArgs, {
+		const child = spawnFn(command, dlxArgs, {
 			stdio: "inherit",
 			shell: process.platform === "win32",
 		});
@@ -95,8 +97,20 @@ export async function spawnLatest(
 			reject(err);
 		});
 
-		child.on("close", (code) => {
+		child.on("close", (code, signal) => {
 			cleanup();
+			if (signal === "SIGINT") {
+				resolve(code ?? 130);
+				return;
+			}
+			if (signal === "SIGTERM") {
+				resolve(code ?? 143);
+				return;
+			}
+			if (signal) {
+				resolve(code ?? 1);
+				return;
+			}
 			resolve(code ?? 0);
 		});
 	});

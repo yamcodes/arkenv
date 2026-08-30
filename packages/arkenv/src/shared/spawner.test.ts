@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { resolveDlxCommand } from "./spawner";
+import { describe, expect, it, vi } from "vitest";
+import { resolveDlxCommand, spawnLatest } from "./spawner";
 
 describe("spawner", () => {
 	describe("resolveDlxCommand", () => {
@@ -55,6 +55,86 @@ describe("spawner", () => {
 				command: "npx",
 				dlxArgs: ["arkenv@latest", "init"],
 			});
+		});
+	});
+
+	describe("spawnLatest", () => {
+		it("spawns child process and resolves exit code on clean close", async () => {
+			const { EventEmitter } = await import("node:events");
+			const mockChild = new EventEmitter() as any;
+			mockChild.kill = vi.fn();
+			const mockSpawn = vi.fn().mockReturnValue(mockChild);
+
+			const promise = spawnLatest({
+				packageName: "arkenv",
+				args: ["init"],
+				userAgent: "npm/10.0.0 node/v22.0.0 darwin arm64",
+				spawnFn: mockSpawn as any,
+			});
+
+			mockChild.emit("close", 0, null);
+
+			const code = await promise;
+			expect(code).toBe(0);
+			expect(mockSpawn).toHaveBeenCalledWith(
+				"npx",
+				["arkenv@latest", "init"],
+				expect.objectContaining({ stdio: "inherit" }),
+			);
+		});
+
+		it("resolves 130 when child is closed with SIGINT signal", async () => {
+			const { EventEmitter } = await import("node:events");
+			const mockChild = new EventEmitter() as any;
+			mockChild.kill = vi.fn();
+			const mockSpawn = vi.fn().mockReturnValue(mockChild);
+
+			const promise = spawnLatest({
+				packageName: "arkenv",
+				args: ["init"],
+				spawnFn: mockSpawn as any,
+			});
+
+			mockChild.emit("close", null, "SIGINT");
+
+			const code = await promise;
+			expect(code).toBe(130);
+		});
+
+		it("resolves 143 when child is closed with SIGTERM signal", async () => {
+			const { EventEmitter } = await import("node:events");
+			const mockChild = new EventEmitter() as any;
+			mockChild.kill = vi.fn();
+			const mockSpawn = vi.fn().mockReturnValue(mockChild);
+
+			const promise = spawnLatest({
+				packageName: "arkenv",
+				args: ["init"],
+				spawnFn: mockSpawn as any,
+			});
+
+			mockChild.emit("close", null, "SIGTERM");
+
+			const code = await promise;
+			expect(code).toBe(143);
+		});
+
+		it("rejects when child process errors", async () => {
+			const { EventEmitter } = await import("node:events");
+			const mockChild = new EventEmitter() as any;
+			mockChild.kill = vi.fn();
+			const mockSpawn = vi.fn().mockReturnValue(mockChild);
+
+			const promise = spawnLatest({
+				packageName: "arkenv",
+				args: ["init"],
+				spawnFn: mockSpawn as any,
+			});
+
+			const error = new Error("spawn ENOENT");
+			mockChild.emit("error", error);
+
+			await expect(promise).rejects.toThrow("spawn ENOENT");
 		});
 	});
 });

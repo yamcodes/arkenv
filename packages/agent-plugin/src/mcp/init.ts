@@ -44,7 +44,7 @@ export async function initProject(
 }
 
 /**
- * Resolve the local `arkenv` binary or fall back to `npx arkenv`.
+ * Resolve the local `arkenv` binary or fall back to `npx arkenv@latest`.
  *
  * @param cwd Project directory
  * @returns Command plus args that precede `init`
@@ -61,7 +61,7 @@ export async function resolveArkEnvCommand(
 		await access(localBin);
 		return { command: localBin, prefixArgs: [] };
 	} catch {
-		return { command: "npx", prefixArgs: ["--yes", "arkenv"] };
+		return { command: "npx", prefixArgs: ["--yes", "arkenv@latest"] };
 	}
 }
 

@@ -122,7 +122,9 @@ export function compareSemver(v1: string, v2: string): number {
 		}
 
 		// Both are strings; compare lexically in ASCII sort order
-		return (id1 as string).localeCompare(id2 as string);
+		const str1 = id1 as string;
+		const str2 = id2 as string;
+		return str1 < str2 ? -1 : 1;
 	}
 
 	// A larger set of pre-release fields has a higher precedence than a smaller set
