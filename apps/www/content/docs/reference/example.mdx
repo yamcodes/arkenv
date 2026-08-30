@@ -9,11 +9,11 @@ that file whenever the schema changes — in CI, a pre-commit hook, or
 right after you add a variable.
 
 ```package-install
-npx arkenv@latest example
+npx arkenv example
 ```
 
 ```package-install
-npx arkenv@latest example --schema ./src/env.ts
+npx arkenv example --schema ./src/env.ts
 ```
 
 [Global flags](/docs/reference#global-flags) (`--quiet`, `--json`,
@@ -92,7 +92,7 @@ Explicit path to the schema module. Overrides `"arkenv"` in
 `package.json` and convention discovery.
 
 ```package-install
-npx arkenv@latest example --schema ./src/config/env.ts
+npx arkenv example --schema ./src/config/env.ts
 ```
 
 ### `--json` / `-j`

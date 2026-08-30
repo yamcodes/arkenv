@@ -8,15 +8,15 @@ schema. Use it as a standalone verification step in CI/CD pipelines,
 local verification scripts, or pre-commit hooks.
 
 ```package-install
-npx arkenv@latest check
+npx arkenv check
 ```
 
 ```package-install
-npx arkenv@latest check --env-file .env.production
+npx arkenv check --env-file .env.production
 ```
 
 ```package-install
-npx arkenv@latest check --schema ./src/env.ts --env-file .env --env-file .env.local
+npx arkenv check --schema ./src/env.ts --env-file .env --env-file .env.local
 ```
 
 [Global flags](/docs/reference#global-flags) (`--quiet`, `--json`,
@@ -61,7 +61,7 @@ Explicit path to the schema module. Overrides `"arkenv"` in `package.json`
 and convention discovery.
 
 ```package-install
-npx arkenv@latest check --schema ./src/config/env.ts
+npx arkenv check --schema ./src/config/env.ts
 ```
 
 ### `--env-file <file>`
@@ -71,7 +71,7 @@ files are loaded in sequence with later files taking precedence over
 earlier ones.
 
 ```package-install
-npx arkenv@latest check --env-file .env --env-file .env.local
+npx arkenv check --env-file .env --env-file .env.local
 ```
 
 Values from `--env-file` are merged over `process.env`. Missing files fail

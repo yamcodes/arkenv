@@ -14,20 +14,20 @@ ArkEnv provides an interactive CLI that detects your stack, writes a
 schema, and wires framework config.
 
 ```package-install
-npx arkenv@latest init
+npx arkenv init
 ```
 
 Omit a project name to mutate the current directory. Pass a name to
 create a new folder (optionally from `--example`):
 
 ```package-install
-npx arkenv@latest init my-app --example with-vite-react -H vercel
+npx arkenv init my-app --example with-vite-react -H vercel
 ```
 
 For agent sessions, use `--agent` (implies `--yes --quiet --json`):
 
 ```package-install
-npx arkenv@latest init --agent
+npx arkenv init --agent
 ```
 
 Install a local binary when you want `arkenv` on the project PATH:
@@ -48,7 +48,7 @@ When the CLI finds a `package.json`, it adopts the repo incrementally.
     ### Run the interactive CLI
 
     ```package-install
-    npx arkenv@latest init
+    npx arkenv init
     ```
 
     The CLI refuses a dirty git working tree. Commit or stash

@@ -13,7 +13,7 @@ The interactive, zero-dependency scaffolding experience for the [ArkEnv](https:/
 <br />
 
 ```sh
-npx arkenv@latest init
+npx arkenv init
 ```
 
 ## Related
