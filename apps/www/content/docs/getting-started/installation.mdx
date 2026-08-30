@@ -30,10 +30,37 @@ For agent sessions, use `--agent` (implies `--yes --quiet --json`):
 npx arkenv init --agent
 ```
 
-Install a local binary when you want `arkenv` on the project PATH:
+## Local installation (recommended workflow)
+
+Installing the CLI as a `devDependency` alongside the runtime validation engine is the recommended standard for team repositories and CI/CD pipelines:
 
 ```package-install
-npm install -D arkenv
+npm install -D arkenv @arkenv/core
+```
+
+If you are using Standard Schema (Zod or Valibot):
+
+```package-install
+npm install -D arkenv @arkenv/standard
+```
+
+### Why install locally?
+
+- **Deterministic versioning**: Locks the exact CLI version in `package-lock.json` or `pnpm-lock.yaml`, ensuring absolute consistency across team members and CI pipelines.
+- **Zero latency & offline execution**: Executions run instantly from `node_modules/.bin/arkenv` without querying npm, working completely offline.
+- **CI/CD reliability**: Pipelines execute the version frozen in the lockfile instead of dynamically resolving `@latest`.
+
+### Wire into `package.json` scripts
+
+Add `arkenv check` to your project scripts to validate environment variables before builds:
+
+```json title="package.json"
+{
+  "scripts": {
+    "build": "arkenv check && next build",
+    "env:check": "arkenv check"
+  }
+}
 ```
 
 Flags, output files, and refusal codes live in

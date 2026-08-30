@@ -8,12 +8,18 @@ The interactive, zero-dependency scaffolding experience for the [ArkEnv](https:/
 
 <br />
 
-## [Read the docs →](https://arkenv.js.org/docs/CLI)
+## Quickstart
 
-<br />
+### Scaffolding (Day 1)
 
 ```sh
 npx arkenv init
+```
+
+### Local installation (Daily driver & CI)
+
+```sh
+npm install -D arkenv @arkenv/core
 ```
 
 ## Related
