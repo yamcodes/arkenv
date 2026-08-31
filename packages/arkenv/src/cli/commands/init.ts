@@ -47,6 +47,7 @@ export class InitUseCase {
 		private readonly spawner: (options: {
 			packageName: string;
 			args: string[];
+			tag?: string | undefined;
 		}) => Promise<number> = spawnLatest,
 		private readonly exit: (code: number) => void = (code) =>
 			process.exit(code),
@@ -89,6 +90,7 @@ export class InitUseCase {
 					const exitCode = await this.spawner({
 						packageName: pkgName,
 						args: forwardedArgs,
+						tag: freshness.distTag,
 					});
 					this.exit(exitCode);
 					return true;

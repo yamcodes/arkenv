@@ -56,6 +56,30 @@ describe("spawner", () => {
 				dlxArgs: ["arkenv@latest", "init"],
 			});
 		});
+
+		it("supports custom dist-tag (e.g. alpha)", () => {
+			const resPnpm = resolveDlxCommand(
+				"arkenv",
+				["init"],
+				"pnpm/9.0.0 npm/? node/v22.0.0 darwin arm64",
+				"alpha",
+			);
+			expect(resPnpm).toEqual({
+				command: "pnpm",
+				dlxArgs: ["dlx", "arkenv@alpha", "init"],
+			});
+
+			const resNpx = resolveDlxCommand(
+				"arkenv",
+				["init"],
+				"npm/10.0.0 node/v22.0.0 darwin arm64",
+				"alpha",
+			);
+			expect(resNpx).toEqual({
+				command: "npx",
+				dlxArgs: ["arkenv@alpha", "init"],
+			});
+		});
 	});
 
 	describe("spawnLatest", () => {
@@ -79,6 +103,31 @@ describe("spawner", () => {
 			expect(mockSpawn).toHaveBeenCalledWith(
 				"npx",
 				["arkenv@latest", "init"],
+				expect.objectContaining({ stdio: "inherit" }),
+			);
+		});
+
+		it("forwards custom dist-tag to spawned command", async () => {
+			const { EventEmitter } = await import("node:events");
+			const mockChild = new EventEmitter() as any;
+			mockChild.kill = vi.fn();
+			const mockSpawn = vi.fn().mockReturnValue(mockChild);
+
+			const promise = spawnLatest({
+				packageName: "arkenv",
+				args: ["init"],
+				tag: "alpha",
+				userAgent: "pnpm/9.0.0 node/v22.0.0 darwin arm64",
+				spawnFn: mockSpawn as any,
+			});
+
+			mockChild.emit("close", 0, null);
+
+			const code = await promise;
+			expect(code).toBe(0);
+			expect(mockSpawn).toHaveBeenCalledWith(
+				"pnpm",
+				["dlx", "arkenv@alpha", "init"],
 				expect.objectContaining({ stdio: "inherit" }),
 			);
 		});

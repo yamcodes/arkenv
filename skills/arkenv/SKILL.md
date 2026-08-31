@@ -113,7 +113,7 @@ pnpm dlx arkenv init [options]
 Apply or refresh a hosting provider preset into an existing ArkEnv schema using managed comment blocks.
 
 ```bash
-pnpm dlx arkenv preset apply <provider> [options]
+pnpm arkenv preset apply <provider> [options]
 ```
 
 #### Options:
@@ -125,7 +125,7 @@ pnpm dlx arkenv preset apply <provider> [options]
 Safely remove a hosting provider preset and its managed block from schema files and `.env.example`.
 
 ```bash
-pnpm dlx arkenv preset remove <provider> [options]
+pnpm arkenv preset remove <provider> [options]
 ```
 
 #### Options:
