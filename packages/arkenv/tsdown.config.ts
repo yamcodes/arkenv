@@ -13,6 +13,7 @@ export default defineConfig({
 	platform: "node",
 	minify: true,
 	fixedExtension: true,
+	sourcemap: false,
 	deps: {
 		alwaysBundle: ["@repo/scope", "@repo/types"],
 		neverBundle: ["arktype"],

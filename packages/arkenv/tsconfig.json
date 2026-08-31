@@ -16,7 +16,7 @@
 			"@/*": ["./src/*"]
 		},
 		"declaration": true,
-		"declarationMap": true,
+		"declarationMap": false,
 		"allowImportingTsExtensions": true,
 		"types": ["node"],
 		"lib": ["es2020", "es2022.object"]

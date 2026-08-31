@@ -7,6 +7,7 @@ export default defineConfig({
 	minify: true,
 	fixedExtension: true,
 	shims: true,
+	sourcemap: false,
 	deps: {
 		alwaysBundle: ["@clack/prompts", "picocolors"],
 	},
