@@ -6,10 +6,10 @@ import { SparklesIcon } from "~/components/icons/sparkles-icon";
 import { useCopyCommand } from "~/hooks/use-copy-command";
 import { getGithubRepoUrl } from "~/lib/github-links";
 
-const INSTALL_COMMAND = "npx arkenv@latest init";
+const INSTALL_COMMAND = "npx arkenv init";
 
 const INSTALL_PROMPT =
-	"Set up ArkEnv with `npx arkenv@latest init --agent`. Install any missing dependencies, wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.";
+	"Set up ArkEnv with `npx arkenv init --agent`. Install any missing dependencies, wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.";
 
 type InstallPanelProps = {
 	variant?: "hero" | "outro";
@@ -36,9 +36,7 @@ export function InstallPanel({ variant = "hero" }: InstallPanelProps) {
 				<span className="home-aurora__install-prompt-symbol" aria-hidden="true">
 					$
 				</span>
-				<code className="home-aurora__install-code">
-					npx arkenv@latest init
-				</code>
+				<code className="home-aurora__install-code">npx arkenv init</code>
 				<span
 					className="home-aurora__install-copy-affordance"
 					aria-hidden="true"

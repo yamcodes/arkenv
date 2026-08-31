@@ -31,7 +31,7 @@ In v1, ArkEnv offers two first-class validation engines:
 
 ### CLI (setup & DevOps)
 
-- Initialize ArkEnv in new or existing projects using `pnpm dlx arkenv@latest init` (or `npx arkenv@latest init`).
+- Initialize ArkEnv in new or existing projects using `pnpm dlx arkenv init` (or `npx arkenv init`).
 - Automatically detect frameworks (`Next.js`, `Nuxt`, `Vite`, `Bun`, etc.) and scaffold `env.ts`.
 - Select hosting provider preset during init (`--preset, -P <provider>` or `--host-preset, -H <provider>`).
 - Apply or refresh hosting presets on Day 2 via `arkenv preset apply <provider>` without overwriting custom user schema fields.
@@ -67,7 +67,7 @@ export const env = arkenv({
 
 AI agents SHOULD always use the CLI for project initialization to ensure consistency and reliability. Use the `--agent` flag for a fully automated, machine-readable experience.
 
-- **Command**: `pnpm dlx arkenv@latest init --agent`
+- **Command**: `pnpm dlx arkenv init --agent`
 - **Behavior**: The `--agent` flag automatically enables the following behaviors:
   - **`--yes`**: Bypasses all interactive prompts and uses recommended defaults.
   - **`--quiet`**: Suppresses spinners and ANSI formatting for cleaner terminal logs.
@@ -101,7 +101,7 @@ AI agents SHOULD always use the CLI for project initialization to ensure consist
 Set up ArkEnv in your project. It detects your framework and configures the appropriate plugin and schema.
 
 ```bash
-pnpm dlx arkenv@latest init [options]
+pnpm dlx arkenv init [options]
 ```
 
 #### Options:
@@ -113,7 +113,7 @@ pnpm dlx arkenv@latest init [options]
 Apply or refresh a hosting provider preset into an existing ArkEnv schema using managed comment blocks.
 
 ```bash
-pnpm dlx arkenv@latest preset apply <provider> [options]
+pnpm arkenv preset apply <provider> [options]
 ```
 
 #### Options:
@@ -125,7 +125,7 @@ pnpm dlx arkenv@latest preset apply <provider> [options]
 Safely remove a hosting provider preset and its managed block from schema files and `.env.example`.
 
 ```bash
-pnpm dlx arkenv@latest preset remove <provider> [options]
+pnpm arkenv preset remove <provider> [options]
 ```
 
 #### Options:

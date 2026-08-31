@@ -3,7 +3,7 @@ import { shake } from "radashi";
 import { code } from "@/cli/ui";
 import { type CollectedState, createPlan, Executor } from "@/features/scaffold";
 import type { HostPreset } from "@/features/scaffold/presets";
-import { RegistryClient } from "@/shared/clients";
+import { RegistryClient, VersionCheckerClient } from "@/shared/clients";
 import { ERROR_CODES } from "@/shared/errors";
 import type {
 	LoggerPort,
@@ -11,6 +11,8 @@ import type {
 	PromptPort,
 	WorkspacePort,
 } from "@/shared/ports";
+import { spawnLatest } from "@/shared/spawner";
+import { name as pkgName, version as pkgVersion } from "../../../package.json";
 import type { ExampleUseCase } from "./example";
 
 /**
@@ -41,12 +43,61 @@ export class InitUseCase {
 		private readonly scanner: ProjectScannerPort,
 		private readonly registry = new RegistryClient(),
 		private readonly exampleUseCase?: ExampleUseCase,
+		private readonly versionChecker = new VersionCheckerClient(),
+		private readonly spawner: (options: {
+			packageName: string;
+			args: string[];
+			tag?: string | undefined;
+		}) => Promise<number> = spawnLatest,
+		private readonly exit: (code: number) => void = (code) =>
+			process.exit(code),
 	) {}
 
 	/**
 	 * Collects init options, creates a scaffolding plan, and executes it.
 	 */
 	async execute(input: InitInput): Promise<boolean> {
+		const isInteractive =
+			!process.env.CI &&
+			Boolean(process.stdout.isTTY) &&
+			!input.isQuiet &&
+			!input.isAgent &&
+			!input.isYes;
+
+		if (isInteractive) {
+			const freshness = await this.versionChecker.checkFreshness({
+				currentVersion: pkgVersion,
+				packageName: pkgName,
+				timeoutMs: 1000,
+			});
+
+			if (freshness.isOutdated && freshness.latestVersion) {
+				const confirmLatest = await this.prompt.confirm(
+					`Version ${freshness.latestVersion} is available (running ${pkgVersion}). Run latest instead?`,
+					true,
+					"Yes (Recommended)",
+				);
+
+				if (confirmLatest === null) {
+					this.logger.cancel("Operation cancelled.");
+					return false;
+				}
+
+				if (confirmLatest) {
+					const rawArgs = process.argv.slice(2);
+					const forwardedArgs =
+						rawArgs[0] === "init" ? rawArgs : ["init", ...rawArgs];
+					const exitCode = await this.spawner({
+						packageName: pkgName,
+						args: forwardedArgs,
+						tag: freshness.distTag,
+					});
+					this.exit(exitCode);
+					return true;
+				}
+			}
+		}
+
 		const state = await this.collect(input);
 		if (!state) return false;
 

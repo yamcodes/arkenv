@@ -9,7 +9,7 @@ describe("InstallPanel", () => {
 
 		expect(
 			screen.getByRole("button", { name: "Copy install command" }),
-		).toHaveTextContent("npx arkenv@latest init");
+		).toHaveTextContent("npx arkenv init");
 		expect(screen.getByRole("button", { name: "Copy prompt" })).toBeVisible();
 		const repo = screen.getByRole("link", { name: "View repo" });
 		expect(repo).toBeVisible();

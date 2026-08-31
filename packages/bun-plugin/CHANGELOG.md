@@ -1,5 +1,21 @@
 # @arkenv/bun-plugin
 
+## 1.0.0-alpha.12
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`e2e01f7`](https://github.com/yamcodes/arkenv/commit/e2e01f7edada5b3cbab3ff0479f3cdc2266dea5f)
+
+</small>
+
+- `@arkenv/build@1.0.0-alpha.5`
+
+</details>
+
 ## 1.0.0-alpha.11
 
 ### Major Changes
