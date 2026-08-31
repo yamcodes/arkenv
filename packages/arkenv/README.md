@@ -22,6 +22,10 @@
 </div>
 
 <br />
+
+> [!NOTE]
+> **ArkEnv v1 is in alpha!** Check out the new docs at [arkenv-v1.vercel.app](https://arkenv-v1.vercel.app).
+
 <br />
 
 
