@@ -1707,282 +1707,233 @@
 }
 
 /* 05 · Automatic coercion — hub-and-spoke node graph animation */
-.home-aurora__node-widget {
+/* 05 · Automatic coercion — Minimalist Typographic Stream */
+.home-aurora__stream-widget {
 	display: flex;
 	flex-direction: column;
-	background: var(--color-paper-2);
-	border: var(--rule-hair) solid var(--color-rule);
-	border-radius: var(--radius-frame);
-	overflow: hidden;
-	height: 100%;
-	justify-content: center;
-	align-items: center;
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+	overflow: visible;
+	box-sizing: border-box;
 }
 
-.home-aurora__node-stage {
-	position: relative;
+.home-aurora__stream-stage {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding: 2.25rem 0.5rem 1.25rem;
+	width: 100%;
+	gap: 2.25rem;
+	box-sizing: border-box;
+}
+
+.home-aurora__stream-row {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 1.5rem 2.25rem;
-	min-height: 13.5rem;
 	width: 100%;
-	height: 100%;
-	overflow: hidden;
-}
-
-.home-aurora__node-svg {
-	position: absolute;
-	inset: 0;
-	width: 100%;
-	height: 100%;
-	pointer-events: none;
-	overflow: visible;
-}
-
-.home-aurora__node-track {
-	fill: none;
-	stroke: var(--color-rule);
-	stroke-width: 1.5;
-	stroke-linecap: round;
-}
-
-.home-aurora__node-beam {
-	fill: none;
-	stroke: url(#beamGradient);
-	stroke-width: 2.5;
-	stroke-linecap: round;
-	stroke-dasharray: 45 180;
-	filter: url(#beamGlow);
-}
-
-.home-aurora__node-beam--1 {
-	animation: node-beam-flow 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-.home-aurora__node-beam--2 {
-	animation: node-beam-flow 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.8s;
-}
-
-.home-aurora__node-beam--3 {
-	animation: node-beam-flow 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite 1.6s;
-}
-
-@keyframes node-beam-flow {
-	0% {
-		stroke-dashoffset: 225;
-		opacity: 0;
-	}
-	10% {
-		opacity: 1;
-	}
-	80% {
-		opacity: 1;
-	}
-	100% {
-		stroke-dashoffset: -45;
-		opacity: 0;
-	}
-}
-
-.home-aurora__node-source {
-	position: relative;
-	z-index: 2;
-	display: flex;
-	align-items: center;
-}
-
-.home-aurora__node-dest-group {
-	position: relative;
-	z-index: 2;
-	display: flex;
-	flex-direction: column;
 	gap: 0.75rem;
 }
 
-.home-aurora__node-dest-wrapper {
-	position: relative;
+.home-aurora__stream-col {
 	display: flex;
 	align-items: center;
+	min-width: 5.5rem;
 }
 
-.home-aurora__node-card {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	border-radius: 0.375rem;
-	background: var(--color-paper-3);
-	border: var(--rule-hair) solid var(--color-rule);
-	box-shadow: var(--shadow-frame);
-	transition:
-		border-color var(--dur-micro) var(--ease-out),
-		box-shadow var(--dur-micro) var(--ease-out);
-}
-
-.home-aurora__node-source-wrapper {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 0.5rem;
-}
-
-.home-aurora__node-file-doc {
-	position: relative;
-	width: 164px;
-	height: 90px;
-	padding: 0.65rem 0.85rem;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	overflow: visible;
-}
-
-.home-aurora__node-doc-bg {
-	position: absolute;
-	inset: 0;
-	width: 100%;
-	height: 100%;
-	pointer-events: none;
-	overflow: visible;
-}
-
-.home-aurora__node-doc-path {
-	fill: color-mix(in oklch, var(--color-paper-3) 90%, black);
-	stroke: var(--color-rule);
-	stroke-width: 1;
-}
-
-.home-aurora__node-doc-flap {
-	fill: color-mix(in oklch, var(--color-paper-2) 85%, var(--color-ink-2));
-	stroke: var(--color-rule);
-	stroke-width: 1;
-}
-
-.home-aurora__node-file-caption {
-	font-family: var(--font-outlier);
-	font-size: 0.75rem;
-	font-weight: 600;
-	color: var(--color-ink-2);
-	letter-spacing: 0.02em;
-	text-align: center;
-}
-
-.home-aurora__node-file-content {
-	display: flex;
-	flex-direction: column;
-	gap: 0.35rem;
-}
-
-.home-aurora__node-file-line {
-	position: relative;
-	display: flex;
-	align-items: baseline;
+.home-aurora__stream-col--left {
 	justify-content: flex-start;
-	font-family: var(--font-outlier);
-	font-size: 0.6875rem;
-	white-space: nowrap;
+	gap: 0.15rem;
 }
 
-.home-aurora__node-file-raw {
-	color: var(--color-muted);
-	font-variant-numeric: tabular-nums;
+.home-aurora__stream-col--right {
+	justify-content: flex-end;
 }
 
-.home-aurora__node-card--dest {
-	flex-direction: row;
-	align-items: baseline;
-	justify-content: space-between;
-	gap: 0.85rem;
-	padding: 0.45rem 0.85rem;
-	min-width: 8.5rem;
-}
-
-.home-aurora__node-label {
-	font-family: var(--font-outlier);
+.home-aurora__stream-key {
+	font-family: var(--font-mono, ui-monospace, monospace);
 	font-size: 0.8125rem;
-	font-weight: 600;
-	color: var(--color-ink);
+	font-weight: 500;
+	color: var(--color-ink-2);
 }
 
-.home-aurora__node-sub {
-	font-family: var(--font-body);
-	font-size: 0.6875rem;
+.home-aurora__stream-raw {
+	font-family: var(--font-mono, ui-monospace, monospace);
+	font-size: 0.8125rem;
+	font-weight: 500;
+	color: color-mix(in oklch, var(--color-cmd, #e5a93c) 90%, var(--color-ink));
+	letter-spacing: 0.02em;
+}
+
+.home-aurora__stream-gate {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+	border: none;
+	padding: 0 0.5rem;
+	flex-shrink: 0;
+}
+
+.home-aurora__stream-schema {
+	font-family: var(--font-mono, ui-monospace, monospace);
+	font-size: 0.8125rem;
 	color: var(--color-muted);
+	font-weight: 500;
+	white-space: nowrap;
+	transition: all var(--dur-micro) var(--ease-out);
 }
 
-.home-aurora__node-type {
-	font-family: var(--font-outlier);
+.home-aurora__stream-prim {
+	font-family: var(--font-mono, ui-monospace, monospace);
 	font-size: 0.8125rem;
 	font-weight: 600;
 	color: var(--color-accent);
+	letter-spacing: 0.02em;
+	transition: all var(--dur-micro) var(--ease-out);
 }
 
-.home-aurora__node-val {
-	font-family: var(--font-outlier);
-	font-size: 0.75rem;
-	color: var(--color-muted);
+/* Dashed Wires */
+.home-aurora__stream-wire {
+	position: relative;
+	display: flex;
+	align-items: center;
+	flex: 1;
+	height: 20px;
+	overflow: visible;
 }
 
-/* Port connectors */
-.home-aurora__node-port {
-	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	width: 6px;
-	height: 6px;
-	border-radius: 50%;
-	background: var(--color-paper-3);
-	border: 1.5px solid var(--color-accent);
-	box-shadow: 0 0 6px var(--color-accent);
-	z-index: 3;
+.home-aurora__stream-wire-svg {
+	width: 100%;
+	height: 100%;
+	overflow: visible;
 }
 
-.home-aurora__node-port--right {
-	right: -0.65rem;
-	transform: translate(50%, -50%);
+.home-aurora__stream-wire-track {
+	stroke: var(--color-rule);
+	stroke-width: 1;
+	stroke-dasharray: 4 4;
+	stroke-linecap: round;
 }
 
-.home-aurora__node-port--left {
-	left: -3px;
+.home-aurora__stream-arrow {
+	fill: var(--color-rule);
 }
 
-/* Staggered node illumination */
-.home-aurora__node-dest--1 .home-aurora__node-card--dest {
-	animation: node-flash 2.4s ease-out infinite;
+.home-aurora__stream-wire-dot {
+	fill: var(--color-accent);
+	filter: drop-shadow(0 0 6px var(--color-accent));
+	opacity: 0;
+	will-change: transform, opacity;
 }
 
-.home-aurora__node-dest--2 .home-aurora__node-card--dest {
-	animation: node-flash 2.4s ease-out infinite 0.8s;
+/* Row 1 cadence (0s offset) */
+.home-aurora__stream-row--port .home-aurora__stream-wire-dot--1 {
+	animation: dot-flow-1 2.8s cubic-bezier(0.25, 1, 0.5, 1) infinite 0s;
+}
+.home-aurora__stream-row--port .home-aurora__stream-schema {
+	animation: schema-illuminate 2.8s cubic-bezier(0.25, 1, 0.5, 1) infinite 0s;
+}
+.home-aurora__stream-row--port .home-aurora__stream-wire-dot--2 {
+	animation: dot-flow-2 2.8s cubic-bezier(0.25, 1, 0.5, 1) infinite 0s;
+}
+.home-aurora__stream-row--port .home-aurora__stream-col--right .home-aurora__stream-prim {
+	animation: prim-pulse 2.8s cubic-bezier(0.25, 1, 0.5, 1) infinite 0s;
 }
 
-.home-aurora__node-dest--3 .home-aurora__node-card--dest {
-	animation: node-flash 2.4s ease-out infinite 1.6s;
+/* Row 2 cadence (1.4s offset) */
+.home-aurora__stream-row--debug .home-aurora__stream-wire-dot--1 {
+	animation: dot-flow-1 2.8s cubic-bezier(0.25, 1, 0.5, 1) infinite 1.4s;
+}
+.home-aurora__stream-row--debug .home-aurora__stream-schema {
+	animation: schema-illuminate 2.8s cubic-bezier(0.25, 1, 0.5, 1) infinite 1.4s;
+}
+.home-aurora__stream-row--debug .home-aurora__stream-wire-dot--2 {
+	animation: dot-flow-2 2.8s cubic-bezier(0.25, 1, 0.5, 1) infinite 1.4s;
+}
+.home-aurora__stream-row--debug .home-aurora__stream-col--right .home-aurora__stream-prim {
+	animation: prim-pulse 2.8s cubic-bezier(0.25, 1, 0.5, 1) infinite 1.4s;
 }
 
-@keyframes node-flash {
-	0%, 65% {
-		border-color: var(--color-rule);
-		box-shadow: var(--shadow-frame);
+@keyframes dot-flow-1 {
+	0% {
+		transform: translateX(0);
+		opacity: 0;
 	}
-	80%, 90% {
-		border-color: color-mix(in oklch, var(--color-accent) 70%, transparent);
-		box-shadow: 0 0 12px color-mix(in oklch, var(--color-accent) 30%, transparent);
+	8% {
+		opacity: 1;
 	}
-	100% {
-		border-color: var(--color-rule);
-		box-shadow: var(--shadow-frame);
+	44% {
+		transform: translateX(100px);
+		opacity: 1;
+	}
+	48%, 100% {
+		transform: translateX(100px);
+		opacity: 0;
+	}
+}
+
+@keyframes schema-illuminate {
+	0%, 35% {
+		color: var(--color-muted);
+		text-shadow: none;
+	}
+	45%, 55% {
+		color: var(--color-ink);
+		text-shadow: 0 0 8px color-mix(in oklch, var(--color-accent) 40%, transparent);
+	}
+	65%, 100% {
+		color: var(--color-muted);
+		text-shadow: none;
+	}
+}
+
+@keyframes dot-flow-2 {
+	0%, 42% {
+		transform: translateX(0);
+		opacity: 0;
+	}
+	48% {
+		opacity: 1;
+	}
+	82% {
+		transform: translateX(92px);
+		opacity: 1;
+	}
+	88%, 100% {
+		transform: translateX(92px);
+		opacity: 0;
+	}
+}
+
+@keyframes prim-pulse {
+	0%, 75% {
+		opacity: 0.85;
+		filter: none;
+		transform: scale(1);
+	}
+	84%, 92% {
+		opacity: 1;
+		filter: drop-shadow(0 0 8px var(--color-accent));
+		text-shadow: 0 0 6px var(--color-accent);
+		transform: scale(1.05);
+	}
+	98%, 100% {
+		opacity: 0.85;
+		filter: none;
+		transform: scale(1);
 	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.home-aurora__node-beam,
-	.home-aurora__node-dest-wrapper .home-aurora__node-card--dest {
+	.home-aurora__stream-wire-dot,
+	.home-aurora__stream-schema,
+	.home-aurora__stream-prim {
 		animation: none !important;
 	}
-
-	.home-aurora__node-beam {
-		stroke-dasharray: none;
-		opacity: 0.7;
+	.home-aurora__stream-wire-dot {
+		display: none;
 	}
 }
 

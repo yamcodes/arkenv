@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { DeclarativeShowcase } from "./declarative-showcase";
 
 describe("DeclarativeShowcase", () => {
-	it("renders the heading and .env file document node graph with coercion values", () => {
+	it("renders the 2-row minimalist typographic data stream", () => {
 		render(<DeclarativeShowcase />);
 
 		expect(
@@ -11,21 +11,26 @@ describe("DeclarativeShowcase", () => {
 		).toBeInTheDocument();
 
 		const figure = screen.getByRole("figure", {
-			name: /node graph visualizing automatic type coercion/i,
+			name: /minimalist data stream showing raw environment strings/i,
 		});
 
-		// Source .env file document preview (no quotation marks)
-		expect(figure).toHaveTextContent(".env");
-		expect(figure).toHaveTextContent("PORT=3000");
-		expect(figure).toHaveTextContent("DEBUG=true");
-		expect(figure).toHaveTextContent("LOG_LEVEL=debug");
-
-		// Destination typed primitives
-		expect(figure).toHaveTextContent("number");
+		// Column 1: Raw .env inputs
+		expect(figure).toHaveTextContent("PORT=");
 		expect(figure).toHaveTextContent("3000");
-		expect(figure).toHaveTextContent("boolean");
-		expect(figure).toHaveTextContent("true");
-		expect(figure).toHaveTextContent('"debug" | "info"');
-		expect(figure).toHaveTextContent('"debug"');
+		expect(figure).toHaveTextContent("DEBUG=");
+		expect(figure).toHaveTextContent("false");
+
+		// Column 2: ArkEnv Schema DSL tokens
+		expect(figure).toHaveTextContent('"number"');
+		expect(figure).toHaveTextContent('"boolean"');
+
+		// Column 3: Inferred primitives
+		expect(figure).toHaveTextContent("3000");
+		expect(figure).toHaveTextContent("false");
+
+		// No redundant sub-labels or column headers
+		expect(figure).not.toHaveTextContent("LOG_LEVEL");
+		expect(figure).not.toHaveTextContent("arkenv schema");
+		expect(figure).not.toHaveTextContent("typed env");
 	});
 });
