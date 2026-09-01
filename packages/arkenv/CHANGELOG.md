@@ -1,5 +1,35 @@
 # @arkenv/core
 
+## 1.0.0-alpha.19
+
+### Major Changes
+
+- #### Drop `arkenv example` command and add `--verify-example` check flag _[`#1733`](https://github.com/yamcodes/arkenv/pull/1733) [`da1b241`](https://github.com/yamcodes/arkenv/commit/da1b2415797232f12d9423258bbe17568b3c6868) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	The `arkenv example` command and AST block merger engine have been dropped. A new read-only `--verify-example` flag has been added to `arkenv check` to strictly verify that all declared schema keys are present in `.env.example` (or a custom example file path) without mutating files on disk.
+	
+	Usage:
+	
+	```sh
+	# Verify .env.example contains all schema keys
+	npx arkenv@latest check --verify-example
+	
+	# Verify custom example file
+	npx arkenv@latest check --verify-example .env.example.production
+	```
+	
+	**BREAKING CHANGE**: The `arkenv example` command has been removed. Use `arkenv check --verify-example` to verify `.env.example` in CI and pre-commit workflows.
+
+### Patch Changes
+
+- #### Reduce package install sizes by omitting sourcemaps and externalizing core types _[`#1734`](https://github.com/yamcodes/arkenv/pull/1734) [`190b652`](https://github.com/yamcodes/arkenv/commit/190b652e7314e443b6a8f182c14fa57920058ede) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Published packages now omit declaration maps (`.d.ts.map`, `.d.mts.map`, `.d.cts.map`) and runtime JavaScript sourcemaps (`*.map`) across the monorepo, significantly reducing npm install footprints and package archive sizes. Both are loss-free removals: declaration maps are inert without the raw `.ts` sources they point to (which are never published), and runtime sourcemaps only re-map minified code (which ArkEnv does not ship).
+	
+	In addition, public ArkType type contracts in `@arkenv/core` declarations are now externalized rather than recursively expanded by the compiler, shrinking `@arkenv/core` declaration files and preventing internal AST definitions from being inlined into consumer type builds. The public type surface is unchanged — only how `tsc` encodes it on disk.
+
 ## 1.0.0-alpha.18
 
 ### Minor Changes
