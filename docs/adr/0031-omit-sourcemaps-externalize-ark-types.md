@@ -20,7 +20,7 @@ ArkEnv's published npm packages were shipping three categories of waste that inf
 
 ### 3. ArkType internals inlined into declaration files
 
-The deeper problem was one of type-level bloat. ArkEnv's internal `@repo/scope` package exposed a scope instance typed as `Scope<$>`, and the core package re-exported `type` as `$.type` (i.e., `Scope<$>["type"]`). When `tsc` encountered these opaque types without explicit public-surface annotations, it recursively chased their generic parameters through `@ark/util`'s internal AST helpers and inlined the entire expanded tree into `@arkenv/core`'s `.d.mts` files. A single file grew from ~17 kB to ~337 kB; the full `@arkenv/core` tarball ballooned from ~90 kB to over 1.6 MB.
+The deeper problem was one of type-level bloat. ArkEnv's internal `@repo/scope` package exposed a scope instance typed as `Scope<$>`, and the core package re-exported `type` as `$.type` (i.e., `Scope<$>["type"]`). When `tsc` encountered these opaque types without explicit public-surface annotations, it recursively chased their generic parameters through `@ark/util`'s internal AST helpers and inlined the entire expanded tree into `@arkenv/core`'s `.d.mts` files. A single file grew from \~17 kB to \~337 kB; the full `@arkenv/core` tarball ballooned from \~90 kB to over 1.6 MB.
 
 Two structural issues forced this inlining:
 
@@ -50,12 +50,14 @@ Add `neverBundle: ["arktype", "@ark/util", "@ark/schema", "arkregex"]` to `tsdow
 ## Consequences
 
 **Positive:**
-- `@arkenv/core` ships at **~90 kB unpacked / ~25 kB gzipped** instead of >1.6 MB — a >18× reduction in install footprint.
+
+- `@arkenv/core` ships at **\~90 kB unpacked / \~25 kB gzipped** instead of >1.6 MB — a >18× reduction in install footprint.
 - Zero `.map` files in any published package; `npm pack --dry-run` output is now predictable and minimal.
 - Declaration files now reference ArkType's stable public `./internal/` subpath exports rather than expanding AST internals, significantly reducing IDE language-server memory use for consumers.
 - The `@repo/types` → `@repo/scope` import cycle is broken; the type `CompiledEnvSchema` is now scope-agnostic, which means any `Type<SchemaShape, any>` satisfies `Infer<T>` regardless of which scope produced it. This has no runtime impact.
 
 **Negative / Trade-offs:**
+
 - The floor on declaration-file size is now set by how granular ArkType's own `./internal/` subpath exports are. If a future ArkType minor restructures those subpaths, we may need to revisit our public-surface annotations.
 - `Type<SchemaShape, any>` as the `CompiledEnvSchema` bound is marginally wider than `Type<SchemaShape, $>`. Schemas produced by a foreign scope could satisfy the type at compile time (though they would still validate correctly at runtime, as validation is scope-agnostic for standard shapes).
 - Contributors must keep `@repo/types` free of direct `@repo/scope` imports. The absence of that dependency in `packages/internal/types/package.json` enforces this at package-manager level; any re-introduction will cause a workspace resolution error before CI runs.
