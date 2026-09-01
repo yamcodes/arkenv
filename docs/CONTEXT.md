@@ -48,7 +48,7 @@ CLI command `arkenv check` that validates the resolved environment (`process.env
 *Avoid*: treating validation findings as `ok: false` or exit `1`; calling Check a dotenv loader (it does not load `.env` unless `--env-file` is passed); folding file lint rules, unquoted space detection, or AST syntax diagnostics onto Check (that belongs in dedicated ecosystem tools like `dotenv-linter`)
 
 **Lint**:
-Archived RFC (Discussion #1710, superseding ADR 0017). File-level syntax, unquoted space detection, and whitespace formatting belong in dedicated ecosystem tools (e.g. `dotenv-linter`). ArkEnv focuses purely on runtime schema validation.
+Archived RFC ([Discussion #1710](https://github.com/yamcodes/arkenv/discussions/1710), superseding ADR 0017). File-level syntax, unquoted space detection, and whitespace formatting belong in dedicated ecosystem tools (e.g. `dotenv-linter`). ArkEnv focuses purely on runtime schema validation.
 *Avoid*: adding custom AST parsers or file lint rules to `arkenv check`; implementing `arkenv lint` on v1
 
 **Example** (CLI command):

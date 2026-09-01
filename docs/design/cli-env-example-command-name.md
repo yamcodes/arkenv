@@ -83,7 +83,7 @@ alias” into one list. An alias of `sync` still spends the verb.
 | A25 | `example sync` (subcommand)                 | Extra noun for one job.                                      |
 | A26 | Fold into `init` only                       | Rejected in #1234: `.env.example` drifts after day one.      |
 | A27 | Fold into `check` (`check --write-example`) | Mixes validate-env with write-file.                          |
-| A28 | `lint`                                      | Reserved for on-disk env-file lint (#481).                   |
+| A28 | `lint`                                      | Withdrawn / archived RFC ([Discussion #1710](https://github.com/yamcodes/arkenv/discussions/1710)). |
 
 ### Layer B — alias policy
 
