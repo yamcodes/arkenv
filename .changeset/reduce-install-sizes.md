@@ -13,4 +13,6 @@
 
 #### Reduce package install sizes by omitting sourcemaps and externalizing core types
 
-Omit declaration maps (`.d.ts.map`, `.d.mts.map`, `.d.cts.map`) and runtime JavaScript sourcemaps (`*.map`) monorepo-wide across published packages. Externalize public ArkType type contracts in `@arkenv/core` declarations to avoid inlining internal AST definitions into `dist/index.d.mts`.
+Published packages now omit declaration maps (`.d.ts.map`, `.d.mts.map`, `.d.cts.map`) and runtime JavaScript sourcemaps (`*.map`) across the monorepo, significantly reducing npm install footprints and package archive sizes.
+
+In addition, public ArkType type contracts in `@arkenv/core` declarations are now externalized rather than recursively expanded by the compiler, shrinking `@arkenv/core` declaration files and preventing internal AST definitions from being inlined into consumer type builds.
