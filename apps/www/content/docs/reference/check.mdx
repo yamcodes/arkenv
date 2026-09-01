@@ -92,6 +92,8 @@ npx arkenv@latest check --verify-example .env.example.production
 
 When all schema keys exist in the example file, `check` exits with `0`. When
 keys are missing, `check` outputs the missing keys and exits with code `4`.
+This mode specifically verifies example file parity against declared schema keys
+and does not validate live environment variables.
 
 ### `--json` / `-j`
 
