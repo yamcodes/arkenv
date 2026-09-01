@@ -11,7 +11,6 @@ import type {
 	PromptPort,
 	WorkspacePort,
 } from "@/shared/ports";
-import type { ExampleUseCase } from "./example";
 
 /**
  * Input parameters for the 'init' command.
@@ -40,7 +39,6 @@ export class InitUseCase {
 		private readonly prompt: PromptPort,
 		private readonly scanner: ProjectScannerPort,
 		private readonly registry = new RegistryClient(),
-		private readonly exampleUseCase?: ExampleUseCase,
 	) {}
 
 	/**
@@ -57,19 +55,6 @@ export class InitUseCase {
 			await executor.execute(plan);
 		} catch (error) {
 			this.logger.fatal("Scaffolding failed.", error);
-		}
-
-		if (this.exampleUseCase && state.mode === "existing") {
-			const exampleCode = await this.exampleUseCase.execute({
-				cwd: state.cwd,
-				embedded: true,
-				isQuiet: input.isQuiet,
-			});
-			if (exampleCode !== 0 && !input.isQuiet && !input.isAgent) {
-				this.logger.warn(
-					`Could not update ${code(".env.example")} from the schema. Run ${code("arkenv example")} after fixing the schema file.`,
-				);
-			}
 		}
 
 		return true;

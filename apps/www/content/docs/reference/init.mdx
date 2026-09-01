@@ -86,10 +86,8 @@ Depending on the detected framework and flags, `init` writes:
 
 - Schema file: `env.ts` (often under `src/`)
 - `.env` / `.env.example` when missing. Init never reads an existing
-  `.env`; a missing `.env.example` is filled from detected keys and
-  defaults, then `example` refreshes `.env.example` from the loaded
-  schema in an existing project. If `.env` is missing, init may copy
-  `.env.example` into it.
+  `.env`; a missing `.env.example` is scaffolded from detected keys and
+  defaults. If `.env` is missing, init may copy `.env.example` into it.
 - Next.js: `withArkEnv` in `next.config.*`, `.arkenv/` in `.gitignore`,
   optional `.arkenv/env.gen.ts` (import as `@/.arkenv`)
 - Vite / Bun: plugin configuration in `vite.config.*` / `bunfig.toml`
@@ -116,9 +114,9 @@ Importing `arkenv` as a library throws and points you at `@arkenv/core`.
 <Cards>
   <Card href="/docs/getting-started/installation" title="Installation" description="CLI walkthrough and manual install." />
 
-  <Card href="/docs/reference/preset" title="preset" description="CLI reference for applying and removing provider presets." />
+  <Card href="/docs/reference/check" title="check" description="Validate the resolved environment against your schema with CI exit codes." />
 
-  <Card href="/docs/reference/example" title="example" description="Update .env.example from the schema." />
+  <Card href="/docs/reference/preset" title="preset" description="CLI reference for applying and removing provider presets." />
 
   <Card href="/docs/reference/options" title="options" description="Configuration options passed to arkenv()." />
 </Cards>

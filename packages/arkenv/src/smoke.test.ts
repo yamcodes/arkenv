@@ -55,7 +55,8 @@ describe("cli smoke tests", () => {
 		expect(stdout).toContain("Usage:");
 		expect(stdout).toContain("arkenv init");
 		expect(stdout).toContain("arkenv check");
-		expect(stdout).toContain("arkenv example");
+		expect(stdout).toContain("--verify-example");
+		expect(stdout).not.toContain("arkenv example");
 		expect(stderr).toBe("");
 	});
 
