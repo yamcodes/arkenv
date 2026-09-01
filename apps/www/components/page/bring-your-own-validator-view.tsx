@@ -24,9 +24,8 @@ export function BringYourOwnValidatorView({
 					Bring your own validator
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					Use ArkType, Zod, Valibot, or any{" "}
-					<a href="/docs/validators">Standard Schema</a> you already have. Mix
-					and match for incremental migration.
+					Use ArkType or any <a href="/docs/validators">Standard Schema</a> you
+					already have. Mix and match for incremental migration.
 				</p>
 			</header>
 
