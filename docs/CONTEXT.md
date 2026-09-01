@@ -44,12 +44,12 @@ The legacy v0 pattern (`arkenv(schema)` plugin argument with native-accessor `de
 *Avoid*: recommending schema/define or ambient `.d.ts` augmentations in v1 docs, CLI, or skills; framing SPA mode as a supported v1 path
 
 **Check**:
-CLI command `arkenv check` that validates the resolved environment (`process.env` plus optional `--env-file` overlays) against the project schema. Findings are not a crash: `--json` emits a completed envelope with `ok: true` and exit code `4`. Complementary to **Lint**: same schema loader and `validate()`, different subject (live env vs files on disk).
-*Avoid*: treating validation findings as `ok: false` or exit `1`; calling Check a dotenv loader (it does not load `.env` unless `--env-file` is passed); folding file lint rules or Unix `path:line:col` onto Check via `--lint` / `--format unix` (that is **Lint**; `--env-file` on Check means overlay, not “lint these files”)
+CLI command `arkenv check` that validates the resolved environment (`process.env` plus optional `--env-file` overlays) against the project schema. Findings are not a crash: `--json` emits a completed envelope with `ok: true` and exit code `4`.
+*Avoid*: treating validation findings as `ok: false` or exit `1`; calling Check a dotenv loader (it does not load `.env` unless `--env-file` is passed); folding file lint rules, unquoted space detection, or AST syntax diagnostics onto Check (that belongs in dedicated ecosystem tools like `dotenv-linter`)
 
 **Lint**:
-Planned CLI command `arkenv lint` (not yet shipped; epic [#481](https://github.com/yamcodes/arkenv/issues/481), ADR 0017) that lints `.env*` files on disk: cascade-by-mode, coordinate-aware parse, static dotenv rules, and schema issues remapped to `file:line:col`. Reuses Check’s schema loader and `validate()`; grows the dotenv parser to keep coordinates instead of skipping bad lines.
-*Avoid*: treating Lint as a rename of Check; wrapping `dotenv-linter`; a second validation engine; documenting or invoking `arkenv lint` as available on current v1
+Archived RFC ([Discussion #1710](https://github.com/yamcodes/arkenv/discussions/1710), superseding ADR 0017). File-level syntax, unquoted space detection, and whitespace formatting belong in dedicated ecosystem tools (e.g. `dotenv-linter`). ArkEnv focuses purely on runtime schema validation.
+*Avoid*: adding custom AST parsers or file lint rules to `arkenv check`; implementing `arkenv lint` on v1
 
 **Example** (CLI command):
 CLI command `arkenv example` that writes `.env.example` from declared schema keys (same loader as Check). Merge-aware: preserve comments/values for surviving keys, drop stale keys, append new keys. Loader failure does not write a partial file. Emits every declared key; `hasDefault` is advisory only (never omit a key because the sniffer missed a default).

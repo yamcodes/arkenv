@@ -37,7 +37,7 @@ Optional later rename to `env-example` (A7) only if support noise from `example`
 - **A7 — `env-example`.** A-tier tuck-away if `example` vs `--example` is too noisy. Not required to close #1234.
 - **B2 — `sync` as hidden alias.** Still spends `sync` in autocomplete. Rejected.
 - **A26 / A27 — fold into `init` or `check`.** Rejected in #1234: the example file drifts after day one; mixing validate-env with write-file confuses jobs.
-- **A28 — `lint`.** Reserved for on-disk env-file lint (#481).
+- **A28 — `lint`.** Withdrawn / archived RFC ([Discussion #1710](https://github.com/yamcodes/arkenv/discussions/1710), superseding ADR 0017).
 
 ## Consequences
 
