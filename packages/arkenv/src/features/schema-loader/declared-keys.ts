@@ -18,7 +18,7 @@ export type DeclaredSchemaKey = {
 	 * Best-effort / advisory only (ArkType DSL/`json.default`, Zod
 	 * `_def.defaultValue` / `type: "default"`, Valibot own `default` /
 	 * `fallback`). Unknown Standard Schema vendors report `false`. Consumers such
-	 * as `arkenv example` must still emit the key when this is `false` — never
+	 * as `arkenv check --verify-example` must still verify the key when this is `false` — never
 	 * omit a declared key because the sniffer missed a default.
 	 */
 	hasDefault: boolean;

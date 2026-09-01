@@ -7,7 +7,6 @@ import {
 import { CLI } from "./cli";
 import {
 	CheckUseCase,
-	ExampleUseCase,
 	HelpUseCase,
 	InitUseCase,
 	PresetUseCase,
@@ -35,20 +34,7 @@ export function compose(
 		: {};
 	const schemaLoader = new JitiSchemaLoaderAdapter(jitiOptions);
 
-	const exampleUseCase = new ExampleUseCase(
-		logger,
-		workspace,
-		scanner,
-		schemaLoader,
-	);
-	const initUseCase = new InitUseCase(
-		logger,
-		workspace,
-		prompt,
-		scanner,
-		undefined,
-		exampleUseCase,
-	);
+	const initUseCase = new InitUseCase(logger, workspace, prompt, scanner);
 	const presetUseCase = new PresetUseCase(logger, workspace, prompt, scanner);
 	const checkUseCase = new CheckUseCase(
 		logger,
@@ -66,7 +52,6 @@ export function compose(
 		initUseCase,
 		presetUseCase,
 		checkUseCase,
-		exampleUseCase,
 		helpUseCase,
 		schemaLoader,
 	};

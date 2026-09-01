@@ -1,12 +1,12 @@
 # CLI command name for schema → `.env.example`
 
 Locked. See [ADR 0030](../adr/0030-cli-env-example-command-name.md)
-(`cli-env-example-command-name`).
+(`cli-env-example-command-name`), superseded by `arkenv check --verify-example` ([#1727](https://github.com/yamcodes/arkenv/issues/1727)).
 
 This file was the living hat for
 [#1234](https://github.com/yamcodes/arkenv/issues/1234) /
 [PR #1643](https://github.com/yamcodes/arkenv/pull/1643). **Chosen public
-story:** `arkenv example` with no aliases (stack A3 + B1). Amend the ADR.
+story:** `arkenv example` with no aliases (stack A3 + B1), subsequently replaced by read-only `arkenv check --verify-example` ([#1727](https://github.com/yamcodes/arkenv/issues/1727)). Amend the ADR.
 Do not resume scoring here.
 
 ## Problem

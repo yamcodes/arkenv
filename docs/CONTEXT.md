@@ -51,9 +51,9 @@ CLI command `arkenv check` that validates the resolved environment (`process.env
 Archived RFC ([Discussion #1710](https://github.com/yamcodes/arkenv/discussions/1710), superseding ADR 0017). File-level syntax, unquoted space detection, and whitespace formatting belong in dedicated ecosystem tools (e.g. `dotenv-linter`). ArkEnv focuses purely on runtime schema validation.
 *Avoid*: adding custom AST parsers or file lint rules to `arkenv check`; implementing `arkenv lint` on v1
 
-**Example** (CLI command):
-CLI command `arkenv example` that writes `.env.example` from declared schema keys (same loader as Check). Merge-aware: preserve comments/values for surviving keys, drop stale keys, append new keys. Loader failure does not write a partial file. Emits every declared key; `hasDefault` is advisory only (never omit a key because the sniffer missed a default).
-*Avoid*: static-parsing `env.ts`; writing `.env` with real secrets; treating Example as a replacement for Check; calling this command `sync` or `generate`; omitting keys when `hasDefault` is false
+**Verify example** (CLI check flag):
+CLI check flag `arkenv check --verify-example [file]` that strictly verifies all keys declared in the schema are present in `.env.example` (or a custom example file) without writing or mutating files on disk (same schema loader as Check). Read-only drift prevention enforcer for CI and pre-commit hooks.
+*Avoid*: mutating or rewriting `.env.example`; static-parsing `env.ts`; writing `.env` with real secrets; invoking a standalone `arkenv example` command (removed in #1727)
 
 **Schema inspect** (CLI loader):
 Jiti-import of a flat `env.ts` under unpublished schema capture ([ADR 0027](./adr/0027-cli-schema-inspection.md)). `arkenv()` records the definition and returns a hollow `{}` stub (not a Proxy). Handshake is `Symbol.for("arkenv.schemaCapture.v1")` on `globalThis` (CLI / `@arkenv/core` / `@arkenv/standard`); Nuxt keeps `__ARKENV_SCHEMA_CAPTURE__`. Fail closed: `arkenv({})` → success `keys: []`; never treat “no call”, “runtime too old”, or “unreadable def” as an empty schema. Loader codes: `ERR_INSPECT_NO_CALL`, `ERR_INSPECT_UNSUPPORTED`, `ERR_INSPECT_UNEXTRACTABLE`, `ERR_INSPECT_EVAL_THROW` (protocol envelopes stay dotted `CLI.*`).
