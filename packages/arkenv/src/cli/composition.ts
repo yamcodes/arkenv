@@ -10,7 +10,6 @@ import {
 	ExampleUseCase,
 	HelpUseCase,
 	InitUseCase,
-	PresetUseCase,
 } from "./commands";
 
 /**
@@ -49,7 +48,6 @@ export function compose(
 		undefined,
 		exampleUseCase,
 	);
-	const presetUseCase = new PresetUseCase(logger, workspace, prompt, scanner);
 	const checkUseCase = new CheckUseCase(
 		logger,
 		workspace,
@@ -64,7 +62,6 @@ export function compose(
 		workspace,
 		prompt,
 		initUseCase,
-		presetUseCase,
 		checkUseCase,
 		exampleUseCase,
 		helpUseCase,

@@ -24,7 +24,6 @@ async function main() {
 		cli,
 		logger,
 		initUseCase,
-		presetUseCase,
 		helpUseCase,
 		checkUseCase,
 		exampleUseCase,
@@ -48,7 +47,6 @@ async function main() {
 
 	const commands = {
 		init: () => initUseCase.execute(shake(cli.initInput)),
-		preset: () => presetUseCase.execute(cli.presetInput),
 		check: () => checkUseCase.execute(cli.checkInput),
 		example: () => exampleUseCase.execute(cli.exampleInput),
 	} as const;

@@ -1,13 +1,8 @@
 import { Logger } from "@/adapters";
-import {
-	type HostPreset,
-	isHostPreset,
-	isHostProvider,
-} from "@/features/scaffold/presets";
+import { type HostPreset, isHostPreset } from "@/features/scaffold/presets";
 import type { CheckInput } from "./commands/check";
 import type { ExampleInput } from "./commands/example";
 import type { InitInput } from "./commands/init";
-import type { PresetInput } from "./commands/preset";
 
 const FLAG_CONFIG = {
 	isYes: { long: "--yes", short: "-y", kind: "boolean" },
@@ -23,7 +18,6 @@ const FLAG_CONFIG = {
 	noCodegen: { long: "--no-codegen", short: "", kind: "boolean" },
 	preset: { long: "--preset", short: "-P", kind: "value" },
 	hostPreset: { long: "--host-preset", short: "-H", kind: "value" },
-	file: { long: "--file", short: "", kind: "value" },
 	schema: { long: "--schema", short: "-s", kind: "value" },
 	envFile: { long: "--env-file", short: "", kind: "value" },
 } as const;
@@ -128,28 +122,7 @@ export class CLI {
 		this.positionalArgs = positionalArgs;
 
 		if (!this.validationError) {
-			if (this.command === "preset") {
-				if (positionalArgs.length === 0) {
-					this.validationError = "Missing subcommand";
-				} else {
-					const action = positionalArgs[0];
-					if (
-						action !== "apply" &&
-						action !== "remove" &&
-						action !== "rm" &&
-						action !== "add"
-					) {
-						this.validationError = `Unknown preset action: ${action}`;
-					} else if (positionalArgs.length > 2) {
-						this.validationError = `Unknown argument: ${positionalArgs[2]}`;
-					} else {
-						const provider = positionalArgs[1];
-						if (provider !== undefined && !isHostProvider(provider)) {
-							this.validationError = `Invalid host preset: ${provider}`;
-						}
-					}
-				}
-			} else if (this.command === "check" || this.command === "example") {
+			if (this.command === "check" || this.command === "example") {
 				if (positionalArgs.length > 0) {
 					this.validationError = `Unknown argument: ${positionalArgs[0]}`;
 				}
@@ -204,14 +177,9 @@ export class CLI {
 		return this.hasFlag("noCodegen");
 	}
 
-	get file(): string | undefined {
-		const flag = FLAG_CONFIG.file;
-		return this.getFlagValue(flag.long, flag.short);
-	}
-
 	get schema(): string | undefined {
 		const flag = FLAG_CONFIG.schema;
-		return this.getFlagValue(flag.long, flag.short) ?? this.file;
+		return this.getFlagValue(flag.long, flag.short);
 	}
 
 	get envFiles(): string[] {
@@ -263,21 +231,6 @@ export class CLI {
 			input.hostPreset = this.hostPreset;
 		}
 		return input;
-	}
-
-	get presetInput(): PresetInput {
-		const rawAction = this.positionalArgs[0];
-		const action =
-			rawAction === "remove" || rawAction === "rm" ? "remove" : "apply";
-		const provider = this.positionalArgs[1];
-		const file = this.file;
-		return {
-			action,
-			...(provider && isHostProvider(provider) ? { provider } : {}),
-			...(file !== undefined ? { file } : {}),
-			isForce: this.isForce,
-			isYes: this.isYes,
-		};
 	}
 
 	get checkInput(): CheckInput {
