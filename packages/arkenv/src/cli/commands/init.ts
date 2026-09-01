@@ -14,7 +14,6 @@ import type {
 import { spawnLatest } from "@/shared/spawner";
 import { name as pkgName, version as pkgVersion } from "../../../package.json";
 
-
 /**
  * Input parameters for the 'init' command.
  */
