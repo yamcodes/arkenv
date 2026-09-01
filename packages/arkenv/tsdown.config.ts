@@ -7,6 +7,7 @@ export default defineConfig({
 	minify: true,
 	fixedExtension: false,
 	shims: true,
+	sourcemap: false,
 	deps: {
 		alwaysBundle: ["@repo/log", "@clack/prompts", "@repo/utils", "picocolors"],
 	},

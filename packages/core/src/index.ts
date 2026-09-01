@@ -5,6 +5,7 @@ import {
 	formatIssues,
 	getSchemaKeys,
 } from "@repo/utils";
+import type { Scope } from "arktype";
 import { arkenv } from "./arkenv";
 
 export type { EnvIssue };
@@ -18,7 +19,7 @@ export { ArkEnvError, arkenv, formatIssues, getSchemaKeys };
  * See ArkType's docs for the full API:
  * https://arktype.io/docs/type-api
  */
-export const type = $.type;
+export const type: Scope<$>["type"] = $.type;
 export type {
 	ArkEnvConfig,
 	EnvSchema,

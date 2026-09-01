@@ -19,7 +19,7 @@ export default defineConfig({
 	// declared") when Nuxt playgrounds rebundle the published ESM.
 	minify: false,
 	fixedExtension: false,
-	sourcemap: true,
+	sourcemap: false,
 	deps: {
 		alwaysBundle: ["@repo/log", "@repo/types", "@repo/utils"],
 		neverBundle: [
@@ -27,6 +27,7 @@ export default defineConfig({
 			"@nuxt/schema",
 			"nitropack",
 			"#arkenv/server-boot",
+			"arktype",
 		],
 	},
 });

@@ -9,7 +9,7 @@
 		"exactOptionalPropertyTypes": true,
 		"noImplicitAny": true,
 		"declaration": true,
-		"declarationMap": true,
+		"declarationMap": false,
 		"emitDeclarationOnly": true,
 		"outDir": "./dist",
 		"rootDir": "./src",
