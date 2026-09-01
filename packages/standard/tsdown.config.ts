@@ -5,8 +5,9 @@ export default defineConfig({
 	format: ["esm", "cjs"],
 	minify: true,
 	fixedExtension: false,
+	sourcemap: false,
 	deps: {
 		alwaysBundle: ["@repo/types", "@repo/utils"],
-		neverBundle: ["@valibot/to-json-schema", "zod", "zod/mini"],
+		neverBundle: ["@valibot/to-json-schema", "zod", "zod/mini", "arktype"],
 	},
 });

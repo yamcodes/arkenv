@@ -1123,9 +1123,6 @@ importers:
 
   packages/internal/types:
     devDependencies:
-      '@repo/scope':
-        specifier: workspace:*
-        version: link:../scope
       arktype:
         specifier: 'catalog:'
         version: 2.2.0

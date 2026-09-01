@@ -1,12 +1,7 @@
-import { scope, type } from "arktype";
+import { type Scope, scope, type } from "arktype";
 import { host, port } from "./keywords";
 
-/**
- * The root scope for the ArkEnv library,
- * containing extensions to the ArkType scopes with ArkEnv-specific types
- * like `string.host` and `number.port`.
- */
-export const $ = scope({
+const rawScope = scope({
 	string: type.module({
 		...type.keywords.string,
 		host,
@@ -17,4 +12,11 @@ export const $ = scope({
 	}),
 });
 
-export type $ = (typeof $)["t"];
+export type $ = (typeof rawScope)["t"];
+
+/**
+ * The root scope for the ArkEnv library,
+ * containing extensions to the ArkType scopes with ArkEnv-specific types
+ * like `string.host` and `number.port`.
+ */
+export const $: Scope<$> = rawScope as never;
