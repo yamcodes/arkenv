@@ -19,4 +19,4 @@ export type $ = (typeof rawScope)["t"];
  * containing extensions to the ArkType scopes with ArkEnv-specific types
  * like `string.host` and `number.port`.
  */
-export const $: Scope<$> = rawScope as never;
+export const $: Scope<$> = rawScope;
