@@ -54,14 +54,12 @@ describe("release config", () => {
 	});
 
 	it("exports standard RELEASE_CONFIG", () => {
-		expect(RELEASE_CONFIG.channel).toBe(RELEASE_TAG);
-		expect(RELEASE_CONFIG.tag).toBe(RELEASE_TAG);
-		expect(RELEASE_CONFIG.packageSpecifier).toBe(
-			RELEASE_TAG ? `arkenv@${RELEASE_TAG}` : "arkenv",
+		expect(RELEASE_CONFIG.channel).toBe("alpha");
+		expect(RELEASE_CONFIG.tag).toBe("alpha");
+		expect(RELEASE_CONFIG.packageSpecifier).toBe("arkenv@alpha");
+		expect(RELEASE_CONFIG.initCommand).toBe("npx arkenv@alpha init");
+		expect(RELEASE_CONFIG.agentPrompt).toBe(
+			"Set up ArkEnv with `npx arkenv@alpha init --agent`. Install any missing dependencies, wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.",
 		);
-		expect(RELEASE_CONFIG.initCommand).toBe(
-			RELEASE_TAG ? `npx arkenv@${RELEASE_TAG} init` : "npx arkenv init",
-		);
-		expect(RELEASE_CONFIG.agentPrompt).toBe(getAgentPrompt(RELEASE_TAG));
 	});
 });

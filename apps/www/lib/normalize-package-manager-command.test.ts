@@ -103,4 +103,33 @@ describe("normalizePackageManagerCommand", () => {
 			"pnpm add -D arkenv",
 		);
 	});
+
+	it("does not corrupt scoped packages like @arkenv/agent-plugin on runner lines", () => {
+		expect(
+			normalizePackageManagerCommand("pnpm dlx @arkenv/agent-plugin init"),
+		).toBe("pnpm dlx @arkenv/agent-plugin init");
+		expect(
+			normalizePackageManagerCommand("npx @arkenv/agent-plugin audit"),
+		).toBe("npx @arkenv/agent-plugin audit");
+		expect(
+			normalizePackageManagerCommand("bunx @arkenv/agent-plugin init"),
+		).toBe("bunx @arkenv/agent-plugin init");
+	});
+
+	it("normalizes runner commands inside prompt text fences", () => {
+		const prompt =
+			"Add ArkEnv to this repo. Run `npx arkenv init --agent`, parse the JSON on stdout, and only retry with flags from `retryWith` if a refusal is safe to bypass.";
+		expect(normalizePackageManagerCommand(prompt)).toBe(
+			"Add ArkEnv to this repo. Run `npx arkenv@alpha init --agent`, parse the JSON on stdout, and only retry with flags from `retryWith` if a refusal is safe to bypass.",
+		);
+
+		const presetPrompt =
+			"Add the Vercel hosting preset with `npx arkenv preset apply vercel --agent` and merge any new system vars into the schema.";
+		expect(normalizePackageManagerCommand(presetPrompt)).toBe(
+			"Add the Vercel hosting preset with `npx arkenv@alpha preset apply vercel --agent` and merge any new system vars into the schema.",
+		);
+
+		// GA mode (empty tag)
+		expect(normalizePackageManagerCommand(prompt, "")).toBe(prompt);
+	});
 });
