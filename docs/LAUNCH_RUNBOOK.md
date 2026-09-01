@@ -17,6 +17,9 @@ This runbook outlines the operational, DNS, npm registry, and deployment steps r
   - Update all alpha links (`arkenv-v1.vercel.app`) in READMEs and docs to `arkenv.js.org`.
 - [ ] **Changelog Epoch Warnings**:
   - Verify epoch migration warnings are prepended in `packages/arkenv/CHANGELOG.md` and `packages/core/CHANGELOG.md`.
+- [ ] **Release Channel Tag Configuration (`apps/www/lib/config/release.ts`)**:
+  - For RC: Update `RELEASE_TAG = "rc"` in `apps/www/lib/config/release.ts` (or override via `NEXT_PUBLIC_ARKENV_RELEASE_TAG="rc"`).
+  - For GA: Set `RELEASE_TAG = ""` so that all UI buttons, copy actions, AI prompts, and docs `package-install` tabs automatically render bare `npx arkenv init` with 0 MDX diffs.
 - [ ] **Local Installation Standard**:
   - Verify docs and installation snippets recommend installing `arkenv` as a local `devDependency` alongside `@arkenv/core` / `@arkenv/standard` for deterministic lockfile-pinned CI builds.
 
