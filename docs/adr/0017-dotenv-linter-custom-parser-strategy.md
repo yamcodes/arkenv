@@ -2,7 +2,11 @@
 
 ## Status
 
-Accepted
+Superseded in favor of focused runtime validation ([#1717](https://github.com/yamcodes/arkenv/issues/1717), RFC Discussion #1710).
+
+The proposed `arkenv lint` command and internal AST coordinate-aware formatting/syntax parser are withdrawn. `arkenv check` focuses exclusively on validating runtime environment variables (`process.env` + `--env-file` overlays) against the declared TypeScript schema. File-level syntax, unquoted space detection, and whitespace formatting linting belong in dedicated ecosystem tools (such as `dotenv-linter`).
+
+The text below is preserved for historical context.
 
 ## Context
 
