@@ -101,13 +101,13 @@ describe("@arkenv/build schema discovery", () => {
 });
 
 describe("formatMissingSchemaError", () => {
-	it("formats a short host error with npx arkenv@latest init and no starter", () => {
+	it("formats a short host error with npx arkenv init and no starter", () => {
 		const message = formatMissingSchemaError({
 			optionsHint: "setupArkEnv options",
 		});
 
 		expect(message).toBe(
-			"[ArkEnv] Could not find schema file at src/env.ts or env.ts. Please specify 'schemaPath' in setupArkEnv options (or run `npx arkenv@latest init`).",
+			"[ArkEnv] Could not find schema file at src/env.ts or env.ts. Please specify 'schemaPath' in setupArkEnv options (or run `npx arkenv init`).",
 		);
 		expect(message).not.toMatch(/```/);
 		expect(message).not.toMatch(/Example/);
@@ -123,6 +123,6 @@ describe("formatMissingSchemaError", () => {
 		expect(message).toContain("ArkEnv Vite plugin: Could not find schema file");
 		expect(message).toContain("Checked paths:");
 		expect(message).toContain(" - /proj/src/env.ts");
-		expect(message).toContain("npx arkenv@latest init");
+		expect(message).toContain("npx arkenv init");
 	});
 });

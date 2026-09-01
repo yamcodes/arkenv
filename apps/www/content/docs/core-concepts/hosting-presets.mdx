@@ -23,7 +23,7 @@ When bootstrapping a project, select your hosting provider from the interactive
 wizard or specify the `--preset` flag:
 
 ```package-install
-npx arkenv@latest init --preset vercel
+npx arkenv init --preset vercel
 ```
 
 Accepted values: `none`, `vercel`, `netlify`, `cloudflare`, `railway`, `render`, `fly`.
@@ -39,7 +39,7 @@ You can apply, refresh, or remove hosting presets at any time using the
 ### Apply or refresh a preset
 
 ```package-install
-npx arkenv@latest preset apply vercel
+npx arkenv preset apply vercel
 ```
 
 When you run `preset apply`, the CLI:
@@ -53,13 +53,13 @@ When you run `preset apply`, the CLI:
 To specify a custom schema path explicitly, pass `--file`:
 
 ```package-install
-npx arkenv@latest preset apply vercel --file ./src/config/env.ts
+npx arkenv preset apply vercel --file ./src/config/env.ts
 ```
 
 ### Remove a preset
 
 ```package-install
-npx arkenv@latest preset remove vercel
+npx arkenv preset remove vercel
 ```
 
 The `preset remove` command strips the delimited preset block from your schema
@@ -107,8 +107,8 @@ Comment markers are plain TypeScript/JavaScript comments. They have **zero perfo
 You can apply multiple presets to the same schema by running `preset apply` for each provider:
 
 ```bash
-npx arkenv@latest preset apply vercel
-npx arkenv@latest preset apply railway
+npx arkenv preset apply vercel
+npx arkenv preset apply railway
 ```
 
 Both blocks coexist independently in your schema file. You can refresh or remove either preset without affecting the other.

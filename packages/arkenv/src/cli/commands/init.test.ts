@@ -1,5 +1,5 @@
 import path from "node:path";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ERROR_CODES } from "@/shared/errors";
 import type {
 	LoggerPort,
@@ -646,5 +646,188 @@ describe("InitUseCase", () => {
 		expect(result).not.toBeNull();
 		expect(result.options.installSkill).toBe(false);
 		expect(result.options.skillDetected).toBe(true);
+	});
+
+	describe("version freshness pre-flight check", () => {
+		let versionChecker: any;
+		let spawner: any;
+		let exit: any;
+		let originalCI: string | undefined;
+		let originalTTY: boolean | undefined;
+
+		beforeEach(() => {
+			originalCI = process.env.CI;
+			originalTTY = process.stdout.isTTY;
+			versionChecker = {
+				checkFreshness: vi.fn().mockResolvedValue({ isOutdated: false }),
+			};
+			spawner = vi.fn().mockResolvedValue(0);
+			exit = vi.fn();
+		});
+
+		afterEach(() => {
+			if (originalCI !== undefined) {
+				process.env.CI = originalCI;
+			} else {
+				delete process.env.CI;
+			}
+			process.stdout.isTTY = originalTTY as boolean;
+		});
+
+		it("prompts to run latest and spawns dlx runner when user confirms", async () => {
+			delete process.env.CI;
+			process.stdout.isTTY = true;
+
+			versionChecker.checkFreshness.mockResolvedValue({
+				isOutdated: true,
+				latestVersion: "1.0.0-alpha.18",
+				distTag: "alpha",
+			});
+			vi.mocked(prompt.confirm).mockResolvedValue(true);
+
+			const customUseCase = new InitUseCase(
+				logger,
+				workspace,
+				prompt,
+				scanner,
+				undefined,
+				undefined,
+				versionChecker,
+				spawner,
+				exit,
+			);
+
+			const success = await customUseCase.execute({
+				isYes: false,
+				isForce: false,
+				isQuiet: false,
+				isAgent: false,
+			});
+
+			expect(versionChecker.checkFreshness).toHaveBeenCalled();
+			expect(prompt.confirm).toHaveBeenCalledWith(
+				expect.stringContaining("Version 1.0.0-alpha.18 is available"),
+				true,
+				"Yes (Recommended)",
+			);
+			expect(spawner).toHaveBeenCalledWith(
+				expect.objectContaining({
+					packageName: "arkenv",
+					args: expect.arrayContaining(["init"]),
+					tag: "alpha",
+				}),
+			);
+			expect(exit).toHaveBeenCalledWith(0);
+			expect(success).toBe(true);
+		});
+
+		it("proceeds with current version when user declines upgrade prompt", async () => {
+			delete process.env.CI;
+			process.stdout.isTTY = true;
+
+			versionChecker.checkFreshness.mockResolvedValue({
+				isOutdated: true,
+				latestVersion: "1.0.0-alpha.18",
+			});
+			vi.mocked(prompt.confirm).mockResolvedValue(false);
+			vi.mocked(prompt.runWizard).mockResolvedValue({
+				path: "./env.ts",
+				validator: "arktype",
+				framework: "vanilla",
+				language: "ts",
+			});
+
+			const customUseCase = new InitUseCase(
+				logger,
+				workspace,
+				prompt,
+				scanner,
+				undefined,
+				undefined,
+				versionChecker,
+				spawner,
+				exit,
+			);
+
+			const success = await customUseCase.execute({
+				isYes: false,
+				isForce: false,
+				isQuiet: false,
+				isAgent: false,
+			});
+
+			expect(versionChecker.checkFreshness).toHaveBeenCalled();
+			expect(spawner).not.toHaveBeenCalled();
+			expect(exit).not.toHaveBeenCalled();
+			expect(success).toBe(true);
+		});
+
+		it("cancels operation cleanly when user aborts the prompt", async () => {
+			delete process.env.CI;
+			process.stdout.isTTY = true;
+
+			versionChecker.checkFreshness.mockResolvedValue({
+				isOutdated: true,
+				latestVersion: "1.0.0-alpha.18",
+			});
+			vi.mocked(prompt.confirm).mockResolvedValue(null);
+
+			const customUseCase = new InitUseCase(
+				logger,
+				workspace,
+				prompt,
+				scanner,
+				undefined,
+				undefined,
+				versionChecker,
+				spawner,
+				exit,
+			);
+
+			const success = await customUseCase.execute({
+				isYes: false,
+				isForce: false,
+				isQuiet: false,
+				isAgent: false,
+			});
+
+			expect(logger.cancel).toHaveBeenCalledWith("Operation cancelled.");
+			expect(spawner).not.toHaveBeenCalled();
+			expect(exit).not.toHaveBeenCalled();
+			expect(success).toBe(false);
+		});
+
+		it("skips check in CI environment", async () => {
+			process.env.CI = "true";
+
+			const customUseCase = new InitUseCase(
+				logger,
+				workspace,
+				prompt,
+				scanner,
+				undefined,
+				undefined,
+				versionChecker,
+				spawner,
+				exit,
+			);
+
+			vi.mocked(prompt.runWizard).mockResolvedValue({
+				path: "./env.ts",
+				validator: "arktype",
+				framework: "vanilla",
+				language: "ts",
+			});
+
+			await customUseCase.execute({
+				isYes: false,
+				isForce: false,
+				isQuiet: false,
+				isAgent: false,
+			});
+
+			expect(versionChecker.checkFreshness).not.toHaveBeenCalled();
+			expect(spawner).not.toHaveBeenCalled();
+		});
 	});
 });

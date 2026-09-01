@@ -8,11 +8,11 @@ hosting provider. Use it to add platform variables, refresh them when
 the provider list changes, or strip a provider when you switch hosts.
 
 ```package-install
-npx arkenv@latest preset apply vercel
+npx arkenv preset apply vercel
 ```
 
 ```package-install
-npx arkenv@latest preset remove vercel
+npx arkenv preset remove vercel
 ```
 
 [Global flags](/docs/reference#global-flags) (`--yes`, `--quiet`,
@@ -42,7 +42,7 @@ Point at a schema file. This overrides the `"arkenv"` pointer in
 `package.json`.
 
 ```package-install
-npx arkenv@latest preset apply vercel --file ./src/config/env.ts
+npx arkenv preset apply vercel --file ./src/config/env.ts
 ```
 
 ### `--force` / `-f`
@@ -50,7 +50,7 @@ npx arkenv@latest preset apply vercel --file ./src/config/env.ts
 Bypass the clean git working tree check.
 
 ```package-install
-npx arkenv@latest preset apply vercel --force
+npx arkenv preset apply vercel --force
 ```
 
 ### `--yes` / `-y`

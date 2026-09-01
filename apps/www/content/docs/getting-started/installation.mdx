@@ -14,26 +14,57 @@ ArkEnv provides an interactive CLI that detects your stack, writes a
 schema, and wires framework config.
 
 ```package-install
-npx arkenv@latest init
+npx arkenv init
 ```
 
 Omit a project name to mutate the current directory. Pass a name to
 create a new folder (optionally from `--example`):
 
 ```package-install
-npx arkenv@latest init my-app --example with-vite-react -H vercel
+npx arkenv init my-app --example with-vite-react -H vercel
 ```
 
 For agent sessions, use `--agent` (implies `--yes --quiet --json`):
 
 ```package-install
-npx arkenv@latest init --agent
+npx arkenv init --agent
 ```
 
-Install a local binary when you want `arkenv` on the project PATH:
+## Local installation (recommended workflow)
+
+Install the runtime validation engine as a dependency, and the `arkenv` CLI as a `devDependency`:
 
 ```package-install
+npm install @arkenv/core
 npm install -D arkenv
+```
+
+If you are using Standard Schema (Zod or Valibot):
+
+```package-install
+npm install @arkenv/standard
+npm install -D arkenv
+```
+
+### Why install locally?
+
+- **Deterministic versioning**: Locks the exact CLI version in `package-lock.json` or `pnpm-lock.yaml`, ensuring absolute consistency across team members and CI pipelines.
+- **Zero latency & offline execution**: Executions run instantly from `node_modules/.bin/arkenv` without querying npm, working completely offline.
+- **CI/CD reliability**: Pipelines execute the version frozen in the lockfile instead of dynamically resolving `@latest`.
+
+Once installed locally, running `npx arkenv <command>` (or `pnpm arkenv`, `bun arkenv`) inside your project automatically executes your locked local binary from `node_modules/.bin`.
+
+### Wire into `package.json` scripts
+
+Add `arkenv check` to your project scripts to validate environment variables before builds:
+
+```json title="package.json"
+{
+  "scripts": {
+    "build": "arkenv check && next build",
+    "env:check": "arkenv check"
+  }
+}
 ```
 
 Flags, output files, and refusal codes live in
@@ -48,7 +79,7 @@ When the CLI finds a `package.json`, it adopts the repo incrementally.
     ### Run the interactive CLI
 
     ```package-install
-    npx arkenv@latest init
+    npx arkenv init
     ```
 
     The CLI refuses a dirty git working tree. Commit or stash
