@@ -34,4 +34,34 @@ describe("DeclarativeShowcase", () => {
 		expect(figure).toHaveTextContent("number");
 		expect(figure).toHaveTextContent("boolean");
 	});
+
+	it("renders mobile direct single-wire elements and carrier tokens in the markup", () => {
+		const { container } = render(<DeclarativeShowcase />);
+
+		const directWires = container.querySelectorAll(
+			".home-aurora__payload-wire--direct",
+		);
+		expect(directWires).toHaveLength(2);
+
+		const portCarrier = container.querySelector(
+			".home-aurora__payload-carrier--port",
+		);
+		expect(portCarrier).toBeInTheDocument();
+		expect(portCarrier).toHaveTextContent('"3000"');
+		expect(portCarrier).toHaveTextContent("3000");
+
+		const debugTrueCarrier = container.querySelector(
+			".home-aurora__payload-carrier--debug-true",
+		);
+		expect(debugTrueCarrier).toBeInTheDocument();
+		expect(debugTrueCarrier).toHaveTextContent('"true"');
+		expect(debugTrueCarrier).toHaveTextContent("true");
+
+		const debugFalseCarrier = container.querySelector(
+			".home-aurora__payload-carrier--debug-false",
+		);
+		expect(debugFalseCarrier).toBeInTheDocument();
+		expect(debugFalseCarrier).toHaveTextContent('"false"');
+		expect(debugFalseCarrier).toHaveTextContent("false");
+	});
 });

@@ -35,7 +35,40 @@ export function DeclarativeShowcase() {
 							<span className="home-aurora__payload-key">PORT=</span>
 						</div>
 
-						{/* Wire 1 */}
+						{/* Mobile: Direct Wire (single track without middle gate) */}
+						<div
+							className="home-aurora__payload-wire home-aurora__payload-wire--direct"
+							aria-hidden="true"
+						>
+							<svg
+								className="home-aurora__stream-wire-svg"
+								viewBox="0 0 100 20"
+								preserveAspectRatio="none"
+								aria-hidden="true"
+							>
+								<line
+									x1="0"
+									y1="10"
+									x2="92"
+									y2="10"
+									className="home-aurora__stream-wire-track"
+								/>
+								<polygon
+									points="90,7 98,10 90,13"
+									className="home-aurora__stream-arrow"
+								/>
+							</svg>
+							<div className="home-aurora__payload-carrier home-aurora__payload-carrier--port">
+								<span className="home-aurora__payload-val home-aurora__payload-val--raw">
+									&quot;3000&quot;
+								</span>
+								<span className="home-aurora__payload-val home-aurora__payload-val--coerced">
+									3000
+								</span>
+							</div>
+						</div>
+
+						{/* Desktop: Wire 1 */}
 						<div
 							className="home-aurora__payload-wire home-aurora__payload-wire--1"
 							aria-hidden="true"
@@ -108,6 +141,47 @@ export function DeclarativeShowcase() {
 						{/* Left static key */}
 						<div className="home-aurora__payload-col home-aurora__payload-col--left">
 							<span className="home-aurora__payload-key">DEBUG=</span>
+						</div>
+
+						{/* Mobile: Direct Wire (single track without middle gate) */}
+						<div
+							className="home-aurora__payload-wire home-aurora__payload-wire--direct"
+							aria-hidden="true"
+						>
+							<svg
+								className="home-aurora__stream-wire-svg"
+								viewBox="0 0 100 20"
+								preserveAspectRatio="none"
+								aria-hidden="true"
+							>
+								<line
+									x1="0"
+									y1="10"
+									x2="92"
+									y2="10"
+									className="home-aurora__stream-wire-track"
+								/>
+								<polygon
+									points="90,7 98,10 90,13"
+									className="home-aurora__stream-arrow"
+								/>
+							</svg>
+							<div className="home-aurora__payload-carrier home-aurora__payload-carrier--debug-true">
+								<span className="home-aurora__payload-val home-aurora__payload-val--raw">
+									&quot;true&quot;
+								</span>
+								<span className="home-aurora__payload-val home-aurora__payload-val--coerced">
+									true
+								</span>
+							</div>
+							<div className="home-aurora__payload-carrier home-aurora__payload-carrier--debug-false">
+								<span className="home-aurora__payload-val home-aurora__payload-val--raw">
+									&quot;false&quot;
+								</span>
+								<span className="home-aurora__payload-val home-aurora__payload-val--coerced">
+									false
+								</span>
+							</div>
 						</div>
 
 						{/* Wire 1 */}
