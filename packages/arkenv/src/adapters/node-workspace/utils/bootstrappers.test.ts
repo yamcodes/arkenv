@@ -50,6 +50,72 @@ describe("bootstrappers", () => {
 			expect(result.code).toContain("arkenvVitePlugin()");
 		});
 
+		it("preserves space indentation format", () => {
+			const initialContent =
+				'import { defineConfig } from "vite";\n\nexport default defineConfig({\n  plugins: [],\n});\n';
+			const result = transformViteConfig({ code: initialContent });
+			expect(result.success).toBe(true);
+			expect(result.code).toContain("  plugins: [arkenvVitePlugin()]");
+			expect(result.code?.endsWith("\n")).toBe(true);
+		});
+
+		it("preserves tab indentation format", () => {
+			const initialContent =
+				'import { defineConfig } from "vite";\n\nexport default defineConfig({\n\tplugins: [],\n});\n';
+			const result = transformViteConfig({ code: initialContent });
+			expect(result.success).toBe(true);
+			expect(result.code).toContain("\tplugins: [arkenvVitePlugin()]");
+		});
+
+		it("preserves absence of trailing newline", () => {
+			const initialContent = "export default { plugins: [] }";
+			const result = transformViteConfig({ code: initialContent });
+			expect(result.success).toBe(true);
+			expect(result.code?.endsWith("\n")).toBe(false);
+		});
+
+		it("refuses defineConfig callback form with an actionable message", () => {
+			const initialContent =
+				'import { defineConfig } from "vite";\nexport default defineConfig((env) => ({\n  plugins: [],\n}));';
+			const result = transformViteConfig({ code: initialContent });
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				expect(result.error).toContain(
+					"The 'defineConfig' callback form is currently not supported",
+				);
+			}
+		});
+
+		it("fails when default export is not an object", () => {
+			const initialContent = "export default 123;";
+			const result = transformViteConfig({ code: initialContent });
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				expect(result.error).toContain(
+					"Could not find default export object in Vite config",
+				);
+			}
+		});
+
+		it("fails when plugins property is not an array", () => {
+			const initialContent = 'export default { plugins: "not-an-array" };';
+			const result = transformViteConfig({ code: initialContent });
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				expect(result.error).toContain(
+					"The 'plugins' property in your Vite config is not an array",
+				);
+			}
+		});
+
+		it("fails gracefully on invalid syntax", () => {
+			const result = transformViteConfig({ code: "const invalid = {" });
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				expect(result.error).toContain("Failed to parse Vite config");
+			}
+		});
+
 		it("does not duplicate plugin if already exists and returns updated: false", async () => {
 			const initialContent = dedent`
 				import arkenvVitePlugin from "@arkenv/vite-plugin"
@@ -112,7 +178,29 @@ describe("bootstrappers", () => {
 			expect(result.code).toContain("codegen: false");
 		});
 
-		it("does not duplicate if already wrapped", async () => {
+		it("refuses CommonJS module.exports", () => {
+			const initialContent = "module.exports = { reactStrictMode: true };";
+			const result = transformNextjsConfig({ code: initialContent });
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				expect(result.error).toContain(
+					"CommonJS is not supported for automatic mutation",
+				);
+			}
+		});
+
+		it("fails when missing default export", () => {
+			const initialContent = "export const foo = 123;";
+			const result = transformNextjsConfig({ code: initialContent });
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				expect(result.error).toContain(
+					"Could not find default export in Next.js config",
+				);
+			}
+		});
+
+		it("does not duplicate if already wrapped with withArkEnv AST", async () => {
 			const initialContent = dedent`
 				import { withArkEnv } from "@arkenv/nextjs/config"
 				export default withArkEnv({
@@ -123,6 +211,36 @@ describe("bootstrappers", () => {
 			const result = transformNextjsConfig({ code: initialContent });
 			expect(result.success).toBe(true);
 			expect(result.updated).toBe(false);
+		});
+
+		it("does not duplicate if withArkEnv is referenced inline or elsewhere", () => {
+			const initialContent =
+				"const wrapped = withArkEnv(config);\nexport default wrapped;";
+			const result = transformNextjsConfig({ code: initialContent });
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(false);
+		});
+
+		it("preserves trailing newline", () => {
+			const initialContent = "export default {};\n";
+			const result = transformNextjsConfig({ code: initialContent });
+			expect(result.success).toBe(true);
+			expect(result.code?.endsWith("\n")).toBe(true);
+		});
+
+		it("preserves absence of trailing newline", () => {
+			const initialContent = "export default {}";
+			const result = transformNextjsConfig({ code: initialContent });
+			expect(result.success).toBe(true);
+			expect(result.code?.endsWith("\n")).toBe(false);
+		});
+
+		it("fails gracefully on invalid syntax", () => {
+			const result = transformNextjsConfig({ code: "export default {" });
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				expect(result.error).toContain("Failed to parse Next.js config");
+			}
 		});
 	});
 
@@ -139,6 +257,21 @@ describe("bootstrappers", () => {
 			expect(result.code).toContain('"@arkenv/nuxt/module"');
 		});
 
+		it("creates modules array if missing in defineNuxtConfig", () => {
+			const initialContent =
+				"export default defineNuxtConfig({\n  ssr: true,\n});\n";
+			const result = transformNuxtConfig({ code: initialContent });
+			expect(result.success).toBe(true);
+			expect(result.code).toContain('"@arkenv/nuxt/module"');
+		});
+
+		it("adds nuxt module to simple object export", () => {
+			const initialContent = "export default { ssr: true };";
+			const result = transformNuxtConfig({ code: initialContent });
+			expect(result.success).toBe(true);
+			expect(result.code).toContain('"@arkenv/nuxt/module"');
+		});
+
 		it("does not duplicate nuxt module if already present", async () => {
 			const initialContent = dedent`
 				export default defineNuxtConfig({
@@ -149,6 +282,46 @@ describe("bootstrappers", () => {
 			const result = transformNuxtConfig({ code: initialContent });
 			expect(result.success).toBe(true);
 			expect(result.updated).toBe(false);
+		});
+
+		it("fails when modules is not an array", () => {
+			const initialContent =
+				'export default defineNuxtConfig({ modules: "invalid" });';
+			const result = transformNuxtConfig({ code: initialContent });
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				expect(result.error).toContain(
+					"The 'modules' property in your Nuxt config is not an array",
+				);
+			}
+		});
+
+		it("fails when default export is not an object", () => {
+			const initialContent = "export default 42;";
+			const result = transformNuxtConfig({ code: initialContent });
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				expect(result.error).toContain(
+					"Could not find default export object in Nuxt config",
+				);
+			}
+		});
+
+		it("fails gracefully on invalid syntax", () => {
+			const result = transformNuxtConfig({
+				code: "export default defineNuxtConfig({",
+			});
+			expect(result.success).toBe(false);
+			if (!result.success) {
+				expect(result.error).toContain("Failed to parse Nuxt config");
+			}
+		});
+
+		it("preserves trailing newline", () => {
+			const initialContent = "export default defineNuxtConfig({});\n";
+			const result = transformNuxtConfig({ code: initialContent });
+			expect(result.success).toBe(true);
+			expect(result.code?.endsWith("\n")).toBe(true);
 		});
 	});
 });

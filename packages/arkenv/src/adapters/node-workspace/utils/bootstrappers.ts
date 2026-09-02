@@ -16,7 +16,6 @@ import type { BootstrapResult } from "@/shared/ports";
  */
 export type MutationInput = {
 	code: string;
-	envImportPath?: string;
 	disableCodegen?: boolean | undefined;
 };
 
@@ -66,8 +65,21 @@ export function transformViteConfig(
 		) {
 			const call = config as { $callee?: string; $args?: any[] };
 			const callee = call.$callee || JSON.stringify(config);
-			if (callee === "defineConfig" && call.$args) {
-				const arg = call.$args[0];
+			if (callee === "defineConfig") {
+				const rawArg = (call as { $ast?: { arguments?: { type: string }[] } })
+					.$ast?.arguments?.[0];
+				if (
+					rawArg?.type === "ArrowFunctionExpression" ||
+					rawArg?.type === "FunctionExpression"
+				) {
+					return {
+						success: false,
+						updated: false,
+						error:
+							"The 'defineConfig' callback form is currently not supported for automatic mutation. Please add the plugin manually.",
+					};
+				}
+				const arg = call.$args?.[0];
 				// Guard against defineConfig((env) => ({...})) callback form
 				if (
 					arg &&
@@ -485,13 +497,12 @@ export async function bootstrapViteConfig(
 		writeFile(path: string, content: string): Promise<void>;
 	},
 	filePath: string,
-	importPath: string,
+	_importPath?: string,
 ): Promise<BootstrapResult> {
 	try {
 		const configCode = await workspace.readFile(filePath);
 		const result = transformViteConfig({
 			code: configCode,
-			envImportPath: importPath,
 		});
 
 		if (result.success && result.updated && result.code) {
