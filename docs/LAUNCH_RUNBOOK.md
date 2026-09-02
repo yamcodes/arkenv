@@ -56,7 +56,7 @@ Execute npm deprecation for the old v0 CLI package name:
 npm deprecate @arkenv/cli "This package was renamed to 'arkenv' in v1. Please update your dependencies: 'npm i -D arkenv' and use '@arkenv/core' for runtime validation."
 ```
 
-### Step 2.4: Validate CLI Postinstall & Import Guards
+### Step 2.4: Validate CLI Import Guard
 
 - Verify that `npm install arkenv` / `import arkenv from "arkenv"` throws the clear runtime error guiding users to `@arkenv/core`.
 - Test running `npx arkenv init` in a fresh project to ensure it executes without errors.

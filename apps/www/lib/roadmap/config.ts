@@ -61,7 +61,7 @@ export const ROADMAP_EXTRAS: readonly RoadmapExtra[] = [
 	},
 	{
 		id: "cli-postinstall-guard",
-		title: "Add CLI postinstall guard for v0 upgrades",
+		title: "Add CLI import guard for v0 upgrades",
 		done: true,
 		topic: "CLI",
 	},
