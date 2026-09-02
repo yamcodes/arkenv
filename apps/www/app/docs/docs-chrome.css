@@ -47,10 +47,8 @@
 		padding-inline: 0.25rem;
 	}
 
-	[data-docs-sidebar-slide] > nav {
+	[data-docs-sidebar-slide] > nav.absolute {
 		width: auto;
-		left: 0.25rem;
-		right: 0.25rem;
 		inset-inline: 0.25rem;
 	}
 }
