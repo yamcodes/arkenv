@@ -1799,23 +1799,10 @@
 	display: none;
 }
 
+/* Responsive display: Governed purely by container query. Direct single wire on
+ * narrow stages (< 28rem / 448px); restores the 5-column schema gate once stage
+ * width has sufficient runway for dual wires and chips. */
 @container stream-stage (min-width: 28rem) {
-	.home-aurora__payload-col {
-		min-width: 4.5rem;
-	}
-
-	.home-aurora__payload-wire--direct {
-		display: none;
-	}
-
-	.home-aurora__payload-wire--1,
-	.home-aurora__payload-gate,
-	.home-aurora__payload-wire--2 {
-		display: flex;
-	}
-}
-
-@media (min-width: 64rem) {
 	.home-aurora__payload-col {
 		min-width: 4.5rem;
 	}
@@ -1920,15 +1907,6 @@
 }
 
 @container stream-stage (min-width: 28rem) {
-	.home-aurora__payload-row--port .home-aurora__payload-dock {
-		animation: port-dock-pulse 8s cubic-bezier(0.25, 1, 0.5, 1) infinite 0s;
-	}
-	.home-aurora__payload-row--debug .home-aurora__payload-dock {
-		animation: debug-dock-pulse 8s cubic-bezier(0.25, 1, 0.5, 1) infinite 0s;
-	}
-}
-
-@media (min-width: 64rem) {
 	.home-aurora__payload-row--port .home-aurora__payload-dock {
 		animation: port-dock-pulse 8s cubic-bezier(0.25, 1, 0.5, 1) infinite 0s;
 	}

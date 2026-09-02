@@ -35,7 +35,7 @@ describe("DeclarativeShowcase", () => {
 		expect(figure).toHaveTextContent("boolean");
 	});
 
-	it("renders mobile direct single-wire elements for responsive degradation", () => {
+	it("renders mobile direct single-wire elements and carrier tokens in the markup", () => {
 		const { container } = render(<DeclarativeShowcase />);
 
 		const directWires = container.querySelectorAll(
