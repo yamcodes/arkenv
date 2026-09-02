@@ -134,6 +134,7 @@ export class CLI {
 
 		this.positionalArgs = positionalArgs;
 
+		if (!this.validationError) {
 			if (this.command === "check") {
 				if (positionalArgs.length > 0) {
 					this.validationError = `Unknown argument: ${positionalArgs[0]}`;

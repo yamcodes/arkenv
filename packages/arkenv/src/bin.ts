@@ -20,8 +20,9 @@ async function main() {
 		}
 	}
 
-	const { cli, logger, initUseCase, helpUseCase, checkUseCase } =
-		compose(process.argv);
+	const { cli, logger, initUseCase, helpUseCase, checkUseCase } = compose(
+		process.argv,
+	);
 	globalLogger = logger;
 
 	setupGracefulShutdown(logger, cli.command);

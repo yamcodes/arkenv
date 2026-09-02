@@ -364,12 +364,12 @@ If a hosting provider introduces a new environment variable, add the variable di
 
 ```ts title="./env.ts"
 export const env = arkenv({
-	DATABASE_URL: "string",
+  DATABASE_URL: "string",
 
-	// Add new or unlisted provider variables directly:
-	VERCEL_NEW_FEATURE: "string?",
-	VERCEL_ENV: "'production' | 'preview' | 'development'?",
-	VERCEL_URL: "string?",
+  // Add new or unlisted provider variables directly:
+  VERCEL_NEW_FEATURE: "string?",
+  VERCEL_ENV: "'production' | 'preview' | 'development'?",
+  VERCEL_URL: "string?",
 });
 ```
 
@@ -382,11 +382,11 @@ import { type } from "@arkenv/core";
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
-	// Custom transformed Vercel URL
-	VERCEL_URL: type("string?").pipe((url) => (url ? `https://${url}` : undefined)),
+  // Custom transformed Vercel URL
+  VERCEL_URL: type("string?").pipe((url) => (url ? `https://${url}` : undefined)),
 
-	// Stricter custom environment enum
-	VERCEL_ENV: "'production' | 'preview' | 'development' | 'staging'?",
+  // Stricter custom environment enum
+  VERCEL_ENV: "'production' | 'preview' | 'development' | 'staging'?",
 });
 ```
 
