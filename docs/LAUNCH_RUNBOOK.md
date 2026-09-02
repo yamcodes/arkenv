@@ -11,7 +11,7 @@ This runbook outlines the operational, DNS, npm registry, and deployment steps r
   - Deploy a frozen snapshot of the `dev` (v0) documentation branch to Vercel/Cloudflare Pages.
   - Assign domain: `v0.arkenv.js.org`.
   - Verify that old links, guides, and v0 API references resolve correctly.
-- [ ] **Alpha Banner on Live v0 Site (`dev` branch)**:
+- [x] **Alpha Banner on Live v0 Site (`dev` branch)**:
   - Add announcement banner to `arkenv.js.org` (pointing to `https://arkenv-v1.vercel.app` and migration guide) during the final testing window.
 - [ ] **README and Production Links**:
   - Update all alpha links (`arkenv-v1.vercel.app`) in READMEs and docs to `arkenv.js.org`.
