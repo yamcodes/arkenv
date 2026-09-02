@@ -1700,6 +1700,82 @@
 	margin-left: auto;
 }
 
+/* Telemetry section header: h2+subtitle on left, toggle pill on right */
+.home-aurora__telemetry-heading-row {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 1rem;
+	flex-wrap: wrap;
+}
+
+/* Telemetry view mode toggle pill */
+.home-aurora__telemetry-toggle {
+	display: flex;
+	align-items: center;
+	gap: 0.125rem;
+	padding: 0.1875rem;
+	background: var(--color-paper-2);
+	border: var(--rule-hair) solid var(--color-rule);
+	border-radius: var(--radius-control, 0.375rem);
+	margin-left: auto;
+}
+
+.home-aurora__telemetry-toggle-btn {
+	padding: 0.1875rem 0.625rem;
+	border: none;
+	border-radius: calc(var(--radius-control, 0.375rem) - 0.125rem);
+	background: transparent;
+	color: var(--color-ink-2);
+	font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
+	font-size: 0.6875rem;
+	font-weight: 500;
+	line-height: 1.35;
+	cursor: pointer;
+	transition:
+		color var(--dur-micro) var(--ease-out),
+		background var(--dur-micro) var(--ease-out);
+}
+
+.home-aurora__telemetry-toggle-btn[aria-pressed="true"] {
+	background: var(--color-paper-3);
+	color: var(--color-ink);
+	border-bottom: 1px solid var(--color-accent);
+}
+
+/* Benchmark receipt footnote */
+.home-aurora__telemetry-footer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.25rem;
+	padding: 0.5rem 0.85rem 0.65rem;
+	border-top: var(--rule-hair) solid var(--color-rule);
+	color: var(--color-ink-2);
+	font-size: 0.6875rem;
+	line-height: 1.4;
+}
+
+.home-aurora__telemetry-footer a {
+	color: var(--color-ink-2);
+	text-decoration: none;
+	transition: color var(--dur-micro) var(--ease-out);
+}
+
+.home-aurora__telemetry-footer a:hover {
+	color: var(--color-ink);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+/* Metric subtitle under pitch heading */
+.home-aurora__telemetry-subtitle {
+	font-size: 0.75rem;
+	color: var(--color-ink-2);
+	line-height: 1.45;
+	margin-top: 0.125rem;
+}
+
 /* 05 · Automatic coercion — hub-and-spoke node graph animation */
 /* 05 · Automatic coercion — Payload Pipeline */
 .home-aurora__stream-widget {

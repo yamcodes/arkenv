@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"mdx": "node ./bin/mdx",
-		"prebuild": "pnpm -w build --filter @arkenv/fumadocs-ui && pnpm run mdx",
+		"prebuild": "pnpm -w build --filter @arkenv/fumadocs-ui && pnpm run mdx && tsx ../../scripts/benchmark-bundle-size.ts",
 		"predev": "pnpm -w build --filter @arkenv/fumadocs-ui && pnpm run mdx",
 		"build": "node ./bin/build next build",
 		"dev": "next dev",
