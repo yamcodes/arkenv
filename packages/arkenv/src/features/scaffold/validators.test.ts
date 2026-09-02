@@ -341,13 +341,12 @@ describe("validators templates", () => {
 				hostPreset: "vercel" as const,
 			};
 			const template = getSimpleTemplate(options);
-			expect(template).toContain("// @arkenv-preset-start vercel");
+			expect(template).toContain("// Vercel environment variables");
 			expect(template).toContain('VERCEL: "string?"');
 			expect(template).toContain(
 				"VERCEL_ENV: \"'production' | 'preview' | 'development'?\"",
 			);
 			expect(template).toContain('VERCEL_URL: "string?"');
-			expect(template).toContain("// @arkenv-preset-end vercel");
 		});
 
 		it("includes Vercel preset with Zod validator for Next.js", () => {
@@ -359,7 +358,7 @@ describe("validators templates", () => {
 				hostPreset: "vercel" as const,
 			};
 			const template = getSimpleTemplate(options);
-			expect(template).toContain("// @arkenv-preset-start vercel");
+			expect(template).toContain("// Vercel environment variables");
 			expect(template).toContain("VERCEL: z.string().optional()");
 			expect(template).toContain(
 				'VERCEL_ENV: z.enum(["production", "preview", "development"]).optional()',
@@ -370,7 +369,6 @@ describe("validators templates", () => {
 			expect(template).toContain(
 				"NEXT_PUBLIC_VERCEL_URL: z.string().optional()",
 			);
-			expect(template).toContain("// @arkenv-preset-end vercel");
 		});
 
 		it("prefixes Vite client keys via framework clientPrefix", () => {

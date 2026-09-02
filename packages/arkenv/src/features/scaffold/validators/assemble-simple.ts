@@ -1,10 +1,6 @@
 import { getCodegenConfig } from "@/features/scaffold/frameworks/codegen-config";
 import { assembleCodegenTemplate } from "@/features/scaffold/frameworks/layouts";
-import {
-	formatPresetEndMarker,
-	formatPresetStartMarker,
-	getPresetKeys,
-} from "@/features/scaffold/presets";
+import { getPresetKeys, PRESETS } from "@/features/scaffold/presets";
 import type { ScaffoldContext } from "@/features/scaffold/scaffold-context";
 import type { Dialect } from "./dialects";
 
@@ -56,8 +52,9 @@ export function assembleSimpleFromDialect(
 		context.hostPreset !== "none" &&
 		presetKeys.length > 0
 	) {
-		const startMarker = `\t\t${formatPresetStartMarker(context.hostPreset)}`;
-		const endMarker = `\t\t${formatPresetEndMarker(context.hostPreset)}`;
+		const presetLabel =
+			PRESETS[context.hostPreset]?.label ?? context.hostPreset;
+		const presetComment = `\t\t// ${presetLabel} environment variables`;
 		const presetFields = dialect.formatSimpleSchemaFields(
 			presetKeys,
 			context.clientPrefix,
@@ -70,9 +67,9 @@ export function assembleSimpleFromDialect(
 				context.clientPrefix,
 				undefined,
 			);
-			schemaFields = `${userFields}\n\n${startMarker}\n${presetFields}\n${endMarker}`;
+			schemaFields = `${userFields}\n\n${presetComment}\n${presetFields}`;
 		} else {
-			schemaFields = `${dialect.defaultSimpleSchemaFields}\n\n${startMarker}\n${presetFields}\n${endMarker}`;
+			schemaFields = `${dialect.defaultSimpleSchemaFields}\n\n${presetComment}\n${presetFields}`;
 		}
 	} else if (keys.length > 0) {
 		schemaFields = dialect.formatSimpleSchemaFields(
