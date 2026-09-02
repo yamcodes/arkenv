@@ -5,6 +5,7 @@ export default defineConfig({
 	entry: ["src/components/index.ts", "src/utils/index.ts", "src/mdx/index.tsx"],
 	format: ["esm", "cjs"],
 	minify: true,
+	sourcemap: false,
 	dts: true,
 	plugins: [preserveUseClient()],
 });

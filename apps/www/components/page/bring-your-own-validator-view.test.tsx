@@ -19,7 +19,7 @@ describe("BringYourOwnValidatorView", () => {
 			"Bring your own validator",
 		);
 		expect(screen.getByText(/mix and match/i).closest("p")).toHaveTextContent(
-			"Use ArkType, Zod, Valibot, or any Standard Schema you already have. Mix and match for incremental migration.",
+			"Use ArkType or any Standard Schema you already have. Mix and match for incremental migration.",
 		);
 		expect(
 			screen.getByRole("link", { name: "Standard Schema" }),

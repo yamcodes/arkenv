@@ -1,5 +1,45 @@
 # @arkenv/nuxt
 
+## 1.0.0-alpha.17
+
+### Patch Changes
+
+- #### Reduce package install sizes by omitting sourcemaps and externalizing core types _[`#1734`](https://github.com/yamcodes/arkenv/pull/1734) [`190b652`](https://github.com/yamcodes/arkenv/commit/190b652e7314e443b6a8f182c14fa57920058ede) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Published packages now omit declaration maps (`.d.ts.map`, `.d.mts.map`, `.d.cts.map`) and runtime JavaScript sourcemaps (`*.map`) across the monorepo, significantly reducing npm install footprints and package archive sizes. Both are loss-free removals: declaration maps are inert without the raw `.ts` sources they point to (which are never published), and runtime sourcemaps only re-map minified code (which ArkEnv does not ship).
+	
+	In addition, public ArkType type contracts in `@arkenv/core` declarations are now externalized rather than recursively expanded by the compiler, shrinking `@arkenv/core` declaration files and preventing internal AST definitions from being inlined into consumer type builds. The public type surface is unchanged — only how `tsc` encodes it on disk.
+<details><summary>Updated 3 dependencies</summary>
+
+<small>
+
+[`190b652`](https://github.com/yamcodes/arkenv/commit/190b652e7314e443b6a8f182c14fa57920058ede)
+
+</small>
+
+- `@arkenv/core@1.0.0-alpha.9`
+- `@arkenv/standard@1.0.0-alpha.9`
+- `@arkenv/build@1.0.0-alpha.6`
+
+</details>
+
+## 1.0.0-alpha.16
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`e2e01f7`](https://github.com/yamcodes/arkenv/commit/e2e01f7edada5b3cbab3ff0479f3cdc2266dea5f)
+
+</small>
+
+- `@arkenv/build@1.0.0-alpha.5`
+
+</details>
+
 ## 1.0.0-alpha.15
 
 ### Patch Changes

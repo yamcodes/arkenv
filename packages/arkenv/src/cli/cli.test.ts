@@ -360,9 +360,78 @@ describe("CLI parser", () => {
 			expect(cli.validationError).toBeUndefined();
 		});
 
+		it("should parse boolean --verify-example flag", () => {
+			const cli = new CLI(["node", "arkenv", "check", "--verify-example"]);
+			expect(cli.command).toBe("check");
+			expect(cli.verifyExample).toBe(true);
+			expect(cli.checkInput.verifyExample).toBe(true);
+			expect(cli.validationError).toBeUndefined();
+		});
+
+		it("should parse boolean --verify-example flag followed by other flags", () => {
+			const cli = new CLI([
+				"node",
+				"arkenv",
+				"check",
+				"--verify-example",
+				"--schema",
+				"./src/env.ts",
+				"--json",
+			]);
+			expect(cli.command).toBe("check");
+			expect(cli.verifyExample).toBe(true);
+			expect(cli.checkInput.verifyExample).toBe(true);
+			expect(cli.checkInput.schema).toBe("./src/env.ts");
+			expect(cli.isJson).toBe(true);
+			expect(cli.validationError).toBeUndefined();
+		});
+
+		it("should parse --verify-example with a custom file path", () => {
+			const cli = new CLI([
+				"node",
+				"arkenv",
+				"check",
+				"--verify-example",
+				".env.example.local",
+			]);
+			expect(cli.command).toBe("check");
+			expect(cli.verifyExample).toBe(".env.example.local");
+			expect(cli.checkInput.verifyExample).toBe(".env.example.local");
+			expect(cli.validationError).toBeUndefined();
+		});
+
+		it("should parse --verify-example with custom file path and other flags", () => {
+			const cli = new CLI([
+				"node",
+				"arkenv",
+				"check",
+				"--verify-example",
+				".env.example.staging",
+				"--schema",
+				"./env.ts",
+			]);
+			expect(cli.command).toBe("check");
+			expect(cli.verifyExample).toBe(".env.example.staging");
+			expect(cli.checkInput.verifyExample).toBe(".env.example.staging");
+			expect(cli.checkInput.schema).toBe("./env.ts");
+			expect(cli.validationError).toBeUndefined();
+		});
+
 		it("should reject positional arguments to check command", () => {
 			const cli = new CLI(["node", "arkenv", "check", "unexpected"]);
 			expect(cli.validationError).toBe("Unknown argument: unexpected");
+		});
+
+		it("should reject extra positional arguments even with --verify-example <path>", () => {
+			const cli = new CLI([
+				"node",
+				"arkenv",
+				"check",
+				"--verify-example",
+				".env.example.staging",
+				"extra-positional",
+			]);
+			expect(cli.validationError).toBe("Unknown argument: extra-positional");
 		});
 	});
 });

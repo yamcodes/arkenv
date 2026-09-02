@@ -36,10 +36,10 @@ describe("HelpUseCase", () => {
 		);
 
 		const exampleCommandLog = logs.find((l) => l.includes("arkenv example"));
-		expect(exampleCommandLog).toBeDefined();
-		expect(exampleCommandLog).toBe(
-			"  arkenv example                Update .env.example from the schema",
-		);
+		expect(exampleCommandLog).toBeUndefined();
+
+		const presetCommandLog = logs.find((l) => l.includes("arkenv preset"));
+		expect(presetCommandLog).toBeUndefined();
 
 		const globalHeaderIndex = logs.findIndex((l) =>
 			l.includes(pc.bold("Global options:")),
@@ -111,10 +111,19 @@ describe("HelpUseCase", () => {
 		const checkHeaderIndex = logs.findIndex((l) =>
 			l.includes(pc.bold("check options:")),
 		);
-		const exampleHeaderIndex = logs.findIndex((l) =>
-			l.includes(pc.bold("example options:")),
-		);
 		expect(checkHeaderIndex).toBeGreaterThan(initHeaderIndex);
-		expect(exampleHeaderIndex).toBeGreaterThan(checkHeaderIndex);
+
+		const presetHeaderIndex = logs.findIndex((l) =>
+			l.includes(pc.bold("preset options:")),
+		);
+		expect(presetHeaderIndex).toBe(-1);
+
+		const verifyExampleOptionLog = logs.find((l) =>
+			l.includes("--verify-example [file]"),
+		);
+		expect(verifyExampleOptionLog).toBeDefined();
+		expect(logs.indexOf(verifyExampleOptionLog as string)).toBeGreaterThan(
+			checkHeaderIndex,
+		);
 	});
 });

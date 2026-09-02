@@ -42,6 +42,12 @@ export const ROADMAP_EXTRAS: readonly RoadmapExtra[] = [
 		topic: "Core",
 	},
 	{
+		id: "v0-alpha-banner",
+		title: "v0 site Alpha banner",
+		done: false,
+		topic: "Docs",
+	},
+	{
 		id: "readme-prod-links",
 		title: "Update README links from alpha to production",
 		done: false,
@@ -50,6 +56,24 @@ export const ROADMAP_EXTRAS: readonly RoadmapExtra[] = [
 	{
 		id: "changelog-epoch",
 		title: "Prepend changelog epoch warnings",
+		done: false,
+		topic: "Docs",
+	},
+	{
+		id: "cli-postinstall-guard",
+		title: "Add CLI postinstall guard for v0 upgrades",
+		done: false,
+		topic: "CLI",
+	},
+	{
+		id: "npm-deprecate-cli",
+		title: "Deprecate @arkenv/cli on npm",
+		done: false,
+		topic: "CLI",
+	},
+	{
+		id: "v0-archive-dns-cutover",
+		title: "Deploy v0.arkenv.js.org archive and flip primary DNS",
 		done: false,
 		topic: "Docs",
 	},

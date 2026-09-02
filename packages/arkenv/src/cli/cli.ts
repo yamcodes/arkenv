@@ -1,7 +1,6 @@
 import { Logger } from "@/adapters";
 import { type HostPreset, isHostPreset } from "@/features/scaffold/presets";
 import type { CheckInput } from "./commands/check";
-import type { ExampleInput } from "./commands/example";
 import type { InitInput } from "./commands/init";
 
 const FLAG_CONFIG = {
@@ -20,6 +19,11 @@ const FLAG_CONFIG = {
 	hostPreset: { long: "--host-preset", short: "-H", kind: "value" },
 	schema: { long: "--schema", short: "-s", kind: "value" },
 	envFile: { long: "--env-file", short: "", kind: "value" },
+	verifyExample: {
+		long: "--verify-example",
+		short: "",
+		kind: "optional-value",
+	},
 } as const;
 
 const knownFlags = new Set<string>(
@@ -42,6 +46,7 @@ export class CLI {
 	public validationError: string | undefined;
 	public logger: Logger;
 	public positionalArgs: string[];
+	private verifyExampleValue: boolean | string | undefined;
 
 	/**
 	 * Creates a CLI context from process arguments and optional adapters.
@@ -91,7 +96,15 @@ export class CLI {
 					this.validationError = `Unknown argument: ${arg}`;
 					break;
 				}
-				if (valuedFlags.has(arg)) {
+				if (arg === FLAG_CONFIG.verifyExample.long) {
+					if (i + 1 < this.args.length && !this.args[i + 1].startsWith("-")) {
+						this.verifyExampleValue = this.args[i + 1];
+						i += 2;
+					} else {
+						this.verifyExampleValue = true;
+						i += 1;
+					}
+				} else if (valuedFlags.has(arg)) {
 					if (i + 1 < this.args.length && !this.args[i + 1].startsWith("-")) {
 						i += 2;
 					} else {
@@ -121,8 +134,7 @@ export class CLI {
 
 		this.positionalArgs = positionalArgs;
 
-		if (!this.validationError) {
-			if (this.command === "check" || this.command === "example") {
+			if (this.command === "check") {
 				if (positionalArgs.length > 0) {
 					this.validationError = `Unknown argument: ${positionalArgs[0]}`;
 				}
@@ -187,6 +199,10 @@ export class CLI {
 		return this.getFlagValues(flag.long, flag.short);
 	}
 
+	get verifyExample(): boolean | string | undefined {
+		return this.verifyExampleValue;
+	}
+
 	get hostPreset(): HostPreset | undefined {
 		const val =
 			this.getFlagValue(FLAG_CONFIG.preset.long, FLAG_CONFIG.preset.short) ??
@@ -239,22 +255,14 @@ export class CLI {
 				? { schema: this.schema, file: this.schema }
 				: {}),
 			...(this.envFiles.length > 0 ? { envFiles: this.envFiles } : {}),
+			...(this.verifyExample !== undefined
+				? { verifyExample: this.verifyExample }
+				: {}),
 			isQuiet: this.isQuiet,
 			isJson: this.isJson,
 			isAgent: this.isAgent,
 			isYes: this.isYes,
 			isForce: this.isForce,
-		};
-	}
-
-	get exampleInput(): ExampleInput {
-		return {
-			...(this.schema !== undefined
-				? { schema: this.schema, file: this.schema }
-				: {}),
-			isQuiet: this.isQuiet,
-			isJson: this.isJson,
-			isAgent: this.isAgent,
 		};
 	}
 

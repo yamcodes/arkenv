@@ -5,7 +5,6 @@ import {
 	DeclarativeShowcase,
 	DotGrid,
 	FailFastShowcase,
-	FaqSection,
 	HeroEnvHoverSlot,
 	HeroMvpExampleSlot,
 	HeroNameCycle,
@@ -13,6 +12,7 @@ import {
 	InstallPanel,
 	QuickstartButton,
 	RoadmapProgressCard,
+	RuntimeBloatShowcase,
 	SecureBoundary,
 	SocialProof,
 	StarUsButton,
@@ -97,10 +97,10 @@ export default async function HomePage() {
 			<div className="home-aurora__bento">
 				<FailFastShowcase />
 				<AutocompleteShowcase />
-				<SecureBoundary />
 				<BringYourOwnValidator />
+				<SecureBoundary />
 				<DeclarativeShowcase />
-				<FaqSection />
+				<RuntimeBloatShowcase />
 			</div>
 
 			<div className="home-aurora__stripe" aria-hidden="true" />

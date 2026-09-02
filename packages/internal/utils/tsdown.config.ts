@@ -12,7 +12,9 @@ export default defineConfig({
 	// module scope (Nuxt/Vite: "Identifier h has already been declared").
 	minify: false,
 	fixedExtension: false,
+	sourcemap: false,
 	deps: {
 		alwaysBundle: ["@repo/log", "@repo/types"],
+		neverBundle: ["arktype", "@ark/util", "@ark/schema", "arkregex"],
 	},
 });

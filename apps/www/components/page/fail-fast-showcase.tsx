@@ -1,5 +1,5 @@
 /**
- * Boot-time safety: terminal with a compact ArkEnvError dump.
+ * Startup safety: terminal with a compact ArkEnvError dump.
  */
 export function FailFastShowcase() {
 	return (
@@ -10,7 +10,7 @@ export function FailFastShowcase() {
 		>
 			<header className="home-aurora__pitch-head">
 				<h2 id="home-boot" data-reveal="blur">
-					Fail-fast at boot
+					Fail-fast at startup
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
 					Missing or malformed variables shouldn&apos;t silently crash

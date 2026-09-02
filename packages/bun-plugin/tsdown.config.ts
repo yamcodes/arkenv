@@ -5,11 +5,12 @@ export default defineConfig({
 	format: ["esm", "cjs"],
 	minify: true,
 	fixedExtension: false,
+	sourcemap: false,
 	deps: {
 		alwaysBundle: ["@repo/log", "@repo/types", "@repo/utils"],
 		// jiti loads the user's env.ts at build time; keep it external so the
 		// plugin does not ship a second copy and Node/Bun can resolve project deps.
 		// @arkenv/build is a workspace runtime dependency for key extraction.
-		neverBundle: ["bun", "@arkenv/build", "jiti"],
+		neverBundle: ["bun", "@arkenv/build", "jiti", "arktype"],
 	},
 });

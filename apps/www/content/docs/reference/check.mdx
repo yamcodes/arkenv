@@ -8,15 +8,15 @@ schema. Use it as a standalone verification step in CI/CD pipelines,
 local verification scripts, or pre-commit hooks.
 
 ```package-install
-npx arkenv@latest check
+npx arkenv check
 ```
 
 ```package-install
-npx arkenv@latest check --env-file .env.production
+npx arkenv check --env-file .env.production
 ```
 
 ```package-install
-npx arkenv@latest check --schema ./src/env.ts --env-file .env --env-file .env.local
+npx arkenv check --schema ./src/env.ts --env-file .env --env-file .env.local
 ```
 
 [Global flags](/docs/reference#global-flags) (`--quiet`, `--json`,
@@ -46,10 +46,9 @@ Errors found while validating environment variables
   PORT must be a number (was a string)
 ```
 
-Before validating, `check` loads the schema the same way
-[`example`](/docs/reference/example#schema-module-contract) does
-(import under capture; hollow `{}` stub). Keep the schema module
-declarative — see that page for supported and unsupported shapes.
+Before validating, `check` loads the schema under capture mode
+(imports the module with a hollow `{}` stub). Keep the schema module
+declarative.
 
 ## Options
 
@@ -61,7 +60,7 @@ Explicit path to the schema module. Overrides `"arkenv"` in `package.json`
 and convention discovery.
 
 ```package-install
-npx arkenv@latest check --schema ./src/config/env.ts
+npx arkenv check --schema ./src/config/env.ts
 ```
 
 ### `--env-file <file>`
@@ -71,12 +70,30 @@ files are loaded in sequence with later files taking precedence over
 earlier ones.
 
 ```package-install
-npx arkenv@latest check --env-file .env --env-file .env.local
+npx arkenv check --env-file .env --env-file .env.local
 ```
 
 Values from `--env-file` are merged over `process.env`. Missing files fail
 fast with a non-zero exit code. Parsing is literal plain dotenv syntax
 (no variable expansion).
+
+### `--verify-example [file]`
+
+Verify that every environment variable declared in the schema is present in
+`.env.example` (or a custom example file path) without mutating files on disk.
+
+```package-install
+npx arkenv@latest check --verify-example
+```
+
+```package-install
+npx arkenv@latest check --verify-example .env.example.production
+```
+
+When all schema keys exist in the example file, `check` exits with `0`. When
+keys are missing, `check` outputs the missing keys and exits with code `4`.
+This mode specifically verifies example file parity against declared schema keys
+and does not validate live environment variables.
 
 ### `--json` / `-j`
 
@@ -138,7 +155,8 @@ run, `4` findings.
 ## CI/CD integration
 
 Add `arkenv check` to your CI workflow to ensure required environment
-variables are present before building or deploying.
+variables are present before building or deploying. You can also use
+`--verify-example` to enforce that documentation stays up to date in PRs:
 
 ```yaml title=".github/workflows/ci.yml"
 name: CI
@@ -146,6 +164,19 @@ name: CI
 on: [push, pull_request]
 
 jobs:
+  validate-example:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Verify .env.example matches schema
+        run: pnpm exec arkenv check --verify-example
+
   validate-env:
     runs-on: ubuntu-latest
     steps:
@@ -170,7 +201,7 @@ jobs:
 
   <Card href="/docs/reference/init" title="init" description="Scaffold a project and schema files." />
 
-  <Card href="/docs/reference/example" title="example" description="Update .env.example from the schema." />
+  <Card href="/docs/reference/preset" title="preset" description="Apply, refresh, or remove hosting provider presets." />
 
   <Card href="/docs/reference/options" title="options" description="Configuration options passed to arkenv()." />
 </Cards>

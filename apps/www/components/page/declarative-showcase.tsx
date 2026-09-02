@@ -1,89 +1,185 @@
-import { WindowChrome } from "./window-chrome";
-
-export const DECLARATIVE_COPY = `// Before: presence check helper
-const { PORT, DEBUG } = getEnv();
-// PORT: string, DEBUG: string
-
-// After: ArkEnv schema
-import { env } from "./env";
-const { PORT, DEBUG } = env;
-// PORT: number, DEBUG: boolean
-`;
-
 /**
- * Declarative coercion & types showcase.
- * Contrasts a presence check helper with typed env coercion.
+ * Automatic coercion showcase.
+ * Minimalist 2-row Payload Pipeline:
+ * - Row 1 (PORT=): Alternates between valid ("3000" -> 3000 number) and invalid ("oops" -> stuck at "number" -> error).
+ * - Row 2 (DEBUG=): Alternates between true ("true" -> true boolean) and false ("false" -> false boolean).
  */
 export function DeclarativeShowcase() {
 	return (
 		<section
-			className="home-aurora__pitch home-aurora__pitch--span"
+			className="home-aurora__pitch"
 			aria-labelledby="home-declarative"
 			id="declarative"
 		>
 			<header className="home-aurora__pitch-head">
-				<div className="home-aurora__pitch-badge-wrap" data-reveal="blur">
-					<span className="home-aurora__pitch-badge">Zero-Config Coercion</span>
-				</div>
 				<h2 id="home-declarative" data-reveal="blur">
-					Zero-config coercion
+					Automatic coercion
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					Turn raw environment strings into typed booleans and numbers
-					automatically, without manual casting.
+					Raw environment variables turn into booleans, numbers, and enums based
+					on your schema.
 				</p>
 			</header>
 
 			<figure
-				className="home-aurora__pitch-visual home-aurora__code-window"
+				className="home-aurora__pitch-visual home-aurora__stream-widget"
 				data-reveal
 				style={{ ["--reveal-delay" as string]: "140ms" }}
-				aria-label="Before and after comparison of env helper vs ArkEnv coercion"
+				aria-label="Payload pipeline showing valid strings coerced into primitives and invalid strings caught at the schema gate"
 			>
-				<WindowChrome title="./app.ts" copyText={DECLARATIVE_COPY} />
-				<div className="home-aurora__ide-pane">
-					<pre className="home-aurora__ide-body">
-						<code>
-							<span className="home-aurora__tok-comment">
-								{"// Before: presence check helper\n"}
+				<div className="home-aurora__stream-stage">
+					{/* Row 1: PORT= (alternates between valid "3000" and invalid "oops") */}
+					<div className="home-aurora__payload-row home-aurora__payload-row--port">
+						{/* Left static key */}
+						<div className="home-aurora__payload-col home-aurora__payload-col--left">
+							<span className="home-aurora__payload-key">PORT=</span>
+						</div>
+
+						{/* Wire 1 */}
+						<div
+							className="home-aurora__payload-wire home-aurora__payload-wire--1"
+							aria-hidden="true"
+						>
+							<svg
+								className="home-aurora__stream-wire-svg"
+								viewBox="0 0 100 20"
+								preserveAspectRatio="none"
+								aria-hidden="true"
+							>
+								<line
+									x1="0"
+									y1="10"
+									x2="100"
+									y2="10"
+									className="home-aurora__stream-wire-track"
+								/>
+							</svg>
+							<span className="home-aurora__payload-chip home-aurora__payload-chip--port-valid">
+								&quot;3000&quot;
 							</span>
-							<span className="home-aurora__tok-kw">const</span>
-							{" { "}
-							<span className="home-aurora__tok-id">PORT</span>
-							{", "}
-							<span className="home-aurora__tok-id">DEBUG</span>
-							{" } = "}
-							<span className="home-aurora__tok-fn">getEnv</span>
-							{"();\n"}
-							<span className="home-aurora__tok-comment">{"// PORT: "}</span>
-							<span className="home-aurora__type-dull">string</span>
-							<span className="home-aurora__tok-comment">{", DEBUG: "}</span>
-							<span className="home-aurora__type-dull">string</span>
-							{"\n\n"}
-							<span className="home-aurora__tok-comment">
-								{"// After: ArkEnv schema\n"}
+							<span className="home-aurora__payload-chip home-aurora__payload-chip--port-invalid">
+								&quot;oops&quot;
 							</span>
-							<span className="home-aurora__tok-kw">import</span>
-							{" { "}
-							<span className="home-aurora__tok-id">env</span>
-							{" } "}
-							<span className="home-aurora__tok-kw">from</span>
-							<span className="home-aurora__tok-str">{` "./env"`}</span>
-							{";\n"}
-							<span className="home-aurora__tok-kw">const</span>
-							{" { "}
-							<span className="home-aurora__tok-id">PORT</span>
-							{", "}
-							<span className="home-aurora__tok-id">DEBUG</span>
-							{" } = "}
-							<span className="home-aurora__tok-id">env</span>
-							{";\n"}
-							<span className="home-aurora__tok-comment">{"// PORT: "}</span>
-							<span className="home-aurora__type-vibrant">number</span>
-							<span className="home-aurora__tok-comment">{", DEBUG: "}</span>
-							<span className="home-aurora__type-vibrant">boolean</span>
-						</code>
-					</pre>
+						</div>
+
+						{/* Center Schema Gate */}
+						<div className="home-aurora__payload-gate">
+							<code className="home-aurora__payload-schema">
+								&quot;number&quot;
+							</code>
+						</div>
+
+						{/* Wire 2 */}
+						<div
+							className="home-aurora__payload-wire home-aurora__payload-wire--2"
+							aria-hidden="true"
+						>
+							<svg
+								className="home-aurora__stream-wire-svg"
+								viewBox="0 0 100 20"
+								preserveAspectRatio="none"
+								aria-hidden="true"
+							>
+								<line
+									x1="0"
+									y1="10"
+									x2="92"
+									y2="10"
+									className="home-aurora__stream-wire-track"
+								/>
+								<polygon
+									points="90,7 98,10 90,13"
+									className="home-aurora__stream-arrow"
+								/>
+							</svg>
+							<span className="home-aurora__payload-chip home-aurora__payload-chip--port-coerced">
+								3000
+							</span>
+						</div>
+
+						{/* Right destination dock */}
+						<div className="home-aurora__payload-col home-aurora__payload-col--right">
+							<code className="home-aurora__payload-dock">number</code>
+						</div>
+					</div>
+
+					{/* Row 2: DEBUG= (alternates between "true" and "false" boolean coercion) */}
+					<div className="home-aurora__payload-row home-aurora__payload-row--debug">
+						{/* Left static key */}
+						<div className="home-aurora__payload-col home-aurora__payload-col--left">
+							<span className="home-aurora__payload-key">DEBUG=</span>
+						</div>
+
+						{/* Wire 1 */}
+						<div
+							className="home-aurora__payload-wire home-aurora__payload-wire--1"
+							aria-hidden="true"
+						>
+							<svg
+								className="home-aurora__stream-wire-svg"
+								viewBox="0 0 100 20"
+								preserveAspectRatio="none"
+								aria-hidden="true"
+							>
+								<line
+									x1="0"
+									y1="10"
+									x2="100"
+									y2="10"
+									className="home-aurora__stream-wire-track"
+								/>
+							</svg>
+							<span className="home-aurora__payload-chip home-aurora__payload-chip--debug-true">
+								&quot;true&quot;
+							</span>
+							<span className="home-aurora__payload-chip home-aurora__payload-chip--debug-false">
+								&quot;false&quot;
+							</span>
+						</div>
+
+						{/* Center Schema Gate */}
+						<div className="home-aurora__payload-gate">
+							<code className="home-aurora__payload-schema">
+								&quot;boolean&quot;
+							</code>
+						</div>
+
+						{/* Wire 2 */}
+						<div
+							className="home-aurora__payload-wire home-aurora__payload-wire--2"
+							aria-hidden="true"
+						>
+							<svg
+								className="home-aurora__stream-wire-svg"
+								viewBox="0 0 100 20"
+								preserveAspectRatio="none"
+								aria-hidden="true"
+							>
+								<line
+									x1="0"
+									y1="10"
+									x2="92"
+									y2="10"
+									className="home-aurora__stream-wire-track"
+								/>
+								<polygon
+									points="90,7 98,10 90,13"
+									className="home-aurora__stream-arrow"
+								/>
+							</svg>
+							<span className="home-aurora__payload-chip home-aurora__payload-chip--debug-true-coerced">
+								true
+							</span>
+							<span className="home-aurora__payload-chip home-aurora__payload-chip--debug-false-coerced">
+								false
+							</span>
+						</div>
+
+						{/* Right destination dock */}
+						<div className="home-aurora__payload-col home-aurora__payload-col--right">
+							<code className="home-aurora__payload-dock">boolean</code>
+						</div>
+					</div>
 				</div>
 			</figure>
 		</section>

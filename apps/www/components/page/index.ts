@@ -15,6 +15,7 @@ export * from "./install-panel";
 export * from "./logo";
 export * from "./quickstart-button";
 export * from "./roadmap-progress-card";
+export * from "./runtime-bloat-showcase";
 export * from "./scroll-reveal";
 export * from "./secure-boundary";
 export * from "./social-proof";

@@ -12,7 +12,7 @@ import {
 	type SafeArkEnvResult,
 	safeExecute,
 } from "@repo/utils";
-import type { type as at, distill } from "arktype";
+import type { type as at, distill, Type } from "arktype";
 import { parse } from "./arktype";
 
 /**
@@ -36,7 +36,7 @@ export type Infer<T> =
 		? Output
 		: T extends { t: infer U }
 			? U
-			: T extends at.Any<infer U, infer _Scope>
+			: T extends Type<infer U, any>
 				? U
 				: T extends SchemaShape
 					? distill.Out<at.infer<T, $>>

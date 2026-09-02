@@ -42,10 +42,6 @@ export class HelpUseCase {
 				left: "arkenv check",
 				right: "Validate the environment against the schema",
 			},
-			{
-				left: "arkenv example",
-				right: "Update .env.example from the schema",
-			},
 		];
 
 		const globalOptions: HelpItem[] = [
@@ -104,13 +100,10 @@ export class HelpUseCase {
 				right:
 					"Path to .env file to load (repeatable; merged in order over process.env)",
 			},
-		];
-
-		const exampleOptions: HelpItem[] = [
 			{
-				left: "--schema, -s <path>",
+				left: "--verify-example [file]",
 				right:
-					"Path to schema file (overrides package.json or convention discovery)",
+					"Verify that all declared schema keys are present in .env.example (or custom file)",
 			},
 		];
 
@@ -129,10 +122,6 @@ export class HelpUseCase {
 		}
 		this.logger.log(`\n${pc.bold("check options:")}`);
 		for (const line of formatColumns(checkOptions)) {
-			this.logger.log(line);
-		}
-		this.logger.log(`\n${pc.bold("example options:")}`);
-		for (const line of formatColumns(exampleOptions)) {
 			this.logger.log(line);
 		}
 	}
