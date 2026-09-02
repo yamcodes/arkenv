@@ -58,7 +58,7 @@ npm deprecate @arkenv/cli "This package was renamed to 'arkenv' in v1. Please up
 
 ### Step 2.4: Validate CLI Import Guard
 
-- Verify that `npm install arkenv` / `import arkenv from "arkenv"` throws the clear runtime error guiding users to `@arkenv/core`.
+- Verify that importing or requiring `arkenv` as a library (`import arkenv from "arkenv"` / `require("arkenv")`) throws the clear runtime error guiding users to `@arkenv/core`.
 - Test running `npx arkenv init` in a fresh project to ensure it executes without errors.
 
 ---
