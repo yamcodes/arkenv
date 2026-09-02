@@ -459,7 +459,8 @@ aside .theme-toggle {
  */
 #nd-sidebar [data-docs-sidebar-slide],
 #nd-sidebar-mobile [data-docs-sidebar-slide] {
-	overflow: hidden;
+	overflow: clip;
+	overflow-clip-margin: 0.5rem;
 }
 
 #nd-sidebar [data-sidebar-mode],

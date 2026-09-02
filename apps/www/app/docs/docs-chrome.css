@@ -37,7 +37,8 @@
 }
 
 [data-docs-sidebar-slide] {
-	overflow: hidden;
+	overflow: clip;
+	overflow-clip-margin: 0.5rem;
 }
 
 /*

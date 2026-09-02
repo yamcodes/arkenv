@@ -503,7 +503,7 @@ function DrillInTree() {
 
 	return (
 		<div
-			className="relative overflow-hidden"
+			className="relative overflow-clip"
 			data-docs-sidebar-slide=""
 			style={height != null ? { height } : undefined}
 		>
