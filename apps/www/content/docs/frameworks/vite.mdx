@@ -130,6 +130,10 @@ Vite maintains two distinct module graphs when building and serving full-stack o
 - **Server graph:** During SSR execution and dev server requests, `env.ts` executes real `@arkenv/core` runtime validation at boot. It ensures private secrets (such as `DATABASE_URL`) and public configuration validate before handling requests.
 - **Client graph:** During client compilation, `@arkenv/vite-plugin` intercepts and transforms `env.ts`. It inlines public `VITE_*` values as static literals and replaces private server keys with throwing runtime stubs. Client bundles omit the validator engine.
 
+On Vite 6+, the Environment API drives this split: server consumers and custom
+`ssr` environments keep the real module, everything else gets the client rewrite.
+On Vite 4 and 5, the plugin falls back to the legacy SSR transform flag.
+
 ## Next steps
 
 <Cards>

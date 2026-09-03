@@ -215,6 +215,152 @@ describe("transform mode plugin", () => {
 		expect(result).toBeNull();
 	});
 
+	it("passes through the env module in Vite 6 server environments", async () => {
+		const fixtureDir = join(__dirname, "__fixtures__", "transform-env");
+		const plugin = arkenvPlugin({ schemaPath: join(fixtureDir, "env.ts") });
+
+		const mockContext = {
+			meta: {
+				framework: "vite",
+				version: "1.0.0",
+				rollupVersion: "4.0.0",
+				viteVersion: "6.0.0",
+			},
+			error: () => {},
+			warn: () => {},
+			info: () => {},
+			debug: () => {},
+			environment: {
+				name: "ssr",
+				config: { consumer: "server" },
+			},
+		} as any;
+
+		if (plugin.config && typeof plugin.config === "function") {
+			plugin.config.call(
+				mockContext,
+				{ root: fixtureDir, envDir: fixtureDir },
+				{ mode: "test", command: "build" },
+			);
+		}
+		if (plugin.configResolved && typeof plugin.configResolved === "function") {
+			await plugin.configResolved.call(mockContext, {
+				root: fixtureDir,
+				envDir: fixtureDir,
+				envPrefix: "VITE_",
+			} as any);
+		}
+
+		const original = readFileSync(join(fixtureDir, "env.ts"), "utf8");
+		let result: any = null;
+		if (plugin.transform && typeof plugin.transform === "function") {
+			result = await plugin.transform.call(
+				mockContext,
+				original,
+				join(fixtureDir, "env.ts"),
+			);
+		}
+		expect(result).toBeNull();
+	});
+
+	it("passes through the env module for custom server-consumer environments", async () => {
+		const fixtureDir = join(__dirname, "__fixtures__", "transform-env");
+		const plugin = arkenvPlugin({ schemaPath: join(fixtureDir, "env.ts") });
+
+		const mockContext = {
+			meta: {
+				framework: "vite",
+				version: "1.0.0",
+				rollupVersion: "4.0.0",
+				viteVersion: "6.0.0",
+			},
+			error: () => {},
+			warn: () => {},
+			info: () => {},
+			debug: () => {},
+			environment: {
+				name: "cloudflare-workers",
+				config: { consumer: "server" },
+			},
+		} as any;
+
+		if (plugin.config && typeof plugin.config === "function") {
+			plugin.config.call(
+				mockContext,
+				{ root: fixtureDir, envDir: fixtureDir },
+				{ mode: "test", command: "build" },
+			);
+		}
+		if (plugin.configResolved && typeof plugin.configResolved === "function") {
+			await plugin.configResolved.call(mockContext, {
+				root: fixtureDir,
+				envDir: fixtureDir,
+				envPrefix: "VITE_",
+			} as any);
+		}
+
+		const original = readFileSync(join(fixtureDir, "env.ts"), "utf8");
+		let result: any = null;
+		if (plugin.transform && typeof plugin.transform === "function") {
+			result = await plugin.transform.call(
+				mockContext,
+				original,
+				join(fixtureDir, "env.ts"),
+			);
+		}
+		expect(result).toBeNull();
+	});
+
+	it("rewrites the env module in Vite 6 client environments", async () => {
+		const fixtureDir = join(__dirname, "__fixtures__", "transform-env");
+		const plugin = arkenvPlugin({ schemaPath: join(fixtureDir, "env.ts") });
+
+		const mockContext = {
+			meta: {
+				framework: "vite",
+				version: "1.0.0",
+				rollupVersion: "4.0.0",
+				viteVersion: "6.0.0",
+			},
+			error: () => {},
+			warn: () => {},
+			info: () => {},
+			debug: () => {},
+			environment: {
+				name: "client",
+				config: { consumer: "client" },
+			},
+		} as any;
+
+		if (plugin.config && typeof plugin.config === "function") {
+			plugin.config.call(
+				mockContext,
+				{ root: fixtureDir, envDir: fixtureDir },
+				{ mode: "test", command: "build" },
+			);
+		}
+		if (plugin.configResolved && typeof plugin.configResolved === "function") {
+			await plugin.configResolved.call(mockContext, {
+				root: fixtureDir,
+				envDir: fixtureDir,
+				envPrefix: "VITE_",
+			} as any);
+		}
+
+		let result: any = null;
+		if (plugin.transform && typeof plugin.transform === "function") {
+			result = await plugin.transform.call(
+				mockContext,
+				"export const env = {}",
+				join(fixtureDir, "env.ts"),
+			);
+		}
+
+		expect(result?.code).toContain("VITE_API_URL");
+		expect(result?.code).toContain('get ["DATABASE_URL"]()');
+		expect(result?.code).not.toContain("@arkenv/core");
+	});
+
 	it("rejects the schema/define path", () => {
 		expect(() =>
 			(arkenvPlugin as (a?: unknown) => unknown)({ VITE_TEST: "string" }),
