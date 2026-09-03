@@ -26,21 +26,48 @@ describe("RuntimeBloatShowcase", () => {
 		expect(group).toBeInTheDocument();
 
 		expect(
-			screen.getByRole("button", { name: /Full edge payload/i }),
+			screen.getByRole("button", { name: /Adapter only/i }),
 		).toBeInTheDocument();
 		expect(
-			screen.getByRole("button", { name: /Adapter engine only/i }),
+			screen.getByRole("button", { name: /Full edge payload/i }),
 		).toBeInTheDocument();
 	});
 
-	it("defaults to full view showing real payload sizes", () => {
+	it("defaults to adapter view showing standalone adapter sizes and varlock", () => {
 		render(<RuntimeBloatShowcase />);
 
 		const figure = screen.getByRole("figure", {
 			name: /production runtime bundle size comparison/i,
 		});
 
-		// Full view: combined ecosystem entries
+		// Adapter view (default): standalone wrapper entries + varlock
+		expect(figure).toHaveTextContent("@arkenv/standard");
+		expect(figure).toHaveTextContent("10.0 kB");
+		expect(figure).toHaveTextContent("@arkenv/core");
+		expect(figure).toHaveTextContent("6.3 kB");
+		expect(figure).toHaveTextContent("@t3-oss/env-core");
+		expect(figure).toHaveTextContent("14.2 kB");
+		expect(figure).toHaveTextContent("varlock");
+		expect(figure).toHaveTextContent("28.4 kB");
+
+		// Should NOT show full-payload combined names in default adapter view
+		expect(figure).not.toHaveTextContent("+ ArkType");
+		expect(figure).not.toHaveTextContent("+ Zod");
+	});
+
+	it("switches to full-payload view when toggle is clicked and syncs URL", async () => {
+		render(<RuntimeBloatShowcase />);
+
+		const fullBtn = screen.getByRole("button", {
+			name: /Full edge payload/i,
+		});
+		await userEvent.click(fullBtn);
+
+		expect(window.location.search).toBe("?view=full");
+
+		const figure = screen.getByRole("figure", {
+			name: /production runtime bundle size comparison/i,
+		});
 		expect(figure).toHaveTextContent("@arkenv/standard + Valibot");
 		expect(figure).toHaveTextContent("23.3 kB");
 		expect(figure).toHaveTextContent("@arkenv/core + ArkType");
@@ -49,52 +76,26 @@ describe("RuntimeBloatShowcase", () => {
 		expect(figure).toHaveTextContent("325.0 kB");
 		expect(figure).toHaveTextContent("varlock");
 		expect(figure).toHaveTextContent("28.4 kB");
-	});
-
-	it("switches to adapter-only view when toggle is clicked and syncs URL", async () => {
-		render(<RuntimeBloatShowcase />);
-
-		const adapterBtn = screen.getByRole("button", {
-			name: /Adapter engine only/i,
-		});
-		await userEvent.click(adapterBtn);
-
-		expect(window.location.search).toBe("?view=adapter");
-
-		const figure = screen.getByRole("figure", {
-			name: /production runtime bundle size comparison/i,
-		});
-		expect(figure).toHaveTextContent("@arkenv/standard");
-		expect(figure).toHaveTextContent("10.0 kB");
-		expect(figure).toHaveTextContent("@arkenv/core");
-		expect(figure).toHaveTextContent("6.3 kB");
-		expect(figure).toHaveTextContent("@t3-oss/env-core");
-		expect(figure).toHaveTextContent("14.2 kB");
-
-		// Should NOT show full-payload combined names in adapter view
-		expect(figure).not.toHaveTextContent("+ ArkType");
-		expect(figure).not.toHaveTextContent("+ Zod");
 
 		// Switching back updates URL query string to empty
-		const fullBtn = screen.getByRole("button", {
-			name: /Full edge payload/i,
+		const adapterBtn = screen.getByRole("button", {
+			name: /Adapter only/i,
 		});
-		await userEvent.click(fullBtn);
+		await userEvent.click(adapterBtn);
 		expect(window.location.search).toBe("");
 	});
 
-	it("initializes to adapter view when ?view=adapter is preset in URL", () => {
-		window.history.replaceState(null, "", "/?view=adapter");
+	it("initializes to full view when ?view=full is preset in URL", () => {
+		window.history.replaceState(null, "", "/?view=full");
 		render(<RuntimeBloatShowcase />);
 
 		const figure = screen.getByRole("figure", {
 			name: /production runtime bundle size comparison/i,
 		});
-		expect(figure).toHaveTextContent("@arkenv/standard");
-		expect(figure).toHaveTextContent("10.0 kB");
-		expect(figure).toHaveTextContent("@arkenv/core");
-		expect(figure).toHaveTextContent("6.3 kB");
-		expect(figure).not.toHaveTextContent("+ ArkType");
+		expect(figure).toHaveTextContent("@arkenv/standard + Valibot");
+		expect(figure).toHaveTextContent("23.3 kB");
+		expect(figure).toHaveTextContent("@arkenv/core + ArkType");
+		expect(figure).toHaveTextContent("156.0 kB");
 	});
 
 	it("renders npmx link for the package base name", () => {

@@ -27,7 +27,47 @@ type BenchmarkResult = {
 	source: "esbuild" | "bundlephobia";
 };
 
-const cases: Record<"full" | "adapter", TestCase[]> = {
+const cases: Record<"adapter" | "full", TestCase[]> = {
+	adapter: [
+		{
+			id: "standard-only",
+			name: "@arkenv/standard",
+			// Adapter-only: no required runtime peers — measures pure Standard Schema wrapper
+			code: `import arkenv from "${join(ROOT, "packages/standard/dist/index.js")}"; console.log(arkenv);`,
+			dir: join(ROOT, "packages/standard"),
+			tier: "primary",
+			fallbackBytes: 10222, // 10.0 kB
+		},
+		{
+			id: "core-only",
+			name: "@arkenv/core",
+			// Adapter-only: externalize arktype peer to isolate the wrapper footprint
+			code: `import arkenv from "${join(ROOT, "packages/core/dist/index.mjs")}"; console.log(arkenv);`,
+			dir: join(ROOT, "packages/core"),
+			tier: "secondary",
+			external: ["arktype", "@ark/util", "@ark/schema", "arkregex"],
+			fallbackBytes: 6424, // 6.3 kB
+		},
+		{
+			id: "t3-only",
+			name: "@t3-oss/env-core",
+			// Adapter-only: externalize zod peer for apples-to-apples adapter comparison
+			code: `import { createEnv } from "@t3-oss/env-core"; console.log(createEnv);`,
+			dir: join(ROOT, "packages/core"),
+			tier: "competitor",
+			fallbackBytes: 14541, // 14.2 kB; not in workspace
+			external: ["zod"],
+		},
+		{
+			id: "varlock",
+			name: "varlock",
+			// Standalone env validator (no external schema engine peer)
+			code: `import { env } from "varlock"; console.log(env);`,
+			dir: ROOT,
+			tier: "competitor",
+			fallbackBytes: 29082, // 28.4 kB — measured via bundlephobia; not in workspace
+		},
+	],
 	full: [
 		{
 			id: "standard-valibot",
@@ -64,47 +104,16 @@ const cases: Record<"full" | "adapter", TestCase[]> = {
 			fallbackBytes: 332800, // ~325.0 kB (Zod 319 kB + t3-env); not in workspace
 		},
 	],
-	adapter: [
-		{
-			id: "standard-only",
-			name: "@arkenv/standard",
-			// Adapter-only: no required runtime peers — measures pure Standard Schema wrapper
-			code: `import arkenv from "${join(ROOT, "packages/standard/dist/index.js")}"; console.log(arkenv);`,
-			dir: join(ROOT, "packages/standard"),
-			tier: "primary",
-			fallbackBytes: 10222, // 10.0 kB
-		},
-		{
-			id: "core-only",
-			name: "@arkenv/core",
-			// Adapter-only: externalize arktype peer to isolate the wrapper footprint
-			code: `import arkenv from "${join(ROOT, "packages/core/dist/index.mjs")}"; console.log(arkenv);`,
-			dir: join(ROOT, "packages/core"),
-			tier: "secondary",
-			external: ["arktype", "@ark/util", "@ark/schema", "arkregex"],
-			fallbackBytes: 6424, // 6.3 kB
-		},
-		{
-			id: "t3-only",
-			name: "@t3-oss/env-core",
-			// Adapter-only: externalize zod peer for apples-to-apples adapter comparison
-			code: `import { createEnv } from "@t3-oss/env-core"; console.log(createEnv);`,
-			dir: join(ROOT, "packages/core"),
-			tier: "competitor",
-			fallbackBytes: 14541, // 14.2 kB; not in workspace
-			external: ["zod"],
-		},
-	],
 };
 
 async function run() {
-	const results: Record<"full" | "adapter", BenchmarkResult[]> = {
-		full: [],
+	const results: Record<"adapter" | "full", BenchmarkResult[]> = {
 		adapter: [],
+		full: [],
 	};
 
 	for (const [mode, tests] of Object.entries(cases) as [
-		"full" | "adapter",
+		"adapter" | "full",
 		TestCase[],
 	][]) {
 		for (const t of tests) {

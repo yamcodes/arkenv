@@ -1,4 +1,38 @@
 {
+	"adapter": [
+		{
+			"id": "standard-only",
+			"name": "@arkenv/standard",
+			"bytes": 10222,
+			"kb": "10.0",
+			"tier": "primary",
+			"source": "esbuild"
+		},
+		{
+			"id": "core-only",
+			"name": "@arkenv/core",
+			"bytes": 6424,
+			"kb": "6.3",
+			"tier": "secondary",
+			"source": "esbuild"
+		},
+		{
+			"id": "t3-only",
+			"name": "@t3-oss/env-core",
+			"bytes": 14541,
+			"kb": "14.2",
+			"tier": "competitor",
+			"source": "bundlephobia"
+		},
+		{
+			"id": "varlock",
+			"name": "varlock",
+			"bytes": 29082,
+			"kb": "28.4",
+			"tier": "competitor",
+			"source": "bundlephobia"
+		}
+	],
 	"full": [
 		{
 			"id": "standard-valibot",
@@ -29,32 +63,6 @@
 			"name": "@t3-oss/env-core + Zod",
 			"bytes": 332800,
 			"kb": "325.0",
-			"tier": "competitor",
-			"source": "bundlephobia"
-		}
-	],
-	"adapter": [
-		{
-			"id": "standard-only",
-			"name": "@arkenv/standard",
-			"bytes": 10222,
-			"kb": "10.0",
-			"tier": "primary",
-			"source": "esbuild"
-		},
-		{
-			"id": "core-only",
-			"name": "@arkenv/core",
-			"bytes": 6424,
-			"kb": "6.3",
-			"tier": "secondary",
-			"source": "esbuild"
-		},
-		{
-			"id": "t3-only",
-			"name": "@t3-oss/env-core",
-			"bytes": 14541,
-			"kb": "14.2",
 			"tier": "competitor",
 			"source": "bundlephobia"
 		}

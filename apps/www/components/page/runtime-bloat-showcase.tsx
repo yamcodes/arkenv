@@ -3,38 +3,38 @@
 import { useEffect, useState } from "react";
 import benchmarkData from "~/lib/benchmark/benchmark.json";
 
-type ViewMode = "full" | "adapter";
+type ViewMode = "adapter" | "full";
 
 const VIEW_LABELS: Record<ViewMode, string> = {
+	adapter: "Adapter only",
 	full: "Full edge payload",
-	adapter: "Adapter engine only",
 };
 
 /**
  * "Optimized for the edge" bento cell: segmented toggle between two benchmark views.
  *
+ * - **Adapter only**: measures pure wrapper footprint with peers externalized (default view).
  * - **Full edge payload**: measures adapter + validator together (true V8 parse cost).
- * - **Adapter engine only**: measures pure wrapper footprint with peers externalized.
  *
- * Toggle state is stored in the URL query string (?view=adapter) so developers can
+ * Toggle state is stored in the URL query string (?view=full) so developers can
  * link directly to either view. State is synced with window.history.replaceState —
  * zero layout shift, zero navigation.
  */
 export function RuntimeBloatShowcase() {
-	const [view, setView] = useState<ViewMode>("full");
+	const [view, setView] = useState<ViewMode>("adapter");
 
-	// Sync from URL on mount (client-only: SSR always renders "full" for crawlers).
+	// Sync from URL on mount (client-only: SSR always renders "adapter" for crawlers).
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
 		const raw = params.get("view");
-		if (raw === "adapter") setView("adapter");
+		if (raw === "full") setView("full");
 	}, []);
 
 	function switchView(next: ViewMode) {
 		setView(next);
 		const url = new URL(window.location.href);
-		if (next === "adapter") {
-			url.searchParams.set("view", "adapter");
+		if (next === "full") {
+			url.searchParams.set("view", "full");
 		} else {
 			url.searchParams.delete("view");
 		}
@@ -71,7 +71,7 @@ export function RuntimeBloatShowcase() {
 						style={{ ["--reveal-delay" as string]: "80ms" }}
 						aria-label="Benchmark view"
 					>
-						{(["full", "adapter"] as const).map((mode) => (
+						{(["adapter", "full"] as const).map((mode) => (
 							<button
 								key={mode}
 								type="button"
