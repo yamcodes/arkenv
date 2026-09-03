@@ -83,7 +83,7 @@ We **do not use Conventional Commits** (`feat:`, `fix:`, `chore:`, etc.). Instea
 ❌ Add Support For Custom Error Messages
 ```
 
-## Branching & Release Workflow
+## Branching & release workflow
 
 We use a **Dual-Branch Model** (`dev` and `main`) to ensure the production documentation site is strictly synchronized with npm releases, meaning it never displays unreleased features. For the architectural reasoning behind this decision, see [ADR 0006: Branching and Release Flow](./adr/0006-branching-and-release-flow.md).
 
@@ -102,9 +102,9 @@ We use a **Dual-Branch Model** (`dev` and `main`) to ensure the production docum
                     └───────────┘
 ```
 
-### Key Workflows
+### Key workflows
 
-#### Use Case 1: Developing a New Feature
+#### Use case 1: Developing a new feature
 
 When adding functionality or new documentation pages for unreleased code:
 
@@ -113,7 +113,7 @@ When adding functionality or new documentation pages for unreleased code:
 3. Open a Pull Request targeting `dev`.
 4. Merging to `dev` will deploy a Vercel Preview (for review), but it will **not** affect the production documentation site.
 
-#### Use Case 2: Releasing Packages to npm
+#### Use case 2: Releasing packages to npm
 
 When you are ready to publish the unreleased features currently sitting on `dev`:
 
@@ -123,7 +123,7 @@ When you are ready to publish the unreleased features currently sitting on `dev`
 4. A GitHub workflow will automatically build and publish the packages to npm.
 5. Immediately after a successful publish, the workflow automatically fast-forwards the `main` branch to match `dev`. This push to `main` triggers the production documentation deploy.
 
-#### Use Case 3: Fixing a Typo on the Live Docs
+#### Use case 3: Fixing a typo on the live docs
 
 When you need to fix a typo or make a cosmetic change to the live documentation *without* publishing a new npm package:
 
@@ -137,7 +137,7 @@ When you need to fix a typo or make a cosmetic change to the live documentation 
    ```
    This ensures the fix hits `main` instantly while preventing Git history drift.
 
-#### Use Case 4: Coordinating a Major Version (e.g., v1)
+#### Use case 4: Coordinating a major version (e.g., v1)
 
 When working on a massive marketing push, docs facelift, or breaking API changes that will take weeks or months to coordinate:
 

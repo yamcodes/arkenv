@@ -305,7 +305,7 @@ pnpm run test:e2e                     # E2E tests
 - Run `pnpm release` after merging PRs to publish packages
 - Only packages in `packages/` are published to npm
 
-## Design Decisions
+## Design decisions
 
 **Split Parsing Engines (ArkType vs Standard Schema):**
 
@@ -470,7 +470,7 @@ A non-interactive muted label that only **groups** sibling **Leaves** under a **
 - Visual direction is **hybrid**: Turbo structure/motion/active-pill; ArkEnv color tokens
 - Sidebar Install banner removed; use **Separators** for flat reference groupings and **Nested Folders** only when the URL is truly nested
 
-### Environment Variable Validation
+### Environment variable validation
 
 - ArkEnv uses ArkType's type system to validate environment variables
 - Schema is defined using TypeScript-like syntax (e.g., `"string.host"`, `"number.port"`)

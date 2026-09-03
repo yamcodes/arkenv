@@ -1,5 +1,5 @@
 ---
-title: Choosing a Validator
+title: Choosing a validator
 description: Compare bundle size, syntax, and runtime characteristics across ArkType, Valibot, Zod Mini, and classic Zod.
 ---
 
@@ -114,9 +114,9 @@ export const env = arkenv({
 
 See the [ArkType guide](/docs/validators/arktype) for keywords, cyclic types, and custom regex definitions.
 
-## Existing monolithic schemas: Classic Zod
+## Existing monolithic schemas: classic Zod
 
-Choose **Classic Zod** via `@arkenv/standard` when you already have extensive Zod 4 schemas
+Choose **classic Zod** via `@arkenv/standard` when you already have extensive Zod 4 schemas
 or want zero code changes during migration, and your target runtime is a long-lived Node.js server
 where isolate cold-start parse time is not a constraint.
 

@@ -284,7 +284,7 @@ Examples are kept clean and focused on demonstrating usage:
 - `examples/basic` - Basic Node.js usage
 - `examples/with-bun` - Bun runtime usage
 
-## Ci integration
+## CI integration
 
 The CI pipeline runs:
 
