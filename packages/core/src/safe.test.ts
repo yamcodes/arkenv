@@ -3,10 +3,7 @@ import { tryArkenv } from "./safe";
 
 describe("tryArkenv", () => {
 	it("should run arkenv safely", () => {
-		const result = tryArkenv(
-			{ PORT: "number" },
-			{ env: { PORT: "3000" } },
-		);
+		const result = tryArkenv({ PORT: "number" }, { env: { PORT: "3000" } });
 		expect(result.success).toBe(true);
 		if (result.success) {
 			expect(result.data).toEqual({ PORT: 3000 });
@@ -14,10 +11,7 @@ describe("tryArkenv", () => {
 	});
 
 	it("should return failure with invalid input", () => {
-		const result = tryArkenv(
-			{ PORT: "number" },
-			{ env: { PORT: "abc" } },
-		);
+		const result = tryArkenv({ PORT: "number" }, { env: { PORT: "abc" } });
 		expect(result.success).toBe(false);
 		if (!result.success) {
 			expect(result.issues).toBeDefined();

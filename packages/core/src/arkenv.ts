@@ -123,9 +123,11 @@ type SchemaCaptureBag = {
  * @returns `true` when capture consumed the call
  */
 function recordIfCapturing(def: unknown): boolean {
-	const state = (globalThis as typeof globalThis & {
-		[SCHEMA_CAPTURE_KEY]?: SchemaCaptureBag;
-	})[SCHEMA_CAPTURE_KEY];
+	const state = (
+		globalThis as typeof globalThis & {
+			[SCHEMA_CAPTURE_KEY]?: SchemaCaptureBag;
+		}
+	)[SCHEMA_CAPTURE_KEY];
 	if (!state?.capturing) {
 		return false;
 	}
