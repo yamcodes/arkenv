@@ -91,6 +91,13 @@ async function run() {
 		fallbackGzipBytes: 68682,
 	});
 
+	const standardZodMini = await measure({
+		code: `import arkenv from "${join(ROOT, "packages/standard/dist/zod-mini.js")}"; import * as z from "zod/mini"; console.log(arkenv(z.object({ PORT: z.string() })));`,
+		dir: join(ROOT, "packages/standard"),
+		fallbackBytes: 34456,
+		fallbackGzipBytes: 11735,
+	});
+
 	// 3. Competitor Benchmarks (fallbacks from npm/bundlephobia / isolated measurements)
 	const t3Engine = {
 		bytes: 14541,
@@ -296,6 +303,45 @@ async function run() {
 				note: "for reference",
 			},
 		],
+		matrix: {
+			valibot: {
+				engine: "@arkenv/standard/valibot",
+				subpath: "@arkenv/standard/valibot",
+				totalBytes: standardValibot.bytes,
+				totalKb: toKb(standardValibot.bytes),
+				gzipBytes: standardValibot.gzipBytes,
+				gzipKb: toKb(standardValibot.gzipBytes),
+				description: "Smallest edge footprint; modular functional tree-shaking",
+			},
+			zodMini: {
+				engine: "@arkenv/standard/zod-mini",
+				subpath: "@arkenv/standard/zod-mini",
+				totalBytes: standardZodMini.bytes,
+				totalKb: toKb(standardZodMini.bytes),
+				gzipBytes: standardZodMini.gzipBytes,
+				gzipKb: toKb(standardZodMini.gzipBytes),
+				description: "~90% smaller than classic Zod; familiar syntax",
+			},
+			arktype: {
+				engine: "@arkenv/core",
+				subpath: "@arkenv/core",
+				totalBytes: coreArkType.bytes,
+				totalKb: toKb(coreArkType.bytes),
+				gzipBytes: coreArkType.gzipBytes,
+				gzipKb: toKb(coreArkType.gzipBytes),
+				description:
+					"TypeScript-native DSL strings; built-in keywords; zero dependencies",
+			},
+			classicZod: {
+				engine: "@arkenv/standard",
+				subpath: "@arkenv/standard",
+				totalBytes: standardZod.bytes,
+				totalKb: toKb(standardZod.bytes),
+				gzipBytes: standardZod.gzipBytes,
+				gzipKb: toKb(standardZod.gzipBytes),
+				description: "Drop-in compatibility for existing Zod schemas (Zod 4)",
+			},
+		},
 	};
 
 	if (!existsSync(dirname(OUT_PATH))) {

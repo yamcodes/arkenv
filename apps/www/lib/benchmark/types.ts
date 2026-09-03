@@ -21,6 +21,26 @@ export type BenchmarkRow = {
 	note?: string;
 };
 
+export type BenchmarkMatrixItem = {
+	engine: string;
+	subpath: string;
+	totalBytes: number;
+	totalKb: string;
+	gzipBytes: number;
+	gzipKb: string;
+	description: string;
+};
+
 export type ValidatorTab = "arktype" | "zod" | "valibot";
 
-export type BenchmarkData = Record<ValidatorTab, BenchmarkRow[]>;
+export type BenchmarkData = {
+	arktype: BenchmarkRow[];
+	zod: BenchmarkRow[];
+	valibot: BenchmarkRow[];
+	matrix: {
+		valibot: BenchmarkMatrixItem;
+		zodMini: BenchmarkMatrixItem;
+		arktype: BenchmarkMatrixItem;
+		classicZod: BenchmarkMatrixItem;
+	};
+};

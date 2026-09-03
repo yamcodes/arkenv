@@ -49,9 +49,11 @@ export function RuntimeBloatShowcase() {
 	const rows = benchmarkData[validator];
 	// Globally consistent scale across all tabs (~337 kB max from T3 Env / Zod)
 	const maxBytes = Math.max(
-		...Object.values(benchmarkData).flatMap((list) =>
-			list.map((r) => r.totalBytes),
-		),
+		...[
+			benchmarkData.arktype,
+			benchmarkData.zod,
+			benchmarkData.valibot,
+		].flatMap((list) => list.map((r) => r.totalBytes)),
 	);
 
 	return (

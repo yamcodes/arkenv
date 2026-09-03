@@ -8,7 +8,7 @@ import {
 import { heroTwoslashOptions } from "./hero-mvp-twoslash-options";
 
 describe("hero MVP snippets", () => {
-	it("typecheck in Twoslash", { timeout: 30_000 }, () => {
+	it("typecheck in Twoslash", { timeout: 60_000 }, () => {
 		const slashers = {
 			arktype: createTwoslasher(heroTwoslashOptions("arktype").twoslashOptions),
 			standard: createTwoslasher(

@@ -165,5 +165,43 @@
 			"tier": "reference",
 			"note": "for reference"
 		}
-	]
+	],
+	"matrix": {
+		"valibot": {
+			"engine": "@arkenv/standard/valibot",
+			"subpath": "@arkenv/standard/valibot",
+			"totalBytes": 23897,
+			"totalKb": "23.3",
+			"gzipBytes": 7718,
+			"gzipKb": "7.5",
+			"description": "Smallest edge footprint; modular functional tree-shaking"
+		},
+		"zodMini": {
+			"engine": "@arkenv/standard/zod-mini",
+			"subpath": "@arkenv/standard/zod-mini",
+			"totalBytes": 34456,
+			"totalKb": "33.6",
+			"gzipBytes": 11735,
+			"gzipKb": "11.5",
+			"description": "~90% smaller than classic Zod; familiar syntax"
+		},
+		"arktype": {
+			"engine": "@arkenv/core",
+			"subpath": "@arkenv/core",
+			"totalBytes": 159771,
+			"totalKb": "156.0",
+			"gzipBytes": 49631,
+			"gzipKb": "48.5",
+			"description": "TypeScript-native DSL strings; built-in keywords; zero dependencies"
+		},
+		"classicZod": {
+			"engine": "@arkenv/standard",
+			"subpath": "@arkenv/standard",
+			"totalBytes": 337145,
+			"totalKb": "329.2",
+			"gzipBytes": 68682,
+			"gzipKb": "67.1",
+			"description": "Drop-in compatibility for existing Zod schemas (Zod 4)"
+		}
+	}
 }
