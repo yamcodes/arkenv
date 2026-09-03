@@ -11,12 +11,12 @@ describe("RuntimeBloatShowcase", () => {
 		).toBeInTheDocument();
 
 		expect(
-			screen.getByText(/Each issue gets a code that CI and agents can act on/i),
+			screen.getByText(
+				/Each issue gets an error code agents and CI can act on/i,
+			),
 		).toBeInTheDocument();
 		expect(
-			screen.getByText(
-				/A missing key and a bad value aren't the same problem/i,
-			),
+			screen.getByText(/Missing keys and bad values aren't the same/i),
 		).toBeInTheDocument();
 
 		const figure = screen.getByRole("figure");
