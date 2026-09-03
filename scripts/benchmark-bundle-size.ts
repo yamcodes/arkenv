@@ -36,6 +36,7 @@ const cases: Record<"full" | "adapter", TestCase[]> = {
 			code: `import arkenv from "${join(ROOT, "packages/standard/dist/valibot.js")}"; import * as v from "valibot"; console.log(arkenv(v.object({ PORT: v.string() })));`,
 			dir: join(ROOT, "packages/standard"),
 			tier: "primary",
+			fallbackBytes: 23897, // 23.3 kB
 		},
 		{
 			id: "core-arktype",
@@ -44,6 +45,7 @@ const cases: Record<"full" | "adapter", TestCase[]> = {
 			code: `import arkenv from "${join(ROOT, "packages/core/dist/index.mjs")}"; import { type } from "arktype"; console.log(arkenv(type({ PORT: "0 <= number.integer <= 65535" })));`,
 			dir: join(ROOT, "packages/core"),
 			tier: "secondary",
+			fallbackBytes: 159771, // 156.0 kB
 		},
 		{
 			id: "varlock",
@@ -70,6 +72,7 @@ const cases: Record<"full" | "adapter", TestCase[]> = {
 			code: `import arkenv from "${join(ROOT, "packages/standard/dist/index.js")}"; console.log(arkenv);`,
 			dir: join(ROOT, "packages/standard"),
 			tier: "primary",
+			fallbackBytes: 10222, // 10.0 kB
 		},
 		{
 			id: "core-only",
@@ -79,6 +82,7 @@ const cases: Record<"full" | "adapter", TestCase[]> = {
 			dir: join(ROOT, "packages/core"),
 			tier: "secondary",
 			external: ["arktype", "@ark/util", "@ark/schema", "arkregex"],
+			fallbackBytes: 6424, // 6.3 kB
 		},
 		{
 			id: "t3-only",
