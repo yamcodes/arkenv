@@ -111,6 +111,7 @@ jobs:
             echo "Deployed $GIT_SHA to production (arkenv.js.org)."
           else
             deploy_log="$(mktemp)"
+            trap 'rm -f "$deploy_log"' EXIT
             node scripts/vercel-wrapper.cjs deploy --prebuilt --archive=tgz --token="$VERCEL_TOKEN" "${META_ARGS[@]}" \
               | tee "$deploy_log"
             DEPLOYMENT_URL="$(tail -n 1 "$deploy_log")"
