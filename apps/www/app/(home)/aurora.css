@@ -2888,6 +2888,12 @@
 	overflow-x: auto;
 }
 
+.home-aurora__tty--wrap {
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	overflow-x: hidden;
+}
+
 .home-aurora__tty .home-aurora__install-prompt-symbol {
 	font-size: inherit;
 	line-height: inherit;
