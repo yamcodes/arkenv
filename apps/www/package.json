@@ -84,7 +84,7 @@
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",
 		"@vitejs/plugin-react": "catalog:",
-		"jsdom": "29.1.1",
+		"jsdom": "30.0.1",
 		"mdast-util-mdx-jsx": "3.2.0",
 		"next-video": "2.8.1",
 		"postcss": "8.5.26",
