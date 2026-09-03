@@ -29,8 +29,8 @@ export function RuntimeBloatShowcase() {
 					Structured errors
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					Each issue gets an error code agents and CI can act on. Missing
-					keys and bad values aren&apos;t the same.
+					Each issue gets an error code agents and CI can act on. Missing keys
+					and bad values aren&apos;t the same.
 				</p>
 			</header>
 
