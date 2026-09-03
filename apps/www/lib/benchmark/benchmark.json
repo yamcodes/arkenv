@@ -33,8 +33,7 @@
 			"totalGzipBytes": 9318,
 			"totalGzipKb": "9.1",
 			"tier": "reference",
-			"source": "bundlephobia",
-			"note": "for reference"
+			"source": "bundlephobia"
 		},
 		{
 			"id": "arkenv-arktype",

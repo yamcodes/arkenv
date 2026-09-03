@@ -37,12 +37,12 @@ describe("RuntimeBloatShowcase", () => {
 		expect(row0.getByText("@arkenv/standard")).toBeInTheDocument();
 		expect(row0.getByText("+ Valibot")).toBeInTheDocument();
 		expect(row0.getByText("23.3 kB")).toBeInTheDocument();
-		expect(row0.getByText("(10.0 + 13.4)")).toBeInTheDocument();
+		expect(row0.queryByText("(10.0 + 13.4)")).not.toBeInTheDocument();
 
 		// 2. varlock (28.4 kB)
 		const row1 = within(rows[1] as HTMLElement);
 		expect(row1.getByText("varlock")).toBeInTheDocument();
-		expect(row1.getByText("(for reference)")).toBeInTheDocument();
+		expect(row1.queryByText("(for reference)")).not.toBeInTheDocument();
 		expect(row1.getByText("28.4 kB")).toBeInTheDocument();
 
 		// 3. @arkenv/core + ArkType (156.0 kB)
@@ -50,14 +50,14 @@ describe("RuntimeBloatShowcase", () => {
 		expect(row2.getByText("@arkenv/core")).toBeInTheDocument();
 		expect(row2.getByText("+ ArkType")).toBeInTheDocument();
 		expect(row2.getByText("156.0 kB")).toBeInTheDocument();
-		expect(row2.getByText("(6.3 + 149.8)")).toBeInTheDocument();
+		expect(row2.queryByText("(6.3 + 149.8)")).not.toBeInTheDocument();
 
 		// 4. @t3-oss/env-core + Zod (325.0 kB)
 		const row3 = within(rows[3] as HTMLElement);
 		expect(row3.getByText("@t3-oss/env-core")).toBeInTheDocument();
 		expect(row3.getByText("+ Zod")).toBeInTheDocument();
 		expect(row3.getByText("325.0 kB")).toBeInTheDocument();
-		expect(row3.getByText("(14.2 + 310.8)")).toBeInTheDocument();
+		expect(row3.queryByText("(14.2 + 310.8)")).not.toBeInTheDocument();
 	});
 
 	it("renders accessible image labels on compound bar tracks", () => {
@@ -80,7 +80,7 @@ describe("RuntimeBloatShowcase", () => {
 		);
 	});
 
-	it("renders npmx links and benchmark receipts link", () => {
+	it("renders npmx links and benchmark source link", () => {
 		render(<RuntimeBloatShowcase />);
 
 		const links = screen.getAllByRole("link");
@@ -110,11 +110,11 @@ describe("RuntimeBloatShowcase", () => {
 			),
 		).toBe(true);
 
-		const receipts = screen.getByRole("link", {
-			name: /View benchmark script/i,
+		const source = screen.getByRole("link", {
+			name: /Source/i,
 		});
-		expect(receipts).toBeInTheDocument();
-		expect(receipts).toHaveAttribute(
+		expect(source).toBeInTheDocument();
+		expect(source).toHaveAttribute(
 			"href",
 			"https://github.com/yamcodes/arkenv/blob/v1/scripts/benchmark-bundle-size.ts",
 		);

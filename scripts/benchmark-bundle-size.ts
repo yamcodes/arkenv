@@ -170,7 +170,6 @@ async function run() {
 			totalGzipKb: toKb(varlock.gzipBytes),
 			tier: "reference",
 			source: "bundlephobia",
-			note: "for reference",
 		},
 		{
 			id: "arkenv-arktype",

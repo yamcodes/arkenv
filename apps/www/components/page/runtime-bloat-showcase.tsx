@@ -45,21 +45,6 @@ export function RuntimeBloatShowcase() {
 				aria-label="Production runtime bundle size comparison"
 			>
 				<div className="home-aurora__telemetry-body">
-					<div className="home-aurora__telemetry-legend" aria-hidden="true">
-						<span className="home-aurora__telemetry-legend-item">
-							<span className="home-aurora__telemetry-swatch home-aurora__telemetry-swatch--engine" />
-							Engine
-						</span>
-						<span className="home-aurora__telemetry-legend-item">
-							<span className="home-aurora__telemetry-swatch home-aurora__telemetry-swatch--validator" />
-							Validator
-						</span>
-						<span className="home-aurora__telemetry-legend-item">
-							<span className="home-aurora__telemetry-swatch home-aurora__telemetry-swatch--reference" />
-							Both
-						</span>
-					</div>
-
 					<section
 						id="benchmark-telemetry-list"
 						className="home-aurora__telemetry-list"
@@ -77,6 +62,10 @@ export function RuntimeBloatShowcase() {
 									? `, plus ${item.validatorName} extension at ${item.validatorKb} kilobytes`
 									: ""
 							}, total ${item.totalKb} kilobytes`;
+
+							const statsTooltip = item.validatorBytes
+								? `Total: ${item.totalKb} kB (${item.engineKb} kB engine + ${item.validatorKb} kB validator)`
+								: `Total: ${item.totalKb} kB`;
 
 							return (
 								<div
@@ -123,25 +112,15 @@ export function RuntimeBloatShowcase() {
 														+ {item.validatorName}
 													</span>
 												) : null}
-												{item.note ? (
-													<span className="home-aurora__telemetry-note">
-														({item.note})
-													</span>
-												) : null}
 											</div>
 
 											<div
 												className="home-aurora__telemetry-stats"
-												title={`Total: ${item.totalKb} kB uncompressed (${item.totalGzipKb} kB gzip)`}
+												title={statsTooltip}
 											>
 												<span className="home-aurora__telemetry-size">
 													{item.totalKb} kB
 												</span>
-												{item.validatorBytes ? (
-													<span className="home-aurora__telemetry-breakdown">
-														({item.engineKb} + {item.validatorKb})
-													</span>
-												) : null}
 											</div>
 										</div>
 									</div>
@@ -151,14 +130,28 @@ export function RuntimeBloatShowcase() {
 					</section>
 
 					<div className="home-aurora__telemetry-footer">
-						ArkEnv built via esbuild · platform: neutral · target: es2022{" "}
-						<span aria-hidden="true">·</span>{" "}
+						<div className="home-aurora__telemetry-legend" aria-hidden="true">
+							<span className="home-aurora__telemetry-legend-item">
+								<span className="home-aurora__telemetry-swatch home-aurora__telemetry-swatch--engine" />
+								Engine
+							</span>
+							<span className="home-aurora__telemetry-legend-item">
+								<span className="home-aurora__telemetry-swatch home-aurora__telemetry-swatch--validator" />
+								Validator
+							</span>
+							<span className="home-aurora__telemetry-legend-item">
+								<span className="home-aurora__telemetry-swatch home-aurora__telemetry-swatch--reference" />
+								Both
+							</span>
+						</div>
+
 						<a
 							href="https://github.com/yamcodes/arkenv/blob/v1/scripts/benchmark-bundle-size.ts"
 							target="_blank"
 							rel="noopener noreferrer"
+							className="home-aurora__telemetry-source"
 						>
-							View benchmark script ↗
+							Source ↗
 						</a>
 					</div>
 				</div>

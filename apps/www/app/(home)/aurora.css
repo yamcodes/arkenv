@@ -1611,7 +1611,7 @@
 .home-aurora__telemetry-list {
 	display: flex;
 	flex-direction: column;
-	padding: 0.65rem 0.25rem 0.35rem;
+	padding: 0.25rem 0.25rem 0.65rem;
 	gap: 0.5rem;
 	width: 100%;
 	box-sizing: border-box;
@@ -1740,14 +1740,6 @@
 	white-space: nowrap;
 }
 
-.home-aurora__telemetry-note {
-	font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
-	font-size: 0.75rem;
-	line-height: normal;
-	color: var(--color-muted);
-	white-space: nowrap;
-}
-
 .home-aurora__telemetry-stats {
 	display: inline-flex;
 	align-items: baseline;
@@ -1765,20 +1757,11 @@
 	color: var(--color-ink);
 }
 
-.home-aurora__telemetry-breakdown {
-	font-family: var(--font-mono, ui-monospace, monospace);
-	font-size: 0.6875rem;
-	font-variant-numeric: tabular-nums;
-	color: var(--color-ink-2);
-	opacity: 0.8;
-}
-
 /* Legend */
 .home-aurora__telemetry-legend {
 	display: flex;
 	align-items: center;
-	gap: 1rem;
-	padding: 0.25rem 0.5rem 0.125rem;
+	gap: 0.875rem;
 	font-size: 0.6875rem;
 	color: var(--color-ink-2);
 	flex-wrap: wrap;
@@ -1811,26 +1794,29 @@
 	border: 1px solid #30363d;
 }
 
-/* Benchmark receipt footnote */
+/* Bottom legend and source line */
 .home-aurora__telemetry-footer {
 	display: flex;
 	align-items: center;
-	justify-content: center;
-	gap: 0.25rem;
-	padding: 0.5rem 0.85rem 0.65rem;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 0.5rem 0.25rem 0.25rem;
 	border-top: var(--rule-hair) solid var(--color-rule);
 	color: var(--color-ink-2);
 	font-size: 0.6875rem;
 	line-height: 1.4;
 }
 
-.home-aurora__telemetry .home-aurora__telemetry-footer a {
+.home-aurora__telemetry-source {
 	color: var(--color-ink-2);
 	text-decoration: none;
+	font-size: 0.6875rem;
+	white-space: nowrap;
+	margin-left: auto;
 	transition: color var(--dur-micro) var(--ease-out);
 }
 
-.home-aurora__telemetry .home-aurora__telemetry-footer a:hover {
+.home-aurora__telemetry-source:hover {
 	color: var(--color-ink);
 	text-decoration: underline;
 	text-underline-offset: 2px;
