@@ -1712,16 +1712,22 @@
 	text-decoration: none;
 	display: inline-flex;
 	align-items: baseline;
+	min-width: 0;
 	color: inherit;
 	cursor: pointer;
 }
 
 .home-aurora__telemetry-name {
 	font-family: var(--font-mono, ui-monospace, monospace);
-	font-size: 0.8125rem;
+	font-size: 0.75rem;
 	font-weight: 500;
 	line-height: normal;
 	color: var(--color-ink);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	min-width: 0;
+	padding-right: 0.5rem;
 	transition: color var(--dur-micro) var(--ease-out);
 }
 
@@ -1733,11 +1739,12 @@
 
 .home-aurora__telemetry-ext {
 	font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
-	font-size: 0.8125rem;
+	font-size: 0.75rem;
 	font-weight: 500;
 	line-height: normal;
 	color: var(--color-ink-2);
 	white-space: nowrap;
+	flex-shrink: 0;
 }
 
 .home-aurora__telemetry-note {
@@ -1746,6 +1753,7 @@
 	line-height: normal;
 	color: var(--color-muted);
 	white-space: nowrap;
+	flex-shrink: 0;
 }
 
 .home-aurora__telemetry-stats {
@@ -1754,15 +1762,24 @@
 	gap: 0.35rem;
 	margin-left: auto;
 	white-space: nowrap;
+	flex-shrink: 0;
 	pointer-events: auto;
 }
 
 .home-aurora__telemetry-size {
 	font-family: var(--font-mono, ui-monospace, monospace);
-	font-size: 0.8125rem;
+	font-size: 0.75rem;
 	font-variant-numeric: tabular-nums;
 	font-weight: 500;
 	color: var(--color-ink);
+}
+
+@media (min-width: 40rem) {
+	.home-aurora__telemetry-name,
+	.home-aurora__telemetry-ext,
+	.home-aurora__telemetry-size {
+		font-size: 0.875rem;
+	}
 }
 
 /* Legend */
