@@ -34,6 +34,11 @@ export async function detectFramework(
 		const pkg = JSON.parse(content);
 		const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
 
+		// TanStack Start runs on native Vite, so `arkenv init` recommends
+		// `@arkenv/vite-plugin` the same way it does for plain Vite projects.
+		if (allDeps["@tanstack/react-start"] || allDeps["@tanstack/start"]) {
+			return "vite";
+		}
 		if (allDeps.vite) return "vite";
 		if (allDeps.next) return "nextjs";
 		if (allDeps.nuxt) return "nuxt";
