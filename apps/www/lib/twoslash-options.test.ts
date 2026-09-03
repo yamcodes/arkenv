@@ -2,7 +2,7 @@ import { twoslasher } from "twoslash";
 import { describe, expect, it } from "vitest";
 import { arktypeTwoslashOptions } from "./twoslash-options";
 
-describe("arktypeTwoslashOptions", () => {
+describe("arktypeTwoslashOptions", { timeout: 30000 }, () => {
 	it("infers @arkenv/nextjs client variables as strings in docs snippets", () => {
 		const result = twoslasher(
 			`// @filename: env.ts

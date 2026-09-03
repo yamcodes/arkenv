@@ -1,48 +1,58 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import benchmarkData from "~/lib/benchmark/benchmark.json";
+import benchmarkDataRaw from "~/lib/benchmark/benchmark.json";
+import type { BenchmarkData, ValidatorTab } from "~/lib/benchmark/types";
+import { ValidatorMark } from "./hero-mvp-marks";
+import { InkTabList } from "./ink-tabs";
 
-type ViewMode = "adapter" | "full";
+const benchmarkData = benchmarkDataRaw as BenchmarkData;
 
-const VIEW_LABELS: Record<ViewMode, string> = {
-	adapter: "Adapter only",
-	full: "Full edge payload",
-};
+const VALIDATOR_TABS: readonly { id: ValidatorTab; label: string }[] = [
+	{ id: "arktype", label: "ArkType" },
+	{ id: "zod", label: "Zod" },
+	{ id: "valibot", label: "Valibot" },
+] as const;
 
 /**
- * "Optimized for the edge" bento cell: segmented toggle between two benchmark views.
+ * "Optimized for the edge" bento cell: pkg-size-style compound bar chart comparing
+ * engine footprint and validator extensions across ArkType, Zod, and Valibot.
  *
- * - **Adapter only**: measures pure wrapper footprint with peers externalized (default view).
- * - **Full edge payload**: measures adapter + validator together (true V8 parse cost).
- *
- * Toggle state is stored in the URL query string (?view=full) so developers can
- * link directly to either view. State is synced with window.history.replaceState —
- * zero layout shift, zero navigation.
+ * Bars are strictly sorted by engine size:
+ * 1. ArkEnv (@arkenv/core or @arkenv/standard)
+ * 2. T3 Env (@t3-oss/env-core)
+ * 3. Varlock (all-in-one engine + validator, for reference)
  */
 export function RuntimeBloatShowcase() {
-	const [view, setView] = useState<ViewMode>("adapter");
+	const [validator, setValidator] = useState<ValidatorTab>("arktype");
 
-	// Sync from URL on mount (client-only: SSR always renders "adapter" for crawlers).
+	// Client-safe URL sync: defaults to "arktype" on server to avoid hydration mismatch
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
-		const raw = params.get("view");
-		if (raw === "full") setView("full");
+		const raw = params.get("validator");
+		if (raw === "zod" || raw === "valibot") {
+			setValidator(raw);
+		}
 	}, []);
 
-	function switchView(next: ViewMode) {
-		setView(next);
+	function switchValidator(next: ValidatorTab) {
+		setValidator(next);
 		const url = new URL(window.location.href);
-		if (next === "full") {
-			url.searchParams.set("view", "full");
+		if (next === "arktype") {
+			url.searchParams.delete("validator");
 		} else {
-			url.searchParams.delete("view");
+			url.searchParams.set("validator", next);
 		}
 		window.history.replaceState(null, "", url.toString());
 	}
 
-	const rows = benchmarkData[view];
-	const maxBytes = Math.max(...rows.map((r) => r.bytes));
+	const rows = benchmarkData[validator];
+	// Globally consistent scale across all tabs (~337 kB max from T3 Env / Zod)
+	const maxBytes = Math.max(
+		...Object.values(benchmarkData).flatMap((list) =>
+			list.map((r) => r.totalBytes),
+		),
+	);
 
 	return (
 		<section
@@ -65,24 +75,27 @@ export function RuntimeBloatShowcase() {
 						</p>
 					</div>
 
-					<fieldset
-						className="home-aurora__telemetry-toggle"
+					<div
 						data-reveal
 						style={{ ["--reveal-delay" as string]: "80ms" }}
-						aria-label="Benchmark view"
+						className="home-aurora__telemetry-tabs-wrap"
 					>
-						{(["adapter", "full"] as const).map((mode) => (
-							<button
-								key={mode}
-								type="button"
-								className="home-aurora__telemetry-toggle-btn"
-								aria-pressed={view === mode}
-								onClick={() => switchView(mode)}
-							>
-								{VIEW_LABELS[mode]}
-							</button>
-						))}
-					</fieldset>
+						<InkTabList
+							label="Validator comparison"
+							value={validator}
+							controls="benchmark-telemetry-list"
+							onChange={switchValidator}
+							items={VALIDATOR_TABS.map((tab) => ({
+								id: tab.id,
+								label: (
+									<>
+										<ValidatorMark id={tab.id} />
+										{tab.label}
+									</>
+								),
+							}))}
+						/>
+					</div>
 				</div>
 			</header>
 
@@ -93,40 +106,113 @@ export function RuntimeBloatShowcase() {
 				aria-label="Production runtime bundle size comparison"
 			>
 				<div className="home-aurora__telemetry-body">
-					<div className="home-aurora__telemetry-list">
+					<div className="home-aurora__telemetry-legend" aria-hidden="true">
+						<span className="home-aurora__telemetry-legend-item">
+							<span className="home-aurora__telemetry-swatch home-aurora__telemetry-swatch--engine" />
+							Engine
+						</span>
+						<span className="home-aurora__telemetry-legend-item">
+							<span className="home-aurora__telemetry-swatch home-aurora__telemetry-swatch--validator" />
+							Validator extension
+						</span>
+						<span className="home-aurora__telemetry-legend-item">
+							<span className="home-aurora__telemetry-swatch home-aurora__telemetry-swatch--reference" />
+							All-in-one (for reference)
+						</span>
+					</div>
+
+					<section
+						id="benchmark-telemetry-list"
+						className="home-aurora__telemetry-list"
+						aria-label={`${validator} runtime bundle size comparison`}
+					>
 						{rows.map((item) => {
-							const widthPct = `${((item.bytes / maxBytes) * 100).toFixed(1)}%`;
+							const totalPct = `${((item.totalBytes / maxBytes) * 100).toFixed(1)}%`;
+							const engineShare = `${((item.engineBytes / item.totalBytes) * 100).toFixed(1)}%`;
+							const validatorShare = item.validatorBytes
+								? `${((item.validatorBytes / item.totalBytes) * 100).toFixed(1)}%`
+								: "0%";
+
+							const a11yLabel = `${item.name} engine at ${item.engineKb} kilobytes${
+								item.validatorName
+									? `, plus ${item.validatorName} extension at ${item.validatorKb} kilobytes`
+									: ""
+							}, total ${item.totalKb} kilobytes`;
+
 							return (
 								<div
 									key={item.id}
 									className="home-aurora__telemetry-row"
 									data-tier={item.tier}
 								>
-									<div className="home-aurora__telemetry-track">
+									<div
+										className="home-aurora__telemetry-track"
+										role="img"
+										aria-label={a11yLabel}
+									>
 										<div
-											className="home-aurora__telemetry-bar"
-											style={{ width: widthPct }}
+											className="home-aurora__telemetry-bar-group"
+											style={{ width: totalPct }}
 											aria-hidden="true"
-										/>
-										<a
-											href={`https://npmx.dev/package/${item.name.replace(/ \+ .+$/, "")}`}
-											target="_blank"
-											rel="noopener noreferrer"
-											className="home-aurora__telemetry-link"
-											title={`View ${item.name} on npmx`}
 										>
-											<code className="home-aurora__telemetry-name">
-												{item.name}
-											</code>
-										</a>
-										<span className="home-aurora__telemetry-size">
-											{item.kb} kB
-										</span>
+											<div
+												className="home-aurora__telemetry-segment home-aurora__telemetry-segment--engine"
+												style={{ width: engineShare }}
+												title={`${item.name} engine: ${item.engineKb} kB (${item.engineGzipKb} kB gzip)`}
+											/>
+											{item.validatorBytes ? (
+												<div
+													className="home-aurora__telemetry-segment home-aurora__telemetry-segment--validator"
+													style={{ width: validatorShare }}
+													title={`${item.validatorName} extension: ${item.validatorKb} kB (${item.validatorGzipKb} kB gzip)`}
+												/>
+											) : null}
+										</div>
+
+										<div className="home-aurora__telemetry-content">
+											<div className="home-aurora__telemetry-meta">
+												<a
+													href={`https://npmx.dev/package/${item.npmPackage}`}
+													target="_blank"
+													rel="noopener noreferrer"
+													className="home-aurora__telemetry-link"
+													title={`View ${item.npmPackage} on npmx`}
+												>
+													<code className="home-aurora__telemetry-name">
+														{item.name}
+													</code>
+												</a>
+												{item.validatorName ? (
+													<span className="home-aurora__telemetry-ext">
+														+ {item.validatorName}
+													</span>
+												) : null}
+												{item.note ? (
+													<span className="home-aurora__telemetry-note">
+														({item.note})
+													</span>
+												) : null}
+											</div>
+
+											<div
+												className="home-aurora__telemetry-stats"
+												title={`Total: ${item.totalKb} kB uncompressed (${item.totalGzipKb} kB gzip)`}
+											>
+												<span className="home-aurora__telemetry-size">
+													{item.totalKb} kB
+												</span>
+												{item.validatorBytes ? (
+													<span className="home-aurora__telemetry-breakdown">
+														({item.engineKb} + {item.validatorKb})
+													</span>
+												) : null}
+											</div>
+										</div>
 									</div>
 								</div>
 							);
 						})}
-					</div>
+					</section>
 
 					<div className="home-aurora__telemetry-footer">
 						ArkEnv built via esbuild · platform: neutral · target: es2022{" "}

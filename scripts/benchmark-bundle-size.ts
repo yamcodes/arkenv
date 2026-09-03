@@ -1,165 +1,302 @@
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { gzipSync } from "node:zlib";
 import { build } from "esbuild";
+import type { BenchmarkData } from "../apps/www/lib/benchmark/types";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const OUT_PATH = join(ROOT, "apps/www/lib/benchmark/benchmark.json");
 
-type TestCase = {
-	id: string;
-	name: string;
+type BuildTarget = {
 	code: string;
 	dir: string;
-	tier: "primary" | "secondary" | "competitor";
-	fallbackBytes?: number;
-	/** Packages esbuild should treat as external (not bundled). */
 	external?: string[];
+	fallbackBytes: number;
+	fallbackGzipBytes: number;
 };
 
-type BenchmarkResult = {
-	id: string;
-	name: string;
-	bytes: number;
-	kb: string;
-	tier: "primary" | "secondary" | "competitor";
-	source: "esbuild" | "bundlephobia";
-};
+async function measure(
+	target: BuildTarget,
+): Promise<{ bytes: number; gzipBytes: number }> {
+	try {
+		const res = await build({
+			stdin: { contents: target.code, resolveDir: target.dir },
+			bundle: true,
+			minify: true,
+			treeShaking: true,
+			format: "esm",
+			platform: "neutral",
+			target: "es2022",
+			write: false,
+			external: target.external ?? [],
+		});
+		const buffer = res.outputFiles[0].contents;
+		return {
+			bytes: buffer.length,
+			gzipBytes: gzipSync(buffer).length,
+		};
+	} catch (err: unknown) {
+		console.warn(
+			`Falling back to static metrics for build target: ${err instanceof Error ? err.message : String(err)}`,
+		);
+		return {
+			bytes: target.fallbackBytes,
+			gzipBytes: target.fallbackGzipBytes,
+		};
+	}
+}
 
-const cases: Record<"adapter" | "full", TestCase[]> = {
-	adapter: [
-		{
-			id: "standard-only",
-			name: "@arkenv/standard",
-			// Adapter-only: no required runtime peers — measures pure Standard Schema wrapper
-			code: `import arkenv from "${join(ROOT, "packages/standard/dist/index.js")}"; console.log(arkenv);`,
-			dir: join(ROOT, "packages/standard"),
-			tier: "primary",
-			fallbackBytes: 10222, // 10.0 kB
-		},
-		{
-			id: "core-only",
-			name: "@arkenv/core",
-			// Adapter-only: externalize arktype peer to isolate the wrapper footprint
-			code: `import arkenv from "${join(ROOT, "packages/core/dist/index.mjs")}"; console.log(arkenv);`,
-			dir: join(ROOT, "packages/core"),
-			tier: "secondary",
-			external: ["arktype", "@ark/util", "@ark/schema", "arkregex"],
-			fallbackBytes: 6424, // 6.3 kB
-		},
-		{
-			id: "t3-only",
-			name: "@t3-oss/env-core",
-			// Adapter-only: externalize zod peer for apples-to-apples adapter comparison
-			code: `import { createEnv } from "@t3-oss/env-core"; console.log(createEnv);`,
-			dir: join(ROOT, "packages/core"),
-			tier: "competitor",
-			fallbackBytes: 14541, // 14.2 kB; not in workspace
-			external: ["zod"],
-		},
-		{
-			id: "varlock",
-			name: "varlock",
-			// Standalone env validator (no external schema engine peer)
-			code: `import { env } from "varlock"; console.log(env);`,
-			dir: ROOT,
-			tier: "competitor",
-			fallbackBytes: 29082, // 28.4 kB — measured via bundlephobia; not in workspace
-		},
-	],
-	full: [
-		{
-			id: "standard-valibot",
-			name: "@arkenv/standard + Valibot",
-			// Full payload: adapter + valibot bundled together (no externals)
-			code: `import arkenv from "${join(ROOT, "packages/standard/dist/valibot.js")}"; import * as v from "valibot"; console.log(arkenv(v.object({ PORT: v.string() })));`,
-			dir: join(ROOT, "packages/standard"),
-			tier: "primary",
-			fallbackBytes: 23897, // 23.3 kB
-		},
-		{
-			id: "core-arktype",
-			name: "@arkenv/core + ArkType",
-			// Full payload: adapter + arktype bundled together (no externals)
-			code: `import arkenv from "${join(ROOT, "packages/core/dist/index.mjs")}"; import { type } from "arktype"; console.log(arkenv(type({ PORT: "0 <= number.integer <= 65535" })));`,
-			dir: join(ROOT, "packages/core"),
-			tier: "secondary",
-			fallbackBytes: 159771, // 156.0 kB
-		},
-		{
-			id: "varlock",
-			name: "varlock",
-			code: `import { env } from "varlock"; console.log(env);`,
-			dir: ROOT,
-			tier: "competitor",
-			fallbackBytes: 29082, // 28.4 kB — measured via bundlephobia; not in workspace
-		},
-		{
-			id: "t3-zod",
-			name: "@t3-oss/env-core + Zod",
-			code: `import { createEnv } from "@t3-oss/env-core"; import { z } from "zod"; console.log(createEnv({ server: { PORT: z.string() }, runtimeEnv: {} }));`,
-			dir: join(ROOT, "packages/core"),
-			tier: "competitor",
-			fallbackBytes: 332800, // ~325.0 kB (Zod 319 kB + t3-env); not in workspace
-		},
-	],
-};
+function toKb(bytes: number): string {
+	return (bytes / 1024).toFixed(1);
+}
 
 async function run() {
-	const results: Record<"adapter" | "full", BenchmarkResult[]> = {
-		adapter: [],
-		full: [],
+	// 1. Measure Core Engine & Core + ArkType
+	const coreEngine = await measure({
+		code: `import arkenv from "${join(ROOT, "packages/core/dist/index.mjs")}"; console.log(arkenv);`,
+		dir: join(ROOT, "packages/core"),
+		external: ["arktype", "@ark/util", "@ark/schema", "arkregex"],
+		fallbackBytes: 6424,
+		fallbackGzipBytes: 2913,
+	});
+
+	const coreArkType = await measure({
+		code: `import arkenv from "${join(ROOT, "packages/core/dist/index.mjs")}"; import { type } from "arktype"; console.log(arkenv(type({ PORT: "0 <= number.integer <= 65535" })));`,
+		dir: join(ROOT, "packages/core"),
+		fallbackBytes: 159771,
+		fallbackGzipBytes: 49631,
+	});
+
+	// 2. Measure Standard Engine & Standard + Valibot / Zod
+	const standardEngine = await measure({
+		code: `import arkenv from "${join(ROOT, "packages/standard/dist/index.js")}"; console.log(arkenv);`,
+		dir: join(ROOT, "packages/standard"),
+		fallbackBytes: 10222,
+		fallbackGzipBytes: 4106,
+	});
+
+	const standardValibot = await measure({
+		code: `import arkenv from "${join(ROOT, "packages/standard/dist/valibot.js")}"; import * as v from "valibot"; console.log(arkenv(v.object({ PORT: v.string() })));`,
+		dir: join(ROOT, "packages/standard"),
+		fallbackBytes: 23897,
+		fallbackGzipBytes: 7718,
+	});
+
+	const standardZod = await measure({
+		code: `import arkenv from "${join(ROOT, "packages/standard/dist/index.js")}"; import { z } from "zod"; console.log(arkenv({ PORT: z.string() }));`,
+		dir: join(ROOT, "packages/standard"),
+		fallbackBytes: 337145,
+		fallbackGzipBytes: 68682,
+	});
+
+	// 3. Competitor Benchmarks (fallbacks from npm/bundlephobia / isolated measurements)
+	const t3Engine = {
+		bytes: 14541,
+		gzipBytes: 4300,
+	};
+	const t3Zod = {
+		bytes: 332800,
+		gzipBytes: 67584,
+	};
+	const varlock = {
+		bytes: 29082,
+		gzipBytes: 9318,
 	};
 
-	for (const [mode, tests] of Object.entries(cases) as [
-		"adapter" | "full",
-		TestCase[],
-	][]) {
-		for (const t of tests) {
-			let bytes: number | undefined;
-			let source: "esbuild" | "bundlephobia" = "esbuild";
-			try {
-				const res = await build({
-					stdin: { contents: t.code, resolveDir: t.dir },
-					bundle: true,
-					minify: true,
-					treeShaking: true,
-					format: "esm",
-					platform: "neutral",
-					target: "es2022",
-					write: false,
-					external: t.external ?? [],
-				});
-				bytes = res.outputFiles[0].contents.length;
-			} catch (e: unknown) {
-				if (t.fallbackBytes) {
-					bytes = t.fallbackBytes;
-					source = "bundlephobia";
-					console.warn(
-						`Using fallback for ${t.name}: ${e instanceof Error ? e.message : String(e)}`,
-					);
-				} else {
-					throw new Error(
-						`Benchmark case ${t.name} failed (no fallback available): ${
-							e instanceof Error ? e.message : String(e)
-						}`,
-					);
-				}
-			}
-
-			if (bytes !== undefined) {
-				results[mode].push({
-					id: t.id,
-					name: t.name,
-					bytes,
-					kb: (bytes / 1024).toFixed(1),
-					tier: t.tier,
-					source,
-				});
-			}
-		}
-	}
+	// 4. Construct rows for each validator tab
+	const results: BenchmarkData = {
+		arktype: [
+			{
+				id: "arkenv-core",
+				name: "@arkenv/core",
+				npmPackage: "@arkenv/core",
+				engineBytes: coreEngine.bytes,
+				engineKb: toKb(coreEngine.bytes),
+				engineGzipBytes: coreEngine.gzipBytes,
+				engineGzipKb: toKb(coreEngine.gzipBytes),
+				validatorName: "ArkType",
+				validatorBytes: Math.max(0, coreArkType.bytes - coreEngine.bytes),
+				validatorKb: toKb(Math.max(0, coreArkType.bytes - coreEngine.bytes)),
+				validatorGzipBytes: Math.max(
+					0,
+					coreArkType.gzipBytes - coreEngine.gzipBytes,
+				),
+				validatorGzipKb: toKb(
+					Math.max(0, coreArkType.gzipBytes - coreEngine.gzipBytes),
+				),
+				totalBytes: coreArkType.bytes,
+				totalKb: toKb(coreArkType.bytes),
+				totalGzipBytes: coreArkType.gzipBytes,
+				totalGzipKb: toKb(coreArkType.gzipBytes),
+				tier: "primary",
+			},
+			{
+				id: "t3-env",
+				name: "@t3-oss/env-core",
+				npmPackage: "@t3-oss/env-core",
+				engineBytes: t3Engine.bytes,
+				engineKb: toKb(t3Engine.bytes),
+				engineGzipBytes: t3Engine.gzipBytes,
+				engineGzipKb: toKb(t3Engine.gzipBytes),
+				validatorName: "Zod",
+				validatorBytes: t3Zod.bytes - t3Engine.bytes,
+				validatorKb: toKb(t3Zod.bytes - t3Engine.bytes),
+				validatorGzipBytes: t3Zod.gzipBytes - t3Engine.gzipBytes,
+				validatorGzipKb: toKb(t3Zod.gzipBytes - t3Engine.gzipBytes),
+				totalBytes: t3Zod.bytes,
+				totalKb: toKb(t3Zod.bytes),
+				totalGzipBytes: t3Zod.gzipBytes,
+				totalGzipKb: toKb(t3Zod.gzipBytes),
+				tier: "competitor",
+				note: "requires Zod",
+			},
+			{
+				id: "varlock",
+				name: "varlock",
+				npmPackage: "varlock",
+				engineBytes: varlock.bytes,
+				engineKb: toKb(varlock.bytes),
+				engineGzipBytes: varlock.gzipBytes,
+				engineGzipKb: toKb(varlock.gzipBytes),
+				totalBytes: varlock.bytes,
+				totalKb: toKb(varlock.bytes),
+				totalGzipBytes: varlock.gzipBytes,
+				totalGzipKb: toKb(varlock.gzipBytes),
+				tier: "reference",
+				note: "for reference",
+			},
+		],
+		zod: [
+			{
+				id: "arkenv-standard",
+				name: "@arkenv/standard",
+				npmPackage: "@arkenv/standard",
+				engineBytes: standardEngine.bytes,
+				engineKb: toKb(standardEngine.bytes),
+				engineGzipBytes: standardEngine.gzipBytes,
+				engineGzipKb: toKb(standardEngine.gzipBytes),
+				validatorName: "Zod",
+				validatorBytes: Math.max(0, standardZod.bytes - standardEngine.bytes),
+				validatorKb: toKb(
+					Math.max(0, standardZod.bytes - standardEngine.bytes),
+				),
+				validatorGzipBytes: Math.max(
+					0,
+					standardZod.gzipBytes - standardEngine.gzipBytes,
+				),
+				validatorGzipKb: toKb(
+					Math.max(0, standardZod.gzipBytes - standardEngine.gzipBytes),
+				),
+				totalBytes: standardZod.bytes,
+				totalKb: toKb(standardZod.bytes),
+				totalGzipBytes: standardZod.gzipBytes,
+				totalGzipKb: toKb(standardZod.gzipBytes),
+				tier: "primary",
+			},
+			{
+				id: "t3-env",
+				name: "@t3-oss/env-core",
+				npmPackage: "@t3-oss/env-core",
+				engineBytes: t3Engine.bytes,
+				engineKb: toKb(t3Engine.bytes),
+				engineGzipBytes: t3Engine.gzipBytes,
+				engineGzipKb: toKb(t3Engine.gzipBytes),
+				validatorName: "Zod",
+				validatorBytes: t3Zod.bytes - t3Engine.bytes,
+				validatorKb: toKb(t3Zod.bytes - t3Engine.bytes),
+				validatorGzipBytes: t3Zod.gzipBytes - t3Engine.gzipBytes,
+				validatorGzipKb: toKb(t3Zod.gzipBytes - t3Engine.gzipBytes),
+				totalBytes: t3Zod.bytes,
+				totalKb: toKb(t3Zod.bytes),
+				totalGzipBytes: t3Zod.gzipBytes,
+				totalGzipKb: toKb(t3Zod.gzipBytes),
+				tier: "competitor",
+			},
+			{
+				id: "varlock",
+				name: "varlock",
+				npmPackage: "varlock",
+				engineBytes: varlock.bytes,
+				engineKb: toKb(varlock.bytes),
+				engineGzipBytes: varlock.gzipBytes,
+				engineGzipKb: toKb(varlock.gzipBytes),
+				totalBytes: varlock.bytes,
+				totalKb: toKb(varlock.bytes),
+				totalGzipBytes: varlock.gzipBytes,
+				totalGzipKb: toKb(varlock.gzipBytes),
+				tier: "reference",
+				note: "for reference",
+			},
+		],
+		valibot: [
+			{
+				id: "arkenv-standard",
+				name: "@arkenv/standard",
+				npmPackage: "@arkenv/standard",
+				engineBytes: standardEngine.bytes,
+				engineKb: toKb(standardEngine.bytes),
+				engineGzipBytes: standardEngine.gzipBytes,
+				engineGzipKb: toKb(standardEngine.gzipBytes),
+				validatorName: "Valibot",
+				validatorBytes: Math.max(
+					0,
+					standardValibot.bytes - standardEngine.bytes,
+				),
+				validatorKb: toKb(
+					Math.max(0, standardValibot.bytes - standardEngine.bytes),
+				),
+				validatorGzipBytes: Math.max(
+					0,
+					standardValibot.gzipBytes - standardEngine.gzipBytes,
+				),
+				validatorGzipKb: toKb(
+					Math.max(0, standardValibot.gzipBytes - standardEngine.gzipBytes),
+				),
+				totalBytes: standardValibot.bytes,
+				totalKb: toKb(standardValibot.bytes),
+				totalGzipBytes: standardValibot.gzipBytes,
+				totalGzipKb: toKb(standardValibot.gzipBytes),
+				tier: "primary",
+			},
+			{
+				id: "t3-env",
+				name: "@t3-oss/env-core",
+				npmPackage: "@t3-oss/env-core",
+				engineBytes: t3Engine.bytes,
+				engineKb: toKb(t3Engine.bytes),
+				engineGzipBytes: t3Engine.gzipBytes,
+				engineGzipKb: toKb(t3Engine.gzipBytes),
+				validatorName: "Zod",
+				validatorBytes: t3Zod.bytes - t3Engine.bytes,
+				validatorKb: toKb(t3Zod.bytes - t3Engine.bytes),
+				validatorGzipBytes: t3Zod.gzipBytes - t3Engine.gzipBytes,
+				validatorGzipKb: toKb(t3Zod.gzipBytes - t3Engine.gzipBytes),
+				totalBytes: t3Zod.bytes,
+				totalKb: toKb(t3Zod.bytes),
+				totalGzipBytes: t3Zod.gzipBytes,
+				totalGzipKb: toKb(t3Zod.gzipBytes),
+				tier: "competitor",
+				note: "requires Zod",
+			},
+			{
+				id: "varlock",
+				name: "varlock",
+				npmPackage: "varlock",
+				engineBytes: varlock.bytes,
+				engineKb: toKb(varlock.bytes),
+				engineGzipBytes: varlock.gzipBytes,
+				engineGzipKb: toKb(varlock.gzipBytes),
+				totalBytes: varlock.bytes,
+				totalKb: toKb(varlock.bytes),
+				totalGzipBytes: varlock.gzipBytes,
+				totalGzipKb: toKb(varlock.gzipBytes),
+				tier: "reference",
+				note: "for reference",
+			},
+		],
+	};
 
 	if (!existsSync(dirname(OUT_PATH))) {
 		mkdirSync(dirname(OUT_PATH), { recursive: true });
