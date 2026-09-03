@@ -1,13 +1,27 @@
-/**
- * Machine-readable validation errors for CI and agents.
- */
+import { WindowChrome } from "./window-chrome";
+
+const HOST_MESSAGE = 'must be a string or "localhost" (was missing)';
+const PORT_MESSAGE = "must be a number (was a string)";
+
 const PROOF_JSON = `{
+  "success": false,
   "issues": [
-    { "path": "HOST", "code": "MISSING_VARIABLE" },
-    { "path": "PORT", "code": "INVALID_TYPE" }
+    { "path": "HOST", "code": "MISSING_VARIABLE", "message": "${HOST_MESSAGE}" },
+    { "path": "PORT", "code": "INVALID_TYPE", "message": "${PORT_MESSAGE}" }
   ]
 }`;
 
+function EllipsisMessage({ message }: { message: string }) {
+	return (
+		<span className="home-aurora__json-ellipsis" title={message} tabIndex={0}>
+			…
+		</span>
+	);
+}
+
+/**
+ * Machine-readable validation errors for CI and agents.
+ */
 export function RuntimeBloatShowcase() {
 	return (
 		<section
@@ -29,9 +43,17 @@ export function RuntimeBloatShowcase() {
 				className="home-aurora__pitch-visual home-aurora__code-window home-aurora__terminal"
 				data-reveal
 				style={{ ["--reveal-delay" as string]: "140ms" }}
+				aria-label="Safe result JSON: HOST missing, PORT invalid type"
 			>
+				<WindowChrome title="{ safe: true }" copyText={PROOF_JSON} />
 				<pre className="home-aurora__tty home-aurora__tty--wrap">
-					<code>{PROOF_JSON}</code>
+					<code>
+						{'{\n  "success": false,\n  "issues": [\n    { "path": "HOST", "code": "MISSING_VARIABLE", "message": "'}
+						<EllipsisMessage message={HOST_MESSAGE} />
+						{'" },\n    { "path": "PORT", "code": "INVALID_TYPE", "message": "'}
+						<EllipsisMessage message={PORT_MESSAGE} />
+						{'" }\n  ]\n}'}
+					</code>
 				</pre>
 			</figure>
 		</section>

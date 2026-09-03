@@ -2,6 +2,9 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { RuntimeBloatShowcase } from "./runtime-bloat-showcase";
 
+const HOST_MESSAGE = 'must be a string or "localhost" (was missing)';
+const PORT_MESSAGE = "must be a number (was a string)";
+
 describe("RuntimeBloatShowcase", () => {
 	it("renders structured issues JSON instead of the edge bundle chart", () => {
 		render(<RuntimeBloatShowcase />);
@@ -19,17 +22,27 @@ describe("RuntimeBloatShowcase", () => {
 			screen.getByText(/Missing keys and bad values aren't the same/i),
 		).toBeInTheDocument();
 
+		expect(screen.getByText("{ safe: true }")).toBeInTheDocument();
+
 		const figure = screen.getByRole("figure");
+		expect(figure).toHaveTextContent('"success": false');
 		expect(figure).toHaveTextContent('"issues"');
 		expect(figure).toHaveTextContent("MISSING_VARIABLE");
 		expect(figure).toHaveTextContent("INVALID_TYPE");
 		expect(figure).toHaveTextContent('"path": "HOST"');
 		expect(figure).toHaveTextContent('"path": "PORT"');
-		expect(figure).not.toHaveTextContent("success");
-		expect(figure).not.toHaveTextContent("message");
+		expect(figure).toHaveTextContent('"message"');
+		expect(figure).toHaveTextContent("…");
+		expect(figure).not.toHaveTextContent(HOST_MESSAGE);
+		expect(figure).not.toHaveTextContent(PORT_MESSAGE);
 		expect(figure).not.toHaveTextContent("received");
 		expect(figure).not.toHaveTextContent("DATABASE_URL");
 		expect(figure).not.toHaveTextContent("$ arkenv check --json");
+		expect(figure).not.toHaveTextContent("ok");
+
+		expect(screen.getByTitle(HOST_MESSAGE)).toBeInTheDocument();
+		expect(screen.getByTitle(PORT_MESSAGE)).toBeInTheDocument();
+		expect(screen.getByRole("button", { name: "Copy" })).toBeInTheDocument();
 
 		expect(
 			screen.queryByRole("heading", { name: "Errors you can automate" }),
