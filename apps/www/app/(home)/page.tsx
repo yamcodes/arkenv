@@ -24,7 +24,7 @@ import { fetchRoadmap } from "~/lib/roadmap/fetch-roadmap";
 export const metadata: Metadata = {
 	title: "ArkEnv - Typesafe environment variables for TypeScript",
 	description:
-		"Typesafe environment variables with ArkType, Zod, Valibot, or any Standard Schema. Get a strictly typed env object using your existing TypeScript validator. No boilerplate. Zero runtime dependencies.",
+		"Typesafe environment variables with ArkType, Zod, Valibot, or any Standard Schema. Get a strictly typed env object from the validator you already use. No boilerplate. No additional dependencies.",
 };
 
 export const revalidate = 300;
@@ -63,8 +63,8 @@ export default async function HomePage() {
 							className="home-aurora__summary rise-blur"
 							style={{ animationDelay: "520ms" }}
 						>
-							Get a strictly typed <HeroEnvHoverSlot /> object using your
-							existing TypeScript validator. No boilerplate. Zero runtime
+							Get a strictly typed <HeroEnvHoverSlot /> object from the
+							validator you already use. No boilerplate. No additional
 							dependencies.
 						</p>
 					</div>

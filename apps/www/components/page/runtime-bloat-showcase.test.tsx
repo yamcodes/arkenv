@@ -3,45 +3,48 @@ import { describe, expect, it } from "vitest";
 import { RuntimeBloatShowcase } from "./runtime-bloat-showcase";
 
 describe("RuntimeBloatShowcase", () => {
-	it("renders the Optimized for the edge heading and comparison copy", () => {
+	it("renders automatable error JSON instead of the edge bundle chart", () => {
 		render(<RuntimeBloatShowcase />);
 
 		expect(
-			screen.getByRole("heading", { name: "Optimized for the edge" }),
+			screen.getByRole("heading", { name: "Errors you can automate" }),
 		).toBeInTheDocument();
 
 		expect(
-			screen.getByText(/50% smaller core than T3 Env/i),
+			screen.getByText(/Beautiful errors in the terminal/i),
 		).toBeInTheDocument();
 		expect(
-			screen.getByText(/All engines under 10 kB for strict edge deployments/i),
+			screen.getByText(/Structured JSON for CI and agents/i),
 		).toBeInTheDocument();
 
-		const figure = screen.getByRole("figure", {
-			name: /production runtime bundle size comparison/i,
+		const figure = screen.getByRole("img", {
+			name: /arkenv check --json/i,
 		});
-		expect(figure).toHaveTextContent("@arkenv/standard");
-		expect(figure).toHaveTextContent("1.5 kB");
-		expect(figure).toHaveTextContent("@arkenv/core");
-		expect(figure).toHaveTextContent("7.4 kB");
-		expect(figure).toHaveTextContent("@t3-oss/env-core");
-		expect(figure).toHaveTextContent("14.2 kB");
-		expect(figure).toHaveTextContent("varlock");
-		expect(figure).toHaveTextContent("28.4 kB");
+		expect(figure).toHaveTextContent("$ arkenv check --json");
+		expect(figure).toHaveTextContent('"success": false');
+		expect(figure).toHaveTextContent("MISSING_VARIABLE");
+		expect(figure).toHaveTextContent("INVALID_TYPE");
+		expect(figure).toHaveTextContent('"path": "HOST"');
+		expect(figure).toHaveTextContent('"path": "PORT"');
+		expect(figure).not.toHaveTextContent("received");
+		expect(figure).not.toHaveTextContent("DATABASE_URL");
 
-		// Check npmx links
-		const links = screen.getAllByRole("link");
+		expect(screen.getByText(/add it to/i)).toBeInTheDocument();
+		expect(screen.getByText(/fix the value/i)).toBeInTheDocument();
+		expect(screen.getByText(/Same codes as/i)).toBeInTheDocument();
+
 		expect(
-			links.some(
-				(l) => l.getAttribute("href") === "https://npmx.dev/package/varlock",
-			),
-		).toBe(true);
+			screen.queryByRole("heading", { name: "Optimized for the edge" }),
+		).not.toBeInTheDocument();
 		expect(
-			links.some(
-				(l) =>
-					l.getAttribute("href") ===
-					"https://npmx.dev/package/@arkenv/standard",
-			),
-		).toBe(true);
+			screen.queryByText(/50% smaller core than T3 Env/i),
+		).not.toBeInTheDocument();
+		expect(screen.queryByText(/varlock/i)).not.toBeInTheDocument();
+		expect(screen.queryByText("@arkenv/standard")).not.toBeInTheDocument();
+		expect(
+			screen.queryByRole("figure", {
+				name: /production runtime bundle size comparison/i,
+			}),
+		).not.toBeInTheDocument();
 	});
 });
