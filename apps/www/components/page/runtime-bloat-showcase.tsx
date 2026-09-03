@@ -106,15 +106,23 @@ export function RuntimeBloatShowcase() {
 													</code>
 												</a>
 												{item.validatorName && item.validatorPackage ? (
-													<a
-														href={`https://npmx.dev/package/${item.validatorPackage}`}
-														target="_blank"
-														rel="noopener noreferrer"
-														className="home-aurora__telemetry-link home-aurora__telemetry-ext"
-														title={`View ${item.validatorPackage} on npmx`}
-													>
-														+ {item.validatorName}
-													</a>
+													<>
+														<span
+															className="home-aurora__telemetry-plus"
+															aria-hidden="true"
+														>
+															+
+														</span>
+														<a
+															href={`https://npmx.dev/package/${item.validatorPackage}`}
+															target="_blank"
+															rel="noopener noreferrer"
+															className="home-aurora__telemetry-link home-aurora__telemetry-ext"
+															title={`View ${item.validatorPackage} on npmx`}
+														>
+															{item.validatorName}
+														</a>
+													</>
 												) : null}
 											</div>
 

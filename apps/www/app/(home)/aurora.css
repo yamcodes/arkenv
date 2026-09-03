@@ -1718,7 +1718,7 @@
 }
 
 .home-aurora__telemetry-name {
-	font-family: var(--font-mono, ui-monospace, monospace);
+	font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
 	font-size: 0.75rem;
 	font-weight: 500;
 	line-height: normal;
@@ -1734,6 +1734,15 @@
 	color: var(--color-accent) !important;
 	text-decoration: underline;
 	text-underline-offset: 2px;
+}
+
+.home-aurora__telemetry-plus {
+	font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
+	font-size: 0.75rem;
+	line-height: normal;
+	color: var(--color-ink-2);
+	white-space: nowrap;
+	flex-shrink: 0;
 }
 
 .home-aurora__telemetry-ext {
@@ -1773,6 +1782,7 @@
 
 @media (min-width: 40rem) {
 	.home-aurora__telemetry-name,
+	.home-aurora__telemetry-plus,
 	.home-aurora__telemetry-ext,
 	.home-aurora__telemetry-size {
 		font-size: 0.875rem;

@@ -35,7 +35,8 @@ describe("RuntimeBloatShowcase", () => {
 		// 1. ArkEnv + Valibot (23.3 kB)
 		const row0 = within(rows[0] as HTMLElement);
 		expect(row0.getByText("ArkEnv")).toBeInTheDocument();
-		expect(row0.getByText("+ Valibot")).toBeInTheDocument();
+		expect(row0.getByText("+")).toBeInTheDocument();
+		expect(row0.getByText("Valibot")).toBeInTheDocument();
 		expect(row0.getByText("23.3 kB")).toBeInTheDocument();
 		expect(row0.queryByText("(10.0 + 13.4)")).not.toBeInTheDocument();
 
@@ -47,14 +48,16 @@ describe("RuntimeBloatShowcase", () => {
 		// 3. ArkEnv + ArkType (156.0 kB)
 		const row2 = within(rows[2] as HTMLElement);
 		expect(row2.getByText("ArkEnv")).toBeInTheDocument();
-		expect(row2.getByText("+ ArkType")).toBeInTheDocument();
+		expect(row2.getByText("+")).toBeInTheDocument();
+		expect(row2.getByText("ArkType")).toBeInTheDocument();
 		expect(row2.getByText("156.0 kB")).toBeInTheDocument();
 		expect(row2.queryByText("(6.3 + 149.8)")).not.toBeInTheDocument();
 
 		// 4. T3 Env + Zod (325.0 kB)
 		const row3 = within(rows[3] as HTMLElement);
 		expect(row3.getByText("T3 Env")).toBeInTheDocument();
-		expect(row3.getByText("+ Zod")).toBeInTheDocument();
+		expect(row3.getByText("+")).toBeInTheDocument();
+		expect(row3.getByText("Zod")).toBeInTheDocument();
 		expect(row3.getByText("325.0 kB")).toBeInTheDocument();
 		expect(row3.queryByText("(14.2 + 310.8)")).not.toBeInTheDocument();
 	});
