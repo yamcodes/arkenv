@@ -65,11 +65,10 @@ export function RuntimeBloatShowcase() {
 						</p>
 					</div>
 
-					<div
+					<fieldset
 						className="home-aurora__telemetry-toggle"
 						data-reveal
 						style={{ ["--reveal-delay" as string]: "80ms" }}
-						role="group"
 						aria-label="Benchmark view"
 					>
 						{(["full", "adapter"] as const).map((mode) => (
@@ -83,7 +82,7 @@ export function RuntimeBloatShowcase() {
 								{VIEW_LABELS[mode]}
 							</button>
 						))}
-					</div>
+					</fieldset>
 				</div>
 			</header>
 
@@ -130,7 +129,7 @@ export function RuntimeBloatShowcase() {
 					</div>
 
 					<div className="home-aurora__telemetry-footer">
-						esbuild · platform: neutral · target: es2022{" "}
+						ArkEnv built via esbuild · platform: neutral · target: es2022{" "}
 						<span aria-hidden="true">·</span>{" "}
 						<a
 							href="https://github.com/yamcodes/arkenv/blob/v1/scripts/benchmark-bundle-size.ts"
@@ -145,4 +144,3 @@ export function RuntimeBloatShowcase() {
 		</section>
 	);
 }
-

@@ -1718,7 +1718,9 @@
 	background: var(--color-paper-2);
 	border: var(--rule-hair) solid var(--color-rule);
 	border-radius: var(--radius-control, 0.375rem);
+	margin: 0;
 	margin-left: auto;
+	min-inline-size: 0;
 }
 
 .home-aurora__telemetry-toggle-btn {
@@ -1756,13 +1758,13 @@
 	line-height: 1.4;
 }
 
-.home-aurora__telemetry-footer a {
+.home-aurora__telemetry .home-aurora__telemetry-footer a {
 	color: var(--color-ink-2);
 	text-decoration: none;
 	transition: color var(--dur-micro) var(--ease-out);
 }
 
-.home-aurora__telemetry-footer a:hover {
+.home-aurora__telemetry .home-aurora__telemetry-footer a:hover {
 	color: var(--color-ink);
 	text-decoration: underline;
 	text-underline-offset: 2px;

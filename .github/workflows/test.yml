@@ -87,6 +87,8 @@ jobs:
           bun-version: 1.4.0
       - run: pnpm install
       - run: pnpm run build
+      - name: Verify benchmark artifact has no uncommitted drift
+        run: git diff --exit-code apps/www/lib/benchmark/benchmark.json
 
   test-vite-compatibility:
     runs-on: ubuntu-latest

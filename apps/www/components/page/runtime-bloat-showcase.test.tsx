@@ -16,9 +16,7 @@ describe("RuntimeBloatShowcase", () => {
 			screen.getByRole("heading", { name: "Optimized for the edge" }),
 		).toBeInTheDocument();
 
-		expect(
-			screen.getByText(/Minified, uncompressed JS/i),
-		).toBeInTheDocument();
+		expect(screen.getByText(/Minified, uncompressed JS/i)).toBeInTheDocument();
 	});
 
 	it("renders the toggle with two buttons", () => {
@@ -53,13 +51,15 @@ describe("RuntimeBloatShowcase", () => {
 		expect(figure).toHaveTextContent("28.4 kB");
 	});
 
-	it("switches to adapter-only view when toggle is clicked", async () => {
+	it("switches to adapter-only view when toggle is clicked and syncs URL", async () => {
 		render(<RuntimeBloatShowcase />);
 
 		const adapterBtn = screen.getByRole("button", {
 			name: /Adapter engine only/i,
 		});
 		await userEvent.click(adapterBtn);
+
+		expect(window.location.search).toBe("?view=adapter");
 
 		const figure = screen.getByRole("figure", {
 			name: /production runtime bundle size comparison/i,
@@ -74,6 +74,27 @@ describe("RuntimeBloatShowcase", () => {
 		// Should NOT show full-payload combined names in adapter view
 		expect(figure).not.toHaveTextContent("+ ArkType");
 		expect(figure).not.toHaveTextContent("+ Zod");
+
+		// Switching back updates URL query string to empty
+		const fullBtn = screen.getByRole("button", {
+			name: /Full edge payload/i,
+		});
+		await userEvent.click(fullBtn);
+		expect(window.location.search).toBe("");
+	});
+
+	it("initializes to adapter view when ?view=adapter is preset in URL", () => {
+		window.history.replaceState(null, "", "/?view=adapter");
+		render(<RuntimeBloatShowcase />);
+
+		const figure = screen.getByRole("figure", {
+			name: /production runtime bundle size comparison/i,
+		});
+		expect(figure).toHaveTextContent("@arkenv/standard");
+		expect(figure).toHaveTextContent("10.0 kB");
+		expect(figure).toHaveTextContent("@arkenv/core");
+		expect(figure).toHaveTextContent("6.3 kB");
+		expect(figure).not.toHaveTextContent("+ ArkType");
 	});
 
 	it("renders npmx link for the package base name", () => {
@@ -83,7 +104,8 @@ describe("RuntimeBloatShowcase", () => {
 		expect(
 			links.some(
 				(l) =>
-					l.getAttribute("href") === "https://npmx.dev/package/@arkenv/standard",
+					l.getAttribute("href") ===
+					"https://npmx.dev/package/@arkenv/standard",
 			),
 		).toBe(true);
 		expect(
