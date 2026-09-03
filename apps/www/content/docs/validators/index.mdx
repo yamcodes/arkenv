@@ -123,9 +123,14 @@ framework plugins that keep server secrets out of the client graph. See
 [Why ArkEnv?](/docs/why-arkenv) for DIY, Varlock, T3 Env, znv, Envalid, and
 related tools.
 
+For a detailed breakdown of bundle sizes and cold-start parse payloads (Valibot 23.3 kB vs Zod Mini 33.6 kB vs ArkType 156.0 kB),
+see [Choosing a validator](/docs/validators/choosing-a-validator).
+
 ## Cookbooks
 
 <Cards>
+  <Card href="/docs/validators/choosing-a-validator" title="Choosing a validator" description="Compare bundle size, syntax, and performance across engines." />
+
   <Card href="/docs/validators/arktype" title="ArkType" description="@arkenv/core, ArkType DSL, and built-in coercion." />
 
   <Card href="/docs/validators/zod" title="Zod" description="@arkenv/standard with Zod 4.2+, Zod Mini, or Zod v3." />

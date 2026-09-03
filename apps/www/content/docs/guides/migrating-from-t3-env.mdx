@@ -108,6 +108,24 @@ Work through these steps on an existing Next.js app.
     });
     ```
 
+    ArkEnv (Zod Mini — 90% smaller edge bundle):
+
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/zod-mini";
+    import * as z from "zod/mini";
+
+    export const env = arkenv({
+      DATABASE_URL: z.url(),
+      NEXT_PUBLIC_APP_URL: z.url(),
+    });
+    ```
+
+    <Callout type="info" title="Shed 90% of bundle weight with Zod Mini">
+      T3 Env with classic Zod ships a \~325 kB uncompressed validation payload to your edge functions.
+      Switching to `@arkenv/standard/zod-mini` and `zod/mini` preserves your familiar Zod syntax
+      while dropping the total edge validation footprint to **33.6 kB** — a \~90% reduction in V8 cold-start parse cost.
+    </Callout>
+
     You do not copy keys into `runtimeEnv`. `NEXT_PUBLIC_` marks client
     variables.
   </Step>

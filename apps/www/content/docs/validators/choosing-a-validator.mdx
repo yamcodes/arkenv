@@ -1,0 +1,153 @@
+---
+title: Choosing a Validator
+description: Compare bundle size, syntax, and runtime characteristics across ArkType, Valibot, Zod Mini, and classic Zod.
+---
+
+ArkEnv supports multiple validation libraries through a unified environment variables pipeline.
+ArkEnv lets you pick the schema engine that matches your performance requirements and coding style.
+
+Both engines (`@arkenv/core` and `@arkenv/standard`) run the same coercion pipeline,
+produce the same fail-fast errors, and support all framework plugins (Next.js, Nuxt, Vite, Bun).
+The difference lies in bundle weight, syntax, and ecosystem integration.
+
+## Comparison matrix
+
+All figures represent minified, uncompressed JavaScript evaluated during V8 isolate cold starts,
+measured using esbuild (`platform: neutral`, `target: es2022`).
+
+| Validator       | Engine / Subpath            | Total edge payload | Min + gzip | Primary strength                                                    |
+| :-------------- | :-------------------------- | :----------------- | :--------- | :------------------------------------------------------------------ |
+| **Valibot**     | `@arkenv/standard/valibot`  | **23.3 kB**        | 7.5 kB     | Smallest edge footprint; modular functional tree-shaking            |
+| **Zod Mini**    | `@arkenv/standard/zod-mini` | **33.6 kB**        | 11.5 kB    | \~90% smaller than classic Zod; familiar syntax                     |
+| **ArkType**     | `@arkenv/core`              | **156.0 kB**       | 48.5 kB    | TypeScript-native DSL strings; built-in keywords; zero dependencies |
+| **Classic Zod** | `@arkenv/standard`          | **329.3 kB**       | 67.1 kB    | Drop-in compatibility for existing Zod schemas                      |
+
+## Strict edge constraints: Valibot
+
+Choose **Valibot** via `@arkenv/standard/valibot` when minimizing cold-start latency on edge runtimes
+(Cloudflare Workers, Vercel Edge Functions, AWS Lambda\@Edge) is your top priority.
+
+Valibot uses standalone functions rather than monolithic class instances or chaining methods.
+Unused schema types are completely stripped by your bundler: the treeshaken validator weighs just
+**2.4 kB**, bringing the total runtime validation payload down to **23.3 kB**.
+
+```package-install
+npm install @arkenv/standard valibot
+```
+
+```ts title="./env.ts" twoslash
+import { arkenv } from "@arkenv/standard/valibot";
+import * as v from "valibot";
+
+export const env = arkenv({
+  DATABASE_URL: v.pipe(v.string(), v.url()),
+  PORT: v.optional(v.number(), 3000),
+  NODE_ENV: v.optional(
+    v.picklist(["development", "production", "test"]),
+    "development",
+  ),
+});
+```
+
+See the [Valibot guide](/docs/validators/valibot) for detailed schema recipes and pipe usage.
+
+## Seamless migrations with massive savings: Zod Mini
+
+Choose **Zod Mini** via `@arkenv/standard/zod-mini` when migrating an existing Zod codebase
+where you want to retain familiar `z.string()`, `z.number()`, and `z.boolean()` APIs without
+shipping Zod's \~320 kB runtime bundle to the edge.
+
+Zod 4's `zod/mini` subpath provides modular, tree-shakeable schema constructors. Paired with
+ArkEnv's pre-bound adapter, the entire payload evaluates at **33.6 kB** — shedding **\~90%** of
+classic Zod's parsing overhead.
+
+```package-install
+npm install @arkenv/standard zod
+```
+
+```ts title="./env.ts" twoslash
+import { arkenv } from "@arkenv/standard/zod-mini";
+import * as z from "zod/mini";
+
+export const env = arkenv({
+  DATABASE_URL: z.url(),
+  PORT: z.number(),
+  DEBUG: z.boolean(),
+});
+```
+
+<Callout type="info" title="Automatic coercion with Zod Mini">
+  `@arkenv/standard/zod-mini` automatically binds `zod/mini`'s JSON Schema converter
+  so string environment variables like `"3000"` coerce to numbers and `"true"` to booleans
+  without needing manual `z.coerce` wrappers.
+</Callout>
+
+See the [Zod guide](/docs/validators/zod#zod-mini) for subpath configuration.
+
+## Advanced TypeScript integration: ArkType
+
+Choose **ArkType** via `@arkenv/core` when you want an expressive, TypeScript-first developer
+experience with zero runtime dependencies.
+
+ArkType defines validation schemas directly using TypeScript syntax within definition strings.
+It compiles definitions at runtime into optimized validation functions while offering 100x faster
+IDE autocomplete and typecheck cycles than generic type builders. ArkEnv also provides built-in
+domain keywords like `number.port` and `string.url`.
+
+At **156.0 kB**, `@arkenv/core` with ArkType evaluates in less than half the bytes of classic
+Zod while providing a full runtime type engine.
+
+```package-install
+npm install @arkenv/core arktype
+```
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  DATABASE_URL: "string.url",
+  PORT: "number.port = 3000",
+  DEBUG: "boolean = false",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+```
+
+See the [ArkType guide](/docs/validators/arktype) for keywords, cyclic types, and custom regex definitions.
+
+## Existing monolithic schemas: Classic Zod
+
+Choose **Classic Zod** via `@arkenv/standard` when you already have extensive Zod 4 schemas
+or want zero code changes during migration, and your target runtime is a long-lived Node.js server
+where isolate cold-start parse time is not a constraint.
+
+```package-install
+npm install @arkenv/standard zod
+```
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard";
+import * as z from "zod";
+
+export const env = arkenv({
+  DATABASE_URL: z.url(),
+  PORT: z.int().min(0).max(65535).default(3000),
+  NODE_ENV: z
+    .enum(["development", "production", "test"])
+    .default("development"),
+});
+```
+
+Zod 4.2+ embeds Standard JSON Schema metadata, enabling automatic string-to-type coercion
+without manual `toJsonSchema` callbacks or `z.coerce`.
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/validators/valibot" title="Valibot" description="Configure @arkenv/standard/valibot for minimal bundle footprints." />
+
+  <Card href="/docs/validators/zod" title="Zod & Zod Mini" description="Use Zod Mini or classic Zod with automatic coercion." />
+
+  <Card href="/docs/validators/arktype" title="ArkType" description="Express schemas with TypeScript syntax and domain keywords." />
+
+  <Card href="/docs/guides/migrating-from-t3-env" title="Migrating from T3 Env" description="Replace T3 Env and drop manual runtimeEnv mappings." />
+</Cards>

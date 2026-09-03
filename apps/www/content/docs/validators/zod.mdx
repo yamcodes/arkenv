@@ -77,6 +77,11 @@ TypeScript must use `moduleResolution: "bundler" | "node16" | "nodenext"`.
 The root `toJsonSchema` callback remains available for mixed maps; see
 [Coercion](/docs/core-concepts/coercion-and-parsing#mixing-with-zod-mini).
 
+Zod Mini gives you the modular tree-shaking benefits of Zod 4: paired with
+`@arkenv/standard/zod-mini`, the combined validation payload evaluates at just
+**33.6 kB** uncompressed JavaScript (\~11.5 kB gzip), compared to \~329 kB for
+classic monolithic Zod. See [Choosing a validator](/docs/validators/choosing-a-validator).
+
 ## Zod v3
 
 Zod v3 (including `zod/v3` subpath exports in Zod 4) implements Standard Schema

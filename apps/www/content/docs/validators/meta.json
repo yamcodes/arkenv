@@ -1,4 +1,4 @@
 {
 	"title": "Validators",
-	"pages": ["index", "arktype", "zod", "valibot"]
+	"pages": ["index", "choosing-a-validator", "arktype", "zod", "valibot"]
 }
