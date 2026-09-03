@@ -10,6 +10,7 @@ export type BenchmarkRow = {
 	engineGzipBytes: number;
 	engineGzipKb: string;
 	validatorName?: string;
+	validatorPackage?: string;
 	validatorBytes?: number;
 	validatorKb?: string;
 	validatorGzipBytes?: number;

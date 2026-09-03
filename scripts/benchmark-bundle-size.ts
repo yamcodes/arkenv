@@ -141,6 +141,7 @@ async function run() {
 				engineGzipBytes: standardEngine.gzipBytes,
 				engineGzipKb: toKb(standardEngine.gzipBytes),
 				validatorName: "Valibot",
+				validatorPackage: "valibot",
 				validatorBytes: Math.max(
 					0,
 					standardValibot.bytes - standardEngine.bytes,
@@ -186,6 +187,7 @@ async function run() {
 				engineGzipBytes: coreEngine.gzipBytes,
 				engineGzipKb: toKb(coreEngine.gzipBytes),
 				validatorName: "ArkType",
+				validatorPackage: "arktype",
 				validatorBytes: Math.max(0, coreArkType.bytes - coreEngine.bytes),
 				validatorKb: toKb(Math.max(0, coreArkType.bytes - coreEngine.bytes)),
 				validatorGzipBytes: Math.max(
@@ -211,6 +213,7 @@ async function run() {
 				engineGzipBytes: t3Engine.gzipBytes,
 				engineGzipKb: toKb(t3Engine.gzipBytes),
 				validatorName: "Zod",
+				validatorPackage: "zod",
 				validatorBytes: t3Zod.bytes - t3Engine.bytes,
 				validatorKb: toKb(t3Zod.bytes - t3Engine.bytes),
 				validatorGzipBytes: t3Zod.gzipBytes - t3Engine.gzipBytes,

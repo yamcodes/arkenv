@@ -108,6 +108,21 @@ describe("RuntimeBloatShowcase", () => {
 					"https://npmx.dev/package/@t3-oss/env-core",
 			),
 		).toBe(true);
+		expect(
+			links.some(
+				(l) => l.getAttribute("href") === "https://npmx.dev/package/valibot",
+			),
+		).toBe(true);
+		expect(
+			links.some(
+				(l) => l.getAttribute("href") === "https://npmx.dev/package/arktype",
+			),
+		).toBe(true);
+		expect(
+			links.some(
+				(l) => l.getAttribute("href") === "https://npmx.dev/package/zod",
+			),
+		).toBe(true);
 
 		const source = screen.getByRole("link", {
 			name: /Source/i,
