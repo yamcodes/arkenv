@@ -29,9 +29,7 @@ describe("RuntimeBloatShowcase", () => {
 
 		expect(screen.getByText(/add it to/i)).toBeInTheDocument();
 		expect(screen.getByText(/fix the value/i)).toBeInTheDocument();
-		expect(
-			screen.queryByText(/Same codes as/i),
-		).not.toBeInTheDocument();
+		expect(screen.queryByText(/Same codes as/i)).not.toBeInTheDocument();
 
 		expect(
 			screen.queryByRole("heading", { name: "Optimized for the edge" }),

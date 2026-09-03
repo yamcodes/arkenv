@@ -64,8 +64,7 @@ export default async function HomePage() {
 							style={{ animationDelay: "520ms" }}
 						>
 							Get a strictly typed <HeroEnvHoverSlot /> object from the
-							validator you already use. No boilerplate. Zero
-							dependencies.
+							validator you already use. No boilerplate. Zero dependencies.
 						</p>
 					</div>
 					<div className="home-aurora__hero-ctas">
