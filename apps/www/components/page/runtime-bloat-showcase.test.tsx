@@ -15,14 +15,15 @@ describe("RuntimeBloatShowcase", () => {
 
 		expect(
 			screen.getByText(
-				/Each issue gets an error code that agents and CI can act on/i,
+				/Each issue gets a code that agents and CI can act on/i,
 			),
 		).toBeInTheDocument();
 		expect(
 			screen.getByText(/Missing keys and bad values aren't the same/i),
 		).toBeInTheDocument();
 
-		expect(screen.getByText("{ safe: true }")).toBeInTheDocument();
+		expect(screen.queryByText("{ safe: true }")).not.toBeInTheDocument();
+		expect(screen.getByText("json")).toBeInTheDocument();
 
 		const figure = screen.getByRole("figure");
 		expect(figure).toHaveTextContent('"success": false');
@@ -38,11 +39,11 @@ describe("RuntimeBloatShowcase", () => {
 		expect(figure).not.toHaveTextContent("received");
 		expect(figure).not.toHaveTextContent("DATABASE_URL");
 		expect(figure).not.toHaveTextContent("$ arkenv check --json");
-		expect(figure).not.toHaveTextContent("ok");
+		expect(figure).not.toHaveClass("home-aurora__terminal");
 
 		expect(screen.getByTitle(HOST_MESSAGE)).toBeInTheDocument();
 		expect(screen.getByTitle(PORT_MESSAGE)).toBeInTheDocument();
-		expect(screen.getByRole("button", { name: "Copy" })).toBeInTheDocument();
+		expect(screen.queryByRole("button", { name: "Copy" })).not.toBeInTheDocument();
 
 		expect(
 			screen.queryByRole("heading", { name: "Errors you can automate" }),

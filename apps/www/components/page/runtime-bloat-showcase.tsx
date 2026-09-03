@@ -1,5 +1,3 @@
-import { WindowChrome } from "./window-chrome";
-
 const HOST_MESSAGE = 'must be a string or "localhost" (was missing)';
 const PORT_MESSAGE = "must be a number (was a string)";
 
@@ -34,19 +32,21 @@ export function RuntimeBloatShowcase() {
 					Structured errors
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					Each issue gets an error code that agents and CI can act on. Missing
-					keys and bad values aren&apos;t the same.
+					Each issue gets a code that agents and CI can act on. Missing keys
+					and bad values aren&apos;t the same.
 				</p>
 			</header>
 
 			<figure
-				className="home-aurora__pitch-visual home-aurora__code-window home-aurora__terminal"
+				className="home-aurora__pitch-visual home-aurora__code-window home-aurora__json"
 				data-reveal
 				style={{ ["--reveal-delay" as string]: "140ms" }}
-				aria-label="Safe result JSON: HOST missing, PORT invalid type"
+				aria-label="JSON issues for HOST missing and PORT invalid type"
 			>
-				<WindowChrome title="{ safe: true }" copyText={PROOF_JSON} />
-				<pre className="home-aurora__tty home-aurora__tty--wrap">
+				<span className="home-aurora__json-lang" aria-hidden="true">
+					json
+				</span>
+				<pre className="home-aurora__json-body home-aurora__tty--wrap">
 					<code>
 						{'{\n  "success": false,\n  "issues": [\n    { "path": "HOST", "code": "MISSING_VARIABLE", "message": "'}
 						<EllipsisMessage message={HOST_MESSAGE} />

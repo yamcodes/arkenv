@@ -2904,6 +2904,33 @@
 	outline-offset: 2px;
 }
 
+.home-aurora__json {
+	position: relative;
+}
+
+.home-aurora__json-lang {
+	position: absolute;
+	top: 0.55rem;
+	right: 0.75rem;
+	font-family: var(--font-body);
+	font-size: var(--text-xs);
+	line-height: 1;
+	color: var(--color-muted);
+	pointer-events: none;
+	letter-spacing: 0.02em;
+}
+
+.home-aurora__json-body {
+	margin: 0;
+	padding: var(--space-sm) var(--space-md);
+	font-family: var(--font-outlier);
+	font-size: var(--text-code);
+	line-height: 1.55;
+	color: var(--color-ink-2);
+	min-width: 0;
+}
+
+
 .home-aurora__tty .home-aurora__install-prompt-symbol {
 	font-size: inherit;
 	line-height: inherit;
