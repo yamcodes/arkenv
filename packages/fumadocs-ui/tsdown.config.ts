@@ -3,8 +3,9 @@ import { defineConfig } from "tsdown";
 
 export default defineConfig({
 	entry: ["src/components/index.ts", "src/utils/index.ts", "src/mdx/index.tsx"],
-	format: ["esm", "cjs"],
+	format: ["esm"],
 	minify: true,
+	fixedExtension: false,
 	sourcemap: false,
 	dts: true,
 	plugins: [preserveUseClient()],
