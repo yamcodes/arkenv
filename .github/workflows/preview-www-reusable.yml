@@ -105,6 +105,7 @@ jobs:
           # First line only. printf|head SIGPIPEs under pipefail on multiline merge messages.
           SHORT_MSG="${GIT_COMMIT_MESSAGE%%$'\n'*}"
           deploy_log="$(mktemp)"
+          trap 'rm -f "$deploy_log"' EXIT
           node scripts/vercel-wrapper.cjs deploy --prebuilt --archive=tgz --token="$VERCEL_TOKEN" \
             -m githubDeployment=1 \
             -m githubOrg="$GIT_ORG" \
