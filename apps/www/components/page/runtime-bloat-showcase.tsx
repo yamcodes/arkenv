@@ -1,60 +1,23 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import benchmarkDataRaw from "~/lib/benchmark/benchmark.json";
-import type { BenchmarkData, ValidatorTab } from "~/lib/benchmark/types";
-import { ValidatorMark } from "./hero-mvp-marks";
-import { InkTabList } from "./ink-tabs";
+import type { BenchmarkData } from "~/lib/benchmark/types";
 
 const benchmarkData = benchmarkDataRaw as BenchmarkData;
 
-const VALIDATOR_TABS: readonly { id: ValidatorTab; label: string }[] = [
-	{ id: "arktype", label: "ArkType" },
-	{ id: "zod", label: "Zod" },
-	{ id: "valibot", label: "Valibot" },
-] as const;
-
 /**
- * "Optimized for the edge" bento cell: pkg-size-style compound bar chart comparing
- * engine footprint and validator extensions across ArkType, Zod, and Valibot.
+ * "Optimized for the edge" leaderboard: pkg-size-style compound bar chart comparing
+ * the four most common real-world edge validation stacks, sorted ascending by total
+ * uncompressed parse weight.
  *
- * Bars are strictly sorted by engine size:
- * 1. ArkEnv (@arkenv/core or @arkenv/standard)
- * 2. T3 Env (@t3-oss/env-core)
- * 3. Varlock (all-in-one engine + validator, for reference)
+ * 1. @arkenv/standard + Valibot (23.3 kB) — ultra-lightweight strict edge champion
+ * 2. varlock (28.4 kB) — standalone reference baseline
+ * 3. @arkenv/core + ArkType (156.0 kB) — full-power JIT-compiled TypeScript DSL
+ * 4. @t3-oss/env-core + Zod (325.0 kB) — monolithic status quo
+ *
+ * Pure React Server Component: zero client-side JavaScript, prerendered at build time.
  */
 export function RuntimeBloatShowcase() {
-	const [validator, setValidator] = useState<ValidatorTab>("arktype");
-
-	// Client-safe URL sync: defaults to "arktype" on server to avoid hydration mismatch
-	useEffect(() => {
-		const params = new URLSearchParams(window.location.search);
-		const raw = params.get("validator");
-		if (raw === "zod" || raw === "valibot") {
-			setValidator(raw);
-		}
-	}, []);
-
-	function switchValidator(next: ValidatorTab) {
-		setValidator(next);
-		const url = new URL(window.location.href);
-		if (next === "arktype") {
-			url.searchParams.delete("validator");
-		} else {
-			url.searchParams.set("validator", next);
-		}
-		window.history.replaceState(null, "", url.toString());
-	}
-
-	const rows = benchmarkData[validator];
-	// Globally consistent scale across all tabs (~337 kB max from T3 Env / Zod)
-	const maxBytes = Math.max(
-		...[
-			benchmarkData.arktype,
-			benchmarkData.zod,
-			benchmarkData.valibot,
-		].flatMap((list) => list.map((r) => r.totalBytes)),
-	);
+	const rows = benchmarkData.leaderboard;
+	const maxBytes = Math.max(...rows.map((r) => r.totalBytes));
 
 	return (
 		<section
@@ -63,42 +26,16 @@ export function RuntimeBloatShowcase() {
 			id="runtime-bloat"
 		>
 			<header className="home-aurora__pitch-head">
-				<div className="home-aurora__telemetry-heading-row">
-					<div>
-						<h2 id="home-bloat" data-reveal="blur">
-							Optimized for the edge
-						</h2>
-						<p
-							className="home-aurora__telemetry-subtitle"
-							data-reveal
-							style={{ ["--reveal-delay" as string]: "60ms" }}
-						>
-							Minified, uncompressed JS evaluated during V8 isolate cold starts.
-						</p>
-					</div>
-
-					<div
-						data-reveal
-						style={{ ["--reveal-delay" as string]: "80ms" }}
-						className="home-aurora__telemetry-tabs-wrap"
-					>
-						<InkTabList
-							label="Validator comparison"
-							value={validator}
-							controls="benchmark-telemetry-list"
-							onChange={switchValidator}
-							items={VALIDATOR_TABS.map((tab) => ({
-								id: tab.id,
-								label: (
-									<>
-										<ValidatorMark id={tab.id} />
-										{tab.label}
-									</>
-								),
-							}))}
-						/>
-					</div>
-				</div>
+				<h2 id="home-bloat" data-reveal="blur">
+					Optimized for the edge
+				</h2>
+				<p
+					className="home-aurora__telemetry-subtitle"
+					data-reveal
+					style={{ ["--reveal-delay" as string]: "60ms" }}
+				>
+					Minified, uncompressed JS evaluated during V8 isolate cold starts.
+				</p>
 			</header>
 
 			<figure
@@ -126,7 +63,7 @@ export function RuntimeBloatShowcase() {
 					<section
 						id="benchmark-telemetry-list"
 						className="home-aurora__telemetry-list"
-						aria-label={`${validator} runtime bundle size comparison`}
+						aria-label="Production runtime bundle size comparison leaderboard"
 					>
 						{rows.map((item) => {
 							const totalPct = `${((item.totalBytes / maxBytes) * 100).toFixed(1)}%`;

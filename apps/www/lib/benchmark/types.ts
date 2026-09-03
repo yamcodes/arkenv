@@ -34,12 +34,8 @@ export type BenchmarkMatrixItem = {
 	description: string;
 };
 
-export type ValidatorTab = "arktype" | "zod" | "valibot";
-
 export type BenchmarkData = {
-	arktype: BenchmarkRow[];
-	zod: BenchmarkRow[];
-	valibot: BenchmarkRow[];
+	leaderboard: BenchmarkRow[];
 	matrix: {
 		valibot: BenchmarkMatrixItem;
 		zodMini: BenchmarkMatrixItem;

@@ -1,14 +1,8 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it } from "vitest";
+import { render, screen, within } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 import { RuntimeBloatShowcase } from "./runtime-bloat-showcase";
 
 describe("RuntimeBloatShowcase", () => {
-	// Prevent window.location.search leaking between tests via replaceState.
-	beforeEach(() => {
-		window.history.replaceState(null, "", "/");
-	});
-
 	it("renders the heading and metric subtitle", () => {
 		render(<RuntimeBloatShowcase />);
 
@@ -19,27 +13,6 @@ describe("RuntimeBloatShowcase", () => {
 		expect(screen.getByText(/Minified, uncompressed JS/i)).toBeInTheDocument();
 	});
 
-	it("renders the 3 validator tabs with ArkType selected by default", () => {
-		render(<RuntimeBloatShowcase />);
-
-		const tablist = screen.getByRole("tablist", {
-			name: /Validator comparison/i,
-		});
-		expect(tablist).toBeInTheDocument();
-
-		const arkTypeTab = screen.getByRole("tab", { name: /ArkType/i });
-		const zodTab = screen.getByRole("tab", { name: /Zod/i });
-		const valibotTab = screen.getByRole("tab", { name: /Valibot/i });
-
-		expect(arkTypeTab).toBeInTheDocument();
-		expect(zodTab).toBeInTheDocument();
-		expect(valibotTab).toBeInTheDocument();
-
-		expect(arkTypeTab).toHaveAttribute("aria-selected", "true");
-		expect(zodTab).toHaveAttribute("aria-selected", "false");
-		expect(valibotTab).toHaveAttribute("aria-selected", "false");
-	});
-
 	it("renders the compound bar legend", () => {
 		render(<RuntimeBloatShowcase />);
 
@@ -48,103 +21,63 @@ describe("RuntimeBloatShowcase", () => {
 		expect(screen.getByText("All-in-one (for reference)")).toBeInTheDocument();
 	});
 
-	it("defaults to ArkType tab sorted by engine size with compound bars", () => {
+	it("renders all four real-world edge stacks simultaneously in ascending order", () => {
 		render(<RuntimeBloatShowcase />);
 
-		const figure = screen.getByRole("figure", {
-			name: /production runtime bundle size comparison/i,
+		const list = screen.getByRole("region", {
+			name: "Production runtime bundle size comparison leaderboard",
 		});
+		expect(list).toBeInTheDocument();
 
-		// ArkEnv core bar
-		expect(figure).toHaveTextContent("@arkenv/core");
-		expect(figure).toHaveTextContent("+ ArkType");
-		expect(figure).toHaveTextContent("156.0 kB");
-		expect(figure).toHaveTextContent("(6.3 + 149.8)");
+		const rows = list.querySelectorAll(".home-aurora__telemetry-row");
+		expect(rows).toHaveLength(4);
 
-		// T3 Env bar with Zod requirement note
-		expect(figure).toHaveTextContent("@t3-oss/env-core");
-		expect(figure).toHaveTextContent("+ Zod");
-		expect(figure).toHaveTextContent("(requires Zod)");
-		expect(figure).toHaveTextContent("325.0 kB");
+		// 1. @arkenv/standard + Valibot (23.3 kB)
+		const row0 = within(rows[0] as HTMLElement);
+		expect(row0.getByText("@arkenv/standard")).toBeInTheDocument();
+		expect(row0.getByText("+ Valibot")).toBeInTheDocument();
+		expect(row0.getByText("23.3 kB")).toBeInTheDocument();
+		expect(row0.getByText("(10.0 + 13.4)")).toBeInTheDocument();
 
-		// Varlock reference bar
-		expect(figure).toHaveTextContent("varlock");
-		expect(figure).toHaveTextContent("(for reference)");
-		expect(figure).toHaveTextContent("28.4 kB");
-	});
+		// 2. varlock (28.4 kB)
+		const row1 = within(rows[1] as HTMLElement);
+		expect(row1.getByText("varlock")).toBeInTheDocument();
+		expect(row1.getByText("(for reference)")).toBeInTheDocument();
+		expect(row1.getByText("28.4 kB")).toBeInTheDocument();
 
-	it("switches to Valibot tab, updates top bar to @arkenv/standard, and syncs URL", async () => {
-		render(<RuntimeBloatShowcase />);
+		// 3. @arkenv/core + ArkType (156.0 kB)
+		const row2 = within(rows[2] as HTMLElement);
+		expect(row2.getByText("@arkenv/core")).toBeInTheDocument();
+		expect(row2.getByText("+ ArkType")).toBeInTheDocument();
+		expect(row2.getByText("156.0 kB")).toBeInTheDocument();
+		expect(row2.getByText("(6.3 + 149.8)")).toBeInTheDocument();
 
-		const valibotTab = screen.getByRole("tab", { name: /Valibot/i });
-		await userEvent.click(valibotTab);
-
-		expect(window.location.search).toBe("?validator=valibot");
-
-		const figure = screen.getByRole("figure", {
-			name: /production runtime bundle size comparison/i,
-		});
-
-		// Shows @arkenv/standard with 23.3 kB total
-		expect(figure).toHaveTextContent("@arkenv/standard");
-		expect(figure).toHaveTextContent("+ Valibot");
-		expect(figure).toHaveTextContent("23.3 kB");
-
-		// T3 Env remains 325.0 kB with (requires Zod) note
-		expect(figure).toHaveTextContent("@t3-oss/env-core");
-		expect(figure).toHaveTextContent("(requires Zod)");
-		expect(figure).toHaveTextContent("325.0 kB");
-	});
-
-	it("switches to Zod tab and back to ArkType clearing query string", async () => {
-		render(<RuntimeBloatShowcase />);
-
-		const zodTab = screen.getByRole("tab", { name: /Zod/i });
-		await userEvent.click(zodTab);
-
-		expect(window.location.search).toBe("?validator=zod");
-
-		const figure = screen.getByRole("figure", {
-			name: /production runtime bundle size comparison/i,
-		});
-		expect(figure).toHaveTextContent("@arkenv/standard");
-		expect(figure).toHaveTextContent("+ Zod");
-		expect(figure).toHaveTextContent("329.2 kB");
-
-		expect(figure).toHaveTextContent("@t3-oss/env-core");
-		expect(figure).toHaveTextContent("325.0 kB");
-
-		// Switching back to default ArkType clears ?validator param
-		const arkTypeTab = screen.getByRole("tab", { name: /ArkType/i });
-		await userEvent.click(arkTypeTab);
-
-		expect(window.location.search).toBe("");
-		expect(figure).toHaveTextContent("@arkenv/core");
-	});
-
-	it("initializes to Valibot view when ?validator=valibot is in URL", () => {
-		window.history.replaceState(null, "", "/?validator=valibot");
-		render(<RuntimeBloatShowcase />);
-
-		const figure = screen.getByRole("figure", {
-			name: /production runtime bundle size comparison/i,
-		});
-		expect(figure).toHaveTextContent("@arkenv/standard");
-		expect(figure).toHaveTextContent("+ Valibot");
-		expect(figure).toHaveTextContent("23.3 kB");
+		// 4. @t3-oss/env-core + Zod (325.0 kB)
+		const row3 = within(rows[3] as HTMLElement);
+		expect(row3.getByText("@t3-oss/env-core")).toBeInTheDocument();
+		expect(row3.getByText("+ Zod")).toBeInTheDocument();
+		expect(row3.getByText("325.0 kB")).toBeInTheDocument();
+		expect(row3.getByText("(14.2 + 310.8)")).toBeInTheDocument();
 	});
 
 	it("renders accessible image labels on compound bar tracks", () => {
 		render(<RuntimeBloatShowcase />);
 
 		const images = screen.getAllByRole("img");
-		expect(
-			images.some((img) =>
-				img
-					.getAttribute("aria-label")
-					?.includes("@arkenv/core engine at 6.3 kilobytes"),
-			),
-		).toBe(true);
+		expect(images).toHaveLength(4);
+
+		expect(images[0]?.getAttribute("aria-label")).toBe(
+			"@arkenv/standard engine at 10.0 kilobytes, plus Valibot extension at 13.4 kilobytes, total 23.3 kilobytes",
+		);
+		expect(images[1]?.getAttribute("aria-label")).toBe(
+			"varlock engine at 28.4 kilobytes, total 28.4 kilobytes",
+		);
+		expect(images[2]?.getAttribute("aria-label")).toBe(
+			"@arkenv/core engine at 6.3 kilobytes, plus ArkType extension at 149.8 kilobytes, total 156.0 kilobytes",
+		);
+		expect(images[3]?.getAttribute("aria-label")).toBe(
+			"@t3-oss/env-core engine at 14.2 kilobytes, plus Zod extension at 310.8 kilobytes, total 325.0 kilobytes",
+		);
 	});
 
 	it("renders npmx links and benchmark receipts link", () => {
@@ -154,12 +87,26 @@ describe("RuntimeBloatShowcase", () => {
 		expect(
 			links.some(
 				(l) =>
+					l.getAttribute("href") ===
+					"https://npmx.dev/package/@arkenv/standard",
+			),
+		).toBe(true);
+		expect(
+			links.some(
+				(l) =>
 					l.getAttribute("href") === "https://npmx.dev/package/@arkenv/core",
 			),
 		).toBe(true);
 		expect(
 			links.some(
 				(l) => l.getAttribute("href") === "https://npmx.dev/package/varlock",
+			),
+		).toBe(true);
+		expect(
+			links.some(
+				(l) =>
+					l.getAttribute("href") ===
+					"https://npmx.dev/package/@t3-oss/env-core",
 			),
 		).toBe(true);
 

@@ -1811,19 +1811,6 @@
 	border: 1px solid #30363d;
 }
 
-/* Telemetry section header: h2+subtitle on left, tabs on right */
-.home-aurora__telemetry-heading-row {
-	display: flex;
-	align-items: flex-end;
-	justify-content: space-between;
-	gap: 1rem;
-	flex-wrap: wrap;
-}
-
-.home-aurora__telemetry-tabs-wrap {
-	margin-left: auto;
-}
-
 /* Benchmark receipt footnote */
 .home-aurora__telemetry-footer {
 	display: flex;
