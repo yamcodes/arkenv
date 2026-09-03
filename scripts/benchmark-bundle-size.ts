@@ -103,10 +103,6 @@ async function run() {
 		bytes: 14541,
 		gzipBytes: 4300,
 	};
-	const t3Zod = {
-		bytes: 332800,
-		gzipBytes: 67584,
-	};
 	const varlock = {
 		bytes: 29082,
 		gzipBytes: 9318,
@@ -223,14 +219,31 @@ async function run() {
 				engineGzipBytes: t3Engine.gzipBytes,
 				engineGzipKb: toKb(t3Engine.gzipBytes),
 				validatorName: "Zod",
-				validatorBytes: t3Zod.bytes - t3Engine.bytes,
-				validatorKb: toKb(t3Zod.bytes - t3Engine.bytes),
-				validatorGzipBytes: t3Zod.gzipBytes - t3Engine.gzipBytes,
-				validatorGzipKb: toKb(t3Zod.gzipBytes - t3Engine.gzipBytes),
-				totalBytes: t3Zod.bytes,
-				totalKb: toKb(t3Zod.bytes),
-				totalGzipBytes: t3Zod.gzipBytes,
-				totalGzipKb: toKb(t3Zod.gzipBytes),
+				validatorBytes: Math.max(0, standardZod.bytes - standardEngine.bytes),
+				validatorKb: toKb(
+					Math.max(0, standardZod.bytes - standardEngine.bytes),
+				),
+				validatorGzipBytes: Math.max(
+					0,
+					standardZod.gzipBytes - standardEngine.gzipBytes,
+				),
+				validatorGzipKb: toKb(
+					Math.max(0, standardZod.gzipBytes - standardEngine.gzipBytes),
+				),
+				totalBytes:
+					t3Engine.bytes +
+					Math.max(0, standardZod.bytes - standardEngine.bytes),
+				totalKb: toKb(
+					t3Engine.bytes +
+						Math.max(0, standardZod.bytes - standardEngine.bytes),
+				),
+				totalGzipBytes:
+					t3Engine.gzipBytes +
+					Math.max(0, standardZod.gzipBytes - standardEngine.gzipBytes),
+				totalGzipKb: toKb(
+					t3Engine.gzipBytes +
+						Math.max(0, standardZod.gzipBytes - standardEngine.gzipBytes),
+				),
 				tier: "competitor",
 			},
 			{

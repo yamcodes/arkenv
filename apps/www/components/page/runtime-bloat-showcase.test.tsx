@@ -110,6 +110,9 @@ describe("RuntimeBloatShowcase", () => {
 		expect(figure).toHaveTextContent("+ Zod");
 		expect(figure).toHaveTextContent("329.2 kB");
 
+		expect(figure).toHaveTextContent("@t3-oss/env-core");
+		expect(figure).toHaveTextContent("333.5 kB");
+
 		// Switching back to default ArkType clears ?validator param
 		const arkTypeTab = screen.getByRole("tab", { name: /ArkType/i });
 		await userEvent.click(arkTypeTab);
