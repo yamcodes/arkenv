@@ -32,31 +32,29 @@ describe("RuntimeBloatShowcase", () => {
 		const rows = list.querySelectorAll(".home-aurora__telemetry-row");
 		expect(rows).toHaveLength(4);
 
-		// 1. @arkenv/standard + Valibot (23.3 kB)
+		// 1. ArkEnv + Valibot (23.3 kB)
 		const row0 = within(rows[0] as HTMLElement);
-		expect(row0.getByText("@arkenv/standard")).toBeInTheDocument();
+		expect(row0.getByText("ArkEnv")).toBeInTheDocument();
 		expect(row0.getByText("+ Valibot")).toBeInTheDocument();
 		expect(row0.getByText("23.3 kB")).toBeInTheDocument();
 		expect(row0.queryByText("(10.0 + 13.4)")).not.toBeInTheDocument();
 
-		// 2. varlock (28.4 kB)
+		// 2. Varlock (28.4 kB)
 		const row1 = within(rows[1] as HTMLElement);
-		expect(row1.getByText("varlock")).toBeInTheDocument();
-		expect(row1.queryByText("(for reference)")).not.toBeInTheDocument();
+		expect(row1.getByText("Varlock")).toBeInTheDocument();
 		expect(row1.getByText("28.4 kB")).toBeInTheDocument();
 
-		// 3. @arkenv/core + ArkType (156.0 kB)
+		// 3. ArkEnv + ArkType (156.0 kB)
 		const row2 = within(rows[2] as HTMLElement);
-		expect(row2.getByText("@arkenv/core")).toBeInTheDocument();
+		expect(row2.getByText("ArkEnv")).toBeInTheDocument();
 		expect(row2.getByText("+ ArkType")).toBeInTheDocument();
 		expect(row2.getByText("156.0 kB")).toBeInTheDocument();
 		expect(row2.queryByText("(6.3 + 149.8)")).not.toBeInTheDocument();
 
-		// 4. @t3-oss/env-core + Zod (325.0 kB)
+		// 4. T3 Env + Zod (325.0 kB)
 		const row3 = within(rows[3] as HTMLElement);
-		expect(row3.getByText("@t3-oss/env-core")).toBeInTheDocument();
+		expect(row3.getByText("T3 Env")).toBeInTheDocument();
 		expect(row3.getByText("+ Zod")).toBeInTheDocument();
-		expect(row3.getByText("(requires Zod)")).toBeInTheDocument();
 		expect(row3.getByText("325.0 kB")).toBeInTheDocument();
 		expect(row3.queryByText("(14.2 + 310.8)")).not.toBeInTheDocument();
 	});
@@ -68,16 +66,16 @@ describe("RuntimeBloatShowcase", () => {
 		expect(images).toHaveLength(4);
 
 		expect(images[0]?.getAttribute("aria-label")).toBe(
-			"@arkenv/standard engine at 10.0 kilobytes, plus Valibot extension at 13.4 kilobytes, total 23.3 kilobytes",
+			"ArkEnv engine at 10.0 kilobytes, plus Valibot extension at 13.4 kilobytes, total 23.3 kilobytes",
 		);
 		expect(images[1]?.getAttribute("aria-label")).toBe(
-			"varlock engine at 28.4 kilobytes, total 28.4 kilobytes",
+			"Varlock engine at 28.4 kilobytes, total 28.4 kilobytes",
 		);
 		expect(images[2]?.getAttribute("aria-label")).toBe(
-			"@arkenv/core engine at 6.3 kilobytes, plus ArkType extension at 149.8 kilobytes, total 156.0 kilobytes",
+			"ArkEnv engine at 6.3 kilobytes, plus ArkType extension at 149.8 kilobytes, total 156.0 kilobytes",
 		);
 		expect(images[3]?.getAttribute("aria-label")).toBe(
-			"@t3-oss/env-core engine at 14.2 kilobytes, plus Zod extension at 310.8 kilobytes, total 325.0 kilobytes",
+			"T3 Env engine at 14.2 kilobytes, plus Zod extension at 310.8 kilobytes, total 325.0 kilobytes",
 		);
 	});
 

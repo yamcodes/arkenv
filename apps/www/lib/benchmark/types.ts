@@ -20,7 +20,6 @@ export type BenchmarkRow = {
 	totalGzipKb: string;
 	tier: BenchmarkTier;
 	source: BenchmarkSource;
-	note?: string;
 };
 
 export type BenchmarkMatrixItem = {

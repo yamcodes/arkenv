@@ -8,10 +8,10 @@ const benchmarkData = benchmarkDataRaw as BenchmarkData;
  * the four most common real-world edge validation stacks, sorted ascending by total
  * uncompressed parse weight.
  *
- * 1. @arkenv/standard + Valibot (23.3 kB) — ultra-lightweight strict edge champion
- * 2. varlock (28.4 kB) — standalone reference baseline
- * 3. @arkenv/core + ArkType (156.0 kB) — full-power JIT-compiled TypeScript DSL
- * 4. @t3-oss/env-core + Zod (325.0 kB) — monolithic status quo
+ * 1. ArkEnv + Valibot (23.3 kB) — ultra-lightweight strict edge champion
+ * 2. Varlock (28.4 kB) — standalone reference baseline
+ * 3. ArkEnv + ArkType (156.0 kB) — full-power JIT-compiled TypeScript DSL
+ * 4. T3 Env + Zod (325.0 kB) — monolithic status quo
  *
  * Pure React Server Component: zero client-side JavaScript, prerendered at build time.
  */
@@ -108,11 +108,6 @@ export function RuntimeBloatShowcase() {
 												{item.validatorName ? (
 													<span className="home-aurora__telemetry-ext">
 														+ {item.validatorName}
-													</span>
-												) : null}
-												{item.note ? (
-													<span className="home-aurora__telemetry-note">
-														({item.note})
 													</span>
 												) : null}
 											</div>

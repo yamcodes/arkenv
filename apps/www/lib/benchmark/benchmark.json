@@ -2,7 +2,7 @@
 	"leaderboard": [
 		{
 			"id": "arkenv-valibot",
-			"name": "@arkenv/standard",
+			"name": "ArkEnv",
 			"npmPackage": "@arkenv/standard",
 			"engineBytes": 10222,
 			"engineKb": "10.0",
@@ -22,7 +22,7 @@
 		},
 		{
 			"id": "varlock",
-			"name": "varlock",
+			"name": "Varlock",
 			"npmPackage": "varlock",
 			"engineBytes": 29082,
 			"engineKb": "28.4",
@@ -37,7 +37,7 @@
 		},
 		{
 			"id": "arkenv-arktype",
-			"name": "@arkenv/core",
+			"name": "ArkEnv",
 			"npmPackage": "@arkenv/core",
 			"engineBytes": 6424,
 			"engineKb": "6.3",
@@ -57,7 +57,7 @@
 		},
 		{
 			"id": "t3-env-zod",
-			"name": "@t3-oss/env-core",
+			"name": "T3 Env",
 			"npmPackage": "@t3-oss/env-core",
 			"engineBytes": 14541,
 			"engineKb": "14.2",
@@ -73,8 +73,7 @@
 			"totalGzipBytes": 67584,
 			"totalGzipKb": "66.0",
 			"tier": "competitor",
-			"source": "bundlephobia",
-			"note": "requires Zod"
+			"source": "bundlephobia"
 		}
 	],
 	"matrix": {
