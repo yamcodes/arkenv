@@ -17,8 +17,8 @@ describe("RuntimeBloatShowcase", () => {
 		render(<RuntimeBloatShowcase />);
 
 		expect(screen.getByText("Engine")).toBeInTheDocument();
-		expect(screen.getByText("Validator extension")).toBeInTheDocument();
-		expect(screen.getByText("All-in-one (for reference)")).toBeInTheDocument();
+		expect(screen.getByText("Validator")).toBeInTheDocument();
+		expect(screen.getByText("Both")).toBeInTheDocument();
 	});
 
 	it("renders all four real-world edge stacks simultaneously in ascending order", () => {

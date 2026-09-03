@@ -52,11 +52,11 @@ export function RuntimeBloatShowcase() {
 						</span>
 						<span className="home-aurora__telemetry-legend-item">
 							<span className="home-aurora__telemetry-swatch home-aurora__telemetry-swatch--validator" />
-							Validator extension
+							Validator
 						</span>
 						<span className="home-aurora__telemetry-legend-item">
 							<span className="home-aurora__telemetry-swatch home-aurora__telemetry-swatch--reference" />
-							All-in-one (for reference)
+							Both
 						</span>
 					</div>
 
