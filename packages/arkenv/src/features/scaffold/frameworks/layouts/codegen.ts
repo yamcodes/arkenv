@@ -1,9 +1,8 @@
 import type { CodegenFrameworkConfig } from "@/features/scaffold/frameworks/codegen-config";
 import {
-	formatPresetEndMarker,
-	formatPresetStartMarker,
 	getPresetKeys,
 	type HostPreset,
+	PRESETS,
 } from "@/features/scaffold/presets";
 import type { Dialect } from "@/features/scaffold/validators/dialects";
 
@@ -249,12 +248,12 @@ function assembleFlatLayout(params: FieldBuckets): string {
 			);
 		}
 
+		const presetLabel = PRESETS[hostPreset]?.label ?? hostPreset;
 		flatFields = [
 			...userFields,
 			...(userFields.length > 0 ? [""] : []),
-			`\t${formatPresetStartMarker(hostPreset)}`,
+			`\t// ${presetLabel} environment variables`,
 			...presetFieldLines,
-			`\t${formatPresetEndMarker(hostPreset)}`,
 		];
 	} else {
 		const allFields = [...serverFields, ...clientFields, ...sharedFields];

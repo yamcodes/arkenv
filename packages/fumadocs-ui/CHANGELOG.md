@@ -1,5 +1,14 @@
 # @arkenv/fumadocs-ui
 
+## 1.0.0-alpha.6
+
+### Patch Changes
+
+- #### Fix keyboard focus ring truncation in sidebar navigation _[`#1743`](https://github.com/yamcodes/arkenv/pull/1743) [`16f2d09`](https://github.com/yamcodes/arkenv/commit/16f2d09e4ef7cef95c332b080924802c31194fdd) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	The drill-in sidebar slide container now uses `overflow: clip` with an expanded clip margin instead of `overflow: hidden`, preventing keyboard focus rings from being clipped along the left and right edges.
+
 ## 1.0.0-alpha.5
 
 ### Patch Changes

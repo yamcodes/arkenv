@@ -123,10 +123,10 @@ describe("normalizePackageManagerCommand", () => {
 			"Add ArkEnv to this repo. Run `npx arkenv@alpha init --agent`, parse the JSON on stdout, and only retry with flags from `retryWith` if a refusal is safe to bypass.",
 		);
 
-		const presetPrompt =
-			"Add the Vercel hosting preset with `npx arkenv preset apply vercel --agent` and merge any new system vars into the schema.";
-		expect(normalizePackageManagerCommand(presetPrompt)).toBe(
-			"Add the Vercel hosting preset with `npx arkenv@alpha preset apply vercel --agent` and merge any new system vars into the schema.",
+		const initPresetPrompt =
+			"Bootstrap the project with Vercel preset using `npx arkenv init --preset vercel --agent`.";
+		expect(normalizePackageManagerCommand(initPresetPrompt)).toBe(
+			"Bootstrap the project with Vercel preset using `npx arkenv@alpha init --preset vercel --agent`.",
 		);
 
 		// GA mode (empty tag)

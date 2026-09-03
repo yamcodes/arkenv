@@ -11,7 +11,7 @@ This runbook outlines the operational, DNS, npm registry, and deployment steps r
   - Deploy a frozen snapshot of the `dev` (v0) documentation branch to Vercel/Cloudflare Pages.
   - Assign domain: `v0.arkenv.js.org`.
   - Verify that old links, guides, and v0 API references resolve correctly.
-- [ ] **Alpha Banner on Live v0 Site (`dev` branch)**:
+- [x] **Alpha Banner on Live v0 Site (`dev` branch)**:
   - Add announcement banner to `arkenv.js.org` (pointing to `https://arkenv-v1.vercel.app` and migration guide) during the final testing window.
 - [ ] **README and Production Links**:
   - Update all alpha links (`arkenv-v1.vercel.app`) in READMEs and docs to `arkenv.js.org`.
@@ -56,9 +56,9 @@ Execute npm deprecation for the old v0 CLI package name:
 npm deprecate @arkenv/cli "This package was renamed to 'arkenv' in v1. Please update your dependencies: 'npm i -D arkenv' and use '@arkenv/core' for runtime validation."
 ```
 
-### Step 2.4: Validate CLI Postinstall & Import Guards
+### Step 2.4: Validate CLI Import Guard
 
-- Verify that `npm install arkenv` / `import arkenv from "arkenv"` throws the clear runtime error guiding users to `@arkenv/core`.
+- Verify that importing or requiring `arkenv` as a library (`import arkenv from "arkenv"` / `require("arkenv")`) throws the clear runtime error guiding users to `@arkenv/core`.
 - Test running `npx arkenv init` in a fresh project to ensure it executes without errors.
 
 ---

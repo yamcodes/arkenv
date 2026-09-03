@@ -44,7 +44,7 @@ export const ROADMAP_EXTRAS: readonly RoadmapExtra[] = [
 	{
 		id: "v0-alpha-banner",
 		title: "v0 site Alpha banner",
-		done: false,
+		done: true,
 		topic: "Docs",
 	},
 	{
@@ -61,8 +61,8 @@ export const ROADMAP_EXTRAS: readonly RoadmapExtra[] = [
 	},
 	{
 		id: "cli-postinstall-guard",
-		title: "Add CLI postinstall guard for v0 upgrades",
-		done: false,
+		title: "Add CLI import guard for v0 upgrades",
+		done: true,
 		topic: "CLI",
 	},
 	{

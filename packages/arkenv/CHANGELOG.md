@@ -1,5 +1,18 @@
 # @arkenv/core
 
+## 1.0.0-alpha.20
+
+### Major Changes
+
+- #### Remove programmatic AST schema mutation and preset command _[`#1736`](https://github.com/yamcodes/arkenv/pull/1736) [`e117bbd`](https://github.com/yamcodes/arkenv/commit/e117bbd70aa463fe40639e11841f2704e403384d) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	The `arkenv preset apply` and `arkenv preset remove` commands, along with programmatic AST and comment-marker schema mutation, have been removed from the CLI.
+	
+	Hosting presets (Vercel, Netlify, Cloudflare, Railway, Render, Fly.io) remain available during initial project scaffolding via `arkenv init --preset <name>` and are documented as copyable code snippets in the docs.
+	
+	**BREAKING CHANGE**: The `arkenv preset` command and `// @arkenv-preset-start` comment marker management have been removed. Use `arkenv init --preset <provider>` when scaffolding new projects, or copy provider variable definitions directly into `./env.ts` for existing schemas.
+
 ## 1.0.0-alpha.19
 
 ### Major Changes

@@ -37,7 +37,20 @@
 }
 
 [data-docs-sidebar-slide] {
-	overflow: hidden;
+	overflow: clip;
+	overflow-clip-margin: 0.5rem;
+}
+
+@supports not (overflow-clip-margin: 0.5rem) {
+	[data-docs-sidebar-slide] {
+		margin-inline: -0.25rem;
+		padding-inline: 0.25rem;
+	}
+
+	[data-docs-sidebar-slide] > nav.absolute {
+		width: auto;
+		inset-inline: 0.25rem;
+	}
 }
 
 /*

@@ -416,7 +416,7 @@ aside .theme-toggle {
 		color 150ms,
 		background-color 150ms;
 	/* Kill the UA outline (tinted by global `outline-ring/50`) — it is
-	   rectangular and gets clipped by the drill-in `overflow-hidden` pane. */
+	   rectangular and gets clipped by the drill-in slide pane. */
 	outline: none;
 }
 
@@ -459,7 +459,28 @@ aside .theme-toggle {
  */
 #nd-sidebar [data-docs-sidebar-slide],
 #nd-sidebar-mobile [data-docs-sidebar-slide] {
-	overflow: hidden;
+	overflow: clip;
+	overflow-clip-margin: 0.5rem;
+}
+
+/*
+ * WebKit / Safari fallback: WebKit supports overflow: clip but does not yet
+ * support overflow-clip-margin (WebKit bug 236153). Pad the slide container
+ * and compensate on absolutely-positioned child panels so the 4px focus ring
+ * paints inside the element padding box without shifting resting or drilled navs.
+ */
+@supports not (overflow-clip-margin: 0.5rem) {
+	#nd-sidebar [data-docs-sidebar-slide],
+	#nd-sidebar-mobile [data-docs-sidebar-slide] {
+		margin-inline: -0.25rem;
+		padding-inline: 0.25rem;
+	}
+
+	#nd-sidebar [data-docs-sidebar-slide] > nav.absolute,
+	#nd-sidebar-mobile [data-docs-sidebar-slide] > nav.absolute {
+		width: auto;
+		inset-inline: 0.25rem;
+	}
 }
 
 #nd-sidebar [data-sidebar-mode],

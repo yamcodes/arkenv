@@ -42,15 +42,6 @@ export class HelpUseCase {
 				left: "arkenv check",
 				right: "Validate the environment against the schema",
 			},
-			{
-				left: "arkenv preset apply [provider]",
-				right:
-					"Apply or refresh hosting provider preset (vercel, netlify, cloudflare, railway, render, fly)",
-			},
-			{
-				left: "arkenv preset remove [provider]",
-				right: "Remove hosting provider preset from schema",
-			},
 		];
 
 		const globalOptions: HelpItem[] = [
@@ -116,17 +107,6 @@ export class HelpUseCase {
 			},
 		];
 
-		const presetOptions: HelpItem[] = [
-			{
-				left: "--file <path>",
-				right: "Path to schema file (overrides package.json arkenv pointer)",
-			},
-			{
-				left: "--force, -f",
-				right: "Bypass dirty git working tree check",
-			},
-		];
-
 		this.logger.log(`ArkEnv CLI v${version}`);
 		this.logger.log(`\n${pc.bold("Usage:")}`);
 		for (const line of formatColumns(commands)) {
@@ -142,10 +122,6 @@ export class HelpUseCase {
 		}
 		this.logger.log(`\n${pc.bold("check options:")}`);
 		for (const line of formatColumns(checkOptions)) {
-			this.logger.log(line);
-		}
-		this.logger.log(`\n${pc.bold("preset options:")}`);
-		for (const line of formatColumns(presetOptions)) {
 			this.logger.log(line);
 		}
 	}
