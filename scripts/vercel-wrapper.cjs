@@ -62,5 +62,7 @@ child.on("close", (code) => {
 			}
 		}
 	}
-	process.exit(code);
+	// Don't process.exit(): the runner captures stdout over a pipe, and a hard
+	// exit can drop the ::error:: annotation written above before it drains.
+	process.exitCode = code ?? 1;
 });
