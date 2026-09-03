@@ -138,7 +138,7 @@ console.log('SUCCESS');
 
 	it("should load @arkenv/core via native require(esm)", () => {
 		const require = createRequire(import.meta.url);
-		const mod = require("../dist/index.js");
+		const mod = require("@arkenv/core");
 		const arkenv = mod.default ?? mod.arkenv;
 		expect(typeof arkenv).toBe("function");
 	});

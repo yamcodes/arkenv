@@ -118,7 +118,8 @@
 	"imports": {
 		"#arkenv/server-boot": {
 			"types": "./dist/empty-server-boot.d.ts",
-			"import": "./dist/empty-server-boot.js"
+			"import": "./dist/empty-server-boot.js",
+			"default": "./dist/empty-server-boot.js"
 		}
 	}
 }
