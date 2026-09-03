@@ -146,15 +146,16 @@ export const env = arkenv(
 
 Default: `false`
 
-Return `{ success, data | issues }` instead of throwing. Use this in
-tests or a custom boot UI when you handle failures yourself.
+`arkenv()` from `@arkenv/core` always throws on validation failure. Pass
+`false` or omit this field. For a result object, import `tryArkenv` from
+`@arkenv/core/safe`.
 
 ```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/core";
+import { tryArkenv } from "@arkenv/core/safe";
 
-const result = arkenv(
+const result = tryArkenv(
   { PORT: "number.port" },
-  { safe: true, env: { PORT: "invalid" } },
+  { env: { PORT: "invalid" } },
 );
 
 if (!result.success) {
@@ -164,9 +165,11 @@ if (!result.success) {
 }
 ```
 
+`@arkenv/standard` still accepts `{ safe: true }` on `arkenv()` itself.
+
 <Callout type="warn">
   Framework plugins omit `safe` so a failed validation cannot soft-fail
-  into the client bundle. Call `arkenv()` yourself if you need
+  into the client bundle. Call `tryArkenv` yourself if you need
   programmatic failure handling outside a plugin.
 </Callout>
 

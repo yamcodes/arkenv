@@ -29,18 +29,41 @@ export const env = arkenv({
 
 ## Exports
 
+The main entry is the throw-path runtime. Issue helpers and the
+non-throwing parser live on subpaths so the default import stays small.
+
 | Export             | Kind                       | Role                                                       |
 | ------------------ | -------------------------- | ---------------------------------------------------------- |
 | `arkenv`           | function (default + named) | Validate and return a typed env object                     |
 | `type`             | function                   | ArkType `type` with [`keywords`](/docs/reference/keywords) |
 | `ArkEnvError`      | class                      | Thrown on validation failure                               |
-| `formatIssues`     | function                   | Format `EnvIssue[]` for display                            |
-| `getSchemaKeys`    | function                   | List keys declared on a schema                             |
 | `ArkEnvConfig`     | type                       | [Options](/docs/reference/options) object                  |
 | `EnvSchema`        | type                       | Declarative schema map                                     |
 | `Infer`            | type                       | Infer output from a schema                                 |
-| `SafeArkEnvResult` | type                       | Result shape when `safe: true`                             |
-| `EnvIssue`         | type                       | Structured validation issue                                |
+| `SafeArkEnvResult` | type                       | Result shape returned by `tryArkenv`                       |
+
+### Subpaths
+
+Issue formatting and the non-throwing parser are separate entries.
+
+| Import                | Role                                                                              |
+| --------------------- | --------------------------------------------------------------------------------- |
+| `@arkenv/core`        | Throw-path `arkenv()` and `type()`                                                |
+| `@arkenv/core/issues` | `formatIssues`, `getSchemaKeys`, and `EnvIssue` / `EnvIssueCode` / `EnvIssueMeta` |
+| `@arkenv/core/safe`   | `tryArkenv` — result object instead of a throw                                    |
+
+```ts title="./env.ts" twoslash
+import { tryArkenv } from "@arkenv/core/safe";
+
+const result = tryArkenv(
+  { PORT: "number.port" },
+  { env: { PORT: "invalid" } },
+);
+
+if (!result.success) {
+  console.error(result.issues);
+}
+```
 
 ## Next steps
 

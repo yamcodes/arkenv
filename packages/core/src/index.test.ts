@@ -57,6 +57,12 @@ describe("index.ts exports", () => {
 		).toThrow();
 	});
 
+	it("does not re-export formatIssues or getSchemaKeys from the main barrel", async () => {
+		const mod = await import(".");
+		expect("formatIssues" in mod).toBe(false);
+		expect("getSchemaKeys" in mod).toBe(false);
+	});
+
 	it("should have same behavior for both default and named imports", () => {
 		// Set test environment variable
 		vi.stubEnv("COMPARISON_TEST", "same-value");

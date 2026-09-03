@@ -137,7 +137,6 @@ export function applyBootGate(
 	const coreArkenv = resolveCoreArkenv(engine);
 	const coerced = coreArkenv(schema, {
 		env: combinedEnv as Dict<string>,
-		safe: false,
 	});
 
 	applyCoercedToRuntimeConfig(runtimeConfig, coerced, publicKeys);

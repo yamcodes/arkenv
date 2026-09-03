@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process";
-import { existsSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { beforeAll, describe, expect, it, vi } from "vitest";
@@ -173,6 +173,38 @@ describe("Distribution Built Outputs", () => {
 					PORT: "number.port",
 				});
 			}).toThrow(ArkEnvError);
+		});
+	});
+
+	describe("Subpaths", () => {
+		it("exports formatIssues and getSchemaKeys from @arkenv/core/issues", async () => {
+			const issues = await import("../dist/issues.js");
+			expect(typeof issues.formatIssues).toBe("function");
+			expect(typeof issues.getSchemaKeys).toBe("function");
+		});
+
+		it("does not re-export formatIssues or getSchemaKeys from the main barrel", async () => {
+			const index = await import("../dist/index.js");
+			expect("formatIssues" in index).toBe(false);
+			expect("getSchemaKeys" in index).toBe(false);
+		});
+
+		it("exports tryArkenv from @arkenv/core/safe", async () => {
+			const safe = await import("../dist/safe.js");
+			expect(typeof safe.tryArkenv).toBe("function");
+			const result = safe.tryArkenv(
+				{ PORT: "number" },
+				{ env: { PORT: "3000" } },
+			);
+			expect(result.success).toBe(true);
+		});
+
+		it("keeps schema-capture helpers and safeExecute out of the default chunk", () => {
+			const source = readFileSync(join(__dirname, "../dist/index.js"), "utf8");
+			expect(source).not.toContain("isCapturingSchema");
+			expect(source).not.toContain("recordSchemaCapture");
+			expect(source).not.toContain("beginSchemaCapture");
+			expect(source).not.toContain("safeExecute");
 		});
 	});
 });
