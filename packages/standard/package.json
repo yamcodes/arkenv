@@ -3,24 +3,24 @@
 	"type": "module",
 	"version": "1.0.0-alpha.9",
 	"description": "Dependency-free, typesafe environment variables validation based on Standard Schema",
-	"main": "./dist/index.cjs",
+	"main": "./dist/index.js",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js",
-			"require": "./dist/index.cjs"
+			"default": "./dist/index.js"
 		},
 		"./valibot": {
 			"types": "./dist/valibot.d.ts",
 			"import": "./dist/valibot.js",
-			"require": "./dist/valibot.cjs"
+			"default": "./dist/valibot.js"
 		},
 		"./zod-mini": {
 			"types": "./dist/zod-mini.d.ts",
 			"import": "./dist/zod-mini.js",
-			"require": "./dist/zod-mini.cjs"
+			"default": "./dist/zod-mini.js"
 		}
 	},
 	"peerDependencies": {

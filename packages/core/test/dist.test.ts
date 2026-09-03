@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { beforeAll, describe, expect, it, vi } from "vitest";
@@ -16,7 +16,7 @@ let standardArkEnvError: any;
 
 beforeAll(async () => {
 	const distDir = join(__dirname, "../dist");
-	if (!existsSync(distDir) || !existsSync(join(distDir, "index.mjs"))) {
+	if (!existsSync(distDir) || !existsSync(join(distDir, "index.js"))) {
 		// Automatically compile the package if dist is missing
 		execSync("pnpm run build", {
 			cwd: join(__dirname, ".."),
@@ -37,7 +37,7 @@ beforeAll(async () => {
 	}
 
 	// Dynamically load to prevent compile-time module resolution errors if dist/ is missing initially
-	const index = await import("../dist/index.mjs");
+	const index = await import("../dist/index.js");
 	defaultArkenv = index.default;
 	namedArkenv = index.arkenv;
 
@@ -50,6 +50,21 @@ beforeAll(async () => {
 });
 
 describe("Distribution Built Outputs", () => {
+	describe("ESM-only dist", () => {
+		it("ships standard .js and .d.ts files with no CJS artifacts", () => {
+			const distDir = join(__dirname, "../dist");
+			const files = readdirSync(distDir, { recursive: true });
+
+			expect(files).toContain("index.js");
+			expect(files).toContain("index.d.ts");
+
+			const cjsArtifacts = files.filter(
+				(file) => file.endsWith(".cjs") || file.endsWith(".d.cts"),
+			);
+			expect(cjsArtifacts).toEqual([]);
+		});
+	});
+
 	describe("Core Tier (arkenv/core)", () => {
 		it("should export ArkEnvError and format validation issues correctly", () => {
 			const error = new ArkEnvError([

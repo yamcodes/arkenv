@@ -205,7 +205,7 @@ export async function assertStandardEntryIsolated(entryFile, context = {}) {
  * @returns {Promise<{ packageName: string, checked: string[] }>}
  */
 export async function assertPackageStandardIsolation(packageDir, options = {}) {
-	const conditions = options.conditions ?? ["import", "require"];
+	const conditions = options.conditions ?? ["import"];
 	const packageJson = JSON.parse(
 		readFileSync(join(packageDir, "package.json"), "utf8"),
 	);

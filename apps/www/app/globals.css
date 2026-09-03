@@ -10,7 +10,7 @@
 
 @plugin "tailwindcss-animate";
 @source "../node_modules/fumadocs-ui/dist/**/*.js";
-@source "../node_modules/@arkenv/fumadocs-ui/dist/**/*.mjs";
+@source "../node_modules/@arkenv/fumadocs-ui/dist/**/*.js";
 
 .dark body,
 .dark html {

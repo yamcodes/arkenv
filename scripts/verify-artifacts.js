@@ -13,7 +13,6 @@ const rootDir = path.join(__dirname, "..");
 
 const targets = [
 	"packages/standard/dist/index.js",
-	"packages/standard/dist/index.cjs",
 	"packages/standard/dist/index.d.ts",
 ];
 

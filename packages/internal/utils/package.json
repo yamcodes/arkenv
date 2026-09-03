@@ -3,24 +3,24 @@
 	"private": true,
 	"type": "module",
 	"version": "0.1.3",
-	"main": "./dist/index.cjs",
+	"main": "./dist/index.js",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js",
-			"require": "./dist/index.cjs"
+			"default": "./dist/index.js"
 		},
 		"./log": {
 			"types": "./dist/log.d.ts",
 			"import": "./dist/log.js",
-			"require": "./dist/log.cjs"
+			"default": "./dist/log.js"
 		},
 		"./boundary-access-error": {
 			"types": "./dist/boundary-access-error.d.ts",
 			"import": "./dist/boundary-access-error.js",
-			"require": "./dist/boundary-access-error.cjs"
+			"default": "./dist/boundary-access-error.js"
 		}
 	},
 	"scripts": {

@@ -36,7 +36,7 @@ try {
 
 // Avoid running when @arkenv/fumadocs-ui is not built yet (e.g. fresh CI install)
 try {
-	require.resolve("@arkenv/fumadocs-ui/dist/utils/index.mjs");
+	require.resolve("@arkenv/fumadocs-ui/dist/utils/index.js");
 } catch {
 	console.warn(
 		"Skipping fumadocs-mdx: @arkenv/fumadocs-ui is not built (dist missing).",

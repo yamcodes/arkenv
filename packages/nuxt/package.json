@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "git+https://github.com/yamcodes/arkenv.git"
 	},
-	"main": "./dist/index.cjs",
+	"main": "./dist/index.js",
 	"module": "./dist/index.js",
 	"dependencies": {
 		"@arkenv/build": "workspace:*",
@@ -56,32 +56,32 @@
 		".": {
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js",
-			"require": "./dist/index.cjs"
+			"default": "./dist/index.js"
 		},
 		"./module": {
 			"types": "./dist/module.d.ts",
 			"import": "./dist/module.js",
-			"require": "./dist/module.cjs"
+			"default": "./dist/module.js"
 		},
 		"./config": {
 			"types": "./dist/config.d.ts",
 			"import": "./dist/config.js",
-			"require": "./dist/config.cjs"
+			"default": "./dist/config.js"
 		},
 		"./standard": {
 			"types": "./dist/standard/index.d.ts",
 			"import": "./dist/standard/index.js",
-			"require": "./dist/standard/index.cjs"
+			"default": "./dist/standard/index.js"
 		},
 		"./standard/module": {
 			"types": "./dist/standard/module.d.ts",
 			"import": "./dist/standard/module.js",
-			"require": "./dist/standard/module.cjs"
+			"default": "./dist/standard/module.js"
 		},
 		"./standard/config": {
 			"types": "./dist/standard/config.d.ts",
 			"import": "./dist/standard/config.js",
-			"require": "./dist/standard/config.cjs"
+			"default": "./dist/standard/config.js"
 		}
 	},
 	"bugs": "https://github.com/yamcodes/arkenv/labels/%40arkenv%2Fnuxt",
@@ -118,8 +118,7 @@
 	"imports": {
 		"#arkenv/server-boot": {
 			"types": "./dist/empty-server-boot.d.ts",
-			"import": "./dist/empty-server-boot.js",
-			"require": "./dist/empty-server-boot.cjs"
+			"import": "./dist/empty-server-boot.js"
 		}
 	}
 }

@@ -9,7 +9,7 @@ export default defineConfig({
 		"src/standard/index.ts",
 		"src/standard/config.ts",
 	],
-	format: ["esm", "cjs"],
+	format: ["esm"],
 	minify: true,
 	fixedExtension: false,
 	sourcemap: false,

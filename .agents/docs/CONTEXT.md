@@ -104,7 +104,7 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 **Build System:**
 
 - Turborepo for task orchestration and caching
-- `tsdown` for building packages (generates ESM + CJS + types)
+- `tsdown` for building packages (pure ESM-only output: `.js` + `.d.ts`, no CJS)
 - Size limits enforced via `size-limit` (\~2 kB per package)
 - Workspace protocol (`workspace:*`) for internal dependencies
 

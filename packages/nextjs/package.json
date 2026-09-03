@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "git+https://github.com/yamcodes/arkenv.git"
 	},
-	"main": "./dist/index.cjs",
+	"main": "./dist/index.js",
 	"module": "./dist/index.js",
 	"dependencies": {
 		"@arkenv/build": "workspace:*",
@@ -55,28 +55,28 @@
 			"react-server": {
 				"types": "./dist/react-server.d.ts",
 				"import": "./dist/react-server.js",
-				"require": "./dist/react-server.cjs"
+				"default": "./dist/react-server.js"
 			},
 			"default": {
 				"types": "./dist/index.d.ts",
 				"import": "./dist/index.js",
-				"require": "./dist/index.cjs"
+				"default": "./dist/index.js"
 			}
 		},
 		"./config": {
 			"types": "./dist/config/index.d.ts",
 			"import": "./dist/config/index.js",
-			"require": "./dist/config/index.cjs"
+			"default": "./dist/config/index.js"
 		},
 		"./standard": {
 			"types": "./dist/standard/index.d.ts",
 			"import": "./dist/standard/index.js",
-			"require": "./dist/standard/index.cjs"
+			"default": "./dist/standard/index.js"
 		},
 		"./standard/config": {
 			"types": "./dist/standard/config.d.ts",
 			"import": "./dist/standard/config.js",
-			"require": "./dist/standard/config.cjs"
+			"default": "./dist/standard/config.js"
 		}
 	},
 	"bugs": "https://github.com/yamcodes/arkenv/labels/%40arkenv%2Fnextjs",

@@ -80,9 +80,7 @@ export function buildSchemaJitiAliases(
 		path.join(packageDir, "mock-imports.ts"),
 	)
 		? path.join(packageDir, "mock-imports.ts")
-		: fs.existsSync(path.join(packageDir, "mock-imports.js"))
-			? path.join(packageDir, "mock-imports.js")
-			: path.join(packageDir, "mock-imports.cjs");
+		: path.join(packageDir, "mock-imports.js");
 
 	const emptyServerBootPath = fs.existsSync(
 		path.join(packageDir, "empty-server-boot.ts"),
