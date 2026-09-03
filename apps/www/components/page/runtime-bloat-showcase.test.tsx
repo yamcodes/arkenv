@@ -61,10 +61,11 @@ describe("RuntimeBloatShowcase", () => {
 		expect(figure).toHaveTextContent("156.0 kB");
 		expect(figure).toHaveTextContent("(6.3 + 149.8)");
 
-		// T3 Env bar with ArkType extension
+		// T3 Env bar with Zod requirement note
 		expect(figure).toHaveTextContent("@t3-oss/env-core");
-		expect(figure).toHaveTextContent("+ ArkType");
-		expect(figure).toHaveTextContent("164.0 kB");
+		expect(figure).toHaveTextContent("+ Zod");
+		expect(figure).toHaveTextContent("(requires Zod)");
+		expect(figure).toHaveTextContent("325.0 kB");
 
 		// Varlock reference bar
 		expect(figure).toHaveTextContent("varlock");
@@ -89,10 +90,10 @@ describe("RuntimeBloatShowcase", () => {
 		expect(figure).toHaveTextContent("+ Valibot");
 		expect(figure).toHaveTextContent("23.3 kB");
 
-		// T3 Env shows Valibot extension with 27.6 kB total
+		// T3 Env remains 325.0 kB with (requires Zod) note
 		expect(figure).toHaveTextContent("@t3-oss/env-core");
-		expect(figure).toHaveTextContent("+ Valibot");
-		expect(figure).toHaveTextContent("27.6 kB");
+		expect(figure).toHaveTextContent("(requires Zod)");
+		expect(figure).toHaveTextContent("325.0 kB");
 	});
 
 	it("switches to Zod tab and back to ArkType clearing query string", async () => {
@@ -111,7 +112,7 @@ describe("RuntimeBloatShowcase", () => {
 		expect(figure).toHaveTextContent("329.2 kB");
 
 		expect(figure).toHaveTextContent("@t3-oss/env-core");
-		expect(figure).toHaveTextContent("333.5 kB");
+		expect(figure).toHaveTextContent("325.0 kB");
 
 		// Switching back to default ArkType clears ?validator param
 		const arkTypeTab = screen.getByRole("tab", { name: /ArkType/i });

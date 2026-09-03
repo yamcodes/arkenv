@@ -103,6 +103,16 @@ async function run() {
 		bytes: 14541,
 		gzipBytes: 4300,
 	};
+	// In practice, developers using @t3-oss/env-core are locked into the monolithic Zod ecosystem (325.0 kB).
+	// While theoretical Standard Schema adapters could exist:
+	//   - Shelved theoretical ArkType + T3: 164.0 kB (14.2 kB engine + 149.8 kB ArkType)
+	//   - Shelved theoretical Valibot + T3: 27.6 kB (14.2 kB engine + 13.4 kB Valibot)
+	// We shelve those theoretical combinations: real-world T3 Env installations pay the full Zod tax.
+	// Pinning T3 Env to Zod across all tabs with "(requires Zod)" accurately reflects the baseline users migrate from.
+	const t3Zod = {
+		bytes: 332800,
+		gzipBytes: 67584,
+	};
 	const varlock = {
 		bytes: 29082,
 		gzipBytes: 9318,
@@ -143,29 +153,17 @@ async function run() {
 				engineKb: toKb(t3Engine.bytes),
 				engineGzipBytes: t3Engine.gzipBytes,
 				engineGzipKb: toKb(t3Engine.gzipBytes),
-				validatorName: "ArkType",
-				validatorBytes: Math.max(0, coreArkType.bytes - coreEngine.bytes),
-				validatorKb: toKb(Math.max(0, coreArkType.bytes - coreEngine.bytes)),
-				validatorGzipBytes: Math.max(
-					0,
-					coreArkType.gzipBytes - coreEngine.gzipBytes,
-				),
-				validatorGzipKb: toKb(
-					Math.max(0, coreArkType.gzipBytes - coreEngine.gzipBytes),
-				),
-				totalBytes:
-					t3Engine.bytes + Math.max(0, coreArkType.bytes - coreEngine.bytes),
-				totalKb: toKb(
-					t3Engine.bytes + Math.max(0, coreArkType.bytes - coreEngine.bytes),
-				),
-				totalGzipBytes:
-					t3Engine.gzipBytes +
-					Math.max(0, coreArkType.gzipBytes - coreEngine.gzipBytes),
-				totalGzipKb: toKb(
-					t3Engine.gzipBytes +
-						Math.max(0, coreArkType.gzipBytes - coreEngine.gzipBytes),
-				),
+				validatorName: "Zod",
+				validatorBytes: t3Zod.bytes - t3Engine.bytes,
+				validatorKb: toKb(t3Zod.bytes - t3Engine.bytes),
+				validatorGzipBytes: t3Zod.gzipBytes - t3Engine.gzipBytes,
+				validatorGzipKb: toKb(t3Zod.gzipBytes - t3Engine.gzipBytes),
+				totalBytes: t3Zod.bytes,
+				totalKb: toKb(t3Zod.bytes),
+				totalGzipBytes: t3Zod.gzipBytes,
+				totalGzipKb: toKb(t3Zod.gzipBytes),
 				tier: "competitor",
+				note: "requires Zod",
 			},
 			{
 				id: "varlock",
@@ -219,31 +217,14 @@ async function run() {
 				engineGzipBytes: t3Engine.gzipBytes,
 				engineGzipKb: toKb(t3Engine.gzipBytes),
 				validatorName: "Zod",
-				validatorBytes: Math.max(0, standardZod.bytes - standardEngine.bytes),
-				validatorKb: toKb(
-					Math.max(0, standardZod.bytes - standardEngine.bytes),
-				),
-				validatorGzipBytes: Math.max(
-					0,
-					standardZod.gzipBytes - standardEngine.gzipBytes,
-				),
-				validatorGzipKb: toKb(
-					Math.max(0, standardZod.gzipBytes - standardEngine.gzipBytes),
-				),
-				totalBytes:
-					t3Engine.bytes +
-					Math.max(0, standardZod.bytes - standardEngine.bytes),
-				totalKb: toKb(
-					t3Engine.bytes +
-						Math.max(0, standardZod.bytes - standardEngine.bytes),
-				),
-				totalGzipBytes:
-					t3Engine.gzipBytes +
-					Math.max(0, standardZod.gzipBytes - standardEngine.gzipBytes),
-				totalGzipKb: toKb(
-					t3Engine.gzipBytes +
-						Math.max(0, standardZod.gzipBytes - standardEngine.gzipBytes),
-				),
+				validatorBytes: t3Zod.bytes - t3Engine.bytes,
+				validatorKb: toKb(t3Zod.bytes - t3Engine.bytes),
+				validatorGzipBytes: t3Zod.gzipBytes - t3Engine.gzipBytes,
+				validatorGzipKb: toKb(t3Zod.gzipBytes - t3Engine.gzipBytes),
+				totalBytes: t3Zod.bytes,
+				totalKb: toKb(t3Zod.bytes),
+				totalGzipBytes: t3Zod.gzipBytes,
+				totalGzipKb: toKb(t3Zod.gzipBytes),
 				tier: "competitor",
 			},
 			{
@@ -300,36 +281,17 @@ async function run() {
 				engineKb: toKb(t3Engine.bytes),
 				engineGzipBytes: t3Engine.gzipBytes,
 				engineGzipKb: toKb(t3Engine.gzipBytes),
-				validatorName: "Valibot",
-				validatorBytes: Math.max(
-					0,
-					standardValibot.bytes - standardEngine.bytes,
-				),
-				validatorKb: toKb(
-					Math.max(0, standardValibot.bytes - standardEngine.bytes),
-				),
-				validatorGzipBytes: Math.max(
-					0,
-					standardValibot.gzipBytes - standardEngine.gzipBytes,
-				),
-				validatorGzipKb: toKb(
-					Math.max(0, standardValibot.gzipBytes - standardEngine.gzipBytes),
-				),
-				totalBytes:
-					t3Engine.bytes +
-					Math.max(0, standardValibot.bytes - standardEngine.bytes),
-				totalKb: toKb(
-					t3Engine.bytes +
-						Math.max(0, standardValibot.bytes - standardEngine.bytes),
-				),
-				totalGzipBytes:
-					t3Engine.gzipBytes +
-					Math.max(0, standardValibot.gzipBytes - standardEngine.gzipBytes),
-				totalGzipKb: toKb(
-					t3Engine.gzipBytes +
-						Math.max(0, standardValibot.gzipBytes - standardEngine.gzipBytes),
-				),
+				validatorName: "Zod",
+				validatorBytes: t3Zod.bytes - t3Engine.bytes,
+				validatorKb: toKb(t3Zod.bytes - t3Engine.bytes),
+				validatorGzipBytes: t3Zod.gzipBytes - t3Engine.gzipBytes,
+				validatorGzipKb: toKb(t3Zod.gzipBytes - t3Engine.gzipBytes),
+				totalBytes: t3Zod.bytes,
+				totalKb: toKb(t3Zod.bytes),
+				totalGzipBytes: t3Zod.gzipBytes,
+				totalGzipKb: toKb(t3Zod.gzipBytes),
 				tier: "competitor",
+				note: "requires Zod",
 			},
 			{
 				id: "varlock",
