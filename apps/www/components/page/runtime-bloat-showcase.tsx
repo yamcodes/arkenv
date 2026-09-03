@@ -23,25 +23,12 @@ export function RuntimeBloatShowcase() {
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
 					Beautiful errors in the terminal. Structured JSON for CI and agents.
 				</p>
-				<p data-reveal style={{ ["--reveal-delay" as string]: "100ms" }}>
-					<code>HOST</code> <code>MISSING_VARIABLE</code>
-					{" → add it to "}
-					<code>.env</code>
-					{"; "}
-					<code>PORT</code> <code>INVALID_TYPE</code>
-					{" → fix the value, don't touch the schema."}
-				</p>
-				<p data-reveal style={{ ["--reveal-delay" as string]: "120ms" }}>
-					Same codes as <code>arkenv check --json</code>.
-				</p>
 			</header>
 
 			<figure
 				className="home-aurora__pitch-visual home-aurora__code-window home-aurora__terminal"
 				data-reveal
 				style={{ ["--reveal-delay" as string]: "140ms" }}
-				role="img"
-				aria-label="Terminal running arkenv check --json, then structured validation issues"
 			>
 				<pre className="home-aurora__tty">
 					<code>
@@ -55,6 +42,14 @@ export function RuntimeBloatShowcase() {
 						{PROOF_JSON}
 					</code>
 				</pre>
+				<figcaption>
+					<code>HOST</code> <code>MISSING_VARIABLE</code>
+					{" → add it to "}
+					<code>.env</code>
+					{"; "}
+					<code>PORT</code> <code>INVALID_TYPE</code>
+					{" → fix the value, don't touch the schema."}
+				</figcaption>
 			</figure>
 		</section>
 	);

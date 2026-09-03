@@ -17,9 +17,7 @@ describe("RuntimeBloatShowcase", () => {
 			screen.getByText(/Structured JSON for CI and agents/i),
 		).toBeInTheDocument();
 
-		const figure = screen.getByRole("img", {
-			name: /arkenv check --json/i,
-		});
+		const figure = screen.getByRole("figure");
 		expect(figure).toHaveTextContent("$ arkenv check --json");
 		expect(figure).toHaveTextContent('"success": false');
 		expect(figure).toHaveTextContent("MISSING_VARIABLE");
@@ -31,7 +29,9 @@ describe("RuntimeBloatShowcase", () => {
 
 		expect(screen.getByText(/add it to/i)).toBeInTheDocument();
 		expect(screen.getByText(/fix the value/i)).toBeInTheDocument();
-		expect(screen.getByText(/Same codes as/i)).toBeInTheDocument();
+		expect(
+			screen.queryByText(/Same codes as/i),
+		).not.toBeInTheDocument();
 
 		expect(
 			screen.queryByRole("heading", { name: "Optimized for the edge" }),
