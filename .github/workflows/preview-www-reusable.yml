@@ -102,8 +102,11 @@ jobs:
           GIT_COMMIT_AUTHOR_NAME: ${{ github.event.head_commit.author.name || github.actor }}
         run: |
           set -o pipefail
-          SHORT_MSG="$(printf '%s\n' "$GIT_COMMIT_MESSAGE" | head -n1)"
-          DEPLOYMENT_URL=$(node scripts/vercel-wrapper.cjs deploy --prebuilt --archive=tgz --token="$VERCEL_TOKEN" \
+          # First line only. printf|head SIGPIPEs under pipefail on multiline merge messages.
+          SHORT_MSG="${GIT_COMMIT_MESSAGE%%$'\n'*}"
+          deploy_log="$(mktemp)"
+          trap 'rm -f "$deploy_log"' EXIT
+          node scripts/vercel-wrapper.cjs deploy --prebuilt --archive=tgz --token="$VERCEL_TOKEN" \
             -m githubDeployment=1 \
             -m githubOrg="$GIT_ORG" \
             -m githubRepo="$GIT_REPO" \
@@ -114,7 +117,8 @@ jobs:
             -m githubCommitMessage="$SHORT_MSG" \
             -m githubCommitAuthorName="$GIT_COMMIT_AUTHOR_NAME" \
             -m githubCommitAuthorLogin="$GIT_ACTOR" \
-            | tail -n 1)
+            | tee "$deploy_log"
+          DEPLOYMENT_URL="$(tail -n 1 "$deploy_log")"
           echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> "$GITHUB_OUTPUT"
       # Explicit alias so branch domains stay current without native Vercel Git builds (#1460).
       # Only on push to dev/v1 — labeled PR previews keep ephemeral URLs and must not steal these.
