@@ -3127,8 +3127,8 @@
 	--color-fd-popover: var(--color-paper-2);
 	--color-fd-popover-foreground: var(--color-ink);
 	--color-fd-border: var(--color-rule);
-	/* Zod's 8-line window — Valibot nests PORT and scrolls inside this cap. */
-	--mvp-lines: 8;
+	/* Window sized for Zod (8 lines) with comfortable breathing room — Valibot (16 lines) scrolls inside this cap. */
+	--mvp-lines: 8.5;
 	--mvp-lh: 1.55;
 	--mvp-body-size: calc(var(--mvp-lines) * var(--mvp-lh) * var(--text-code) + 2 * var(--space-sm));
 	display: grid;

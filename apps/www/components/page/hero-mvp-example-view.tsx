@@ -31,13 +31,13 @@ type ScrollEdgeFades = {
 };
 
 function readScrollEdgeFades(scroll: HTMLElement): ScrollEdgeFades {
-	const canScroll = scroll.scrollHeight > scroll.clientHeight + 1;
+	const canScroll = scroll.scrollHeight - scroll.clientHeight > 6;
 	if (!canScroll) {
 		return { overflow: false, fadeTop: false, fadeBottom: false };
 	}
-	const atTop = scroll.scrollTop <= 1;
+	const atTop = scroll.scrollTop <= 2;
 	const atBottom =
-		scroll.scrollTop + scroll.clientHeight >= scroll.scrollHeight - 1;
+		scroll.scrollTop + scroll.clientHeight >= scroll.scrollHeight - 2;
 	return {
 		overflow: true,
 		fadeTop: !atTop,
