@@ -1740,6 +1740,14 @@
 	white-space: nowrap;
 }
 
+.home-aurora__telemetry-note {
+	font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
+	font-size: 0.75rem;
+	line-height: normal;
+	color: var(--color-muted);
+	white-space: nowrap;
+}
+
 .home-aurora__telemetry-stats {
 	display: inline-flex;
 	align-items: baseline;

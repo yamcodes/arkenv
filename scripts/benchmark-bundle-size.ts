@@ -3,7 +3,10 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gzipSync } from "node:zlib";
 import { build } from "esbuild";
-import type { BenchmarkData } from "../apps/www/lib/benchmark/types";
+import type {
+	BenchmarkData,
+	BenchmarkRow,
+} from "../apps/www/lib/benchmark/types";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
@@ -117,7 +120,7 @@ async function run() {
 	//   - Shelved theoretical ArkType + T3: 164.0 kB (14.2 kB engine + 149.8 kB ArkType)
 	//   - Shelved theoretical Valibot + T3: 27.6 kB (14.2 kB engine + 13.4 kB Valibot)
 	// We shelve those theoretical combinations: real-world T3 Env installations pay the full Zod tax.
-	// Pinning T3 Env to Zod across all tabs with "(requires Zod)" accurately reflects the baseline users migrate from.
+	// The "requires Zod" note marks Zod as a user-supplied peer, since @t3-oss/env-core itself ships engine-only.
 	const t3Zod = {
 		bytes: 332800,
 		gzipBytes: 67584,
@@ -128,95 +131,101 @@ async function run() {
 	};
 
 	// 4. Construct sorted leaderboard of real-world edge stacks
-	const leaderboard: BenchmarkRow[] = [
-		{
-			id: "arkenv-valibot",
-			name: "@arkenv/standard",
-			npmPackage: "@arkenv/standard",
-			engineBytes: standardEngine.bytes,
-			engineKb: toKb(standardEngine.bytes),
-			engineGzipBytes: standardEngine.gzipBytes,
-			engineGzipKb: toKb(standardEngine.gzipBytes),
-			validatorName: "Valibot",
-			validatorBytes: Math.max(0, standardValibot.bytes - standardEngine.bytes),
-			validatorKb: toKb(
-				Math.max(0, standardValibot.bytes - standardEngine.bytes),
-			),
-			validatorGzipBytes: Math.max(
-				0,
-				standardValibot.gzipBytes - standardEngine.gzipBytes,
-			),
-			validatorGzipKb: toKb(
-				Math.max(0, standardValibot.gzipBytes - standardEngine.gzipBytes),
-			),
-			totalBytes: standardValibot.bytes,
-			totalKb: toKb(standardValibot.bytes),
-			totalGzipBytes: standardValibot.gzipBytes,
-			totalGzipKb: toKb(standardValibot.gzipBytes),
-			tier: "primary",
-			source: standardValibot.source,
-		},
-		{
-			id: "varlock",
-			name: "varlock",
-			npmPackage: "varlock",
-			engineBytes: varlock.bytes,
-			engineKb: toKb(varlock.bytes),
-			engineGzipBytes: varlock.gzipBytes,
-			engineGzipKb: toKb(varlock.gzipBytes),
-			totalBytes: varlock.bytes,
-			totalKb: toKb(varlock.bytes),
-			totalGzipBytes: varlock.gzipBytes,
-			totalGzipKb: toKb(varlock.gzipBytes),
-			tier: "reference",
-			source: "bundlephobia",
-		},
-		{
-			id: "arkenv-arktype",
-			name: "@arkenv/core",
-			npmPackage: "@arkenv/core",
-			engineBytes: coreEngine.bytes,
-			engineKb: toKb(coreEngine.bytes),
-			engineGzipBytes: coreEngine.gzipBytes,
-			engineGzipKb: toKb(coreEngine.gzipBytes),
-			validatorName: "ArkType",
-			validatorBytes: Math.max(0, coreArkType.bytes - coreEngine.bytes),
-			validatorKb: toKb(Math.max(0, coreArkType.bytes - coreEngine.bytes)),
-			validatorGzipBytes: Math.max(
-				0,
-				coreArkType.gzipBytes - coreEngine.gzipBytes,
-			),
-			validatorGzipKb: toKb(
-				Math.max(0, coreArkType.gzipBytes - coreEngine.gzipBytes),
-			),
-			totalBytes: coreArkType.bytes,
-			totalKb: toKb(coreArkType.bytes),
-			totalGzipBytes: coreArkType.gzipBytes,
-			totalGzipKb: toKb(coreArkType.gzipBytes),
-			tier: "primary",
-			source: coreArkType.source,
-		},
-		{
-			id: "t3-env-zod",
-			name: "@t3-oss/env-core",
-			npmPackage: "@t3-oss/env-core",
-			engineBytes: t3Engine.bytes,
-			engineKb: toKb(t3Engine.bytes),
-			engineGzipBytes: t3Engine.gzipBytes,
-			engineGzipKb: toKb(t3Engine.gzipBytes),
-			validatorName: "Zod",
-			validatorBytes: t3Zod.bytes - t3Engine.bytes,
-			validatorKb: toKb(t3Zod.bytes - t3Engine.bytes),
-			validatorGzipBytes: t3Zod.gzipBytes - t3Engine.gzipBytes,
-			validatorGzipKb: toKb(t3Zod.gzipBytes - t3Engine.gzipBytes),
-			totalBytes: t3Zod.bytes,
-			totalKb: toKb(t3Zod.bytes),
-			totalGzipBytes: t3Zod.gzipBytes,
-			totalGzipKb: toKb(t3Zod.gzipBytes),
-			tier: "competitor",
-			source: "bundlephobia",
-		},
-	].sort((a, b) => a.totalBytes - b.totalBytes);
+	const leaderboard: BenchmarkRow[] = (
+		[
+			{
+				id: "arkenv-valibot",
+				name: "@arkenv/standard",
+				npmPackage: "@arkenv/standard",
+				engineBytes: standardEngine.bytes,
+				engineKb: toKb(standardEngine.bytes),
+				engineGzipBytes: standardEngine.gzipBytes,
+				engineGzipKb: toKb(standardEngine.gzipBytes),
+				validatorName: "Valibot",
+				validatorBytes: Math.max(
+					0,
+					standardValibot.bytes - standardEngine.bytes,
+				),
+				validatorKb: toKb(
+					Math.max(0, standardValibot.bytes - standardEngine.bytes),
+				),
+				validatorGzipBytes: Math.max(
+					0,
+					standardValibot.gzipBytes - standardEngine.gzipBytes,
+				),
+				validatorGzipKb: toKb(
+					Math.max(0, standardValibot.gzipBytes - standardEngine.gzipBytes),
+				),
+				totalBytes: standardValibot.bytes,
+				totalKb: toKb(standardValibot.bytes),
+				totalGzipBytes: standardValibot.gzipBytes,
+				totalGzipKb: toKb(standardValibot.gzipBytes),
+				tier: "primary",
+				source: standardValibot.source,
+			},
+			{
+				id: "varlock",
+				name: "varlock",
+				npmPackage: "varlock",
+				engineBytes: varlock.bytes,
+				engineKb: toKb(varlock.bytes),
+				engineGzipBytes: varlock.gzipBytes,
+				engineGzipKb: toKb(varlock.gzipBytes),
+				totalBytes: varlock.bytes,
+				totalKb: toKb(varlock.bytes),
+				totalGzipBytes: varlock.gzipBytes,
+				totalGzipKb: toKb(varlock.gzipBytes),
+				tier: "reference",
+				source: "bundlephobia",
+			},
+			{
+				id: "arkenv-arktype",
+				name: "@arkenv/core",
+				npmPackage: "@arkenv/core",
+				engineBytes: coreEngine.bytes,
+				engineKb: toKb(coreEngine.bytes),
+				engineGzipBytes: coreEngine.gzipBytes,
+				engineGzipKb: toKb(coreEngine.gzipBytes),
+				validatorName: "ArkType",
+				validatorBytes: Math.max(0, coreArkType.bytes - coreEngine.bytes),
+				validatorKb: toKb(Math.max(0, coreArkType.bytes - coreEngine.bytes)),
+				validatorGzipBytes: Math.max(
+					0,
+					coreArkType.gzipBytes - coreEngine.gzipBytes,
+				),
+				validatorGzipKb: toKb(
+					Math.max(0, coreArkType.gzipBytes - coreEngine.gzipBytes),
+				),
+				totalBytes: coreArkType.bytes,
+				totalKb: toKb(coreArkType.bytes),
+				totalGzipBytes: coreArkType.gzipBytes,
+				totalGzipKb: toKb(coreArkType.gzipBytes),
+				tier: "primary",
+				source: coreArkType.source,
+			},
+			{
+				id: "t3-env-zod",
+				name: "@t3-oss/env-core",
+				npmPackage: "@t3-oss/env-core",
+				engineBytes: t3Engine.bytes,
+				engineKb: toKb(t3Engine.bytes),
+				engineGzipBytes: t3Engine.gzipBytes,
+				engineGzipKb: toKb(t3Engine.gzipBytes),
+				validatorName: "Zod",
+				validatorBytes: t3Zod.bytes - t3Engine.bytes,
+				validatorKb: toKb(t3Zod.bytes - t3Engine.bytes),
+				validatorGzipBytes: t3Zod.gzipBytes - t3Engine.gzipBytes,
+				validatorGzipKb: toKb(t3Zod.gzipBytes - t3Engine.gzipBytes),
+				totalBytes: t3Zod.bytes,
+				totalKb: toKb(t3Zod.bytes),
+				totalGzipBytes: t3Zod.gzipBytes,
+				totalGzipKb: toKb(t3Zod.gzipBytes),
+				tier: "competitor",
+				source: "bundlephobia",
+				note: "requires Zod",
+			},
+		] satisfies BenchmarkRow[]
+	).sort((a, b) => a.totalBytes - b.totalBytes);
 
 	const results: BenchmarkData = {
 		leaderboard,

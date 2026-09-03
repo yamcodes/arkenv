@@ -63,9 +63,7 @@ export function RuntimeBloatShowcase() {
 									: ""
 							}, total ${item.totalKb} kilobytes`;
 
-							const statsTooltip = item.validatorBytes
-								? `Total: ${item.totalKb} kB (${item.engineKb} kB engine + ${item.validatorKb} kB validator)`
-								: `Total: ${item.totalKb} kB`;
+							const statsTooltip = `Total: ${item.totalKb} kB (${item.totalGzipKb} kB gzipped)`;
 
 							return (
 								<div
@@ -83,13 +81,13 @@ export function RuntimeBloatShowcase() {
 											<div
 												className="home-aurora__telemetry-segment home-aurora__telemetry-segment--engine"
 												style={{ width: engineShare }}
-												title={`${item.name} engine: ${item.engineKb} kB (${item.engineGzipKb} kB gzip)`}
+												title={`${item.name}: ${item.engineKb} kB (${item.engineGzipKb} kB gzipped)`}
 											/>
 											{item.validatorBytes ? (
 												<div
 													className="home-aurora__telemetry-segment home-aurora__telemetry-segment--validator"
 													style={{ width: validatorShare }}
-													title={`${item.validatorName} extension: ${item.validatorKb} kB (${item.validatorGzipKb} kB gzip)`}
+													title={`${item.validatorName}: ${item.validatorKb} kB (${item.validatorGzipKb} kB gzipped)`}
 												/>
 											) : null}
 										</div>
@@ -110,6 +108,11 @@ export function RuntimeBloatShowcase() {
 												{item.validatorName ? (
 													<span className="home-aurora__telemetry-ext">
 														+ {item.validatorName}
+													</span>
+												) : null}
+												{item.note ? (
+													<span className="home-aurora__telemetry-note">
+														({item.note})
 													</span>
 												) : null}
 											</div>

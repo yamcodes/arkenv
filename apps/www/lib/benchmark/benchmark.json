@@ -73,7 +73,8 @@
 			"totalGzipBytes": 67584,
 			"totalGzipKb": "66.0",
 			"tier": "competitor",
-			"source": "bundlephobia"
+			"source": "bundlephobia",
+			"note": "requires Zod"
 		}
 	],
 	"matrix": {

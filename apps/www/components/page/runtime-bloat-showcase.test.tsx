@@ -56,6 +56,7 @@ describe("RuntimeBloatShowcase", () => {
 		const row3 = within(rows[3] as HTMLElement);
 		expect(row3.getByText("@t3-oss/env-core")).toBeInTheDocument();
 		expect(row3.getByText("+ Zod")).toBeInTheDocument();
+		expect(row3.getByText("(requires Zod)")).toBeInTheDocument();
 		expect(row3.getByText("325.0 kB")).toBeInTheDocument();
 		expect(row3.queryByText("(14.2 + 310.8)")).not.toBeInTheDocument();
 	});
