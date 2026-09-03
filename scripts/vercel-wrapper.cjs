@@ -1,4 +1,5 @@
 const { spawn } = require("node:child_process");
+const fs = require("node:fs");
 
 const args = process.argv.slice(2);
 
@@ -32,11 +33,36 @@ child.on("close", (code) => {
 			stderr.includes(keyword),
 		);
 
-		if (isRateLimit) {
-			console.log(
-				"\n::error title=Vercel Rate Limit Exceeded::Your Vercel account has reached a rate limit. Please check your Vercel dashboard or documentation for more information: https://vercel.com/docs/platform/limits",
-			);
+		const title = isRateLimit
+			? "Vercel Rate Limit Exceeded"
+			: "Vercel CLI failed";
+		const detail =
+			stderr.trim() ||
+			(isRateLimit
+				? "Your Vercel account has reached a rate limit. See https://vercel.com/docs/platform/limits"
+				: `vercel exited with code ${code}`);
+
+		// Workflow command: percent-encode so the annotation stays one line.
+		const encoded = detail
+			.replace(/%/g, "%25")
+			.replace(/\r/g, "")
+			.replace(/\n/g, "%0A");
+		console.log(`\n::error title=${title}::${encoded}`);
+
+		const summaryPath = process.env.GITHUB_STEP_SUMMARY;
+		if (summaryPath) {
+			const heading = isRateLimit
+				? "Vercel rate limit exceeded"
+				: "Vercel CLI failed";
+			const md = `\n## ${heading}\n\nExit code \`${code}\`.\n\n\`\`\`\n${detail}\n\`\`\`\n`;
+			try {
+				fs.appendFileSync(summaryPath, md);
+			} catch {
+				// Annotation already emitted; keep the original exit code.
+			}
 		}
 	}
-	process.exit(code);
+	// Don't process.exit(): the runner captures stdout over a pipe, and a hard
+	// exit can drop the ::error:: annotation written above before it drains.
+	process.exitCode = code ?? 1;
 });
