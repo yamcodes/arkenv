@@ -147,15 +147,12 @@ export function RuntimeBloatShowcase() {
 									className="home-aurora__telemetry-row"
 									data-tier={item.tier}
 								>
-									<div
-										className="home-aurora__telemetry-track"
-										role="img"
-										aria-label={a11yLabel}
-									>
+									<div className="home-aurora__telemetry-track">
 										<div
 											className="home-aurora__telemetry-bar-group"
 											style={{ width: totalPct }}
-											aria-hidden="true"
+											role="img"
+											aria-label={a11yLabel}
 										>
 											<div
 												className="home-aurora__telemetry-segment home-aurora__telemetry-segment--engine"

@@ -10,16 +10,19 @@ const ROOT = resolve(__dirname, "..");
 const OUT_PATH = join(ROOT, "apps/www/lib/benchmark/benchmark.json");
 
 type BuildTarget = {
+	name: string;
 	code: string;
 	dir: string;
 	external?: string[];
-	fallbackBytes: number;
-	fallbackGzipBytes: number;
+	fallbackBytes?: number;
+	fallbackGzipBytes?: number;
 };
 
-async function measure(
-	target: BuildTarget,
-): Promise<{ bytes: number; gzipBytes: number }> {
+async function measure(target: BuildTarget): Promise<{
+	bytes: number;
+	gzipBytes: number;
+	source: "esbuild" | "bundlephobia";
+}> {
 	try {
 		const res = await build({
 			stdin: { contents: target.code, resolveDir: target.dir },
@@ -36,15 +39,27 @@ async function measure(
 		return {
 			bytes: buffer.length,
 			gzipBytes: gzipSync(buffer).length,
+			source: "esbuild",
 		};
 	} catch (err: unknown) {
-		console.warn(
-			`Falling back to static metrics for build target: ${err instanceof Error ? err.message : String(err)}`,
+		if (
+			target.fallbackBytes !== undefined &&
+			target.fallbackGzipBytes !== undefined
+		) {
+			console.warn(
+				`Using fallback for ${target.name}: ${err instanceof Error ? err.message : String(err)}`,
+			);
+			return {
+				bytes: target.fallbackBytes,
+				gzipBytes: target.fallbackGzipBytes,
+				source: "bundlephobia",
+			};
+		}
+		throw new Error(
+			`Benchmark measurement for ${target.name} failed (no fallback allowed): ${
+				err instanceof Error ? err.message : String(err)
+			}`,
 		);
-		return {
-			bytes: target.fallbackBytes,
-			gzipBytes: target.fallbackGzipBytes,
-		};
 	}
 }
 
@@ -53,49 +68,43 @@ function toKb(bytes: number): string {
 }
 
 async function run() {
-	// 1. Measure Core Engine & Core + ArkType
+	// 1. Measure Core Engine & Core + ArkType (must build fresh, no fallbacks allowed)
 	const coreEngine = await measure({
+		name: "@arkenv/core (engine)",
 		code: `import arkenv from "${join(ROOT, "packages/core/dist/index.mjs")}"; console.log(arkenv);`,
 		dir: join(ROOT, "packages/core"),
 		external: ["arktype", "@ark/util", "@ark/schema", "arkregex"],
-		fallbackBytes: 6424,
-		fallbackGzipBytes: 2913,
 	});
 
 	const coreArkType = await measure({
+		name: "@arkenv/core + ArkType",
 		code: `import arkenv from "${join(ROOT, "packages/core/dist/index.mjs")}"; import { type } from "arktype"; console.log(arkenv(type({ PORT: "0 <= number.integer <= 65535" })));`,
 		dir: join(ROOT, "packages/core"),
-		fallbackBytes: 159771,
-		fallbackGzipBytes: 49631,
 	});
 
-	// 2. Measure Standard Engine & Standard + Valibot / Zod
+	// 2. Measure Standard Engine & Standard + Valibot / Zod / Zod Mini (must build fresh, no fallbacks allowed)
 	const standardEngine = await measure({
+		name: "@arkenv/standard (engine)",
 		code: `import arkenv from "${join(ROOT, "packages/standard/dist/index.js")}"; console.log(arkenv);`,
 		dir: join(ROOT, "packages/standard"),
-		fallbackBytes: 10222,
-		fallbackGzipBytes: 4106,
 	});
 
 	const standardValibot = await measure({
+		name: "@arkenv/standard/valibot + Valibot",
 		code: `import arkenv from "${join(ROOT, "packages/standard/dist/valibot.js")}"; import * as v from "valibot"; console.log(arkenv(v.object({ PORT: v.string() })));`,
 		dir: join(ROOT, "packages/standard"),
-		fallbackBytes: 23897,
-		fallbackGzipBytes: 7718,
 	});
 
 	const standardZod = await measure({
+		name: "@arkenv/standard + Zod",
 		code: `import arkenv from "${join(ROOT, "packages/standard/dist/index.js")}"; import { z } from "zod"; console.log(arkenv({ PORT: z.string() }));`,
 		dir: join(ROOT, "packages/standard"),
-		fallbackBytes: 337145,
-		fallbackGzipBytes: 68682,
 	});
 
 	const standardZodMini = await measure({
+		name: "@arkenv/standard/zod-mini + Zod Mini",
 		code: `import arkenv from "${join(ROOT, "packages/standard/dist/zod-mini.js")}"; import * as z from "zod/mini"; console.log(arkenv(z.object({ PORT: z.string() })));`,
 		dir: join(ROOT, "packages/standard"),
-		fallbackBytes: 34456,
-		fallbackGzipBytes: 11735,
 	});
 
 	// 3. Competitor Benchmarks (fallbacks from npm/bundlephobia / isolated measurements)
@@ -144,6 +153,7 @@ async function run() {
 				totalGzipBytes: coreArkType.gzipBytes,
 				totalGzipKb: toKb(coreArkType.gzipBytes),
 				tier: "primary",
+				source: coreArkType.source,
 			},
 			{
 				id: "t3-env",
@@ -163,6 +173,7 @@ async function run() {
 				totalGzipBytes: t3Zod.gzipBytes,
 				totalGzipKb: toKb(t3Zod.gzipBytes),
 				tier: "competitor",
+				source: "bundlephobia",
 				note: "requires Zod",
 			},
 			{
@@ -178,6 +189,7 @@ async function run() {
 				totalGzipBytes: varlock.gzipBytes,
 				totalGzipKb: toKb(varlock.gzipBytes),
 				tier: "reference",
+				source: "bundlephobia",
 				note: "for reference",
 			},
 		],
@@ -207,6 +219,7 @@ async function run() {
 				totalGzipBytes: standardZod.gzipBytes,
 				totalGzipKb: toKb(standardZod.gzipBytes),
 				tier: "primary",
+				source: standardZod.source,
 			},
 			{
 				id: "t3-env",
@@ -226,6 +239,7 @@ async function run() {
 				totalGzipBytes: t3Zod.gzipBytes,
 				totalGzipKb: toKb(t3Zod.gzipBytes),
 				tier: "competitor",
+				source: "bundlephobia",
 			},
 			{
 				id: "varlock",
@@ -240,6 +254,7 @@ async function run() {
 				totalGzipBytes: varlock.gzipBytes,
 				totalGzipKb: toKb(varlock.gzipBytes),
 				tier: "reference",
+				source: "bundlephobia",
 				note: "for reference",
 			},
 		],
@@ -272,6 +287,7 @@ async function run() {
 				totalGzipBytes: standardValibot.gzipBytes,
 				totalGzipKb: toKb(standardValibot.gzipBytes),
 				tier: "primary",
+				source: standardValibot.source,
 			},
 			{
 				id: "t3-env",
@@ -291,6 +307,7 @@ async function run() {
 				totalGzipBytes: t3Zod.gzipBytes,
 				totalGzipKb: toKb(t3Zod.gzipBytes),
 				tier: "competitor",
+				source: "bundlephobia",
 				note: "requires Zod",
 			},
 			{
@@ -306,6 +323,7 @@ async function run() {
 				totalGzipBytes: varlock.gzipBytes,
 				totalGzipKb: toKb(varlock.gzipBytes),
 				tier: "reference",
+				source: "bundlephobia",
 				note: "for reference",
 			},
 		],
@@ -317,6 +335,7 @@ async function run() {
 				totalKb: toKb(standardValibot.bytes),
 				gzipBytes: standardValibot.gzipBytes,
 				gzipKb: toKb(standardValibot.gzipBytes),
+				source: standardValibot.source,
 				description: "Smallest edge footprint; modular functional tree-shaking",
 			},
 			zodMini: {
@@ -326,6 +345,7 @@ async function run() {
 				totalKb: toKb(standardZodMini.bytes),
 				gzipBytes: standardZodMini.gzipBytes,
 				gzipKb: toKb(standardZodMini.gzipBytes),
+				source: standardZodMini.source,
 				description: "~90% smaller than classic Zod; familiar syntax",
 			},
 			arktype: {
@@ -335,6 +355,7 @@ async function run() {
 				totalKb: toKb(coreArkType.bytes),
 				gzipBytes: coreArkType.gzipBytes,
 				gzipKb: toKb(coreArkType.gzipBytes),
+				source: coreArkType.source,
 				description:
 					"TypeScript-native DSL strings; built-in keywords; zero dependencies",
 			},
@@ -345,6 +366,7 @@ async function run() {
 				totalKb: toKb(standardZod.bytes),
 				gzipBytes: standardZod.gzipBytes,
 				gzipKb: toKb(standardZod.gzipBytes),
+				source: standardZod.source,
 				description: "Drop-in compatibility for existing Zod schemas (Zod 4)",
 			},
 		},

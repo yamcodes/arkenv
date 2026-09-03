@@ -17,7 +17,8 @@
 			"totalKb": "156.0",
 			"totalGzipBytes": 49631,
 			"totalGzipKb": "48.5",
-			"tier": "primary"
+			"tier": "primary",
+			"source": "esbuild"
 		},
 		{
 			"id": "t3-env",
@@ -37,6 +38,7 @@
 			"totalGzipBytes": 67584,
 			"totalGzipKb": "66.0",
 			"tier": "competitor",
+			"source": "bundlephobia",
 			"note": "requires Zod"
 		},
 		{
@@ -52,6 +54,7 @@
 			"totalGzipBytes": 9318,
 			"totalGzipKb": "9.1",
 			"tier": "reference",
+			"source": "bundlephobia",
 			"note": "for reference"
 		}
 	],
@@ -73,7 +76,8 @@
 			"totalKb": "329.2",
 			"totalGzipBytes": 68682,
 			"totalGzipKb": "67.1",
-			"tier": "primary"
+			"tier": "primary",
+			"source": "esbuild"
 		},
 		{
 			"id": "t3-env",
@@ -92,7 +96,8 @@
 			"totalKb": "325.0",
 			"totalGzipBytes": 67584,
 			"totalGzipKb": "66.0",
-			"tier": "competitor"
+			"tier": "competitor",
+			"source": "bundlephobia"
 		},
 		{
 			"id": "varlock",
@@ -107,6 +112,7 @@
 			"totalGzipBytes": 9318,
 			"totalGzipKb": "9.1",
 			"tier": "reference",
+			"source": "bundlephobia",
 			"note": "for reference"
 		}
 	],
@@ -128,7 +134,8 @@
 			"totalKb": "23.3",
 			"totalGzipBytes": 7718,
 			"totalGzipKb": "7.5",
-			"tier": "primary"
+			"tier": "primary",
+			"source": "esbuild"
 		},
 		{
 			"id": "t3-env",
@@ -148,6 +155,7 @@
 			"totalGzipBytes": 67584,
 			"totalGzipKb": "66.0",
 			"tier": "competitor",
+			"source": "bundlephobia",
 			"note": "requires Zod"
 		},
 		{
@@ -163,6 +171,7 @@
 			"totalGzipBytes": 9318,
 			"totalGzipKb": "9.1",
 			"tier": "reference",
+			"source": "bundlephobia",
 			"note": "for reference"
 		}
 	],
@@ -174,6 +183,7 @@
 			"totalKb": "23.3",
 			"gzipBytes": 7718,
 			"gzipKb": "7.5",
+			"source": "esbuild",
 			"description": "Smallest edge footprint; modular functional tree-shaking"
 		},
 		"zodMini": {
@@ -183,6 +193,7 @@
 			"totalKb": "33.6",
 			"gzipBytes": 11735,
 			"gzipKb": "11.5",
+			"source": "esbuild",
 			"description": "~90% smaller than classic Zod; familiar syntax"
 		},
 		"arktype": {
@@ -192,6 +203,7 @@
 			"totalKb": "156.0",
 			"gzipBytes": 49631,
 			"gzipKb": "48.5",
+			"source": "esbuild",
 			"description": "TypeScript-native DSL strings; built-in keywords; zero dependencies"
 		},
 		"classicZod": {
@@ -201,6 +213,7 @@
 			"totalKb": "329.2",
 			"gzipBytes": 68682,
 			"gzipKb": "67.1",
+			"source": "esbuild",
 			"description": "Drop-in compatibility for existing Zod schemas (Zod 4)"
 		}
 	}

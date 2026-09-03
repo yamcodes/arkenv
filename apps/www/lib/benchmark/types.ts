@@ -1,4 +1,5 @@
 export type BenchmarkTier = "primary" | "competitor" | "reference";
+export type BenchmarkSource = "esbuild" | "bundlephobia";
 
 export type BenchmarkRow = {
 	id: string;
@@ -18,6 +19,7 @@ export type BenchmarkRow = {
 	totalGzipBytes: number;
 	totalGzipKb: string;
 	tier: BenchmarkTier;
+	source: BenchmarkSource;
 	note?: string;
 };
 
@@ -28,6 +30,7 @@ export type BenchmarkMatrixItem = {
 	totalKb: string;
 	gzipBytes: number;
 	gzipKb: string;
+	source: BenchmarkSource;
 	description: string;
 };
 
