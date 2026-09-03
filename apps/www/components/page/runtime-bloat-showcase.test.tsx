@@ -12,7 +12,7 @@ describe("RuntimeBloatShowcase", () => {
 
 		expect(
 			screen.getByText(
-				/Each issue gets an error code agents and CI can act on/i,
+				/Each issue gets an error code that agents and CI can act on/i,
 			),
 		).toBeInTheDocument();
 		expect(
@@ -20,11 +20,13 @@ describe("RuntimeBloatShowcase", () => {
 		).toBeInTheDocument();
 
 		const figure = screen.getByRole("figure");
-		expect(figure).toHaveTextContent('"success": false');
+		expect(figure).toHaveTextContent('"issues"');
 		expect(figure).toHaveTextContent("MISSING_VARIABLE");
 		expect(figure).toHaveTextContent("INVALID_TYPE");
 		expect(figure).toHaveTextContent('"path": "HOST"');
 		expect(figure).toHaveTextContent('"path": "PORT"');
+		expect(figure).not.toHaveTextContent("success");
+		expect(figure).not.toHaveTextContent("message");
 		expect(figure).not.toHaveTextContent("received");
 		expect(figure).not.toHaveTextContent("DATABASE_URL");
 		expect(figure).not.toHaveTextContent("$ arkenv check --json");

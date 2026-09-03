@@ -2,18 +2,9 @@
  * Machine-readable validation errors for CI and agents.
  */
 const PROOF_JSON = `{
-  "success": false,
   "issues": [
-    {
-      "path": "HOST",
-      "code": "MISSING_VARIABLE",
-      "message": "must be a string or \\"localhost\\" (was missing)"
-    },
-    {
-      "path": "PORT",
-      "code": "INVALID_TYPE",
-      "message": "must be a number (was a string)"
-    }
+    { "path": "HOST", "code": "MISSING_VARIABLE" },
+    { "path": "PORT", "code": "INVALID_TYPE" }
   ]
 }`;
 
@@ -29,8 +20,8 @@ export function RuntimeBloatShowcase() {
 					Structured errors
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					Each issue gets an error code agents and CI can act on. Missing keys
-					and bad values aren&apos;t the same.
+					Each issue gets an error code that agents and CI can act on. Missing
+					keys and bad values aren&apos;t the same.
 				</p>
 			</header>
 
