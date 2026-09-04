@@ -62,21 +62,16 @@ export function transformPackageJson(pkg, exampleConfig, catalog) {
 	// Remove pnpm-specific fields that don't apply to standalone examples
 	delete transformed.arkenvExamples;
 
-	// Update package manager if specified
+	// Update package manager if specified (version from workspace catalog)
 	if (exampleConfig.packageManager) {
-		// Get latest stable version for each package manager
-		const packageManagers = {
-			npm: "npm@11.9.0",
-			pnpm: "pnpm@10.23.0",
-		};
-
-		if (catalog[exampleConfig.packageManager]) {
-			transformed.packageManager = `${exampleConfig.packageManager}@${catalog[exampleConfig.packageManager]}`;
-		} else {
-			transformed.packageManager =
-				packageManagers[exampleConfig.packageManager] ||
-				exampleConfig.packageManager;
+		const pm = exampleConfig.packageManager;
+		const version = catalog[pm];
+		if (!version) {
+			throw new Error(
+				`Package manager "${pm}" not found in workspace catalog; add e.g. "${pm}: <version>"`,
+			);
 		}
+		transformed.packageManager = `${pm}@${version}`;
 	}
 
 	// Remove workspace-specific scripts (like pnpm -w run fix)
