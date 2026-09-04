@@ -31,7 +31,9 @@ const FALLBACK_DOCS_URL = "https://arkenv.js.org";
 export function getDocsUrl(env: NodeJS.ProcessEnv = process.env): string {
 	const siteUrl = env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, "");
 	if (siteUrl) {
-		return siteUrl;
+		return siteUrl.startsWith("http://") || siteUrl.startsWith("https://")
+			? siteUrl
+			: `https://${siteUrl}`;
 	}
 
 	const productionHost = env.VERCEL_PROJECT_PRODUCTION_URL?.trim().replace(

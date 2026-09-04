@@ -86,6 +86,13 @@ describe("release config", () => {
 		expect(getDocsUrl()).toBe("https://custom.example");
 	});
 
+	it("prepends https:// to bare-hostname NEXT_PUBLIC_SITE_URL", () => {
+		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "arkenv.js.org");
+		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "prod.example");
+		vi.stubEnv("VERCEL_URL", "preview.example");
+		expect(getDocsUrl()).toBe("https://arkenv.js.org");
+	});
+
 	it("resolves docs URL from VERCEL_PROJECT_PRODUCTION_URL next", () => {
 		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
 		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "arkenv.js.org");
