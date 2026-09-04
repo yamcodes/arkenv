@@ -189,10 +189,11 @@ describe("Distribution Built Outputs", () => {
 			expect("getSchemaKeys" in index).toBe(false);
 		});
 
-		it("exports tryArkenv from @arkenv/core/safe", async () => {
+		it("exports arkenv from @arkenv/core/safe as default and named", async () => {
 			const safe = await import("../dist/safe.js");
-			expect(typeof safe.tryArkenv).toBe("function");
-			const result = safe.tryArkenv(
+			expect(typeof safe.arkenv).toBe("function");
+			expect(safe.default).toBe(safe.arkenv);
+			const result = safe.arkenv(
 				{ PORT: "number" },
 				{ env: { PORT: "3000" } },
 			);

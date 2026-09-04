@@ -40,7 +40,7 @@ non-throwing parser live on subpaths so the default import stays small.
 | `ArkEnvConfig`     | type                       | [Options](/docs/reference/options) object                  |
 | `EnvSchema`        | type                       | Declarative schema map                                     |
 | `Infer`            | type                       | Infer output from a schema                                 |
-| `SafeArkEnvResult` | type                       | Result shape returned by `tryArkenv`                       |
+| `SafeArkEnvResult` | type                       | Result shape returned by `@arkenv/core/safe`               |
 
 ### Subpaths
 
@@ -50,12 +50,12 @@ Issue formatting and the non-throwing parser are separate entries.
 | --------------------- | --------------------------------------------------------------------------------- |
 | `@arkenv/core`        | Throw-path `arkenv()` and `type()`                                                |
 | `@arkenv/core/issues` | `formatIssues`, `getSchemaKeys`, and `EnvIssue` / `EnvIssueCode` / `EnvIssueMeta` |
-| `@arkenv/core/safe`   | `tryArkenv` — result object instead of a throw                                    |
+| `@arkenv/core/safe`   | `arkenv` — result object instead of a throw (default + named export)              |
 
 ```ts title="./env.ts" twoslash
-import { tryArkenv } from "@arkenv/core/safe";
+import arkenv from "@arkenv/core/safe";
 
-const result = tryArkenv(
+const result = arkenv(
   { PORT: "number.port" },
   { env: { PORT: "invalid" } },
 );

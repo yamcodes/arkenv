@@ -4,8 +4,9 @@ description: Configuration object passed as the second argument to arkenv().
 ---
 
 The second argument to `arkenv()` is an optional configuration object.
-Shared fields exist on both engines: `env`, `coerce`, `safe`,
+Shared fields exist on both engines: `env`, `coerce`,
 `emptyAsUndefined`, `onUndeclaredKey`, `arrayFormat`, and `debugSecrets`.
+`safe` is reserved for call-site compat (`false` or omit only).
 `toJsonSchema` exists only on
 [`@arkenv/standard`](/docs/reference/standard). ArkType already exposes
 JSON Schema, so [`@arkenv/core`](/docs/reference/core) has nothing to fall
@@ -146,14 +147,14 @@ export const env = arkenv(
 
 Default: `false`
 
-`arkenv()` from `@arkenv/core` always throws on validation failure. Pass
-`false` or omit this field. For a result object, import `tryArkenv` from
-`@arkenv/core/safe`.
+Reserved on the main `arkenv()` entry. Pass `false` or omit — `{ safe: true }`
+is not accepted. For a result object, import `arkenv` from
+`@arkenv/core/safe` or `@arkenv/standard/safe`.
 
 ```ts title="./env.ts" twoslash
-import { tryArkenv } from "@arkenv/core/safe";
+import arkenv from "@arkenv/core/safe";
 
-const result = tryArkenv(
+const result = arkenv(
   { PORT: "number.port" },
   { env: { PORT: "invalid" } },
 );
@@ -165,12 +166,12 @@ if (!result.success) {
 }
 ```
 
-`@arkenv/standard` still accepts `{ safe: true }` on `arkenv()` itself.
-
 <Callout type="warn">
-  Framework plugins omit `safe` so a failed validation cannot soft-fail
-  into the client bundle. Call `tryArkenv` yourself if you need
-  programmatic failure handling outside a plugin.
+  Framework plugins (Next.js, Nuxt, Vite, Bun) do not ship a `/safe`
+  subpath, so a failed validation cannot soft-fail into the client
+  bundle. Call `arkenv` from `@arkenv/core/safe` or
+  `@arkenv/standard/safe` yourself if you need programmatic failure
+  handling outside a plugin.
 </Callout>
 
 ### debugSecrets

@@ -69,14 +69,14 @@ Values for sensitive keys are redacted in error output by default. Leave that al
 
 ## Safe mode
 
-Default `arkenv()` from `@arkenv/core` always throws. Import `tryArkenv`
-from `@arkenv/core/safe` when you want a result object instead of a throw
-(tests, custom boot UI):
+Fail-fast `arkenv()` from `@arkenv/core` (and `@arkenv/standard`) always
+throws. Import `arkenv` from the `/safe` subpath when you want a result
+object instead of a throw (tests, custom boot UI):
 
 ```ts title="./env.ts" twoslash
-import { tryArkenv } from "@arkenv/core/safe";
+import arkenv from "@arkenv/core/safe";
 
-const result = tryArkenv(
+const result = arkenv(
   { PORT: "number.port" },
   { env: { PORT: "nope" } },
 );
@@ -86,9 +86,10 @@ if (!result.success) {
 }
 ```
 
-`@arkenv/standard` still accepts `{ safe: true }` on `arkenv()`. Framework
-integrations do not expose a non-throwing path. Invalid env still fails
-the build or server start there on purpose.
+`@arkenv/standard` mirrors the same shape via `@arkenv/standard/safe`.
+Framework integrations (Next.js, Nuxt, Vite, Bun) do not expose a
+non-throwing path — invalid env still fails the build or server start
+there on purpose.
 
 ## Framework boundary errors
 

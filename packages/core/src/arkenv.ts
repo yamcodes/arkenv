@@ -93,7 +93,7 @@ export type ArkEnvConfig = {
 
 	/**
 	 * Reserved for call-site compat. Pass `false` or omit.
-	 * Use `tryArkenv` from `@arkenv/core/safe` instead of `{ safe: true }`.
+	 * Use `arkenv` from `@arkenv/core/safe` instead of `{ safe: true }`.
 	 *
 	 * @default false
 	 */
@@ -119,10 +119,10 @@ type SchemaCaptureBag = {
 /**
  * Record `def` on the CLI schema-capture bag if capture is active.
  *
- * Shared by `arkenv` and `tryArkenv` so CLI schema inspection keeps working
- * after migrating off `{ safe: true }`.
+ * Shared by `arkenv` (throw path and `@arkenv/core/safe`) so CLI schema
+ * inspection keeps working after migrating off `{ safe: true }`.
  *
- * @param def The schema definition passed to `arkenv()` / `tryArkenv()`
+ * @param def The schema definition passed to `arkenv()`
  * @returns `true` when capture consumed the call
  */
 export function recordIfCapturing(def: unknown): boolean {
