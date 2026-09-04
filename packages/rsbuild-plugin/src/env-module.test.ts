@@ -403,24 +403,26 @@ describe("rsbuild builds", () => {
 			resolveBuild = resolve;
 		});
 		const { close } = await rsbuild.build({ watch: true });
-		await firstBuildPromise;
+		try {
+			await firstBuildPromise;
 
-		const firstBundle = collectJs(outDir);
-		expect(firstBundle).toContain("https://initial.example.com");
+			const firstBundle = collectJs(outDir);
+			expect(firstBundle).toContain("https://initial.example.com");
 
-		const secondBuildPromise = new Promise<void>((resolve) => {
-			resolveBuild = resolve;
-		});
-		writeFileSync(
-			join(tempProj, ".env.test"),
-			"PUBLIC_API_URL=https://updated.example.com\nDATABASE_URL=postgres://fixture:5432/db\nPUBLIC_PORT=8080\nPUBLIC_DEBUG=true\n",
-		);
-		await secondBuildPromise;
+			const secondBuildPromise = new Promise<void>((resolve) => {
+				resolveBuild = resolve;
+			});
+			writeFileSync(
+				join(tempProj, ".env.test"),
+				"PUBLIC_API_URL=https://updated.example.com\nDATABASE_URL=postgres://fixture:5432/db\nPUBLIC_PORT=8080\nPUBLIC_DEBUG=true\n",
+			);
+			await secondBuildPromise;
 
-		const secondBundle = collectJs(outDir);
-		expect(secondBundle).toContain("https://updated.example.com");
-		expect(secondBundle).not.toContain("https://initial.example.com");
-
-		await close();
+			const secondBundle = collectJs(outDir);
+			expect(secondBundle).toContain("https://updated.example.com");
+			expect(secondBundle).not.toContain("https://initial.example.com");
+		} finally {
+			await close();
+		}
 	});
 });
