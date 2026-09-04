@@ -78,21 +78,6 @@
 		"rsbuild-plugin"
 	],
 	"license": "MIT",
-	"compatiblePackages": {
-		"schemaVersion": 1,
-		"vite": {
-			"type": "incompatible",
-			"reason": "Uses Rsbuild-specific APIs"
-		},
-		"rollup": {
-			"type": "incompatible",
-			"reason": "Uses Rsbuild-specific APIs"
-		},
-		"rolldown": {
-			"type": "incompatible",
-			"reason": "Uses Rsbuild-specific APIs"
-		}
-	},
 	"scripts": {
 		"build": "tsdown",
 		"typecheck": "tsc --noEmit",

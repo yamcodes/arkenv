@@ -1,4 +1,12 @@
-import { mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs";
+import {
+	cpSync,
+	existsSync,
+	mkdtempSync,
+	readdirSync,
+	readFileSync,
+	rmSync,
+	writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createRsbuild } from "@rsbuild/core";
@@ -185,13 +193,46 @@ describe("transform mode plugin", () => {
 		expect(result).toBe("export const other = 1");
 	});
 
-	it("registers a build-time validation hook that refreshes state", () => {
+	it("registers a build-time validation hook that refreshes state", async () => {
+		const tempProj = mkdtempSync(join(__dirname, "__fixtures__", ".tmp-unit-"));
+		temps.push(tempProj);
+		cpSync(fixtureDir, tempProj, { recursive: true });
+		writeFileSync(
+			join(tempProj, ".env.test"),
+			"PUBLIC_API_URL=https://before.example.com\nDATABASE_URL=postgres://fixture:5432/db\nPUBLIC_PORT=8080\nPUBLIC_DEBUG=true\n",
+		);
+
 		const plugin = arkenvPlugin({ schemaPath: "env.ts" });
-		const { api, getBeforeCompile } = createFakeApi(fixtureDir);
+		const { api, getBeforeCompile, getTransform } = createFakeApi(tempProj);
 		plugin.setup(api as never);
 
 		expect(getBeforeCompile().length).toBe(1);
-		expect(() => getBeforeCompile()[0]()).not.toThrow();
+
+		const transform = getTransform();
+		expect(transform).toBeDefined();
+		if (!transform) return;
+
+		const first = await transform.handler({
+			code: "export const env = {}",
+			resourcePath: join(tempProj, "env.ts"),
+			addDependency: vi.fn(),
+			addMissingDependency: vi.fn(),
+		});
+		expect(first).toContain("https://before.example.com");
+
+		writeFileSync(
+			join(tempProj, ".env.test"),
+			"PUBLIC_API_URL=https://after.example.com\nDATABASE_URL=postgres://fixture:5432/db\nPUBLIC_PORT=8080\nPUBLIC_DEBUG=true\n",
+		);
+		getBeforeCompile()[0]();
+
+		const second = await transform.handler({
+			code: "export const env = {}",
+			resourcePath: join(tempProj, "env.ts"),
+			addDependency: vi.fn(),
+			addMissingDependency: vi.fn(),
+		});
+		expect(second).toContain("https://after.example.com");
 	});
 
 	it("throws a discovery error when no env module exists", () => {
@@ -217,6 +258,7 @@ describe("rsbuild builds", () => {
 	});
 
 	function collectJs(dir: string): string {
+		if (!existsSync(dir)) return "";
 		const files: string[] = [];
 		const walk = (current: string) => {
 			for (const entry of readdirSync(current, { withFileTypes: true })) {
@@ -323,5 +365,62 @@ describe("rsbuild builds", () => {
 				process.env.SECRET_TOKEN = previous;
 			}
 		}
+	});
+
+	it("refreshes inlined client values in watch mode when an env file changes", {
+		timeout: 120000,
+	}, async () => {
+		const tempProj = mkdtempSync(
+			join(__dirname, "__fixtures__", ".tmp-watch-"),
+		);
+		temps.push(tempProj);
+		cpSync(fixtureDir, tempProj, { recursive: true });
+
+		const outDir = join(tempProj, "dist");
+		writeFileSync(
+			join(tempProj, ".env.test"),
+			"PUBLIC_API_URL=https://initial.example.com\nDATABASE_URL=postgres://fixture:5432/db\nPUBLIC_PORT=8080\nPUBLIC_DEBUG=true\n",
+		);
+
+		const rsbuild = await createRsbuild({
+			cwd: tempProj,
+			rsbuildConfig: {
+				source: { entry: { index: "./index.ts" } },
+				output: { distPath: { root: outDir }, cleanDistPath: true },
+				plugins: [arkenvPlugin({ schemaPath: "env.ts" })],
+			},
+		});
+
+		let resolveBuild: (() => void) | null = null;
+		rsbuild.onAfterBuild(() => {
+			if (resolveBuild) {
+				resolveBuild();
+				resolveBuild = null;
+			}
+		});
+
+		const firstBuildPromise = new Promise<void>((resolve) => {
+			resolveBuild = resolve;
+		});
+		const { close } = await rsbuild.build({ watch: true });
+		await firstBuildPromise;
+
+		const firstBundle = collectJs(outDir);
+		expect(firstBundle).toContain("https://initial.example.com");
+
+		const secondBuildPromise = new Promise<void>((resolve) => {
+			resolveBuild = resolve;
+		});
+		writeFileSync(
+			join(tempProj, ".env.test"),
+			"PUBLIC_API_URL=https://updated.example.com\nDATABASE_URL=postgres://fixture:5432/db\nPUBLIC_PORT=8080\nPUBLIC_DEBUG=true\n",
+		);
+		await secondBuildPromise;
+
+		const secondBundle = collectJs(outDir);
+		expect(secondBundle).toContain("https://updated.example.com");
+		expect(secondBundle).not.toContain("https://initial.example.com");
+
+		await close();
 	});
 });
