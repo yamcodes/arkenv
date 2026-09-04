@@ -3,7 +3,7 @@
  * Minimalist 3-row Payload Pipeline:
  * - Row 1 (PORT=): Alternates between valid ("3000" -> 3000 number) and invalid ("oops" -> stuck at "number" -> error).
  * - Row 2 (DEBUG=): Alternates between true ("true" -> true boolean) and false ("false" -> false boolean).
- * - Row 3 (NODE_ENV=): Alternates between "production" and "development" enum members.
+ * - Row 3 (LOG_LEVEL=): Alternates between "info" and "debug" enum members.
  */
 export function DeclarativeShowcase() {
 	return (
@@ -256,11 +256,11 @@ export function DeclarativeShowcase() {
 						</div>
 					</div>
 
-					{/* Row 3: NODE_ENV= (alternates between "production" and "development" enum members) */}
-					<div className="home-aurora__payload-row home-aurora__payload-row--nodeenv">
+					{/* Row 3: LOG_LEVEL= (alternates between "info" and "debug" enum members) */}
+					<div className="home-aurora__payload-row home-aurora__payload-row--loglevel">
 						{/* Left static key */}
 						<div className="home-aurora__payload-col home-aurora__payload-col--left">
-							<span className="home-aurora__payload-key">NODE_ENV=</span>
+							<span className="home-aurora__payload-key">LOG_LEVEL=</span>
 						</div>
 
 						{/* Mobile: Direct Wire (single track without middle gate) */}
@@ -286,20 +286,20 @@ export function DeclarativeShowcase() {
 									className="home-aurora__stream-arrow"
 								/>
 							</svg>
-							<div className="home-aurora__payload-carrier home-aurora__payload-carrier--nodeenv-prod">
+							<div className="home-aurora__payload-carrier home-aurora__payload-carrier--loglevel-info">
 								<span className="home-aurora__payload-val home-aurora__payload-val--raw">
-									&quot;production&quot;
+									&quot;info&quot;
 								</span>
 								<span className="home-aurora__payload-val home-aurora__payload-val--coerced">
-									&quot;production&quot;
+									&quot;info&quot;
 								</span>
 							</div>
-							<div className="home-aurora__payload-carrier home-aurora__payload-carrier--nodeenv-dev">
+							<div className="home-aurora__payload-carrier home-aurora__payload-carrier--loglevel-debug">
 								<span className="home-aurora__payload-val home-aurora__payload-val--raw">
-									&quot;development&quot;
+									&quot;debug&quot;
 								</span>
 								<span className="home-aurora__payload-val home-aurora__payload-val--coerced">
-									&quot;development&quot;
+									&quot;debug&quot;
 								</span>
 							</div>
 						</div>
@@ -323,18 +323,18 @@ export function DeclarativeShowcase() {
 									className="home-aurora__stream-wire-track"
 								/>
 							</svg>
-							<span className="home-aurora__payload-chip home-aurora__payload-chip--nodeenv-prod">
-								&quot;production&quot;
+							<span className="home-aurora__payload-chip home-aurora__payload-chip--loglevel-info">
+								&quot;info&quot;
 							</span>
-							<span className="home-aurora__payload-chip home-aurora__payload-chip--nodeenv-dev">
-								&quot;development&quot;
+							<span className="home-aurora__payload-chip home-aurora__payload-chip--loglevel-debug">
+								&quot;debug&quot;
 							</span>
 						</div>
 
 						{/* Center Schema Gate */}
 						<div className="home-aurora__payload-gate">
 							<code className="home-aurora__payload-schema">
-								&quot;&apos;development&apos; | &apos;production&apos; | &apos;test&apos;&quot;
+								&quot;&apos;debug&apos; | &apos;info&apos; | &apos;warn&apos; | &apos;error&apos;&quot;
 							</code>
 						</div>
 
@@ -361,18 +361,18 @@ export function DeclarativeShowcase() {
 									className="home-aurora__stream-arrow"
 								/>
 							</svg>
-							<span className="home-aurora__payload-chip home-aurora__payload-chip--nodeenv-prod-coerced">
-								&quot;production&quot;
+							<span className="home-aurora__payload-chip home-aurora__payload-chip--loglevel-info-coerced">
+								&quot;info&quot;
 							</span>
-							<span className="home-aurora__payload-chip home-aurora__payload-chip--nodeenv-dev-coerced">
-								&quot;development&quot;
+							<span className="home-aurora__payload-chip home-aurora__payload-chip--loglevel-debug-coerced">
+								&quot;debug&quot;
 							</span>
 						</div>
 
 						{/* Right destination dock */}
 						<div className="home-aurora__payload-col home-aurora__payload-col--right">
 							<code className="home-aurora__payload-dock">
-								&quot;development&quot; | &quot;production&quot; | &quot;test&quot;
+								&quot;debug&quot; | &quot;info&quot; | &quot;warn&quot; | &quot;error&quot;
 							</code>
 						</div>
 					</div>

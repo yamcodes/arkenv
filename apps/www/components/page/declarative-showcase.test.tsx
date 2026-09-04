@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { DeclarativeShowcase } from "./declarative-showcase";
 
 describe("DeclarativeShowcase", () => {
-	it("renders the 3-row alternating payload pipeline with enum NODE_ENV row", () => {
+	it("renders the 3-row alternating payload pipeline with enum LOG_LEVEL row", () => {
 		render(<DeclarativeShowcase />);
 
 		expect(
@@ -17,7 +17,7 @@ describe("DeclarativeShowcase", () => {
 		// Static keys
 		expect(figure).toHaveTextContent("PORT=");
 		expect(figure).toHaveTextContent("DEBUG=");
-		expect(figure).toHaveTextContent("NODE_ENV=");
+		expect(figure).toHaveTextContent("LOG_LEVEL=");
 
 		// Row 1 alternating chips ("3000" success vs "oops" failure)
 		expect(figure).toHaveTextContent('"3000"');
@@ -27,22 +27,22 @@ describe("DeclarativeShowcase", () => {
 		expect(figure).toHaveTextContent('"true"');
 		expect(figure).toHaveTextContent('"false"');
 
-		// Row 3 alternating chips ("production" vs "development")
-		expect(figure).toHaveTextContent('"production"');
-		expect(figure).toHaveTextContent('"development"');
+		// Row 3 alternating chips ("info" vs "debug")
+		expect(figure).toHaveTextContent('"info"');
+		expect(figure).toHaveTextContent('"debug"');
 
 		// Schema Gates
 		expect(figure).toHaveTextContent('"number"');
 		expect(figure).toHaveTextContent('"boolean"');
 		expect(figure).toHaveTextContent(
-			"\"'development' | 'production' | 'test'\"",
+			"\"'debug' | 'info' | 'warn' | 'error'\"",
 		);
 
 		// Destination Type Definitions
 		expect(figure).toHaveTextContent("number");
 		expect(figure).toHaveTextContent("boolean");
 		expect(figure).toHaveTextContent(
-			'"development" | "production" | "test"',
+			'"debug" | "info" | "warn" | "error"',
 		);
 	});
 
@@ -75,16 +75,16 @@ describe("DeclarativeShowcase", () => {
 		expect(debugFalseCarrier).toHaveTextContent('"false"');
 		expect(debugFalseCarrier).toHaveTextContent("false");
 
-		const nodeenvProdCarrier = container.querySelector(
-			".home-aurora__payload-carrier--nodeenv-prod",
+		const loglevelInfoCarrier = container.querySelector(
+			".home-aurora__payload-carrier--loglevel-info",
 		);
-		expect(nodeenvProdCarrier).toBeInTheDocument();
-		expect(nodeenvProdCarrier).toHaveTextContent('"production"');
+		expect(loglevelInfoCarrier).toBeInTheDocument();
+		expect(loglevelInfoCarrier).toHaveTextContent('"info"');
 
-		const nodeenvDevCarrier = container.querySelector(
-			".home-aurora__payload-carrier--nodeenv-dev",
+		const loglevelDebugCarrier = container.querySelector(
+			".home-aurora__payload-carrier--loglevel-debug",
 		);
-		expect(nodeenvDevCarrier).toBeInTheDocument();
-		expect(nodeenvDevCarrier).toHaveTextContent('"development"');
+		expect(loglevelDebugCarrier).toBeInTheDocument();
+		expect(loglevelDebugCarrier).toHaveTextContent('"debug"');
 	});
 });
