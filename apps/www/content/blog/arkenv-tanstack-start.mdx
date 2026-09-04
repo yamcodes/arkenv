@@ -2,6 +2,7 @@
 title: Typesafe environment variables in TanStack Start with ArkEnv
 description: How ArkEnv secures environment variables across TanStack Start server functions and client routes with zero client bundle bloat.
 author: Yam Borodetsky
+authorGithub: yamcodes
 date: 2026-09-05
 draft: true
 ---
@@ -34,7 +35,8 @@ npx arkenv init
 
 The CLI detects `@tanstack/react-start` in your dependencies and registers `@arkenv/vite-plugin` in your `vite.config.ts`:
 
-```ts title="vite.config.ts"
+```ts title="vite.config.ts" twoslash
+// @noErrors
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import arkenvVitePlugin from "@arkenv/vite-plugin";
 import { defineConfig } from "vite";
@@ -48,7 +50,7 @@ export default defineConfig({
 
 ArkEnv uses a single `src/env.ts` file as the contract for all environment variables across your application.
 
-```ts title="src/env.ts"
+```ts title="src/env.ts" twoslash
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
@@ -71,10 +73,22 @@ export const env = arkenv({
 
 Because TanStack Start routes blend server execution with client rendering, ArkEnv ensures that each layer accesses what it needs safely.
 
-```tsx title="src/routes/index.tsx"
+```tsx title="src/routes/index.tsx" twoslash
+// @noErrors
+// @filename: env.ts
+import arkenv from "@arkenv/core";
+export const env = arkenv({
+  DATABASE_URL: "string",
+  VITE_APP_NAME: "string = 'My TanStack App'",
+  VITE_API_URL: "string.url",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+});
+
+// @filename: index.tsx
+// ---cut---
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { env } from "../env";
+import { env } from "./env";
 
 // Server function runs exclusively on the server
 const getDatabaseHost = createServerFn({ method: "GET" }).handler(() => {
@@ -104,7 +118,18 @@ function HomePage() {
 
 If a developer accidentally references a server key in client-side code:
 
-```tsx
+```tsx twoslash
+// @noErrors
+// @filename: env.ts
+import arkenv from "@arkenv/core";
+export const env = arkenv({
+  DATABASE_URL: "string",
+});
+
+// @filename: index.tsx
+// ---cut---
+import { env } from "./env";
+
 function ClientWidget() {
   return <div>{env.DATABASE_URL}</div>;
 }

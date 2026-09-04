@@ -124,6 +124,7 @@ export const blogPosts = defineCollections({
 	dir: "content/blog",
 	schema: pageSchema.extend({
 		author: z.string(),
+		authorGithub: z.string().optional(),
 		date: z.string().date().or(z.date()),
 		draft: z.boolean().optional(),
 	}),

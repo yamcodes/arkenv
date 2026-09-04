@@ -1,6 +1,6 @@
 import { twoslasher } from "twoslash";
 import { describe, expect, it } from "vitest";
-import { arktypeTwoslashOptions } from "./twoslash-options";
+import { arktypeTwoslashOptions, cleanHoverDocs } from "./twoslash-options";
 
 describe("arktypeTwoslashOptions", () => {
 	it("infers @arkenv/nextjs client variables as strings in docs snippets", () => {
@@ -233,5 +233,34 @@ export const env = arkenv(
 		);
 
 		expect(result.errors).toEqual([]);
+	});
+
+	describe("cleanHoverDocs", () => {
+		it("cleans multiline {@link} tags and normalizes inline whitespace", () => {
+			const input =
+				"Type helper to make it easier to use vite.config.ts\naccepts a direct \n{@link \nUserConfig\n}\n object, or a function that returns it.\nThe function receives a \n{@link \nConfigEnv\n}\n object.";
+			const output = cleanHoverDocs(input);
+			expect(output).toBe(
+				"Type helper to make it easier to use vite.config.ts accepts a direct `UserConfig` object, or a function that returns it. The function receives a `ConfigEnv` object.",
+			);
+		});
+
+		it("formats HTTP URLs inside {@link} as markdown links", () => {
+			const input =
+				"See {@link https://vite.dev/config/ Vite Configuration} for more details.";
+			const output = cleanHoverDocs(input);
+			expect(output).toBe(
+				"See [Vite Configuration](https://vite.dev/config/) for more details.",
+			);
+		});
+
+		it("preserves paragraphs and list items", () => {
+			const input =
+				"First paragraph.\n\nSummary of errors:\n- Error 1\n- Error 2\n\nFinal paragraph.";
+			const output = cleanHoverDocs(input);
+			expect(output).toBe(
+				"First paragraph.\n\nSummary of errors:\n- Error 1\n- Error 2\n\nFinal paragraph.",
+			);
+		});
 	});
 });
