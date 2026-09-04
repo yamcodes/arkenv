@@ -140,13 +140,20 @@ describe("normalizePackageManagerCommand", () => {
 	});
 
 	it("does not double-tag already-tagged scoped packages", () => {
-		expect(normalizePackageManagerCommand("npm install @arkenv/core@alpha")).toBe("npm install @arkenv/core@alpha");
-		expect(normalizePackageManagerCommand("npm install @arkenv/core@latest")).toBe("npm install @arkenv/core@latest");
+		expect(
+			normalizePackageManagerCommand("npm install @arkenv/core@alpha"),
+		).toBe("npm install @arkenv/core@alpha");
+		expect(
+			normalizePackageManagerCommand("npm install @arkenv/core@latest"),
+		).toBe("npm install @arkenv/core@latest");
 	});
 
 	it("strips scoped tags on install lines in GA mode", () => {
-		expect(normalizePackageManagerCommand("npm install @arkenv/core@alpha", "")).toBe("npm install @arkenv/core");
-		expect(normalizePackageManagerCommand("npm install @arkenv/core", "")).toBe("npm install @arkenv/core");
+		expect(
+			normalizePackageManagerCommand("npm install @arkenv/core@alpha", ""),
+		).toBe("npm install @arkenv/core");
+		expect(normalizePackageManagerCommand("npm install @arkenv/core", "")).toBe(
+			"npm install @arkenv/core",
+		);
 	});
-
 });
