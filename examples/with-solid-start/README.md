@@ -20,14 +20,14 @@ export const env = arkenv({
 });
 ```
 
-```ts title="app.config.ts"
+```ts title="vite.config.ts"
 import arkenvVitePlugin from "@arkenv/vite-plugin";
-import { defineConfig } from "@solidjs/start/config";
+import { solidStart } from "@solidjs/start/config";
+import { nitro } from "nitro/vite";
+import { defineConfig } from "vite";
 
 export default defineConfig({
-  vite: {
-    plugins: [arkenvVitePlugin()],
-  },
+  plugins: [solidStart(), nitro(), arkenvVitePlugin()],
 });
 ```
 
@@ -52,8 +52,8 @@ pnpm dev
 # Build for production
 pnpm build
 
-# Start production server
-pnpm start
+# Locally preview production build
+pnpm preview
 ```
 
 ## Documentation

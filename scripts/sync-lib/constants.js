@@ -20,12 +20,10 @@ export const DEFAULT_EXCLUDES = [
 	".next",
 	".nuxt",
 	".output",
-	".vinxi",
 	"next-env.d.ts",
 	".env",
 	".env.local",
 	".env.development",
 	".env.production",
 	".env.test",
-	"app.config.timestamp_*",
 ];
