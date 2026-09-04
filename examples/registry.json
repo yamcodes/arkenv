@@ -37,6 +37,18 @@
 			"framework": "vite"
 		},
 		{
+			"id": "with-tanstack-start",
+			"name": "TanStack Start",
+			"description": "TanStack Start with @arkenv/vite-plugin",
+			"framework": "vite"
+		},
+		{
+			"id": "with-solid-start",
+			"name": "SolidStart",
+			"description": "SolidStart with @arkenv/vite-plugin",
+			"framework": "vite"
+		},
+		{
 			"id": "with-bun",
 			"name": "Bun (Vanilla)",
 			"description": "Minimal Bun project with ArkType",
