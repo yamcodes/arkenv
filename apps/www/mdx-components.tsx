@@ -18,6 +18,7 @@ import {
 import { Card, Cards } from "fumadocs-ui/components/card";
 import { File, Files, Folder } from "fumadocs-ui/components/files";
 import type { MDXComponents } from "mdx/types";
+import Image from "next/image";
 import { type ComponentProps, createElement, isValidElement } from "react";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/cn";
@@ -76,5 +77,26 @@ export function getMDXComponents(components: MDXComponents): MDXComponents {
 				)}
 			/>
 		),
+		img: (props) => {
+			const { src, alt, width, height, ...rest } = props;
+			if (!src || typeof src !== "string") {
+				return <img alt={alt ?? ""} {...props} />;
+			}
+			if (src.startsWith("http") || src.startsWith("data:")) {
+				return <img src={src} alt={alt ?? ""} {...rest} />;
+			}
+			return (
+				<Image
+					src={src}
+					alt={alt ?? ""}
+					width={typeof width === "number" ? width : Number(width) || 1200}
+					height={typeof height === "number" ? height : Number(height) || 630}
+					sizes="(max-width: 768px) 100vw, 768px"
+					className={
+						typeof rest.className === "string" ? rest.className : undefined
+					}
+				/>
+			);
+		},
 	};
 }

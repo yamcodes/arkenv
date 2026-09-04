@@ -1,12 +1,15 @@
-import { docs } from "fumadocs-mdx:collections/server";
+import { blogPosts, docs } from "fumadocs-mdx:collections/server";
 import type { autocomplete } from "@ark/util";
 import * as SimpleIcons from "@icons-pack/react-simple-icons";
 import { loader } from "fumadocs-core/source";
+import { toFumadocsSource } from "fumadocs-mdx/runtime/server";
 import { icons } from "lucide-react";
 import { createElement } from "react";
 import { NewBadge, UpdatedBadge } from "~/components/ui/new-badge";
 
 export type IconName = keyof typeof icons | "New" | "Updated";
+
+export const SITE_URL = "https://arkenv.js.org";
 
 export const source = loader({
 	baseUrl: "/docs",
@@ -24,3 +27,23 @@ export const source = loader({
 		throw new Error(`${icon} is not a valid icon`);
 	},
 });
+
+export const blog = loader({
+	baseUrl: "/blog",
+	// defineCollections({ type: "doc" }) yields an array — use toFumadocsSource(pages, []).
+	source: toFumadocsSource(blogPosts, []),
+});
+
+/**
+ * Blog pages for listing/RSS/sitemap.
+ * Drafts are included only in `next dev` (NODE_ENV === "development");
+ * production listing, RSS, and sitemap always omit drafts.
+ */
+export function getBlogPages() {
+	return blog.getPages().filter((page) => {
+		if (page.data.draft) {
+			return process.env.NODE_ENV === "development";
+		}
+		return true;
+	});
+}

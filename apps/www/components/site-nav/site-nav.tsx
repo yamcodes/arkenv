@@ -23,6 +23,7 @@ type NavLink = {
 
 const NAV_CORE_LINKS: NavLink[] = [
 	{ text: "Docs", url: "/docs", activeMatch: "/docs" },
+	{ text: "Blog", url: "/blog", activeMatch: "/blog" },
 	{
 		text: "Roadmap",
 		url: "/roadmap",
