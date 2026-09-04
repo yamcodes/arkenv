@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { isPublishedBlogPage } from "./is-published-blog-page";
+import { isPublishedBlogPage } from "./blog-published";
 
 describe("isPublishedBlogPage", () => {
 	afterEach(() => {

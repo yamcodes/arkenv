@@ -6,7 +6,7 @@ import { toFumadocsSource } from "fumadocs-mdx/runtime/server";
 import { icons } from "lucide-react";
 import { createElement } from "react";
 import { NewBadge, UpdatedBadge } from "~/components/ui/new-badge";
-import { isPublishedBlogPage } from "~/lib/is-published-blog-page";
+import { isPublishedBlogPage } from "./blog-published";
 
 export type IconName = keyof typeof icons | "New" | "Updated";
 
@@ -35,7 +35,7 @@ export const blog = loader({
 	source: toFumadocsSource(blogPosts, []),
 });
 
-export { isPublishedBlogPage };
+export { isPublishedBlogPage } from "./blog-published";
 
 /**
  * Blog pages for listing/RSS/sitemap.
