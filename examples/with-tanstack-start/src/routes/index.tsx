@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { SecretLeakButton } from "../components/secret-leak-button";
-import { env } from "../env";
+import { SecretLeakButton } from "~/components/secret-leak-button";
+import { env } from "~/env";
 
 const getDatabaseHost = createServerFn({ method: "GET" }).handler(() => {
 	// Server functions can safely read server secrets without leaking them to the client:

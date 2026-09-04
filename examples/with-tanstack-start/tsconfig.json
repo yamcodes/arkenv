@@ -1,6 +1,9 @@
 {
 	"include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
 	"compilerOptions": {
+		"paths": {
+			"~/*": ["./src/*"]
+		},
 		"strict": true,
 		"esModuleInterop": true,
 		"jsx": "react-jsx",

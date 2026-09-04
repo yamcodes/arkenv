@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { env } from "../env";
+import { env } from "~/env";
 
 function LeakedSecret() {
 	// Accessing server-only DATABASE_URL directly in client render tree throws an error
