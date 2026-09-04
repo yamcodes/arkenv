@@ -119,10 +119,13 @@ type SchemaCaptureBag = {
 /**
  * Record `def` on the CLI schema-capture bag if capture is active.
  *
- * @param def The schema definition passed to `arkenv()`
+ * Shared by `arkenv` and `tryArkenv` so CLI schema inspection keeps working
+ * after migrating off `{ safe: true }`.
+ *
+ * @param def The schema definition passed to `arkenv()` / `tryArkenv()`
  * @returns `true` when capture consumed the call
  */
-function recordIfCapturing(def: unknown): boolean {
+export function recordIfCapturing(def: unknown): boolean {
 	const state = (
 		globalThis as typeof globalThis & {
 			[SCHEMA_CAPTURE_KEY]?: SchemaCaptureBag;
