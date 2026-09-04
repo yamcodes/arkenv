@@ -52,20 +52,42 @@ See [Hosting presets](/docs/core-concepts/hosting-presets).
 Same macro as the [global `--agent` flag](/docs/reference#agent):
 `--yes --quiet --json`. It does not imply `--force`.
 
-When a safety check fails (dirty git tree), stdout is a JSON refusal and
-the process exits non-zero:
+When a safety check fails (dirty git tree), stdout is an errored
+settlement envelope (`ok: false`) and the process exits non-zero:
 
 ```json
 {
-  "status": "error",
-  "code": "GIT_TREE_DIRTY",
-  "message": "Git working tree is not clean.",
-  "retryWith": ["--force"]
+  "ok": false,
+  "commandId": "init",
+  "error": {
+    "code": "CLI.GIT_TREE_DIRTY",
+    "severity": "error",
+    "summary": "Git working tree is not clean.",
+    "why": "Commit or stash your changes before running arkenv init.",
+    "nextActions": [
+      {
+        "kind": "run-command",
+        "label": "Re-run with --force to bypass git working tree check",
+        "command": "arkenv init --force"
+      }
+    ]
+  },
+  "diagnostics": [],
+  "nextActions": [
+    {
+      "kind": "run-command",
+      "label": "Re-run with --force to bypass git working tree check",
+      "command": "arkenv init --force"
+    }
+  ]
 }
 ```
 
-Only rerun with flags in `retryWith` after you confirm the bypass is
-safe.
+Branch on `error.code` (dotted `CLI.*` / `ENV.*` codes). Use
+`nextActions` for remediation — a `run-command` action with `--force`
+means the refusal is bypassable. Only re-run with that flag after you
+confirm the bypass is safe. The same envelope shape is documented for
+[`check --json`](/docs/reference/check#json--j).
 
 ### `--example <name>`
 

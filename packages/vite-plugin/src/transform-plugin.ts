@@ -133,9 +133,6 @@ export function createTransformPlugin(
 		 * everything else gets the client rewrite. On Vite 4/5, where
 		 * `this.environment` is undefined, the legacy `options.ssr` flag is used
 		 * as a fallback.
-		 *
-		 * ADR 0021 (canonical env object surface): do not reintroduce `env.gen.ts`
-		 * codegen, client-side re-validation, or `runtimeEnv` wiring here.
 		 */
 		transform(_code, id, options) {
 			const isServer = this.environment

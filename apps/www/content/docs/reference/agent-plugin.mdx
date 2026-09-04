@@ -41,7 +41,7 @@ a follow-up to `plugins add`.
 ## Commands
 
 Two slash commands wrap the CLI and the auditor. Parse JSON on stdout.
-Do not pass `--force` unless a refusal lists it in `retryWith`.
+Do not pass `--force` unless a refusal's `nextActions` include a `--force` run-command.
 
 ### `/arkenv:init`
 

@@ -16,8 +16,6 @@ export const TRANSFORM_OPTION_KEYS = new Set([
 
 /**
  * Options for the env-module transform mode.
- *
- * @see docs/adr/0021-env-object-canonical-surface.md — transform design
  */
 export type TransformOptions = {
 	/**

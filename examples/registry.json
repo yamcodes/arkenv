@@ -7,6 +7,12 @@
 			"framework": "vanilla"
 		},
 		{
+			"id": "basic-js",
+			"name": "Basic (JavaScript)",
+			"description": "Minimal Node.js app in plain JavaScript (runtime validates without TypeScript)",
+			"framework": "vanilla"
+		},
+		{
 			"id": "with-nextjs",
 			"name": "Next.js",
 			"description": "Minimal Next.js project with ArkType",
@@ -34,6 +40,18 @@
 			"id": "with-vite-react-zod",
 			"name": "React + Vite (Zod)",
 			"description": "React + Vite with @arkenv/vite-plugin/standard and Zod",
+			"framework": "vite"
+		},
+		{
+			"id": "with-tanstack-start",
+			"name": "TanStack Start",
+			"description": "TanStack Start with @arkenv/vite-plugin",
+			"framework": "vite"
+		},
+		{
+			"id": "with-solid-start",
+			"name": "SolidStart",
+			"description": "SolidStart with @arkenv/vite-plugin",
 			"framework": "vite"
 		},
 		{
