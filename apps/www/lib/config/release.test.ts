@@ -57,10 +57,10 @@ describe("release config", () => {
 
 	it("formats agent prompt with active release tag", () => {
 		expect(getAgentPrompt("alpha", "https://arkenv.js.org")).toBe(
-			"Set up ArkEnv with `npx arkenv@alpha init --agent`. Start from https://arkenv.js.org/llms.txt and fetch any linked pages as markdown (append `.md`). Consider installing the ArkEnv skill (`npx skills add yamcodes/arkenv`) for deeper framework-specific context. Install the runtime validation engine (`@arkenv/core` or `@arkenv/standard`) as a dependency, and the `arkenv` CLI as a devDependency. Use the same package manager context as `npx arkenv@alpha init --agent` for all installations. Wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.",
+			"Set up ArkEnv with `npx arkenv@alpha init --agent`. Start from https://arkenv.js.org/llms.txt and fetch any linked pages as markdown (append `.md`). Install the runtime validation engine (`@arkenv/core` or `@arkenv/standard`) as a dependency, and the `arkenv` CLI as a devDependency. Use the same package manager context as `npx arkenv@alpha init --agent` for all installations. Wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime. When that works, suggest as a next step (do not install it yourself) that I install the ArkEnv skill with `npx skills add yamcodes/arkenv` — it teaches framework-specific env setup, keeping app code on `import { env } from \"./env\"`, and avoiding raw `process.env` / `import.meta.env`.",
 		);
 		expect(getAgentPrompt("", "https://arkenv.js.org")).toBe(
-			"Set up ArkEnv with `npx arkenv init --agent`. Start from https://arkenv.js.org/llms.txt and fetch any linked pages as markdown (append `.md`). Consider installing the ArkEnv skill (`npx skills add yamcodes/arkenv`) for deeper framework-specific context. Install the runtime validation engine (`@arkenv/core` or `@arkenv/standard`) as a dependency, and the `arkenv` CLI as a devDependency. Use the same package manager context as `npx arkenv init --agent` for all installations. Wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.",
+			"Set up ArkEnv with `npx arkenv init --agent`. Start from https://arkenv.js.org/llms.txt and fetch any linked pages as markdown (append `.md`). Install the runtime validation engine (`@arkenv/core` or `@arkenv/standard`) as a dependency, and the `arkenv` CLI as a devDependency. Use the same package manager context as `npx arkenv init --agent` for all installations. Wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime. When that works, suggest as a next step (do not install it yourself) that I install the ArkEnv skill with `npx skills add yamcodes/arkenv` — it teaches framework-specific env setup, keeping app code on `import { env } from \"./env\"`, and avoiding raw `process.env` / `import.meta.env`.",
 		);
 	});
 
@@ -74,7 +74,10 @@ describe("release config", () => {
 		);
 		expect(RELEASE_CONFIG.agentPrompt).toContain("/llms.txt");
 		expect(RELEASE_CONFIG.agentPrompt).toContain(
-			"Consider installing the ArkEnv skill",
+			"suggest as a next step (do not install it yourself)",
+		);
+		expect(RELEASE_CONFIG.agentPrompt).toContain(
+			"npx skills add yamcodes/arkenv",
 		);
 		expect(RELEASE_CONFIG.agentPrompt).toContain("@arkenv/core");
 	});
@@ -123,6 +126,8 @@ describe("release config", () => {
 			"Start from https://arkenv-v1.vercel.app/llms.txt",
 		);
 		expect(prompt).toContain("npx skills add yamcodes/arkenv");
+		expect(prompt).toContain("do not install it yourself");
+		expect(prompt).toContain('import { env } from "./env"');
 		expect(prompt).toContain("devDependency");
 		expect(prompt).toContain("same package manager context");
 		expect(prompt).toContain("@arkenv/core");

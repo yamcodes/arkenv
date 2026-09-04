@@ -116,10 +116,10 @@ export function getAgentPrompt(
 	return [
 		`Set up ArkEnv with \`${command}\`.`,
 		`Start from ${docsUrl}/llms.txt and fetch any linked pages as markdown (append \`.md\`).`,
-		"Consider installing the ArkEnv skill (`npx skills add yamcodes/arkenv`) for deeper framework-specific context.",
 		"Install the runtime validation engine (`@arkenv/core` or `@arkenv/standard`) as a dependency, and the `arkenv` CLI as a devDependency.",
 		`Use the same package manager context as \`${command}\` for all installations.`,
 		"Wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.",
+		"When that works, suggest as a next step (do not install it yourself) that I install the ArkEnv skill with `npx skills add yamcodes/arkenv` — it teaches framework-specific env setup, keeping app code on `import { env } from \"./env\"`, and avoiding raw `process.env` / `import.meta.env`.",
 	].join(" ");
 }
 
