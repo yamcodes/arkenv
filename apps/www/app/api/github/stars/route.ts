@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/nextjs";
 import { type NextRequest, NextResponse } from "next/server";
+import { env } from "~/env";
 import { breakDownGithubUrl } from "~/lib/utils/github";
 
 type GitHubApiResponse = {
@@ -17,8 +18,7 @@ export const revalidate = 300; // Revalidate every 5 minutes
 export async function GET(_request: NextRequest) {
 	try {
 		const githubUrl =
-			process.env.NEXT_PUBLIC_GITHUB_URL ??
-			"https://github.com/yamcodes/arkenv";
+			env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/yamcodes/arkenv";
 		const { owner, repo } = breakDownGithubUrl(githubUrl);
 
 		const headers: HeadersInit = {
@@ -27,7 +27,7 @@ export async function GET(_request: NextRequest) {
 		};
 
 		// Use GitHub token if available for higher rate limits (5,000/hour vs 60/hour)
-		const githubToken = process.env.GITHUB_TOKEN;
+		const githubToken = env.GITHUB_TOKEN;
 		if (githubToken) {
 			// Classic PATs (ghp_*) require "token" scheme, fine-grained tokens use "Bearer"
 			headers.Authorization = githubToken.startsWith("ghp_")

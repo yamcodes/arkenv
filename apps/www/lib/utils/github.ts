@@ -1,3 +1,5 @@
+import { env } from "~/env";
+
 /**
  * Prefer the first non-empty trimmed string; treat "" as unset.
  */
@@ -19,16 +21,14 @@ function firstNonEmpty(
  */
 export const breakDownGithubUrl = (githubUrl?: string) => {
 	const url =
-		firstNonEmpty(githubUrl, process.env.NEXT_PUBLIC_GITHUB_URL) ??
+		firstNonEmpty(githubUrl, env.NEXT_PUBLIC_GITHUB_URL) ??
 		"https://github.com/yamcodes/arkenv";
 
 	// Manual override → Vercel deploy branch → local/default.
 	// Empty env values (common when vars are defined but blank) must not win over fallbacks.
 	const defaultBranch =
-		firstNonEmpty(
-			process.env.NEXT_PUBLIC_GITHUB_BRANCH,
-			process.env.VERCEL_GIT_COMMIT_REF,
-		) ?? "dev";
+		firstNonEmpty(env.NEXT_PUBLIC_GITHUB_BRANCH, env.VERCEL_GIT_COMMIT_REF) ??
+		"dev";
 	const cleanUrl = url.replace(/\/$/, "");
 	const urlObj = new URL(cleanUrl);
 	const [owner, repo] = urlObj.pathname.split("/").filter(Boolean).slice(-2);
@@ -45,7 +45,7 @@ export const breakDownGithubUrl = (githubUrl?: string) => {
  */
 export const getLinkTitleAndHref = (path: string, githubUrl?: string) => {
 	const url =
-		firstNonEmpty(githubUrl, process.env.NEXT_PUBLIC_GITHUB_URL) ??
+		firstNonEmpty(githubUrl, env.NEXT_PUBLIC_GITHUB_URL) ??
 		"https://github.com/yamcodes/arkenv";
 
 	const { owner, repo, defaultBranch } = breakDownGithubUrl(url);

@@ -13,6 +13,7 @@ import {
 } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
 import { DocsTocLinks } from "~/components/docs/toc-links";
+import { env } from "~/env";
 import { FeatureFlags } from "~/lib/feature-flags";
 import { source } from "~/lib/source";
 import { getLinkTitleAndHref } from "~/lib/utils";
@@ -20,7 +21,7 @@ import { getMDXComponents } from "~/mdx-components";
 
 function getDocsEditHref(pagePath: string): string {
 	const basePath = (
-		process.env.NEXT_PUBLIC_DOCS_CONTENT_PATH || "apps/www/content/docs/"
+		env.NEXT_PUBLIC_DOCS_CONTENT_PATH || "apps/www/content/docs/"
 	).replace(/\/$/, "");
 	const normalizedPath = pagePath.replace(/^\/+/, "");
 	return getLinkTitleAndHref(`${basePath}/${normalizedPath}`).href;

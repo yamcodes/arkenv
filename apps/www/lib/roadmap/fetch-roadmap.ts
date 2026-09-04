@@ -1,3 +1,4 @@
+import { env } from "~/env";
 import {
 	ROADMAP_EXCLUDE_ISSUE_NUMBERS,
 	ROADMAP_EXTRAS,
@@ -38,7 +39,7 @@ function githubHeaders(): HeadersInit {
 		Accept: "application/vnd.github+json",
 		"User-Agent": "arkenv-website",
 	};
-	const githubToken = process.env.GITHUB_TOKEN;
+	const githubToken = env.GITHUB_TOKEN;
 	if (githubToken) {
 		headers.Authorization = githubToken.startsWith("ghp_")
 			? `token ${githubToken}`
@@ -49,7 +50,7 @@ function githubHeaders(): HeadersInit {
 
 function repoCoords(): { owner: string; repo: string } {
 	const githubUrl =
-		process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/yamcodes/arkenv";
+		env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/yamcodes/arkenv";
 	return breakDownGithubUrl(githubUrl);
 }
 

@@ -1,10 +1,10 @@
+import { env } from "~/env";
+
 /**
  * Canonical public GitHub repo URL for www chrome CTAs.
  */
 export function getGithubRepoUrl(): string {
-	return (
-		process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/yamcodes/arkenv"
-	);
+	return env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/yamcodes/arkenv";
 }
 
 /**

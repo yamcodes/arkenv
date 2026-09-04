@@ -1,4 +1,5 @@
 import { App, type Octokit } from "octokit";
+import { env } from "~/env";
 import { breakDownGithubUrl } from "~/lib/utils/github";
 
 /**
@@ -27,8 +28,8 @@ function normalizePrivateKey(key: string): string {
 async function getOctokit(): Promise<Octokit> {
 	if (octokitInstance) return octokitInstance;
 
-	const appId = process.env.GITHUB_APP_ID;
-	const privateKey = process.env.GITHUB_APP_PRIVATE_KEY;
+	const appId = env.GITHUB_APP_ID;
+	const privateKey = env.GITHUB_APP_PRIVATE_KEY;
 
 	if (!appId || !privateKey) {
 		throw new Error(
