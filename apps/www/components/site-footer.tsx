@@ -39,8 +39,7 @@ export function SiteFooter({
 						<Logo />
 					</a>
 					<p>
-						Typesafe environment variables with ArkType, Zod, Valibot, or any
-						Standard Schema.
+						Typesafe environment variables from the validator you already use.
 					</p>
 				</div>
 
@@ -100,6 +99,12 @@ export function SiteFooter({
 						</li>
 						<li>
 							<a href="/docs/frameworks/nuxt">Nuxt</a>
+						</li>
+						<li>
+							<a href="/docs/frameworks/tanstack-start">TanStack Start</a>
+						</li>
+						<li>
+							<a href="/docs/frameworks/bun">Bun</a>
 						</li>
 						<li>
 							<a href="/docs/getting-started">Vanilla TS</a>
