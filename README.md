@@ -1,9 +1,11 @@
 <p align="center">
-  <a href="https://github.com/yamcodes/arkenv/blob/v1/apps/www/public/assets/icon.svg"><img alt="ArkEnv Logo" src="https://arkenv.js.org/assets/icon.svg" width="160px" align="center"/></a>
+  <a href="https://github.com/yamcodes/arkenv/blob/v1/apps/www/public/assets/icon.svg"><img alt="ArkEnv Logo" src="https://raw.githubusercontent.com/yamcodes/arkenv/v1/apps/www/public/assets/icon.svg" width="160px" align="center"/></a>
   <h1 align="center">ArkEnv</h1>
   <div align="center">
     <p align="center">
-      Typesafe environment variables with ArkType, Zod, Valibot, or any Standard Schema. <br/> <a href="https://nextjs.org/">Next.js</a>, <a href="https://nuxt.com/">Nuxt</a>, <a href="https://nodejs.org/">Node.js</a>, <a href="https://vite.dev/">Vite</a>, and <a href="https://bun.com/">Bun</a>
+      Typesafe environment variables from a Standard Schema validator: ArkType, Zod, Valibot, and more.<br/>
+      Get a strictly typed env object from the validator you already use. No boilerplate. Zero dependencies.<br/>
+      <a href="https://nextjs.org/">Next.js</a>, <a href="https://nuxt.com/">Nuxt</a>, <a href="https://nodejs.org/">Node.js</a>, <a href="https://vite.dev/">Vite</a>, and <a href="https://bun.com/">Bun</a>
     </p>
     <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Av1"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/test.yml/badge.svg?branch=v1"></a>
     <a href="https://bundlephobia.com/package/arkenv"><img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/arkenv"></a>
@@ -35,15 +37,58 @@
 </h3>
 
 <br />
+
+<details open>
+<summary>ArkType</summary>
+
+```ts
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  DATABASE_URL: "string.url",
+  PORT: "0 <= number.integer <= 65535 = 3000",
+  CI: "boolean = false",
+});
+```
+
+</details>
+
+<details>
+<summary>Zod</summary>
+
+```ts
+import arkenv from "@arkenv/standard";
+import * as z from "zod";
+
+export const env = arkenv({
+  DATABASE_URL: z.url(),
+  PORT: z.int().min(0).max(65535).default(3000),
+  CI: z.boolean().default(false),
+});
+```
+
+</details>
+
+<details>
+<summary>Valibot</summary>
+
+```ts
+import arkenv from "@arkenv/standard/valibot";
+import * as v from "valibot";
+
+export const env = arkenv({
+  DATABASE_URL: v.pipe(v.string(), v.url()),
+  PORT: v.optional(
+    v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)),
+    3000,
+  ),
+  CI: v.optional(v.boolean(), false),
+});
+```
+
+</details>
+
 <br />
-
-<p align="center">
-  <img alt="ArkEnv Demo" src="https://arkenv.js.org/assets/demo.gif" />
-</p>
-
-<br />
-
-
 
 <details open>
 <summary>npm</summary>
