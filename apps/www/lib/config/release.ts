@@ -10,6 +10,52 @@ export const RELEASE_TAG = rawTag.trim();
 
 export type PackageManager = "npm" | "pnpm" | "bun" | "yarn";
 
+const FALLBACK_DOCS_URL = "https://arkenv.js.org";
+
+/**
+ * Resolves the docs origin for the current deployment.
+ *
+ * Preference order:
+ * 1. `NEXT_PUBLIC_SITE_URL` (trimmed, no trailing slash)
+ * 2. `https://${VERCEL_PROJECT_PRODUCTION_URL}` (production domain; flips when DNS moves)
+ * 3. `https://${VERCEL_URL}` (preview deployment host)
+ * 4. Fallback `https://arkenv.js.org`
+ *
+ * Setting `NEXT_PUBLIC_SITE_URL` or the Vercel production URL makes the homepage
+ * agent prompt auto-update when the site moves off a preview host (e.g.
+ * arkenv-v1.vercel.app → arkenv.js.org) without hardcoding the preview forever.
+ *
+ * @param env - Env bag to read (defaults to `process.env`; injectable for tests).
+ * @returns Absolute docs origin with no trailing slash.
+ */
+export function getDocsUrl(env: NodeJS.ProcessEnv = process.env): string {
+	const siteUrl = env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, "");
+	if (siteUrl) {
+		return siteUrl;
+	}
+
+	const productionHost = env.VERCEL_PROJECT_PRODUCTION_URL?.trim().replace(
+		/\/+$/,
+		"",
+	);
+	if (productionHost) {
+		return productionHost.startsWith("http://") ||
+			productionHost.startsWith("https://")
+			? productionHost
+			: `https://${productionHost}`;
+	}
+
+	const previewHost = env.VERCEL_URL?.trim().replace(/\/+$/, "");
+	if (previewHost) {
+		return previewHost.startsWith("http://") ||
+			previewHost.startsWith("https://")
+			? previewHost
+			: `https://${previewHost}`;
+	}
+
+	return FALLBACK_DOCS_URL;
+}
+
 /**
  * Returns the npm package specifier with an optional release tag.
  * When the tag is empty or falsy, returns the bare package name.
@@ -53,14 +99,25 @@ export function getInitCommand(
 }
 
 /**
- * Returns the standard AI agent onboarding prompt formatted with the active release tag.
+ * Returns the standard AI agent onboarding prompt formatted with the active
+ * release tag and the current deployment's docs URL.
  *
- * @param tag - Release tag override (defaults to `RELEASE_TAG`).
+ * @param tag - Release tag override (defaults to RELEASE_TAG).
+ * @param docsUrl - Docs origin override (defaults to getDocsUrl).
  * @returns Formatted prompt string for AI coding agents.
  */
-export function getAgentPrompt(tag = RELEASE_TAG): string {
+export function getAgentPrompt(
+	tag = RELEASE_TAG,
+	docsUrl = getDocsUrl(),
+): string {
 	const command = getInitCommand("npm", tag, "init --agent");
-	return `Set up ArkEnv with \`${command}\`. Install any missing dependencies, wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.`;
+	return [
+		`Set up ArkEnv with \`${command}\`.`,
+		`Use docs only at ${docsUrl}.`,
+		"If the ArkEnv skill is missing, install it with `npx skills add yamcodes/arkenv`.",
+		'Prefer `@arkenv/core` / `@arkenv/standard` over legacy `import from "arkenv"`.',
+		"Install any missing dependencies, wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.",
+	].join(" ");
 }
 
 /**

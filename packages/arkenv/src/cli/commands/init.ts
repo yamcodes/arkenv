@@ -368,9 +368,7 @@ export class InitUseCase {
 		// Handle installSkill logic
 		if (hasSkill) {
 			options.installSkill = false;
-		} else if (isAgent) {
-			options.installSkill = false;
-		} else if (isYes) {
+		} else if (isAgent || isYes) {
 			options.installSkill = true;
 		} else {
 			const confirmInstall = await this.prompt.confirm(

@@ -1,6 +1,7 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
 	getAgentPrompt,
+	getDocsUrl,
 	getInitCommand,
 	getPackageSpecifier,
 	RELEASE_CONFIG,
@@ -8,6 +9,16 @@ import {
 } from "./release";
 
 describe("release config", () => {
+	beforeEach(() => {
+		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
+		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "");
+		vi.stubEnv("VERCEL_URL", "");
+	});
+
+	afterEach(() => {
+		vi.unstubAllEnvs();
+	});
+
 	it("defaults RELEASE_TAG to alpha", () => {
 		expect(RELEASE_TAG).toBe("alpha");
 	});
@@ -45,11 +56,11 @@ describe("release config", () => {
 	});
 
 	it("formats agent prompt with active release tag", () => {
-		expect(getAgentPrompt("alpha")).toBe(
-			"Set up ArkEnv with `npx arkenv@alpha init --agent`. Install any missing dependencies, wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.",
+		expect(getAgentPrompt("alpha", "https://arkenv.js.org")).toBe(
+			'Set up ArkEnv with `npx arkenv@alpha init --agent`. Use docs only at https://arkenv.js.org. If the ArkEnv skill is missing, install it with `npx skills add yamcodes/arkenv`. Prefer `@arkenv/core` / `@arkenv/standard` over legacy `import from "arkenv"`. Install any missing dependencies, wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.',
 		);
-		expect(getAgentPrompt("")).toBe(
-			"Set up ArkEnv with `npx arkenv init --agent`. Install any missing dependencies, wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.",
+		expect(getAgentPrompt("", "https://arkenv.js.org")).toBe(
+			'Set up ArkEnv with `npx arkenv init --agent`. Use docs only at https://arkenv.js.org. If the ArkEnv skill is missing, install it with `npx skills add yamcodes/arkenv`. Prefer `@arkenv/core` / `@arkenv/standard` over legacy `import from "arkenv"`. Install any missing dependencies, wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.',
 		);
 	});
 
@@ -58,8 +69,52 @@ describe("release config", () => {
 		expect(RELEASE_CONFIG.tag).toBe("alpha");
 		expect(RELEASE_CONFIG.packageSpecifier).toBe("arkenv@alpha");
 		expect(RELEASE_CONFIG.initCommand).toBe("npx arkenv@alpha init");
-		expect(RELEASE_CONFIG.agentPrompt).toBe(
-			"Set up ArkEnv with `npx arkenv@alpha init --agent`. Install any missing dependencies, wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.",
+		expect(RELEASE_CONFIG.agentPrompt).toContain(
+			"npx arkenv@alpha init --agent",
 		);
+		expect(RELEASE_CONFIG.agentPrompt).toContain("Use docs only at ");
+		expect(RELEASE_CONFIG.agentPrompt).toContain(
+			"npx skills add yamcodes/arkenv",
+		);
+		expect(RELEASE_CONFIG.agentPrompt).toContain("@arkenv/core");
+	});
+
+	it("resolves docs URL from NEXT_PUBLIC_SITE_URL first", () => {
+		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "https://custom.example/");
+		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "prod.example");
+		vi.stubEnv("VERCEL_URL", "preview.example");
+		expect(getDocsUrl()).toBe("https://custom.example");
+	});
+
+	it("resolves docs URL from VERCEL_PROJECT_PRODUCTION_URL next", () => {
+		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
+		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "arkenv.js.org");
+		vi.stubEnv("VERCEL_URL", "arkenv-v1.vercel.app");
+		expect(getDocsUrl()).toBe("https://arkenv.js.org");
+	});
+
+	it("resolves docs URL from VERCEL_URL for preview deploys", () => {
+		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
+		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "");
+		vi.stubEnv("VERCEL_URL", "arkenv-v1.vercel.app");
+		expect(getDocsUrl()).toBe("https://arkenv-v1.vercel.app");
+	});
+
+	it("falls back to arkenv.js.org when env is unset", () => {
+		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
+		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "");
+		vi.stubEnv("VERCEL_URL", "");
+		expect(getDocsUrl()).toBe("https://arkenv.js.org");
+	});
+
+	it("embeds the resolved docs URL in the agent prompt", () => {
+		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
+		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "");
+		vi.stubEnv("VERCEL_URL", "arkenv-v1.vercel.app");
+		const prompt = getAgentPrompt("alpha");
+		expect(prompt).toContain("Use docs only at https://arkenv-v1.vercel.app.");
+		expect(prompt).toContain("`npx skills add yamcodes/arkenv`");
+		expect(prompt).toContain("@arkenv/core");
+		expect(prompt).toContain("@arkenv/standard");
 	});
 });
