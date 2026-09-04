@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { RuntimeBloatShowcase } from "./runtime-bloat-showcase";
 
@@ -32,6 +33,8 @@ describe("RuntimeBloatShowcase", () => {
 		expect(figure).toHaveTextContent('"path": "PORT"');
 		expect(figure).toHaveTextContent('"message"');
 		expect(figure).toHaveTextContent("…");
+		// stacked fields: each key on its own line in the source string
+		expect(figure).toHaveTextContent(/\{\s*"path": "HOST"/);
 		expect(figure).not.toHaveTextContent(HOST_MESSAGE);
 		expect(figure).not.toHaveTextContent(PORT_MESSAGE);
 		expect(figure).not.toHaveTextContent("received");
@@ -39,8 +42,12 @@ describe("RuntimeBloatShowcase", () => {
 		expect(figure).not.toHaveTextContent("$ arkenv check --json");
 		expect(figure).not.toHaveClass("home-aurora__terminal");
 
-		expect(screen.getByTitle(HOST_MESSAGE)).toBeInTheDocument();
-		expect(screen.getByTitle(PORT_MESSAGE)).toBeInTheDocument();
+		expect(
+			screen.getByRole("button", { name: `Full message: ${HOST_MESSAGE}` }),
+		).toBeInTheDocument();
+		expect(
+			screen.getByRole("button", { name: `Full message: ${PORT_MESSAGE}` }),
+		).toBeInTheDocument();
 		expect(
 			screen.queryByRole("button", { name: "Copy" }),
 		).not.toBeInTheDocument();
@@ -56,5 +63,15 @@ describe("RuntimeBloatShowcase", () => {
 		expect(
 			screen.queryByRole("heading", { name: "Optimized for the edge" }),
 		).not.toBeInTheDocument();
+	});
+
+	it("opens the full issue message on tap/click of …", async () => {
+		const user = userEvent.setup();
+		render(<RuntimeBloatShowcase />);
+
+		await user.click(
+			screen.getByRole("button", { name: `Full message: ${HOST_MESSAGE}` }),
+		);
+		expect(await screen.findByText(HOST_MESSAGE)).toBeInTheDocument();
 	});
 });

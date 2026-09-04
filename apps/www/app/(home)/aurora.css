@@ -2949,8 +2949,27 @@
 }
 
 .home-aurora__json-ellipsis {
-	cursor: help;
+	display: inline;
+	margin: 0;
+	padding: 0;
+	border: none;
 	border-bottom: 1px dotted color-mix(in oklch, var(--color-ink-2) 55%, transparent);
+	background: none;
+	font: inherit;
+	line-height: inherit;
+	color: inherit;
+	cursor: pointer;
+	border-radius: 2px;
+}
+
+.home-aurora__json-ellipsis:focus-visible {
+	outline: 2px solid color-mix(in oklch, var(--color-accent) 70%, transparent);
+	outline-offset: 2px;
+}
+
+.home-aurora__json-ellipsis-tip {
+	font-family: var(--font-body);
+	word-break: break-word;
 }
 
 .home-aurora__json {

@@ -1,11 +1,35 @@
+"use client";
+
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "~/components/ui/popover";
+
 const HOST_MESSAGE = 'must be a string or "localhost" (was missing)';
 const PORT_MESSAGE = "must be a number (was a string)";
 
 function EllipsisMessage({ message }: { message: string }) {
 	return (
-		<span className="home-aurora__json-ellipsis" title={message}>
-			…
-		</span>
+		<Popover>
+			<PopoverTrigger asChild>
+				<button
+					type="button"
+					className="home-aurora__json-ellipsis"
+					aria-label={`Full message: ${message}`}
+				>
+					…
+				</button>
+			</PopoverTrigger>
+			<PopoverContent
+				align="start"
+				side="top"
+				collisionPadding={12}
+				className="home-aurora__json-ellipsis-tip min-w-0 max-w-[min(18rem,calc(100vw-1.5rem))] rounded-md border-fd-border bg-fd-popover p-2 text-xs leading-snug text-fd-popover-foreground shadow-md backdrop-blur-none"
+			>
+				{message}
+			</PopoverContent>
+		</Popover>
 	);
 }
 
@@ -41,12 +65,14 @@ export function RuntimeBloatShowcase() {
 				<pre className="home-aurora__json-body home-aurora__tty--wrap">
 					<code>
 						{
-							'{\n  "success": false,\n  "issues": [\n    { "path": "HOST", "code": "MISSING_VARIABLE", "message": "'
+							'{\n  "success": false,\n  "issues": [\n    {\n      "path": "HOST",\n      "code": "MISSING_VARIABLE",\n      "message": "'
 						}
 						<EllipsisMessage message={HOST_MESSAGE} />
-						{'" },\n    { "path": "PORT", "code": "INVALID_TYPE", "message": "'}
+						{
+							'"\n    },\n    {\n      "path": "PORT",\n      "code": "INVALID_TYPE",\n      "message": "'
+						}
 						<EllipsisMessage message={PORT_MESSAGE} />
-						{'" }\n  ]\n}'}
+						{'"\n    }\n  ]\n}'}
 					</code>
 				</pre>
 			</figure>
