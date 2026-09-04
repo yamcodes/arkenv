@@ -6,6 +6,7 @@ import { toFumadocsSource } from "fumadocs-mdx/runtime/server";
 import { icons } from "lucide-react";
 import { createElement } from "react";
 import { NewBadge, UpdatedBadge } from "~/components/ui/new-badge";
+import { isPublishedBlogPage } from "~/lib/is-published-blog-page";
 
 export type IconName = keyof typeof icons | "New" | "Updated";
 
@@ -34,20 +35,7 @@ export const blog = loader({
 	source: toFumadocsSource(blogPosts, []),
 });
 
-/**
- * Pure draft filter used by `getBlogPages()`.
- * Drafts are included only when `nodeEnv === "development"`;
- * production listing, RSS, and sitemap always omit drafts.
- */
-export function isPublishedBlogPage(
-	page: { data: { draft?: boolean } },
-	nodeEnv: string | undefined = process.env.NODE_ENV,
-): boolean {
-	if (page.data.draft) {
-		return nodeEnv === "development";
-	}
-	return true;
-}
+export { isPublishedBlogPage };
 
 /**
  * Blog pages for listing/RSS/sitemap.

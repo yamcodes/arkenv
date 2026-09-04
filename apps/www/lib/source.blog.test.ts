@@ -1,32 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("fumadocs-mdx:collections/server", () => ({
-	blogPosts: [],
-	docs: {
-		toFumadocsSource: () => ({
-			files: [],
-		}),
-	},
-}));
-
-vi.mock("fumadocs-mdx/runtime/server", () => ({
-	toFumadocsSource: () => ({
-		files: [],
-	}),
-}));
-
-vi.mock("fumadocs-core/source", () => ({
-	loader: () => ({
-		getPages: () => [],
-	}),
-}));
-
-vi.mock("~/components/ui/new-badge", () => ({
-	NewBadge: () => null,
-	UpdatedBadge: () => null,
-}));
-
-import { isPublishedBlogPage } from "./source";
+import { isPublishedBlogPage } from "./is-published-blog-page";
 
 describe("isPublishedBlogPage", () => {
 	afterEach(() => {
