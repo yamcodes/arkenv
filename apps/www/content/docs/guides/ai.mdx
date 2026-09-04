@@ -82,7 +82,7 @@ public prefixes, and skip a `runtimeEnv` map.
 **Greenfield setup**
 
 ```text
-Add ArkEnv to this repo. Run `npx arkenv init --agent`, parse the JSON on stdout, and only retry with flags from `retryWith` if a refusal is safe to bypass. Do not hand-write next.config or env.ts unless init fails.
+Add ArkEnv to this repo. Run `npx arkenv init --agent`, parse the JSON on stdout, and only retry with `--force` if the refusal's `nextActions` include a `run-command` with `--force`. Do not hand-write next.config or env.ts unless init fails.
 ```
 
 **Existing keys**
