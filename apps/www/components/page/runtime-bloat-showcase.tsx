@@ -24,8 +24,8 @@ export function RuntimeBloatShowcase() {
 					Structured errors
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					Each issue gets a code that agents and CI can act on. Missing keys
-					and bad values aren&apos;t the same.
+					Each issue gets a code that agents and CI can act on. Missing keys and
+					bad values aren&apos;t the same.
 				</p>
 			</header>
 
@@ -40,7 +40,9 @@ export function RuntimeBloatShowcase() {
 				</span>
 				<pre className="home-aurora__json-body home-aurora__tty--wrap">
 					<code>
-						{'{\n  "success": false,\n  "issues": [\n    { "path": "HOST", "code": "MISSING_VARIABLE", "message": "'}
+						{
+							'{\n  "success": false,\n  "issues": [\n    { "path": "HOST", "code": "MISSING_VARIABLE", "message": "'
+						}
 						<EllipsisMessage message={HOST_MESSAGE} />
 						{'" },\n    { "path": "PORT", "code": "INVALID_TYPE", "message": "'}
 						<EllipsisMessage message={PORT_MESSAGE} />

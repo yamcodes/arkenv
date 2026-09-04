@@ -14,9 +14,7 @@ describe("RuntimeBloatShowcase", () => {
 		).toBeInTheDocument();
 
 		expect(
-			screen.getByText(
-				/Each issue gets a code that agents and CI can act on/i,
-			),
+			screen.getByText(/Each issue gets a code that agents and CI can act on/i),
 		).toBeInTheDocument();
 		expect(
 			screen.getByText(/Missing keys and bad values aren't the same/i),
