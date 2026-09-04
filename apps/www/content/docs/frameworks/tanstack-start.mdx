@@ -123,7 +123,7 @@ function Home() {
 Client components read `VITE_` keys from the same import. The plugin rewrites
 the client module so these values are inlined as coerced literals.
 
-:::warning\[Do not read `import.meta.env` directly]
+:::warning[Do not read `import.meta.env` directly]
 Reading `import.meta.env` skips ArkEnv. Import `{ env }` so public keys stay
 typed and coerced and server secrets stay out of the client bundle.
 :::
