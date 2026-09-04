@@ -51,6 +51,9 @@ export function SiteFooter({
 							<a href="/docs">Docs</a>
 						</li>
 						<li>
+							<a href="/blog">Blog</a>
+						</li>
+						<li>
 							<a
 								href={`${githubRepoUrl}/releases`}
 								target="_blank"
