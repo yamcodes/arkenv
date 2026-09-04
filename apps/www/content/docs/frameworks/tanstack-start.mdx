@@ -97,22 +97,23 @@ import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { env } from "../env";
 
-const readDatabaseUrl = createServerFn({ method: "GET" }).handler(() => {
-  return env.DATABASE_URL; // server-only: validated at boot
+const getDatabaseHost = createServerFn({ method: "GET" }).handler(() => {
+  const url = new URL(env.DATABASE_URL); // server-only: validated at boot
+  return url.host; // safe to return to the client
 });
 
 export const Route = createFileRoute("/")({
   component: Home,
-  loader: () => readDatabaseUrl(),
+  loader: () => getDatabaseHost(),
 });
 
 function Home() {
-  const databaseUrl = Route.useLoaderData();
+  const dbHost = Route.useLoaderData();
 
   return (
     <div>
       <h1>{env.VITE_APP_NAME}</h1>
-      <p>Database: {databaseUrl}</p>
+      <p>Database Host: {dbHost}</p>
     </div>
   );
 }
@@ -154,9 +155,9 @@ inject variables before boot.
 
 ## Example
 
-The [`with-tanstack-start`](https://github.com/yamcodes/arkenv/tree/main/examples/with-tanstack-start)
-example runs the setup above end to end: a server-only `DATABASE_URL` read
-through `createServerFn`, public `VITE_` keys rendered in a client component,
+The [`with-tanstack-start`](https://github.com/yamcodes/arkenv/tree/v1/examples/with-tanstack-start)
+example runs the setup above end to end: server-only `DATABASE_URL` accessed
+inside `createServerFn`, public `VITE_` keys rendered in a client component,
 and a button that demonstrates the client-side throw.
 
 ## Next steps

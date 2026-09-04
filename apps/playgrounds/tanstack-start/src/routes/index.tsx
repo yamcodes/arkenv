@@ -3,13 +3,15 @@ import { createServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { env } from "../env";
 
-const readDatabaseUrl = createServerFn({ method: "GET" }).handler(() => {
-	return env.DATABASE_URL;
+const getDatabaseHost = createServerFn({ method: "GET" }).handler(() => {
+	// Server functions can safely read server secrets without leaking them to the client:
+	const url = new URL(env.DATABASE_URL);
+	return url.host;
 });
 
 export const Route = createFileRoute("/")({
 	component: Home,
-	loader: () => readDatabaseUrl(),
+	loader: () => getDatabaseHost(),
 });
 
 function tryReadServerKeyOnClient(): string {
@@ -21,7 +23,7 @@ function tryReadServerKeyOnClient(): string {
 }
 
 function Home() {
-	const databaseUrl = Route.useLoaderData();
+	const dbHost = Route.useLoaderData();
 	const [clientReadResult, setClientReadResult] = useState<string | null>(null);
 
 	return (
@@ -31,7 +33,7 @@ function Home() {
 				Public key inlined into the client bundle: {env.VITE_APP_NAME} (release{" "}
 				{env.VITE_APP_RELEASE})
 			</p>
-			<p>Server key loaded through createServerFn: {databaseUrl}</p>
+			<p>Database host loaded through createServerFn: {dbHost}</p>
 			<button
 				type="button"
 				onClick={() => setClientReadResult(tryReadServerKeyOnClient())}
