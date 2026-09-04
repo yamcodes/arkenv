@@ -1,6 +1,17 @@
 #!/usr/bin/env node
 
+const path = require("node:path");
 const { spawn, execSync } = require("node:child_process");
+
+// Ensure .arkenv types are generated for typechecking and runtime
+try {
+	const { setupArkEnv } = require("@arkenv/nextjs/config");
+	setupArkEnv({
+		schemaPath: path.resolve(__dirname, "../env.ts"),
+	});
+} catch {
+	// Ignore if @arkenv/nextjs is not built yet
+}
 
 // Skip mdx types generation during tests - types aren't needed for running tests
 if (process.env.SKIP_MDX === "true") {
