@@ -1854,8 +1854,8 @@
 .home-aurora__payload-chip--port-valid,
 .home-aurora__payload-chip--debug-true,
 .home-aurora__payload-chip--debug-false,
-.home-aurora__payload-chip--loglevel-info,
-.home-aurora__payload-chip--loglevel-debug {
+.home-aurora__payload-chip--theme-light,
+.home-aurora__payload-chip--theme-dark {
 	color: var(--color-ink);
 	text-shadow: 0 0 8px color-mix(in oklch, var(--color-ink) 40%, transparent);
 }
@@ -1867,8 +1867,8 @@
 .home-aurora__payload-chip--port-coerced,
 .home-aurora__payload-chip--debug-true-coerced,
 .home-aurora__payload-chip--debug-false-coerced,
-.home-aurora__payload-chip--loglevel-info-coerced,
-.home-aurora__payload-chip--loglevel-debug-coerced {
+.home-aurora__payload-chip--theme-light-coerced,
+.home-aurora__payload-chip--theme-dark-coerced {
 	color: var(--color-accent);
 	text-shadow: 0 0 10px var(--color-accent);
 }
@@ -1911,32 +1911,29 @@
 }
 
 /* Row 3 Alternating Cadence (8s cycle, phase-shifted vs DEBUG) */
-.home-aurora__payload-chip--loglevel-info {
+.home-aurora__payload-chip--theme-light {
 	animation: debug-travel-true 8s cubic-bezier(0.25, 1, 0.5, 1) infinite 1.2s;
 }
-.home-aurora__payload-chip--loglevel-info-coerced {
+.home-aurora__payload-chip--theme-light-coerced {
 	animation: debug-travel-true-coerced 8s cubic-bezier(0.25, 1, 0.5, 1) infinite 1.2s;
 }
-.home-aurora__payload-chip--loglevel-debug {
+.home-aurora__payload-chip--theme-dark {
 	animation: debug-travel-false 8s cubic-bezier(0.25, 1, 0.5, 1) infinite 1.2s;
 }
-.home-aurora__payload-chip--loglevel-debug-coerced {
+.home-aurora__payload-chip--theme-dark-coerced {
 	animation: debug-travel-false-coerced 8s cubic-bezier(0.25, 1, 0.5, 1) infinite 1.2s;
 }
-.home-aurora__payload-row--loglevel .home-aurora__payload-schema {
+.home-aurora__payload-row--theme .home-aurora__payload-schema {
 	animation: debug-schema-flash 8s cubic-bezier(0.25, 1, 0.5, 1) infinite 1.2s;
-	font-size: 0.6875rem;
 }
-.home-aurora__payload-row--loglevel .home-aurora__payload-dock {
+.home-aurora__payload-row--theme .home-aurora__payload-dock {
 	animation: debug-dock-pulse-mobile 8s cubic-bezier(0.2, 0.8, 0.25, 1) infinite 1.2s;
-	font-size: 0.6875rem;
-	letter-spacing: 0;
 }
-.home-aurora__payload-row--loglevel .home-aurora__payload-col--left {
-	min-width: 5.75rem;
+.home-aurora__payload-row--theme .home-aurora__payload-col--left {
+	min-width: 4.5rem;
 }
-.home-aurora__payload-row--loglevel .home-aurora__payload-col--right {
-	min-width: 14rem;
+.home-aurora__payload-row--theme .home-aurora__payload-col--right {
+	min-width: 6.5rem;
 	justify-content: flex-end;
 }
 
@@ -1947,7 +1944,7 @@
 	.home-aurora__payload-row--debug .home-aurora__payload-dock {
 		animation: debug-dock-pulse 8s cubic-bezier(0.25, 1, 0.5, 1) infinite 0s;
 	}
-	.home-aurora__payload-row--loglevel .home-aurora__payload-dock {
+	.home-aurora__payload-row--theme .home-aurora__payload-dock {
 		animation: debug-dock-pulse 8s cubic-bezier(0.25, 1, 0.5, 1) infinite 1.2s;
 	}
 }
@@ -2015,23 +2012,23 @@
 	animation: debug-mobile-coerced-false 8s cubic-bezier(0.2, 0.8, 0.25, 1) infinite 0s;
 }
 
-.home-aurora__payload-carrier--loglevel-info {
+.home-aurora__payload-carrier--theme-light {
 	animation: debug-mobile-travel-true 8s cubic-bezier(0.2, 0.8, 0.25, 1) infinite 1.2s;
 }
-.home-aurora__payload-carrier--loglevel-info .home-aurora__payload-val--raw {
+.home-aurora__payload-carrier--theme-light .home-aurora__payload-val--raw {
 	animation: debug-mobile-raw-true 8s cubic-bezier(0.2, 0.8, 0.25, 1) infinite 1.2s;
 }
-.home-aurora__payload-carrier--loglevel-info .home-aurora__payload-val--coerced {
+.home-aurora__payload-carrier--theme-light .home-aurora__payload-val--coerced {
 	animation: debug-mobile-coerced-true 8s cubic-bezier(0.2, 0.8, 0.25, 1) infinite 1.2s;
 }
 
-.home-aurora__payload-carrier--loglevel-debug {
+.home-aurora__payload-carrier--theme-dark {
 	animation: debug-mobile-travel-false 8s cubic-bezier(0.2, 0.8, 0.25, 1) infinite 1.2s;
 }
-.home-aurora__payload-carrier--loglevel-debug .home-aurora__payload-val--raw {
+.home-aurora__payload-carrier--theme-dark .home-aurora__payload-val--raw {
 	animation: debug-mobile-raw-false 8s cubic-bezier(0.2, 0.8, 0.25, 1) infinite 1.2s;
 }
-.home-aurora__payload-carrier--loglevel-debug .home-aurora__payload-val--coerced {
+.home-aurora__payload-carrier--theme-dark .home-aurora__payload-val--coerced {
 	animation: debug-mobile-coerced-false 8s cubic-bezier(0.2, 0.8, 0.25, 1) infinite 1.2s;
 }
 

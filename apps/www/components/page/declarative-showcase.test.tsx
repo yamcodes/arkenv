@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { DeclarativeShowcase } from "./declarative-showcase";
 
 describe("DeclarativeShowcase", () => {
-	it("renders the 3-row alternating payload pipeline with enum LOG_LEVEL row", () => {
+	it("renders the 3-row alternating payload pipeline with enum THEME row", () => {
 		render(<DeclarativeShowcase />);
 
 		expect(
@@ -17,7 +17,7 @@ describe("DeclarativeShowcase", () => {
 		// Static keys
 		expect(figure).toHaveTextContent("PORT=");
 		expect(figure).toHaveTextContent("DEBUG=");
-		expect(figure).toHaveTextContent("LOG_LEVEL=");
+		expect(figure).toHaveTextContent("THEME=");
 
 		// Row 1 alternating chips ("3000" success vs "oops" failure)
 		expect(figure).toHaveTextContent('"3000"');
@@ -27,19 +27,19 @@ describe("DeclarativeShowcase", () => {
 		expect(figure).toHaveTextContent('"true"');
 		expect(figure).toHaveTextContent('"false"');
 
-		// Row 3 alternating chips ("info" vs "debug")
-		expect(figure).toHaveTextContent('"info"');
-		expect(figure).toHaveTextContent('"debug"');
+		// Row 3 alternating chips ("light" vs "dark")
+		expect(figure).toHaveTextContent('"light"');
+		expect(figure).toHaveTextContent('"dark"');
 
 		// Schema Gates
 		expect(figure).toHaveTextContent('"number"');
 		expect(figure).toHaveTextContent('"boolean"');
-		expect(figure).toHaveTextContent("\"'debug' | 'info' | 'warn' | 'error'\"");
+		expect(figure).toHaveTextContent("\"'light' | 'dark'\"");
 
 		// Destination Type Definitions
 		expect(figure).toHaveTextContent("number");
 		expect(figure).toHaveTextContent("boolean");
-		expect(figure).toHaveTextContent('"debug" | "info" | "warn" | "error"');
+		expect(figure).toHaveTextContent('"light" | "dark"');
 	});
 
 	it("renders mobile direct single-wire elements and carrier tokens in the markup", () => {
@@ -71,16 +71,16 @@ describe("DeclarativeShowcase", () => {
 		expect(debugFalseCarrier).toHaveTextContent('"false"');
 		expect(debugFalseCarrier).toHaveTextContent("false");
 
-		const loglevelInfoCarrier = container.querySelector(
-			".home-aurora__payload-carrier--loglevel-info",
+		const themeLightCarrier = container.querySelector(
+			".home-aurora__payload-carrier--theme-light",
 		);
-		expect(loglevelInfoCarrier).toBeInTheDocument();
-		expect(loglevelInfoCarrier).toHaveTextContent('"info"');
+		expect(themeLightCarrier).toBeInTheDocument();
+		expect(themeLightCarrier).toHaveTextContent('"light"');
 
-		const loglevelDebugCarrier = container.querySelector(
-			".home-aurora__payload-carrier--loglevel-debug",
+		const themeDarkCarrier = container.querySelector(
+			".home-aurora__payload-carrier--theme-dark",
 		);
-		expect(loglevelDebugCarrier).toBeInTheDocument();
-		expect(loglevelDebugCarrier).toHaveTextContent('"debug"');
+		expect(themeDarkCarrier).toBeInTheDocument();
+		expect(themeDarkCarrier).toHaveTextContent('"dark"');
 	});
 });
