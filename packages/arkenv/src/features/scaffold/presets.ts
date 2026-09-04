@@ -1,9 +1,5 @@
 /**
  * Codegen IR for a single hosting-preset field.
- *
- * @remarks See `docs/adr/0018-cli-hosting-preset-field-metadata.md` (ADR 0018).
- * Do not grow this union without an explicit decision - prefer JSON Schema subset
- * or richer dialect rendering if more field kinds are needed.
  */
 export type PresetField =
 	| { readonly type: "string" }

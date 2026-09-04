@@ -551,7 +551,7 @@ function DrillInTree() {
 }
 
 /**
- * Mobile Sidebar Tree: root Sections expand in place (ADR 0026).
+ * Mobile Sidebar Tree: root Sections expand in place.
  * Title → Overview; chevron toggles; Nested Folder / Separator / Leaf unchanged.
  */
 function AccordionSection({
@@ -730,7 +730,7 @@ function DrillInNav({ className }: { className?: string }) {
 			data-docs-sidebar-tree=""
 			className={cn(
 				/* Inline pad is --site-nav-gutter in docs-chrome.css (equal
-				 * gutters; pill left stays on the helm). Do not add Tailwind ps-*. */
+				 * gutters; pill left stays on the helm). */
 				"flex w-full flex-col gap-0.5 pt-12 pb-4",
 				className,
 			)}
@@ -741,7 +741,7 @@ function DrillInNav({ className }: { className?: string }) {
 }
 
 /**
- * Desktop drill-in rail + mobile Sidebar Tree drawer (ADR 0022 / 0026).
+ * Desktop drill-in rail + mobile Sidebar Tree drawer.
  *
  * @see drillInSidebarSlots
  */
