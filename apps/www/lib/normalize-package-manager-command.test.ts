@@ -26,7 +26,7 @@ describe("normalizePackageManagerCommand", () => {
 		);
 	});
 
-	it("leaves pnpm add and yarn add alone", () => {
+	it("keeps pnpm/yarn add verbs and tags scoped packages", () => {
 		expect(normalizePackageManagerCommand("pnpm add @arkenv/core")).toBe(
 			"pnpm add @arkenv/core@alpha",
 		);
@@ -116,6 +116,31 @@ describe("normalizePackageManagerCommand", () => {
 		).toBe("bunx @arkenv/agent-plugin init");
 	});
 
+	it("tags scoped @arkenv/* packages on multi-line install fences", () => {
+		expect(
+			normalizePackageManagerCommand(
+				"npm install @arkenv/core arktype\nnpm install -D @arkenv/vite-plugin",
+			),
+		).toBe(
+			"npm install @arkenv/core@alpha arktype\nnpm install -D @arkenv/vite-plugin@alpha",
+		);
+	});
+
+	it("rewrites pre-tagged scoped packages on install lines to the active release tag", () => {
+		expect(
+			normalizePackageManagerCommand("npm install @arkenv/core@latest"),
+		).toBe("npm install @arkenv/core@alpha");
+		expect(
+			normalizePackageManagerCommand("npm install @arkenv/core@latest", "rc"),
+		).toBe("npm install @arkenv/core@rc");
+	});
+
+	it("strips scoped install tags when release tag is empty (GA mode)", () => {
+		expect(
+			normalizePackageManagerCommand("npm install @arkenv/core@alpha", ""),
+		).toBe("npm install @arkenv/core");
+	});
+
 	it("normalizes runner commands inside prompt text fences", () => {
 		const prompt =
 			"Add ArkEnv to this repo. Run `npx arkenv init --agent`, parse the JSON on stdout, and only retry with flags from `retryWith` if a refusal is safe to bypass.";
@@ -131,29 +156,5 @@ describe("normalizePackageManagerCommand", () => {
 
 		// GA mode (empty tag)
 		expect(normalizePackageManagerCommand(prompt, "")).toBe(prompt);
-	});
-
-	it("tags bare scoped packages on install lines", () => {
-		expect(normalizePackageManagerCommand("npm install @arkenv/core")).toBe(
-			"npm install @arkenv/core@alpha",
-		);
-	});
-
-	it("does not double-tag already-tagged scoped packages", () => {
-		expect(
-			normalizePackageManagerCommand("npm install @arkenv/core@alpha"),
-		).toBe("npm install @arkenv/core@alpha");
-		expect(
-			normalizePackageManagerCommand("npm install @arkenv/core@latest"),
-		).toBe("npm install @arkenv/core@latest");
-	});
-
-	it("strips scoped tags on install lines in GA mode", () => {
-		expect(
-			normalizePackageManagerCommand("npm install @arkenv/core@alpha", ""),
-		).toBe("npm install @arkenv/core");
-		expect(normalizePackageManagerCommand("npm install @arkenv/core", "")).toBe(
-			"npm install @arkenv/core",
-		);
 	});
 });

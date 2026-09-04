@@ -62,5 +62,5 @@ pnpm start
 
 ## Documentation
 
-- [TanStack Start guide](https://github.com/yamcodes/arkenv/blob/v1/apps/www/content/docs/frameworks/tanstack-start.mdx) (`/docs/frameworks/tanstack-start` on the v1 docs site)
+- [TanStack Start guide](https://arkenv.js.org/docs/frameworks/tanstack-start)
 - [Vite plugin docs](https://arkenv.js.org/docs/reference/vite-plugin)

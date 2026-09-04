@@ -4,52 +4,29 @@ const RUNNER_COMMAND_REGEX =
 	/\b(npx|pnpm\s+dlx|bunx|yarn\s+dlx)(\s+(?:--?[^\s`'"]+\s+)*)(?<![@\w-])arkenv(?:@[^\s/`'"]+)?(?=[\s`'"]|$)/g;
 
 const INSTALL_LINE_REGEX =
-	/^(\s*)(npm install|pnpm add|yarn add|bun install)(\b.*)$/;
+	/(^|\n)(npm install|pnpm add|yarn add|bun install)([^\n]*)/g;
 
-/** Bare or tagged scoped @arkenv/* package on an install line. */
-const SCOPED_ARKENV_PACKAGE_REGEX =
-	/@(arkenv\/[\w-]+)(?:@[^\s/`'"]+)?(?=[\s`'"]|$)/g;
+const SCOPED_ARKENV_PACKAGE_REGEX = /@arkenv\/[\w-]+(?:@[^\s/`'"]+)?/g;
 
-/**
- * Tags bare `@arkenv/...` packages on install lines with the active release tag.
- * Does not rewrite packages that already have an `@tag` / version suffix.
- * When `activeTag` is empty (GA), strips any existing tag/version suffix.
- */
-function normalizeScopedArkenvOnInstallLine(
-	line: string,
-	activeTag: string,
-): string {
-	const match = line.match(INSTALL_LINE_REGEX);
-	if (!match) {
-		return line;
-	}
-
-	const [, indent = "", verb = "", rest = ""] = match;
-	const normalizedRest = rest.replaceAll(
-		SCOPED_ARKENV_PACKAGE_REGEX,
-		(full, pkg: string) => {
-			if (!activeTag) {
-				return `@${pkg}`;
-			}
-			// Already tagged/versioned — do not double-tag or rewrite.
-			if (full !== `@${pkg}`) {
-				return full;
-			}
-			return `@${pkg}@${activeTag}`;
-		},
-	);
-
-	return `${indent}${verb}${normalizedRest}`;
+function withReleaseTag(specifier: string, tag: string): string {
+	const match = specifier.match(/^(@arkenv\/[\w-]+)(?:@(.+))?$/);
+	if (!match) return specifier;
+	const name = match[1];
+	return tag ? `${name}@${tag}` : name;
 }
 
 /**
- * Canonical verbs and release tagging in docs code fences and install tabs.
- * Tags CLI runners and bare scoped packages on install lines via RELEASE_TAG.
- * Already-tagged scoped packages are left alone; empty tag strips scoped tags.
- * Scoped packages on runner lines are preserved.
+ * Canonical verbs and release tagging in docs code fences and install tabs:
+ * - npm install / pnpm add / yarn add / bun install (not npm i, not bun add).
+ * - bun x -> bunx.
+ * - arkenv CLI runner commands dynamically tag arkenv with `@${tag}` (e.g. `arkenv@alpha`),
+ *   or bare `arkenv` when tag is empty.
+ * - On install lines only, `@arkenv/*` packages are tagged the same way (or stripped in GA).
+ * - Scoped packages on runner lines (such as `@arkenv/agent-plugin`) are preserved untagged.
+ * - Bare `arkenv` on install lines is left untagged.
  *
  * @param value - Raw command or multi-line script content.
- * @param tag - Release tag to apply (defaults to RELEASE_TAG).
+ * @param tag - Release tag to apply (defaults to `RELEASE_TAG`).
  * @returns Normalized command string.
  */
 export function normalizePackageManagerCommand(
@@ -71,8 +48,14 @@ export function normalizePackageManagerCommand(
 			`${runner}${flags}${arkenvReplacement}`,
 	);
 
-	return withRunners
-		.split("\n")
-		.map((line) => normalizeScopedArkenvOnInstallLine(line, activeTag))
-		.join("\n");
+	return withRunners.replaceAll(
+		INSTALL_LINE_REGEX,
+		(_match: string, prefix: string, verb: string, rest: string) => {
+			const taggedRest = rest.replaceAll(
+				SCOPED_ARKENV_PACKAGE_REGEX,
+				(specifier: string) => withReleaseTag(specifier, activeTag),
+			);
+			return `${prefix}${verb}${taggedRest}`;
+		},
+	);
 }
