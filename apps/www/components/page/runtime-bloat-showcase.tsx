@@ -1,90 +1,151 @@
-const BUNDLE_DATA = [
-	{
-		name: "@arkenv/standard",
-		size: "1.5 kB",
-		width: "8%",
-		tier: "primary",
-	},
-	{
-		name: "@arkenv/core",
-		size: "7.4 kB",
-		width: "28%",
-		tier: "secondary",
-	},
-	{
-		name: "@t3-oss/env-core",
-		size: "14.2 kB",
-		width: "52%",
-		tier: "competitor",
-	},
-	{
-		name: "varlock",
-		size: "28.4 kB",
-		width: "100%",
-		tier: "competitor",
-	},
-];
+"use client";
+
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "~/components/ui/popover";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "~/components/ui/tooltip";
+import { useIsMobile } from "~/hooks/use-is-mobile";
+
+const HOST_MESSAGE = 'must be a string or "localhost" (was missing)';
+const PORT_MESSAGE = "must be a number (was a string)";
+
+const tipClassName =
+	"home-aurora__json-ellipsis-tip min-w-0 max-w-[min(18rem,calc(100vw-1.5rem))] rounded-md border-fd-border bg-fd-popover p-2 text-xs leading-snug text-fd-popover-foreground shadow-md backdrop-blur-none";
+
+function EllipsisMessage({
+	message,
+	mode,
+}: {
+	message: string;
+	mode: "hover" | "tap";
+}) {
+	const trigger = (
+		<button
+			type="button"
+			className="home-aurora__json-ellipsis"
+			aria-label={`Full message: ${message}`}
+		>
+			…
+		</button>
+	);
+
+	if (mode === "hover") {
+		return (
+			<Tooltip>
+				<TooltipTrigger asChild>{trigger}</TooltipTrigger>
+				<TooltipContent side="top" sideOffset={6} className={tipClassName}>
+					{message}
+				</TooltipContent>
+			</Tooltip>
+		);
+	}
+
+	return (
+		<Popover>
+			<PopoverTrigger asChild>{trigger}</PopoverTrigger>
+			<PopoverContent
+				align="start"
+				side="top"
+				collisionPadding={12}
+				className={tipClassName}
+			>
+				{message}
+			</PopoverContent>
+		</Popover>
+	);
+}
+
+function IssuesJson({
+	layout,
+	mode,
+}: {
+	layout: "compact" | "stacked";
+	mode: "hover" | "tap";
+}) {
+	const host = <EllipsisMessage message={HOST_MESSAGE} mode={mode} />;
+	const port = <EllipsisMessage message={PORT_MESSAGE} mode={mode} />;
+
+	if (layout === "compact") {
+		return (
+			<code>
+				{
+					'{\n  "success": false,\n  "issues": [\n    { "path": "HOST", "code": "MISSING_VARIABLE", "message": "'
+				}
+				{host}
+				{'" },\n    { "path": "PORT", "code": "INVALID_TYPE", "message": "'}
+				{port}
+				{'" }\n  ]\n}'}
+			</code>
+		);
+	}
+
+	return (
+		<code>
+			{
+				'{\n  "success": false,\n  "issues": [\n    {\n      "path": "HOST",\n      "code": "MISSING_VARIABLE",\n      "message": "'
+			}
+			{host}
+			{
+				'"\n    },\n    {\n      "path": "PORT",\n      "code": "INVALID_TYPE",\n      "message": "'
+			}
+			{port}
+			{'"\n    }\n  ]\n}'}
+		</code>
+	);
+}
 
 /**
- * Performance & zero-runtime-bloat showcase with highlighted ArkEnv tiers
- * and muted dark neutral competitor bars.
+ * Machine-readable validation errors for CI and agents.
+ * Desktop: hover tooltip + compact issue objects.
+ * Mobile: tap popover + stacked path/code/message.
  */
 export function RuntimeBloatShowcase() {
+	const isMobile = useIsMobile();
+	const mode = isMobile ? "tap" : "hover";
+	const layout = isMobile ? "stacked" : "compact";
+
 	return (
 		<section
 			className="home-aurora__pitch"
-			aria-labelledby="home-bloat"
-			id="runtime-bloat"
+			aria-labelledby="home-errors"
+			id="errors"
 		>
 			<header className="home-aurora__pitch-head">
-				<h2 id="home-bloat" data-reveal="blur">
-					Optimized for the edge
+				<h2 id="home-errors" data-reveal="blur">
+					Structured errors
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					50% smaller core than T3 Env. All engines under 10 kB for strict edge
-					deployments.
+					Each issue gets a code that agents and CI can act on. Missing keys and
+					bad values aren&apos;t the same.
 				</p>
 			</header>
 
 			<figure
-				className="home-aurora__pitch-visual home-aurora__telemetry"
+				className="home-aurora__pitch-visual home-aurora__code-window home-aurora__json"
 				data-reveal
 				style={{ ["--reveal-delay" as string]: "140ms" }}
-				aria-label="Production runtime bundle size comparison"
+				aria-label="JSON issues for HOST missing and PORT invalid type"
+				data-layout={layout}
 			>
-				<div className="home-aurora__telemetry-body">
-					<div className="home-aurora__telemetry-list">
-						{BUNDLE_DATA.map((item) => (
-							<div
-								key={item.name}
-								className="home-aurora__telemetry-row"
-								data-tier={item.tier}
-							>
-								<div className="home-aurora__telemetry-track">
-									<div
-										className="home-aurora__telemetry-bar"
-										style={{ width: item.width }}
-										aria-hidden="true"
-									/>
-									<a
-										href={`https://npmx.dev/package/${item.name}`}
-										target="_blank"
-										rel="noopener noreferrer"
-										className="home-aurora__telemetry-link"
-										title={`View ${item.name} on npmx`}
-									>
-										<code className="home-aurora__telemetry-name">
-											{item.name}
-										</code>
-									</a>
-									<span className="home-aurora__telemetry-size">
-										{item.size}
-									</span>
-								</div>
-							</div>
-						))}
-					</div>
-				</div>
+				<span className="home-aurora__json-lang" aria-hidden="true">
+					json
+				</span>
+				<pre className="home-aurora__json-body home-aurora__tty--wrap">
+					{mode === "hover" ? (
+						<TooltipProvider delayDuration={200}>
+							<IssuesJson layout={layout} mode={mode} />
+						</TooltipProvider>
+					) : (
+						<IssuesJson layout={layout} mode={mode} />
+					)}
+				</pre>
 			</figure>
 		</section>
 	);
