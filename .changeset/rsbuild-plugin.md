@@ -20,7 +20,7 @@ import { defineConfig } from "@rsbuild/core";
 import { arkenvPlugin } from "@arkenv/rsbuild-plugin";
 
 export default defineConfig({
-	plugins: [arkenvPlugin({ schemaPath: "src/env.ts" })],
+  plugins: [arkenvPlugin({ schemaPath: "src/env.ts" })],
 });
 ```
 
