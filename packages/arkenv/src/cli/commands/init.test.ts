@@ -648,7 +648,7 @@ describe("InitUseCase", () => {
 		expect(result.options.skillDetected).toBe(true);
 	});
 
-	it("should set installSkill to true for isAgent when skill is missing", async () => {
+	it("should set installSkill to false for isAgent when skill is missing", async () => {
 		vi.mocked(scanner.hasSkill).mockResolvedValue(false);
 		vi.mocked(prompt.runWizard).mockResolvedValue({
 			path: "./env.ts",
@@ -665,7 +665,7 @@ describe("InitUseCase", () => {
 		});
 
 		expect(result).not.toBeNull();
-		expect(result.options.installSkill).toBe(true);
+		expect(result.options.installSkill).toBe(false);
 		expect(prompt.confirm).not.toHaveBeenCalled();
 	});
 
