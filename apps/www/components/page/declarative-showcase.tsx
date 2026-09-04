@@ -1,8 +1,9 @@
 /**
  * Automatic coercion showcase.
- * Minimalist 2-row Payload Pipeline:
+ * Minimalist 3-row Payload Pipeline:
  * - Row 1 (PORT=): Alternates between valid ("3000" -> 3000 number) and invalid ("oops" -> stuck at "number" -> error).
  * - Row 2 (DEBUG=): Alternates between true ("true" -> true boolean) and false ("false" -> false boolean).
+ * - Row 3 (THEME=): Alternates between "light" and "dark" enum members.
  */
 export function DeclarativeShowcase() {
 	return (
@@ -252,6 +253,127 @@ export function DeclarativeShowcase() {
 						{/* Right destination dock */}
 						<div className="home-aurora__payload-col home-aurora__payload-col--right">
 							<code className="home-aurora__payload-dock">boolean</code>
+						</div>
+					</div>
+
+					{/* Row 3: THEME= (alternates between "light" and "dark" enum members) */}
+					<div className="home-aurora__payload-row home-aurora__payload-row--theme">
+						{/* Left static key */}
+						<div className="home-aurora__payload-col home-aurora__payload-col--left">
+							<span className="home-aurora__payload-key">THEME=</span>
+						</div>
+
+						{/* Mobile: Direct Wire (single track without middle gate) */}
+						<div
+							className="home-aurora__payload-wire home-aurora__payload-wire--direct"
+							aria-hidden="true"
+						>
+							<svg
+								className="home-aurora__stream-wire-svg"
+								viewBox="0 0 100 20"
+								preserveAspectRatio="none"
+								aria-hidden="true"
+							>
+								<line
+									x1="0"
+									y1="10"
+									x2="92"
+									y2="10"
+									className="home-aurora__stream-wire-track"
+								/>
+								<polygon
+									points="90,7 98,10 90,13"
+									className="home-aurora__stream-arrow"
+								/>
+							</svg>
+							<div className="home-aurora__payload-carrier home-aurora__payload-carrier--theme-light">
+								<span className="home-aurora__payload-val home-aurora__payload-val--raw">
+									&quot;light&quot;
+								</span>
+								<span className="home-aurora__payload-val home-aurora__payload-val--coerced">
+									&quot;light&quot;
+								</span>
+							</div>
+							<div className="home-aurora__payload-carrier home-aurora__payload-carrier--theme-dark">
+								<span className="home-aurora__payload-val home-aurora__payload-val--raw">
+									&quot;dark&quot;
+								</span>
+								<span className="home-aurora__payload-val home-aurora__payload-val--coerced">
+									&quot;dark&quot;
+								</span>
+							</div>
+						</div>
+
+						{/* Wire 1 */}
+						<div
+							className="home-aurora__payload-wire home-aurora__payload-wire--1"
+							aria-hidden="true"
+						>
+							<svg
+								className="home-aurora__stream-wire-svg"
+								viewBox="0 0 100 20"
+								preserveAspectRatio="none"
+								aria-hidden="true"
+							>
+								<line
+									x1="0"
+									y1="10"
+									x2="100"
+									y2="10"
+									className="home-aurora__stream-wire-track"
+								/>
+							</svg>
+							<span className="home-aurora__payload-chip home-aurora__payload-chip--theme-light">
+								&quot;light&quot;
+							</span>
+							<span className="home-aurora__payload-chip home-aurora__payload-chip--theme-dark">
+								&quot;dark&quot;
+							</span>
+						</div>
+
+						{/* Center Schema Gate */}
+						<div className="home-aurora__payload-gate">
+							<code className="home-aurora__payload-schema">
+								&quot;&apos;light&apos; | &apos;dark&apos;&quot;
+							</code>
+						</div>
+
+						{/* Wire 2 */}
+						<div
+							className="home-aurora__payload-wire home-aurora__payload-wire--2"
+							aria-hidden="true"
+						>
+							<svg
+								className="home-aurora__stream-wire-svg"
+								viewBox="0 0 100 20"
+								preserveAspectRatio="none"
+								aria-hidden="true"
+							>
+								<line
+									x1="0"
+									y1="10"
+									x2="92"
+									y2="10"
+									className="home-aurora__stream-wire-track"
+								/>
+								<polygon
+									points="90,7 98,10 90,13"
+									className="home-aurora__stream-arrow"
+								/>
+							</svg>
+							<span className="home-aurora__payload-chip home-aurora__payload-chip--theme-light-coerced">
+								&quot;light&quot;
+							</span>
+							<span className="home-aurora__payload-chip home-aurora__payload-chip--theme-dark-coerced">
+								&quot;dark&quot;
+							</span>
+						</div>
+
+						{/* Right destination dock */}
+						<div className="home-aurora__payload-col home-aurora__payload-col--right">
+							<code className="home-aurora__payload-dock">
+								&quot;light&quot; | &quot;dark&quot;
+							</code>
 						</div>
 					</div>
 				</div>

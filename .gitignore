@@ -35,6 +35,9 @@ pnpm-debug.log*
 .env*.local
 .arkenv/
 
+# TanStack Start
+.tanstack/
+
 # archives
 *.zip
 *.tar

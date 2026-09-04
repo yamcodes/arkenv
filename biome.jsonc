@@ -21,7 +21,8 @@
 			"!**/.output",
 			"!**/.source",
 			"!**/generated/**/*",
-			"!**/env.gen.ts"
+			"!**/env.gen.ts",
+			"!**/routeTree.gen.ts"
 		]
 	},
 	"formatter": {

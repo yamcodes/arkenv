@@ -108,6 +108,26 @@ API_KEY=
 			expect(result).toBe("nextjs");
 		});
 
+		it("detects vite from @tanstack/react-start dependencies", async () => {
+			await fsp.writeFile(
+				path.join(tempDir, "package.json"),
+				JSON.stringify({
+					dependencies: { "@tanstack/react-start": "^1.168.0" },
+				}),
+			);
+			const result = await scanner.detectFramework(tempDir);
+			expect(result).toBe("vite");
+		});
+
+		it("detects vite from @tanstack/start dependencies", async () => {
+			await fsp.writeFile(
+				path.join(tempDir, "package.json"),
+				JSON.stringify({ devDependencies: { "@tanstack/start": "^1.168.0" } }),
+			);
+			const result = await scanner.detectFramework(tempDir);
+			expect(result).toBe("vite");
+		});
+
 		it("detects bun-fullstack from tsconfig types and feature presence", async () => {
 			await fsp.writeFile(
 				path.join(tempDir, "server.ts"),
