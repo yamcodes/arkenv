@@ -36,10 +36,7 @@ export function tryArkenv<
 export function tryArkenv<
 	const T extends SchemaShape,
 	const D extends EnvSchema<T> | CompiledEnvSchema,
->(
-	def: D,
-	config: TryArkenvConfig = {},
-): SafeArkEnvResult<ArkenvOutput<T, D>> {
+>(def: D, config: TryArkenvConfig = {}): SafeArkEnvResult<ArkenvOutput<T, D>> {
 	if (recordIfCapturing(def)) {
 		// Capture records the schema only. Stub data has no values, so schema
 		// modules must stay declarative and must not require env at module scope.
