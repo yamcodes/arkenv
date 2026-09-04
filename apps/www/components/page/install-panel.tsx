@@ -3,8 +3,8 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { ArrowUpRight, BookOpen, Check, Copy } from "lucide-react";
 import { SparklesIcon } from "~/components/icons/sparkles-icon";
+import { env } from "~/env";
 import { useCopyCommand } from "~/hooks/use-copy-command";
-import { getGithubRepoUrl } from "~/lib/github-links";
 
 const INSTALL_COMMAND = "npx arkenv@latest init";
 
@@ -77,7 +77,7 @@ export function InstallPanel({ variant = "hero" }: InstallPanelProps) {
 				) : (
 					<a
 						className="home-aurora__install-prompt"
-						href={getGithubRepoUrl()}
+						href={env.NEXT_PUBLIC_GITHUB_URL}
 						target="_blank"
 						rel="noopener noreferrer"
 					>

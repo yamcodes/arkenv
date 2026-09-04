@@ -20,9 +20,10 @@ import { getLinkTitleAndHref } from "~/lib/utils";
 import { getMDXComponents } from "~/mdx-components";
 
 function getDocsEditHref(pagePath: string): string {
-	const basePath = env.NEXT_PUBLIC_DOCS_CONTENT_PATH.replace(/\/$/, "");
 	const normalizedPath = pagePath.replace(/^\/+/, "");
-	return getLinkTitleAndHref(`${basePath}/${normalizedPath}`).href;
+	return getLinkTitleAndHref(
+		`${env.NEXT_PUBLIC_DOCS_CONTENT_PATH}/${normalizedPath}`,
+	).href;
 }
 
 export default async function Page(props: {

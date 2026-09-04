@@ -2,7 +2,7 @@
 
 import { ArrowUpRight, Star } from "lucide-react";
 import { DotGrid } from "~/components/page/dot-grid";
-import { getGithubRepoUrl } from "~/lib/github-links";
+import { env } from "~/env";
 import { useGithubStarCount } from "~/lib/use-github-star-count";
 import { cn } from "~/lib/utils/cn";
 import "./docs-star-card.css";
@@ -19,7 +19,7 @@ export function DocsStarCard({
 	onSpotlightEnd?: () => void;
 }) {
 	const starCount = useGithubStarCount();
-	const githubUrl = getGithubRepoUrl();
+	const githubUrl = env.NEXT_PUBLIC_GITHUB_URL;
 
 	const label =
 		starCount !== null

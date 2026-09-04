@@ -1,3 +1,4 @@
+import { type } from "arktype";
 import arkenv from "@/.arkenv";
 
 export const env = arkenv(
@@ -14,7 +15,9 @@ export const env = arkenv(
 		// --- Client-side Environment Variables (NEXT_PUBLIC_*) ---
 		NEXT_PUBLIC_GITHUB_URL: "string = 'https://github.com/yamcodes/arkenv'",
 		NEXT_PUBLIC_GITHUB_BRANCH: "string?",
-		NEXT_PUBLIC_DOCS_CONTENT_PATH: "string = 'apps/www/content/docs/'",
+		NEXT_PUBLIC_DOCS_CONTENT_PATH: type("string")
+			.pipe((s: string) => s.replace(/\/+$/, ""))
+			.default("apps/www/content/docs"),
 		NEXT_PUBLIC_POSTHOG_KEY: "string?",
 		NEXT_PUBLIC_SENTRY_DSN: "string?",
 		NEXT_PUBLIC_SENTRY_DEBUG: "boolean = false",

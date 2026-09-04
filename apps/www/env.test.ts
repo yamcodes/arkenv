@@ -1,5 +1,6 @@
 import { ArkEnvError } from "@arkenv/core";
 import { arkenv as clientArkenv } from "@arkenv/nextjs";
+import { type } from "arktype";
 import { describe, expect, it } from "vitest";
 import { env } from "./env";
 
@@ -8,7 +9,7 @@ describe("apps/www environment configuration (ArkEnv dog-fooding)", () => {
 		expect(env.NEXT_PUBLIC_GITHUB_URL).toBe(
 			"https://github.com/yamcodes/arkenv",
 		);
-		expect(env.NEXT_PUBLIC_DOCS_CONTENT_PATH).toBe("apps/www/content/docs/");
+		expect(env.NEXT_PUBLIC_DOCS_CONTENT_PATH).toBe("apps/www/content/docs");
 		expect(typeof env.NEXT_PUBLIC_GITHUB_STAR_COUNT).toBe("boolean");
 		expect(typeof env.NEXT_PUBLIC_DISCORD_LINK).toBe("boolean");
 		expect(typeof env.NEXT_PUBLIC_DOCS_TOC_POPOVER).toBe("boolean");
@@ -126,5 +127,22 @@ MIIEowIBAAKCAQEA0m4w...
 				},
 			);
 		}).toThrow();
+	});
+
+	it("strips trailing slashes from NEXT_PUBLIC_DOCS_CONTENT_PATH using ArkType pipe", () => {
+		const parsed = clientArkenv(
+			{
+				NEXT_PUBLIC_DOCS_CONTENT_PATH: type("string")
+					.pipe((s: string) => s.replace(/\/+$/, ""))
+					.default("apps/www/content/docs"),
+			},
+			{
+				runtimeEnv: {
+					NEXT_PUBLIC_DOCS_CONTENT_PATH: "custom/content/path///",
+				},
+			},
+		);
+		expect(parsed.NEXT_PUBLIC_DOCS_CONTENT_PATH).toBe("custom/content/path");
+		expect(env.NEXT_PUBLIC_DOCS_CONTENT_PATH).toBe("apps/www/content/docs");
 	});
 });
