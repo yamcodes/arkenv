@@ -115,11 +115,12 @@ export function getAgentPrompt(
 	const command = getInitCommand("npm", tag, "init --agent");
 	return [
 		`Set up ArkEnv with \`${command}\`.`,
-		`Start from ${docsUrl}/llms.txt and fetch any linked pages as markdown (append \`.md\`).`,
-		"Install the runtime validation engine (`@arkenv/core` or `@arkenv/standard`) as a dependency, and the `arkenv` CLI as a devDependency.",
-		`Use the same package manager context as \`${command}\` for all installations.`,
+		`For docs/reference, start from ${docsUrl}/llms.txt and fetch any linked pages as markdown (append \`.md\`).`,
+		"Install the runtime engine as a dependency: `@arkenv/core` (with `arktype`) if ArkType is already in the project or there is no env validator yet; otherwise `@arkenv/standard` for use with the project's existing Standard Schema library (Zod, Valibot, etc.).",
+		"Install the `arkenv` CLI as a devDependency.",
+		"Use the project's package manager for installs.",
 		"Wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.",
-		'When that works, suggest as a next step (do not install it yourself) that I install the ArkEnv skill with `npx skills add yamcodes/arkenv` — it teaches framework-specific env setup, keeping app code on `import { env } from "./env"`, and avoiding raw `process.env` / `import.meta.env`.',
+		"When that works, suggest as a next step (do not install it yourself) that I install the ArkEnv skill with `npx skills add yamcodes/arkenv` — it teaches framework-specific env setup, keeping app code on `import { env } from \"./env\"`, and avoiding raw `process.env` / `import.meta.env`.",
 	].join(" ");
 }
 
