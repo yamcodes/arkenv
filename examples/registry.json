@@ -7,6 +7,12 @@
 			"framework": "vanilla"
 		},
 		{
+			"id": "basic-js",
+			"name": "Basic (JavaScript)",
+			"description": "Minimal Node.js app in plain JavaScript (runtime validates without TypeScript)",
+			"framework": "vanilla"
+		},
+		{
 			"id": "with-nextjs",
 			"name": "Next.js",
 			"description": "Minimal Next.js project with ArkType",

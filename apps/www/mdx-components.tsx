@@ -19,6 +19,7 @@ import { Card, Cards } from "fumadocs-ui/components/card";
 import { File, Files, Folder } from "fumadocs-ui/components/files";
 import type { MDXComponents } from "mdx/types";
 import { type ComponentProps, createElement, isValidElement } from "react";
+import { ExampleCards } from "~/components/docs/example-cards";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/cn";
 
@@ -63,6 +64,7 @@ export function getMDXComponents(components: MDXComponents): MDXComponents {
 		AutoTypeTable,
 		TypeTable,
 		Cards,
+		ExampleCards,
 		Files,
 		Folder,
 		File,
