@@ -4,7 +4,7 @@
   <div align="center">
     <p align="center">
       Typesafe environment variables from the validator you already use.<br/>
-      No boilerplate. Zero dependencies.<br/>
+      No boilerplate. Zero runtime dependencies.<br/>
       <a href="https://nextjs.org/">Next.js</a>,
       <a href="https://nuxt.com/">Nuxt</a>,
       <a href="https://vite.dev/">Vite</a>,
