@@ -1,0 +1,120 @@
+{
+	"name": "@arkenv/rsbuild-plugin",
+	"version": "1.0.0-alpha.0",
+	"author": "Yam Borodetsky <yam@yam.codes>",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/yamcodes/arkenv.git"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"dependencies": {
+		"@arkenv/build": "workspace:*",
+		"jiti": "catalog:"
+	},
+	"devDependencies": {
+		"@arkenv/core": "workspace:*",
+		"@arkenv/standard": "workspace:*",
+		"@repo/log": "workspace:*",
+		"@repo/scope": "workspace:*",
+		"@repo/types": "workspace:*",
+		"@repo/utils": "workspace:*",
+		"@rsbuild/core": "2.2.3",
+		"@size-limit/preset-small-lib": "catalog:",
+		"arktype": "catalog:",
+		"rimraf": "catalog:",
+		"size-limit": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
+	},
+	"peerDependencies": {
+		"@arkenv/core": "^1.0.0",
+		"@arkenv/standard": "^1.0.0",
+		"@rsbuild/core": "^1.0.0 || ^2.0.0",
+		"arktype": "^2.1.22"
+	},
+	"peerDependenciesMeta": {
+		"@arkenv/core": {
+			"optional": true
+		},
+		"@arkenv/standard": {
+			"optional": true
+		},
+		"arktype": {
+			"optional": true
+		}
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"default": "./dist/index.js"
+		},
+		"./standard": {
+			"types": "./dist/standard.d.ts",
+			"import": "./dist/standard.js",
+			"default": "./dist/standard.js"
+		}
+	},
+	"bugs": "https://github.com/yamcodes/arkenv/labels/%40arkenv%2Frsbuild-plugin",
+	"description": "ArkEnv plugin for Rsbuild",
+	"files": [
+		"dist"
+	],
+	"homepage": "https://arkenv.js.org",
+	"keywords": [
+		"arkenv",
+		"arktype",
+		"env",
+		"environment-variables",
+		"dotenv",
+		"config",
+		"validation",
+		"typesafe",
+		"standard-schema",
+		"rsbuild",
+		"plugin",
+		"rsbuild-plugin"
+	],
+	"license": "MIT",
+	"compatiblePackages": {
+		"schemaVersion": 1,
+		"vite": {
+			"type": "incompatible",
+			"reason": "Uses Rsbuild-specific APIs"
+		},
+		"rollup": {
+			"type": "incompatible",
+			"reason": "Uses Rsbuild-specific APIs"
+		},
+		"rolldown": {
+			"type": "incompatible",
+			"reason": "Uses Rsbuild-specific APIs"
+		}
+	},
+	"scripts": {
+		"build": "tsdown",
+		"typecheck": "tsc --noEmit",
+		"clean": "rimraf dist node_modules",
+		"test": "vitest",
+		"fix": "pnpm -w run fix",
+		"changeset": "pnpm -w run changeset",
+		"size": "size-limit --json > .size-limit.json"
+	},
+	"type": "module",
+	"types": "./dist/index.d.ts",
+	"size-limit": [
+		{
+			"path": "dist/index.js",
+			"limit": "8 kB",
+			"import": "*",
+			"ignore": [
+				"@rsbuild/core",
+				"arktype",
+				"jiti",
+				"@arkenv/build"
+			]
+		}
+	]
+}
