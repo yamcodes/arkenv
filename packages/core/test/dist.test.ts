@@ -197,12 +197,26 @@ describe("Distribution Built Outputs", () => {
 			expect(result.success).toBe(true);
 		});
 
-		it("keeps schema-capture helpers and safeExecute out of the default chunk", () => {
+		it("does not re-export schema-capture helpers or safeExecute from the default entry", () => {
 			const source = readFileSync(join(__dirname, "../dist/index.js"), "utf8");
 			expect(source).not.toContain("isCapturingSchema");
 			expect(source).not.toContain("recordSchemaCapture");
 			expect(source).not.toContain("beginSchemaCapture");
 			expect(source).not.toContain("safeExecute");
+		});
+
+		it("exports arkenv from @arkenv/standard/safe as default and named", async () => {
+			const safe = await import("../../standard/dist/safe.js");
+			expect(typeof safe.arkenv).toBe("function");
+			expect(safe.default).toBe(safe.arkenv);
+			const mock = {
+				"~standard": {
+					version: 1 as const,
+					validate: (value: unknown) => ({ value }),
+				},
+			};
+			const result = safe.arkenv({ PORT: mock }, { env: { PORT: "3000" } });
+			expect(result.success).toBe(true);
 		});
 	});
 });

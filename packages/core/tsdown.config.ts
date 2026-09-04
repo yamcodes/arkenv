@@ -7,7 +7,6 @@ export default defineConfig({
 	minify: false,
 	fixedExtension: false,
 	sourcemap: false,
-	splitting: false,
 	deps: {
 		alwaysBundle: ["@repo/scope", "@repo/types", "@repo/utils"],
 		neverBundle: ["arktype", "@ark/util", "@ark/schema", "arkregex"],
