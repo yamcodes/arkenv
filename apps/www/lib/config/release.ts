@@ -115,10 +115,11 @@ export function getAgentPrompt(
 	const command = getInitCommand("npm", tag, "init --agent");
 	return [
 		`Set up ArkEnv with \`${command}\`.`,
-		`Use docs only at ${docsUrl}.`,
-		"If the ArkEnv skill is missing, install it with `npx skills add yamcodes/arkenv`.",
-		'Prefer `@arkenv/core` / `@arkenv/standard` over legacy `import from "arkenv"`.',
-		"Install any missing dependencies, wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.",
+		`Start from ${docsUrl}/llms.txt and fetch any linked pages as markdown (append \`.md\`).`,
+		"Consider installing the ArkEnv skill (`npx skills add yamcodes/arkenv`) for deeper framework-specific context.",
+		"Install the runtime validation engine (`@arkenv/core` or `@arkenv/standard`) as a dependency, and the `arkenv` CLI as a devDependency.",
+		`Use the same package manager context as \`${command}\` for all installations.`,
+		"Wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.",
 	].join(" ");
 }
 
