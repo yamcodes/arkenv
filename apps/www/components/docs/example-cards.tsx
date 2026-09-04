@@ -1,5 +1,6 @@
 import { Card, Cards } from "fumadocs-ui/components/card";
 import { getGithubRepoUrl } from "~/lib/github-links";
+import { breakDownGithubUrl } from "~/lib/utils/github";
 import registry from "../../../../examples/registry.json";
 
 type Example = {
@@ -12,11 +13,8 @@ type Example = {
 const examples = (registry as { examples: Example[] }).examples;
 
 function exampleTreeUrl(id: string): string {
-	const ref =
-		process.env.VERCEL_GIT_COMMIT_REF ??
-		process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF ??
-		"main";
-	return `${getGithubRepoUrl()}/tree/${encodeURIComponent(ref)}/examples/${id}`;
+	const { defaultBranch } = breakDownGithubUrl();
+	return `${getGithubRepoUrl()}/tree/${encodeURIComponent(defaultBranch)}/examples/${id}`;
 }
 
 /**
