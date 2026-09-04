@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/yamcodes/arkenv/blob/v1/apps/www/public/assets/icon.svg"><img alt="ArkEnv Logo" src="https://raw.githubusercontent.com/yamcodes/arkenv/v1/apps/www/public/assets/icon.svg" width="160px" align="center"/></a>
+  <a href="https://github.com/yamcodes/arkenv/blob/v1/apps/www/public/assets/icon-v1.svg"><img alt="ArkEnv Logo" src="https://arkenv.js.org/assets/icon-v1.svg" width="160px" align="center"/></a>
   <h1 align="center">ArkEnv</h1>
   <div align="center">
     <p align="center">
