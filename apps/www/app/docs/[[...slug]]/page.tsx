@@ -20,9 +20,7 @@ import { getLinkTitleAndHref } from "~/lib/utils";
 import { getMDXComponents } from "~/mdx-components";
 
 function getDocsEditHref(pagePath: string): string {
-	const basePath = (
-		env.NEXT_PUBLIC_DOCS_CONTENT_PATH || "apps/www/content/docs/"
-	).replace(/\/$/, "");
+	const basePath = env.NEXT_PUBLIC_DOCS_CONTENT_PATH.replace(/\/$/, "");
 	const normalizedPath = pagePath.replace(/^\/+/, "");
 	return getLinkTitleAndHref(`${basePath}/${normalizedPath}`).href;
 }

@@ -13,10 +13,7 @@ type StarUsProps = {
 
 export function StarUsButton({ className }: StarUsProps) {
 	const starCount = useGithubStarCount();
-
-	const githubUrl =
-		env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/yamcodes/arkenv";
-	const { owner, repo } = breakDownGithubUrl(githubUrl);
+	const { owner, repo } = breakDownGithubUrl(env.NEXT_PUBLIC_GITHUB_URL);
 
 	return (
 		<a

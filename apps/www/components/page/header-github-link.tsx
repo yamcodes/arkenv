@@ -18,10 +18,7 @@ export function HeaderGithubLink({
 	iconClassName?: string;
 }) {
 	const starCount = useGithubStarCount();
-
-	const githubUrl =
-		env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/yamcodes/arkenv";
-	const { owner, repo } = breakDownGithubUrl(githubUrl);
+	const { owner, repo } = breakDownGithubUrl(env.NEXT_PUBLIC_GITHUB_URL);
 
 	const label =
 		starCount !== null

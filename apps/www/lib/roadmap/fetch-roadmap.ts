@@ -49,9 +49,7 @@ function githubHeaders(): HeadersInit {
 }
 
 function repoCoords(): { owner: string; repo: string } {
-	const githubUrl =
-		env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/yamcodes/arkenv";
-	return breakDownGithubUrl(githubUrl);
+	return breakDownGithubUrl(env.NEXT_PUBLIC_GITHUB_URL);
 }
 
 function labelNames(issue: GitHubIssue): string[] {

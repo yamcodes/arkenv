@@ -17,8 +17,7 @@ export const revalidate = 300; // Revalidate every 5 minutes
 
 export async function GET(_request: NextRequest) {
 	try {
-		const githubUrl =
-			env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/yamcodes/arkenv";
+		const githubUrl = env.NEXT_PUBLIC_GITHUB_URL;
 		const { owner, repo } = breakDownGithubUrl(githubUrl);
 
 		const headers: HeadersInit = {
