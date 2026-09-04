@@ -34,6 +34,10 @@ describe("CheckUseCase", () => {
 					__dirname,
 					"../../../../core/src/index.ts",
 				),
+				"@arkenv/core/issues": path.resolve(
+					__dirname,
+					"../../../../core/src/issues.ts",
+				),
 				arkenv: path.resolve(__dirname, "../../../../core/src/index.ts"),
 			},
 		});

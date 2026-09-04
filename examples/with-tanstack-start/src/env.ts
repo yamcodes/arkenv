@@ -5,7 +5,7 @@ import arkenv from "@arkenv/core";
  */
 export const env = arkenv({
 	DATABASE_URL: "string = 'postgres://localhost:5432/tanstackstart'",
-	VITE_APP_NAME: "string = 'ArkEnv + TanStack Start'",
-	VITE_APP_RELEASE: "string = 'local'",
+	PORT: "number.port = 3000",
+	VITE_API_URL: "string = 'https://api.example.com'",
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });

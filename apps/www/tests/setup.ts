@@ -4,6 +4,9 @@ import { afterEach, expect, vi } from "vitest";
 
 expect.extend(matchers);
 
+// Configure ArkEnv to recognize Node/Vitest test environment as server
+(globalThis as any).__arkenv_force_server__ = true;
+
 // Mock ResizeObserver (Radix / layout observers)
 class ResizeObserverMock {
 	observe() {

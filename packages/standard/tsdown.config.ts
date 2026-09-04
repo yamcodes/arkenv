@@ -1,7 +1,7 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-	entry: ["src/index.ts", "src/valibot.ts", "src/zod-mini.ts"],
+	entry: ["src/index.ts", "src/safe.ts", "src/valibot.ts", "src/zod-mini.ts"],
 	format: ["esm"],
 	minify: true,
 	fixedExtension: false,

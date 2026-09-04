@@ -32,6 +32,5 @@ export function validateSchema(
 	const coreArkenv = resolveCoreArkenv(engine);
 	coreArkenv(schema, {
 		env: (typeof process !== "undefined" ? process.env : {}) as Dict<string>,
-		safe: false,
 	});
 }

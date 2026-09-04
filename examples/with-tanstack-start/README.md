@@ -14,19 +14,25 @@ import arkenv from "@arkenv/core";
 
 export const env = arkenv({
   DATABASE_URL: "string = 'postgres://localhost:5432/tanstackstart'",
-  VITE_APP_NAME: "string = 'ArkEnv + TanStack Start'",
-  VITE_APP_RELEASE: "string = 'local'",
+  PORT: "number.port = 3000",
+  VITE_API_URL: "string = 'https://api.example.com'",
   NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
 ```
 
 ```ts title="vite.config.ts"
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import viteReact from "@vitejs/plugin-react";
 import arkenvVitePlugin from "@arkenv/vite-plugin";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  plugins: [tanstackStart({ srcDirectory: "src" }), arkenvVitePlugin()],
+  plugins: [
+    tanstackStart({ srcDirectory: "src" }),
+    // React's Vite plugin must come after Start's plugin
+    viteReact(),
+    arkenvVitePlugin(),
+  ],
 });
 ```
 
@@ -40,7 +46,7 @@ const readDatabaseUrl = createServerFn({ method: "GET" }).handler(() => {
   return env.DATABASE_URL; // server-only: real value, validated at boot
 });
 
-env.VITE_APP_NAME; // string (inlined on the client)
+env.VITE_API_URL; // string (inlined on the client)
 env.DATABASE_URL; // throws in the browser; works in SSR and server functions
 ```
 

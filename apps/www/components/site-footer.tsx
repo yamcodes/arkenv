@@ -1,6 +1,6 @@
 import { DiscordListItem } from "~/components/discord-list-item";
 import { Logo } from "~/components/page/logo";
-import { getGithubRepoUrl } from "~/lib/github-links";
+import { env } from "~/env";
 
 /**
  * Shared site footer used on the home page and docs.
@@ -22,7 +22,7 @@ export function SiteFooter({
 	 */
 	rails?: boolean;
 }) {
-	const githubRepoUrl = getGithubRepoUrl();
+	const githubRepoUrl = env.NEXT_PUBLIC_GITHUB_URL;
 
 	const footer = (
 		<footer

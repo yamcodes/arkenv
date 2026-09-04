@@ -9,6 +9,7 @@ const testAliases = {
 	"@arkenv/nextjs/config": path.join(nextjsSrc, "config/index.ts"),
 	"@arkenv/nextjs": path.join(nextjsSrc, "index.ts"),
 	"@arkenv/core": path.join(nextjsSrc, "../../core/src/index.ts"),
+	"@arkenv/core/issues": path.join(nextjsSrc, "../../core/src/issues.ts"),
 	"@repo/scope": path.join(nextjsSrc, "../../internal/scope/src/index.ts"),
 	"@repo/types": path.join(nextjsSrc, "../../internal/types/src/index.ts"),
 };

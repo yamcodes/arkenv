@@ -1,4 +1,5 @@
 import path from "node:path";
+import { withArkEnv } from "@arkenv/nextjs/config";
 import { type SentryBuildOptions, withSentryConfig } from "@sentry/nextjs";
 import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
@@ -540,4 +541,4 @@ const sentryConfig = {
 	},
 } as const satisfies SentryBuildOptions;
 
-export default withSentryConfig(createMDX()(config), sentryConfig);
+export default withArkEnv(withSentryConfig(createMDX()(config), sentryConfig));
