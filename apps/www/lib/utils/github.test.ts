@@ -27,8 +27,9 @@ describe("github utilities", () => {
 			});
 		});
 
-		it("should use environment variable when no URL provided", () => {
+		it("should use environment variable when no URL provided", async () => {
 			vi.stubEnv("NEXT_PUBLIC_GITHUB_URL", "https://github.com/example/repo");
+			const { breakDownGithubUrl } = await import("./github");
 
 			const result = breakDownGithubUrl();
 
@@ -39,12 +40,13 @@ describe("github utilities", () => {
 			});
 		});
 
-		it("should use custom branch from environment variable", () => {
+		it("should use custom branch from environment variable", async () => {
 			vi.stubEnv(
 				"NEXT_PUBLIC_GITHUB_URL",
 				"https://github.com/yamcodes/arkenv",
 			);
 			vi.stubEnv("NEXT_PUBLIC_GITHUB_BRANCH", "develop");
+			const { breakDownGithubUrl } = await import("./github");
 
 			const result = breakDownGithubUrl();
 
@@ -55,8 +57,9 @@ describe("github utilities", () => {
 			});
 		});
 
-		it("should use Vercel deploy branch when no manual branch override", () => {
+		it("should use Vercel deploy branch when no manual branch override", async () => {
 			vi.stubEnv("VERCEL_GIT_COMMIT_REF", "v1");
+			const { breakDownGithubUrl } = await import("./github");
 
 			const result = breakDownGithubUrl("https://github.com/yamcodes/arkenv");
 
@@ -67,9 +70,10 @@ describe("github utilities", () => {
 			});
 		});
 
-		it("should prefer NEXT_PUBLIC_GITHUB_BRANCH over Vercel deploy branch", () => {
+		it("should prefer NEXT_PUBLIC_GITHUB_BRANCH over Vercel deploy branch", async () => {
 			vi.stubEnv("NEXT_PUBLIC_GITHUB_BRANCH", "dev");
 			vi.stubEnv("VERCEL_GIT_COMMIT_REF", "simplify-docs");
+			const { breakDownGithubUrl } = await import("./github");
 
 			const result = breakDownGithubUrl("https://github.com/yamcodes/arkenv");
 
@@ -80,9 +84,10 @@ describe("github utilities", () => {
 			});
 		});
 
-		it("should ignore blank NEXT_PUBLIC_GITHUB_BRANCH and use Vercel deploy branch", () => {
+		it("should ignore blank NEXT_PUBLIC_GITHUB_BRANCH and use Vercel deploy branch", async () => {
 			vi.stubEnv("NEXT_PUBLIC_GITHUB_BRANCH", "");
 			vi.stubEnv("VERCEL_GIT_COMMIT_REF", "simplify-docs");
+			const { breakDownGithubUrl } = await import("./github");
 
 			const result = breakDownGithubUrl("https://github.com/yamcodes/arkenv");
 
@@ -181,8 +186,9 @@ describe("github utilities", () => {
 			});
 		});
 
-		it("should use environment variable when no URL provided", () => {
+		it("should use environment variable when no URL provided", async () => {
 			vi.stubEnv("NEXT_PUBLIC_GITHUB_URL", "https://github.com/example/repo");
+			const { getLinkTitleAndHref } = await import("./github");
 
 			const result = getLinkTitleAndHref("test.md");
 
@@ -192,12 +198,13 @@ describe("github utilities", () => {
 			});
 		});
 
-		it("should use custom branch from environment variable", () => {
+		it("should use custom branch from environment variable", async () => {
 			vi.stubEnv(
 				"NEXT_PUBLIC_GITHUB_URL",
 				"https://github.com/yamcodes/arkenv",
 			);
 			vi.stubEnv("NEXT_PUBLIC_GITHUB_BRANCH", "develop");
+			const { getLinkTitleAndHref } = await import("./github");
 
 			const result = getLinkTitleAndHref("package.json");
 

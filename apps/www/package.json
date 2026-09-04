@@ -13,6 +13,7 @@
 		"clear-cache": "rimraf .next .source",
 		"test": "vitest",
 		"fix": "pnpm -w run fix",
+		"pretypecheck": "node -e 'try { require(\"@arkenv/nextjs/config\").setupArkEnv({ schemaPath: \"./env.ts\" }) } catch {}'",
 		"typecheck": "tsc --noEmit",
 		"twoslash": "tsx bin/twoslash-mdx.ts"
 	},
