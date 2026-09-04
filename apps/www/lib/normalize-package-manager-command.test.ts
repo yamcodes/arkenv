@@ -4,20 +4,20 @@ import { normalizePackageManagerCommand } from "./normalize-package-manager-comm
 describe("normalizePackageManagerCommand", () => {
 	it("expands npm i to npm install", () => {
 		expect(normalizePackageManagerCommand("npm i @arkenv/core")).toBe(
-			"npm install @arkenv/core",
+			"npm install @arkenv/core@alpha",
 		);
 		expect(normalizePackageManagerCommand("npm i -D @arkenv/vite-plugin")).toBe(
-			"npm install -D @arkenv/vite-plugin",
+			"npm install -D @arkenv/vite-plugin@alpha",
 		);
 	});
 
 	it("rewrites bun add to bun install", () => {
 		expect(normalizePackageManagerCommand("bun add @arkenv/core")).toBe(
-			"bun install @arkenv/core",
+			"bun install @arkenv/core@alpha",
 		);
 		expect(
 			normalizePackageManagerCommand("bun add -D @arkenv/vite-plugin"),
-		).toBe("bun install -D @arkenv/vite-plugin");
+		).toBe("bun install -D @arkenv/vite-plugin@alpha");
 	});
 
 	it("rewrites bun x to bunx", () => {
@@ -28,10 +28,10 @@ describe("normalizePackageManagerCommand", () => {
 
 	it("leaves pnpm add and yarn add alone", () => {
 		expect(normalizePackageManagerCommand("pnpm add @arkenv/core")).toBe(
-			"pnpm add @arkenv/core",
+			"pnpm add @arkenv/core@alpha",
 		);
 		expect(normalizePackageManagerCommand("yarn add @arkenv/core")).toBe(
-			"yarn add @arkenv/core",
+			"yarn add @arkenv/core@alpha",
 		);
 	});
 
@@ -132,4 +132,21 @@ describe("normalizePackageManagerCommand", () => {
 		// GA mode (empty tag)
 		expect(normalizePackageManagerCommand(prompt, "")).toBe(prompt);
 	});
+
+	it("tags bare scoped packages on install lines", () => {
+		expect(normalizePackageManagerCommand("npm install @arkenv/core")).toBe(
+			"npm install @arkenv/core@alpha",
+		);
+	});
+
+	it("does not double-tag already-tagged scoped packages", () => {
+		expect(normalizePackageManagerCommand("npm install @arkenv/core@alpha")).toBe("npm install @arkenv/core@alpha");
+		expect(normalizePackageManagerCommand("npm install @arkenv/core@latest")).toBe("npm install @arkenv/core@latest");
+	});
+
+	it("strips scoped tags on install lines in GA mode", () => {
+		expect(normalizePackageManagerCommand("npm install @arkenv/core@alpha", "")).toBe("npm install @arkenv/core");
+		expect(normalizePackageManagerCommand("npm install @arkenv/core", "")).toBe("npm install @arkenv/core");
+	});
+
 });
