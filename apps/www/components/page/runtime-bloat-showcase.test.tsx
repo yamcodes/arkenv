@@ -1,13 +1,23 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { RuntimeBloatShowcase } from "./runtime-bloat-showcase";
 
 const HOST_MESSAGE = 'must be a string or "localhost" (was missing)';
 const PORT_MESSAGE = "must be a number (was a string)";
 
+const useIsMobile = vi.fn(() => false);
+
+vi.mock("~/hooks/use-is-mobile", () => ({
+	useIsMobile: () => useIsMobile(),
+}));
+
 describe("RuntimeBloatShowcase", () => {
-	it("renders structured issues JSON instead of the edge bundle chart", () => {
+	beforeEach(() => {
+		useIsMobile.mockReturnValue(false);
+	});
+
+	it("renders compact JSON with hover … triggers on desktop", () => {
 		render(<RuntimeBloatShowcase />);
 
 		expect(
@@ -25,6 +35,7 @@ describe("RuntimeBloatShowcase", () => {
 		expect(screen.getByText("json")).toBeInTheDocument();
 
 		const figure = screen.getByRole("figure");
+		expect(figure).toHaveAttribute("data-layout", "compact");
 		expect(figure).toHaveTextContent('"success": false');
 		expect(figure).toHaveTextContent('"issues"');
 		expect(figure).toHaveTextContent("MISSING_VARIABLE");
@@ -33,8 +44,8 @@ describe("RuntimeBloatShowcase", () => {
 		expect(figure).toHaveTextContent('"path": "PORT"');
 		expect(figure).toHaveTextContent('"message"');
 		expect(figure).toHaveTextContent("…");
-		// stacked fields: each key on its own line in the source string
-		expect(figure).toHaveTextContent(/\{\s*"path": "HOST"/);
+		// compact: issue object stays on one visual line (path after brace+space)
+		expect(figure).toHaveTextContent('{ "path": "HOST"');
 		expect(figure).not.toHaveTextContent(HOST_MESSAGE);
 		expect(figure).not.toHaveTextContent(PORT_MESSAGE);
 		expect(figure).not.toHaveTextContent("received");
@@ -65,7 +76,17 @@ describe("RuntimeBloatShowcase", () => {
 		).not.toBeInTheDocument();
 	});
 
-	it("opens the full issue message on tap/click of …", async () => {
+	it("renders stacked JSON on mobile", () => {
+		useIsMobile.mockReturnValue(true);
+		render(<RuntimeBloatShowcase />);
+
+		const figure = screen.getByRole("figure");
+		expect(figure).toHaveAttribute("data-layout", "stacked");
+		expect(figure).toHaveTextContent(/\{\s*"path": "HOST"/);
+	});
+
+	it("opens the full issue message on tap of … on mobile", async () => {
+		useIsMobile.mockReturnValue(true);
 		const user = userEvent.setup();
 		render(<RuntimeBloatShowcase />);
 
@@ -73,5 +94,15 @@ describe("RuntimeBloatShowcase", () => {
 			screen.getByRole("button", { name: `Full message: ${HOST_MESSAGE}` }),
 		);
 		expect(await screen.findByText(HOST_MESSAGE)).toBeInTheDocument();
+	});
+
+	it("shows the full issue message on hover of … on desktop", async () => {
+		const user = userEvent.setup();
+		render(<RuntimeBloatShowcase />);
+
+		await user.hover(
+			screen.getByRole("button", { name: `Full message: ${HOST_MESSAGE}` }),
+		);
+		expect(await screen.findByRole("tooltip")).toHaveTextContent(HOST_MESSAGE);
 	});
 });

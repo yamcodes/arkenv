@@ -2962,6 +2962,12 @@
 	border-radius: 2px;
 }
 
+@media (hover: hover) and (pointer: fine) {
+	.home-aurora__json-ellipsis {
+		cursor: help;
+	}
+}
+
 .home-aurora__json-ellipsis:focus-visible {
 	outline: 2px solid color-mix(in oklch, var(--color-accent) 70%, transparent);
 	outline-offset: 2px;
