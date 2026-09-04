@@ -5,10 +5,17 @@
     <p align="center">
       Typesafe environment variables from the validator you already use.<br/>
       No boilerplate. Zero dependencies.<br/>
-      <a href="https://nextjs.org/">Next.js</a>, <a href="https://nuxt.com/">Nuxt</a>, <a href="https://nodejs.org/">Node.js</a>, <a href="https://vite.dev/">Vite</a>, and <a href="https://bun.com/">Bun</a>
+      <a href="https://nextjs.org/">Next.js</a>,
+      <a href="https://nuxt.com/">Nuxt</a>,
+      <a href="https://vite.dev/">Vite</a>,
+      <a href="https://tanstack.com/start">TanStack Start</a>,
+      <a href="https://start.solidjs.com/">SolidStart</a>,
+      <a href="https://nodejs.org/">Node.js</a>,
+      and <a href="https://bun.com/">Bun</a>
     </p>
     <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Av1"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/test.yml/badge.svg?branch=v1"></a>
-    <a href="https://bundlephobia.com/package/arkenv"><img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/arkenv"></a>
+    <a href="https://www.npmjs.com/package/@arkenv/core"><img alt="npm (alpha)" src="https://img.shields.io/npm/v/@arkenv/core/alpha?label=%40arkenv%2Fcore"></a>
+    <a href="https://bundlephobia.com/package/@arkenv/core"><img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/%40arkenv%2Fcore"></a>
     <a href="https://arktype.io/docs/ecosystem#arkenv"><img alt="ArkType Ecosystem" src="https://custom-icon-badges.demolab.com/badge/ArkType%20Ecosystem-0d1526?logo=arktype2&logoColor=e9eef9"></a>
     <a href="https://pullfrog.com"><img alt="Pullfrog" src="https://custom-icon-badges.demolab.com/badge/Powered%20by%20Pullfrog-2f4032?logo=pullfrog-white"></a>
   </div>
@@ -23,6 +30,8 @@
   <a href="https://arkenv-v1.vercel.app/docs">Docs</a>
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
   <a href="https://arkenv-v1.vercel.app/docs/getting-started">Get started</a>
+  <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
+  <a href="https://arkenv-v1.vercel.app/docs/frameworks">Frameworks</a>
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
   <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/v1/examples/stackblitz?file=index.ts">Try on StackBlitz</a>
   <br />
@@ -94,7 +103,7 @@ export const env = arkenv({
 <summary>npm</summary>
 
 ```sh
-npx arkenv init
+npx arkenv@alpha init
 ```
 
 </details>
@@ -103,7 +112,7 @@ npx arkenv init
 <summary>pnpm</summary>
 
 ```sh
-pnpm dlx arkenv init
+pnpm dlx arkenv@alpha init
 ```
 
 </details>
@@ -112,7 +121,7 @@ pnpm dlx arkenv init
 <summary>Yarn</summary>
 
 ```sh
-yarn dlx arkenv init
+yarn dlx arkenv@alpha init
 ```
 
 </details>
@@ -121,7 +130,7 @@ yarn dlx arkenv init
 <summary>Bun</summary>
 
 ```sh
-bunx arkenv init
+bunx arkenv@alpha init
 ```
 
 </details>
