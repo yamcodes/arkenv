@@ -147,13 +147,12 @@ export type ParseStandardConfig = {
 	emptyAsUndefined?: boolean;
 
 	/**
-	 * Whether to return a safe result object instead of throwing an error on validation failure.
-	 *
-	 * When enabled, the function returns an object with `{ success: true, data }` or `{ success: false, issues }`.
+	 * Reserved for call-site compat. Pass `false` or omit.
+	 * Use `arkenv` from `@arkenv/standard/safe` (or `@arkenv/core/safe`) instead of `{ safe: true }`.
 	 *
 	 * @default false
 	 */
-	safe?: boolean;
+	safe?: false;
 };
 
 /**

@@ -12,7 +12,6 @@ import {
 	parseStandard,
 	recordSchemaCapture,
 	type SafeArkEnvResult,
-	safeExecute,
 } from "@repo/utils";
 
 export {
@@ -25,8 +24,19 @@ export {
 
 /**
  * Configuration options for `arkenv` from `@arkenv/standard`.
+ *
+ * `safe` is reserved for call-site compat — pass `false` or omit. Use
+ * `arkenv` from `@arkenv/standard/safe` for a result object.
  */
-export type StandardEnvConfig = ParseStandardConfig;
+export type StandardEnvConfig = Omit<ParseStandardConfig, "safe"> & {
+	/**
+	 * Reserved for call-site compat. Pass `false` or omit.
+	 * Use `arkenv` from `@arkenv/standard/safe` instead of `{ safe: true }`.
+	 *
+	 * @default false
+	 */
+	safe?: false;
+};
 
 type StandardEnvOutput<T extends Record<string, StandardSchemaV1>> = {
 	[K in keyof T]: StandardSchemaV1.InferOutput<T[K]>;
@@ -40,8 +50,8 @@ type StandardEnvOutput<T extends Record<string, StandardSchemaV1>> = {
  *
  * @param def An object mapping variable names to Standard Schema validators
  * @param config Optional configuration
- * @returns The validated environment variables, a SafeArkEnvResult if `{ safe: true }` is configured, or a value-less stub when schema capture is active
- * @throws An {@link ArkEnvError} if validation fails and `safe` is not enabled
+ * @returns The validated environment variables, or a value-less stub when schema capture is active
+ * @throws An {@link ArkEnvError} if validation fails
  *
  * @example
  * ```ts
@@ -54,15 +64,10 @@ type StandardEnvOutput<T extends Record<string, StandardSchemaV1>> = {
  * });
  * ```
  */
-export function arkenv<
-	const T extends Record<string, StandardSchemaV1>,
-	const Safe extends boolean | undefined = undefined,
->(
+export function arkenv<const T extends Record<string, StandardSchemaV1>>(
 	def: T,
-	config?: Omit<StandardEnvConfig, "safe"> & { safe?: Safe },
-): [Safe] extends [true]
-	? SafeArkEnvResult<StandardEnvOutput<T>>
-	: StandardEnvOutput<T> {
+	config?: StandardEnvConfig,
+): StandardEnvOutput<T> {
 	const resolved = (config ?? {}) as StandardEnvConfig;
 	assertStandardSchemaMap(def);
 
@@ -76,28 +81,13 @@ export function arkenv<
 		recordSchemaCapture(def);
 		// Capture records the schema only. The returned object has no values, so
 		// schema modules must stay declarative and must not require env at module scope.
-		return {} as [Safe] extends [true]
-			? SafeArkEnvResult<StandardEnvOutput<T>>
-			: StandardEnvOutput<T>;
+		return {} as StandardEnvOutput<T>;
 	}
 
-	if (resolved.safe) {
-		return safeExecute(
-			() =>
-				parseStandard(
-					def as Record<string, unknown>,
-					resolved,
-				) as StandardEnvOutput<T>,
-		) as [Safe] extends [true]
-			? SafeArkEnvResult<StandardEnvOutput<T>>
-			: StandardEnvOutput<T>;
-	}
-
-	return parseStandard(def as Record<string, unknown>, resolved) as [
-		Safe,
-	] extends [true]
-		? SafeArkEnvResult<StandardEnvOutput<T>>
-		: StandardEnvOutput<T>;
+	return parseStandard(
+		def as Record<string, unknown>,
+		resolved,
+	) as StandardEnvOutput<T>;
 }
 
 export default arkenv;

@@ -177,7 +177,6 @@ export function arkenvInternal(
 
 					const validated = coreArkenv(ext as SchemaShape, {
 						env: combinedEnv as Dict<string>,
-						safe: false,
 					});
 					extendedEnvValues = { ...extendedEnvValues, ...validated };
 
@@ -275,7 +274,6 @@ export function arkenvInternal(
 	// Run core validation
 	const validated = coreArkenv(schema as SchemaShape, {
 		env: combinedEnv as Dict<string>,
-		safe: false,
 	});
 
 	const mergedValidated = { ...extendedEnvValues, ...validated };

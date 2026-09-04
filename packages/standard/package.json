@@ -12,6 +12,11 @@
 			"import": "./dist/index.js",
 			"default": "./dist/index.js"
 		},
+		"./safe": {
+			"types": "./dist/safe.d.ts",
+			"import": "./dist/safe.js",
+			"default": "./dist/safe.js"
+		},
 		"./valibot": {
 			"types": "./dist/valibot.d.ts",
 			"import": "./dist/valibot.js",

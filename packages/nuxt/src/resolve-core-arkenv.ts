@@ -3,7 +3,7 @@ import { createJiti } from "jiti";
 
 type CoreArkenv = (
 	schema: SchemaShape,
-	config?: { env?: Dict<string>; safe?: boolean },
+	config?: { env?: Dict<string>; safe?: false },
 ) => Record<string, unknown>;
 
 /**
