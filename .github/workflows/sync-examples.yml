@@ -5,6 +5,7 @@ on:
     paths:
       - "apps/playgrounds/**"
       - "examples/**"
+      - "pnpm-workspace.yaml"
       - "scripts/sync-examples.js"
       - "scripts/sync-lib/**"
   push:
@@ -12,6 +13,7 @@ on:
     paths:
       - "apps/playgrounds/**"
       - "examples/**"
+      - "pnpm-workspace.yaml"
       - "scripts/sync-examples.js"
       - "scripts/sync-lib/**"
   workflow_dispatch:
