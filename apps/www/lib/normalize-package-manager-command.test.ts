@@ -26,7 +26,7 @@ describe("normalizePackageManagerCommand", () => {
 		);
 	});
 
-	it("keeps pnpm/yarn add verbs and tags scoped packages", () => {
+	it("keeps pnpm add and yarn add canonical on install lines", () => {
 		expect(normalizePackageManagerCommand("pnpm add @arkenv/core")).toBe(
 			"pnpm add @arkenv/core@alpha",
 		);
