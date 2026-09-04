@@ -1,5 +1,75 @@
 # @arkenv/core
 
+## 1.0.0-alpha.10
+
+### Major Changes
+
+- #### Move issue helpers and safe parsing off the default import _[`#1767`](https://github.com/yamcodes/arkenv/pull/1767) [`fae7ca1`](https://github.com/yamcodes/arkenv/commit/fae7ca110e92aa0d74537ca8bb35667df8f186bf) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	The default `@arkenv/core` and `@arkenv/standard` imports are now the throw
+	path only. `formatIssues`, `getSchemaKeys`, and the `EnvIssue` types moved
+	to `@arkenv/core/issues` (core). `{ safe: true }` is no longer accepted on
+	either package's main `arkenv()`; import `arkenv` from `/safe` instead.
+	
+	```ts
+	import arkenv from "@arkenv/core";
+	import { formatIssues } from "@arkenv/core/issues";
+	import arkenvSafe from "@arkenv/core/safe";
+	
+	export const env = arkenv({
+	  PORT: "number.port = 3000",
+	});
+	
+	const result = arkenvSafe(
+	  { PORT: "number.port" },
+	  { env: { PORT: "invalid" } },
+	);
+	
+	if (!result.success) {
+	  console.error(formatIssues(result.issues));
+	}
+	```
+	
+	`@arkenv/standard` mirrors the same shape:
+	
+	```ts
+	import arkenv from "@arkenv/standard";
+	import arkenvSafe from "@arkenv/standard/safe";
+	```
+	
+	`@arkenv/core` now sets `"sideEffects": false` so bundlers can tree-shake
+	unused subpaths. Framework packages (Next.js, Nuxt, Vite, Bun) do **not**
+	ship a `/safe` subpath.
+	
+	**BREAKING CHANGE**: Issue helpers moved to `@arkenv/core/issues`.
+	`{ safe: true }` on `arkenv()` is replaced by `arkenv` from
+	`@arkenv/core/safe` / `@arkenv/standard/safe`.
+	
+	```diff
+	- import arkenv, { formatIssues } from "@arkenv/core";
+	- const result = arkenv(schema, { safe: true });
+	+ import arkenv from "@arkenv/core";
+	+ import { formatIssues } from "@arkenv/core/issues";
+	+ import arkenvSafe from "@arkenv/core/safe";
+	+ const result = arkenvSafe(schema);
+	```
+	
+	```diff
+	- import arkenv from "@arkenv/standard";
+	- const result = arkenv(schema, { safe: true });
+	+ import arkenv from "@arkenv/standard/safe";
+	+ const result = arkenv(schema);
+	```
+- #### Migrate all packages to pure ESM-only output _[`#1754`](https://github.com/yamcodes/arkenv/pull/1754) [`e29b46c`](https://github.com/yamcodes/arkenv/commit/e29b46c98f733980f55e1fff727c01ac0abee7df) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Every package now ships standard `.js` and `.d.ts` files under `"type": "module"`. The dual-published `.mjs`, `.cjs`, `.d.mts`, and `.d.cts` artifacts have been removed, and package `exports` no longer carry `require` conditions.
+	
+	CommonJS consumers keep working through Node's native `require(esm)`, which resolves each package through its `"default"` export condition. Bundlers (esbuild, Vite, Rollup, webpack) continue to transpile and inline the ESM output cleanly.
+	
+	**BREAKING CHANGE**: ArkEnv packages no longer ship `.cjs` builds. `require()` now returns the ESM namespace (for example, `require("@arkenv/core").default` is the `arkenv` function) and requires Node.js 20.19+, 22.12+, or 24. Projects that load ArkEnv from CommonJS on older Node versions need to upgrade Node or move to `import` syntax.
+
 ## 1.0.0-alpha.9
 
 ### Patch Changes
