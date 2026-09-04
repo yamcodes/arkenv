@@ -95,6 +95,12 @@ Install `@vitejs/plugin-react` if it is not already a dependency. If you
 aren't using ArkType, import the ArkEnv plugin from
 `@arkenv/vite-plugin/standard`.
 
+:::warning[React Refresh plugin required for client hydration]
+TanStack Start React dev mode requires the React Refresh runtime (`/@react-refresh`). You must include `@vitejs/plugin-react` (or `@vitejs/plugin-react-swc`) in your Vite `plugins` array and place it **after** `tanstackStart()`.
+
+If the React plugin is missing, Vite fails to load the client entry (`/@react-refresh could not be resolved`). The page will still render via SSR, but client-side hydration fails, leaving interactive handlers (like `onClick` listeners) unattached.
+:::
+
 ### Define your schema
 
 Create an `env.ts` file in your source tree. Keys your client bundle reads must

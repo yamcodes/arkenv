@@ -100,6 +100,10 @@
 			"name": "🛝 solid-start"
 		},
 		{
+			"path": "apps/playgrounds/tanstack-start",
+			"name": "🛝 tanstack-start"
+		},
+		{
 			"path": "apps/playgrounds/bun-react",
 			"name": "🛝 bun-react"
 		},
@@ -162,6 +166,10 @@
 		{
 			"path": "examples/with-solid-start",
 			"name": "💡 with-solid-start"
+		},
+		{
+			"path": "examples/with-tanstack-start",
+			"name": "💡 with-tanstack-start"
 		},
 		{
 			"path": "examples/with-zod",
