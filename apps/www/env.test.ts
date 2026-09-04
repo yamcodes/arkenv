@@ -93,9 +93,14 @@ MIIEowIBAAKCAQEA0m4w...
 		const normalize = (key: string) =>
 			key.includes("\\n") ? key.replace(/\\n/g, "\n") : key;
 
-		expect(normalize(rawPem)).toContain("\n");
-		expect(normalize(escapedPem)).toEqual(rawPem);
-		expect(normalize(escapedPem)).not.toContain("\\n");
+		// Assert on arkenv parsing results directly
+		expect(parsedMultiline.GITHUB_APP_PRIVATE_KEY).toBe(rawPem);
+		expect(parsedEscaped.GITHUB_APP_PRIVATE_KEY).toBe(escapedPem);
+		expect(normalize(parsedMultiline.GITHUB_APP_PRIVATE_KEY)).toContain("\n");
+		expect(normalize(parsedEscaped.GITHUB_APP_PRIVATE_KEY)).toEqual(rawPem);
+		expect(normalize(parsedEscaped.GITHUB_APP_PRIVATE_KEY)).not.toContain(
+			"\\n",
+		);
 	});
 
 	it("fails fast with ArkEnvError when schema validation encounters invalid values", () => {
@@ -111,7 +116,7 @@ MIIEowIBAAKCAQEA0m4w...
 					},
 				},
 			);
-		}).toThrow();
+		}).toThrow(ArkEnvError);
 	});
 
 	it("fails fast when a numeric sample rate is malformed", () => {
@@ -126,7 +131,7 @@ MIIEowIBAAKCAQEA0m4w...
 					},
 				},
 			);
-		}).toThrow();
+		}).toThrow(ArkEnvError);
 	});
 
 	it("strips trailing slashes from NEXT_PUBLIC_DOCS_CONTENT_PATH using ArkType pipe", () => {
