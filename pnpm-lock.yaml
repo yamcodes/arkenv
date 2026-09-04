@@ -834,8 +834,8 @@ importers:
   packages/build:
     dependencies:
       chokidar:
-        specifier: ^4.0.3
-        version: 4.0.3
+        specifier: ^5.0.0
+        version: 5.0.0
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -1015,8 +1015,8 @@ importers:
         specifier: workspace:*
         version: link:../arkenv
       chokidar:
-        specifier: ^4.0.3
-        version: 4.0.3
+        specifier: ^5.0.0
+        version: 5.0.0
       jiti:
         specifier: 'catalog:'
         version: 2.7.0
