@@ -334,7 +334,8 @@ export function DeclarativeShowcase() {
 						{/* Center Schema Gate */}
 						<div className="home-aurora__payload-gate">
 							<code className="home-aurora__payload-schema">
-								&quot;&apos;debug&apos; | &apos;info&apos; | &apos;warn&apos; | &apos;error&apos;&quot;
+								&quot;&apos;debug&apos; | &apos;info&apos; | &apos;warn&apos; |
+								&apos;error&apos;&quot;
 							</code>
 						</div>
 
@@ -372,7 +373,8 @@ export function DeclarativeShowcase() {
 						{/* Right destination dock */}
 						<div className="home-aurora__payload-col home-aurora__payload-col--right">
 							<code className="home-aurora__payload-dock">
-								&quot;debug&quot; | &quot;info&quot; | &quot;warn&quot; | &quot;error&quot;
+								&quot;debug&quot; | &quot;info&quot; | &quot;warn&quot; |
+								&quot;error&quot;
 							</code>
 						</div>
 					</div>

@@ -34,16 +34,12 @@ describe("DeclarativeShowcase", () => {
 		// Schema Gates
 		expect(figure).toHaveTextContent('"number"');
 		expect(figure).toHaveTextContent('"boolean"');
-		expect(figure).toHaveTextContent(
-			"\"'debug' | 'info' | 'warn' | 'error'\"",
-		);
+		expect(figure).toHaveTextContent("\"'debug' | 'info' | 'warn' | 'error'\"");
 
 		// Destination Type Definitions
 		expect(figure).toHaveTextContent("number");
 		expect(figure).toHaveTextContent("boolean");
-		expect(figure).toHaveTextContent(
-			'"debug" | "info" | "warn" | "error"',
-		);
+		expect(figure).toHaveTextContent('"debug" | "info" | "warn" | "error"');
 	});
 
 	it("renders mobile direct single-wire elements and carrier tokens in the markup", () => {
