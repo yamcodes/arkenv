@@ -2899,11 +2899,6 @@
 	border-bottom: 1px dotted color-mix(in oklch, var(--color-ink-2) 55%, transparent);
 }
 
-.home-aurora__json-ellipsis:focus-visible {
-	outline: 2px solid var(--color-accent);
-	outline-offset: 2px;
-}
-
 .home-aurora__json {
 	position: relative;
 }

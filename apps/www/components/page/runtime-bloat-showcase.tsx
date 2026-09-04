@@ -1,17 +1,9 @@
 const HOST_MESSAGE = 'must be a string or "localhost" (was missing)';
 const PORT_MESSAGE = "must be a number (was a string)";
 
-const PROOF_JSON = `{
-  "success": false,
-  "issues": [
-    { "path": "HOST", "code": "MISSING_VARIABLE", "message": "${HOST_MESSAGE}" },
-    { "path": "PORT", "code": "INVALID_TYPE", "message": "${PORT_MESSAGE}" }
-  ]
-}`;
-
 function EllipsisMessage({ message }: { message: string }) {
 	return (
-		<span className="home-aurora__json-ellipsis" title={message} tabIndex={0}>
+		<span className="home-aurora__json-ellipsis" title={message}>
 			…
 		</span>
 	);

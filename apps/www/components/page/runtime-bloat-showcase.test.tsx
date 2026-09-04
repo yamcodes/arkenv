@@ -43,7 +43,9 @@ describe("RuntimeBloatShowcase", () => {
 
 		expect(screen.getByTitle(HOST_MESSAGE)).toBeInTheDocument();
 		expect(screen.getByTitle(PORT_MESSAGE)).toBeInTheDocument();
-		expect(screen.queryByRole("button", { name: "Copy" })).not.toBeInTheDocument();
+		expect(
+			screen.queryByRole("button", { name: "Copy" }),
+		).not.toBeInTheDocument();
 
 		expect(
 			screen.queryByRole("heading", { name: "Errors you can automate" }),
