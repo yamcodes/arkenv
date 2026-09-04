@@ -3,10 +3,10 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { DiscordListItem } from "~/components/discord-list-item";
 import { SiteNavHome } from "~/components/site-nav";
-import { getGithubRepoUrl } from "~/lib/github-links";
+import { env } from "~/env";
 
 export default function NotFound() {
-	const githubRepoUrl = getGithubRepoUrl();
+	const githubRepoUrl = env.NEXT_PUBLIC_GITHUB_URL;
 
 	return (
 		<HomeLayout

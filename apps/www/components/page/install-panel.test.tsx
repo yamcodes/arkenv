@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { env } from "~/env";
 import { RELEASE_CONFIG } from "~/lib/config/release";
-import { getGithubRepoUrl } from "~/lib/github-links";
 import { InstallPanel } from "./install-panel";
 
 describe("InstallPanel", () => {
@@ -25,7 +25,7 @@ describe("InstallPanel", () => {
 		expect(screen.getByRole("button", { name: "Copy prompt" })).toBeVisible();
 		const repo = screen.getByRole("link", { name: "View repo" });
 		expect(repo).toBeVisible();
-		expect(repo).toHaveAttribute("href", getGithubRepoUrl());
+		expect(repo).toHaveAttribute("href", env.NEXT_PUBLIC_GITHUB_URL);
 		expect(
 			screen.queryByRole("link", { name: "Read the docs" }),
 		).not.toBeInTheDocument();
