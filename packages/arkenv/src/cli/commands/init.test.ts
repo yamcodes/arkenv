@@ -648,6 +648,49 @@ describe("InitUseCase", () => {
 		expect(result.options.skillDetected).toBe(true);
 	});
 
+	it("should set installSkill to false for isAgent when skill is missing", async () => {
+		vi.mocked(scanner.hasSkill).mockResolvedValue(false);
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			path: "./env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			isYes: false,
+			isForce: false,
+			isQuiet: true,
+			isAgent: true,
+		});
+
+		expect(result).not.toBeNull();
+		expect(result.options.installSkill).toBe(false);
+		expect(prompt.confirm).not.toHaveBeenCalled();
+	});
+
+	it("should set installSkill to false for isAgent when skill is already present", async () => {
+		vi.mocked(scanner.hasSkill).mockResolvedValue(true);
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			path: "./env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			isYes: false,
+			isForce: false,
+			isQuiet: true,
+			isAgent: true,
+		});
+
+		expect(result).not.toBeNull();
+		expect(result.options.installSkill).toBe(false);
+		expect(result.options.skillDetected).toBe(true);
+		expect(prompt.confirm).not.toHaveBeenCalled();
+	});
+
 	describe("version freshness pre-flight check", () => {
 		let versionChecker: any;
 		let spawner: any;
