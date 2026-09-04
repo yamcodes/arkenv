@@ -77,6 +77,9 @@ export function getMDXComponents(components: MDXComponents): MDXComponents {
 				)}
 			/>
 		),
+		// Authors: use absolute public paths (`/assets/...`) and explicit
+		// width/height. Relative `./` srcs throw in next/image; missing
+		// dimensions fall back to 1200×630 and can distort non-16:9 images.
 		img: (props) => {
 			const { src, alt, width, height, ...rest } = props;
 			if (!src || typeof src !== "string") {

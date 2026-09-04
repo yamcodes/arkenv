@@ -35,15 +35,25 @@ export const blog = loader({
 });
 
 /**
+ * Pure draft filter used by `getBlogPages()`.
+ * Drafts are included only when `nodeEnv === "development"`;
+ * production listing, RSS, and sitemap always omit drafts.
+ */
+export function isPublishedBlogPage(
+	page: { data: { draft?: boolean } },
+	nodeEnv: string | undefined = process.env.NODE_ENV,
+): boolean {
+	if (page.data.draft) {
+		return nodeEnv === "development";
+	}
+	return true;
+}
+
+/**
  * Blog pages for listing/RSS/sitemap.
- * Drafts are included only in `next dev` (NODE_ENV === "development");
+ * Drafts are included only in `next dev` via `isPublishedBlogPage`;
  * production listing, RSS, and sitemap always omit drafts.
  */
 export function getBlogPages() {
-	return blog.getPages().filter((page) => {
-		if (page.data.draft) {
-			return process.env.NODE_ENV === "development";
-		}
-		return true;
-	});
+	return blog.getPages().filter((page) => isPublishedBlogPage(page));
 }
