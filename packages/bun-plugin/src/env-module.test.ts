@@ -331,7 +331,7 @@ describe("missing-schema errors", () => {
 		}
 
 		expect(message).toMatch(/Could not find schema file/);
-		expect(message).toMatch(/npx arkenv@latest init/);
+		expect(message).toMatch(/npx arkenv init/);
 		expect(message).toMatch(/Checked paths:/);
 		expect(message).not.toMatch(/Example `src\/env\.ts`/);
 		expect(message).not.toMatch(/```/);

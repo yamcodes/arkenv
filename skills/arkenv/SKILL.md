@@ -31,66 +31,62 @@ In v1, ArkEnv offers two first-class validation engines:
 
 ### CLI (setup & DevOps)
 
-- Initialize ArkEnv in new or existing projects using `pnpm dlx arkenv@latest init` (or `npx arkenv@latest init`).
+- Initialize ArkEnv in new or existing projects using `pnpm dlx arkenv init` (or `npx arkenv init`).
 - Automatically detect frameworks (`Next.js`, `Nuxt`, `Vite`, `Bun`, etc.) and scaffold `env.ts`.
 - Select hosting provider preset during init (`--preset, -P <provider>` or `--host-preset, -H <provider>`).
-- Apply or refresh hosting presets on Day 2 via `arkenv preset apply <provider>` without overwriting custom user schema fields.
-- Remove hosting presets on Day 2 via `arkenv preset remove <provider>`.
 - Automatically configure `tsconfig.json` and schema configuration pointers in `package.json`.
 
-### Managed Preset Blocks & Day 2 Management
+### Hosting presets
 
-ArkEnv uses machine-managed comment blocks to isolate hosting provider variables (e.g. Vercel, Netlify, Cloudflare, Railway, Render, Fly) from user-defined environment variables:
-
-```ts
-export const env = arkenv({
-  DATABASE_URL: "string", // User-owned field (outside markers)
-
-  // @arkenv-preset-start vercel
-  VERCEL: "string?",
-  VERCEL_ENV: "'production' | 'preview' | 'development'?",
-  VERCEL_URL: "string?",
-  // @arkenv-preset-end vercel
-});
-```
-
-#### Safe Refresh & Collision Handling
-- **User-Owned Space**: Everything outside `@arkenv-preset-start/end` markers is strictly user-owned.
-- **Fail-Closed on Collision**: If a preset tries to add a key that already exists outside managed blocks (unmarked) or inside another preset's block, the CLI fails closed with an actionable collision error rather than silently overwriting.
-- **Nuke-and-Pave Refresh**: When re-running `arkenv preset apply <provider>`, the CLI safely replaces only the contents inside the matching preset markers, preserving user fields and formatting.
-- **Malformed Marker Safety**: If markers are unclosed, mismatched, or nested, the CLI aborts without modifying files.
-- **`.env.example` Sync**:
-  - `preset apply` only appends missing keys if `.env.example` already exists on disk (never creates `.env`).
-  - `preset remove` removes preset keys from `.env.example` only if no remaining presets in the schema use them.
+ArkEnv is **code-first**. You can select a hosting provider preset during initial project setup (`--preset vercel`, `netlify`, `cloudflare`, `railway`, `render`, `fly`) or copy-paste provider fields directly into `./env.ts` from the documentation (`/docs/core-concepts/hosting-presets`). There are no machine-managed comment blocks or CLI mutation commands.
 
 ### Agent setup (machine-readable)
 
 AI agents SHOULD always use the CLI for project initialization to ensure consistency and reliability. Use the `--agent` flag for a fully automated, machine-readable experience.
 
-- **Command**: `pnpm dlx arkenv@latest init --agent`
+- **Command**: `pnpm dlx arkenv init --agent`
 - **Behavior**: The `--agent` flag automatically enables the following behaviors:
   - **`--yes`**: Bypasses all interactive prompts and uses recommended defaults.
   - **`--quiet`**: Suppresses spinners and ANSI formatting for cleaner terminal logs.
   - **`--json`**: Emits a structured JSON summary to `stdout` upon completion (all other output is sent to `stderr`).
-- **Success Verification**: Parse the JSON output to verify `status: "success"` and retrieve details like the scaffolded file path.
+- **Success Verification**: Parse the JSON settlement envelope on `stdout`. Success is `ok: true` with `commandId: "init"`; details (e.g. scaffolded paths) live under `result`.
 
-#### Handling refusals (`status: "error"`)
+#### Handling refusals (`ok: false`)
 
-`--agent` **never** implies `--force`. When a safety check trips, the CLI refuses and emits a machine-actionable JSON payload to `stdout`:
+`--agent` **never** implies `--force`. When a safety check trips, the CLI refuses and emits an errored settlement envelope to `stdout`:
 
 ```json
 {
-  "status": "error",
-  "code": "GIT_TREE_DIRTY",
-  "message": "Git working tree is not clean.",
-  "retryWith": ["--force"]
+  "ok": false,
+  "commandId": "init",
+  "error": {
+    "code": "CLI.GIT_TREE_DIRTY",
+    "severity": "error",
+    "summary": "Git working tree is not clean.",
+    "why": "Commit or stash your changes before running arkenv init.",
+    "nextActions": [
+      {
+        "kind": "run-command",
+        "label": "Re-run with --force to bypass git working tree check",
+        "command": "arkenv init --force"
+      }
+    ]
+  },
+  "diagnostics": [],
+  "nextActions": [
+    {
+      "kind": "run-command",
+      "label": "Re-run with --force to bypass git working tree check",
+      "command": "arkenv init --force"
+    }
+  ]
 }
 ```
 
-- **`code`**: a stable identifier you can branch on. Refusal codes: `REQUIREMENTS_NOT_MET`, `GIT_TREE_DIRTY`, `NON_EMPTY_DIR`. A `code` of `INTERNAL` means the CLI *broke* rather than *refused* - retrying with flags will not help.
-- **`retryWith`**: the flag(s) that would bypass the check (e.g. `["--force"]`). Empty (`[]`) means the refusal is not bypassable.
+- **`error.code`**: a stable dotted identifier you can branch on (`CLI.REQUIREMENTS_NOT_MET`, `CLI.GIT_TREE_DIRTY`, `CLI.NON_EMPTY_DIR`, …). `CLI.INTERNAL_ERROR` means the CLI *broke* rather than *refused* — retrying with flags will not help.
+- **`nextActions`**: remediation steps. A `run-command` action that includes `--force` means the refusal is bypassable; empty `nextActions` means it is not. Prefer `nextActions` over any legacy `retryWith` field.
 
-**Escalation pattern**: always run `init --agent` or `preset apply --agent` **without** `--force` first. If you get `status: "error"`, inspect `code` and `retryWith`. Only re-run with the flag(s) from `retryWith` (e.g. append `--force`) once you have deliberately decided the refusal is safe to bypass - do not add `--force` pre-emptively.
+**Escalation pattern**: always run `init --agent` **without** `--force` first. If you get `ok: false`, inspect `error.code` and `nextActions`. Only re-run with `--force` (or the command from a `run-command` action) once you have deliberately decided the refusal is safe to bypass — do not add `--force` pre-emptively.
 
 ---
 
@@ -101,36 +97,26 @@ AI agents SHOULD always use the CLI for project initialization to ensure consist
 Set up ArkEnv in your project. It detects your framework and configures the appropriate plugin and schema.
 
 ```bash
-pnpm dlx arkenv@latest init [options]
+pnpm dlx arkenv init [options]
 ```
 
 #### Options:
 - `--preset, -P <preset>`: Specify hosting provider preset (none, vercel, netlify, cloudflare, railway, render, fly).
 - `--no-codegen`: Disable Next.js codegen configuration setup.
+- `--force, -f`: Bypass clean git working tree safety check.
 
-### `preset apply`
+### `check`
 
-Apply or refresh a hosting provider preset into an existing ArkEnv schema using managed comment blocks.
+Validate the environment against your schema file.
 
 ```bash
-pnpm dlx arkenv@latest preset apply <provider> [options]
+pnpm arkenv check [options]
 ```
 
 #### Options:
-- `--file <path>`: Path to schema file or directory (overrides `package.json` `"arkenv"` pointer).
-- `--force, -f`: Bypass clean git working tree safety check.
-
-### `preset remove`
-
-Safely remove a hosting provider preset and its managed block from schema files and `.env.example`.
-
-```bash
-pnpm dlx arkenv@latest preset remove <provider> [options]
-```
-
-#### Options:
-- `--file <path>`: Path to schema file or directory (overrides `package.json` `"arkenv"` pointer).
-- `--force, -f`: Bypass clean git working tree safety check.
+- `--verify-example [file]`: Verify that all declared schema keys are present in `.env.example` (or a custom example file path) without mutating files.
+- `--env-file <path>`: Specify one or more custom environment files to load.
+- `--json`: Output structured JSON diagnostics to stdout.
 
 ---
 

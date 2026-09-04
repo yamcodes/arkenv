@@ -3,11 +3,17 @@ import {
 	remarkMdxFiles,
 } from "fumadocs-core/mdx-plugins";
 import { remarkSteps } from "fumadocs-core/mdx-plugins/remark-steps";
-import { defineConfig, defineDocs } from "fumadocs-mdx/config";
+import { pageSchema } from "fumadocs-core/source/schema";
+import {
+	defineCollections,
+	defineConfig,
+	defineDocs,
+} from "fumadocs-mdx/config";
 import { transformerTwoslash } from "fumadocs-twoslash";
 import { createFileSystemTypesCache } from "fumadocs-twoslash/cache-fs";
 import remarkDirective from "remark-directive";
 import remarkGemoji from "remark-gemoji";
+import { z } from "zod";
 import { rehypeOptimizeInternalLinks } from "./lib/plugins/rehype-optimize-internal-links";
 import { remarkNormalizeCodeIndent } from "./lib/plugins/remark-normalize-code-indent";
 import { remarkNormalizePackageManagerCommands } from "./lib/plugins/remark-normalize-package-manager-commands";
@@ -112,6 +118,16 @@ function remarkDirectiveAdmonitionCustom(options: {
 		traverse(tree);
 	};
 }
+
+export const blogPosts = defineCollections({
+	type: "doc",
+	dir: "content/blog",
+	schema: pageSchema.extend({
+		author: z.string(),
+		date: z.string().date().or(z.date()),
+		draft: z.boolean().optional(),
+	}),
+});
 
 export const docs = defineDocs({
 	dir: "content/docs",

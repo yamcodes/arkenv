@@ -10,8 +10,6 @@
 		"---Commands---",
 		"init",
 		"check",
-		"example",
-		"preset",
 
 		"---Packages---",
 		"core",

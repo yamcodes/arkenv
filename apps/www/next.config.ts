@@ -436,7 +436,12 @@ const config = {
 			},
 			{
 				source: "/docs/reference/add-host",
-				destination: "/docs/reference/preset",
+				destination: "/docs/core-concepts/hosting-presets",
+				permanent: true,
+			},
+			{
+				source: "/docs/reference/preset",
+				destination: "/docs/core-concepts/hosting-presets",
 				permanent: true,
 			},
 			{

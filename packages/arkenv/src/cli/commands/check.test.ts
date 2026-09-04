@@ -34,6 +34,10 @@ describe("CheckUseCase", () => {
 					__dirname,
 					"../../../../core/src/index.ts",
 				),
+				"@arkenv/core/issues": path.resolve(
+					__dirname,
+					"../../../../core/src/issues.ts",
+				),
 				arkenv: path.resolve(__dirname, "../../../../core/src/index.ts"),
 			},
 		});
@@ -390,5 +394,192 @@ describe("CheckUseCase", () => {
 		} finally {
 			process.env = originalEnv;
 		}
+	});
+
+	describe("--verify-example", () => {
+		it("returns exit code 0 when .env.example contains all declared schema keys", async () => {
+			const envPath = path.join(tempDir, "env.ts");
+			await fs.writeFile(
+				envPath,
+				`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ PORT: "number", DATABASE_URL: "string" });\n`,
+			);
+			await fs.writeFile(
+				path.join(tempDir, ".env.example"),
+				"PORT=3000\nDATABASE_URL=postgres://localhost:5432/db\n",
+			);
+
+			const exitCode = await useCase.execute({
+				schema: envPath,
+				verifyExample: true,
+				cwd: tempDir,
+			});
+
+			expect(exitCode).toBe(0);
+			expect(
+				memoryReporter.logs.some(
+					(l) =>
+						l.type === "success" &&
+						l.message.includes(".env.example matches the schema"),
+				),
+			).toBe(true);
+		});
+
+		it("returns exit code 4 and lists missing keys when .env.example is missing declared keys", async () => {
+			const envPath = path.join(tempDir, "env.ts");
+			await fs.writeFile(
+				envPath,
+				`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ PORT: "number", DATABASE_URL: "string", REDIS_URL: "string" });\n`,
+			);
+			await fs.writeFile(path.join(tempDir, ".env.example"), "PORT=3000\n");
+
+			const exitCode = await useCase.execute({
+				schema: envPath,
+				verifyExample: true,
+				cwd: tempDir,
+			});
+
+			expect(exitCode).toBe(4);
+			const errorLog = memoryReporter.logs.find((l) => l.type === "error");
+			expect(errorLog).toBeDefined();
+			expect(errorLog?.message).toContain("Missing 2 keys in .env.example");
+			expect(errorLog?.message).toContain("DATABASE_URL");
+			expect(errorLog?.message).toContain("REDIS_URL");
+			expect(errorLog?.message).toContain(
+				"Please add the missing keys to .env.example.",
+			);
+		});
+
+		it("emits structured diagnostics in JSON mode when missing keys are found", async () => {
+			(logger as any).options.isJson = true;
+			const envPath = path.join(tempDir, "env.ts");
+			await fs.writeFile(
+				envPath,
+				`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ API_KEY: "string" });\n`,
+			);
+			await fs.writeFile(
+				path.join(tempDir, ".env.example"),
+				"# Empty example\n",
+			);
+
+			const exitCode = await useCase.execute({
+				schema: envPath,
+				verifyExample: true,
+				cwd: tempDir,
+			});
+
+			expect(exitCode).toBe(4);
+			const reports = memoryReporter.logs.filter(
+				(l) => l.type === "reportCompleted",
+			);
+			expect(reports).toHaveLength(1);
+			const envelope = reports[0].data as any;
+			expect(envelope.ok).toBe(true);
+			expect(envelope.commandId).toBe("check");
+			expect(envelope.exitCode).toBe(4);
+			expect(envelope.result.keys).toEqual({ declared: 1, missing: 1 });
+			expect(envelope.diagnostics).toHaveLength(1);
+			expect(envelope.diagnostics[0]).toMatchObject({
+				code: "ENV.MISSING_VARIABLE",
+				severity: "error",
+				summary: "API_KEY is declared in schema but missing in .env.example",
+				where: { path: ".env.example" },
+				meta: { key: "API_KEY", targetFile: ".env.example" },
+				nextActions: [
+					{
+						kind: "edit-file",
+						label: "Add API_KEY to .env.example",
+						where: { path: ".env.example" },
+					},
+				],
+			});
+		});
+
+		it("emits clean completed envelope in JSON mode when .env.example is complete", async () => {
+			(logger as any).options.isJson = true;
+			const envPath = path.join(tempDir, "env.ts");
+			await fs.writeFile(
+				envPath,
+				`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ PORT: "number" });\n`,
+			);
+			await fs.writeFile(path.join(tempDir, ".env.example"), "PORT=3000\n");
+
+			const exitCode = await useCase.execute({
+				schema: envPath,
+				verifyExample: true,
+				cwd: tempDir,
+			});
+
+			expect(exitCode).toBe(0);
+			const reports = memoryReporter.logs.filter(
+				(l) => l.type === "reportCompleted",
+			);
+			expect(reports).toHaveLength(1);
+			const envelope = reports[0].data as any;
+			expect(envelope.ok).toBe(true);
+			expect(envelope.exitCode).toBe(0);
+			expect(envelope.result.keys).toEqual({ declared: 1, missing: 0 });
+			expect(envelope.diagnostics).toEqual([]);
+		});
+
+		it("supports custom example file path string in --verify-example <path>", async () => {
+			const envPath = path.join(tempDir, "env.ts");
+			await fs.writeFile(
+				envPath,
+				`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ HOST: "string" });\n`,
+			);
+			const customPath = path.join(tempDir, ".env.example.custom");
+			await fs.writeFile(customPath, "HOST=localhost\n");
+
+			const exitCode = await useCase.execute({
+				schema: envPath,
+				verifyExample: ".env.example.custom",
+				cwd: tempDir,
+			});
+
+			expect(exitCode).toBe(0);
+			expect(
+				memoryReporter.logs.some(
+					(l) =>
+						l.type === "success" &&
+						l.message.includes(".env.example.custom matches the schema"),
+				),
+			).toBe(true);
+		});
+
+		it("gracefully treats a non-existent .env.example as missing all declared keys", async () => {
+			const envPath = path.join(tempDir, "env.ts");
+			await fs.writeFile(
+				envPath,
+				`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ SECRET_A: "string", SECRET_B: "string" });\n`,
+			);
+
+			const exitCode = await useCase.execute({
+				schema: envPath,
+				verifyExample: true,
+				cwd: tempDir,
+			});
+
+			expect(exitCode).toBe(4);
+			const errorLog = memoryReporter.logs.find((l) => l.type === "error");
+			expect(errorLog?.message).toContain("Missing 2 keys in .env.example");
+			expect(errorLog?.message).toContain("SECRET_A");
+			expect(errorLog?.message).toContain("SECRET_B");
+		});
+
+		it("succeeds when schema has no keys (arkenv({}))", async () => {
+			const envPath = path.join(tempDir, "env.ts");
+			await fs.writeFile(
+				envPath,
+				`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({});\n`,
+			);
+
+			const exitCode = await useCase.execute({
+				schema: envPath,
+				verifyExample: true,
+				cwd: tempDir,
+			});
+
+			expect(exitCode).toBe(0);
+		});
 	});
 });

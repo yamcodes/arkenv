@@ -1,11 +1,11 @@
 ---
 title: Hosting presets
-description: Pre-populate schemas with Vercel, Netlify, Cloudflare, Railway, Render, or Fly.io variables using managed preset blocks.
+description: Pre-populate schemas with Vercel, Netlify, Cloudflare, Railway, Render, or Fly.io environment variables.
 ---
 
-Hosting providers inject their own system environment variables at build and
-runtime. Presets teach the ArkEnv CLI which variables to generate into your
-schema, pre-typed and optional, so you do not look them up manually.
+Hosting providers inject system environment variables at build and
+runtime. Presets teach ArkEnv which variables to generate into your
+schema, pre-typed and optional, so you do not have to look them up manually.
 
 Presets work with ArkType, Zod, and Valibot on a flat `env.ts` schema.
 
@@ -23,7 +23,7 @@ When bootstrapping a project, select your hosting provider from the interactive
 wizard or specify the `--preset` flag:
 
 ```package-install
-npx arkenv@latest init --preset vercel
+npx arkenv init --preset vercel
 ```
 
 Accepted values: `none`, `vercel`, `netlify`, `cloudflare`, `railway`, `render`, `fly`.
@@ -31,118 +31,351 @@ Accepted values: `none`, `vercel`, `netlify`, `cloudflare`, `railway`, `render`,
 The CLI also accepts `-P`, `--host-preset`, or `-H` as aliases. Passing `none`
 scaffolds standard schema templates without provider fields.
 
-## Manage presets in an existing schema
+## Adding presets to an existing schema
 
-You can apply, refresh, or remove hosting presets at any time using the
-`arkenv preset` command.
+Because ArkEnv is code-first and generates plain TypeScript schemas, you can copy
+and paste hosting provider fields directly into your `./env.ts` at any time.
 
-### Apply or refresh a preset
+### Vercel
 
-```package-install
-npx arkenv@latest preset apply vercel
-```
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/core";
 
-When you run `preset apply`, the CLI:
+    export const env = arkenv({
+    	DATABASE_URL: "string",
 
-1. Resolves your schema file location automatically from the `"arkenv"` configuration pointer in `package.json` (or defaults to standard paths).
-2. Verifies that your git working tree is clean to prevent uncommitted loss.
-3. Checks for collisions against existing user-defined variables or other presets.
-4. Injects or refreshes the platform variables within delimited comment markers.
-5. Updates `.env.example` with the new keys.
+    	// Vercel system environment variables
+    	VERCEL: "string?",
+    	VERCEL_ENV: "'production' | 'preview' | 'development'?",
+    	VERCEL_URL: "string?",
+    });
+    ```
+  </Tab>
 
-To specify a custom schema path explicitly, pass `--file`:
+  <Tab value="Zod">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
 
-```package-install
-npx arkenv@latest preset apply vercel --file ./src/config/env.ts
-```
+    export const env = arkenv({
+    	DATABASE_URL: z.string(),
 
-### Remove a preset
+    	// Vercel system environment variables
+    	VERCEL: z.string().optional(),
+    	VERCEL_ENV: z.enum(["production", "preview", "development"]).optional(),
+    	VERCEL_URL: z.string().optional(),
+    });
+    ```
+  </Tab>
 
-```package-install
-npx arkenv@latest preset remove vercel
-```
+  <Tab value="Valibot">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import * as v from "valibot";
 
-The `preset remove` command strips the delimited preset block from your schema
-and removes provider-specific entries from `.env.example`, while preserving any
-keys shared with other active presets or custom fields.
+    export const env = arkenv({
+    	DATABASE_URL: v.string(),
 
-## How managed preset blocks work
+    	// Vercel system environment variables
+    	VERCEL: v.optional(v.string()),
+    	VERCEL_ENV: v.optional(v.picklist(["production", "preview", "development"])),
+    	VERCEL_URL: v.optional(v.string()),
+    });
+    ```
+  </Tab>
+</Tabs>
 
-ArkEnv isolates machine-managed platform variables using comment markers:
+### Netlify
 
-```ts title="./env.ts"
-import arkenv from "@arkenv/core";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/core";
 
-export const env = arkenv({
-  DATABASE_URL: "string",
-  PORT: "number.port = 3000",
+    export const env = arkenv({
+    	DATABASE_URL: "string",
 
-  // @arkenv-preset-start vercel
-  VERCEL: "string?",
-  VERCEL_ENV: "'production' | 'preview' | 'development'?",
-  VERCEL_URL: "string?",
-  // @arkenv-preset-end vercel
-});
-```
+    	// Netlify system environment variables
+    	NETLIFY: "string?",
+    	DEPLOY_URL: "string?",
+    	CONTEXT: "'production' | 'deploy-preview' | 'branch-deploy'?",
+    	URL: "string?",
+    });
+    ```
+  </Tab>
 
-### Why comment markers exist
+  <Tab value="Zod">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
 
-1. **Handling unprefixed platform keys**: While some platforms prefix variables (e.g. `VERCEL_ENV`), many providers use common names like `URL`, `CONTEXT`, `DEPLOY_URL` (Netlify), or `PORT` (Railway, Render, Fly.io). Markers establish unambiguous machine ownership so the CLI knows which fields belong to the host.
-2. **Safe atomic updates**: When hosting platforms add new system environment variables, re-running `arkenv preset apply <provider>` replaces only the delimited block, leaving your manual schema customizations before and after untouched.
-3. **Clean removal**: Running `arkenv preset remove <provider>` deletes only the target provider block without risking collateral deletion of your own fields.
-4. **Validator and AST independence**: Because ArkEnv supports multiple validators (ArkType DSL, Zod objects, Valibot pipes, Standard Schema), line-delimited boundaries avoid heavyweight AST formatting passes that alter user indentation or drop code comments.
+    export const env = arkenv({
+    	DATABASE_URL: z.string(),
 
-### Runtime and build behavior
+    	// Netlify system environment variables
+    	NETLIFY: z.string().optional(),
+    	DEPLOY_URL: z.string().optional(),
+    	CONTEXT: z.enum(["production", "deploy-preview", "branch-deploy"]).optional(),
+    	URL: z.string().optional(),
+    });
+    ```
+  </Tab>
 
-Comment markers are plain TypeScript/JavaScript comments. They have **zero performance impact** and are stripped by bundlers and TypeScript compilers during build. ArkEnv's runtime validation treats marked variables as ordinary schema fields.
+  <Tab value="Valibot">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import * as v from "valibot";
 
-### Safety mechanisms
+    export const env = arkenv({
+    	DATABASE_URL: v.string(),
 
-- **Fail-closed collision prevention**: If a variable defined by a preset already exists outside a managed block, `arkenv preset apply` halts immediately and refuses to modify the file. It will never overwrite your manual schema definitions.
-- **Git working tree gate**: All file mutations require a clean git working tree so any changes appear clearly in `git diff`. Pass `--force` (`-f`) if you want to bypass this check in automated environments.
-- **Malformed marker detection**: If marker comments are unclosed or mismatched, the CLI halts with a descriptive error before touching code.
+    	// Netlify system environment variables
+    	NETLIFY: v.optional(v.string()),
+    	DEPLOY_URL: v.optional(v.string()),
+    	CONTEXT: v.optional(v.picklist(["production", "deploy-preview", "branch-deploy"])),
+    	URL: v.optional(v.string()),
+    });
+    ```
+  </Tab>
+</Tabs>
 
-## Stacking multiple presets
+### Cloudflare Pages / Workers
 
-You can apply multiple presets to the same schema by running `preset apply` for each provider:
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/core";
 
-```bash
-npx arkenv@latest preset apply vercel
-npx arkenv@latest preset apply railway
-```
+    export const env = arkenv({
+    	DATABASE_URL: "string",
 
-Both blocks coexist independently in your schema file. You can refresh or remove either preset without affecting the other.
+    	// Cloudflare system environment variables
+    	CF_PAGES: "string?",
+    	CF_PAGES_COMMIT_SHA: "string?",
+    	CF_PAGES_BRANCH: "string?",
+    	CF_PAGES_URL: "string?",
+    });
+    ```
+  </Tab>
 
-## Customizing, refining, and overriding variables
+  <Tab value="Zod">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
+
+    export const env = arkenv({
+    	DATABASE_URL: z.string(),
+
+    	// Cloudflare system environment variables
+    	CF_PAGES: z.string().optional(),
+    	CF_PAGES_COMMIT_SHA: z.string().optional(),
+    	CF_PAGES_BRANCH: z.string().optional(),
+    	CF_PAGES_URL: z.string().optional(),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	DATABASE_URL: v.string(),
+
+    	// Cloudflare system environment variables
+    	CF_PAGES: v.optional(v.string()),
+    	CF_PAGES_COMMIT_SHA: v.optional(v.string()),
+    	CF_PAGES_BRANCH: v.optional(v.string()),
+    	CF_PAGES_URL: v.optional(v.string()),
+    });
+    ```
+  </Tab>
+</Tabs>
+
+### Railway
+
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/core";
+
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+
+    	// Railway system environment variables
+    	RAILWAY_ENVIRONMENT_NAME: "string?",
+    	RAILWAY_PUBLIC_DOMAIN: "string?",
+    	RAILWAY_SERVICE_NAME: "string?",
+    	RAILWAY_GIT_COMMIT_SHA: "string?",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
+
+    export const env = arkenv({
+    	DATABASE_URL: z.string(),
+
+    	// Railway system environment variables
+    	RAILWAY_ENVIRONMENT_NAME: z.string().optional(),
+    	RAILWAY_PUBLIC_DOMAIN: z.string().optional(),
+    	RAILWAY_SERVICE_NAME: z.string().optional(),
+    	RAILWAY_GIT_COMMIT_SHA: z.string().optional(),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	DATABASE_URL: v.string(),
+
+    	// Railway system environment variables
+    	RAILWAY_ENVIRONMENT_NAME: v.optional(v.string()),
+    	RAILWAY_PUBLIC_DOMAIN: v.optional(v.string()),
+    	RAILWAY_SERVICE_NAME: v.optional(v.string()),
+    	RAILWAY_GIT_COMMIT_SHA: v.optional(v.string()),
+    });
+    ```
+  </Tab>
+</Tabs>
+
+### Render
+
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/core";
+
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+
+    	// Render system environment variables
+    	RENDER: "string?",
+    	RENDER_SERVICE_ID: "string?",
+    	RENDER_SERVICE_TYPE: "string?",
+    	RENDER_EXTERNAL_URL: "string?",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
+
+    export const env = arkenv({
+    	DATABASE_URL: z.string(),
+
+    	// Render system environment variables
+    	RENDER: z.string().optional(),
+    	RENDER_SERVICE_ID: z.string().optional(),
+    	RENDER_SERVICE_TYPE: z.string().optional(),
+    	RENDER_EXTERNAL_URL: z.string().optional(),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	DATABASE_URL: v.string(),
+
+    	// Render system environment variables
+    	RENDER: v.optional(v.string()),
+    	RENDER_SERVICE_ID: v.optional(v.string()),
+    	RENDER_SERVICE_TYPE: v.optional(v.string()),
+    	RENDER_EXTERNAL_URL: v.optional(v.string()),
+    });
+    ```
+  </Tab>
+</Tabs>
+
+### Fly.io
+
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/core";
+
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+
+    	// Fly.io system environment variables
+    	FLY_APP_NAME: "string?",
+    	FLY_REGION: "string?",
+    	FLY_ALLOC_ID: "string?",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import { z } from "zod";
+
+    export const env = arkenv({
+    	DATABASE_URL: z.string(),
+
+    	// Fly.io system environment variables
+    	FLY_APP_NAME: z.string().optional(),
+    	FLY_REGION: z.string().optional(),
+    	FLY_ALLOC_ID: z.string().optional(),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="env.ts"
+    import arkenv from "@arkenv/standard";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	DATABASE_URL: v.string(),
+
+    	// Fly.io system environment variables
+    	FLY_APP_NAME: v.optional(v.string()),
+    	FLY_REGION: v.optional(v.string()),
+    	FLY_ALLOC_ID: v.optional(v.string()),
+    });
+    ```
+  </Tab>
+</Tabs>
+
+## Customizing and refining variables
 
 Because ArkEnv gives full code ownership to your repository, you have complete control over how platform variables are validated:
 
-### 1. The "Eject" path (full manual control)
+### 1. Adding missing platform variables
 
-If you prefer to maintain platform variables entirely by hand, delete the `// @arkenv-preset-start` and `// @arkenv-preset-end` comment lines.
-
-The variables immediately become regular, user-owned schema fields. ArkEnv's fail-closed collision engine will protect them from being overwritten if someone runs `preset apply` in the future.
-
-### 2. Adding missing platform variables
-
-If a hosting provider introduces a new environment variable before an ArkEnv CLI release includes it, add the variable directly to your schema outside the preset block:
+If a hosting provider introduces a new environment variable, add the variable directly to your schema:
 
 ```ts title="./env.ts"
 export const env = arkenv({
+  DATABASE_URL: "string",
+
   // Add new or unlisted provider variables directly:
   VERCEL_NEW_FEATURE: "string?",
-
-  // @arkenv-preset-start vercel
-  VERCEL: "string?",
   VERCEL_ENV: "'production' | 'preview' | 'development'?",
   VERCEL_URL: "string?",
-  // @arkenv-preset-end vercel
 });
 ```
 
-### 3. Refining types and transformations
+### 2. Refining types and transformations
 
-You can modify field definitions inside or outside the block to add stricter validations, regex constraints, default values, or runtime transformations (such as prefixing URLs with `https://`):
+You can modify field definitions to add stricter validations, regex constraints, default values, or runtime transformations (such as prefixing URLs with `https://`):
 
 ```ts title="./env.ts"
 import { type } from "@arkenv/core";
@@ -219,7 +452,7 @@ Every preset field is **optional** (present only when deployed on that provider)
 ## Next steps
 
 <Cards>
-  <Card href="/docs/reference/preset" title="preset reference" description="CLI reference for arkenv preset apply and arkenv preset remove." />
+  <Card href="/docs/reference/init" title="init reference" description="Scaffold a project and select a hosting preset." />
 
   <Card href="/docs/core-concepts/client-vs-server" title="Client vs Server" description="Flat env.ts and the optional two-module recipe." />
 </Cards>

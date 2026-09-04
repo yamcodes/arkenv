@@ -9,9 +9,8 @@ import { describe, expect, it } from "vitest";
 const exec = promisify(execCallback);
 const require = createRequire(import.meta.url);
 
-const cliPath = path.resolve(__dirname, "../dist/bin.cjs");
+const cliPath = path.resolve(__dirname, "../dist/bin.js");
 const esmIndexPath = path.resolve(__dirname, "../dist/index.js");
-const cjsIndexPath = path.resolve(__dirname, "../dist/index.cjs");
 
 describe("library import guard", () => {
 	it("importing ESM entry throws migration error", async () => {
@@ -20,8 +19,8 @@ describe("library import guard", () => {
 		);
 	});
 
-	it("requiring CJS entry throws migration error", () => {
-		expect(() => require(cjsIndexPath)).toThrow(
+	it("requiring the ESM entry via native require(esm) throws migration error", () => {
+		expect(() => require(esmIndexPath)).toThrow(
 			"You imported the 'arkenv' package as a library",
 		);
 	});
@@ -40,7 +39,7 @@ describe("library import guard", () => {
 
 	it("running node with CJS require throws migration error", async () => {
 		await expect(
-			exec(`node -e "require('${cjsIndexPath.replace(/\\/g, "\\\\")}')"`),
+			exec(`node -e "require('${esmIndexPath.replace(/\\/g, "\\\\")}')"`),
 		).rejects.toMatchObject({
 			stderr: expect.stringContaining(
 				"You imported the 'arkenv' package as a library",
@@ -55,7 +54,8 @@ describe("cli smoke tests", () => {
 		expect(stdout).toContain("Usage:");
 		expect(stdout).toContain("arkenv init");
 		expect(stdout).toContain("arkenv check");
-		expect(stdout).toContain("arkenv example");
+		expect(stdout).toContain("--verify-example");
+		expect(stdout).not.toContain("arkenv example");
 		expect(stderr).toBe("");
 	});
 

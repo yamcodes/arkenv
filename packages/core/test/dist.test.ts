@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { beforeAll, describe, expect, it, vi } from "vitest";
@@ -16,7 +16,7 @@ let standardArkEnvError: any;
 
 beforeAll(async () => {
 	const distDir = join(__dirname, "../dist");
-	if (!existsSync(distDir) || !existsSync(join(distDir, "index.mjs"))) {
+	if (!existsSync(distDir) || !existsSync(join(distDir, "index.js"))) {
 		// Automatically compile the package if dist is missing
 		execSync("pnpm run build", {
 			cwd: join(__dirname, ".."),
@@ -37,7 +37,7 @@ beforeAll(async () => {
 	}
 
 	// Dynamically load to prevent compile-time module resolution errors if dist/ is missing initially
-	const index = await import("../dist/index.mjs");
+	const index = await import("../dist/index.js");
 	defaultArkenv = index.default;
 	namedArkenv = index.arkenv;
 
@@ -50,6 +50,21 @@ beforeAll(async () => {
 });
 
 describe("Distribution Built Outputs", () => {
+	describe("ESM-only dist", () => {
+		it("ships standard .js and .d.ts files with no CJS artifacts", () => {
+			const distDir = join(__dirname, "../dist");
+			const files = readdirSync(distDir, { recursive: true });
+
+			expect(files).toContain("index.js");
+			expect(files).toContain("index.d.ts");
+
+			const cjsArtifacts = files.filter(
+				(file) => file.endsWith(".cjs") || file.endsWith(".d.cts"),
+			);
+			expect(cjsArtifacts).toEqual([]);
+		});
+	});
+
 	describe("Core Tier (arkenv/core)", () => {
 		it("should export ArkEnvError and format validation issues correctly", () => {
 			const error = new ArkEnvError([
@@ -158,6 +173,50 @@ describe("Distribution Built Outputs", () => {
 					PORT: "number.port",
 				});
 			}).toThrow(ArkEnvError);
+		});
+	});
+
+	describe("Subpaths", () => {
+		it("exports formatIssues and getSchemaKeys from @arkenv/core/issues", async () => {
+			const issues = await import("../dist/issues.js");
+			expect(typeof issues.formatIssues).toBe("function");
+			expect(typeof issues.getSchemaKeys).toBe("function");
+		});
+
+		it("does not re-export formatIssues or getSchemaKeys from the main barrel", async () => {
+			const index = await import("../dist/index.js");
+			expect("formatIssues" in index).toBe(false);
+			expect("getSchemaKeys" in index).toBe(false);
+		});
+
+		it("exports arkenv from @arkenv/core/safe as default and named", async () => {
+			const safe = await import("../dist/safe.js");
+			expect(typeof safe.arkenv).toBe("function");
+			expect(safe.default).toBe(safe.arkenv);
+			const result = safe.arkenv({ PORT: "number" }, { env: { PORT: "3000" } });
+			expect(result.success).toBe(true);
+		});
+
+		it("does not re-export schema-capture helpers or safeExecute from the default entry", () => {
+			const source = readFileSync(join(__dirname, "../dist/index.js"), "utf8");
+			expect(source).not.toContain("isCapturingSchema");
+			expect(source).not.toContain("recordSchemaCapture");
+			expect(source).not.toContain("beginSchemaCapture");
+			expect(source).not.toContain("safeExecute");
+		});
+
+		it("exports arkenv from @arkenv/standard/safe as default and named", async () => {
+			const safe = await import("../../standard/dist/safe.js");
+			expect(typeof safe.arkenv).toBe("function");
+			expect(safe.default).toBe(safe.arkenv);
+			const mock = {
+				"~standard": {
+					version: 1 as const,
+					validate: (value: unknown) => ({ value }),
+				},
+			};
+			const result = safe.arkenv({ PORT: mock }, { env: { PORT: "3000" } });
+			expect(result.success).toBe(true);
 		});
 	});
 });

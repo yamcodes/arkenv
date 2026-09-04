@@ -1,4 +1,3 @@
-import type { $ } from "@repo/scope";
 import type { Type } from "arktype";
 
 export type SchemaShape = Record<string, unknown>;
@@ -15,4 +14,4 @@ export type SchemaShape = Record<string, unknown>;
  * This form bypasses schema validation and is intended for advanced
  * or programmatic use cases where schemas are constructed dynamically.
  */
-export type CompiledEnvSchema = Type<SchemaShape, $>;
+export type CompiledEnvSchema = Type<SchemaShape, any>;

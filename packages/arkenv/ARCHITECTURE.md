@@ -23,8 +23,7 @@ src/
 ├── features/                 # Pure Business Domains (Headless)
 │   ├── scaffold/             # Generation engine (Planner, Executor)
 │   ├── schema-loader/        # Inspect env.ts schemas without validating env
-│   ├── example/              # Merge declared keys into .env.example
-│   └── config-mutation/      # AST-based configuration manipulation
+│   └── example/              # Merge declared keys into .env.example
 │
 ├── adapters/                 # Driven Adapters (Infrastructure)
 │   ├── node-workspace.adapter.ts # Concrete File System & Process logic
@@ -51,7 +50,7 @@ The dependency direction always flows **inward** toward the ports or **outward**
 The architecture is specifically designed to support AI agents and headless environments via the `--agent` and `--json` flags.
 
 - When `--agent` is passed, the `composition.ts` root injects a `JsonReporter` into the `LoggerPort`.
-- Because the `scaffold` and `config-mutation` features are headless, they continue to function exactly the same.
+- Because the `scaffold` features are headless, they continue to function exactly the same.
 - The `init` command skips interactive `ui/prompts` and passes default/provided options directly to the `features`.
 - No interactive prompt will ever hang a headless process.
 

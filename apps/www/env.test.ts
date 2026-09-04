@@ -94,13 +94,17 @@ MIIEowIBAAKCAQEA0m4w...
 			key.includes("\\n") ? key.replace(/\\n/g, "\n") : key;
 
 		// Assert on arkenv parsing results directly
-		expect(parsedMultiline.GITHUB_APP_PRIVATE_KEY).toBe(rawPem);
-		expect(parsedEscaped.GITHUB_APP_PRIVATE_KEY).toBe(escapedPem);
-		expect(normalize(parsedMultiline.GITHUB_APP_PRIVATE_KEY)).toContain("\n");
-		expect(normalize(parsedEscaped.GITHUB_APP_PRIVATE_KEY)).toEqual(rawPem);
-		expect(normalize(parsedEscaped.GITHUB_APP_PRIVATE_KEY)).not.toContain(
-			"\\n",
+		expect((parsedMultiline as any).GITHUB_APP_PRIVATE_KEY).toBe(rawPem);
+		expect((parsedEscaped as any).GITHUB_APP_PRIVATE_KEY).toBe(escapedPem);
+		expect(
+			normalize((parsedMultiline as any).GITHUB_APP_PRIVATE_KEY),
+		).toContain("\n");
+		expect(normalize((parsedEscaped as any).GITHUB_APP_PRIVATE_KEY)).toEqual(
+			rawPem,
 		);
+		expect(
+			normalize((parsedEscaped as any).GITHUB_APP_PRIVATE_KEY),
+		).not.toContain("\\n");
 	});
 
 	it("fails fast with ArkEnvError when schema validation encounters invalid values", () => {

@@ -37,7 +37,7 @@ export function formatMissingSchemaError(
 ): string {
 	const prefix = options.prefix ?? "[ArkEnv]";
 	const location = options.schemaPath || DEFAULT_SCHEMA_LOCATIONS;
-	let message = `${prefix} Could not find schema file at ${location}. Please specify 'schemaPath' in ${options.optionsHint} (or run \`npx arkenv@latest init\`).`;
+	let message = `${prefix} Could not find schema file at ${location}. Please specify 'schemaPath' in ${options.optionsHint} (or run \`npx arkenv init\`).`;
 
 	if (options.checkedPaths?.length) {
 		const pathsList = options.checkedPaths.map((p) => ` - ${p}`).join("\n");

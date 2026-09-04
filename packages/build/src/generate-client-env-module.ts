@@ -3,9 +3,7 @@ import { boundaryAccessErrorMessage } from "@repo/utils/boundary-access-error";
 /**
  * Build the client-graph replacement module: inlined coerced literals + server-key guards.
  *
- * No validator import is emitted. See ADR 0021 (env-object canonical surface) —
- * contributors must not reintroduce `env.gen.ts`, client-side re-validation, or
- * `runtimeEnv` wiring on hosts that own their transform.
+ * No validator import is emitted.
  *
  * @param clientValues Coerced values for client and shared keys
  * @param serverKeys Server-only keys that must throw when read on the client

@@ -20,7 +20,7 @@ Importing `arkenv` as a library throws. Swap packages first.
 | v0                    | v1                    | Role                                               |
 | --------------------- | --------------------- | -------------------------------------------------- |
 | `arkenv`              | `@arkenv/core`        | Runtime and ArkType engine                         |
-| `@arkenv/cli`         | `arkenv`              | CLI (`init`, `preset`)                             |
+| `@arkenv/cli`         | `arkenv`              | CLI (`init`, `check`)                              |
 | —                     | `@arkenv/standard`    | Zod, Valibot, and other Standard Schema validators |
 | `@arkenv/vite-plugin` | `@arkenv/vite-plugin` | Vite plugin (transform mode only)                  |
 | `@arkenv/bun-plugin`  | `@arkenv/bun-plugin`  | Bun plugin (transform mode only)                   |
@@ -217,7 +217,7 @@ and the [Next.js](/docs/frameworks/nextjs) /
 
 ## Strict layout removed (alpha hard cut)
 
-Earlier alphas shipped `npx arkenv@latest init --strict` plus
+Earlier alphas shipped `npx arkenv init --strict` plus
 `@arkenv/nextjs/server` / `@arkenv/nuxt/client` (and related subpaths).
 That layout engine is gone. Flat `env.ts` is the only first-class path.
 

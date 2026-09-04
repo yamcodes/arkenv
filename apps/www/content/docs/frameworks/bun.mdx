@@ -1,20 +1,20 @@
 ---
-title: Bun
-description: Learn how to use ArkEnv in a Bun project.
+title: Bun fullstack dev server
+description: Learn how to use ArkEnv in a Bun fullstack application.
 ---
 
 ArkEnv supports most Bun apps out of the box, no further configuration required.
 
-However, some Bun apps use Bun's fullstack dev server (`Bun.serve()`) or Bun's bundler (`Bun.build()`) to build their bundle. The Bun integration was built to support these use cases.
+However, some Bun apps use [Bun's fullstack dev server](https://bun.com/docs/bundler/fullstack) (`Bun.serve()`) or [Bun's bundler](https://bun.com/docs/bundler) (`Bun.build()`). The Bun integration was built to support these use cases.
 
 Continue reading if you're using `Bun.serve()` or `Bun.build()`. Otherwise, the [Getting started](/docs/getting-started) guide is a good place to start.
 
 ## Quickstart
 
-Scaffold Bun integration in an existing project using the interactiveCLI:
+Scaffold Bun integration in an existing project using the interactive CLI:
 
 ```package-install
-npx arkenv@latest init
+npx arkenv init
 ```
 
 The CLI installs `@arkenv/bun-plugin` and creates your initial `env.ts` schema file.

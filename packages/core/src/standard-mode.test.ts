@@ -1,4 +1,5 @@
 import { ArkEnvError, arkenv } from "@arkenv/standard";
+import arkenvSafe from "@arkenv/standard/safe";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 
 // Mock Standard Schema validators for testing
@@ -486,7 +487,7 @@ describe("Standard Mode emptyAsUndefined", () => {
 		}
 	});
 
-	it("should support arkenv({ safe: true }) standard mode API", () => {
+	it("should support arkenv from @arkenv/standard/safe", () => {
 		const mockZodValidator = {
 			"~standard": {
 				version: 1 as const,
@@ -509,22 +510,22 @@ describe("Standard Mode emptyAsUndefined", () => {
 			},
 		};
 
-		const resultSuccess = arkenv(
+		const resultSuccess = arkenvSafe(
 			{
 				PORT: mockZodValidator,
 			},
-			{ safe: true, env: { PORT: "3000" } },
+			{ env: { PORT: "3000" } },
 		);
 		expect(resultSuccess.success).toBe(true);
 		if (resultSuccess.success) {
 			expect(resultSuccess.data).toEqual({ PORT: "3000" });
 		}
 
-		const resultFail = arkenv(
+		const resultFail = arkenvSafe(
 			{
 				PORT: mockZodValidator,
 			},
-			{ safe: true, env: {} },
+			{ env: {} },
 		);
 		expect(resultFail.success).toBe(false);
 		if (!resultFail.success) {

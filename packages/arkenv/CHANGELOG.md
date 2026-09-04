@@ -1,5 +1,71 @@
 # @arkenv/core
 
+## 1.0.0-alpha.20
+
+### Major Changes
+
+- #### Remove programmatic AST schema mutation and preset command _[`#1736`](https://github.com/yamcodes/arkenv/pull/1736) [`e117bbd`](https://github.com/yamcodes/arkenv/commit/e117bbd70aa463fe40639e11841f2704e403384d) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	The `arkenv preset apply` and `arkenv preset remove` commands, along with programmatic AST and comment-marker schema mutation, have been removed from the CLI.
+	
+	Hosting presets (Vercel, Netlify, Cloudflare, Railway, Render, Fly.io) remain available during initial project scaffolding via `arkenv init --preset <name>` and are documented as copyable code snippets in the docs.
+	
+	**BREAKING CHANGE**: The `arkenv preset` command and `// @arkenv-preset-start` comment marker management have been removed. Use `arkenv init --preset <provider>` when scaffolding new projects, or copy provider variable definitions directly into `./env.ts` for existing schemas.
+
+## 1.0.0-alpha.19
+
+### Major Changes
+
+- #### Drop `arkenv example` command and add `--verify-example` check flag _[`#1733`](https://github.com/yamcodes/arkenv/pull/1733) [`da1b241`](https://github.com/yamcodes/arkenv/commit/da1b2415797232f12d9423258bbe17568b3c6868) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	The `arkenv example` command and AST block merger engine have been dropped. A new read-only `--verify-example` flag has been added to `arkenv check` to strictly verify that all declared schema keys are present in `.env.example` (or a custom example file path) without mutating files on disk.
+	
+	Usage:
+	
+	```sh
+	# Verify .env.example contains all schema keys
+	npx arkenv@latest check --verify-example
+	
+	# Verify custom example file
+	npx arkenv@latest check --verify-example .env.example.production
+	```
+	
+	**BREAKING CHANGE**: The `arkenv example` command has been removed. Use `arkenv check --verify-example` to verify `.env.example` in CI and pre-commit workflows.
+
+### Patch Changes
+
+- #### Reduce package install sizes by omitting sourcemaps and externalizing core types _[`#1734`](https://github.com/yamcodes/arkenv/pull/1734) [`190b652`](https://github.com/yamcodes/arkenv/commit/190b652e7314e443b6a8f182c14fa57920058ede) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Published packages now omit declaration maps (`.d.ts.map`, `.d.mts.map`, `.d.cts.map`) and runtime JavaScript sourcemaps (`*.map`) across the monorepo, significantly reducing npm install footprints and package archive sizes. Both are loss-free removals: declaration maps are inert without the raw `.ts` sources they point to (which are never published), and runtime sourcemaps only re-map minified code (which ArkEnv does not ship).
+	
+	In addition, public ArkType type contracts in `@arkenv/core` declarations are now externalized rather than recursively expanded by the compiler, shrinking `@arkenv/core` declaration files and preventing internal AST definitions from being inlined into consumer type builds. The public type surface is unchanged — only how `tsc` encodes it on disk.
+
+## 1.0.0-alpha.18
+
+### Minor Changes
+
+- #### Add version freshness pre-flight check to CLI init _[`#1723`](https://github.com/yamcodes/arkenv/pull/1723) [`e2e01f7`](https://github.com/yamcodes/arkenv/commit/e2e01f7edada5b3cbab3ff0479f3cdc2266dea5f) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`arkenv init` now performs a lightweight pre-flight version freshness check in interactive environments before scaffolding. When an outdated CLI version is detected, users are prompted to seamlessly run the latest release via their package manager's DLX runner (`pnpm dlx`, `bunx`, `yarn dlx`, or `npx`).
+	
+	- The pre-flight check queries the npm registry with a 1000ms timeout and fails open silently in offline or non-interactive/CI environments.
+	- Confirmed upgrades invoke the latest version via the active package manager with full TTY stdio inheritance and signal forwarding (`SIGINT`/`SIGTERM`).
+	- Marketing copy and missing-schema error hints now omit `@latest` across the ecosystem (e.g. `npx arkenv init`).
+	
+	Usage:
+	
+	```sh
+	# Run init interactively (prompts automatically if outdated)
+	npx arkenv init
+	
+	# Non-interactive / CI runs bypass the prompt automatically
+	npx arkenv init --yes
+	```
+
 ## 1.0.0-alpha.17
 
 ### Patch Changes

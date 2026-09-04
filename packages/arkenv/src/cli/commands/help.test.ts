@@ -26,36 +26,20 @@ describe("HelpUseCase", () => {
 		);
 		expect(initCommandLog).toBeDefined();
 		expect(initCommandLog).toBe(
-			"  arkenv init [project-name]         Set up ArkEnv in your project",
+			"  arkenv init [project-name]    Set up ArkEnv in your project",
 		);
 
 		const checkCommandLog = logs.find((l) => l.includes("arkenv check"));
 		expect(checkCommandLog).toBeDefined();
 		expect(checkCommandLog).toBe(
-			"  arkenv check                       Validate the environment against the schema",
+			"  arkenv check                  Validate the environment against the schema",
 		);
 
 		const exampleCommandLog = logs.find((l) => l.includes("arkenv example"));
-		expect(exampleCommandLog).toBeDefined();
-		expect(exampleCommandLog).toBe(
-			"  arkenv example                     Update .env.example from the schema",
-		);
+		expect(exampleCommandLog).toBeUndefined();
 
-		const presetApplyCommandLog = logs.find((l) =>
-			l.includes("arkenv preset apply [provider]"),
-		);
-		expect(presetApplyCommandLog).toBeDefined();
-		expect(presetApplyCommandLog).toBe(
-			"  arkenv preset apply [provider]     Apply or refresh hosting provider preset (vercel, netlify, cloudflare, railway, render, fly)",
-		);
-
-		const presetRemoveCommandLog = logs.find((l) =>
-			l.includes("arkenv preset remove [provider]"),
-		);
-		expect(presetRemoveCommandLog).toBeDefined();
-		expect(presetRemoveCommandLog).toBe(
-			"  arkenv preset remove [provider]    Remove hosting provider preset from schema",
-		);
+		const presetCommandLog = logs.find((l) => l.includes("arkenv preset"));
+		expect(presetCommandLog).toBeUndefined();
 
 		const globalHeaderIndex = logs.findIndex((l) =>
 			l.includes(pc.bold("Global options:")),
@@ -127,10 +111,19 @@ describe("HelpUseCase", () => {
 		const checkHeaderIndex = logs.findIndex((l) =>
 			l.includes(pc.bold("check options:")),
 		);
-		const exampleHeaderIndex = logs.findIndex((l) =>
-			l.includes(pc.bold("example options:")),
-		);
 		expect(checkHeaderIndex).toBeGreaterThan(initHeaderIndex);
-		expect(exampleHeaderIndex).toBeGreaterThan(checkHeaderIndex);
+
+		const presetHeaderIndex = logs.findIndex((l) =>
+			l.includes(pc.bold("preset options:")),
+		);
+		expect(presetHeaderIndex).toBe(-1);
+
+		const verifyExampleOptionLog = logs.find((l) =>
+			l.includes("--verify-example [file]"),
+		);
+		expect(verifyExampleOptionLog).toBeDefined();
+		expect(logs.indexOf(verifyExampleOptionLog as string)).toBeGreaterThan(
+			checkHeaderIndex,
+		);
 	});
 });

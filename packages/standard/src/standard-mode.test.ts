@@ -7,6 +7,7 @@ import * as zMini from "zod/mini";
 import { z as z3 } from "zod/v3";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { ArkEnvError, arkenv } from "./index";
+import arkenvSafe from "./safe";
 
 // Mock Standard Schema validators for testing
 const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({
@@ -1001,7 +1002,7 @@ describe("Standard Mode emptyAsUndefined", () => {
 		}
 	});
 
-	it("should support arkenv({ safe: true }) standard mode API", () => {
+	it("should support arkenv from @arkenv/standard/safe", () => {
 		const mockZodValidator = {
 			"~standard": {
 				version: 1 as const,
@@ -1024,11 +1025,11 @@ describe("Standard Mode emptyAsUndefined", () => {
 			},
 		};
 
-		const resultSuccess = arkenv(
+		const resultSuccess = arkenvSafe(
 			{
 				PORT: mockZodValidator,
 			},
-			{ safe: true, env: { PORT: "3000" } },
+			{ env: { PORT: "3000" } },
 		);
 		expect(resultSuccess.success).toBe(true);
 		if (resultSuccess.success) {
@@ -1036,11 +1037,11 @@ describe("Standard Mode emptyAsUndefined", () => {
 		}
 		expectTypeOf(resultSuccess).toHaveProperty("success");
 
-		const resultFail = arkenv(
+		const resultFail = arkenvSafe(
 			{
 				PORT: mockZodValidator,
 			},
-			{ safe: true, env: {} },
+			{ env: {} },
 		);
 		expect(resultFail.success).toBe(false);
 		if (!resultFail.success) {

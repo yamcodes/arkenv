@@ -1,12 +1,12 @@
 # CLI command name for schema → `.env.example`
 
 Locked. See [ADR 0030](../adr/0030-cli-env-example-command-name.md)
-(`cli-env-example-command-name`).
+(`cli-env-example-command-name`), superseded by `arkenv check --verify-example` ([#1727](https://github.com/yamcodes/arkenv/issues/1727)).
 
 This file was the living hat for
 [#1234](https://github.com/yamcodes/arkenv/issues/1234) /
 [PR #1643](https://github.com/yamcodes/arkenv/pull/1643). **Chosen public
-story:** `arkenv example` with no aliases (stack A3 + B1). Amend the ADR.
+story:** `arkenv example` with no aliases (stack A3 + B1), subsequently replaced by read-only `arkenv check --verify-example` ([#1727](https://github.com/yamcodes/arkenv/issues/1727)). Amend the ADR.
 Do not resume scoring here.
 
 ## Problem
@@ -54,36 +54,36 @@ alias” into one list. An alias of `sync` still spends the verb.
 
 ### Layer A — public command path
 
-| #   | Option                                      | Notes                                                        |
-| --- | ------------------------------------------- | ------------------------------------------------------------ |
-| A1  | `sync`                                      | Blessed in the #1234 agent brief. Current PR.                |
-| A2  | `template`                                  | User-suggested. Scaffolding already has example *templates*. |
-| A3  | `example`                                   | User-suggested. Artifact is `.env.example`.                  |
-| A4  | `gen`                                       | User-suggested abbreviation of generate.                     |
-| A5  | `generate`                                  | Original bikeshed rival. Prisma-shaped.                      |
-| A6  | `codegen`                                   | User-suggested. Implies TypeScript / `env.gen.ts`.           |
-| A7  | `env-example`                               | User-suggested. Filename as command.                         |
-| A8  | `update`                                    | User-suggested. Vague object.                                |
-| A9  | `refresh`                                   | Verb like `check`. Does not name the file.                   |
-| A10 | `dump`                                      | Overwrite energy. Hostile.                                   |
-| A11 | `export`                                    | Sounds like dumping `process.env` or a shell export.         |
-| A12 | `write-example`                             | Honest, long, hyphen pile.                                   |
-| A13 | `pull`                                      | Cloud-secret verb. Out of scope for this job.                |
-| A14 | `push`                                      | Same family as pull. Wrong direction.                        |
-| A15 | `hydrate`                                   | Jargon; sounds like filling values.                          |
-| A16 | `seed`                                      | Sounds like writing `.env` with starter secrets.             |
-| A17 | `emit`                                      | Compiler-speak.                                              |
-| A18 | `snapshot`                                  | Implies a point-in-time copy of live env.                    |
-| A19 | `align` / `reconcile`                       | Accurate, uncommon as CLI verbs.                             |
-| A20 | `example-env`                               | Word order vs the filename.                                  |
-| A21 | `dotenv-example`                            | Brands a format ArkEnv is not a loader for.                  |
-| A22 | `schema-example`                            | Honest source, still hyphenated.                             |
-| A23 | `make-example`                              | Make-ism.                                                    |
-| A24 | `sync-example`                              | Keeps `sync` in the public path.                             |
-| A25 | `example sync` (subcommand)                 | Extra noun for one job.                                      |
-| A26 | Fold into `init` only                       | Rejected in #1234: `.env.example` drifts after day one.      |
-| A27 | Fold into `check` (`check --write-example`) | Mixes validate-env with write-file.                          |
-| A28 | `lint`                                      | Reserved for on-disk env-file lint (#481).                   |
+| #   | Option                                      | Notes                                                                                               |
+| --- | ------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| A1  | `sync`                                      | Blessed in the #1234 agent brief. Current PR.                                                       |
+| A2  | `template`                                  | User-suggested. Scaffolding already has example *templates*.                                        |
+| A3  | `example`                                   | User-suggested. Artifact is `.env.example`.                                                         |
+| A4  | `gen`                                       | User-suggested abbreviation of generate.                                                            |
+| A5  | `generate`                                  | Original bikeshed rival. Prisma-shaped.                                                             |
+| A6  | `codegen`                                   | User-suggested. Implies TypeScript / `env.gen.ts`.                                                  |
+| A7  | `env-example`                               | User-suggested. Filename as command.                                                                |
+| A8  | `update`                                    | User-suggested. Vague object.                                                                       |
+| A9  | `refresh`                                   | Verb like `check`. Does not name the file.                                                          |
+| A10 | `dump`                                      | Overwrite energy. Hostile.                                                                          |
+| A11 | `export`                                    | Sounds like dumping `process.env` or a shell export.                                                |
+| A12 | `write-example`                             | Honest, long, hyphen pile.                                                                          |
+| A13 | `pull`                                      | Cloud-secret verb. Out of scope for this job.                                                       |
+| A14 | `push`                                      | Same family as pull. Wrong direction.                                                               |
+| A15 | `hydrate`                                   | Jargon; sounds like filling values.                                                                 |
+| A16 | `seed`                                      | Sounds like writing `.env` with starter secrets.                                                    |
+| A17 | `emit`                                      | Compiler-speak.                                                                                     |
+| A18 | `snapshot`                                  | Implies a point-in-time copy of live env.                                                           |
+| A19 | `align` / `reconcile`                       | Accurate, uncommon as CLI verbs.                                                                    |
+| A20 | `example-env`                               | Word order vs the filename.                                                                         |
+| A21 | `dotenv-example`                            | Brands a format ArkEnv is not a loader for.                                                         |
+| A22 | `schema-example`                            | Honest source, still hyphenated.                                                                    |
+| A23 | `make-example`                              | Make-ism.                                                                                           |
+| A24 | `sync-example`                              | Keeps `sync` in the public path.                                                                    |
+| A25 | `example sync` (subcommand)                 | Extra noun for one job.                                                                             |
+| A26 | Fold into `init` only                       | Rejected in #1234: `.env.example` drifts after day one.                                             |
+| A27 | Fold into `check` (`check --write-example`) | Mixes validate-env with write-file.                                                                 |
+| A28 | `lint`                                      | Withdrawn / archived RFC ([Discussion #1710](https://github.com/yamcodes/arkenv/discussions/1710)). |
 
 ### Layer B — alias policy
 

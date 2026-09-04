@@ -1,12 +1,12 @@
 {
 	"name": "@arkenv/bun-plugin",
-	"version": "1.0.0-alpha.11",
+	"version": "1.0.0-alpha.13",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/yamcodes/arkenv.git"
 	},
-	"main": "./dist/index.cjs",
+	"main": "./dist/index.js",
 	"module": "./dist/index.js",
 	"dependencies": {
 		"@arkenv/build": "workspace:*",
@@ -50,12 +50,12 @@
 		".": {
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js",
-			"require": "./dist/index.cjs"
+			"default": "./dist/index.js"
 		},
 		"./standard": {
 			"types": "./dist/standard.d.ts",
 			"import": "./dist/standard.js",
-			"require": "./dist/standard.cjs"
+			"default": "./dist/standard.js"
 		}
 	},
 	"bugs": "https://github.com/yamcodes/arkenv/labels/%40arkenv%2Fbun-plugin",

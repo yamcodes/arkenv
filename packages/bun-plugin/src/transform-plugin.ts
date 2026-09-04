@@ -101,9 +101,6 @@ export function createTransformPlugin(
 			 * Rewrite the env module in browser bundles only.
 			 *
 			 * @remarks
-			 * ADR 0021 (canonical env object surface): do not reintroduce `env.gen.ts`
-			 * codegen, client-side re-validation, or `runtimeEnv` wiring here.
-			 *
 			 * Dev-server refresh: `onStart` re-validates on each `Bun.build` /
 			 * `[serve.static]` rebuild. Bun does not expose a Vite-style
 			 * `handleHotUpdate` hook, so editing `.env` / `env.ts` during an

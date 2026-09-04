@@ -10,6 +10,7 @@ const testAliases = {
 	"@arkenv/nuxt/config": path.join(nuxtSrc, "config.ts"),
 	"@arkenv/nuxt": path.join(nuxtSrc, "index.ts"),
 	"@arkenv/core": path.join(coreSrc, "index.ts"),
+	"@arkenv/core/issues": path.join(coreSrc, "issues.ts"),
 	"@repo/scope": path.join(nuxtSrc, "../../internal/scope/src/index.ts"),
 	"@repo/types": path.join(nuxtSrc, "../../internal/types/src/index.ts"),
 	"#imports": path.join(nuxtSrc, "mock-imports.ts"),

@@ -1,13 +1,7 @@
 import { Logger } from "@/adapters";
-import {
-	type HostPreset,
-	isHostPreset,
-	isHostProvider,
-} from "@/features/scaffold/presets";
+import { type HostPreset, isHostPreset } from "@/features/scaffold/presets";
 import type { CheckInput } from "./commands/check";
-import type { ExampleInput } from "./commands/example";
 import type { InitInput } from "./commands/init";
-import type { PresetInput } from "./commands/preset";
 
 const FLAG_CONFIG = {
 	isYes: { long: "--yes", short: "-y", kind: "boolean" },
@@ -23,9 +17,13 @@ const FLAG_CONFIG = {
 	noCodegen: { long: "--no-codegen", short: "", kind: "boolean" },
 	preset: { long: "--preset", short: "-P", kind: "value" },
 	hostPreset: { long: "--host-preset", short: "-H", kind: "value" },
-	file: { long: "--file", short: "", kind: "value" },
 	schema: { long: "--schema", short: "-s", kind: "value" },
 	envFile: { long: "--env-file", short: "", kind: "value" },
+	verifyExample: {
+		long: "--verify-example",
+		short: "",
+		kind: "optional-value",
+	},
 } as const;
 
 const knownFlags = new Set<string>(
@@ -48,6 +46,7 @@ export class CLI {
 	public validationError: string | undefined;
 	public logger: Logger;
 	public positionalArgs: string[];
+	private verifyExampleValue: boolean | string | undefined;
 
 	/**
 	 * Creates a CLI context from process arguments and optional adapters.
@@ -97,7 +96,15 @@ export class CLI {
 					this.validationError = `Unknown argument: ${arg}`;
 					break;
 				}
-				if (valuedFlags.has(arg)) {
+				if (arg === FLAG_CONFIG.verifyExample.long) {
+					if (i + 1 < this.args.length && !this.args[i + 1].startsWith("-")) {
+						this.verifyExampleValue = this.args[i + 1];
+						i += 2;
+					} else {
+						this.verifyExampleValue = true;
+						i += 1;
+					}
+				} else if (valuedFlags.has(arg)) {
 					if (i + 1 < this.args.length && !this.args[i + 1].startsWith("-")) {
 						i += 2;
 					} else {
@@ -128,28 +135,7 @@ export class CLI {
 		this.positionalArgs = positionalArgs;
 
 		if (!this.validationError) {
-			if (this.command === "preset") {
-				if (positionalArgs.length === 0) {
-					this.validationError = "Missing subcommand";
-				} else {
-					const action = positionalArgs[0];
-					if (
-						action !== "apply" &&
-						action !== "remove" &&
-						action !== "rm" &&
-						action !== "add"
-					) {
-						this.validationError = `Unknown preset action: ${action}`;
-					} else if (positionalArgs.length > 2) {
-						this.validationError = `Unknown argument: ${positionalArgs[2]}`;
-					} else {
-						const provider = positionalArgs[1];
-						if (provider !== undefined && !isHostProvider(provider)) {
-							this.validationError = `Invalid host preset: ${provider}`;
-						}
-					}
-				}
-			} else if (this.command === "check" || this.command === "example") {
+			if (this.command === "check") {
 				if (positionalArgs.length > 0) {
 					this.validationError = `Unknown argument: ${positionalArgs[0]}`;
 				}
@@ -204,19 +190,18 @@ export class CLI {
 		return this.hasFlag("noCodegen");
 	}
 
-	get file(): string | undefined {
-		const flag = FLAG_CONFIG.file;
-		return this.getFlagValue(flag.long, flag.short);
-	}
-
 	get schema(): string | undefined {
 		const flag = FLAG_CONFIG.schema;
-		return this.getFlagValue(flag.long, flag.short) ?? this.file;
+		return this.getFlagValue(flag.long, flag.short);
 	}
 
 	get envFiles(): string[] {
 		const flag = FLAG_CONFIG.envFile;
 		return this.getFlagValues(flag.long, flag.short);
+	}
+
+	get verifyExample(): boolean | string | undefined {
+		return this.verifyExampleValue;
 	}
 
 	get hostPreset(): HostPreset | undefined {
@@ -265,43 +250,20 @@ export class CLI {
 		return input;
 	}
 
-	get presetInput(): PresetInput {
-		const rawAction = this.positionalArgs[0];
-		const action =
-			rawAction === "remove" || rawAction === "rm" ? "remove" : "apply";
-		const provider = this.positionalArgs[1];
-		const file = this.file;
-		return {
-			action,
-			...(provider && isHostProvider(provider) ? { provider } : {}),
-			...(file !== undefined ? { file } : {}),
-			isForce: this.isForce,
-			isYes: this.isYes,
-		};
-	}
-
 	get checkInput(): CheckInput {
 		return {
 			...(this.schema !== undefined
 				? { schema: this.schema, file: this.schema }
 				: {}),
 			...(this.envFiles.length > 0 ? { envFiles: this.envFiles } : {}),
+			...(this.verifyExample !== undefined
+				? { verifyExample: this.verifyExample }
+				: {}),
 			isQuiet: this.isQuiet,
 			isJson: this.isJson,
 			isAgent: this.isAgent,
 			isYes: this.isYes,
 			isForce: this.isForce,
-		};
-	}
-
-	get exampleInput(): ExampleInput {
-		return {
-			...(this.schema !== undefined
-				? { schema: this.schema, file: this.schema }
-				: {}),
-			isQuiet: this.isQuiet,
-			isJson: this.isJson,
-			isAgent: this.isAgent,
 		};
 	}
 

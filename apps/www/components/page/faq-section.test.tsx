@@ -18,9 +18,11 @@ describe("FaqSection", () => {
 			),
 		).toBeInTheDocument();
 
-		expect(screen.getByText(/Booleans:/i)).toBeInTheDocument();
-		expect(screen.getByText(/Numbers:/i)).toBeInTheDocument();
-		expect(screen.getByText(/Client\/server splits:/i)).toBeInTheDocument();
+		expect(screen.getAllByText(/Booleans:/i).length).toBeGreaterThanOrEqual(1);
+		expect(screen.getAllByText(/Numbers:/i).length).toBeGreaterThanOrEqual(1);
+		expect(
+			screen.getAllByText(/Client\/server splits:/i).length,
+		).toBeGreaterThanOrEqual(1);
 
 		const link = screen.getByRole("link", {
 			name: /read the full getEnv migration guide/i,

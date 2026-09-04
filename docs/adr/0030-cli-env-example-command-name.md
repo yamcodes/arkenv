@@ -4,7 +4,7 @@ The dedicated CLI command that merges `.env.example` from the loaded schema is `
 
 ## Status
 
-Accepted ([#1234](https://github.com/yamcodes/arkenv/issues/1234) closed by hand; shipped in [#1643](https://github.com/yamcodes/arkenv/pull/1643))
+Superseded by `arkenv check --verify-example` ([#1727](https://github.com/yamcodes/arkenv/issues/1727))
 
 ## Context
 
@@ -37,7 +37,7 @@ Optional later rename to `env-example` (A7) only if support noise from `example`
 - **A7 — `env-example`.** A-tier tuck-away if `example` vs `--example` is too noisy. Not required to close #1234.
 - **B2 — `sync` as hidden alias.** Still spends `sync` in autocomplete. Rejected.
 - **A26 / A27 — fold into `init` or `check`.** Rejected in #1234: the example file drifts after day one; mixing validate-env with write-file confuses jobs.
-- **A28 — `lint`.** Reserved for on-disk env-file lint (#481).
+- **A28 — `lint`.** Withdrawn / archived RFC ([Discussion #1710](https://github.com/yamcodes/arkenv/discussions/1710), superseding ADR 0017).
 
 ## Consequences
 

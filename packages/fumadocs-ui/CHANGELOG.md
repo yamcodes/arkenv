@@ -1,5 +1,25 @@
 # @arkenv/fumadocs-ui
 
+## 1.0.0-alpha.6
+
+### Patch Changes
+
+- #### Fix keyboard focus ring truncation in sidebar navigation _[`#1743`](https://github.com/yamcodes/arkenv/pull/1743) [`16f2d09`](https://github.com/yamcodes/arkenv/commit/16f2d09e4ef7cef95c332b080924802c31194fdd) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	The drill-in sidebar slide container now uses `overflow: clip` with an expanded clip margin instead of `overflow: hidden`, preventing keyboard focus rings from being clipped along the left and right edges.
+
+## 1.0.0-alpha.5
+
+### Patch Changes
+
+- #### Reduce package install sizes by omitting sourcemaps and externalizing core types _[`#1734`](https://github.com/yamcodes/arkenv/pull/1734) [`190b652`](https://github.com/yamcodes/arkenv/commit/190b652e7314e443b6a8f182c14fa57920058ede) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Published packages now omit declaration maps (`.d.ts.map`, `.d.mts.map`, `.d.cts.map`) and runtime JavaScript sourcemaps (`*.map`) across the monorepo, significantly reducing npm install footprints and package archive sizes. Both are loss-free removals: declaration maps are inert without the raw `.ts` sources they point to (which are never published), and runtime sourcemaps only re-map minified code (which ArkEnv does not ship).
+	
+	In addition, public ArkType type contracts in `@arkenv/core` declarations are now externalized rather than recursively expanded by the compiler, shrinking `@arkenv/core` declaration files and preventing internal AST definitions from being inlined into consumer type builds. The public type surface is unchanged — only how `tsc` encodes it on disk.
+
 ## 1.0.0-alpha.4
 
 ### Patch Changes

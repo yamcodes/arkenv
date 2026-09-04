@@ -5,13 +5,7 @@ import {
 	NodeWorkspace,
 } from "@/adapters";
 import { CLI } from "./cli";
-import {
-	CheckUseCase,
-	ExampleUseCase,
-	HelpUseCase,
-	InitUseCase,
-	PresetUseCase,
-} from "./commands";
+import { CheckUseCase, HelpUseCase, InitUseCase } from "./commands";
 
 /**
  * Bootstraps the application's dependency graph by composing
@@ -35,21 +29,7 @@ export function compose(
 		: {};
 	const schemaLoader = new JitiSchemaLoaderAdapter(jitiOptions);
 
-	const exampleUseCase = new ExampleUseCase(
-		logger,
-		workspace,
-		scanner,
-		schemaLoader,
-	);
-	const initUseCase = new InitUseCase(
-		logger,
-		workspace,
-		prompt,
-		scanner,
-		undefined,
-		exampleUseCase,
-	);
-	const presetUseCase = new PresetUseCase(logger, workspace, prompt, scanner);
+	const initUseCase = new InitUseCase(logger, workspace, prompt, scanner);
 	const checkUseCase = new CheckUseCase(
 		logger,
 		workspace,
@@ -64,9 +44,7 @@ export function compose(
 		workspace,
 		prompt,
 		initUseCase,
-		presetUseCase,
 		checkUseCase,
-		exampleUseCase,
 		helpUseCase,
 		schemaLoader,
 	};

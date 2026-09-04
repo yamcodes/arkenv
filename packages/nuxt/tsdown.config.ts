@@ -13,13 +13,13 @@ export default defineConfig({
 		"src/standard/module.ts",
 		"src/standard/config.ts",
 	],
-	format: ["esm", "cjs"],
+	format: ["esm"],
 	// Unminified: alwaysBundle of @repo/utils (index + boundary-access-error) then
 	// minify produced a chunk Vite/Rollup rejects ("Identifier h has already been
 	// declared") when Nuxt playgrounds rebundle the published ESM.
 	minify: false,
 	fixedExtension: false,
-	sourcemap: true,
+	sourcemap: false,
 	deps: {
 		alwaysBundle: ["@repo/log", "@repo/types", "@repo/utils"],
 		neverBundle: [
@@ -27,6 +27,7 @@ export default defineConfig({
 			"@nuxt/schema",
 			"nitropack",
 			"#arkenv/server-boot",
+			"arktype",
 		],
 	},
 });

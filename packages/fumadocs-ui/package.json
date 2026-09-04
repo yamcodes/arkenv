@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/fumadocs-ui",
-	"version": "1.0.0-alpha.4",
+	"version": "1.0.0-alpha.6",
 	"type": "module",
 	"repository": {
 		"type": "git",
@@ -9,28 +9,19 @@
 	"exports": {
 		"./css/*": "./css/*",
 		"./mdx": {
-			"types": {
-				"import": "./dist/mdx/index.d.mts",
-				"require": "./dist/mdx/index.d.cts"
-			},
-			"import": "./dist/mdx/index.mjs",
-			"require": "./dist/mdx/index.cjs"
+			"types": "./dist/mdx/index.d.ts",
+			"import": "./dist/mdx/index.js",
+			"default": "./dist/mdx/index.js"
 		},
 		"./components": {
-			"types": {
-				"import": "./dist/components/index.d.mts",
-				"require": "./dist/components/index.d.cts"
-			},
-			"import": "./dist/components/index.mjs",
-			"require": "./dist/components/index.cjs"
+			"types": "./dist/components/index.d.ts",
+			"import": "./dist/components/index.js",
+			"default": "./dist/components/index.js"
 		},
 		"./utils": {
-			"types": {
-				"import": "./dist/utils/index.d.mts",
-				"require": "./dist/utils/index.d.cts"
-			},
-			"import": "./dist/utils/index.mjs",
-			"require": "./dist/utils/index.cjs"
+			"types": "./dist/utils/index.d.ts",
+			"import": "./dist/utils/index.js",
+			"default": "./dist/utils/index.js"
 		}
 	},
 	"files": [

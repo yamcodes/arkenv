@@ -15,7 +15,7 @@ For high-level architectural trade-offs, see
 Scaffold Vite integration in an existing project using the CLI:
 
 ```package-install
-npx arkenv@latest init
+npx arkenv init
 ```
 
 The CLI installs `@arkenv/vite-plugin`, configures `vite.config.ts`, and scaffolds
@@ -65,7 +65,7 @@ If you aren't using ArkType, import the plugin from `@arkenv/vite-plugin/standar
 
 ### Define your schema
 
-Create an `env.ts` file in your source tree:
+Create an `env.ts` file in your source tree. Import from `@arkenv/core` (or `@arkenv/standard`); the `arkenv` package is CLI-only:
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/core";
@@ -129,6 +129,10 @@ Vite maintains two distinct module graphs when building and serving full-stack o
 
 - **Server graph:** During SSR execution and dev server requests, `env.ts` executes real `@arkenv/core` runtime validation at boot. It ensures private secrets (such as `DATABASE_URL`) and public configuration validate before handling requests.
 - **Client graph:** During client compilation, `@arkenv/vite-plugin` intercepts and transforms `env.ts`. It inlines public `VITE_*` values as static literals and replaces private server keys with throwing runtime stubs. Client bundles omit the validator engine.
+
+On Vite 6+, the Environment API drives this split: server consumers and custom
+`ssr` environments keep the real module, everything else gets the client rewrite.
+On Vite 4 and 5, the plugin falls back to the legacy SSR transform flag.
 
 ## Next steps
 

@@ -33,7 +33,13 @@ function regenerateLockFile(examplePath, packageManager) {
 
 	if (packageManager === "npm" || packageManager.startsWith("npm@")) {
 		bin = "npm";
-		args = ["install", "--package-lock-only", "--ignore-scripts"];
+		args = [
+			"install",
+			"--package-lock-only",
+			"--ignore-scripts",
+			"--no-audit",
+			"--no-fund",
+		];
 		lockFile = "package-lock.json";
 	} else if (packageManager === "bun" || packageManager.startsWith("bun@")) {
 		bin = "bun";

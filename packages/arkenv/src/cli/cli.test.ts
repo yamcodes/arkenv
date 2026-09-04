@@ -307,87 +307,6 @@ describe("CLI parser", () => {
 			const invalid = new CLI(["node", "arkenv", "init", "-H", "vercle"]);
 			expect(invalid.validationError).toBe("Invalid host preset: vercle");
 		});
-
-		describe("preset command", () => {
-			it("should parse valid preset apply vercel command", () => {
-				const cli = new CLI(["node", "arkenv", "preset", "apply", "vercel"]);
-				expect(cli.command).toBe("preset");
-				expect(cli.presetInput.action).toBe("apply");
-				expect(cli.presetInput.provider).toBe("vercel");
-				expect(cli.validationError).toBeUndefined();
-			});
-
-			it("should parse valid preset remove netlify command", () => {
-				const cli = new CLI(["node", "arkenv", "preset", "remove", "netlify"]);
-				expect(cli.command).toBe("preset");
-				expect(cli.presetInput.action).toBe("remove");
-				expect(cli.presetInput.provider).toBe("netlify");
-				expect(cli.validationError).toBeUndefined();
-			});
-
-			it("should parse valid preset rm alias", () => {
-				const cli = new CLI(["node", "arkenv", "preset", "rm", "cloudflare"]);
-				expect(cli.command).toBe("preset");
-				expect(cli.presetInput.action).toBe("remove");
-				expect(cli.presetInput.provider).toBe("cloudflare");
-				expect(cli.validationError).toBeUndefined();
-			});
-
-			it("should parse preset apply with omitted provider", () => {
-				const cli = new CLI(["node", "arkenv", "preset", "apply"]);
-				expect(cli.command).toBe("preset");
-				expect(cli.presetInput.action).toBe("apply");
-				expect(cli.presetInput.provider).toBeUndefined();
-				expect(cli.validationError).toBeUndefined();
-			});
-
-			it("should parse flags in presetInput", () => {
-				const cli = new CLI([
-					"node",
-					"arkenv",
-					"preset",
-					"apply",
-					"vercel",
-					"--force",
-					"--yes",
-					"--file",
-					"./custom-env.ts",
-				]);
-				expect(cli.command).toBe("preset");
-				expect(cli.presetInput.action).toBe("apply");
-				expect(cli.presetInput.provider).toBe("vercel");
-				expect(cli.presetInput.isForce).toBe(true);
-				expect(cli.presetInput.isYes).toBe(true);
-				expect(cli.presetInput.file).toBe("./custom-env.ts");
-			});
-
-			it("should reject bare preset without a subcommand", () => {
-				const cli = new CLI(["node", "arkenv", "preset"]);
-				expect(cli.validationError).toBe("Missing subcommand");
-			});
-
-			it("should reject unknown preset action", () => {
-				const cli = new CLI(["node", "arkenv", "preset", "invalid"]);
-				expect(cli.validationError).toBe("Unknown preset action: invalid");
-			});
-
-			it("should reject invalid provider in preset apply", () => {
-				const cli = new CLI(["node", "arkenv", "preset", "apply", "vercle"]);
-				expect(cli.validationError).toBe("Invalid host preset: vercle");
-			});
-
-			it("should reject extra positional arguments", () => {
-				const cli = new CLI([
-					"node",
-					"arkenv",
-					"preset",
-					"apply",
-					"vercel",
-					"extra",
-				]);
-				expect(cli.validationError).toBe("Unknown argument: extra");
-			});
-		});
 	});
 
 	describe("check command", () => {
@@ -441,9 +360,78 @@ describe("CLI parser", () => {
 			expect(cli.validationError).toBeUndefined();
 		});
 
+		it("should parse boolean --verify-example flag", () => {
+			const cli = new CLI(["node", "arkenv", "check", "--verify-example"]);
+			expect(cli.command).toBe("check");
+			expect(cli.verifyExample).toBe(true);
+			expect(cli.checkInput.verifyExample).toBe(true);
+			expect(cli.validationError).toBeUndefined();
+		});
+
+		it("should parse boolean --verify-example flag followed by other flags", () => {
+			const cli = new CLI([
+				"node",
+				"arkenv",
+				"check",
+				"--verify-example",
+				"--schema",
+				"./src/env.ts",
+				"--json",
+			]);
+			expect(cli.command).toBe("check");
+			expect(cli.verifyExample).toBe(true);
+			expect(cli.checkInput.verifyExample).toBe(true);
+			expect(cli.checkInput.schema).toBe("./src/env.ts");
+			expect(cli.isJson).toBe(true);
+			expect(cli.validationError).toBeUndefined();
+		});
+
+		it("should parse --verify-example with a custom file path", () => {
+			const cli = new CLI([
+				"node",
+				"arkenv",
+				"check",
+				"--verify-example",
+				".env.example.local",
+			]);
+			expect(cli.command).toBe("check");
+			expect(cli.verifyExample).toBe(".env.example.local");
+			expect(cli.checkInput.verifyExample).toBe(".env.example.local");
+			expect(cli.validationError).toBeUndefined();
+		});
+
+		it("should parse --verify-example with custom file path and other flags", () => {
+			const cli = new CLI([
+				"node",
+				"arkenv",
+				"check",
+				"--verify-example",
+				".env.example.staging",
+				"--schema",
+				"./env.ts",
+			]);
+			expect(cli.command).toBe("check");
+			expect(cli.verifyExample).toBe(".env.example.staging");
+			expect(cli.checkInput.verifyExample).toBe(".env.example.staging");
+			expect(cli.checkInput.schema).toBe("./env.ts");
+			expect(cli.validationError).toBeUndefined();
+		});
+
 		it("should reject positional arguments to check command", () => {
 			const cli = new CLI(["node", "arkenv", "check", "unexpected"]);
 			expect(cli.validationError).toBe("Unknown argument: unexpected");
+		});
+
+		it("should reject extra positional arguments even with --verify-example <path>", () => {
+			const cli = new CLI([
+				"node",
+				"arkenv",
+				"check",
+				"--verify-example",
+				".env.example.staging",
+				"extra-positional",
+			]);
+			expect(cli.validationError).toBe("Unknown argument: extra-positional");
 		});
 	});
 });

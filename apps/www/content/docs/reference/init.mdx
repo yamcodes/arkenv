@@ -9,7 +9,7 @@ the walkthrough, see
 [Installation](/docs/getting-started/installation).
 
 ```package-install
-npx arkenv@latest init
+npx arkenv init
 ```
 
 ## Usage
@@ -46,27 +46,48 @@ Pre-populate provider system variables. Values: `none`, `vercel`,
 `--host-preset` and `-H` as aliases.
 
 See [Hosting presets](/docs/core-concepts/hosting-presets).
-To apply or remove presets later, use [`preset`](/docs/reference/preset).
 
 ### `--agent`
 
 Same macro as the [global `--agent` flag](/docs/reference#agent):
 `--yes --quiet --json`. It does not imply `--force`.
 
-When a safety check fails (dirty git tree), stdout is a JSON refusal and
-the process exits non-zero:
+When a safety check fails (dirty git tree), stdout is an errored
+settlement envelope (`ok: false`) and the process exits non-zero:
 
 ```json
 {
-  "status": "error",
-  "code": "GIT_TREE_DIRTY",
-  "message": "Git working tree is not clean.",
-  "retryWith": ["--force"]
+  "ok": false,
+  "commandId": "init",
+  "error": {
+    "code": "CLI.GIT_TREE_DIRTY",
+    "severity": "error",
+    "summary": "Git working tree is not clean.",
+    "why": "Commit or stash your changes before running arkenv init.",
+    "nextActions": [
+      {
+        "kind": "run-command",
+        "label": "Re-run with --force to bypass git working tree check",
+        "command": "arkenv init --force"
+      }
+    ]
+  },
+  "diagnostics": [],
+  "nextActions": [
+    {
+      "kind": "run-command",
+      "label": "Re-run with --force to bypass git working tree check",
+      "command": "arkenv init --force"
+    }
+  ]
 }
 ```
 
-Only rerun with flags in `retryWith` after you confirm the bypass is
-safe.
+Branch on `error.code` (dotted `CLI.*` / `ENV.*` codes). Use
+`nextActions` for remediation — a `run-command` action with `--force`
+means the refusal is bypassable. Only re-run with that flag after you
+confirm the bypass is safe. The same envelope shape is documented for
+[`check --json`](/docs/reference/check#json--j).
 
 ### `--example <name>`
 
@@ -86,10 +107,8 @@ Depending on the detected framework and flags, `init` writes:
 
 - Schema file: `env.ts` (often under `src/`)
 - `.env` / `.env.example` when missing. Init never reads an existing
-  `.env`; a missing `.env.example` is filled from detected keys and
-  defaults, then `example` refreshes `.env.example` from the loaded
-  schema in an existing project. If `.env` is missing, init may copy
-  `.env.example` into it.
+  `.env`; a missing `.env.example` is scaffolded from detected keys and
+  defaults. If `.env` is missing, init may copy `.env.example` into it.
 - Next.js: `withArkEnv` in `next.config.*`, `.arkenv/` in `.gitignore`,
   optional `.arkenv/env.gen.ts` (import as `@/.arkenv`)
 - Vite / Bun: plugin configuration in `vite.config.*` / `bunfig.toml`
@@ -116,9 +135,9 @@ Importing `arkenv` as a library throws and points you at `@arkenv/core`.
 <Cards>
   <Card href="/docs/getting-started/installation" title="Installation" description="CLI walkthrough and manual install." />
 
-  <Card href="/docs/reference/preset" title="preset" description="CLI reference for applying and removing provider presets." />
+  <Card href="/docs/reference/check" title="check" description="Validate the resolved environment against your schema with CI exit codes." />
 
-  <Card href="/docs/reference/example" title="example" description="Update .env.example from the schema." />
+  <Card href="/docs/core-concepts/hosting-presets" title="Hosting presets" description="Pre-populate provider environment variables." />
 
   <Card href="/docs/reference/options" title="options" description="Configuration options passed to arkenv()." />
 </Cards>

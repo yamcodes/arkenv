@@ -128,11 +128,19 @@ export function createTransformPlugin(
 		 * Rewrite the env module in the client graph only.
 		 *
 		 * @remarks
-		 * ADR 0021 (canonical env object surface): do not reintroduce `env.gen.ts`
-		 * codegen, client-side re-validation, or `runtimeEnv` wiring here.
+		 * Vite 6+ discriminates module graphs through the Environment API:
+		 * server consumers (or environments named `ssr`) keep the real module,
+		 * everything else gets the client rewrite. On Vite 4/5, where
+		 * `this.environment` is undefined, the legacy `options.ssr` flag is used
+		 * as a fallback.
 		 */
 		transform(_code, id, options) {
-			if (options?.ssr) return null;
+			const isServer = this.environment
+				? this.environment.config?.consumer === "server" ||
+					this.environment.name === "ssr"
+				: Boolean(options?.ssr);
+
+			if (isServer) return null;
 			if (!state.schemaPath) return null;
 			if (!isEnvModuleId(id, state.schemaPath)) return null;
 

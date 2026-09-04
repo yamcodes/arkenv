@@ -5,14 +5,8 @@ import type {
 	SchemaShape,
 	StandardSchemaV1,
 } from "@repo/types";
-import {
-	ArkEnvError,
-	isCapturingSchema,
-	recordSchemaCapture,
-	type SafeArkEnvResult,
-	safeExecute,
-} from "@repo/utils";
-import type { type as at, distill } from "arktype";
+import type { SafeArkEnvResult } from "@repo/utils";
+import type { type as at, distill, Type } from "arktype";
 import { parse } from "./arktype";
 
 /**
@@ -36,7 +30,7 @@ export type Infer<T> =
 		? Output
 		: T extends { t: infer U }
 			? U
-			: T extends at.Any<infer U, infer _Scope>
+			: T extends Type<infer U, any>
 				? U
 				: T extends SchemaShape
 					? distill.Out<at.infer<T, $>>
@@ -98,13 +92,12 @@ export type ArkEnvConfig = {
 	emptyAsUndefined?: boolean;
 
 	/**
-	 * Whether to return a safe result object instead of throwing an error on validation failure.
-	 *
-	 * When enabled, the function returns an object with `{ success: true, data }` or `{ success: false, issues }`.
+	 * Reserved for call-site compat. Pass `false` or omit.
+	 * Use `arkenv` from `@arkenv/core/safe` instead of `{ safe: true }`.
 	 *
 	 * @default false
 	 */
-	safe?: boolean;
+	safe?: false;
 };
 
 export type { SafeArkEnvResult };
@@ -116,56 +109,63 @@ export type ArkenvOutput<T extends SchemaShape, D> =
 	| distill.Out<at.infer<T, $>>
 	| InferType<D>;
 
+const SCHEMA_CAPTURE_KEY = Symbol.for("arkenv.schemaCapture.v1");
+
+type SchemaCaptureBag = {
+	capturing: boolean;
+	definitions: unknown[];
+};
+
+/**
+ * Record `def` on the CLI schema-capture bag if capture is active.
+ *
+ * Shared by `arkenv` (throw path and `@arkenv/core/safe`) so CLI schema
+ * inspection keeps working after migrating off `{ safe: true }`.
+ *
+ * @param def The schema definition passed to `arkenv()`
+ * @returns `true` when capture consumed the call
+ */
+export function recordIfCapturing(def: unknown): boolean {
+	const state = (
+		globalThis as typeof globalThis & {
+			[SCHEMA_CAPTURE_KEY]?: SchemaCaptureBag;
+		}
+	)[SCHEMA_CAPTURE_KEY];
+	if (!state?.capturing) {
+		return false;
+	}
+	state.definitions.push(def);
+	return true;
+}
+
 /**
  * Parse and validate environment variables using ArkType or Standard Schema.
  *
  * @param def The schema definition
  * @param config The evaluation configuration
- * @returns The parsed environment variables, a SafeArkEnvResult if `{ safe: true }` is configured, or a value-less stub when schema capture is active
- * @throws An {@link ArkEnvError | error} if the environment variables are invalid and `safe` is not enabled
+ * @returns The parsed environment variables, or a value-less stub when schema capture is active
+ * @throws An ArkEnvError if the environment variables are invalid
  */
 export function arkenv<const T extends SchemaShape>(
 	def: EnvSchema<T>,
-	config?: ArkEnvConfig & { safe?: false },
+	config?: ArkEnvConfig,
 ): distill.Out<at.infer<T, $>>;
 export function arkenv<T extends CompiledEnvSchema>(
 	def: T,
-	config?: ArkEnvConfig & { safe?: false },
+	config?: ArkEnvConfig,
 ): InferType<T>;
 export function arkenv<
 	const T extends SchemaShape,
 	const D extends EnvSchema<T> | CompiledEnvSchema,
->(def: D, config?: ArkEnvConfig & { safe?: false }): ArkenvOutput<T, D>;
-export function arkenv<const T extends SchemaShape>(
-	def: EnvSchema<T>,
-	config: ArkEnvConfig & { safe: true },
-): SafeArkEnvResult<distill.Out<at.infer<T, $>>>;
-export function arkenv<T extends CompiledEnvSchema>(
-	def: T,
-	config: ArkEnvConfig & { safe: true },
-): SafeArkEnvResult<InferType<T>>;
+>(def: D, config?: ArkEnvConfig): ArkenvOutput<T, D>;
 export function arkenv<
 	const T extends SchemaShape,
 	const D extends EnvSchema<T> | CompiledEnvSchema,
->(
-	def: D,
-	config: ArkEnvConfig & { safe: true },
-): SafeArkEnvResult<ArkenvOutput<T, D>>;
-export function arkenv<
-	const T extends SchemaShape,
-	const D extends EnvSchema<T> | CompiledEnvSchema,
->(
-	def: D,
-	config: ArkEnvConfig = {},
-): ArkenvOutput<T, D> | SafeArkEnvResult<ArkenvOutput<T, D>> {
-	if (isCapturingSchema()) {
-		recordSchemaCapture(def);
+>(def: D, config: ArkEnvConfig = {}): ArkenvOutput<T, D> {
+	if (recordIfCapturing(def)) {
 		// Capture records the schema only. The returned object has no values, so
 		// schema modules must stay declarative and must not require env at module scope.
 		return {} as ArkenvOutput<T, D>;
-	}
-	if (config.safe) {
-		return safeExecute(() => parse(def as any, config));
 	}
 	// biome-ignore lint/suspicious/noExplicitAny: parse handles both EnvSchema<T> and CompiledEnvSchema at runtime
 	return parse(def as any, config);

@@ -14,10 +14,10 @@ type BoundArkEnv = typeof createArkEnv;
 export function bindArkEnv(
 	defaultToJsonSchema: NonNullable<StandardEnvConfig["toJsonSchema"]>,
 ): BoundArkEnv {
-	function boundArkEnv<
-		const T extends Record<string, StandardSchemaV1>,
-		const Safe extends boolean | undefined = undefined,
-	>(def: T, config?: Omit<StandardEnvConfig, "safe"> & { safe?: Safe }) {
+	function boundArkEnv<const T extends Record<string, StandardSchemaV1>>(
+		def: T,
+		config?: StandardEnvConfig,
+	) {
 		return createArkEnv(def, {
 			...config,
 			toJsonSchema: config?.toJsonSchema ?? defaultToJsonSchema,

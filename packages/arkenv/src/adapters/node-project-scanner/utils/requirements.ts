@@ -1,23 +1,8 @@
 import fsp from "node:fs/promises";
 import path from "node:path";
 import type { RequirementCheckResult } from "@/shared/ports";
+import { compareSemver } from "@/shared/semver";
 import { checkTsConfig } from "./tsconfig";
-
-/**
- * Simple semver comparison.
- * Returns 1 if v1 > v2, -1 if v1 < v2, 0 if equal.
- */
-function compareSemver(v1: string, v2: string): number {
-	const p1 = v1.replace(/^v/, "").split(".").map(Number);
-	const p2 = v2.replace(/^v/, "").split(".").map(Number);
-	for (let i = 0; i < 3; i++) {
-		const n1 = p1[i] || 0;
-		const n2 = p2[i] || 0;
-		if (n1 > n2) return 1;
-		if (n1 < n2) return -1;
-	}
-	return 0;
-}
 
 /**
  * Normalizes a semver string by removing leading 'v' and ensuring it has 3 parts (major.minor.patch).

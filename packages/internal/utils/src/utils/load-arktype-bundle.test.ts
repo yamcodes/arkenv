@@ -19,7 +19,7 @@ describe("load-arktype bundling compatibility", () => {
 			? process.cwd()
 			: join(process.cwd(), "packages/core");
 
-		const arkenvDistPath = join(projectRoot, "dist/index.mjs");
+		const arkenvDistPath = join(projectRoot, "dist/index.js");
 		const esbuildPath = join(projectRoot, "../../node_modules/.bin/esbuild");
 
 		// Create a small script that uses the ESM version of arkenv

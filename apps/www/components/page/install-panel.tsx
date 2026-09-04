@@ -5,11 +5,10 @@ import { ArrowUpRight, BookOpen, Check, Copy } from "lucide-react";
 import { SparklesIcon } from "~/components/icons/sparkles-icon";
 import { env } from "~/env";
 import { useCopyCommand } from "~/hooks/use-copy-command";
+import { RELEASE_CONFIG } from "~/lib/config/release";
 
-const INSTALL_COMMAND = "npx arkenv@latest init";
-
-const INSTALL_PROMPT =
-	"Set up ArkEnv with `npx arkenv@latest init --agent`. Install any missing dependencies, wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.";
+const INSTALL_COMMAND = RELEASE_CONFIG.initCommand;
+const INSTALL_PROMPT = RELEASE_CONFIG.agentPrompt;
 
 type InstallPanelProps = {
 	variant?: "hero" | "outro";
@@ -36,9 +35,7 @@ export function InstallPanel({ variant = "hero" }: InstallPanelProps) {
 				<span className="home-aurora__install-prompt-symbol" aria-hidden="true">
 					$
 				</span>
-				<code className="home-aurora__install-code">
-					npx arkenv@latest init
-				</code>
+				<code className="home-aurora__install-code">{INSTALL_COMMAND}</code>
 				<span
 					className="home-aurora__install-copy-affordance"
 					aria-hidden="true"

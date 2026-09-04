@@ -30,6 +30,7 @@ export type CheckInput = {
 	schema?: string;
 	file?: string;
 	envFiles?: string[];
+	verifyExample?: boolean | string;
 	isQuiet?: boolean;
 	isJson?: boolean;
 	isAgent?: boolean;
@@ -123,43 +124,7 @@ export class CheckUseCase {
 
 		const relSchemaPath = path.relative(cwd, schemaPath) || schemaPath;
 
-		// 3. Resolve environment variables
-		const resolvedEnv: Record<string, string | undefined> = {
-			...process.env,
-		};
-
-		if (input.envFiles && input.envFiles.length > 0) {
-			for (const envFile of input.envFiles) {
-				const resolvedEnvPath = path.resolve(cwd, envFile);
-				if (!(await this.workspace.exists(resolvedEnvPath))) {
-					const summary = `Environment file not found at "${resolvedEnvPath}".`;
-					if (isJson) {
-						this.logger.reportErrored({
-							ok: false,
-							commandId: "check",
-							error: {
-								code: PROTOCOL_ERROR_CODES.CLI_INVALID_ARGUMENT,
-								severity: "error",
-								summary,
-								where: { path: envFile },
-								nextActions: [],
-							},
-							diagnostics: [],
-							nextActions: [],
-						});
-					} else {
-						this.logger.error(summary);
-					}
-					return 2;
-				}
-
-				const content = await this.workspace.readFile(resolvedEnvPath);
-				const parsed = parseDotenv(content);
-				Object.assign(resolvedEnv, parsed);
-			}
-		}
-
-		// 4. Load schema under capture mode to verify validity
+		// 3. Load schema under capture mode to verify validity
 		const loadResult = await this.schemaLoader.load({ schemaPath });
 		if (!loadResult.ok) {
 			const summary = sanitizeSecretText(loadResult.message);
@@ -230,6 +195,137 @@ export class CheckUseCase {
 				}
 			}
 			return 2;
+		}
+
+		// 4. Verify .env.example if --verify-example flag is present
+		if (input.verifyExample !== undefined) {
+			const exampleFile =
+				typeof input.verifyExample === "string"
+					? input.verifyExample
+					: ".env.example";
+			const resolvedExamplePath = path.resolve(cwd, exampleFile);
+			const relExamplePath =
+				path.relative(cwd, resolvedExamplePath) || exampleFile;
+
+			let exampleContent = "";
+			if (await this.workspace.exists(resolvedExamplePath)) {
+				exampleContent = await this.workspace.readFile(resolvedExamplePath);
+			}
+
+			const parsedExample = parseDotenv(exampleContent);
+			const declaredKeys = loadResult.keys.map((k) => k.name);
+			const missingKeys = declaredKeys.filter((k) => !(k in parsedExample));
+
+			if (missingKeys.length > 0) {
+				const diagnostics: Diagnostic[] = missingKeys.map((key) => {
+					const summary = `${key} is declared in schema but missing in ${relExamplePath}`;
+					const nextActions: NextAction[] = [
+						{
+							kind: "edit-file",
+							label: `Add ${key} to ${relExamplePath}`,
+							where: { path: relExamplePath },
+							meta: {
+								targetFile: relExamplePath,
+								key,
+							},
+						},
+					];
+					return {
+						code: PROTOCOL_ERROR_CODES.ENV_MISSING_VARIABLE,
+						severity: "error",
+						summary,
+						where: { path: relExamplePath },
+						meta: { key, targetFile: relExamplePath },
+						nextActions,
+					};
+				});
+
+				const allNextActions = diagnostics.flatMap((d) => d.nextActions);
+
+				if (isJson) {
+					this.logger.reportCompleted({
+						ok: true,
+						commandId: "check",
+						result: {
+							schema: { path: relSchemaPath },
+							file: { path: relExamplePath },
+							keys: {
+								declared: declaredKeys.length,
+								missing: missingKeys.length,
+							},
+						},
+						exitCode: 4,
+						diagnostics,
+						nextActions: allNextActions,
+					});
+				} else {
+					const keyPlural = missingKeys.length === 1 ? "key" : "keys";
+					const missingList = missingKeys.map((k) => `  - ${k}`).join("\n");
+					this.logger.error(
+						`Missing ${missingKeys.length} ${keyPlural} in ${relExamplePath}:\n${missingList}\n\nPlease add the missing ${keyPlural} to ${relExamplePath}.`,
+					);
+				}
+				return 4;
+			}
+
+			if (isJson) {
+				this.logger.reportCompleted({
+					ok: true,
+					commandId: "check",
+					result: {
+						schema: { path: relSchemaPath },
+						file: { path: relExamplePath },
+						keys: {
+							declared: declaredKeys.length,
+							missing: 0,
+						},
+					},
+					exitCode: 0,
+					diagnostics: [],
+					nextActions: [],
+				});
+			} else {
+				this.logger.success(
+					`No issues found — ${relExamplePath} matches the schema`,
+				);
+			}
+			return 0;
+		}
+
+		// 5. Resolve environment variables
+		const resolvedEnv: Record<string, string | undefined> = {
+			...process.env,
+		};
+
+		if (input.envFiles && input.envFiles.length > 0) {
+			for (const envFile of input.envFiles) {
+				const resolvedEnvPath = path.resolve(cwd, envFile);
+				if (!(await this.workspace.exists(resolvedEnvPath))) {
+					const summary = `Environment file not found at "${resolvedEnvPath}".`;
+					if (isJson) {
+						this.logger.reportErrored({
+							ok: false,
+							commandId: "check",
+							error: {
+								code: PROTOCOL_ERROR_CODES.CLI_INVALID_ARGUMENT,
+								severity: "error",
+								summary,
+								where: { path: envFile },
+								nextActions: [],
+							},
+							diagnostics: [],
+							nextActions: [],
+						});
+					} else {
+						this.logger.error(summary);
+					}
+					return 2;
+				}
+
+				const content = await this.workspace.readFile(resolvedEnvPath);
+				const parsed = parseDotenv(content);
+				Object.assign(resolvedEnv, parsed);
+			}
 		}
 
 		// 5. Validate resolved environment against schema
