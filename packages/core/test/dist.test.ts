@@ -193,10 +193,7 @@ describe("Distribution Built Outputs", () => {
 			const safe = await import("../dist/safe.js");
 			expect(typeof safe.arkenv).toBe("function");
 			expect(safe.default).toBe(safe.arkenv);
-			const result = safe.arkenv(
-				{ PORT: "number" },
-				{ env: { PORT: "3000" } },
-			);
+			const result = safe.arkenv({ PORT: "number" }, { env: { PORT: "3000" } });
 			expect(result.success).toBe(true);
 		});
 
