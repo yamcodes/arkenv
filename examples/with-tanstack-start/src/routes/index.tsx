@@ -28,11 +28,8 @@ function Home() {
 
 	return (
 		<main style={{ fontFamily: "system-ui, sans-serif", padding: "2rem" }}>
-			<h1>{env.VITE_APP_NAME}</h1>
-			<p>
-				Public key inlined into the client bundle: {env.VITE_APP_NAME} (release{" "}
-				{env.VITE_APP_RELEASE})
-			</p>
+			<h1>API: {env.VITE_API_URL}</h1>
+			<p>Public key inlined into the client bundle: {env.VITE_API_URL}</p>
 			<p>Database host loaded through createServerFn: {dbHost}</p>
 			<button
 				type="button"
