@@ -1,6 +1,6 @@
 ---
 title: Frameworks
-description: Validate environment variables in Next.js, Nuxt, Vite, and Bun with ArkEnv.
+description: Validate environment variables in Next.js, Nuxt, Vite, TanStack Start, and Bun with ArkEnv.
 ---
 
 ArkEnv works in any JavaScript or TypeScript project. When you build
@@ -17,6 +17,8 @@ Choose your framework to get started:
 
   <Card href="/docs/frameworks/vite" title="Vite" description="@arkenv/vite-plugin transform mode and VITE_ keys." />
 
+  <Card href="/docs/frameworks/tanstack-start" title="TanStack Start" description="@arkenv/vite-plugin with tanstackStart() and createServerFn." />
+
   <Card href="/docs/frameworks/bun" title="Bun" description="@arkenv/bun-plugin for Bun bundler and fullstack apps." />
 </Cards>
 
@@ -25,14 +27,16 @@ Choose your framework to get started:
 Frameworks use **compile-time AST transforms** or **host runtime
 adapters**:
 
-| Framework | Integration strategy                         | Client bundle output                     | SSR and server validation          | Public env without rebuild (Docker)  |
-| --------- | -------------------------------------------- | ---------------------------------------- | ---------------------------------- | ------------------------------------ |
-| Next.js   | Host adapter + codegen (`@arkenv/nextjs`)    | Generated runtime proxy                  | Process boot (`process.env`)       | Requires rebuild for `NEXT_PUBLIC_*` |
-| Nuxt      | Nitro plugin (`@arkenv/nuxt`)                | Dynamic `runtimeConfig` hydration        | Nitro server boot gate             | Yes (via Nitro `runtimeConfig`)      |
-| Vite      | AST build transform (`@arkenv/vite-plugin`)  | Inlined public literals + throwing stubs | Full `@arkenv/core` at server boot | Requires rebuild for `VITE_*`        |
-| Bun       | Bundler AST transform (`@arkenv/bun-plugin`) | Inlined public literals + throwing stubs | Full `@arkenv/core` at server boot | Requires rebuild for `BUN_PUBLIC_*`  |
+| Framework      | Integration strategy                         | Client bundle output                     | SSR and server validation          | Public env without rebuild (Docker)  |
+| -------------- | -------------------------------------------- | ---------------------------------------- | ---------------------------------- | ------------------------------------ |
+| Next.js        | Host adapter + codegen (`@arkenv/nextjs`)    | Generated runtime proxy                  | Process boot (`process.env`)       | Requires rebuild for `NEXT_PUBLIC_*` |
+| Nuxt           | Nitro plugin (`@arkenv/nuxt`)                | Dynamic `runtimeConfig` hydration        | Nitro server boot gate             | Yes (via Nitro `runtimeConfig`)      |
+| Vite           | AST build transform (`@arkenv/vite-plugin`)  | Inlined public literals + throwing stubs | Full `@arkenv/core` at server boot | Requires rebuild for `VITE_*`        |
+| TanStack Start | AST build transform (`@arkenv/vite-plugin`)  | Inlined public literals + throwing stubs | Full `@arkenv/core` at server boot | Requires rebuild for `VITE_*`        |
+| Bun            | Bundler AST transform (`@arkenv/bun-plugin`) | Inlined public literals + throwing stubs | Full `@arkenv/core` at server boot | Requires rebuild for `BUN_PUBLIC_*`  |
 
-Vite and Bun evaluate two module graphs in full-stack and SSR apps.
+Vite, TanStack Start, and Bun evaluate two module graphs in full-stack and
+SSR apps.
 Application code imports `@arkenv/core` (or `@arkenv/standard`); the
 plugin rewrites the **client** graph so public keys inline and server
 secrets become throwing stubs. Next.js and Nuxt use host adapters
