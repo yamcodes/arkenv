@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { DeclarativeShowcase } from "./declarative-showcase";
 
 describe("DeclarativeShowcase", () => {
-	it("renders the 2-row alternating payload pipeline with true/false debug toggles", () => {
+	it("renders the 3-row alternating payload pipeline with enum NODE_ENV row", () => {
 		render(<DeclarativeShowcase />);
 
 		expect(
@@ -17,6 +17,7 @@ describe("DeclarativeShowcase", () => {
 		// Static keys
 		expect(figure).toHaveTextContent("PORT=");
 		expect(figure).toHaveTextContent("DEBUG=");
+		expect(figure).toHaveTextContent("NODE_ENV=");
 
 		// Row 1 alternating chips ("3000" success vs "oops" failure)
 		expect(figure).toHaveTextContent('"3000"');
@@ -26,13 +27,23 @@ describe("DeclarativeShowcase", () => {
 		expect(figure).toHaveTextContent('"true"');
 		expect(figure).toHaveTextContent('"false"');
 
+		// Row 3 alternating chips ("production" vs "development")
+		expect(figure).toHaveTextContent('"production"');
+		expect(figure).toHaveTextContent('"development"');
+
 		// Schema Gates
 		expect(figure).toHaveTextContent('"number"');
 		expect(figure).toHaveTextContent('"boolean"');
+		expect(figure).toHaveTextContent(
+			"\"'development' | 'production' | 'test'\"",
+		);
 
 		// Destination Type Definitions
 		expect(figure).toHaveTextContent("number");
 		expect(figure).toHaveTextContent("boolean");
+		expect(figure).toHaveTextContent(
+			'"development" | "production" | "test"',
+		);
 	});
 
 	it("renders mobile direct single-wire elements and carrier tokens in the markup", () => {
@@ -41,7 +52,7 @@ describe("DeclarativeShowcase", () => {
 		const directWires = container.querySelectorAll(
 			".home-aurora__payload-wire--direct",
 		);
-		expect(directWires).toHaveLength(2);
+		expect(directWires).toHaveLength(3);
 
 		const portCarrier = container.querySelector(
 			".home-aurora__payload-carrier--port",
@@ -63,5 +74,17 @@ describe("DeclarativeShowcase", () => {
 		expect(debugFalseCarrier).toBeInTheDocument();
 		expect(debugFalseCarrier).toHaveTextContent('"false"');
 		expect(debugFalseCarrier).toHaveTextContent("false");
+
+		const nodeenvProdCarrier = container.querySelector(
+			".home-aurora__payload-carrier--nodeenv-prod",
+		);
+		expect(nodeenvProdCarrier).toBeInTheDocument();
+		expect(nodeenvProdCarrier).toHaveTextContent('"production"');
+
+		const nodeenvDevCarrier = container.querySelector(
+			".home-aurora__payload-carrier--nodeenv-dev",
+		);
+		expect(nodeenvDevCarrier).toBeInTheDocument();
+		expect(nodeenvDevCarrier).toHaveTextContent('"development"');
 	});
 });
