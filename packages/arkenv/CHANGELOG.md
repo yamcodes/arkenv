@@ -1,5 +1,18 @@
 # @arkenv/core
 
+## 1.0.0-alpha.22
+
+### Minor Changes
+
+- #### feat(cli): Rsbuild template detection and scaffolding in `arkenv init` _[`#1809`](https://github.com/yamcodes/arkenv/pull/1809) [`6be3c3a`](https://github.com/yamcodes/arkenv/commit/6be3c3ad010e44078377f51272c0c0d51df65d6e) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Added first-class support for Rsbuild in `arkenv init`:
+	- Detects `@rsbuild/core` in project dependencies or `rsbuild.config.*` files.
+	- Adds `@arkenv/rsbuild-plugin` to project dependencies during initialization.
+	- Bootstraps `rsbuild.config.*` files by injecting `arkenvRsbuildPlugin()`.
+	- Sets default client prefix to `PUBLIC_`.
+
 ## 1.0.0-alpha.21
 
 ### Major Changes
