@@ -3,7 +3,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { AddOnCompiledSchema } from "@tanstack/create";
 import { describe, expect, it } from "vitest";
-import { buildAddon } from "../scripts/build";
+import { compileAddon } from "../scripts/build";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -11,8 +11,8 @@ const packageRoot = resolve(__dirname, "..");
 const repoRoot = resolve(packageRoot, "../..");
 
 describe("TanStack Add-on Compilation", () => {
-	it("compiles a schema-valid add-on bundle", () => {
-		const compiled = buildAddon();
+	it("compiles a schema-valid add-on bundle in memory without disk side-effects", () => {
+		const compiled = compileAddon();
 
 		// Validate against TanStack CLI's AddOnCompiledSchema
 		const parsed = AddOnCompiledSchema.safeParse(compiled);
@@ -57,7 +57,9 @@ describe("TanStack Add-on Compilation", () => {
 		expect(compiled.options?.demo.default).toBe("true");
 	});
 
-	it("mirrors compiled files and assets to apps/www/public/tanstack", () => {
+	it("ensures committed public bundles match source templates without drift", () => {
+		const freshCompiled = compileAddon();
+
 		const publicInfo = resolve(repoRoot, "apps/www/public/tanstack/info.json");
 		const publicAddon = resolve(
 			repoRoot,
@@ -69,8 +71,10 @@ describe("TanStack Add-on Compilation", () => {
 		expect(existsSync(publicAddon)).toBe(true);
 		expect(existsSync(publicAssets)).toBe(true);
 
-		const content = JSON.parse(readFileSync(publicInfo, "utf-8"));
-		expect(content.id).toBe("arkenv");
-		expect(content.files["src/env.ts.ejs"]).toBeDefined();
+		const committedInfo = JSON.parse(readFileSync(publicInfo, "utf-8"));
+		const committedAddon = JSON.parse(readFileSync(publicAddon, "utf-8"));
+
+		expect(committedInfo).toEqual(freshCompiled);
+		expect(committedAddon).toEqual(freshCompiled);
 	});
 });

@@ -31,7 +31,9 @@ Generate a new TanStack Start project with the ArkEnv add-on:
 npx @tanstack/cli create my-app --add-ons https://arkenv.js.org/tanstack/info.json
 ```
 
-The CLI prompts you with configuration choices:
+By default, the add-on scaffolds with **ArkType** (`@arkenv/core`) and includes the interactive demo route at `/demo/arkenv`.
+
+Configuration options supported by the add-on:
 
 - **Validator Engine**:
   - **ArkType** (default) — installs `@arkenv/core` and `arktype`
@@ -39,7 +41,7 @@ The CLI prompts you with configuration choices:
   - **Valibot** — installs `@arkenv/standard` and `valibot`
 - **Interactive Demo Route**:
   - **Include `/demo/arkenv`** (default) — scaffolds an interactive secret leak test showcasing server-only isolation in the browser
-  - **Skip demo route** — scaffolds only the schema definition and plugin configuration
+  - **Skip demo route** — scaffolds only the schema definition and plugin configuration (automatically skipped when creating a project with `--no-examples` or the `blank` preset)
 
 The add-on automatically:
 

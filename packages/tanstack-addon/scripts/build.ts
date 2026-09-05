@@ -43,9 +43,7 @@ function gatherFilesRecursively(
 	return result;
 }
 
-export function buildAddon() {
-	console.log("Building @arkenv/tanstack-addon...");
-
+export function compileAddon() {
 	const infoPath = join(addonDir, "info.json");
 	const packageTemplatePath = join(addonDir, "package.json.ejs");
 
@@ -61,13 +59,15 @@ export function buildAddon() {
 
 	const files = gatherFilesRecursively(assetsDir, assetsDir);
 
-	const compiled = {
+	return {
 		...info,
 		packageTemplate,
 		files,
 		deletedFiles: [],
 	};
+}
 
+export function writeAddon(compiled = compileAddon()) {
 	// Ensure distDir exists
 	mkdirSync(distDir, { recursive: true });
 	const compiledJson = JSON.stringify(compiled, null, 2);
@@ -80,7 +80,10 @@ export function buildAddon() {
 	mkdirSync(docsPublicDir, { recursive: true });
 	writeFileSync(join(docsPublicDir, "info.json"), compiledJson);
 	writeFileSync(join(docsPublicDir, "add-on.json"), compiledJson);
-	writeFileSync(join(docsPublicDir, "package.json.ejs"), packageTemplate);
+	writeFileSync(
+		join(docsPublicDir, "package.json.ejs"),
+		compiled.packageTemplate,
+	);
 
 	// Copy assets directory recursively to apps/www/public/tanstack/assets
 	const targetAssetsDir = join(docsPublicDir, "assets");
@@ -89,12 +92,17 @@ export function buildAddon() {
 	cpSync(assetsDir, targetAssetsDir, { recursive: true });
 
 	console.log(
-		`Successfully compiled ${Object.keys(files).length} asset files into:`,
+		`Successfully compiled ${Object.keys(compiled.files).length} asset files into:`,
 	);
 	console.log(` - ${join(distDir, "info.json")}`);
 	console.log(` - ${join(docsPublicDir, "info.json")}`);
 	console.log(` - ${targetAssetsDir}`);
+}
 
+export function buildAddon() {
+	console.log("Building @arkenv/tanstack-addon...");
+	const compiled = compileAddon();
+	writeAddon(compiled);
 	return compiled;
 }
 
