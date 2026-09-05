@@ -40,6 +40,10 @@
 			"name": "🎁 @arkenv/vite-plugin"
 		},
 		{
+			"path": "packages/rsbuild-plugin",
+			"name": "🎁 @arkenv/rsbuild-plugin"
+		},
+		{
 			"path": "packages/bun-plugin",
 			"name": "🎁 @arkenv/bun-plugin"
 		},
