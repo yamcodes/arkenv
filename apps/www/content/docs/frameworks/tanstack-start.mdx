@@ -29,7 +29,8 @@ pnpm dlx arkenv@alpha init
 Use the runner that matches your lockfile. Init detects the package manager for installs.
 
 The CLI detects `@tanstack/react-start` in your dependencies and installs
-the plugin matching your project setup.
+`@arkenv/vite-plugin` the same way it does for Vite projects. For Rsbuild
+setups, follow [Manual installation](#manual-installation) below.
 
 :::info[Pinning alphas]
 Until GA, pin exact `@arkenv/*` alpha versions in the lockfile if you want
@@ -144,17 +145,33 @@ Create an `env.ts` file in your source tree. Keys your client bundle reads must
 match your bundler's client prefix: `VITE_` for Vite or `PUBLIC_` for Rsbuild.
 Everything else stays on the server:
 
-```ts title="./src/env.ts" twoslash
-import arkenv from "@arkenv/core";
+<Tabs items={["Vite", "Rsbuild"]}>
+  <Tab value="Vite">
+    ```ts title="./src/env.ts" twoslash
+    import arkenv from "@arkenv/core";
 
-export const env = arkenv({
-  DATABASE_URL: "string",
-  PORT: "number.port = 3000",
-  VITE_API_URL: "string = 'https://api.example.com'",
-  PUBLIC_API_URL: "string = 'https://api.example.com'",
-  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-});
-```
+    export const env = arkenv({
+      DATABASE_URL: "string",
+      PORT: "number.port = 3000",
+      VITE_API_URL: "string = 'https://api.example.com'",
+      NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Rsbuild">
+    ```ts title="./src/env.ts" twoslash
+    import arkenv from "@arkenv/core";
+
+    export const env = arkenv({
+      DATABASE_URL: "string",
+      PORT: "number.port = 3000",
+      PUBLIC_API_URL: "string = 'https://api.example.com'",
+      NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+    ```
+  </Tab>
+</Tabs>
 
 :::tip[Pass the schema as an object literal]
 Pass the object literal into `arkenv({ ... })`, or wrap a shared shape with
@@ -173,32 +190,65 @@ Server-only keys work inside `createServerFn` handlers. The handler runs on the
 server, where `env.ts` executes the real validation runtime against your
 process environment:
 
-```tsx title="./src/routes/index.tsx"
-import { createFileRoute } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-import { env } from "../env";
+<Tabs items={["Vite", "Rsbuild"]}>
+  <Tab value="Vite">
+    ```tsx title="./src/routes/index.tsx"
+    import { createFileRoute } from "@tanstack/react-router";
+    import { createServerFn } from "@tanstack/react-start";
+    import { env } from "../env";
 
-const getDatabaseHost = createServerFn({ method: "GET" }).handler(() => {
-  const url = new URL(env.DATABASE_URL); // server-only: validated at boot
-  return url.host; // safe to return to the client
-});
+    const getDatabaseHost = createServerFn({ method: "GET" }).handler(() => {
+      const url = new URL(env.DATABASE_URL); // server-only: validated at boot
+      return url.host; // safe to return to the client
+    });
 
-export const Route = createFileRoute("/")({
-  component: Home,
-  loader: () => getDatabaseHost(),
-});
+    export const Route = createFileRoute("/")({
+      component: Home,
+      loader: () => getDatabaseHost(),
+    });
 
-function Home() {
-  const dbHost = Route.useLoaderData();
+    function Home() {
+      const dbHost = Route.useLoaderData();
 
-  return (
-    <div>
-      <h1>API: {env.VITE_API_URL ?? env.PUBLIC_API_URL}</h1>
-      <p>Database Host: {dbHost}</p>
-    </div>
-  );
-}
-```
+      return (
+        <div>
+          <h1>API: {env.VITE_API_URL}</h1>
+          <p>Database Host: {dbHost}</p>
+        </div>
+      );
+    }
+    ```
+  </Tab>
+
+  <Tab value="Rsbuild">
+    ```tsx title="./src/routes/index.tsx"
+    import { createFileRoute } from "@tanstack/react-router";
+    import { createServerFn } from "@tanstack/react-start";
+    import { env } from "../env";
+
+    const getDatabaseHost = createServerFn({ method: "GET" }).handler(() => {
+      const url = new URL(env.DATABASE_URL); // server-only: validated at boot
+      return url.host; // safe to return to the client
+    });
+
+    export const Route = createFileRoute("/")({
+      component: Home,
+      loader: () => getDatabaseHost(),
+    });
+
+    function Home() {
+      const dbHost = Route.useLoaderData();
+
+      return (
+        <div>
+          <h1>API: {env.PUBLIC_API_URL}</h1>
+          <p>Database Host: {dbHost}</p>
+        </div>
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
 
 ### Client keys in components
 
@@ -213,11 +263,21 @@ typed and coerced and server secrets stay out of the client bundle.
 
 Reading a server-only key in the browser throws instead of leaking:
 
-```tsx
-env.VITE_API_URL; // string, inlined into the client bundle (Vite)
-env.PUBLIC_API_URL; // string, inlined into the client bundle (Rsbuild)
-env.DATABASE_URL; // throws in the browser; real value on the server
-```
+<Tabs items={["Vite", "Rsbuild"]}>
+  <Tab value="Vite">
+    ```tsx
+    env.VITE_API_URL; // string, inlined into the client bundle
+    env.DATABASE_URL; // throws in the browser; real value on the server
+    ```
+  </Tab>
+
+  <Tab value="Rsbuild">
+    ```tsx
+    env.PUBLIC_API_URL; // string, inlined into the client bundle
+    env.DATABASE_URL; // throws in the browser; real value on the server
+    ```
+  </Tab>
+</Tabs>
 
 ## SSR and the client boundary
 

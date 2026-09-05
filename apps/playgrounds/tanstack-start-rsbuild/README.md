@@ -71,4 +71,4 @@ pnpm start
 ## Documentation
 
 - [TanStack Start guide](https://github.com/yamcodes/arkenv/blob/v1/apps/www/content/docs/frameworks/tanstack-start.mdx) (`/docs/frameworks/tanstack-start` on the v1 docs site)
-- [Rsbuild plugin docs](https://arkenv.js.org/docs/reference/rsbuild-plugin)
+- [Rsbuild plugin docs](https://github.com/yamcodes/arkenv/blob/v1/apps/www/content/docs/reference/rsbuild-plugin.mdx) (`/docs/reference/rsbuild-plugin` on the v1 docs site)

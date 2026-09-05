@@ -52,7 +52,7 @@
 			"id": "with-tanstack-start-rsbuild",
 			"name": "TanStack Start (Rsbuild)",
 			"description": "TanStack Start with @arkenv/rsbuild-plugin",
-			"framework": "rsbuild"
+			"framework": "vite"
 		},
 		{
 			"id": "with-solid-start",
