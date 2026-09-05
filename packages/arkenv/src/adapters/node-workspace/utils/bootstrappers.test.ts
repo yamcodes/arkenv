@@ -493,5 +493,35 @@ describe("bootstrappers", () => {
 			expect(result.code).toContain("plugins: [customPlugin()]");
 			expect(result.code).not.toContain("arkenvRsbuildPlugin()");
 		});
+
+		it("prefers the plugin function when options type is imported before it", async () => {
+			const initialContent = dedent`
+				import { type RsbuildTransformOptions, arkenvRsbuildPlugin } from "@arkenv/rsbuild-plugin"
+				export default {
+					plugins: []
+				}
+			`;
+
+			const result = transformRsbuildConfig({ code: initialContent });
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain("plugins: [arkenvRsbuildPlugin()]");
+			expect(result.code).not.toContain("RsbuildTransformOptions()");
+		});
+
+		it("injects plugin into a non-empty plugins array preserving existing entries", async () => {
+			const initialContent = dedent`
+				import { pluginReact } from "@rsbuild/plugin-react"
+				export default {
+					plugins: [pluginReact()]
+				}
+			`;
+
+			const result = transformRsbuildConfig({ code: initialContent });
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain("pluginReact()");
+			expect(result.code).toContain("arkenvRsbuildPlugin()");
+		});
 	});
 });

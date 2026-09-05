@@ -263,9 +263,15 @@ export function transformRsbuildConfig(
 			});
 
 			if (!hasPlugin) {
-				const existingImport = (mod.imports.$items || []).find(
+				const rsbuildImports = (mod.imports.$items || []).filter(
 					(item) => item.from && item.from.startsWith("@arkenv/rsbuild-plugin"),
 				);
+				const existingImport =
+					rsbuildImports.find(
+						(item) =>
+							item.imported === "arkenvRsbuildPlugin" ||
+							item.imported === "default",
+					) || rsbuildImports[0];
 				const localName = existingImport?.local || "arkenvRsbuildPlugin";
 
 				if (!existingImport) {
