@@ -464,5 +464,34 @@ describe("bootstrappers", () => {
 			expect(result.success).toBe(true);
 			expect(result.updated).toBe(true);
 		});
+
+		it("injects plugin into plugins array even if import already exists but is unregistered", async () => {
+			const initialContent = dedent`
+				import { arkenvRsbuildPlugin } from "@arkenv/rsbuild-plugin"
+				export default {
+					plugins: []
+				}
+			`;
+
+			const result = transformRsbuildConfig({ code: initialContent });
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain("plugins: [arkenvRsbuildPlugin()]");
+		});
+
+		it("injects aliased plugin call when an unregistered aliased import exists", async () => {
+			const initialContent = dedent`
+				import { arkenvRsbuildPlugin as customPlugin } from "@arkenv/rsbuild-plugin"
+				export default {
+					plugins: []
+				}
+			`;
+
+			const result = transformRsbuildConfig({ code: initialContent });
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain("plugins: [customPlugin()]");
+			expect(result.code).not.toContain("arkenvRsbuildPlugin()");
+		});
 	});
 });

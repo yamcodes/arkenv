@@ -235,22 +235,52 @@ export function transformRsbuildConfig(
 		}
 
 		if (Array.isArray(config.plugins)) {
-			// Check if already exists using a regex to avoid false positives and support aliases
-			const hasPlugin =
-				/\barkenv(?:Rsbuild)?Plugin\b/.test(initialCode) ||
-				/from\s+['"]@arkenv\/rsbuild-plugin(?:\/standard)?['"]/.test(
-					initialCode,
-				);
+			// Find identifier names imported from @arkenv/rsbuild-plugin (supports aliases)
+			const rsbuildPluginImports = new Set<string>();
+			for (const item of mod.imports.$items || []) {
+				if (item.from && item.from.startsWith("@arkenv/rsbuild-plugin")) {
+					rsbuildPluginImports.add(item.local);
+				}
+			}
+			rsbuildPluginImports.add("arkenvRsbuildPlugin");
+
+			// Check if already registered in the plugins array AST
+			const pluginsList = Array.from(config.plugins as any[]);
+			const hasPlugin = pluginsList.some((p) => {
+				if (typeof p !== "object" || !p || !("$type" in p)) return false;
+				if (p.$type === "function-call") {
+					return (
+						typeof p.$callee === "string" && rsbuildPluginImports.has(p.$callee)
+					);
+				}
+				if (p.$type === "identifier") {
+					return (
+						p.$ast?.type === "Identifier" &&
+						rsbuildPluginImports.has(p.$ast.name)
+					);
+				}
+				return false;
+			});
 
 			if (!hasPlugin) {
-				// Add imports
-				mod.imports.$add({
-					from: "@arkenv/rsbuild-plugin",
-					local: "arkenvRsbuildPlugin",
-					imported: "arkenvRsbuildPlugin",
-				});
+				const existingImport = (mod.imports.$items || []).find(
+					(item) => item.from && item.from.startsWith("@arkenv/rsbuild-plugin"),
+				);
+				const localName = existingImport?.local || "arkenvRsbuildPlugin";
 
-				config.plugins.push("__ARK_PLUGIN_PLACEHOLDER__");
+				if (!existingImport) {
+					mod.imports.$add({
+						from: "@arkenv/rsbuild-plugin",
+						local: "arkenvRsbuildPlugin",
+						imported: "arkenvRsbuildPlugin",
+					});
+				}
+
+				const placeholder =
+					localName === "arkenvRsbuildPlugin"
+						? "__ARK_PLUGIN__"
+						: `__ARK_PLUGIN__:${localName}`;
+				config.plugins.push(placeholder);
 			} else {
 				// Already has plugin, nothing to do
 				return { success: true, updated: false };
@@ -266,8 +296,9 @@ export function transformRsbuildConfig(
 		let code = generateCode(mod, {
 			format: detectCodeFormat(initialCode),
 		}).code;
-		const pluginCall = "arkenvRsbuildPlugin()";
-		code = code.replace(/['"]__ARK_PLUGIN_PLACEHOLDER__['"]/g, pluginCall);
+		code = code.replace(/['"]__ARK_PLUGIN__(?::(.+?))?['"]/g, (_, name) =>
+			name ? `${name}()` : "arkenvRsbuildPlugin()",
+		);
 		code = normalizeImportSpacing(code);
 		code = preserveTrailingNewline(code, initialCode);
 
