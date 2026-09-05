@@ -160,6 +160,129 @@ export function transformViteConfig(
 }
 
 /**
+ * Transforms an Rsbuild configuration file by injecting the ArkEnv Rsbuild plugin.
+ *
+ * @param input The configuration code.
+ * @returns The result of the bootstrap operation, potentially including the updated code.
+ */
+export function transformRsbuildConfig(
+	input: MutationInput,
+): BootstrapResult & { code?: string } {
+	try {
+		const mod = parseModule(input.code);
+		const initialCode = input.code;
+
+		// 1. Find the plugins array
+		let config = mod.exports.default;
+
+		// Handle defineConfig({...}) wrapper
+		if (
+			config &&
+			typeof config === "object" &&
+			"$type" in config &&
+			config.$type === "function-call"
+		) {
+			const call = config as { $callee?: string; $args?: any[] };
+			const callee = call.$callee || JSON.stringify(config);
+			if (callee === "defineConfig") {
+				const rawArg = (call as { $ast?: { arguments?: { type: string }[] } })
+					.$ast?.arguments?.[0];
+				if (
+					rawArg?.type === "ArrowFunctionExpression" ||
+					rawArg?.type === "FunctionExpression"
+				) {
+					return {
+						success: false,
+						updated: false,
+						error:
+							"The 'defineConfig' callback form is currently not supported for automatic mutation. Please add the plugin manually.",
+					};
+				}
+				const arg = call.$args?.[0];
+				// Guard against defineConfig((env) => ({...})) callback form
+				if (
+					arg &&
+					typeof arg === "object" &&
+					"$type" in arg &&
+					(arg.$type === "arrow-function-expression" ||
+						arg.$type === "function-expression")
+				) {
+					return {
+						success: false,
+						updated: false,
+						error:
+							"The 'defineConfig' callback form is currently not supported for automatic mutation. Please add the plugin manually.",
+					};
+				}
+				config = arg;
+			}
+		}
+
+		if (
+			!config ||
+			typeof config !== "object" ||
+			(typeof config === "object" && "$type" in config)
+		) {
+			return {
+				success: false,
+				updated: false,
+				error: "Could not find default export object in Rsbuild config",
+			};
+		}
+
+		if (!config.plugins) {
+			config.plugins = [];
+		}
+
+		if (Array.isArray(config.plugins)) {
+			// Check if already exists using a regex to avoid false positives and support aliases
+			const hasPlugin =
+				/\barkenv(?:Rsbuild)?Plugin\b/.test(initialCode) ||
+				/from\s+['"]@arkenv\/rsbuild-plugin(?:\/standard)?['"]/.test(
+					initialCode,
+				);
+
+			if (!hasPlugin) {
+				// Add imports
+				mod.imports.$add({
+					from: "@arkenv/rsbuild-plugin",
+					local: "arkenvRsbuildPlugin",
+					imported: "arkenvRsbuildPlugin",
+				});
+
+				config.plugins.push("__ARK_PLUGIN_PLACEHOLDER__");
+			} else {
+				// Already has plugin, nothing to do
+				return { success: true, updated: false };
+			}
+		} else {
+			return {
+				success: false,
+				updated: false,
+				error: "The 'plugins' property in your Rsbuild config is not an array.",
+			};
+		}
+
+		let code = generateCode(mod, {
+			format: detectCodeFormat(initialCode),
+		}).code;
+		const pluginCall = "arkenvRsbuildPlugin()";
+		code = code.replace(/['"]__ARK_PLUGIN_PLACEHOLDER__['"]/g, pluginCall);
+		code = normalizeImportSpacing(code);
+		code = preserveTrailingNewline(code, initialCode);
+
+		return { success: true, updated: true, code };
+	} catch (e: unknown) {
+		const error = e instanceof Error ? e.message : String(e);
+		return {
+			success: false,
+			updated: false,
+			error: `Failed to parse Rsbuild config: ${error}`,
+		};
+	}
+}
+
+/**
  * Transform a Next.js configuration file by wrapping the default export with `withArkEnv`.
  *
  * @param input The configuration code and optional import path
@@ -502,6 +625,62 @@ export async function bootstrapViteConfig(
 	try {
 		const configCode = await workspace.readFile(filePath);
 		const result = transformViteConfig({
+			code: configCode,
+		});
+
+		if (result.success && result.updated && result.code) {
+			await workspace.writeFile(filePath, result.code);
+		}
+
+		if (result.success) {
+			return result.updated !== undefined
+				? { success: true, updated: result.updated }
+				: { success: true };
+		}
+		return {
+			success: false,
+			error: result.error!,
+		};
+	} catch (e: unknown) {
+		return {
+			success: false,
+			error: e instanceof Error ? e.message : String(e),
+		};
+	}
+}
+
+export async function findRsbuildConfig(
+	cwd = process.cwd(),
+): Promise<string | null> {
+	const filenames = [
+		"rsbuild.config.ts",
+		"rsbuild.config.js",
+		"rsbuild.config.mjs",
+		"rsbuild.config.cjs",
+		"rsbuild.config.mts",
+	];
+	for (const file of filenames) {
+		const fullPath = path.resolve(cwd, file);
+		try {
+			await fsp.access(fullPath);
+			return fullPath;
+		} catch {
+			// ignore missing file
+		}
+	}
+	return null;
+}
+
+export async function bootstrapRsbuildConfig(
+	workspace: {
+		readFile(path: string): Promise<string>;
+		writeFile(path: string, content: string): Promise<void>;
+	},
+	filePath: string,
+): Promise<BootstrapResult> {
+	try {
+		const configCode = await workspace.readFile(filePath);
+		const result = transformRsbuildConfig({
 			code: configCode,
 		});
 

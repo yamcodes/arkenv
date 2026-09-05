@@ -111,7 +111,8 @@ Depending on the detected framework and flags, `init` writes:
   defaults. If `.env` is missing, init may copy `.env.example` into it.
 - Next.js: `withArkEnv` in `next.config.*`, `.arkenv/` in `.gitignore`,
   optional `.arkenv/env.gen.ts` (import as `@/.arkenv`)
-- Vite / Bun: plugin configuration in `vite.config.*` / `bunfig.toml`
+- Vite / Bun / Rsbuild: plugin configuration in `vite.config.*` /
+  `bunfig.toml` / `rsbuild.config.*`
 - Dependency installs for the chosen dialect (`@arkenv/core`, plugins,
   Zod/Valibot)
 

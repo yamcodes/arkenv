@@ -22,7 +22,9 @@ async function hasConfig(cwd: string, files: string[]): Promise<boolean> {
 export async function detectFramework(
 	cwd = process.cwd(),
 	tsConfig?: ParsedTsConfig | null,
-): Promise<"vite" | "bun-fullstack" | "vanilla" | "nextjs" | "nuxt"> {
+): Promise<
+	"vite" | "bun-fullstack" | "vanilla" | "nextjs" | "nuxt" | "rsbuild"
+> {
 	if (tsConfig?.compilerOptions?.types) {
 		const types = tsConfig.compilerOptions.types;
 		if (types.includes("vite") || types.includes("vite/client")) return "vite";
@@ -42,6 +44,7 @@ export async function detectFramework(
 		if (allDeps.vite) return "vite";
 		if (allDeps.next) return "nextjs";
 		if (allDeps.nuxt) return "nuxt";
+		if (allDeps["@rsbuild/core"]) return "rsbuild";
 	} catch {
 		// ignore missing or invalid package.json
 	}
@@ -70,6 +73,17 @@ export async function detectFramework(
 		])
 	) {
 		return "nuxt";
+	}
+	if (
+		await hasConfig(cwd, [
+			"rsbuild.config.ts",
+			"rsbuild.config.js",
+			"rsbuild.config.mjs",
+			"rsbuild.config.cjs",
+			"rsbuild.config.mts",
+		])
+	) {
+		return "rsbuild";
 	}
 
 	// Bun Detection

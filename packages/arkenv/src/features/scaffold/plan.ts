@@ -11,7 +11,8 @@ export type Framework =
 	| "bun-fullstack"
 	| "vanilla"
 	| "nextjs"
-	| "nuxt";
+	| "nuxt"
+	| "rsbuild";
 export type PackageManager = "pnpm" | "yarn" | "npm" | "bun";
 
 /**

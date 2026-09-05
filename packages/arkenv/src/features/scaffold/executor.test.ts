@@ -32,6 +32,7 @@ describe("Executor", () => {
 		findBunConfig: vi.fn().mockResolvedValue("bunfig.toml"),
 		findNextjsConfig: vi.fn().mockResolvedValue("next.config.ts"),
 		findNuxtConfig: vi.fn().mockResolvedValue("nuxt.config.ts"),
+		findRsbuildConfig: vi.fn().mockResolvedValue("rsbuild.config.ts"),
 		bootstrapViteConfig: vi
 			.fn()
 			.mockResolvedValue({ success: true, updated: true }),
@@ -42,6 +43,9 @@ describe("Executor", () => {
 			.fn()
 			.mockResolvedValue({ success: true, updated: true }),
 		bootstrapNuxtConfig: vi
+			.fn()
+			.mockResolvedValue({ success: true, updated: true }),
+		bootstrapRsbuildConfig: vi
 			.fn()
 			.mockResolvedValue({ success: true, updated: true }),
 		appendMissingEnvExampleKeys: vi.fn().mockResolvedValue(true),
@@ -262,6 +266,19 @@ describe("Executor", () => {
 		expect(mockWorkspace.bootstrapViteConfig).toHaveBeenCalledWith(
 			"vite.config.ts",
 			"./env",
+		);
+	});
+
+	it("bootstraps rsbuild when planned", async () => {
+		const plan: ScaffoldingPlan = {
+			...defaultPlan,
+			metadata: { ...defaultPlan.metadata, framework: "rsbuild" },
+			bootstrap: { framework: "rsbuild", importPath: "./env" },
+		};
+		await executor.execute(plan);
+		expect(mockWorkspace.findRsbuildConfig).toHaveBeenCalled();
+		expect(mockWorkspace.bootstrapRsbuildConfig).toHaveBeenCalledWith(
+			"rsbuild.config.ts",
 		);
 	});
 

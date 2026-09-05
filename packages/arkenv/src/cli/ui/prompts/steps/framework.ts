@@ -39,6 +39,11 @@ export async function frameworkStep(options: {
 				label: `Nuxt${options.framework === "nuxt" ? " (Detected)" : ""}`,
 				hint: "Nuxt with build and runtime validation",
 			},
+			{
+				value: "rsbuild",
+				label: `Rsbuild${options.framework === "rsbuild" ? " (Detected)" : ""}`,
+				hint: "Rspack-based build tool with client-side and static inlining validation",
+			},
 		],
 	});
 	return isCancel(answer) ? null : (answer as ProjectOptions["framework"]);
