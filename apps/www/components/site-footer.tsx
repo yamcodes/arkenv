@@ -38,9 +38,7 @@ export function SiteFooter({
 					>
 						<Logo />
 					</a>
-					<p>
-						Typesafe environment variables from the validator you already use.
-					</p>
+					<p>Typesafe environment variables for ArkType, Zod, and Valibot.</p>
 				</div>
 
 				<nav aria-labelledby="footer-resources">

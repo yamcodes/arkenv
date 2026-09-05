@@ -2,7 +2,7 @@
 	"name": "@arkenv/core",
 	"type": "module",
 	"version": "1.0.0-alpha.10",
-	"description": "Typesafe environment variables parsing and validation with ArkType",
+	"description": "ArkType-powered typesafe environment variables for ArkType, Zod, and Valibot.",
 	"main": "./dist/index.js",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
