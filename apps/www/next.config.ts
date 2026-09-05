@@ -82,6 +82,7 @@ const config = {
 			/**
 			 * Temporary fallback: Proxy TanStack CLI add-on to v1 preview.
 			 * Static bundles in public/tanstack take precedence and serve natively.
+			 * Mirror of packages/tanstack-addon/scripts/build.ts output — re-sync when add-on templates change.
 			 * TODO(v1-ga): Remove this proxy rewrite once the v1 branch is merged into dev/main.
 			 */
 			{
