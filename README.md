@@ -3,18 +3,10 @@
   <h1 align="center">ArkEnv</h1>
   <div align="center">
     <p align="center">
-      Typesafe environment variables from the validator you already use.<br/>
-      No boilerplate. Zero runtime dependencies.<br/>
-      <a href="https://nextjs.org/">Next.js</a>,
-      <a href="https://nuxt.com/">Nuxt</a>,
-      <a href="https://vite.dev/">Vite</a>,
-      <a href="https://tanstack.com/start">TanStack Start</a>,
-      <a href="https://start.solidjs.com/">SolidStart</a>,
-      <a href="https://nodejs.org/">Node.js</a>,
-      and <a href="https://bun.com/">Bun</a>
+      Typesafe environment variables for ArkType, Zod, and Valibot.<br/>
+      No boilerplate. Zero runtime dependencies.
     </p>
     <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Av1"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/test.yml/badge.svg?branch=v1"></a>
-    <a href="https://www.npmjs.com/package/@arkenv/core"><img alt="npm (alpha)" src="https://img.shields.io/npm/v/@arkenv/core/alpha?label=%40arkenv%2Fcore"></a>
     <a href="https://bundlephobia.com/package/@arkenv/core"><img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/%40arkenv%2Fcore"></a>
     <a href="https://arktype.io/docs/ecosystem#arkenv"><img alt="ArkType Ecosystem" src="https://custom-icon-badges.demolab.com/badge/ArkType%20Ecosystem-0d1526?logo=arktype2&logoColor=e9eef9"></a>
     <a href="https://pullfrog.com"><img alt="Pullfrog" src="https://custom-icon-badges.demolab.com/badge/Powered%20by%20Pullfrog-2f4032?logo=pullfrog-white"></a>
@@ -42,7 +34,7 @@
 
 
 <h3 align="center">
-  Bring your own validator: <a href="https://arktype.io/">ArkType</a>, <a href="https://zod.dev/">Zod</a>, <a href="https://valibot.dev/">Valibot</a>, or <a href="https://arkenv-v1.vercel.app/docs/validators">any Standard Schema library</a>
+  First-class integrations: <a href="https://arkenv-v1.vercel.app/docs/frameworks/nextjs">Next.js</a>, <a href="https://arkenv-v1.vercel.app/docs/frameworks/nuxt">Nuxt</a>, <a href="https://arkenv-v1.vercel.app/docs/frameworks/vite">Vite</a>, <a href="https://arkenv-v1.vercel.app/docs/frameworks/tanstack-start">TanStack Start</a>, <a href="https://github.com/yamcodes/arkenv/tree/v1/examples/with-solid-start">SolidStart</a>, <a href="https://arkenv-v1.vercel.app/docs/getting-started">Node.js</a>, and <a href="https://arkenv-v1.vercel.app/docs/frameworks/bun">Bun fullstack</a>
 </h3>
 
 <br />

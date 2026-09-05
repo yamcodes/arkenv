@@ -1,0 +1,24 @@
+<%
+  const arkenvOption = (typeof addOnOption !== 'undefined' && (
+    addOnOption['arkenv'] ||
+    Object.entries(addOnOption).find(([k]) => k.includes('arkenv') || k.includes('info.json'))?.[1]
+  )) || {};
+  const validator = arkenvOption.validator || 'arktype';
+-%>
+{
+  "dependencies": {
+<% if (validator === 'zod') { -%>
+    "@arkenv/standard": "^1.0.0-alpha.1",
+    "zod": "^3.24.2"
+<% } else if (validator === 'valibot') { -%>
+    "@arkenv/standard": "^1.0.0-alpha.1",
+    "valibot": "^1.0.0"
+<% } else { -%>
+    "@arkenv/core": "^1.0.0-alpha.1",
+    "arktype": "^2.2.0"
+<% } -%>
+  },
+  "devDependencies": {
+    "@arkenv/vite-plugin": "^1.0.0-alpha.1"
+  }
+}

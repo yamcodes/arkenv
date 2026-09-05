@@ -227,4 +227,44 @@ describe("NodeWorkspace", () => {
 		expect(result.success).toBe(true);
 		expect(result.updated).toBe(false);
 	});
+
+	it("finds rsbuild config files", async () => {
+		await fsp.writeFile(path.join(tempDir, "rsbuild.config.ts"), "");
+		const found = await workspace.findRsbuildConfig();
+		expect(found).toContain("rsbuild.config.ts");
+	});
+
+	it("bootstraps rsbuild config by injecting arkenvRsbuildPlugin", async () => {
+		const rsbuildConfig = dedent`
+			import { defineConfig } from "@rsbuild/core";
+			export default defineConfig({
+				plugins: []
+			});
+		`;
+		const configPath = path.join(tempDir, "rsbuild.config.ts");
+		await fsp.writeFile(configPath, rsbuildConfig);
+
+		const result = await workspace.bootstrapRsbuildConfig(configPath);
+		expect(result.success).toBe(true);
+		expect(result.updated).toBe(true);
+
+		const updated = await fsp.readFile(configPath, "utf-8");
+		expect(updated).toContain('from "@arkenv/rsbuild-plugin"');
+		expect(updated).toContain("arkenvRsbuildPlugin()");
+	});
+
+	it("is idempotent when bootstrapping rsbuild config that already has the plugin", async () => {
+		const rsbuildConfig = dedent`
+			import { arkenvRsbuildPlugin } from "@arkenv/rsbuild-plugin";
+			export default {
+				plugins: [arkenvRsbuildPlugin()]
+			};
+		`;
+		const configPath = path.join(tempDir, "rsbuild.config.ts");
+		await fsp.writeFile(configPath, rsbuildConfig);
+
+		const result = await workspace.bootstrapRsbuildConfig(configPath);
+		expect(result.success).toBe(true);
+		expect(result.updated).toBe(false);
+	});
 });

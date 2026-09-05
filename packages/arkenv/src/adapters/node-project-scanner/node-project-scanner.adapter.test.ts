@@ -128,6 +128,21 @@ API_KEY=
 			expect(result).toBe("vite");
 		});
 
+		it("detects rsbuild from package.json dependencies", async () => {
+			await fsp.writeFile(
+				path.join(tempDir, "package.json"),
+				JSON.stringify({ dependencies: { "@rsbuild/core": "^1.0.0" } }),
+			);
+			const result = await scanner.detectFramework(tempDir);
+			expect(result).toBe("rsbuild");
+		});
+
+		it("detects rsbuild from rsbuild.config.ts", async () => {
+			await fsp.writeFile(path.join(tempDir, "rsbuild.config.ts"), "");
+			const result = await scanner.detectFramework(tempDir);
+			expect(result).toBe("rsbuild");
+		});
+
 		it("detects bun-fullstack from tsconfig types and feature presence", async () => {
 			await fsp.writeFile(
 				path.join(tempDir, "server.ts"),

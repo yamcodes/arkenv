@@ -13,6 +13,7 @@ const EXPECTED_CLIENT_PREFIXES = {
 	vite: "VITE_",
 	"bun-fullstack": "BUN_PUBLIC_",
 	vanilla: "",
+	rsbuild: "PUBLIC_",
 } as const satisfies Record<Framework, string>;
 
 /**

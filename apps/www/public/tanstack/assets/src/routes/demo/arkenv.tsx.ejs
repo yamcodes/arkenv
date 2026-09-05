@@ -1,0 +1,93 @@
+<%
+  const arkenvOption = (typeof addOnOption !== 'undefined' && (
+    addOnOption['arkenv'] ||
+    Object.entries(addOnOption).find(([k]) => k.includes('arkenv') || k.includes('info.json'))?.[1]
+  )) || {};
+  const includeDemo = typeof includeExamples !== 'undefined' ? includeExamples : true;
+  if (arkenvOption.demo === 'false' || !includeDemo) {
+    if (typeof ignoreFile === 'function') {
+      ignoreFile();
+      return;
+    }
+  }
+-%>
+import { createFileRoute } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import { useState } from "react";
+import { env } from "../../env";
+
+const getDatabaseConfig = createServerFn({ method: "GET" }).handler(() => {
+	// Server-only key: safely read on the server during SSR / RPC
+	try {
+		const url = new URL(env.DATABASE_URL);
+		return { host: url.host, protocol: url.protocol };
+	} catch {
+		return { host: "localhost:5432", protocol: "postgresql:" };
+	}
+});
+
+export const Route = createFileRoute("/demo/arkenv")({
+	component: ArkEnvDemo,
+	loader: () => getDatabaseConfig(),
+});
+
+function LeakedSecret() {
+	// Accessing server-only DATABASE_URL directly on the client throws at runtime
+	return <p>Server key leaked: {env.DATABASE_URL}</p>;
+}
+
+function ArkEnvDemo() {
+	const dbConfig = Route.useLoaderData();
+	const [attemptLeak, setAttemptLeak] = useState(false);
+
+	return (
+		<div className="p-6 max-w-xl mx-auto space-y-4 font-sans">
+			<h1 className="text-2xl font-bold">ArkEnv Demo</h1>
+			<p className="text-sm text-gray-600">
+				Typesafe environment variables with build-time validation and runtime
+				leak protection.
+			</p>
+
+			<div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-md space-y-2">
+				<h2 className="font-semibold text-lg">Public Client Variables</h2>
+				<p className="text-sm text-gray-600 dark:text-gray-300">
+					Inlined safely into client bundles:
+				</p>
+				<code className="block p-2 bg-white dark:bg-black rounded border text-xs font-mono">
+					env.VITE_API_URL: {env.VITE_API_URL}
+				</code>
+			</div>
+
+			<div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-md space-y-2">
+				<h2 className="font-semibold text-lg">Server-Only Variables</h2>
+				<p className="text-sm text-gray-600 dark:text-gray-300">
+					Accessible inside createServerFn handlers:
+				</p>
+				<code className="block p-2 bg-white dark:bg-black rounded border text-xs font-mono">
+					Database Host: {dbConfig.host} ({dbConfig.protocol})
+				</code>
+			</div>
+
+			<div className="p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-md space-y-2">
+				<h2 className="font-semibold text-red-800 dark:text-red-300 text-lg">
+					Secret Leak Protection
+				</h2>
+				<p className="text-sm text-red-700 dark:text-red-400">
+					Clicking the button below attempts to access the server secret{" "}
+					<code>env.DATABASE_URL</code> on the client, which ArkEnv blocks:
+				</p>
+				{attemptLeak ? (
+					<LeakedSecret />
+				) : (
+					<button
+						type="button"
+						className="px-3 py-1.5 bg-red-600 text-white rounded text-sm hover:bg-red-700 cursor-pointer"
+						onClick={() => setAttemptLeak(true)}
+					>
+						Attempt client access to DATABASE_URL
+					</button>
+				)}
+			</div>
+		</div>
+	);
+}
