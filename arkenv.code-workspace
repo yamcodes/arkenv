@@ -60,6 +60,10 @@
 			"name": "🎁 @arkenv/agent-plugin"
 		},
 		{
+			"path": "packages/tanstack-addon",
+			"name": "🎁 @arkenv/tanstack-addon"
+		},
+		{
 			"path": "packages/standard",
 			"name": "🎁 @arkenv/standard"
 		},
