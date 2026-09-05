@@ -11,6 +11,7 @@ Living evaluation, not an ADR. Update this file as options enter or leave the ha
 TanStack CLI (`tanstack create`, `tanstack add`, `@tanstack/cli`) allows developers to scaffold new TanStack Start and TanStack Router applications and layer in ecosystem capabilities (auth, databases, ORMs, monitoring, tooling) via modular **add-ons**. Currently, TanStack CLI includes `t3env` as a built-in tooling add-on for environment variable validation, but has no built-in or official add-on for **ArkEnv**.
 
 When we are done:
+
 1. Developers must be able to scaffold a fresh TanStack Start application with ArkEnv configured out of the box via `tanstack create <app> --add-ons <url>` (and eventually via short name in the built-in catalog).
 2. The add-on must configure dependencies (`@arkenv/core` / `@arkenv/standard`, `@arkenv/vite-plugin`), wire `arkenv()` into `vite.config.ts`, generate a typesafe `src/env.ts` schema module, and provide an immediate demonstration of full-stack server-key protection and client inlining.
 3. The add-on source, compile pipeline, tests, and distribution assets must live in this repository without drifting as ArkEnv moves through `alpha`, `rc`, and `1.0.0` GA.
@@ -32,14 +33,14 @@ Items on different layers compose into a cohesive **stack**. Do not flatten them
 
 ## Metrics
 
-| Metric | Question |
-| ------ | -------- |
-| **Monorepo Coherence & Zero Drift** | Does the add-on participate in Turborepo CI (`check`, `typecheck`, `test`, `build`), ensuring core engine or plugin changes never silently break the add-on? |
-| **TanStack CLI Spec Compliance** | Does the artifact strictly adhere to `@tanstack/create`'s add-on spec (`.add-on/info.json`, `add-on.json`, `assets/`, `integrations`, EJS variables)? |
-| **Distribution Reliability** | Can developers run a simple, immutable, publicly accessible command/URL without local prerequisites or friction? |
-| **"Show, Don't Tell" DX** | Does the generated app immediately demonstrate ArkEnv's unique runtime protection (server secret throw on client, public inlining) rather than leaving an inert config file? |
-| **Upstream Catalog Bridge** | Does the structure make it trivial to copy or upstream into `@tanstack/create/src/frameworks/react/add-ons/arkenv`? |
-| **Maintenance Tax** | How much developer overhead is required to maintain, test, version, and publish the add-on on new releases? |
+| Metric                              | Question                                                                                                                                                                     |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Monorepo Coherence & Zero Drift** | Does the add-on participate in Turborepo CI (`check`, `typecheck`, `test`, `build`), ensuring core engine or plugin changes never silently break the add-on?                 |
+| **TanStack CLI Spec Compliance**    | Does the artifact strictly adhere to `@tanstack/create`'s add-on spec (`.add-on/info.json`, `add-on.json`, `assets/`, `integrations`, EJS variables)?                        |
+| **Distribution Reliability**        | Can developers run a simple, immutable, publicly accessible command/URL without local prerequisites or friction?                                                             |
+| **"Show, Don't Tell" DX**           | Does the generated app immediately demonstrate ArkEnv's unique runtime protection (server secret throw on client, public inlining) rather than leaving an inert config file? |
+| **Upstream Catalog Bridge**         | Does the structure make it trivial to copy or upstream into `@tanstack/create/src/frameworks/react/add-ons/arkenv`?                                                          |
+| **Maintenance Tax**                 | How much developer overhead is required to maintain, test, version, and publish the add-on on new releases?                                                                  |
 
 ---
 
@@ -47,49 +48,49 @@ Items on different layers compose into a cohesive **stack**. Do not flatten them
 
 ### Layer A — Monorepo Placement & Packaging
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| A1 | Workspace package `packages/tanstack-addon` | Managed with `pnpm`, builds `.add-on` and `add-on.json`, runs CI tests, can publish to npm. |
-| A2 | Dedicated top-level directory `addons/tanstack` | Authoring directory outside `packages/`, standalone `package.json` and build scripts. |
-| A3 | Authoring sandbox inside `apps/playgrounds/tanstack-start-addon` | Uses a real TanStack Start project that runs `tanstack add-on dev/compile`. |
-| A4 | Static files directly in `apps/www/public/tanstack/` | No build step; raw `info.json` and asset templates manually authored in docs site public folder. |
-| A5 | Separate external repository (`yamcodes/tanstack-addon-arkenv`) | Isolated repository solely for the add-on. (Include to score rejection). |
+| #  | Option                                                           | Notes                                                                                            |
+| -- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| A1 | Workspace package `packages/tanstack-addon`                      | Managed with `pnpm`, builds `.add-on` and `add-on.json`, runs CI tests, can publish to npm.      |
+| A2 | Dedicated top-level directory `addons/tanstack`                  | Authoring directory outside `packages/`, standalone `package.json` and build scripts.            |
+| A3 | Authoring sandbox inside `apps/playgrounds/tanstack-start-addon` | Uses a real TanStack Start project that runs `tanstack add-on dev/compile`.                      |
+| A4 | Static files directly in `apps/www/public/tanstack/`             | No build step; raw `info.json` and asset templates manually authored in docs site public folder. |
+| A5 | Separate external repository (`yamcodes/tanstack-addon-arkenv`)  | Isolated repository solely for the add-on. (Include to score rejection).                         |
 
 ### Layer B — Distribution & Hosting
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| B1 | Hosted static URL on docs domain (`info.json`) | Hosted by Next.js in `apps/www`, updated on every docs deploy. |
-| B1a | Reverse Proxy on `main` (`arkenv.js.org/tanstack/*` -> `arkenv-v1.vercel.app`) | Allows using `https://arkenv.js.org/tanstack/info.json` from Day 1 without waiting for v1 GA. |
-| B1b | Direct v1 preview URL (`https://arkenv-v1.vercel.app/tanstack/info.json`) with GA redirect | Zero changes to `main` during alpha; redirects to `arkenv.js.org` at GA. |
-| B1c | Direct static deploy to `main` via `sync-main` | Cherry-pick `apps/www/public/tanstack/` onto `main` so `arkenv.js.org` serves it natively. |
-| B2 | Published npm package `@arkenv/tanstack-addon` | Distributed via npm registry; consumed via `npx` or npm package download. |
-| B3 | GitHub raw content URL (`https://raw.githubusercontent.com/...`) | Fetched directly from GitHub git tree without hosting infrastructure. |
-| B4 | Upstream built-in catalog PR to `@tanstack/create` | Native `tanstack create --add-ons arkenv` without specifying an external URL. |
+| #   | Option                                                                                     | Notes                                                                                         |
+| --- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| B1  | Hosted static URL on docs domain (`info.json`)                                             | Hosted by Next.js in `apps/www`, updated on every docs deploy.                                |
+| B1a | Reverse Proxy on `main` (`arkenv.js.org/tanstack/*` -> `arkenv-v1.vercel.app`)             | Allows using `https://arkenv.js.org/tanstack/info.json` from Day 1 without waiting for v1 GA. |
+| B1b | Direct v1 preview URL (`https://arkenv-v1.vercel.app/tanstack/info.json`) with GA redirect | Zero changes to `main` during alpha; redirects to `arkenv.js.org` at GA.                      |
+| B1c | Direct static deploy to `main` via `sync-main`                                             | Cherry-pick `apps/www/public/tanstack/` onto `main` so `arkenv.js.org` serves it natively.    |
+| B2  | Published npm package `@arkenv/tanstack-addon`                                             | Distributed via npm registry; consumed via `npx` or npm package download.                     |
+| B3  | GitHub raw content URL (`https://raw.githubusercontent.com/...`)                           | Fetched directly from GitHub git tree without hosting infrastructure.                         |
+| B4  | Upstream built-in catalog PR to `@tanstack/create`                                         | Native `tanstack create --add-ons arkenv` without specifying an external URL.                 |
 
 ### Layer C — Validator Engine & Schema Options
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| C1 | ArkType-only (`@arkenv/core` + `arktype`) | Opinionated ArkEnv default. Zero options to choose during scaffolding. |
-| C2 | Configurable option via `info.json` (`validator: "arktype" | "zod" | "valibot"`) | Prompts developer during `tanstack create`, templates `env.ts.ejs` and `package.json.ejs` (`@arkenv/core` vs `@arkenv/standard`). |
-| C3 | Standard Schema / Zod-only | Matches existing `t3env` TanStack add-on conventions, but ignores ArkType flagship syntax. |
+| #  | Option                                                      | Notes                                                                                      |              |                                                                                                                                   |
+| -- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| C1 | ArkType-only (`@arkenv/core` + `arktype`)                   | Opinionated ArkEnv default. Zero options to choose during scaffolding.                     |              |                                                                                                                                   |
+| C2 | Configurable option via `info.json` (\`validator: "arktype" | "zod"                                                                                      | "valibot"\`) | Prompts developer during `tanstack create`, templates `env.ts.ejs` and `package.json.ejs` (`@arkenv/core` vs `@arkenv/standard`). |
+| C3 | Standard Schema / Zod-only                                  | Matches existing `t3env` TanStack add-on conventions, but ignores ArkType flagship syntax. |              |                                                                                                                                   |
 
 ### Layer D — Scaffolding Assets & Demo Scope
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| D1 | Minimal env setup only | Injects `src/env.ts`, `vite.config.ts` plugin, `.env.example`, and dependencies. No routes or components. |
-| D2 | Minimal env setup + Demo Route (`/demo/arkenv`) | Injects `src/env.ts`, Vite plugin, plus a demo route showing server-side loader/action reading `DATABASE_URL` and client rendering `VITE_API_URL`. |
-| D3 | Minimal env setup + Demo Route + Secret Leak Interactive Trigger | Includes the full demo route plus a `SecretLeakButton` component that demonstrates the client throw when attempting to access server keys. |
+| #  | Option                                                           | Notes                                                                                                                                              |
+| -- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D1 | Minimal env setup only                                           | Injects `src/env.ts`, `vite.config.ts` plugin, `.env.example`, and dependencies. No routes or components.                                          |
+| D2 | Minimal env setup + Demo Route (`/demo/arkenv`)                  | Injects `src/env.ts`, Vite plugin, plus a demo route showing server-side loader/action reading `DATABASE_URL` and client rendering `VITE_API_URL`. |
+| D3 | Minimal env setup + Demo Route + Secret Leak Interactive Trigger | Includes the full demo route plus a `SecretLeakButton` component that demonstrates the client throw when attempting to access server keys.         |
 
 ### Layer E — Version Pinning & Release Automation
 
-| # | Option | Notes |
-| - | ------ | ----- |
+| #  | Option                                            | Notes                                                                                                    |
+| -- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | E1 | Dynamic sync from `RELEASE_CONFIG` / build script | Injects active release channel (`alpha`, `rc`, GA) into `package.json.ejs` / `info.json` during compile. |
-| E2 | Hardcoded pinned alpha versions | Hardcoded e.g. `^1.0.0-alpha.1` in the template files, manually updated. |
-| E3 | Floating `latest` tag on npm | Relies on `latest` tag on npm (fails during pre-release alpha/rc phases where npm tag is `alpha`). |
+| E2 | Hardcoded pinned alpha versions                   | Hardcoded e.g. `^1.0.0-alpha.1` in the template files, manually updated.                                 |
+| E3 | Floating `latest` tag on npm                      | Relies on `latest` tag on npm (fails during pre-release alpha/rc phases where npm tag is `alpha`).       |
 
 ---
 
@@ -249,6 +250,7 @@ Solutions ranked as **answers to the whole problem**.
 ### S-Tier (The Recommended Public Stack)
 
 **Stack: `A1 + B1a + C2 + D2 + E1`** (Fallback: `B1b` if `main` cannot be touched immediately)
+
 - **A1:** Monorepo package `packages/tanstack-addon` containing the source templates, tests, and compilation scripts.
 - **B1a:** Official brand URL `https://arkenv.js.org/tanstack/info.json` from Day 1, enabled via a tiny Next.js proxy rewrite on `main` to `https://arkenv-v1.vercel.app/tanstack/:path*`. (Fallback `B1b`: `https://arkenv-v1.vercel.app/tanstack/info.json` in preview docs).
 - **C2:** Configurable engine option: ArkType (default), Zod, or Valibot.
@@ -291,6 +293,7 @@ It gives developers an instant, zero-friction setup via the permanent URL `tanst
 ### Use Case 1: Scaffolding a new TanStack Start app with ArkEnv
 
 **S (Hosted Custom Add-on):**
+
 ```bash
 # Developer creates app with ArkEnv add-on
 tanstack create my-app --add-ons https://arkenv.js.org/tanstack/info.json
@@ -303,6 +306,7 @@ tanstack create my-app --add-ons https://arkenv.js.org/tanstack/info.json
 ```
 
 Generated project structure:
+
 ```
 my-app/
 ├── src/
@@ -318,6 +322,7 @@ my-app/
 ```
 
 **A (After Upstream Catalog PR Merged):**
+
 ```bash
 # Once merged upstream into @tanstack/create:
 tanstack create my-app --add-ons arkenv
@@ -328,6 +333,7 @@ tanstack create my-app --add-ons arkenv
 ### Use Case 2: Adding ArkEnv to an existing TanStack project
 
 **S:**
+
 ```bash
 cd my-tanstack-app
 tanstack add https://arkenv.js.org/tanstack/info.json
@@ -338,6 +344,7 @@ tanstack add https://arkenv.js.org/tanstack/info.json
 ### Use Case 3: Local Development & Iteration
 
 In the `arkenv` repository:
+
 ```bash
 # Build packages and compile TanStack add-on
 pnpm --filter @arkenv/tanstack-addon build
@@ -571,4 +578,3 @@ function ArkEnvDemo() {
 
 - 2026-09-05: Initial write-up of TanStack CLI add-on evaluation note using `/the-hat` methodology.
 - 2026-09-05: Added exact template specifications (`info.json`, `package.json.ejs`, `src/env.ts.ejs`, `src/routes/demo/arkenv.tsx`), clarified `info.json` remote compilation schema, and resolved EJS addOnOption ID targeting for remote and upstream modes.
-
