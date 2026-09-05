@@ -4,6 +4,7 @@ import {
 	mkdirSync,
 	readdirSync,
 	readFileSync,
+	rmSync,
 	statSync,
 	writeFileSync,
 } from "node:fs";
@@ -83,6 +84,7 @@ export function buildAddon() {
 
 	// Copy assets directory recursively to apps/www/public/tanstack/assets
 	const targetAssetsDir = join(docsPublicDir, "assets");
+	rmSync(targetAssetsDir, { recursive: true, force: true });
 	mkdirSync(targetAssetsDir, { recursive: true });
 	cpSync(assetsDir, targetAssetsDir, { recursive: true });
 

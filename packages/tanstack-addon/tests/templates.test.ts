@@ -16,6 +16,10 @@ const packageTemplate = readFileSync(
 	resolve(packageRoot, ".add-on/package.json.ejs"),
 	"utf-8",
 );
+const demoRouteTemplate = readFileSync(
+	resolve(packageRoot, ".add-on/assets/src/routes/demo/arkenv.tsx.ejs"),
+	"utf-8",
+);
 
 describe("Template Rendering", () => {
 	describe("src/env.ts.ejs", () => {
@@ -129,6 +133,54 @@ describe("Template Rendering", () => {
 
 			expect(parsed.dependencies["@arkenv/standard"]).toBeDefined();
 			expect(parsed.dependencies.zod).toBeDefined();
+		});
+	});
+
+	describe("src/routes/demo/arkenv.tsx.ejs", () => {
+		it("renders demo route by default", () => {
+			const rendered = ejs.render(demoRouteTemplate, {
+				addOnOption: {},
+				includeExamples: true,
+			});
+			expect(rendered).toContain('createFileRoute("/demo/arkenv")');
+			expect(rendered).toContain("LeakedSecret");
+			expect(rendered).toContain("DATABASE_URL");
+		});
+
+		it("calls ignoreFile when demo option is false", () => {
+			let ignored = false;
+			ejs.render(demoRouteTemplate, {
+				addOnOption: { arkenv: { demo: "false" } },
+				ignoreFile: () => {
+					ignored = true;
+				},
+			});
+			expect(ignored).toBe(true);
+		});
+
+		it("calls ignoreFile when includeExamples is false", () => {
+			let ignored = false;
+			ejs.render(demoRouteTemplate, {
+				addOnOption: { arkenv: { demo: "true" } },
+				includeExamples: false,
+				ignoreFile: () => {
+					ignored = true;
+				},
+			});
+			expect(ignored).toBe(true);
+		});
+
+		it("calls ignoreFile when demo option is false via URL ID", () => {
+			let ignored = false;
+			ejs.render(demoRouteTemplate, {
+				addOnOption: {
+					"https://arkenv.js.org/tanstack/info.json": { demo: "false" },
+				},
+				ignoreFile: () => {
+					ignored = true;
+				},
+			});
+			expect(ignored).toBe(true);
 		});
 	});
 });

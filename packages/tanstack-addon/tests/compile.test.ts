@@ -28,7 +28,7 @@ describe("TanStack Add-on Compilation", () => {
 
 		// Assert files dictionary
 		expect(compiled.files).toHaveProperty("src/env.ts.ejs");
-		expect(compiled.files).toHaveProperty("src/routes/demo/arkenv.tsx");
+		expect(compiled.files).toHaveProperty("src/routes/demo/arkenv.tsx.ejs");
 		expect(compiled.files).toHaveProperty("_dot_env.example");
 
 		// Assert integrations
@@ -53,6 +53,8 @@ describe("TanStack Add-on Compilation", () => {
 		// Assert options
 		expect(compiled.options?.validator).toBeDefined();
 		expect(compiled.options?.validator.default).toBe("arktype");
+		expect(compiled.options?.demo).toBeDefined();
+		expect(compiled.options?.demo.default).toBe("true");
 	});
 
 	it("mirrors compiled files and assets to apps/www/public/tanstack", () => {

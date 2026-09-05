@@ -31,18 +31,22 @@ Generate a new TanStack Start project with the ArkEnv add-on:
 npx @tanstack/cli create my-app --add-ons https://arkenv.js.org/tanstack/info.json
 ```
 
-The CLI prompts you to choose your preferred validation engine:
+The CLI prompts you with configuration choices:
 
-- **ArkType** (default) — installs `@arkenv/core` and `arktype`
-- **Zod** — installs `@arkenv/standard` and `zod`
-- **Valibot** — installs `@arkenv/standard` and `valibot`
+- **Validator Engine**:
+  - **ArkType** (default) — installs `@arkenv/core` and `arktype`
+  - **Zod** — installs `@arkenv/standard` and `zod`
+  - **Valibot** — installs `@arkenv/standard` and `valibot`
+- **Interactive Demo Route**:
+  - **Include `/demo/arkenv`** (default) — scaffolds an interactive secret leak test showcasing server-only isolation in the browser
+  - **Skip demo route** — scaffolds only the schema definition and plugin configuration
 
 The add-on automatically:
 
 - Installs the required validator runtime and dev dependencies
 - Configures `arkenvVitePlugin()` in `vite.config.ts`
 - Generates `src/env.ts` with your selected validator engine
-- Adds an interactive demo route at `/demo/arkenv` showcasing server-only secret isolation and runtime safety
+- Pre-populates declared keys in `.env.example`
 
 <Callout type="info" title="Adding to an existing TanStack project">
   If you already have a TanStack application, add ArkEnv directly with the TanStack CLI:

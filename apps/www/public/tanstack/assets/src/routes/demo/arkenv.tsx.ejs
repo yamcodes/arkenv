@@ -1,3 +1,16 @@
+<%
+  const arkenvOption = (typeof addOnOption !== 'undefined' && (
+    addOnOption['arkenv'] ||
+    Object.entries(addOnOption).find(([k]) => k.includes('arkenv') || k.includes('info.json'))?.[1]
+  )) || {};
+  const includeDemo = typeof includeExamples !== 'undefined' ? includeExamples : true;
+  if (arkenvOption.demo === 'false' || !includeDemo) {
+    if (typeof ignoreFile === 'function') {
+      ignoreFile();
+      return;
+    }
+  }
+-%>
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { useState } from "react";

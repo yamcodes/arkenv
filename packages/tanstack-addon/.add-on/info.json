@@ -29,6 +29,21 @@
 					"label": "Valibot (@arkenv/standard)"
 				}
 			]
+		},
+		"demo": {
+			"type": "select",
+			"label": "Interactive Demo Route",
+			"default": "true",
+			"options": [
+				{
+					"value": "true",
+					"label": "Include /demo/arkenv (recommended)"
+				},
+				{
+					"value": "false",
+					"label": "Skip demo route"
+				}
+			]
 		}
 	},
 	"routes": [
