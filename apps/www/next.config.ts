@@ -79,6 +79,13 @@ const config = {
 				source: `${POSTHOG_PROXY_PREFIX}/:path*`,
 				destination: `${POSTHOG_API_ENDPOINT}/:path*`,
 			},
+			/**
+			 * Proxy TanStack CLI add-on to v1 preview during alpha
+			 */
+			{
+				source: "/tanstack/:path*",
+				destination: "https://arkenv-v1.vercel.app/tanstack/:path*",
+			},
 		];
 	},
 	// This is required to support PostHog trailing slash API requests
