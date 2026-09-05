@@ -1,7 +1,9 @@
 import "./blog.css";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { SiteFooter } from "~/components/site-footer";
+import { getAuthorAvatarUrl, getAuthorGithub } from "~/lib/blog-author";
 import { getBlogPages } from "~/lib/source";
 
 export const metadata: Metadata = {
@@ -44,26 +46,50 @@ export default function BlogIndexPage() {
 				</header>
 
 				<ul className="blog-page__list">
-					{pages.map((page) => (
-						<li key={page.url} className="blog-page__item">
-							<Link
-								href={page.url}
-								className="blog-page__item-link"
-								data-no-underline
-								data-no-arrow
-							>
-								<span className="blog-page__item-meta">
-									{formatDate(page.data.date)} · {page.data.author}
-								</span>
-								<span className="blog-page__item-title">{page.data.title}</span>
-								{page.data.description ? (
-									<p className="blog-page__item-desc">
-										{page.data.description}
-									</p>
-								) : null}
-							</Link>
-						</li>
-					))}
+					{pages.map((page) => {
+						const githubHandle = getAuthorGithub(
+							page.data.author,
+							page.data.authorGithub,
+						);
+						const avatarUrl = githubHandle
+							? getAuthorAvatarUrl(githubHandle, 40)
+							: undefined;
+
+						return (
+							<li key={page.url} className="blog-page__item">
+								<Link
+									href={page.url}
+									className="blog-page__item-link"
+									data-no-underline
+									data-no-arrow
+								>
+									<span className="blog-page__item-meta">
+										{avatarUrl ? (
+											<Image
+												src={avatarUrl}
+												alt={page.data.author}
+												width={20}
+												height={20}
+												className="blog-page__avatar blog-page__avatar--sm"
+												unoptimized
+											/>
+										) : null}
+										<span>{page.data.author}</span>
+										<span aria-hidden="true">·</span>
+										<span>{formatDate(page.data.date)}</span>
+									</span>
+									<span className="blog-page__item-title">
+										{page.data.title}
+									</span>
+									{page.data.description ? (
+										<p className="blog-page__item-desc">
+											{page.data.description}
+										</p>
+									) : null}
+								</Link>
+							</li>
+						);
+					})}
 				</ul>
 			</article>
 			<SiteFooter reveal />

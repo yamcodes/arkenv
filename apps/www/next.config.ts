@@ -11,6 +11,18 @@ import {
 
 const config = {
 	outputFileTracingRoot: path.join(__dirname, "../../"),
+	images: {
+		remotePatterns: [
+			{
+				protocol: "https",
+				hostname: "github.com",
+			},
+			{
+				protocol: "https",
+				hostname: "avatars.githubusercontent.com",
+			},
+		],
+	},
 	// @arkenv/fumadocs-ui resolves fumadocs-* from its own node_modules.
 	// A second copy means RootProvider's FrameworkProvider is not the one
 	// DocsLayout / sidebar slots read — "wrap your application inside FrameworkProvider".
