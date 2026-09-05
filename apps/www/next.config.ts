@@ -80,7 +80,9 @@ const config = {
 				destination: `${POSTHOG_API_ENDPOINT}/:path*`,
 			},
 			/**
-			 * Proxy TanStack CLI add-on to v1 preview during alpha
+			 * Temporary fallback: Proxy TanStack CLI add-on to v1 preview.
+			 * Static bundles in public/tanstack take precedence and serve natively.
+			 * TODO(v1-ga): Remove this proxy rewrite once the v1 branch is merged into dev/main.
 			 */
 			{
 				source: "/tanstack/:path*",
