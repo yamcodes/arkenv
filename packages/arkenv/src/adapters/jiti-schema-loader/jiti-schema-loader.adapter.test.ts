@@ -20,6 +20,7 @@ const requireFromStandard = createRequire(
 
 const jitiAliases = {
 	"@arkenv/core": path.join(packagesDir, "core/src/index.ts"),
+	"@arkenv/core/issues": path.join(packagesDir, "core/src/issues.ts"),
 	"@arkenv/standard": path.join(packagesDir, "standard/src/index.ts"),
 	arktype: requireFromCore.resolve("arktype"),
 	zod: requireFromCore.resolve("zod"),

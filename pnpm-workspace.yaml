@@ -57,3 +57,9 @@ overrides:
 publicHoistPattern:
   - '*import-in-the-middle*'
   - '*require-in-the-middle*'
+minimumReleaseAgeExclude:
+  - db0@0.4.1
+  - h3@2.0.1-rc.31
+  - nitro@3.0.260903-beta
+  - srvx@1.0.3
+  - unstorage@2.0.0-alpha.10

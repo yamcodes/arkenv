@@ -1,6 +1,7 @@
 "use server";
 
 import { PostHog } from "posthog-node";
+import { env } from "~/env";
 import { POSTHOG_API_ENDPOINT } from "~/lib/posthog/config";
 import { docsFeedbackEmotions } from "./emotions";
 import { buildDocsFeedbackBody, createDocsFeedbackDiscussion } from "./github";
@@ -11,7 +12,7 @@ import {
 } from "./schema";
 
 async function capturePostHog(feedback: DocsPageFeedback): Promise<void> {
-	const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+	const key = env.NEXT_PUBLIC_POSTHOG_KEY;
 	if (!key) return;
 
 	const posthog = new PostHog(key, { host: POSTHOG_API_ENDPOINT });

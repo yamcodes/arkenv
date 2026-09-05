@@ -1,13 +1,10 @@
-// instrumentation-client.ts
 import * as Sentry from "@sentry/nextjs";
 import posthog from "posthog-js";
+import { env } from "~/env";
 import { POSTHOG_PROXY_PREFIX, POSTHOG_UI_HOST } from "~/lib/posthog/config";
 
 // Resolve environment consistently on the client
-const ENV =
-	process.env.NEXT_PUBLIC_VERCEL_ENV ||
-	process.env.VERCEL_ENV ||
-	process.env.NODE_ENV; // fallback
+const ENV = env.NEXT_PUBLIC_VERCEL_ENV || env.NODE_ENV;
 
 // biome-ignore lint/correctness/noUnusedVariables: Might be used later
 const isDev = ENV === "development";
@@ -15,27 +12,20 @@ const isPreview = ENV === "preview";
 const isProd = ENV === "production";
 
 // Optional manual kill-switch
-const explicitEnabled =
-	typeof process.env.NEXT_PUBLIC_SENTRY_ENABLED === "string"
-		? process.env.NEXT_PUBLIC_SENTRY_ENABLED === "true"
-		: undefined;
+const explicitEnabled = env.NEXT_PUBLIC_SENTRY_ENABLED;
 
 // Enable only in preview/prod unless explicitly overridden
 const enabled = explicitEnabled ?? (isPreview || isProd);
 
 // Safer defaults from env with sensible fallbacks
-const tracesRateEnv = Number(
-	process.env.NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE_CLIENT,
-);
-const replaysSessionRateEnv = Number(
-	process.env.NEXT_PUBLIC_SENTRY_REPLAYS_SESSION_SAMPLE_RATE,
-);
-const replaysOnErrorRateEnv = Number(
-	process.env.NEXT_PUBLIC_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE,
-);
+const tracesRateEnv = env.NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE_CLIENT;
+const replaysSessionRateEnv =
+	env.NEXT_PUBLIC_SENTRY_REPLAYS_SESSION_SAMPLE_RATE;
+const replaysOnErrorRateEnv =
+	env.NEXT_PUBLIC_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE;
 
 Sentry.init({
-	dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+	dsn: env.NEXT_PUBLIC_SENTRY_DSN,
 	enabled,
 
 	environment: ENV, // "development" | "preview" | "production"
@@ -81,7 +71,7 @@ Sentry.init({
 	sendDefaultPii: false,
 
 	// Helpful when you explicitly opt in during local troubleshooting
-	debug: Boolean(process.env.NEXT_PUBLIC_SENTRY_DEBUG) && !isProd,
+	debug: env.NEXT_PUBLIC_SENTRY_DEBUG && !isProd,
 
 	// Extra guardrails
 	ignoreErrors: [
@@ -109,8 +99,8 @@ export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
 
 // PostHog analytics initialization
 // Disable PostHog in CI environments (tests, CI/CD)
-const isCI = Boolean(process.env.CI);
-const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+const isCI = env.NODE_ENV === "test" || Boolean(process.env.CI);
+const posthogKey = env.NEXT_PUBLIC_POSTHOG_KEY;
 
 if (isCI) {
 	// Silently skip PostHog initialization in CI

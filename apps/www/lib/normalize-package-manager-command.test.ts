@@ -4,20 +4,20 @@ import { normalizePackageManagerCommand } from "./normalize-package-manager-comm
 describe("normalizePackageManagerCommand", () => {
 	it("expands npm i to npm install", () => {
 		expect(normalizePackageManagerCommand("npm i @arkenv/core")).toBe(
-			"npm install @arkenv/core",
+			"npm install @arkenv/core@alpha",
 		);
 		expect(normalizePackageManagerCommand("npm i -D @arkenv/vite-plugin")).toBe(
-			"npm install -D @arkenv/vite-plugin",
+			"npm install -D @arkenv/vite-plugin@alpha",
 		);
 	});
 
 	it("rewrites bun add to bun install", () => {
 		expect(normalizePackageManagerCommand("bun add @arkenv/core")).toBe(
-			"bun install @arkenv/core",
+			"bun install @arkenv/core@alpha",
 		);
 		expect(
 			normalizePackageManagerCommand("bun add -D @arkenv/vite-plugin"),
-		).toBe("bun install -D @arkenv/vite-plugin");
+		).toBe("bun install -D @arkenv/vite-plugin@alpha");
 	});
 
 	it("rewrites bun x to bunx", () => {
@@ -26,12 +26,12 @@ describe("normalizePackageManagerCommand", () => {
 		);
 	});
 
-	it("leaves pnpm add and yarn add alone", () => {
+	it("keeps pnpm add and yarn add canonical on install lines", () => {
 		expect(normalizePackageManagerCommand("pnpm add @arkenv/core")).toBe(
-			"pnpm add @arkenv/core",
+			"pnpm add @arkenv/core@alpha",
 		);
 		expect(normalizePackageManagerCommand("yarn add @arkenv/core")).toBe(
-			"yarn add @arkenv/core",
+			"yarn add @arkenv/core@alpha",
 		);
 	});
 
@@ -114,6 +114,31 @@ describe("normalizePackageManagerCommand", () => {
 		expect(
 			normalizePackageManagerCommand("bunx @arkenv/agent-plugin init"),
 		).toBe("bunx @arkenv/agent-plugin init");
+	});
+
+	it("tags scoped @arkenv/* packages on multi-line install fences", () => {
+		expect(
+			normalizePackageManagerCommand(
+				"npm install @arkenv/core arktype\nnpm install -D @arkenv/vite-plugin",
+			),
+		).toBe(
+			"npm install @arkenv/core@alpha arktype\nnpm install -D @arkenv/vite-plugin@alpha",
+		);
+	});
+
+	it("rewrites pre-tagged scoped packages on install lines to the active release tag", () => {
+		expect(
+			normalizePackageManagerCommand("npm install @arkenv/core@latest"),
+		).toBe("npm install @arkenv/core@alpha");
+		expect(
+			normalizePackageManagerCommand("npm install @arkenv/core@latest", "rc"),
+		).toBe("npm install @arkenv/core@rc");
+	});
+
+	it("strips scoped install tags when release tag is empty (GA mode)", () => {
+		expect(
+			normalizePackageManagerCommand("npm install @arkenv/core@alpha", ""),
+		).toBe("npm install @arkenv/core");
 	});
 
 	it("normalizes runner commands inside prompt text fences", () => {

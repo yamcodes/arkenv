@@ -25,6 +25,7 @@
 		"@types/node": "catalog:",
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",
+		"@vitejs/plugin-react": "catalog:",
 		"rimraf": "catalog:",
 		"typescript": "catalog:",
 		"vite": "8.0.10"

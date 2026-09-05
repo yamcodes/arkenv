@@ -1,5 +1,28 @@
 # @arkenv/core
 
+## 1.0.0-alpha.21
+
+### Major Changes
+
+- #### Migrate all packages to pure ESM-only output _[`#1754`](https://github.com/yamcodes/arkenv/pull/1754) [`e29b46c`](https://github.com/yamcodes/arkenv/commit/e29b46c98f733980f55e1fff727c01ac0abee7df) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Every package now ships standard `.js` and `.d.ts` files under `"type": "module"`. The dual-published `.mjs`, `.cjs`, `.d.mts`, and `.d.cts` artifacts have been removed, and package `exports` no longer carry `require` conditions.
+	
+	CommonJS consumers keep working through Node's native `require(esm)`, which resolves each package through its `"default"` export condition. Bundlers (esbuild, Vite, Rollup, webpack) continue to transpile and inline the ESM output cleanly.
+	
+	**BREAKING CHANGE**: ArkEnv packages no longer ship `.cjs` builds. `require()` now returns the ESM namespace (for example, `require("@arkenv/core").default` is the `arkenv` function) and requires Node.js 20.19+, 22.12+, or 24. Projects that load ArkEnv from CommonJS on older Node versions need to upgrade Node or move to `import` syntax.
+
+### Minor Changes
+
+- #### Detect TanStack Start projects and recommend the Vite plugin _[`#1773`](https://github.com/yamcodes/arkenv/pull/1773) [`776349f`](https://github.com/yamcodes/arkenv/commit/776349ff543ac68efa68cac1a20bb438a7b6ea8a) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`arkenv init` now recognizes `@tanstack/react-start` and `@tanstack/start` in
+	project dependencies. TanStack Start projects are detected through the Vite
+	integration and scaffold `@arkenv/vite-plugin` with a `VITE_` client prefix,
+	matching plain Vite projects.
+
 ## 1.0.0-alpha.20
 
 ### Major Changes

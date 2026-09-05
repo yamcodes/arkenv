@@ -1,7 +1,7 @@
 {
 	"name": "@arkenv/standard",
 	"type": "module",
-	"version": "1.0.0-alpha.9",
+	"version": "1.0.0-alpha.10",
 	"description": "Dependency-free, typesafe environment variables validation based on Standard Schema",
 	"main": "./dist/index.js",
 	"module": "./dist/index.js",
@@ -11,6 +11,11 @@
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js",
 			"default": "./dist/index.js"
+		},
+		"./safe": {
+			"types": "./dist/safe.d.ts",
+			"import": "./dist/safe.js",
+			"default": "./dist/safe.js"
 		},
 		"./valibot": {
 			"types": "./dist/valibot.d.ts",

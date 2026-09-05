@@ -2,6 +2,7 @@
 
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { Star } from "lucide-react";
+import { env } from "~/env";
 import { useGithubStarCount } from "~/lib/use-github-star-count";
 import { cn } from "~/lib/utils";
 import { breakDownGithubUrl } from "~/lib/utils/github";
@@ -12,10 +13,7 @@ type StarUsProps = {
 
 export function StarUsButton({ className }: StarUsProps) {
 	const starCount = useGithubStarCount();
-
-	const githubUrl =
-		process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/yamcodes/arkenv";
-	const { owner, repo } = breakDownGithubUrl(githubUrl);
+	const { owner, repo } = breakDownGithubUrl(env.NEXT_PUBLIC_GITHUB_URL);
 
 	return (
 		<a

@@ -18,6 +18,9 @@
 		"noErrorTruncation": true,
 		"paths": {
 			"~/*": ["./*"],
+			"@/.arkenv": ["./.arkenv/index.ts"],
+			"#arkenv/*": ["./.arkenv/*"],
+			"#arkenv/env": ["./.arkenv/env.gen.ts"],
 			"fumadocs-mdx:collections/*": ["./.source/*"]
 		},
 		"plugins": [
@@ -30,6 +33,7 @@
 		"next-env.d.ts",
 		"**/*.ts",
 		"**/*.tsx",
+		".arkenv/**/*.ts",
 		".next/types/**/*.ts",
 		".next/dev/types/**/*.ts"
 	],

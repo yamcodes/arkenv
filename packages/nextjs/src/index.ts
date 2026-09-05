@@ -1,5 +1,6 @@
 import type { EnvSchema, Infer } from "@arkenv/core";
-import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/core";
+import { arkenv as coreArkenv } from "@arkenv/core";
+import { getSchemaKeys } from "@arkenv/core/issues";
 import type { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
 import type { type as at, distill } from "arktype";

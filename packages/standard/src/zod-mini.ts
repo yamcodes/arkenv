@@ -20,8 +20,8 @@ const zodMiniToJsonSchema: NonNullable<StandardEnvConfig["toJsonSchema"]> = (
  *
  * @param def An object mapping variable names to Zod Mini schemas
  * @param config Optional configuration. Pass `toJsonSchema` to override the bound converter
- * @returns The validated environment variables, or a SafeArkEnvResult if `{ safe: true }` is configured
- * @throws An {@link ArkEnvError} if validation fails and `safe` is not enabled
+ * @returns The validated environment variables
+ * @throws An {@link ArkEnvError} if validation fails
  *
  * @example
  * ```ts

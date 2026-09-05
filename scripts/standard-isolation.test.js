@@ -15,6 +15,7 @@ const rootDir = join(dirname(fileURLToPath(import.meta.url)), "..");
 const integrationPackages = resolvePackageDirs(rootDir, [
 	"packages/vite-plugin",
 	"packages/bun-plugin",
+	"packages/rsbuild-plugin",
 	"packages/nextjs",
 	"packages/nuxt",
 ]);

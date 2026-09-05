@@ -60,9 +60,24 @@ These are the public names from `@arkenv/standard`.
 
 | Import                      | Role                                                                                           |
 | --------------------------- | ---------------------------------------------------------------------------------------------- |
-| `@arkenv/standard`          | Root engine. Dependency-free. Zod works zero-config.                                           |
+| `@arkenv/standard`          | Root engine (throw path). Dependency-free. Zod works zero-config.                              |
+| `@arkenv/standard/safe`     | `arkenv` — result object instead of a throw (default + named export)                           |
 | `@arkenv/standard/valibot`  | Same `arkenv`, pre-configured for Valibot. `valibot` + `@valibot/to-json-schema` are required. |
 | `@arkenv/standard/zod-mini` | Same `arkenv`, pre-configured for Zod Mini. `zod` is required.                                 |
+
+```ts title="./env.ts" twoslash
+import arkenv from "@arkenv/standard/safe";
+import * as z from "zod";
+
+const result = arkenv(
+  { PORT: z.coerce.number() },
+  { env: { PORT: "invalid" } },
+);
+
+if (!result.success) {
+  console.error(result.issues);
+}
+```
 
 ```ts title="./env.ts" twoslash
 import { arkenv } from "@arkenv/standard/valibot";

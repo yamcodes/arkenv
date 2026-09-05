@@ -3,20 +3,21 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"dev": "vinxi dev",
-		"build": "vinxi build",
-		"start": "vinxi start"
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview"
 	},
 	"dependencies": {
-		"@arkenv/core": "1.0.0-alpha.9",
-		"@arkenv/vite-plugin": "1.0.0-alpha.14",
-		"@solidjs/start": "1.3.2",
+		"@arkenv/core": "1.0.0-alpha.10",
+		"@arkenv/vite-plugin": "1.0.0-alpha.15",
+		"@solidjs/start": "^2.0.4",
 		"arktype": "^2.2.0",
+		"nitro": "3.0.260903-beta",
 		"solid-js": "1.9.12",
-		"vinxi": "0.5.11"
+		"vite": "8.0.10"
 	},
 	"engines": {
-		"node": ">=22"
+		"node": ">=24"
 	},
 	"packageManager": "npm@11.9.0"
 }
