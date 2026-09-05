@@ -1,0 +1,45 @@
+{
+	"name": "tanstack-start-rsbuild-playground",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"sideEffects": false,
+	"scripts": {
+		"dev": "rsbuild dev",
+		"build": "rsbuild build && tsc --noEmit",
+		"start": "rsbuild preview",
+		"preview": "rsbuild preview",
+		"fix": "pnpm -w run fix",
+		"clean": "rimraf dist node_modules .output"
+	},
+	"dependencies": {
+		"@arkenv/core": "workspace:*",
+		"@arkenv/rsbuild-plugin": "workspace:*",
+		"@tanstack/react-router": "1.170.32",
+		"@tanstack/react-start": "1.168.49",
+		"arktype": "catalog:",
+		"react": "catalog:",
+		"react-dom": "catalog:"
+	},
+	"devDependencies": {
+		"@rsbuild/core": "2.2.3",
+		"@rsbuild/plugin-react": "2.1.0",
+		"@types/node": "catalog:",
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"rimraf": "catalog:",
+		"typescript": "catalog:"
+	},
+	"engines": {
+		"node": ">=22.12.0"
+	},
+	"arkenvExamples": [
+		{
+			"name": "with-tanstack-start-rsbuild",
+			"packageManager": "npm",
+			"exclude": [
+				".tanstack"
+			]
+		}
+	]
+}

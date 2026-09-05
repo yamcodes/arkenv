@@ -49,6 +49,12 @@
 			"framework": "vite"
 		},
 		{
+			"id": "with-tanstack-start-rsbuild",
+			"name": "TanStack Start (Rsbuild)",
+			"description": "TanStack Start with @arkenv/rsbuild-plugin",
+			"framework": "rsbuild"
+		},
+		{
 			"id": "with-solid-start",
 			"name": "SolidStart",
 			"description": "SolidStart with @arkenv/vite-plugin",
