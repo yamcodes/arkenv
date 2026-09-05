@@ -3,10 +3,10 @@ title: TanStack Start
 description: Learn how to use ArkEnv in a TanStack Start project.
 ---
 
-TanStack Start apps validate environment variables with `@arkenv/vite-plugin`,
-the same Vite plugin ArkEnv ships for plain Vite projects. ArkEnv inlines
-public `VITE_` keys into the client bundle, keeps server secrets inside server
-functions, and throws if client code reads them.
+TanStack Start apps validate environment variables with `@arkenv/vite-plugin`
+or `@arkenv/rsbuild-plugin`, depending on your underlying bundler. ArkEnv
+inlines public keys (`VITE_` or `PUBLIC_`) into the client bundle, keeps server
+secrets inside server functions, and throws if client code reads them.
 
 For high-level architectural trade-offs, see
 [Frameworks](/docs/frameworks).
@@ -29,7 +29,8 @@ pnpm dlx arkenv@alpha init
 Use the runner that matches your lockfile. Init detects the package manager for installs.
 
 The CLI detects `@tanstack/react-start` in your dependencies and installs
-`@arkenv/vite-plugin` the same way it does for Vite projects.
+`@arkenv/vite-plugin` the same way it does for Vite projects. For Rsbuild
+setups, follow [Manual installation](#manual-installation) below.
 
 :::info[Pinning alphas]
 Until GA, pin exact `@arkenv/*` alpha versions in the lockfile if you want
@@ -38,40 +39,55 @@ bit-for-bit reproducibility across machines and CI.
 
 ## Manual installation
 
-If you prefer manual setup, install `@arkenv/vite-plugin` alongside your chosen
-validation engine.
+Install the plugin that matches your bundler (`@arkenv/vite-plugin` for Vite or
+`@arkenv/rsbuild-plugin` for Rsbuild) alongside your chosen validation engine.
 
 <Callout type="info">
-  Prefer `@arkenv/core` / `@arkenv/vite-plugin` as app dependencies — not the
+  Prefer `@arkenv/core` and your host plugin as app dependencies — not the
   `arkenv` CLI package.
 </Callout>
 
 ### ArkType engine
 
-Install `@arkenv/core`, `arktype`, and the Vite plugin:
+For Vite:
 
 ```package-install
 npm install @arkenv/core arktype
 npm install -D @arkenv/vite-plugin
 ```
 
+For Rsbuild:
+
+```package-install
+npm install @arkenv/core arktype
+npm install -D @arkenv/rsbuild-plugin
+```
+
 ### Standard Schema engine
 
 If you aren't using ArkType, install `@arkenv/standard`:
+
+For Vite:
 
 ```package-install
 npm install @arkenv/standard
 npm install -D @arkenv/vite-plugin
 ```
 
+For Rsbuild:
+
+```package-install
+npm install @arkenv/standard
+npm install -D @arkenv/rsbuild-plugin
+```
+
 ## Configuration
 
-Register the plugin next to `tanstackStart()` and `@vitejs/plugin-react` in
-your `vite.config.ts`.
+Register the plugin next to TanStack Start and React in your bundler config.
 
-### Register the plugin
+### Vite
 
-TanStack Start's React recipe expects `viteReact()` after `tanstackStart()`
+TanStack Start's React recipe on Vite expects `viteReact()` after `tanstackStart()`
 (for JSX / Fast Refresh). Add `arkenvVitePlugin()` to the same `plugins`
 array:
 
@@ -101,21 +117,61 @@ TanStack Start React dev mode requires the React Refresh runtime (`/@react-refre
 If the React plugin is missing, Vite fails to load the client entry (`/@react-refresh could not be resolved`). The page will still render via SSR, but client-side hydration fails, leaving interactive handlers (like `onClick` listeners) unattached.
 :::
 
+### Rsbuild
+
+TanStack Start also supports [Rsbuild](https://rsbuild.dev) via `@tanstack/react-start/plugin/rsbuild`. Register `arkenvRsbuildPlugin()` in your `rsbuild.config.ts`:
+
+```ts title="./rsbuild.config.ts"
+import { pluginReact } from "@rsbuild/plugin-react";
+import { tanstackStart } from "@tanstack/react-start/plugin/rsbuild";
+import arkenvRsbuildPlugin from "@arkenv/rsbuild-plugin";
+import { defineConfig } from "@rsbuild/core";
+
+export default defineConfig({
+  plugins: [
+    tanstackStart({ srcDirectory: "src" }),
+    pluginReact(),
+    arkenvRsbuildPlugin(),
+  ],
+});
+```
+
+If you aren't using ArkType, import the plugin from
+`@arkenv/rsbuild-plugin/standard`.
+
 ### Define your schema
 
 Create an `env.ts` file in your source tree. Keys your client bundle reads must
-use the `VITE_` prefix; everything else stays on the server:
+match your bundler's client prefix: `VITE_` for Vite or `PUBLIC_` for Rsbuild.
+Everything else stays on the server:
 
-```ts title="./src/env.ts" twoslash
-import arkenv from "@arkenv/core";
+<Tabs items={["Vite", "Rsbuild"]}>
+  <Tab value="Vite">
+    ```ts title="./src/env.ts" twoslash
+    import arkenv from "@arkenv/core";
 
-export const env = arkenv({
-  DATABASE_URL: "string",
-  PORT: "number.port = 3000",
-  VITE_API_URL: "string = 'https://api.example.com'",
-  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-});
-```
+    export const env = arkenv({
+      DATABASE_URL: "string",
+      PORT: "number.port = 3000",
+      VITE_API_URL: "string = 'https://api.example.com'",
+      NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Rsbuild">
+    ```ts title="./src/env.ts" twoslash
+    import arkenv from "@arkenv/core";
+
+    export const env = arkenv({
+      DATABASE_URL: "string",
+      PORT: "number.port = 3000",
+      PUBLIC_API_URL: "string = 'https://api.example.com'",
+      NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+    ```
+  </Tab>
+</Tabs>
 
 :::tip[Pass the schema as an object literal]
 Pass the object literal into `arkenv({ ... })`, or wrap a shared shape with
@@ -134,37 +190,71 @@ Server-only keys work inside `createServerFn` handlers. The handler runs on the
 server, where `env.ts` executes the real validation runtime against your
 process environment:
 
-```tsx title="./src/routes/index.tsx"
-import { createFileRoute } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-import { env } from "../env";
+<Tabs items={["Vite", "Rsbuild"]}>
+  <Tab value="Vite">
+    ```tsx title="./src/routes/index.tsx"
+    import { createFileRoute } from "@tanstack/react-router";
+    import { createServerFn } from "@tanstack/react-start";
+    import { env } from "../env";
 
-const getDatabaseHost = createServerFn({ method: "GET" }).handler(() => {
-  const url = new URL(env.DATABASE_URL); // server-only: validated at boot
-  return url.host; // safe to return to the client
-});
+    const getDatabaseHost = createServerFn({ method: "GET" }).handler(() => {
+      const url = new URL(env.DATABASE_URL); // server-only: validated at boot
+      return url.host; // safe to return to the client
+    });
 
-export const Route = createFileRoute("/")({
-  component: Home,
-  loader: () => getDatabaseHost(),
-});
+    export const Route = createFileRoute("/")({
+      component: Home,
+      loader: () => getDatabaseHost(),
+    });
 
-function Home() {
-  const dbHost = Route.useLoaderData();
+    function Home() {
+      const dbHost = Route.useLoaderData();
 
-  return (
-    <div>
-      <h1>API: {env.VITE_API_URL}</h1>
-      <p>Database Host: {dbHost}</p>
-    </div>
-  );
-}
-```
+      return (
+        <div>
+          <h1>API: {env.VITE_API_URL}</h1>
+          <p>Database Host: {dbHost}</p>
+        </div>
+      );
+    }
+    ```
+  </Tab>
+
+  <Tab value="Rsbuild">
+    ```tsx title="./src/routes/index.tsx"
+    import { createFileRoute } from "@tanstack/react-router";
+    import { createServerFn } from "@tanstack/react-start";
+    import { env } from "../env";
+
+    const getDatabaseHost = createServerFn({ method: "GET" }).handler(() => {
+      const url = new URL(env.DATABASE_URL); // server-only: validated at boot
+      return url.host; // safe to return to the client
+    });
+
+    export const Route = createFileRoute("/")({
+      component: Home,
+      loader: () => getDatabaseHost(),
+    });
+
+    function Home() {
+      const dbHost = Route.useLoaderData();
+
+      return (
+        <div>
+          <h1>API: {env.PUBLIC_API_URL}</h1>
+          <p>Database Host: {dbHost}</p>
+        </div>
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
 
 ### Client keys in components
 
-Client components read `VITE_` keys from the same import. The plugin rewrites
-the client module so these values are inlined as coerced literals.
+Client components read public keys (`VITE_*` on Vite, `PUBLIC_*` on Rsbuild)
+from the same import. The plugin rewrites the client module so these values
+are inlined as coerced literals.
 
 :::warning[Do not read `import.meta.env` directly]
 Reading `import.meta.env` skips ArkEnv. Import `{ env }` so public keys stay
@@ -173,39 +263,55 @@ typed and coerced and server secrets stay out of the client bundle.
 
 Reading a server-only key in the browser throws instead of leaking:
 
-```tsx
-env.VITE_API_URL; // string, inlined into the client bundle
-env.DATABASE_URL; // throws in the browser; real value on the server
-```
+<Tabs items={["Vite", "Rsbuild"]}>
+  <Tab value="Vite">
+    ```tsx
+    env.VITE_API_URL; // string, inlined into the client bundle
+    env.DATABASE_URL; // throws in the browser; real value on the server
+    ```
+  </Tab>
+
+  <Tab value="Rsbuild">
+    ```tsx
+    env.PUBLIC_API_URL; // string, inlined into the client bundle
+    env.DATABASE_URL; // throws in the browser; real value on the server
+    ```
+  </Tab>
+</Tabs>
 
 ## SSR and the client boundary
 
-TanStack Start builds two Vite module graphs: the SSR graph for the server
+TanStack Start builds two module graphs: the SSR graph for the server
 functions and routes you render on the server, and the client graph for what
 ships to the browser.
 
 - **Server graph:** `env.ts` executes the real `@arkenv/core` runtime at boot
   and validates your process environment before requests are served. `createServerFn`
   handlers run on this graph, so they read real, validated values.
-- **Client graph:** `@arkenv/vite-plugin` transforms `env.ts` during the client
-  build. It inlines public `VITE_` values and replaces private server keys with
+- **Client graph:** `@arkenv/vite-plugin` or `@arkenv/rsbuild-plugin` transforms `env.ts` during the client
+  build. It inlines public values and replaces private server keys with
   throwing getters, so the validator engine never ships to the browser.
 
-Like Vite, TanStack Start loads `.env*` files in development. In production, the
+Like Vite and Rsbuild, TanStack Start loads `.env*` files in development. In production, the
 environment comes from the process that starts your server, so containers must
 inject variables before boot.
 
-## Example
+## Examples
 
-The [`with-tanstack-start`](https://github.com/yamcodes/arkenv/tree/v1/examples/with-tanstack-start)
-example runs the setup above end to end: server-only `DATABASE_URL` accessed
-inside `createServerFn`, public `VITE_` keys rendered in a client component,
-and a button that demonstrates the client-side throw.
+Run a complete setup end to end:
+
+- [`with-tanstack-start`](https://github.com/yamcodes/arkenv/tree/v1/examples/with-tanstack-start): TanStack Start with Vite and `@arkenv/vite-plugin`.
+- [`with-tanstack-start-rsbuild`](https://github.com/yamcodes/arkenv/tree/v1/examples/with-tanstack-start-rsbuild): TanStack Start with Rsbuild and `@arkenv/rsbuild-plugin`.
+
+Both examples demonstrate server-only `DATABASE_URL` accessed inside `createServerFn`,
+public keys rendered in a client component, and a button that demonstrates the client-side throw.
 
 ## Next steps
 
 <Cards>
-  <Card href="/docs/reference/vite-plugin" title="@arkenv/vite-plugin reference" description="Transform modes, configuration options, and plugin exports." />
+  <Card href="/docs/reference/vite-plugin" title="@arkenv/vite-plugin reference" description="Transform modes, configuration options, and Vite plugin exports." />
+
+  <Card href="/docs/reference/rsbuild-plugin" title="@arkenv/rsbuild-plugin reference" description="Transform modes, configuration options, and Rsbuild plugin exports." />
 
   <Card href="/docs/core-concepts/client-vs-server" title="Client vs. server" description="Understand how ArkEnv protects server keys in client bundles." />
 
