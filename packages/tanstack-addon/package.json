@@ -1,0 +1,40 @@
+{
+	"name": "@arkenv/tanstack-addon",
+	"version": "1.0.0-alpha.1",
+	"author": "Yam Borodetsky <yam@yam.codes>",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/yamcodes/arkenv.git"
+	},
+	"description": "TanStack CLI add-on for ArkEnv environment variable validation",
+	"homepage": "https://arkenv.js.org",
+	"license": "MIT",
+	"type": "module",
+	"scripts": {
+		"build": "tsx scripts/build.ts",
+		"typecheck": "tsc --noEmit",
+		"clean": "rimraf dist .add-on/info.json add-on.json node_modules",
+		"test": "vitest run",
+		"fix": "pnpm -w run fix"
+	},
+	"files": [
+		"dist",
+		".add-on"
+	],
+	"devDependencies": {
+		"@arkenv/core": "workspace:*",
+		"@arkenv/standard": "workspace:*",
+		"@arkenv/vite-plugin": "workspace:*",
+		"@tanstack/create": "^0.70.0",
+		"@types/ejs": "^3.1.5",
+		"@types/node": "catalog:",
+		"arktype": "catalog:",
+		"ejs": "^3.1.10",
+		"rimraf": "catalog:",
+		"tsx": "catalog:",
+		"typescript": "catalog:",
+		"valibot": "catalog:",
+		"vitest": "catalog:",
+		"zod": "catalog:"
+	}
+}
