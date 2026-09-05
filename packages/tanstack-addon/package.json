@@ -13,7 +13,7 @@
 	"scripts": {
 		"build": "tsx scripts/build.ts",
 		"typecheck": "tsc --noEmit",
-		"clean": "rimraf dist .add-on/info.json add-on.json node_modules",
+		"clean": "rimraf dist node_modules",
 		"test": "vitest run",
 		"fix": "pnpm -w run fix"
 	},

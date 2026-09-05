@@ -7,7 +7,7 @@
 The TanStack CLI add-on is now available for generating and configuring ArkEnv in TanStack Start applications.
 
 Features include:
-- Multi-validator selection during scaffolding (ArkType, Zod, or Valibot)
+- Multi-validator support (ArkType by default; configurable for Zod or Valibot)
 - Automated `vite.config.ts` setup with `@arkenv/vite-plugin`
 - Typesafe `src/env.ts` schema definition with server secret isolation
 - Scaffolding of an interactive demo route at `/demo/arkenv` demonstrating client-side secret protection
