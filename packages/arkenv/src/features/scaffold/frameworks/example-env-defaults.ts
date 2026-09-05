@@ -51,6 +51,18 @@ export const exampleEnvDefaults: Record<string, Record<string, string>> = {
 		BUN_PUBLIC_DEBUG: "true",
 		NODE_ENV: "development",
 	},
+	"with-tanstack-start": {
+		DATABASE_URL: "postgres://localhost:5432/tanstackstart",
+		PORT: "3000",
+		VITE_API_URL: "https://api.example.com",
+		NODE_ENV: "development",
+	},
+	"with-tanstack-start-rsbuild": {
+		DATABASE_URL: "postgres://localhost:5432/tanstackstartrsbuild",
+		PORT: "3000",
+		PUBLIC_API_URL: "https://api.example.com",
+		NODE_ENV: "development",
+	},
 	"with-zod": {
 		HOST: "localhost",
 		PORT: "3000",

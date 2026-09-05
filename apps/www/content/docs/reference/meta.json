@@ -17,6 +17,7 @@
 		"nextjs",
 		"nuxt",
 		"vite-plugin",
+		"rsbuild-plugin",
 		"bun-plugin",
 		"agent-plugin"
 	]

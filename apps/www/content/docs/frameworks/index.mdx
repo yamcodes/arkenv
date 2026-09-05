@@ -29,13 +29,13 @@ Choose your framework to get started:
 Frameworks use **compile-time AST transforms** or **host runtime
 adapters**:
 
-| Framework      | Integration strategy                         | Client bundle output                     | SSR and server validation          | Public env without rebuild (Docker)  |
-| -------------- | -------------------------------------------- | ---------------------------------------- | ---------------------------------- | ------------------------------------ |
-| Next.js        | Host adapter + codegen (`@arkenv/nextjs`)    | Generated runtime proxy                  | Process boot (`process.env`)       | Requires rebuild for `NEXT_PUBLIC_*` |
-| Nuxt           | Nitro plugin (`@arkenv/nuxt`)                | Dynamic `runtimeConfig` hydration        | Nitro server boot gate             | Yes (via Nitro `runtimeConfig`)      |
-| Vite           | AST build transform (`@arkenv/vite-plugin`)  | Inlined public literals + throwing stubs | Full `@arkenv/core` at server boot | Requires rebuild for `VITE_*`        |
-| TanStack Start | AST build transform (`@arkenv/vite-plugin`)  | Inlined public literals + throwing stubs | Full `@arkenv/core` at server boot | Requires rebuild for `VITE_*`        |
-| Bun            | Bundler AST transform (`@arkenv/bun-plugin`) | Inlined public literals + throwing stubs | Full `@arkenv/core` at server boot | Requires rebuild for `BUN_PUBLIC_*`  |
+| Framework      | Integration strategy                                                   | Client bundle output                     | SSR and server validation          | Public env without rebuild (Docker)        |
+| -------------- | ---------------------------------------------------------------------- | ---------------------------------------- | ---------------------------------- | ------------------------------------------ |
+| Next.js        | Host adapter + codegen (`@arkenv/nextjs`)                              | Generated runtime proxy                  | Process boot (`process.env`)       | Requires rebuild for `NEXT_PUBLIC_*`       |
+| Nuxt           | Nitro plugin (`@arkenv/nuxt`)                                          | Dynamic `runtimeConfig` hydration        | Nitro server boot gate             | Yes (via Nitro `runtimeConfig`)            |
+| Vite           | AST build transform (`@arkenv/vite-plugin`)                            | Inlined public literals + throwing stubs | Full `@arkenv/core` at server boot | Requires rebuild for `VITE_*`              |
+| TanStack Start | AST build transform (`@arkenv/vite-plugin` / `@arkenv/rsbuild-plugin`) | Inlined public literals + throwing stubs | Full `@arkenv/core` at server boot | Requires rebuild for `VITE_*` / `PUBLIC_*` |
+| Bun            | Bundler AST transform (`@arkenv/bun-plugin`)                           | Inlined public literals + throwing stubs | Full `@arkenv/core` at server boot | Requires rebuild for `BUN_PUBLIC_*`        |
 
 Vite, TanStack Start, and Bun evaluate two module graphs in full-stack and
 SSR apps.
