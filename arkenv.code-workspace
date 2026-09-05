@@ -60,12 +60,24 @@
 			"name": "🎁 @arkenv/agent-plugin"
 		},
 		{
+			"path": "packages/standard",
+			"name": "🎁 @arkenv/standard"
+		},
+		{
 			"path": "packages/internal/types",
 			"name": "📦 @repo/types"
 		},
 		{
 			"path": "packages/internal/scope",
 			"name": "📦 @repo/scope"
+		},
+		{
+			"path": "packages/internal/log",
+			"name": "📦 @repo/log"
+		},
+		{
+			"path": "packages/internal/utils",
+			"name": "📦 @repo/utils"
 		},
 		{
 			"path": "tmp",
@@ -78,6 +90,10 @@
 		{
 			"path": "apps/playwright-www",
 			"name": "🧪 playwright-www"
+		},
+		{
+			"path": "apps/dash",
+			"name": "📊 dash"
 		},
 		{
 			"path": "apps/playgrounds/nextjs",
@@ -106,6 +122,10 @@
 		{
 			"path": "apps/playgrounds/tanstack-start",
 			"name": "🛝 tanstack-start"
+		},
+		{
+			"path": "apps/playgrounds/tanstack-start-rsbuild",
+			"name": "🛝 tanstack-start-rsbuild"
 		},
 		{
 			"path": "apps/playgrounds/bun-react",
@@ -174,6 +194,10 @@
 		{
 			"path": "examples/with-tanstack-start",
 			"name": "💡 with-tanstack-start"
+		},
+		{
+			"path": "examples/with-tanstack-start-rsbuild",
+			"name": "💡 with-tanstack-start-rsbuild"
 		},
 		{
 			"path": "examples/with-zod",
