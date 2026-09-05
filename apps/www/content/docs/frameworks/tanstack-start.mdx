@@ -20,13 +20,51 @@ See [`init` reference](/docs/reference/init#import-the-validator-from-core).
 
 ## Quickstart
 
-Scaffold TanStack Start integration in an existing project:
+You can create a new TanStack Start project with ArkEnv pre-configured using the
+official TanStack CLI add-on, or scaffold it into an existing project.
 
-```bash title="Terminal"
-pnpm dlx arkenv@alpha init
+### Create a new project with TanStack CLI
+
+Generate a new TanStack Start project with the ArkEnv add-on:
+
+```package-install
+npx @tanstack/cli create my-app --add-ons https://arkenv.js.org/tanstack/info.json
 ```
 
-Use the runner that matches your lockfile. Init detects the package manager for installs.
+By default, the add-on scaffolds with **ArkType** (`@arkenv/core`) and includes the interactive demo route at `/demo/arkenv`.
+
+Configuration options supported by the add-on:
+
+- **Validator Engine**:
+  - **ArkType** (default) — installs `@arkenv/core` and `arktype`
+  - **Zod** — installs `@arkenv/standard` and `zod`
+  - **Valibot** — installs `@arkenv/standard` and `valibot`
+- **Interactive Demo Route**:
+  - **Include `/demo/arkenv`** (default) — scaffolds an interactive secret leak test showcasing server-only isolation in the browser
+  - **Skip demo route** — scaffolds only the schema definition and plugin configuration (automatically skipped when creating a project with `--no-examples` or the `blank` preset)
+
+The add-on automatically:
+
+- Installs the required validator runtime and dev dependencies
+- Configures `arkenvVitePlugin()` in `vite.config.ts`
+- Generates `src/env.ts` with your selected validator engine
+- Pre-populates declared keys in `.env.example`
+
+<Callout type="info" title="Adding to an existing TanStack project">
+  If you already have a TanStack application, add ArkEnv directly with the TanStack CLI:
+
+  ```package-install
+  npx @tanstack/cli add https://arkenv.js.org/tanstack/info.json
+  ```
+</Callout>
+
+### Existing projects with ArkEnv CLI
+
+If you prefer using the ArkEnv CLI in an existing TanStack Start project:
+
+```package-install
+npx arkenv init
+```
 
 The CLI detects `@tanstack/react-start` in your dependencies and installs
 `@arkenv/vite-plugin` the same way it does for Vite projects. For Rsbuild
