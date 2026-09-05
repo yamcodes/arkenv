@@ -45,6 +45,7 @@ export type ConfigPort = {
 	findBunConfig(cwd?: string): Promise<string | null>;
 	findNextjsConfig(cwd?: string): Promise<string | null>;
 	findNuxtConfig(cwd?: string): Promise<string | null>;
+	findRsbuildConfig(cwd?: string): Promise<string | null>;
 	bootstrapViteConfig(
 		path: string,
 		importPath: string,
@@ -58,6 +59,7 @@ export type ConfigPort = {
 		disableCodegen?: boolean,
 	): Promise<BootstrapResult>;
 	bootstrapNuxtConfig(path: string): Promise<BootstrapResult>;
+	bootstrapRsbuildConfig(path: string): Promise<BootstrapResult>;
 	appendMissingEnvExampleKeys(cwd: string, keys: string[]): Promise<boolean>;
 	removeEnvExampleKeys(
 		cwd: string,

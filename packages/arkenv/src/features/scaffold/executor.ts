@@ -220,6 +220,38 @@ export class Executor {
 							`No Nuxt config found. Please register ${code("@arkenv/nuxt/module")} manually.`,
 						);
 					}
+				} else if (plan.bootstrap.framework === "rsbuild") {
+					this.reporter.step("Bootstrapping Rsbuild plugin...");
+					const rsbuildConfigPath = await this.workspace.findRsbuildConfig(
+						plan.cwd,
+					);
+					if (rsbuildConfigPath) {
+						const result =
+							await this.workspace.bootstrapRsbuildConfig(rsbuildConfigPath);
+						if (result.success) {
+							if (result.updated) {
+								this.reporter.info(
+									`Updated ${code(path.basename(rsbuildConfigPath))}`,
+								);
+							} else {
+								this.reporter.info(
+									`${code(path.basename(rsbuildConfigPath))} already registers @arkenv/rsbuild-plugin`,
+								);
+							}
+							frameworkConfigBootstrapped = true;
+						} else {
+							this.reporter.warn(
+								`Could not automatically update ${code(path.basename(rsbuildConfigPath))}: ${result.error}`,
+							);
+							this.reporter.info(
+								`Please add ${code("@arkenv/rsbuild-plugin")} manually.`,
+							);
+						}
+					} else {
+						this.reporter.info(
+							`No Rsbuild config found - please add ${code("@arkenv/rsbuild-plugin")} to your Rsbuild config manually.`,
+						);
+					}
 				}
 			}
 

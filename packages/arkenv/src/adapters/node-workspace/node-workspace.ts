@@ -11,10 +11,12 @@ import {
 	bootstrapBunConfig,
 	bootstrapNextjsConfig,
 	bootstrapNuxtConfig,
+	bootstrapRsbuildConfig,
 	bootstrapViteConfig,
 	findBunConfig,
 	findNextjsConfig,
 	findNuxtConfig,
+	findRsbuildConfig,
 	findViteConfig,
 } from "./utils/bootstrappers";
 import {
@@ -126,6 +128,10 @@ export class NodeWorkspace implements WorkspacePort {
 		return findNuxtConfig(cwd);
 	}
 
+	async findRsbuildConfig(cwd?: string): Promise<string | null> {
+		return findRsbuildConfig(cwd);
+	}
+
 	async bootstrapViteConfig(
 		filePath: string,
 		importPath: string,
@@ -149,6 +155,10 @@ export class NodeWorkspace implements WorkspacePort {
 
 	async bootstrapNuxtConfig(filePath: string): Promise<BootstrapResult> {
 		return bootstrapNuxtConfig(this, filePath);
+	}
+
+	async bootstrapRsbuildConfig(filePath: string): Promise<BootstrapResult> {
+		return bootstrapRsbuildConfig(this, filePath);
 	}
 
 	async appendMissingEnvExampleKeys(

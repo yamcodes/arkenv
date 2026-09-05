@@ -46,6 +46,23 @@ describe("Planner", () => {
 		expect(plan.bootstrap?.framework).toBe("vite");
 	});
 
+	it("plans for rsbuild framework", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: { ...defaultState.options, framework: "rsbuild" },
+			detectedFramework: "rsbuild",
+		};
+		const plan = createPlan(state);
+		expect(plan.install?.dependencies).toContain("@arkenv/rsbuild-plugin");
+		expect(plan.install?.dependencies).toContain("@arkenv/core");
+		expect(plan.install?.dependencies).toContain("arktype");
+		expect(plan.bootstrap?.framework).toBe("rsbuild");
+		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
+		expect(envFile?.content).toContain(
+			'import arkenv, { type } from "@arkenv/core";',
+		);
+	});
+
 	it("plans for nextjs framework", () => {
 		const state: CollectedState = {
 			...defaultState,

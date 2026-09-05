@@ -1,6 +1,7 @@
 import { bunFullstackStrategy } from "./bun-fullstack";
 import { nextjsStrategy } from "./nextjs";
 import { nuxtStrategy } from "./nuxt";
+import { rsbuildStrategy } from "./rsbuild";
 import type { FrameworkRegistry } from "./types";
 import { vanillaStrategy } from "./vanilla";
 import { viteStrategy } from "./vite";
@@ -14,6 +15,7 @@ export const FRAMEWORKS = {
 	nextjs: nextjsStrategy,
 	nuxt: nuxtStrategy,
 	vanilla: vanillaStrategy,
+	rsbuild: rsbuildStrategy,
 } satisfies FrameworkRegistry;
 
 export { FRAMEWORK_CLIENT_PREFIXES } from "./client-prefixes";

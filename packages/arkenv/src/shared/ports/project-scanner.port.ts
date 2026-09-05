@@ -73,7 +73,9 @@ export type ProjectScannerPort = {
 	detectFramework(
 		cwd?: string,
 		tsConfig?: ParsedTsConfig | null,
-	): Promise<"vite" | "bun-fullstack" | "vanilla" | "nextjs" | "nuxt">;
+	): Promise<
+		"vite" | "bun-fullstack" | "vanilla" | "nextjs" | "nuxt" | "rsbuild"
+	>;
 	/**
 	 * Detects which Bun browser bundling entry points are present.
 	 */

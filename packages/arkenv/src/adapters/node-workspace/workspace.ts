@@ -5,7 +5,12 @@ import { applyEdits, modify } from "jsonc-parser";
 /**
  * Supported build/runtime frameworks.
  */
-export type Framework = "vite" | "bun-fullstack" | "vanilla" | "nextjs";
+export type Framework =
+	| "vite"
+	| "bun-fullstack"
+	| "vanilla"
+	| "nextjs"
+	| "rsbuild";
 
 /**
  * Options for configuring a Workspace.
@@ -60,6 +65,7 @@ export class Workspace {
 
 			if (allDeps.vite) return "vite";
 			if (allDeps.next) return "nextjs";
+			if (allDeps["@rsbuild/core"]) return "rsbuild";
 
 			if (await this.hasBunFeatures()) return "bun-fullstack";
 		} catch {
@@ -83,6 +89,16 @@ export class Workspace {
 			(await this.exists("next.config.cjs"))
 		) {
 			return "nextjs";
+		}
+
+		if (
+			(await this.exists("rsbuild.config.ts")) ||
+			(await this.exists("rsbuild.config.js")) ||
+			(await this.exists("rsbuild.config.mjs")) ||
+			(await this.exists("rsbuild.config.cjs")) ||
+			(await this.exists("rsbuild.config.mts"))
+		) {
+			return "rsbuild";
 		}
 
 		// Check for bun features

@@ -110,7 +110,9 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 	async detectFramework(
 		cwd = process.cwd(),
 		tsConfig?: ParsedTsConfig | null,
-	): Promise<"vite" | "bun-fullstack" | "vanilla" | "nextjs" | "nuxt"> {
+	): Promise<
+		"vite" | "bun-fullstack" | "vanilla" | "nextjs" | "nuxt" | "rsbuild"
+	> {
 		return detectFramework(cwd, tsConfig);
 	}
 
