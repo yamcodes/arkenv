@@ -10,20 +10,29 @@ export const RELEASE_TAG = rawTag.trim();
 
 export type PackageManager = "npm" | "pnpm" | "bun" | "yarn";
 
-const FALLBACK_DOCS_URL = "https://arkenv.js.org";
+/**
+ * Default/fallback docs origin:
+ * During pre-release (alpha/rc), v1 docs are hosted at https://arkenv-v1.vercel.app
+ * while https://arkenv.js.org remains the v0 docs site.
+ * When graduating to GA (empty RELEASE_TAG), the default flips to https://arkenv.js.org.
+ */
+export const FALLBACK_DOCS_URL = RELEASE_TAG
+	? "https://arkenv-v1.vercel.app"
+	: "https://arkenv.js.org";
 
 /**
  * Resolves the docs origin for the current deployment.
  *
  * Preference order:
  * 1. `NEXT_PUBLIC_SITE_URL` (trimmed, no trailing slash)
- * 2. `https://${VERCEL_PROJECT_PRODUCTION_URL}` (production domain; flips when DNS moves)
- * 3. `https://${VERCEL_URL}` (preview deployment host)
- * 4. Fallback `https://arkenv.js.org`
+ * 2. `https://${NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL ?? VERCEL_PROJECT_PRODUCTION_URL}` (production domain; flips when DNS moves in GA)
+ * 3. `https://${NEXT_PUBLIC_VERCEL_URL ?? VERCEL_URL}` (preview deployment host)
+ * 4. Fallback docs URL (`https://arkenv-v1.vercel.app` during pre-release, `https://arkenv.js.org` for GA)
  *
  * Setting `NEXT_PUBLIC_SITE_URL` or the Vercel production URL makes the homepage
- * agent prompt auto-update when the site moves off a preview host (e.g.
- * arkenv-v1.vercel.app → arkenv.js.org) without hardcoding the preview forever.
+ * agent prompt auto-update when the site moves off a preview host without hardcoding.
+ * During pre-release (e.g. alpha), arkenv.js.org serves v0 docs, so it is ignored
+ * in favor of the v1 deployment host or the pre-release fallback.
  *
  * @param env - Env bag to read (defaults to `process.env`; injectable for tests).
  * @returns Absolute docs origin with no trailing slash.
@@ -36,18 +45,26 @@ export function getDocsUrl(env: NodeJS.ProcessEnv = process.env): string {
 			: `https://${siteUrl}`;
 	}
 
-	const productionHost = env.VERCEL_PROJECT_PRODUCTION_URL?.trim().replace(
-		/\/+$/,
-		"",
-	);
+	const productionHost = (
+		env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL ??
+		env.VERCEL_PROJECT_PRODUCTION_URL
+	)
+		?.trim()
+		.replace(/\/+$/, "");
 	if (productionHost) {
-		return productionHost.startsWith("http://") ||
-			productionHost.startsWith("https://")
-			? productionHost
-			: `https://${productionHost}`;
+		const isV0DomainDuringPreRelease =
+			Boolean(RELEASE_TAG) && productionHost === "arkenv.js.org";
+		if (!isV0DomainDuringPreRelease) {
+			return productionHost.startsWith("http://") ||
+				productionHost.startsWith("https://")
+				? productionHost
+				: `https://${productionHost}`;
+		}
 	}
 
-	const previewHost = env.VERCEL_URL?.trim().replace(/\/+$/, "");
+	const previewHost = (env.NEXT_PUBLIC_VERCEL_URL ?? env.VERCEL_URL)
+		?.trim()
+		.replace(/\/+$/, "");
 	if (previewHost) {
 		return previewHost.startsWith("http://") ||
 			previewHost.startsWith("https://")
