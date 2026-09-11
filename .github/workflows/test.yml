@@ -1,5 +1,8 @@
 name: test
 
+env:
+  NEXT_PUBLIC_GITHUB_URL: https://github.com/yamcodes/arkenv
+
 on:
   pull_request:
     branches: [dev, v1]

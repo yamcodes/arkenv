@@ -129,6 +129,10 @@ bunx arkenv@alpha init
 
 <br />
 
+### Local setup
+
+For the docs/site app, copy `apps/www/.env.example` to a local env file and set `NEXT_PUBLIC_GITHUB_URL` to the repo URL you want GitHub links to point at, for example `https://github.com/yamcodes/arkenv`. In production, set the same variable in your deploy platform or CI environment so the header/footer and "View repo" actions stay pointed at the correct repository.
+
 ### [Read the docs →](https://arkenv-v1.vercel.app/docs/getting-started)
 
 <br />
