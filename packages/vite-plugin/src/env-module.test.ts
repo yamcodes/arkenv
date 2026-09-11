@@ -170,6 +170,119 @@ describe("transform mode plugin", () => {
 		}
 	});
 
+	it("fails during config resolution when the environment is invalid", async () => {
+		const root = mkdtempSync(join(tmpdir(), "arkenv-vite-invalid-startup-"));
+		temps.push(root);
+		writeFileSync(
+			join(root, "env.ts"),
+			'import arkenv from "@arkenv/core";\n\nexport const env = arkenv({ REQUIRED_TOKEN: "string" });\n',
+		);
+		const plugin = arkenvPlugin() as any;
+		const context = {} as any;
+
+		if (plugin.config && typeof plugin.config === "function") {
+			plugin.config.call(
+				context,
+				{ root, envDir: root },
+				{ mode: "test", command: "serve" },
+			);
+		}
+
+		await expect(
+			Promise.resolve().then(() =>
+				plugin.configResolved?.call(context, {
+					root,
+					envDir: root,
+					envPrefix: "VITE_",
+				} as any),
+			),
+		).rejects.toMatchObject({ name: "ArkEnvError" });
+		expect(process.env.REQUIRED_TOKEN).toBeUndefined();
+	});
+
+	it("revalidates valid schema and dotenv changes during HMR", async () => {
+		const root = mkdtempSync(join(tmpdir(), "arkenv-vite-hmr-"));
+		temps.push(root);
+		const schemaPath = join(root, "env.ts");
+		const dotenvPath = join(root, ".env.test");
+		writeFileSync(
+			schemaPath,
+			'import arkenv from "@arkenv/core";\n\nexport const env = arkenv({ VITE_API_URL: "string" });\n',
+		);
+		writeFileSync(dotenvPath, "VITE_API_URL=https://example.com\n");
+		const plugin = arkenvPlugin({ schemaPath }) as any;
+		const server = {
+			moduleGraph: {
+				getModulesByFile: () => new Set([{ id: schemaPath }]),
+				invalidateModule: () => {},
+			},
+		} as any;
+		const context = {} as any;
+
+		plugin.config?.call(
+			context,
+			{ root, envDir: root },
+			{ mode: "test", command: "serve" },
+		);
+		await plugin.configResolved?.call(context, {
+			root,
+			envDir: root,
+			envPrefix: "VITE_",
+		} as any);
+
+		const schemaUpdate = plugin.handleHotUpdate?.call(context, {
+			file: schemaPath,
+			server,
+		} as any);
+		expect(schemaUpdate).toHaveLength(1);
+		const dotenvUpdate = plugin.handleHotUpdate?.call(context, {
+			file: dotenvPath,
+			server,
+		} as any);
+		expect(dotenvUpdate).toHaveLength(1);
+	});
+
+	it("propagates invalid dotenv values during HMR", async () => {
+		const root = mkdtempSync(join(tmpdir(), "arkenv-vite-invalid-hmr-"));
+		temps.push(root);
+		const schemaPath = join(root, "env.ts");
+		const dotenvPath = join(root, ".env.test");
+		writeFileSync(
+			schemaPath,
+			'import arkenv from "@arkenv/core";\n\nexport const env = arkenv({ VITE_PORT: "number" });\n',
+		);
+		writeFileSync(dotenvPath, "VITE_PORT=8080\n");
+		const plugin = arkenvPlugin({ schemaPath }) as any;
+		const server = {
+			moduleGraph: {
+				getModulesByFile: () => new Set(),
+				invalidateModule: () => {},
+			},
+		} as any;
+		const context = {} as any;
+
+		plugin.config?.call(
+			context,
+			{ root, envDir: root },
+			{ mode: "test", command: "serve" },
+		);
+		await plugin.configResolved?.call(context, {
+			root,
+			envDir: root,
+			envPrefix: "VITE_",
+		} as any);
+		writeFileSync(dotenvPath, "VITE_PORT=not-a-number\n");
+
+		await expect(
+			Promise.resolve().then(() =>
+				plugin.handleHotUpdate?.call(context, {
+					file: dotenvPath,
+					server,
+				} as any),
+			),
+		).rejects.toMatchObject({ name: "ArkEnvError" });
+	});
+
 	it("passes through the env module unchanged in the SSR graph", async () => {
 		const fixtureDir = join(__dirname, "__fixtures__", "transform-env");
 		const plugin = arkenvPlugin({ schemaPath: join(fixtureDir, "env.ts") });

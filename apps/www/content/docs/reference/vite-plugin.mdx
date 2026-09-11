@@ -44,6 +44,18 @@ Call `arkenvPlugin()` with no args, or an options object that includes
 transform fields (`schemaPath`, `clientPrefix`, logging). Do not pass a
 schema map or compiled `type()` to the plugin.
 
+## Startup validation
+
+When the plugin is registered, it resolves `env.ts` and validates it during
+Vite config resolution. Missing or invalid environment variables therefore
+abort the dev server or production build before Vite is ready. The plugin
+revalidates the schema when a relevant `.env` file or schema module changes
+during HMR.
+
+Without the plugin, validation is import-driven and runs when a module imports
+`env.ts`. Startup fail-fast is the documented behavior of the existing plugin
+contract; there is no default-off lazy-validation flag.
+
 ## Next steps
 
 <Cards>

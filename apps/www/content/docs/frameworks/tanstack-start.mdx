@@ -8,6 +8,15 @@ or `@arkenv/rsbuild-plugin`, depending on your underlying bundler. ArkEnv
 inlines public keys (`VITE_` or `PUBLIC_`) into the client bundle, keeps server
 secrets inside server functions, and throws if client code reads them.
 
+When the Vite plugin is registered, it discovers and validates `env.ts` during
+Vite config resolution. Missing or invalid values abort the dev server or
+production build before it is ready, and relevant `.env` or schema changes are
+revalidated during HMR. Without the plugin, validation is import-driven and
+starts when a module first imports `env.ts`.
+
+This is the existing fail-fast contract, not a new lazy-validation option.
+ArkEnv does not add a default-off flag for lazy validation.
+
 For high-level architectural trade-offs, see
 [Frameworks](/docs/frameworks).
 
