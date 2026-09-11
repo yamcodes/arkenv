@@ -54,24 +54,19 @@
 		},
 		// By Package Manager
 		{
-			// Disable sync-generated example directories entirely to avoid lockfile-only churn
-			// from standalone example apps. Hand-maintained examples are still allowed through
-			// the pnpm group above.
-			"description": "Disable automated updates for sync-generated example projects",
-			"matchFileNames": [
-				"examples/basic/**",
-				"examples/basic-js/**",
-				"examples/stackblitz/**",
-				"examples/with-bun/**",
-				"examples/with-bun-react/**",
-				"examples/with-nextjs/**",
-				"examples/with-nextjs-strict/**",
-				"examples/with-nuxt/**",
-				"examples/with-solid-start/**",
-				"examples/with-standard-schema/**",
-				"examples/with-vite-react/**"
-			],
+			// Disable the whole sync-generated example tree so new examples are covered
+			// automatically without updating this list every time.
+			"description": "Disable sync-generated example apps",
+			"matchFileNames": ["examples/**"],
 			"enabled": false
+		},
+		{
+			"description": "Allow hand-maintained examples to keep updating via the pnpm group",
+			"matchFileNames": [
+				"examples/with-zod/**",
+				"examples/with-valibot/**"
+			],
+			"enabled": true
 		},
 		{
 			// Group pnpm workspace updates (minor/patch) across selected dirs
@@ -117,25 +112,6 @@
 			"matchPackagePatterns": ["^@arkenv/"],
 			"automerge": true,
 			"automergeType": "pr"
-		},
-		{
-			// Sync-generated examples only — packageManager comes from catalog + transform.js.
-			// Hand-maintained examples (with-zod, with-valibot) stay Renovate-updatable via the pnpm group.
-			"description": "Disable packageManager bumps for sync-generated examples; versions come from the catalog + transform.js",
-			"matchPackageNames": ["npm", "pnpm", "bun"],
-			"matchFileNames": [
-				"examples/basic/**",
-				"examples/basic-js/**",
-				"examples/with-nextjs/**",
-				"examples/with-nextjs-strict/**",
-				"examples/with-nuxt/**",
-				"examples/with-solid-start/**",
-				"examples/with-standard-schema/**",
-				"examples/with-vite-react/**",
-				"examples/with-bun/**",
-				"examples/with-bun-react/**"
-			],
-			"enabled": false
 		}
 	]
 }
