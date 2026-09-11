@@ -7,18 +7,15 @@ const START_MARKER = "// BEGIN GENERATED SYNC EXAMPLES";
 const END_MARKER = "// END GENERATED SYNC EXAMPLES";
 
 /**
- * Emit generated `matchFileNames` entries with the trailing comma omitted
- * from the final entry so the generated JSONC remains parseable.
+ * Emit every generated `matchFileNames` entry with a trailing comma so the
+ * generated JSONC matches the repository formatter's trailing-comma policy.
  *
  * @param {string[]} exampleNames
  */
 export function generatedMatchFileNames(exampleNames) {
 	return [
 		`\t\t\t\t${START_MARKER}`,
-		...exampleNames.map(
-			(name, index) =>
-				`\t\t\t\t"examples/${name}/**"${index === exampleNames.length - 1 ? "" : ","}`,
-		),
+		...exampleNames.map((name) => `\t\t\t\t"examples/${name}/**",`),
 		`\t\t\t\t${END_MARKER}`,
 	].join("\n");
 }
