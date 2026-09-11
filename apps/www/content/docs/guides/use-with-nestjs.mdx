@@ -83,7 +83,7 @@ Register `EnvProvider` in your module's `providers` array (and `exports` if used
 
 Do not pass an ArkEnv schema shape into `@nestjs/config`'s `ConfigModule.forRoot({ validationSchema })`.
 
-Starting in `@nestjs/config` 12, `validationSchema` supports Standard Schema validators, but `@nestjs/config` passes raw string environment variables directly to the schema without automatic type coercion. A non-coercing validator (like ArkType's `number.port` or Zod's `z.number()`) rejects `"3000"` with a type error instead of parsing it. In `@nestjs/config` 11 and earlier, `validationSchema` only accepts Joi schemas.
+Starting in `@nestjs/config` 12, `validationSchema` supports Standard Schema validators, but `@nestjs/config` passes raw string environment variables directly to the schema without automatic type coercion. A non-coercing validator (like ArkType's `number.port` or Zod's `z.number()`) rejects `"3000"` with a type error instead of parsing it. In `@nestjs/config` 11 and earlier, `validationSchema` doesn't support Standard Schema validators.
 
 Using ArkEnv directly in `src/env.ts` handles string coercion automatically and fails immediately before NestJS initializes.
 
