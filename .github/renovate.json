@@ -54,19 +54,23 @@
 		},
 		// By Package Manager
 		{
-			// Disable the whole sync-generated example tree so new examples are covered
-			// automatically without updating this list every time.
+			// Generated from apps/playgrounds/*/package.json arkenvExamples metadata.
 			"description": "Disable sync-generated example apps",
-			"matchFileNames": ["examples/**"],
-			"enabled": false
-		},
-		{
-			"description": "Allow hand-maintained examples to keep updating via the pnpm group",
 			"matchFileNames": [
-				"examples/with-zod/**",
-				"examples/with-valibot/**"
+			// BEGIN GENERATED SYNC EXAMPLES
+				"examples/basic/**",
+				"examples/basic-js/**",
+				"examples/with-bun/**",
+				"examples/with-bun-react/**",
+				"examples/with-nextjs/**",
+				"examples/with-nextjs-strict/**",
+				"examples/with-nuxt/**",
+				"examples/with-solid-start/**",
+				"examples/with-standard-schema/**",
+				"examples/with-vite-react/**"
+			// END GENERATED SYNC EXAMPLES
 			],
-			"enabled": true
+			"enabled": false
 		},
 		{
 			// Group pnpm workspace updates (minor/patch) across selected dirs
