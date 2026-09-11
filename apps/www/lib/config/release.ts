@@ -37,7 +37,9 @@ export const FALLBACK_DOCS_URL = RELEASE_TAG
  * @param env - Env bag to read (defaults to `process.env`; injectable for tests).
  * @returns Absolute docs origin with no trailing slash.
  */
-function firstNonEmpty(...values: Array<string | undefined>): string | undefined {
+function firstNonEmpty(
+	...values: Array<string | undefined>
+): string | undefined {
 	for (const value of values) {
 		const trimmed = value?.trim();
 		if (trimmed) {
@@ -70,10 +72,7 @@ export function getDocsUrl(env: NodeJS.ProcessEnv = process.env): string {
 		}
 	}
 
-	const previewHost = firstNonEmpty(
-		env.NEXT_PUBLIC_VERCEL_URL,
-		env.VERCEL_URL,
-	);
+	const previewHost = firstNonEmpty(env.NEXT_PUBLIC_VERCEL_URL, env.VERCEL_URL);
 	if (previewHost) {
 		return previewHost.startsWith("http://") ||
 			previewHost.startsWith("https://")
