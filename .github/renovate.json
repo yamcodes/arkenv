@@ -54,6 +54,26 @@
 		},
 		// By Package Manager
 		{
+			// Disable sync-generated example directories entirely to avoid lockfile-only churn
+			// from standalone example apps. Hand-maintained examples are still allowed through
+			// the pnpm group above.
+			"description": "Disable automated updates for sync-generated example projects",
+			"matchFileNames": [
+				"examples/basic/**",
+				"examples/basic-js/**",
+				"examples/stackblitz/**",
+				"examples/with-bun/**",
+				"examples/with-bun-react/**",
+				"examples/with-nextjs/**",
+				"examples/with-nextjs-strict/**",
+				"examples/with-nuxt/**",
+				"examples/with-solid-start/**",
+				"examples/with-standard-schema/**",
+				"examples/with-vite-react/**"
+			],
+			"enabled": false
+		},
+		{
 			// Group pnpm workspace updates (minor/patch) across selected dirs
 			"groupName": "the pnpm group",
 			"matchManagers": ["npm"],
