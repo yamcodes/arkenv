@@ -4,4 +4,4 @@
 
 #### Widen the React peer dependency range
 
-Replace the workspace `catalog:` alias for the published React peer dependency with `"^18.2.0 || ^19.0.0"` so installs are not pinned to a single React version.
+Allow `@arkenv/nextjs` to work with React 18.2.0 and later in the React 18 line, as well as every React 19 release, instead of requiring React 19.2.5. Install it alongside a supported React version, such as `pnpm add @arkenv/nextjs react@^18.2.0`.
