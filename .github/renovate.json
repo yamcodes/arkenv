@@ -4,7 +4,7 @@
 	"ignorePaths": ["**/node_modules/**"],
 	"schedule": ["on friday"],
 	"vulnerabilityAlerts": {
-		"enabled": true
+		"enabled": true,
 	},
 	"osvVulnerabilityAlerts": true,
 	"updateInternalDeps": true,
@@ -13,7 +13,7 @@
 		"enabled": true,
 		"schedule": ["* 10 * * 5"], // Every Friday at 10:00 AM
 		"automerge": true,
-		"automergeType": "pr"
+		"automergeType": "pr",
 	},
 	"automerge": false,
 	"automergeType": "pr",
@@ -24,21 +24,21 @@
 		// Do not edit peer dependency ranges in package manifests.
 		{
 			"matchDepTypes": ["peerDependencies"],
-			"enabled": false
+			"enabled": false,
 		},
 
 		// By SemVer
 		{
 			"matchUpdateTypes": ["patch"],
-			"minimumReleaseAge": "2 days"
+			"minimumReleaseAge": "2 days",
 		},
 		{
 			"matchUpdateTypes": ["minor"],
-			"minimumReleaseAge": "7 days"
+			"minimumReleaseAge": "7 days",
 		},
 		{
 			"matchUpdateTypes": ["major"],
-			"minimumReleaseAge": "14 days"
+			"minimumReleaseAge": "14 days",
 		},
 		// By Package Type (App or Package)
 		{
@@ -46,11 +46,11 @@
 			// they are supposed to be able to run independently
 			// and its conventions.
 			"matchFileNames": ["apps/**"],
-			"extends": ["config:js-app"]
+			"extends": ["config:js-app"],
 		},
 		{
 			"matchFileNames": ["packages/**", "tooling/**"],
-			"extends": ["config:js-lib"]
+			"extends": ["config:js-lib"],
 		},
 		// By Package Manager
 		{
@@ -71,7 +71,7 @@
 				"examples/with-vite-react/**",
 				// END GENERATED SYNC EXAMPLES
 			],
-			"enabled": false
+			"enabled": false,
 		},
 		{
 			// Group pnpm workspace updates (minor/patch) across selected dirs
@@ -84,12 +84,12 @@
 				"package.json", // Root package.json,
 				"pnpm-workspace.yaml", // Catalog
 				"examples/with-zod/**", // Hand-maintained (not sync-generated)
-				"examples/with-valibot/**" // Hand-maintained (not sync-generated)
+				"examples/with-valibot/**", // Hand-maintained (not sync-generated)
 			],
 			"matchUpdateTypes": ["minor", "patch"],
 			"matchCurrentVersion": ">=1.0.0",
 			"automerge": true,
-			"automergeType": "pr"
+			"automergeType": "pr",
 		},
 		{
 			"groupName": "the Bun group",
@@ -97,26 +97,26 @@
 			"matchFileNames": [
 				".github/actions/size-limit/package.json", // Bun script
 				"apps/playgrounds/**/*bun*/**",
-				"examples/**/*bun*/**"
+				"examples/**/*bun*/**",
 			],
 			"matchUpdateTypes": ["minor", "patch"],
 			"matchCurrentVersion": ">=1.0.0",
 			"automerge": true,
-			"automergeType": "pr"
+			"automergeType": "pr",
 		},
 		{
 			"groupName": "the GitHub Actions group",
 			"matchManagers": ["github-actions"],
 			"matchUpdateTypes": ["minor", "patch"],
 			"automerge": true,
-			"automergeType": "pr"
+			"automergeType": "pr",
 		},
 		{
 			"groupName": "arkenv packages",
 			"matchPackageNames": ["arkenv"],
 			"matchPackagePatterns": ["^@arkenv/"],
 			"automerge": true,
-			"automergeType": "pr"
-		}
-	]
+			"automergeType": "pr",
+		},
+	],
 }
