@@ -54,7 +54,7 @@ jobs:
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
-        uses: changesets/action@v2.1.1
+        uses: changesets/action@v2.1.2
         with:
           publish-script: pnpm run release
           github-token: ${{ steps.generate-token.outputs.token }}
