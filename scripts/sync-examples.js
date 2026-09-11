@@ -17,6 +17,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { argv } from "node:process";
 import { PLAYGROUNDS_DIR } from "./sync-lib/constants.js";
+import { syncRenovateConfig } from "./sync-lib/renovate.js";
 import { syncPlayground } from "./sync-lib/sync.js";
 import { parseCatalog } from "./sync-lib/workspace.js";
 
@@ -39,6 +40,7 @@ function main() {
 		.map((d) => join(PLAYGROUNDS_DIR, d.name));
 
 	let hasChanges = false;
+	const generatedExampleNames = [];
 
 	for (const playgroundPath of playgroundDirs) {
 		const pkgPath = join(playgroundPath, "package.json");
@@ -65,6 +67,7 @@ function main() {
 				continue;
 			}
 
+			generatedExampleNames.push(exampleConfig.name);
 			const changes = syncPlayground(
 				playgroundPath,
 				exampleConfig,
@@ -80,6 +83,13 @@ function main() {
 				}
 			}
 		}
+	}
+
+	if (syncRenovateConfig(generatedExampleNames, checkOnly)) {
+		hasChanges = true;
+		console.log(
+			"\n  ✗ Renovate config is out of sync with playground metadata.",
+		);
 	}
 
 	if (checkOnly) {
