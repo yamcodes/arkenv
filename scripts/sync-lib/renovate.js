@@ -6,12 +6,17 @@ const RENOVATE_CONFIG_PATH = join(ROOT_DIR, ".github", "renovate.json");
 const START_MARKER = "// BEGIN GENERATED SYNC EXAMPLES";
 const END_MARKER = "// END GENERATED SYNC EXAMPLES";
 
-function generatedMatchFileNames(exampleNames) {
+/**
+ * Emit every generated `matchFileNames` entry with a trailing comma so the
+ * marker region stays self-contained JSONC whether or not hand-written entries
+ * follow the END marker before the closing `]`.
+ *
+ * @param {string[]} exampleNames
+ */
+export function generatedMatchFileNames(exampleNames) {
 	return [
 		`\t\t\t\t${START_MARKER}`,
-		...exampleNames.flatMap((name, index) => [
-			`\t\t\t\t"examples/${name}/**"${index === exampleNames.length - 1 ? "" : ","}`,
-		]),
+		...exampleNames.map((name) => `\t\t\t\t"examples/${name}/**",`),
 		`\t\t\t\t${END_MARKER}`,
 	].join("\n");
 }

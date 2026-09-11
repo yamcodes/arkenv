@@ -68,7 +68,7 @@
 				"examples/with-nuxt/**",
 				"examples/with-solid-start/**",
 				"examples/with-standard-schema/**",
-				"examples/with-vite-react/**"
+				"examples/with-vite-react/**",
 				// END GENERATED SYNC EXAMPLES
 			],
 			"enabled": false
