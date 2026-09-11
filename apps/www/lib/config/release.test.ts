@@ -149,9 +149,12 @@ describe("release config", () => {
 		const { getDocsUrl } = await import("./release");
 
 		expect(getDocsUrl()).toBe("https://arkenv.js.org");
-		expect(getDocsUrl({ VERCEL_PROJECT_PRODUCTION_URL: "arkenv.js.org" })).toBe(
-			"https://arkenv.js.org",
-		);
+		expect(
+			getDocsUrl({
+				NODE_ENV: "test",
+				VERCEL_PROJECT_PRODUCTION_URL: "arkenv.js.org",
+			}),
+		).toBe("https://arkenv.js.org");
 	});
 
 	it("embeds the resolved docs URL in the agent prompt", () => {
