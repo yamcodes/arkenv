@@ -1,5 +1,14 @@
 # @arkenv/nextjs
 
+## 0.1.6
+
+### Patch Changes
+
+- #### Widen the React peer dependency range _[`#1833`](https://github.com/yamcodes/arkenv/pull/1833) [`230ed72`](https://github.com/yamcodes/arkenv/commit/230ed728399ab29c6926b6b098f995bb9cae7257) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Allow `@arkenv/nextjs` to work with React 18.2.0 and later in the React 18 line, as well as every React 19 release, instead of requiring React 19.2.5. Install it alongside a supported React version, such as `pnpm add @arkenv/nextjs react@^18.2.0`.
+
 ## 0.1.5
 
 ### Patch Changes
