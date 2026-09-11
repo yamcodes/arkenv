@@ -73,7 +73,7 @@ console.log("\n📦 Running size-limit validation...");
 try {
 	execSync("pnpm --filter arkenv run size", { cwd: rootDir, stdio: "inherit" });
 	console.log("✅ Passed: size-limit validation");
-} catch (error) {
+} catch {
 	console.error("❌ Error: size-limit validation failed");
 	process.exit(1);
 }
