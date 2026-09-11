@@ -141,6 +141,19 @@ describe("release config", () => {
 		expect(getDocsUrl()).toBe("https://arkenv-v1.vercel.app");
 	});
 
+	it("uses the GA fallback and production host", async () => {
+		vi.stubEnv("NEXT_PUBLIC_ARKENV_RELEASE_TAG", "");
+		vi.stubEnv("ARKENV_RELEASE_TAG", "");
+		vi.resetModules();
+
+		const { getDocsUrl } = await import("./release");
+
+		expect(getDocsUrl()).toBe("https://arkenv.js.org");
+		expect(
+			getDocsUrl({ VERCEL_PROJECT_PRODUCTION_URL: "arkenv.js.org" }),
+		).toBe("https://arkenv.js.org");
+	});
+
 	it("embeds the resolved docs URL in the agent prompt", () => {
 		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
 		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "");
