@@ -11,6 +11,8 @@ import {
 describe("release config", () => {
 	beforeEach(() => {
 		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
+		vi.stubEnv("NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL", "");
+		vi.stubEnv("NEXT_PUBLIC_VERCEL_URL", "");
 		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "");
 		vi.stubEnv("VERCEL_URL", "");
 	});
@@ -72,7 +74,9 @@ describe("release config", () => {
 		expect(RELEASE_CONFIG.agentPrompt).toContain(
 			"npx arkenv@alpha init --agent",
 		);
-		expect(RELEASE_CONFIG.agentPrompt).toContain("/llms.txt");
+		expect(RELEASE_CONFIG.agentPrompt).toContain(
+			"https://arkenv-v1.vercel.app/llms.txt",
+		);
 		expect(RELEASE_CONFIG.agentPrompt).toContain(
 			"suggest as a next step (do not install it yourself)",
 		);
@@ -98,9 +102,23 @@ describe("release config", () => {
 
 	it("resolves docs URL from VERCEL_PROJECT_PRODUCTION_URL next", () => {
 		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
+		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "prod.example");
+		vi.stubEnv("VERCEL_URL", "preview.example");
+		expect(getDocsUrl()).toBe("https://prod.example");
+	});
+
+	it("ignores arkenv.js.org from VERCEL_PROJECT_PRODUCTION_URL during pre-release", () => {
+		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
 		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "arkenv.js.org");
-		vi.stubEnv("VERCEL_URL", "arkenv-v1.vercel.app");
-		expect(getDocsUrl()).toBe("https://arkenv.js.org");
+		vi.stubEnv("VERCEL_URL", "preview.example");
+		expect(getDocsUrl()).toBe("https://preview.example");
+	});
+
+	it("ignores https://arkenv.js.org from VERCEL_PROJECT_PRODUCTION_URL during pre-release", () => {
+		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
+		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "https://arkenv.js.org");
+		vi.stubEnv("VERCEL_URL", "preview.example");
+		expect(getDocsUrl()).toBe("https://preview.example");
 	});
 
 	it("resolves docs URL from VERCEL_URL for preview deploys", () => {
@@ -110,11 +128,33 @@ describe("release config", () => {
 		expect(getDocsUrl()).toBe("https://arkenv-v1.vercel.app");
 	});
 
-	it("falls back to arkenv.js.org when env is unset", () => {
+	it("resolves docs URL from NEXT_PUBLIC_VERCEL_URL on client side", () => {
+		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
+		vi.stubEnv("NEXT_PUBLIC_VERCEL_URL", "preview-client.example");
+		expect(getDocsUrl()).toBe("https://preview-client.example");
+	});
+
+	it("falls back to arkenv-v1.vercel.app when env is unset", () => {
 		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
 		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "");
 		vi.stubEnv("VERCEL_URL", "");
+		expect(getDocsUrl()).toBe("https://arkenv-v1.vercel.app");
+	});
+
+	it("uses the GA fallback and production host", async () => {
+		vi.stubEnv("NEXT_PUBLIC_ARKENV_RELEASE_TAG", "");
+		vi.stubEnv("ARKENV_RELEASE_TAG", "");
+		vi.resetModules();
+
+		const { getDocsUrl } = await import("./release");
+
 		expect(getDocsUrl()).toBe("https://arkenv.js.org");
+		expect(
+			getDocsUrl({
+				NODE_ENV: "test",
+				VERCEL_PROJECT_PRODUCTION_URL: "arkenv.js.org",
+			}),
+		).toBe("https://arkenv.js.org");
 	});
 
 	it("embeds the resolved docs URL in the agent prompt", () => {
