@@ -87,7 +87,9 @@ function main() {
 
 	if (syncRenovateConfig(generatedExampleNames, checkOnly)) {
 		hasChanges = true;
-		console.log("\n  ✗ Renovate config is out of sync with playground metadata.");
+		console.log(
+			"\n  ✗ Renovate config is out of sync with playground metadata.",
+		);
 	}
 
 	if (checkOnly) {

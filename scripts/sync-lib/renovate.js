@@ -8,11 +8,11 @@ const END_MARKER = "// END GENERATED SYNC EXAMPLES";
 
 function generatedMatchFileNames(exampleNames) {
 	return [
-		`\t\t\t${START_MARKER}`,
+		`\t\t\t\t${START_MARKER}`,
 		...exampleNames.flatMap((name, index) => [
 			`\t\t\t\t"examples/${name}/**"${index === exampleNames.length - 1 ? "" : ","}`,
 		]),
-		`\t\t\t${END_MARKER}`,
+		`\t\t\t\t${END_MARKER}`,
 	].join("\n");
 }
 

@@ -57,7 +57,7 @@
 			// Generated from apps/playgrounds/*/package.json arkenvExamples metadata.
 			"description": "Disable sync-generated example apps",
 			"matchFileNames": [
-			// BEGIN GENERATED SYNC EXAMPLES
+				// BEGIN GENERATED SYNC EXAMPLES
 				"examples/basic/**",
 				"examples/basic-js/**",
 				"examples/with-bun/**",
@@ -68,7 +68,7 @@
 				"examples/with-solid-start/**",
 				"examples/with-standard-schema/**",
 				"examples/with-vite-react/**"
-			// END GENERATED SYNC EXAMPLES
+				// END GENERATED SYNC EXAMPLES
 			],
 			"enabled": false
 		},
