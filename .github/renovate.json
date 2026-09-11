@@ -55,6 +55,7 @@
 		// By Package Manager
 		{
 			// Generated from apps/playgrounds/*/package.json arkenvExamples metadata.
+			// Hand-maintained examples, including StackBlitz, remain Renovate-managed.
 			"description": "Disable sync-generated example apps",
 			"matchFileNames": [
 				// BEGIN GENERATED SYNC EXAMPLES
