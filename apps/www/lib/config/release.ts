@@ -37,23 +37,31 @@ export const FALLBACK_DOCS_URL = RELEASE_TAG
  * @param env - Env bag to read (defaults to `process.env`; injectable for tests).
  * @returns Absolute docs origin with no trailing slash.
  */
+function firstNonEmpty(...values: Array<string | undefined>): string | undefined {
+	for (const value of values) {
+		const trimmed = value?.trim();
+		if (trimmed) {
+			return trimmed.replace(/\/+$/, "");
+		}
+	}
+}
+
 export function getDocsUrl(env: NodeJS.ProcessEnv = process.env): string {
-	const siteUrl = env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, "");
+	const siteUrl = firstNonEmpty(env.NEXT_PUBLIC_SITE_URL);
 	if (siteUrl) {
 		return siteUrl.startsWith("http://") || siteUrl.startsWith("https://")
 			? siteUrl
 			: `https://${siteUrl}`;
 	}
 
-	const productionHost = (
-		env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL ??
-		env.VERCEL_PROJECT_PRODUCTION_URL
-	)
-		?.trim()
-		.replace(/\/+$/, "");
+	const productionHost = firstNonEmpty(
+		env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL,
+		env.VERCEL_PROJECT_PRODUCTION_URL,
+	);
 	if (productionHost) {
 		const isV0DomainDuringPreRelease =
-			Boolean(RELEASE_TAG) && productionHost === "arkenv.js.org";
+			Boolean(RELEASE_TAG) &&
+			productionHost.replace(/^https?:\/\//, "") === "arkenv.js.org";
 		if (!isV0DomainDuringPreRelease) {
 			return productionHost.startsWith("http://") ||
 				productionHost.startsWith("https://")
@@ -62,9 +70,10 @@ export function getDocsUrl(env: NodeJS.ProcessEnv = process.env): string {
 		}
 	}
 
-	const previewHost = (env.NEXT_PUBLIC_VERCEL_URL ?? env.VERCEL_URL)
-		?.trim()
-		.replace(/\/+$/, "");
+	const previewHost = firstNonEmpty(
+		env.NEXT_PUBLIC_VERCEL_URL,
+		env.VERCEL_URL,
+	);
 	if (previewHost) {
 		return previewHost.startsWith("http://") ||
 			previewHost.startsWith("https://")

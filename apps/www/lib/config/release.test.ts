@@ -11,6 +11,8 @@ import {
 describe("release config", () => {
 	beforeEach(() => {
 		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
+		vi.stubEnv("NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL", "");
+		vi.stubEnv("NEXT_PUBLIC_VERCEL_URL", "");
 		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "");
 		vi.stubEnv("VERCEL_URL", "");
 	});
@@ -108,6 +110,13 @@ describe("release config", () => {
 	it("ignores arkenv.js.org from VERCEL_PROJECT_PRODUCTION_URL during pre-release", () => {
 		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
 		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "arkenv.js.org");
+		vi.stubEnv("VERCEL_URL", "preview.example");
+		expect(getDocsUrl()).toBe("https://preview.example");
+	});
+
+	it("ignores https://arkenv.js.org from VERCEL_PROJECT_PRODUCTION_URL during pre-release", () => {
+		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
+		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "https://arkenv.js.org");
 		vi.stubEnv("VERCEL_URL", "preview.example");
 		expect(getDocsUrl()).toBe("https://preview.example");
 	});
