@@ -18,7 +18,6 @@ import {
 import type { JSX } from "react";
 import { ArkTypeIcon } from "~/components/icons/arktype-icon";
 import { SolidStartIcon } from "~/components/icons/solid-start-icon";
-import { TypiaIcon } from "~/components/icons/typia-icon";
 import { ValibotIcon } from "~/components/icons/valibot-icon";
 import { VsCodeIcon } from "~/components/icons/vscode-icon";
 
@@ -30,7 +29,7 @@ type LogoItem = {
 /**
  * Ecosystem logos for the full-width ticker.
  * Compatibility list — not a map of the hero tabs. Tabs preview ArkType / Zod;
- * this list includes those plus Valibot, Typia, runtimes, editors, and hosts.
+ * this list includes those plus Valibot, runtimes, editors, and hosts.
  */
 const worksWith: LogoItem[] = [
 	{
@@ -46,10 +45,6 @@ const worksWith: LogoItem[] = [
 	{
 		name: "Valibot",
 		icon: ({ className }) => <ValibotIcon className={className} />,
-	},
-	{
-		name: "Typia",
-		icon: ({ className }) => <TypiaIcon className={className} />,
 	},
 	{
 		name: "TypeScript",
