@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { generatedMatchFileNames } from "./renovate.js";
 
 describe("generatedMatchFileNames", () => {
-	it("always trailing-commas generated entries so the region is self-contained", () => {
+	it("omits the trailing comma from the final generated entry", () => {
 		const block = generatedMatchFileNames(["basic", "with-vite-react"]);
 		const entries = block
 			.split("\n")
@@ -11,13 +11,13 @@ describe("generatedMatchFileNames", () => {
 
 		expect(entries).toEqual([
 			'"examples/basic/**",',
-			'"examples/with-vite-react/**",',
+			'"examples/with-vite-react/**"',
 		]);
 	});
 
-	it("trailing-commas a single generated entry", () => {
+	it("omits the trailing comma from a single generated entry", () => {
 		const block = generatedMatchFileNames(["basic"]);
-		expect(block).toContain('"examples/basic/**",');
-		expect(block).not.toMatch(/"examples\/basic\/\*\*"\n/);
+		expect(block).toContain('"examples/basic/**"');
+		expect(block).not.toContain('"examples/basic/**",');
 	});
 });
