@@ -38,7 +38,7 @@ jobs:
           cache: pnpm
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.4.0
+          bun-version: 1.4.2
       - name: Install dependencies
         run: pnpm install
       - name: Build packages
@@ -84,7 +84,7 @@ jobs:
           cache: pnpm
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.4.0
+          bun-version: 1.4.2
       - run: pnpm install
       - run: pnpm run build
 
@@ -192,7 +192,7 @@ jobs:
           cache: pnpm
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.4.0
+          bun-version: 1.4.2
       - name: Install dependencies
         run: pnpm install
       - uses: actions/cache@v6
@@ -247,7 +247,7 @@ jobs:
           cache: pnpm
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.4.0
+          bun-version: 1.4.2
       - name: Install dependencies
         run: pnpm install
       - uses: actions/cache@v6
