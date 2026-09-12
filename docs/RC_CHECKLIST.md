@@ -74,6 +74,9 @@ explicitly not an RC gate.
       Release notes or keep under this heading). Candidates to verify,
       not invent:
   - [ ] Upstream TanStack CLI catalog (#1818) still blocked
+  - [ ] Docs AI-slop / voice pass - full human MDX rewrite is **not** an
+        RC gate; do not hold the channel flip for it. Track as a known
+        gap on the RC announce (see Explicitly not RC gates)
   - [ ] Perfect completion of every `ROADMAP_EXTRAS` row before first
         `rc` publish (see Explicitly not RC gates)
   - [ ] Any other parked surface from Discussion
@@ -208,6 +211,16 @@ replaces `latest` with `1.0.0` per
   - [ ] Confirm `import … from "arkenv"` / `require("arkenv")` still
         throws the CLI import guard
 
+### External deps (soft blocker for announce / day-of `latest` → rc)
+
+- [ ] **Soft blocker** - ArkType ecosystem snippet still shows
+      `import arkenv from "arkenv"` at
+      [arktype.io/docs/ecosystem#arkenv](https://arktype.io/docs/ecosystem#arkenv).
+      Open a PR or ping David for `@arkenv/core` + a migrating-to-v1
+      link before the announce / day-of npm `latest` → `1.0.0-rc.n`
+      flip. This is **not** a reason to stay on alpha or delay tagging
+      `rc` in changesets (section B).
+
 ---
 
 ## D. Import-guard / migration (product decisions)
@@ -242,6 +255,11 @@ detail: [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.
 - [ ] Optional: default GitHub branch → `v1` (repo default today is
       `dev` - verify before changing)
 - [ ] GitHub Release for `1.0.0-rc.n` + announce blog + tweet
+      (include Not-GA known gaps from section A, including the docs
+      voice / AI-slop pass)
+- [ ] Soft-blocker check from section C: ArkType ecosystem snippet
+      updated (or ping outstanding) before announce / day-of
+      `latest` → rc
 - [ ] State the support window for alpha consumers and v0
       (`v0.arkenv.js.org` + last v0 npm lines)
 
@@ -295,10 +313,15 @@ Open on tip (re-verify):
 
 - TanStack Showcase / upstream catalog showcase work - parked
   ([#1818](https://github.com/yamcodes/arkenv/issues/1818) blocked)
+- Docs AI-slop / voice pass - full human MDX rewrite; track as a Not-GA
+  known gap on the RC announce, do not hold the channel flip
 - Essay / Reddit / Habr timing - marketing schedule, not a publish gate
 - Perfect completion of every `ROADMAP_EXTRA` before first `rc` publish
 - Flipping DNS / README to production before `readme-prod-links` and
   `v0-archive-dns-cutover` are done
+- ArkType ecosystem snippet fix (section C soft blocker) - do not stay
+  on alpha or delay tagging `rc` for it; clear before announce /
+  day-of `latest` → rc when possible
 
 ---
 
