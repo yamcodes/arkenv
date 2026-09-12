@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { generatedMatchFileNames } from "./renovate.js";
 import { ROOT_DIR } from "./constants.js";
+import { generatedMatchFileNames } from "./renovate.js";
 
 describe("generatedMatchFileNames", () => {
 	it("adds a trailing comma to every generated entry", () => {
@@ -25,7 +25,10 @@ describe("generatedMatchFileNames", () => {
 });
 
 describe("Renovate configuration", () => {
-	const config = readFileSync(join(ROOT_DIR, ".github", "renovate.json"), "utf8");
+	const config = readFileSync(
+		join(ROOT_DIR, ".github", "renovate.json"),
+		"utf8",
+	);
 
 	it("includes every example in the pnpm group", () => {
 		const pnpmGroupStart = config.indexOf('"groupName": "the pnpm group"');
