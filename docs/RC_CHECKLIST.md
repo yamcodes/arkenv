@@ -157,7 +157,8 @@ are still `1.0.0-alpha.*`:
 
 - [ ] Today the hero announcement slot is only
       [`RoadmapProgressCard`](../apps/www/components/page/roadmap-progress-card.tsx)
-      on [`apps/www/app/(home)/page.tsx`](../apps/www/app/(home)/page.tsx)
+      on
+      [`apps/www/app/(home)/page.tsx`](../apps/www/app/%28home%29/page.tsx)
       - there is **no** Release Candidate badge/banner yet. Add one (or
       extend the announcement chip) so the live site says Release
       Candidate while versions stay `-rc`.
@@ -271,7 +272,10 @@ Open on tip (re-verify):
       rsbuild path +
       [`apps/www/content/docs/frameworks/tanstack-start.mdx`](../apps/www/content/docs/frameworks/tanstack-start.mdx)
       are enough
-- [ ] Docs feedback [#1533](https://github.com/yamcodes/arkenv/discussions/1533)–[#1575](https://github.com/yamcodes/arkenv/discussions/1575)
+- [ ] Docs feedback
+      [#1533](https://github.com/yamcodes/arkenv/discussions/1533)
+      through
+      [#1575](https://github.com/yamcodes/arkenv/discussions/1575)
       - skim for install/import `"arkenv"` confusion
       (open on tip: 1533, 1534, 1545, 1574, 1575)
 
