@@ -235,11 +235,26 @@ describe("transform mode plugin", () => {
 			server,
 		} as any);
 		expect(schemaUpdate).toHaveLength(1);
+		writeFileSync(dotenvPath, "VITE_API_URL=https://updated.example.com\n");
 		const dotenvUpdate = plugin.handleHotUpdate?.call(context, {
 			file: dotenvPath,
 			server,
 		} as any);
 		expect(dotenvUpdate).toHaveLength(1);
+
+		const clientModule = await plugin.transform?.call(
+			{
+				environment: {
+					name: "client",
+					config: { consumer: "client" },
+				},
+			},
+			"export const env = {}",
+			schemaPath,
+		);
+		expect(clientModule?.code).toContain(
+			'"VITE_API_URL": "https://updated.example.com"',
+		);
 	});
 
 	it("propagates invalid dotenv values during HMR", async () => {
