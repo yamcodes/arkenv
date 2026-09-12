@@ -50,7 +50,8 @@ describe("Renovate configuration", () => {
 		const generatedExamplesEnd = config.indexOf(
 			"// END GENERATED SYNC EXAMPLES",
 		);
-		const disableRule = config.slice(disableRuleStart, generatedExamplesEnd);
+		const disableRuleEnd = config.indexOf("\n\t\t},", generatedExamplesEnd);
+		const disableRule = config.slice(disableRuleStart, disableRuleEnd);
 		const generatedExamples = config.slice(
 			generatedExamplesStart,
 			generatedExamplesEnd,
