@@ -3,7 +3,7 @@
 Maintainer checklist for cutting the first `1.0.0-rc.n` from the `v1`
 branch. Use it to park open work, flip the in-repo release channel, publish,
 and smoke-test installs. It does **not** replace the GA launch steps in
-[LAUNCH\_RUNBOOK.md](./LAUNCH_RUNBOOK.md).
+[LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md).
 
 Verified against tip `af94f540` on `v1` (2026-09-12). Re-check open
 PRs, Discussions, and `ROADMAP_EXTRAS` before you execute a cut.
@@ -88,7 +88,7 @@ explicitly not an RC gate.
 ## B. Switch release channel in-repo
 
 Move packages and site copy from alpha to RC without pretending this is
-GA. Keep [LAUNCH\_RUNBOOK.md](./LAUNCH_RUNBOOK.md) for the eventual
+GA. Keep [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) for the eventual
 `1.0.0` + empty `RELEASE_TAG` cut.
 
 ### Changesets: alpha → rc
@@ -197,7 +197,7 @@ not disturb `latest`.
 semver version stays `-rc` and the site says Release Candidate. Keep the
 `@rc` tag populated as well for callers who pin the channel. GA later
 replaces `latest` with `1.0.0` per
-[LAUNCH\_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §2.
+[LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §2.
 
 - [ ] Publish `1.0.0-rc.n` for the publishable packages in section B
 - [ ] Set dist-tags: `@rc` → `1.0.0-rc.n`, and **`latest` → `1.0.0-rc.n`**
@@ -239,7 +239,7 @@ replaces `latest` with `1.0.0` per
   `arkenv init`. Revisit post-RC only if support volume warrants it.
 - [ ] `npm deprecate` `@arkenv/cli` when ready
   (`ROADMAP_EXTRAS` id `npm-deprecate-cli`). Wording reference:
-  [LAUNCH\_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §2.3.
+  [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §2.3.
 
 ---
 
@@ -248,7 +248,7 @@ replaces `latest` with `1.0.0` per
 These overlap GA ops. Prefer executing DNS with the RC announce pack
 only when archive + README production links are ready; otherwise keep
 serving v1 from `https://arkenv-v1.vercel.app` until then. Full DNS
-detail: [LAUNCH\_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.
+detail: [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.
 
 - [ ] `arkenv.js.org` → v1 `www`; `v0.arkenv.js.org` archive
 - [ ] Optional: default GitHub branch → `v1` (repo default today is
@@ -335,4 +335,4 @@ Open on tip (re-verify):
    production links are ready.
 
 When you are ready for stable `1.0.0`, stop here and follow
-[LAUNCH\_RUNBOOK.md](./LAUNCH_RUNBOOK.md).
+[LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md).
