@@ -40,13 +40,26 @@ describe("Renovate configuration", () => {
 		expect(pnpmGroup).toContain('"examples/**"');
 	});
 
-	it("applies the generated-example exclusion after the pnpm group", () => {
-		const pnpmGroupStart = config.indexOf('"groupName": "the pnpm group"');
+	it("keeps generated examples excluded from Renovate updates", () => {
+		const disableRuleStart = config.indexOf(
+			'"description": "Disable sync-generated example apps"',
+		);
 		const generatedExamplesStart = config.indexOf(
 			"// BEGIN GENERATED SYNC EXAMPLES",
 		);
+		const generatedExamplesEnd = config.indexOf(
+			"// END GENERATED SYNC EXAMPLES",
+		);
+		const disableRule = config.slice(disableRuleStart, generatedExamplesEnd);
+		const generatedExamples = config.slice(
+			generatedExamplesStart,
+			generatedExamplesEnd,
+		);
 
-		expect(pnpmGroupStart).toBeGreaterThanOrEqual(0);
-		expect(generatedExamplesStart).toBeGreaterThan(pnpmGroupStart);
+		expect(disableRuleStart).toBeGreaterThanOrEqual(0);
+		expect(disableRule).toContain('"enabled": false');
+		expect(generatedExamples).toContain('"examples/basic/**"');
+		expect(generatedExamplesStart).toBeGreaterThanOrEqual(0);
+		expect(generatedExamplesEnd).toBeGreaterThan(generatedExamplesStart);
 	});
 });
