@@ -148,7 +148,7 @@ When working on a massive marketing push, docs facelift, or breaking API changes
 
    - **Alpha** (Initial unstable integration): `pnpm changeset pre enter alpha` (produces `1.0.0-alpha.0`, `1.0.0-alpha.1`, etc. published to `@alpha`)
    - **Beta** (Feature complete, testing needed): `pnpm changeset pre enter beta` (produces `1.0.0-beta.0`, `1.0.0-beta.1`, etc. published to `@beta`)
-   - **Release Candidate** (API frozen, final validation): `pnpm changeset pre enter rc` (produces `1.0.0-rc.0`, `1.0.0-rc.1`, etc. published to `@rc`)
+   - **Release Candidate** (API frozen, final validation): `pnpm changeset pre enter rc` (produces `1.0.0-rc.0`, `1.0.0-rc.1`, etc. published to `@rc`). Maintainer cut checklist (including the product decision to also point `latest` at `1.0.0-rc.n`): [RC_CHECKLIST.md](./RC_CHECKLIST.md).
 
    > [!IMPORTANT]
    > **SemVer Pre-release Identifiers vs Build Metadata**:

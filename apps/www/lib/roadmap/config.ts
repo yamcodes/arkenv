@@ -33,6 +33,8 @@ export const ROADMAP_EXCLUDE_ISSUE_NUMBERS = new Set([
  * Launch / narrative items carried over from the old #683 issue body (plus
  * launch-meta issues folded out of the milestone checklist).
  * Flip `done` when each ships; order here is the public “Up next” order.
+ * RC cut sequencing (what must ship before first `1.0.0-rc.n` vs GA DNS):
+ * see `docs/RC_CHECKLIST.md`. GA launch-day ops: `docs/LAUNCH_RUNBOOK.md`.
  */
 export const ROADMAP_EXTRAS: readonly RoadmapExtra[] = [
 	{
