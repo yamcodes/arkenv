@@ -154,6 +154,10 @@ are still `1.0.0-alpha.*`:
     `alpha` npm tag; update for RC
 - [ ] [`apps/www/content/docs/reference/agent-plugin.mdx`](../apps/www/content/docs/reference/agent-plugin.mdx)
   - `@arkenv/agent-plugin@alpha` in MCP-only host copy / JSON
+- [ ] [`packages/agent-plugin/README.md`](../packages/agent-plugin/README.md)
+  - `npx -y @arkenv/agent-plugin@alpha` in the published-package setup
+- [ ] [`apps/www/content/docs/frameworks/tanstack-start.mdx`](../apps/www/content/docs/frameworks/tanstack-start.mdx)
+  - `Pinning alphas` callout and exact `@arkenv/*` alpha-version guidance
 
 ### Explicit RC badge / banner on the site
 
