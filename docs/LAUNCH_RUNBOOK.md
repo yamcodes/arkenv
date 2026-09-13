@@ -1,6 +1,14 @@
 # ArkEnv v1.0.0 Launch Operations Runbook
 
-This runbook outlines the operational, DNS, npm registry, and deployment steps required on launch day to transition ArkEnv from `v0` to `v1.0.0` stable without breaking existing users.
+This runbook outlines the operational, DNS, npm registry, and deployment
+steps required on launch day to transition ArkEnv from `v0` to `v1.0.0`
+stable without breaking existing users.
+
+For the earlier **Release Candidate** cut (`1.0.0-rc.n`, channel flip,
+install smoke tests, Discussions scan), use
+[RC_CHECKLIST.md](./RC_CHECKLIST.md). Do not treat this GA runbook as the
+RC checklist, and do not treat the RC checklist as a substitute for these
+`1.0.0` steps.
 
 ---
 
@@ -18,8 +26,11 @@ This runbook outlines the operational, DNS, npm registry, and deployment steps r
 - [ ] **Changelog Epoch Warnings**:
   - Verify epoch migration warnings are prepended in `packages/arkenv/CHANGELOG.md` and `packages/core/CHANGELOG.md`.
 - [ ] **Release Channel Tag Configuration (`apps/www/lib/config/release.ts`)**:
-  - For RC: Update `RELEASE_TAG = "rc"` in `apps/www/lib/config/release.ts` (or override via `NEXT_PUBLIC_ARKENV_RELEASE_TAG="rc"`).
-  - For GA: Set `RELEASE_TAG = ""` so that all UI buttons, copy actions, AI prompts, and docs `package-install` tabs automatically render bare `npx arkenv init` with 0 MDX diffs.
+  - For RC: follow [RC_CHECKLIST.md](./RC_CHECKLIST.md) §B (default
+    `"rc"` or `NEXT_PUBLIC_ARKENV_RELEASE_TAG="rc"`).
+  - For GA: Set `RELEASE_TAG = ""` so that all UI buttons, copy actions,
+    AI prompts, and docs `package-install` tabs automatically render bare
+    `npx arkenv init` with 0 MDX diffs.
 - [ ] **Local Installation Standard**:
   - Verify docs and installation snippets recommend installing `arkenv` as a local `devDependency` alongside `@arkenv/core` / `@arkenv/standard` for deterministic lockfile-pinned CI builds.
 
