@@ -54,8 +54,26 @@
 		},
 		// By Package Manager
 		{
+			// Group pnpm workspace updates (minor/patch) across workspace and examples.
+			"groupName": "the pnpm group",
+			"matchManagers": ["npm"],
+			"matchFileNames": [
+				"packages/**",
+				"apps/**",
+				"tooling/**",
+				"package.json", // Root package.json,
+				"pnpm-workspace.yaml", // Catalog
+				"examples/**",
+			],
+			"matchUpdateTypes": ["minor", "patch"],
+			"matchCurrentVersion": ">=1.0.0",
+			"automerge": true,
+			"automergeType": "pr",
+		},
+		{
 			// Generated from apps/playgrounds/*/package.json arkenvExamples metadata.
-			// Hand-maintained examples, including StackBlitz, remain Renovate-managed.
+			// Keep this after the pnpm group so every example is covered without
+			// manually listing hand-maintained examples there.
 			"description": "Disable sync-generated example apps",
 			"matchFileNames": [
 				// BEGIN GENERATED SYNC EXAMPLES
@@ -72,24 +90,6 @@
 				// END GENERATED SYNC EXAMPLES
 			],
 			"enabled": false,
-		},
-		{
-			// Group pnpm workspace updates (minor/patch) across selected dirs
-			"groupName": "the pnpm group",
-			"matchManagers": ["npm"],
-			"matchFileNames": [
-				"packages/**",
-				"apps/**",
-				"tooling/**",
-				"package.json", // Root package.json,
-				"pnpm-workspace.yaml", // Catalog
-				"examples/with-zod/**", // Hand-maintained (not sync-generated)
-				"examples/with-valibot/**", // Hand-maintained (not sync-generated)
-			],
-			"matchUpdateTypes": ["minor", "patch"],
-			"matchCurrentVersion": ">=1.0.0",
-			"automerge": true,
-			"automergeType": "pr",
 		},
 		{
 			"groupName": "the Bun group",
