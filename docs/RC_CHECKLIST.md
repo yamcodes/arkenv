@@ -315,7 +315,7 @@ Open on tip (re-verify):
 - Docs AI-slop / voice pass - full human MDX rewrite; track as a Not-GA
   known gap on the RC announce, do not hold the channel flip
 - Essay / Reddit / Habr timing - marketing schedule, not a publish gate
-- Perfect completion of every `ROADMAP_EXTRA` before first `rc` publish
+- Perfect completion of every `ROADMAP_EXTRAS` before first `rc` publish
 - Flipping DNS / README to production before `readme-prod-links` and
   `v0-archive-dns-cutover` are done
 - ArkType ecosystem snippet fix (section C soft blocker) - do not stay
