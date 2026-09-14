@@ -216,13 +216,12 @@ replaces `latest` with `1.0.0` per
 
 ### External deps (soft blocker for announce / day-of `latest` → rc)
 
-- [ ] **Soft blocker** - ArkType ecosystem snippet still shows
-  `import arkenv from "arkenv"` at
-  [arktype.io/docs/ecosystem#arkenv](https://arktype.io/docs/ecosystem#arkenv).
-  Open a PR or ping David for `@arkenv/core` + a migrating-to-v1
-  link before the announce / day-of npm `latest` → `1.0.0-rc.n`
-  flip. This is **not** a reason to stay on alpha or delay tagging
-  `rc` in changesets (section B).
+- [ ] **Soft blocker** - ArkType ecosystem snippet. PR opened and
+  David pinged:
+  [arktypeio/arktype#1655](https://github.com/arktypeio/arktype/pull/1655)
+  (`@arkenv/core` + `npx arkenv init`). Land that before announce /
+  day-of npm `latest` → `1.0.0-rc.n`. This is **not** a reason to stay
+  on alpha or delay tagging `rc` in changesets (section B).
 
 ---
 
@@ -260,8 +259,9 @@ detail: [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.
 - [ ] GitHub Release for `1.0.0-rc.n` + announce blog + tweet
   (include Not-GA known gaps from section A, including the docs
   voice / AI-slop pass)
-- [ ] Soft-blocker check from section C: ArkType ecosystem snippet
-  updated (or ping outstanding) before announce / day-of
+- [ ] Soft-blocker check from section C: land
+  [arktypeio/arktype#1655](https://github.com/arktypeio/arktype/pull/1655)
+  (or confirm the live snippet) before announce / day-of
   `latest` → rc
 - [ ] State the support window for alpha consumers and v0
   (`v0.arkenv.js.org` + last v0 npm lines)
@@ -322,9 +322,10 @@ Open on tip (re-verify):
 - Perfect completion of every `ROADMAP_EXTRAS` before first `rc` publish
 - Flipping DNS / README to production before `readme-prod-links` and
   `v0-archive-dns-cutover` are done
-- ArkType ecosystem snippet fix (section C soft blocker) - do not stay
-  on alpha or delay tagging `rc` for it; clear before announce /
-  day-of `latest` → rc when possible
+- ArkType ecosystem snippet fix (section C soft blocker;
+  [arktypeio/arktype#1655](https://github.com/arktypeio/arktype/pull/1655))
+  - do not stay on alpha or delay tagging `rc` for it; land before
+  announce / day-of `latest` → rc when possible
 
 ---
 
