@@ -3,8 +3,8 @@ import { shake } from "radashi";
 import { FRAMEWORKS } from "./frameworks";
 import { getEnvDefaultsForExample } from "./frameworks/example-env-defaults";
 import {
-	DEFAULT_SKILL_SOURCE,
 	type CollectedState,
+	DEFAULT_SKILL_SOURCE,
 	type ScaffoldingPlan,
 } from "./plan";
 import { mergeEnvKeysWithPreset } from "./presets";
