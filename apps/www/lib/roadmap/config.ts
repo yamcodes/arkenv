@@ -40,7 +40,7 @@ export const ROADMAP_EXTRAS: readonly RoadmapExtra[] = [
 	{
 		id: "parity-audit",
 		title: "Final v0 parity audit",
-		done: false,
+		done: true,
 		topic: "Core",
 	},
 	{
