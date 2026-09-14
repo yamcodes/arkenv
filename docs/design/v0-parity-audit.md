@@ -24,17 +24,17 @@ Public roadmap row: flip `ROADMAP_EXTRAS` id `parity-audit` to
 
 ## Package map
 
-| v0                              | v1                         | Parity |
-| ------------------------------- | -------------------------- | ------ |
-| `arkenv` (runtime)              | `@arkenv/core`             | Rename + split |
-| `arkenv/standard`               | `@arkenv/standard`         | Split package |
-| `@arkenv/cli`                   | `arkenv` (CLI)             | Rename; library import throws |
-| `@arkenv/vite-plugin`           | `@arkenv/vite-plugin`      | Transform-only (ADR 0021) |
-| `@arkenv/bun-plugin`            | `@arkenv/bun-plugin`       | Transform-only (ADR 0021) |
+| v0                                | v1                       | Parity                                   |
+| --------------------------------- | ------------------------ | ---------------------------------------- |
+| `arkenv` (runtime)                | `@arkenv/core`           | Rename + split                           |
+| `arkenv/standard`                 | `@arkenv/standard`       | Split package                            |
+| `@arkenv/cli`                     | `arkenv` (CLI)           | Rename; library import throws            |
+| `@arkenv/vite-plugin`             | `@arkenv/vite-plugin`    | Transform-only (ADR 0021)                |
+| `@arkenv/bun-plugin`              | `@arkenv/bun-plugin`     | Transform-only (ADR 0021)                |
 | `@arkenv/nextjs` / `@arkenv/nuxt` | same names               | Flat path; strict engine gone (ADR 0020) |
-| —                               | `@arkenv/rsbuild-plugin`   | v1 gain |
-| —                               | `@arkenv/tanstack-addon`   | v1 gain |
-| `@arkenv/build`, `fumadocs-ui`  | retained                   | Independent cadence (Discussion #1709) |
+| —                                 | `@arkenv/rsbuild-plugin` | v1 gain                                  |
+| —                                 | `@arkenv/tanstack-addon` | v1 gain                                  |
+| `@arkenv/build`, `fumadocs-ui`    | retained                 | Independent cadence (Discussion #1709)   |
 
 Publishable packages on tip are still `1.0.0-alpha.*` under the `alpha`
 npm tag until the RC channel flip (`docs/RC_CHECKLIST.md` §B).
@@ -43,15 +43,15 @@ npm tag until the RC channel flip (`docs/RC_CHECKLIST.md` §B).
 
 ## Runtime / API
 
-| Capability                         | v0 | v1 | Notes |
-| ---------------------------------- | -- | -- | ----- |
-| ArkType `arkenv({ … })`            | ✓  | ✓  | Via `@arkenv/core` |
-| Standard Schema (Zod / Valibot)    | ✓  | ✓  | Via `@arkenv/standard` |
-| `safe` / issues helpers            | ✓  | ✓  | `@arkenv/core/safe`, `/issues` |
-| Coercion + custom ArkType keywords | ✓  | ✓  | Kept (Discussion #1709) |
-| Nested `{ server, client, shared }`| ✓  | deprecated | Still works on Next/Nuxt; migrate to flat + `exposeToClient` |
-| Strict layout engine / `--strict`  | ✓  | ✗  | Intentional hard cut (ADR 0020); two-module recipe in docs |
-| Canonical `import { env } from "./env"` | Next/Nuxt | all hosts | ADR 0021 |
+| Capability                              | v0        | v1         | Notes                                                        |
+| --------------------------------------- | --------- | ---------- | ------------------------------------------------------------ |
+| ArkType `arkenv({ … })`                 | ✓         | ✓          | Via `@arkenv/core`                                           |
+| Standard Schema (Zod / Valibot)         | ✓         | ✓          | Via `@arkenv/standard`                                       |
+| `safe` / issues helpers                 | ✓         | ✓          | `@arkenv/core/safe`, `/issues`                               |
+| Coercion + custom ArkType keywords      | ✓         | ✓          | Kept (Discussion #1709)                                      |
+| Nested `{ server, client, shared }`     | ✓         | deprecated | Still works on Next/Nuxt; migrate to flat + `exposeToClient` |
+| Strict layout engine / `--strict`       | ✓         | ✗          | Intentional hard cut (ADR 0020); two-module recipe in docs   |
+| Canonical `import { env } from "./env"` | Next/Nuxt | all hosts  | ADR 0021                                                     |
 
 Migration path:
 [`apps/www/content/docs/guides/migrating-to-v1.mdx`](../../apps/www/content/docs/guides/migrating-to-v1.mdx).
@@ -60,13 +60,13 @@ Migration path:
 
 ## CLI
 
-| Capability                    | v0 (`@arkenv/cli`) | v1 (`arkenv`) | Notes |
-| ----------------------------- | ------------------ | ------------- | ----- |
-| `init`                        | ✓                  | ✓             | Hosting presets at scaffold time |
-| `check` (schema vs env)       | —                  | ✓             | Runtime validation focus |
-| `add` / `preset apply|remove` | ✓                  | ✗             | AST mutation removed (#1716 / Discussion #1709) |
-| Dotenv formatting linter      | ✓ (historical)     | ✗             | Pruned (#1717 / Discussion #1710) |
-| Library `import` from CLI pkg | worked as runtime  | hard throw    | Points at `@arkenv/core` |
+| Capability                    | v0 (`@arkenv/cli`) | v1 (`arkenv`) | Notes                             |                                                 |
+| ----------------------------- | ------------------ | ------------- | --------------------------------- | ----------------------------------------------- |
+| `init`                        | ✓                  | ✓             | Hosting presets at scaffold time  |                                                 |
+| `check` (schema vs env)       | —                  | ✓             | Runtime validation focus          |                                                 |
+| `add` / \`preset apply        | remove\`           | ✓             | ✗                                 | AST mutation removed (#1716 / Discussion #1709) |
+| Dotenv formatting linter      | ✓ (historical)     | ✗             | Pruned (#1717 / Discussion #1710) |                                                 |
+| Library `import` from CLI pkg | worked as runtime  | hard throw    | Points at `@arkenv/core`          |                                                 |
 
 `init` still detects Vite (incl. TanStack Start), Next.js, Nuxt, Bun
 fullstack, Rsbuild, and vanilla Node.
@@ -75,18 +75,18 @@ fullstack, Rsbuild, and vanilla Node.
 
 ## Hosts / examples
 
-| Host                         | v0 example / docs | v1 example / docs | Parity |
-| ---------------------------- | ----------------- | ----------------- | ------ |
-| Plain Node / JS              | `basic`, `basic-js` | same + `mix-and-match` | ✓ |
-| Vite React                   | `with-vite-react` | + Zod twin        | ✓ |
-| Bun / Bun React              | ✓                 | ✓                 | ✓ |
-| Next.js                      | ✓ (+ strict)      | ✓ (flat; no strict example) | Intentional |
-| Nuxt                         | ✓                 | ✓                 | ✓ |
-| SolidStart                   | ✓                 | ✓                 | ✓ (now on env-object + vite plugin) |
-| Zod / Valibot cookbooks      | ✓                 | ✓                 | ✓ |
-| Standard Schema cookbook     | `with-standard-schema` | covered by `@arkenv/standard` examples | ✓ |
-| TanStack Start (Vite)        | —                 | ✓ + docs          | v1 gain |
-| TanStack Start (Rsbuild)     | —                 | ✓ + docs          | v1 gain |
+| Host                     | v0 example / docs      | v1 example / docs                      | Parity                              |
+| ------------------------ | ---------------------- | -------------------------------------- | ----------------------------------- |
+| Plain Node / JS          | `basic`, `basic-js`    | same + `mix-and-match`                 | ✓                                   |
+| Vite React               | `with-vite-react`      | + Zod twin                             | ✓                                   |
+| Bun / Bun React          | ✓                      | ✓                                      | ✓                                   |
+| Next.js                  | ✓ (+ strict)           | ✓ (flat; no strict example)            | Intentional                         |
+| Nuxt                     | ✓                      | ✓                                      | ✓                                   |
+| SolidStart               | ✓                      | ✓                                      | ✓ (now on env-object + vite plugin) |
+| Zod / Valibot cookbooks  | ✓                      | ✓                                      | ✓                                   |
+| Standard Schema cookbook | `with-standard-schema` | covered by `@arkenv/standard` examples | ✓                                   |
+| TanStack Start (Vite)    | —                      | ✓ + docs                               | v1 gain                             |
+| TanStack Start (Rsbuild) | —                      | ✓ + docs                               | v1 gain                             |
 
 Framework docs on v1: Next.js, Nuxt, Vite, Bun, TanStack Start.
 
