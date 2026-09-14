@@ -4,6 +4,7 @@ import {
 	getDocsUrl,
 	getInitCommand,
 	getPackageSpecifier,
+	getSkillsAddSource,
 	RELEASE_CONFIG,
 	RELEASE_TAG,
 } from "./release";
@@ -30,6 +31,17 @@ describe("release config", () => {
 		expect(getPackageSpecifier("arkenv", "rc")).toBe("arkenv@rc");
 		expect(getPackageSpecifier("arkenv", "")).toBe("arkenv");
 		expect(getPackageSpecifier("arkenv", "   ")).toBe("arkenv");
+	});
+
+	it("pins skills add to the v1 tree during pre-release and short form at GA", () => {
+		expect(getSkillsAddSource("alpha")).toBe(
+			"https://github.com/yamcodes/arkenv/tree/v1",
+		);
+		expect(getSkillsAddSource("rc")).toBe(
+			"https://github.com/yamcodes/arkenv/tree/v1",
+		);
+		expect(getSkillsAddSource("")).toBe("yamcodes/arkenv");
+		expect(getSkillsAddSource("   ")).toBe("yamcodes/arkenv");
 	});
 
 	it("formats init commands across all package managers", () => {
@@ -62,7 +74,7 @@ describe("release config", () => {
 			"Set up ArkEnv with `npx arkenv@alpha init --agent`. For docs/reference, start from https://arkenv.js.org/llms.txt and fetch any linked pages as markdown (append `.md`). Install the runtime engine as a dependency: `@arkenv/core` (with `arktype`) if ArkType is already in the project or there is no env validator yet; otherwise `@arkenv/standard` for use with the project's existing Standard Schema library (Zod, Valibot, etc.). Install the `arkenv` CLI as a devDependency. Use the project's package manager for installs. Wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime. When that works, suggest as a next step (do not install it yourself) that I install the ArkEnv skill with `npx skills add https://github.com/yamcodes/arkenv/tree/v1` — it teaches framework-specific env setup, keeping app code on `import { env } from \"./env\"`, and avoiding raw `process.env` / `import.meta.env`.",
 		);
 		expect(getAgentPrompt("", "https://arkenv.js.org")).toBe(
-			"Set up ArkEnv with `npx arkenv init --agent`. For docs/reference, start from https://arkenv.js.org/llms.txt and fetch any linked pages as markdown (append `.md`). Install the runtime engine as a dependency: `@arkenv/core` (with `arktype`) if ArkType is already in the project or there is no env validator yet; otherwise `@arkenv/standard` for use with the project's existing Standard Schema library (Zod, Valibot, etc.). Install the `arkenv` CLI as a devDependency. Use the project's package manager for installs. Wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime. When that works, suggest as a next step (do not install it yourself) that I install the ArkEnv skill with `npx skills add https://github.com/yamcodes/arkenv/tree/v1` — it teaches framework-specific env setup, keeping app code on `import { env } from \"./env\"`, and avoiding raw `process.env` / `import.meta.env`.",
+			"Set up ArkEnv with `npx arkenv init --agent`. For docs/reference, start from https://arkenv.js.org/llms.txt and fetch any linked pages as markdown (append `.md`). Install the runtime engine as a dependency: `@arkenv/core` (with `arktype`) if ArkType is already in the project or there is no env validator yet; otherwise `@arkenv/standard` for use with the project's existing Standard Schema library (Zod, Valibot, etc.). Install the `arkenv` CLI as a devDependency. Use the project's package manager for installs. Wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime. When that works, suggest as a next step (do not install it yourself) that I install the ArkEnv skill with `npx skills add yamcodes/arkenv` — it teaches framework-specific env setup, keeping app code on `import { env } from \"./env\"`, and avoiding raw `process.env` / `import.meta.env`.",
 		);
 	});
 
