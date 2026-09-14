@@ -16,6 +16,13 @@ export type Framework =
 export type PackageManager = "pnpm" | "yarn" | "npm" | "bun";
 
 /**
+ * Source for `skills add`. Uses the v1 GitHub tree URL so installs resolve
+ * this branch instead of the repo default (skills supports `/tree/<branch>`).
+ */
+export const DEFAULT_SKILL_SOURCE =
+	"https://github.com/yamcodes/arkenv/tree/v1";
+
+/**
  * Options chosen by the user or inferred for scaffolding the project.
  */
 export type ProjectOptions = {

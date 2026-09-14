@@ -2,7 +2,11 @@ import path from "node:path";
 import { shake } from "radashi";
 import { FRAMEWORKS } from "./frameworks";
 import { getEnvDefaultsForExample } from "./frameworks/example-env-defaults";
-import type { CollectedState, ScaffoldingPlan } from "./plan";
+import {
+	DEFAULT_SKILL_SOURCE,
+	type CollectedState,
+	type ScaffoldingPlan,
+} from "./plan";
 import { mergeEnvKeysWithPreset } from "./presets";
 import { getDlxCommand } from "./scaffold";
 import { VALIDATORS } from "./validators";
@@ -194,7 +198,7 @@ function planSkillInstall(state: CollectedState, plan: ScaffoldingPlan): void {
 
 	plan.skill = {
 		dlxCommand: getDlxCommand(state.packageManager),
-		packageName: "yamcodes/arkenv",
+		packageName: DEFAULT_SKILL_SOURCE,
 		isYes: state.isYes,
 	};
 }

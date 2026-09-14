@@ -2,6 +2,7 @@ import fsp from "node:fs/promises";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Executor } from "./executor";
 import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
+import { DEFAULT_SKILL_SOURCE } from "./plan";
 
 const mockExistingFiles = new Set<string>();
 
@@ -287,14 +288,14 @@ describe("Executor", () => {
 			...defaultPlan,
 			skill: {
 				dlxCommand: ["pnpm", "dlx"],
-				packageName: "yamcodes/arkenv",
+				packageName: DEFAULT_SKILL_SOURCE,
 				isYes: true,
 			},
 		};
 		await executor.execute(plan);
 		expect(mockWorkspace.execute).toHaveBeenCalledWith(
 			"pnpm",
-			["dlx", "skills", "add", "yamcodes/arkenv", "--yes"],
+			["dlx", "skills", "add", DEFAULT_SKILL_SOURCE, "--yes"],
 			plan.cwd,
 		);
 	});
