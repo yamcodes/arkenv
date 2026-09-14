@@ -19,6 +19,10 @@ These skills are intended for users of ArkEnv to improve their development exper
 
   - [**the-hat**](./the-hat/SKILL.md): Hat → metrics → tier-list loop for comparing design alternatives across composing layers.
 
+  ### Documentation
+
+  - [**docs-writer**](./docs-writer/SKILL.md): Mechanics for writing, reviewing, and editing docs (links, wrapping, structure). Pair with **the-voice** for ArkEnv register.
+
   ### GitHub workflows
 
   - [**changeset**](./changeset/SKILL.md): Creates changesets for semantic versioning, version bumps, and package releases.
