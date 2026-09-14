@@ -325,7 +325,7 @@ Open on tip (re-verify):
 - ArkType ecosystem snippet fix (section C soft blocker;
   [arktypeio/arktype#1655](https://github.com/arktypeio/arktype/pull/1655))
   - do not stay on alpha or delay tagging `rc` for it; land before
-  announce / day-of `latest` → rc when possible
+    announce / day-of `latest` → rc when possible
 
 ---
 
