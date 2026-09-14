@@ -105,9 +105,27 @@
 }
 
 .blog-page__item-meta {
+	display: flex;
+	align-items: center;
+	gap: 0.45rem;
 	font-size: 0.8125rem;
 	color: var(--color-ink-3);
 	font-variant-numeric: tabular-nums;
+}
+
+.blog-page__avatar {
+	width: 2rem;
+	height: 2rem;
+	border-radius: 50%;
+	object-fit: cover;
+	background: var(--color-paper-2);
+	border: var(--rule-hair) solid var(--color-rule);
+	flex-shrink: 0;
+}
+
+.blog-page__avatar--sm {
+	width: 1.25rem;
+	height: 1.25rem;
 }
 
 .blog-page__item-title {
@@ -138,6 +156,54 @@
 	color: var(--color-ink);
 }
 
+.blog-page__post-author {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	margin-top: 0.25rem;
+}
+
+.blog-page__author-avatar-link {
+	display: flex;
+	flex-shrink: 0;
+	border-radius: 50%;
+	text-decoration: none;
+	border-bottom: none !important;
+}
+
+.blog-page__author-avatar-link:focus-visible {
+	outline: 2px solid var(--color-accent);
+	outline-offset: 2px;
+}
+
+.blog-page__author-details {
+	display: flex;
+	flex-direction: column;
+	gap: 0.15rem;
+}
+
+.blog-page__author-name {
+	font-size: 0.875rem;
+	font-weight: 500;
+	color: var(--color-ink-2);
+	text-decoration: none !important;
+	border-bottom: none !important;
+	padding-bottom: 0 !important;
+	transition: color var(--dur-short) var(--ease-out);
+}
+
+a.blog-page__author-name:hover {
+	color: var(--color-ink);
+	border-bottom: none !important;
+	text-decoration: none !important;
+}
+
+.blog-page__post-date {
+	font-size: 0.8125rem;
+	color: var(--color-ink-3);
+	font-variant-numeric: tabular-nums;
+}
+
 .blog-page__post-meta {
 	margin: 0;
 	font-size: 0.875rem;
@@ -146,4 +212,19 @@
 
 .blog-page__post-body {
 	margin-top: var(--space-lg);
+}
+
+/* Hyperlinks in blog: soft footer-like style (ink-2 to ink on hover, no underline, no layout shift) */
+.blog-page a:not(.fd-card):not([data-card]):not(.blog-page__rss):not(.blog-page__item-link) {
+	border-bottom: none !important;
+	padding-bottom: 0 !important;
+	text-decoration: none;
+	color: var(--color-ink-2);
+	transition: color var(--dur-short) var(--ease-out);
+}
+
+.blog-page a:not(.fd-card):not([data-card]):not(.blog-page__rss):not(.blog-page__item-link):hover {
+	border-bottom: none !important;
+	color: var(--color-ink);
+	text-decoration: none;
 }

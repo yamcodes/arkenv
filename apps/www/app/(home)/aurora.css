@@ -593,13 +593,20 @@
 .fd-twoslash-popover .twoslash-popup-code {
 	display: block;
 	line-height: 1.5;
-	overflow-wrap: break-word;
+	white-space: pre-wrap;
+	overflow-wrap: normal;
+	font-family: var(--font-mono);
 }
 
 /* Grid is only safe on classic `.line` rows — inline token spans stack if gridded. */
 .fd-twoslash-popover .shiki code {
-	display: grid;
+	display: block;
+	white-space: pre-wrap;
 	line-height: 1.5;
+}
+
+.fd-twoslash-popover .shiki code:has(> .line) {
+	display: grid;
 }
 
 .fd-twoslash-popover .twoslash-popup-code .line,
@@ -612,6 +619,23 @@
 .fd-twoslash-popover .shiki .line:empty,
 .fd-twoslash-popover .twoslash-popup-code .line:empty {
 	height: 0;
+}
+
+.fd-twoslash-popover .twoslash-popup-docs code {
+	display: inline;
+	padding: 0.1em 0.35em;
+	border-radius: 0.25rem;
+	background: var(--color-paper-3, color-mix(in oklch, var(--color-fd-muted) 60%, transparent));
+	font-family: var(--font-mono);
+	font-size: 0.875em;
+}
+
+.fd-twoslash-popover .twoslash-popup-docs p {
+	margin: 0;
+}
+
+.fd-twoslash-popover .twoslash-popup-docs p + p {
+	margin-top: 0.5rem;
 }
 
 .home-aurora__env-hover-code .shiki,
