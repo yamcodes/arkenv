@@ -1,7 +1,7 @@
 const rawTag =
 	process.env.NEXT_PUBLIC_ARKENV_RELEASE_TAG ??
 	process.env.ARKENV_RELEASE_TAG ??
-	"alpha";
+	"rc";
 
 /**
  * The active release channel tag for ArkEnv CLI (e.g. "alpha", "rc", or "" for GA).
@@ -89,7 +89,7 @@ export function getDocsUrl(env: NodeJS.ProcessEnv = process.env): string {
  *
  * @param pkg - Package name (defaults to "arkenv").
  * @param tag - Release tag override (defaults to `RELEASE_TAG`).
- * @returns Formatted package specifier (e.g. "arkenv@alpha" or "arkenv").
+ * @returns Formatted package specifier (e.g. "arkenv@rc" or "arkenv").
  */
 export function getPackageSpecifier(pkg = "arkenv", tag = RELEASE_TAG): string {
 	const trimmedTag = tag.trim();
@@ -102,7 +102,7 @@ export function getPackageSpecifier(pkg = "arkenv", tag = RELEASE_TAG): string {
  * @param packageManager - The target package manager ("npm", "pnpm", "bun", or "yarn").
  * @param tag - Release tag override (defaults to `RELEASE_TAG`).
  * @param args - CLI arguments to append (defaults to "init").
- * @returns The formatted command string (e.g. "npx arkenv@alpha init").
+ * @returns The formatted command string (e.g. "npx arkenv@rc init").
  */
 export function getInitCommand(
 	packageManager: PackageManager = "npm",
@@ -126,6 +126,19 @@ export function getInitCommand(
 }
 
 /**
+ * Returns the `skills add` source for the active release channel.
+ * Pre-release (alpha/rc) pins the v1 GitHub tree URL; GA uses the short repo form.
+ *
+ * @param tag - Release tag override (defaults to `RELEASE_TAG`).
+ * @returns Source argument for `npx skills add …`.
+ */
+export function getSkillsAddSource(tag = RELEASE_TAG): string {
+	return tag.trim()
+		? "https://github.com/yamcodes/arkenv/tree/v1"
+		: "yamcodes/arkenv";
+}
+
+/**
  * Returns the standard AI agent onboarding prompt formatted with the active
  * release tag and the current deployment's docs URL.
  *
@@ -138,6 +151,7 @@ export function getAgentPrompt(
 	docsUrl = getDocsUrl(),
 ): string {
 	const command = getInitCommand("npm", tag, "init --agent");
+	const skillsSource = getSkillsAddSource(tag);
 	return [
 		`Set up ArkEnv with \`${command}\`.`,
 		`For docs/reference, start from ${docsUrl}/llms.txt and fetch any linked pages as markdown (append \`.md\`).`,
@@ -145,7 +159,7 @@ export function getAgentPrompt(
 		"Install the `arkenv` CLI as a devDependency.",
 		"Use the project's package manager for installs.",
 		"Wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime.",
-		'When that works, suggest as a next step (do not install it yourself) that I install the ArkEnv skill with `npx skills add yamcodes/arkenv` — it teaches framework-specific env setup, keeping app code on `import { env } from "./env"`, and avoiding raw `process.env` / `import.meta.env`.',
+		`When that works, suggest as a next step (do not install it yourself) that I install the ArkEnv skill with \`npx skills add ${skillsSource}\` — it teaches framework-specific env setup, keeping app code on \`import { env } from "./env"\`, and avoiding raw \`process.env\` / \`import.meta.env\`.`,
 	].join(" ");
 }
 

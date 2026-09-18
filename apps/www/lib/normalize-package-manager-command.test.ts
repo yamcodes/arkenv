@@ -4,70 +4,70 @@ import { normalizePackageManagerCommand } from "./normalize-package-manager-comm
 describe("normalizePackageManagerCommand", () => {
 	it("expands npm i to npm install", () => {
 		expect(normalizePackageManagerCommand("npm i @arkenv/core")).toBe(
-			"npm install @arkenv/core@alpha",
+			"npm install @arkenv/core@rc",
 		);
 		expect(normalizePackageManagerCommand("npm i -D @arkenv/vite-plugin")).toBe(
-			"npm install -D @arkenv/vite-plugin@alpha",
+			"npm install -D @arkenv/vite-plugin@rc",
 		);
 	});
 
 	it("rewrites bun add to bun install", () => {
 		expect(normalizePackageManagerCommand("bun add @arkenv/core")).toBe(
-			"bun install @arkenv/core@alpha",
+			"bun install @arkenv/core@rc",
 		);
 		expect(
 			normalizePackageManagerCommand("bun add -D @arkenv/vite-plugin"),
-		).toBe("bun install -D @arkenv/vite-plugin@alpha");
+		).toBe("bun install -D @arkenv/vite-plugin@rc");
 	});
 
 	it("rewrites bun x to bunx", () => {
 		expect(normalizePackageManagerCommand("bun x arkenv init")).toBe(
-			"bunx arkenv@alpha init",
+			"bunx arkenv@rc init",
 		);
 	});
 
 	it("keeps pnpm add and yarn add canonical on install lines", () => {
 		expect(normalizePackageManagerCommand("pnpm add @arkenv/core")).toBe(
-			"pnpm add @arkenv/core@alpha",
+			"pnpm add @arkenv/core@rc",
 		);
 		expect(normalizePackageManagerCommand("yarn add @arkenv/core")).toBe(
-			"yarn add @arkenv/core@alpha",
+			"yarn add @arkenv/core@rc",
 		);
 	});
 
-	it("tags runner commands across all package managers with alpha by default", () => {
+	it("tags runner commands across all package managers with rc by default", () => {
 		expect(normalizePackageManagerCommand("npx arkenv init")).toBe(
-			"npx arkenv@alpha init",
+			"npx arkenv@rc init",
 		);
 		expect(normalizePackageManagerCommand("pnpm dlx arkenv init")).toBe(
-			"pnpm dlx arkenv@alpha init",
+			"pnpm dlx arkenv@rc init",
 		);
 		expect(normalizePackageManagerCommand("bun x arkenv init")).toBe(
-			"bunx arkenv@alpha init",
+			"bunx arkenv@rc init",
 		);
 		expect(normalizePackageManagerCommand("yarn dlx arkenv init")).toBe(
-			"yarn dlx arkenv@alpha init",
+			"yarn dlx arkenv@rc init",
 		);
 	});
 
 	it("preserves flags preceding arkenv token", () => {
 		expect(normalizePackageManagerCommand("npx --yes arkenv init")).toBe(
-			"npx --yes arkenv@alpha init",
+			"npx --yes arkenv@rc init",
 		);
 		expect(normalizePackageManagerCommand("bunx --bun arkenv init")).toBe(
-			"bunx --bun arkenv@alpha init",
+			"bunx --bun arkenv@rc init",
 		);
 		expect(
 			normalizePackageManagerCommand("pnpm dlx --silent arkenv init"),
-		).toBe("pnpm dlx --silent arkenv@alpha init");
+		).toBe("pnpm dlx --silent arkenv@rc init");
 	});
 
 	it("rewrites pre-tagged arkenv occurrences to active release tag", () => {
 		expect(normalizePackageManagerCommand("npx arkenv@latest init")).toBe(
-			"npx arkenv@alpha init",
+			"npx arkenv@rc init",
 		);
 		expect(normalizePackageManagerCommand("npx arkenv@alpha init")).toBe(
-			"npx arkenv@alpha init",
+			"npx arkenv@rc init",
 		);
 		expect(normalizePackageManagerCommand("npx arkenv@latest init", "rc")).toBe(
 			"npx arkenv@rc init",
@@ -122,14 +122,14 @@ describe("normalizePackageManagerCommand", () => {
 				"npm install @arkenv/core arktype\nnpm install -D @arkenv/vite-plugin",
 			),
 		).toBe(
-			"npm install @arkenv/core@alpha arktype\nnpm install -D @arkenv/vite-plugin@alpha",
+			"npm install @arkenv/core@rc arktype\nnpm install -D @arkenv/vite-plugin@rc",
 		);
 	});
 
 	it("rewrites pre-tagged scoped packages on install lines to the active release tag", () => {
 		expect(
 			normalizePackageManagerCommand("npm install @arkenv/core@latest"),
-		).toBe("npm install @arkenv/core@alpha");
+		).toBe("npm install @arkenv/core@rc");
 		expect(
 			normalizePackageManagerCommand("npm install @arkenv/core@latest", "rc"),
 		).toBe("npm install @arkenv/core@rc");
@@ -145,13 +145,13 @@ describe("normalizePackageManagerCommand", () => {
 		const prompt =
 			"Add ArkEnv to this repo. Run `npx arkenv init --agent`, parse the JSON on stdout, and only retry with flags from `retryWith` if a refusal is safe to bypass.";
 		expect(normalizePackageManagerCommand(prompt)).toBe(
-			"Add ArkEnv to this repo. Run `npx arkenv@alpha init --agent`, parse the JSON on stdout, and only retry with flags from `retryWith` if a refusal is safe to bypass.",
+			"Add ArkEnv to this repo. Run `npx arkenv@rc init --agent`, parse the JSON on stdout, and only retry with flags from `retryWith` if a refusal is safe to bypass.",
 		);
 
 		const initPresetPrompt =
 			"Bootstrap the project with Vercel preset using `npx arkenv init --preset vercel --agent`.";
 		expect(normalizePackageManagerCommand(initPresetPrompt)).toBe(
-			"Bootstrap the project with Vercel preset using `npx arkenv@alpha init --preset vercel --agent`.",
+			"Bootstrap the project with Vercel preset using `npx arkenv@rc init --preset vercel --agent`.",
 		);
 
 		// GA mode (empty tag)
