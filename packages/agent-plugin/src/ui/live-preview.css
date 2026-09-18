@@ -1,0 +1,158 @@
+:root {
+	color-scheme: light dark;
+	--lp-bg: canvas;
+	--lp-fg: canvastext;
+	--lp-muted: color-mix(in oklab, canvastext 55%, canvas);
+	--lp-rule: color-mix(in oklab, canvastext 18%, canvas);
+	--lp-ok: #1a7f37;
+	--lp-fail: #cf222e;
+	--lp-missing: #9a6700;
+	--lp-unknown: color-mix(in oklab, canvastext 45%, canvas);
+	--lp-chip: color-mix(in oklab, canvastext 8%, canvas);
+	font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	background: var(--lp-bg);
+	color: var(--lp-fg);
+}
+
+.lp {
+	padding: 1rem 1.1rem 1.25rem;
+	display: grid;
+	gap: 0.75rem;
+}
+
+.lp__header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 1rem;
+}
+
+.lp__eyebrow {
+	margin: 0;
+	font-size: 0.75rem;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--lp-muted);
+}
+
+.lp__title {
+	margin: 0.15rem 0 0;
+	font-size: 1.15rem;
+	font-weight: 600;
+}
+
+.lp__btn,
+.lp__chip {
+	border: 1px solid var(--lp-rule);
+	background: var(--lp-chip);
+	color: inherit;
+	border-radius: 0.375rem;
+	padding: 0.35rem 0.7rem;
+	font: inherit;
+	cursor: pointer;
+}
+
+.lp__btn:disabled {
+	opacity: 0.55;
+	cursor: default;
+}
+
+.lp__meta,
+.lp__note {
+	margin: 0;
+	font-size: 0.85rem;
+	color: var(--lp-muted);
+}
+
+.lp__note {
+	padding: 0.55rem 0.7rem;
+	border: 1px dashed var(--lp-rule);
+	border-radius: 0.375rem;
+}
+
+.lp__filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+}
+
+.lp__chip.is-active {
+	border-color: color-mix(in oklab, canvastext 45%, canvas);
+	font-weight: 600;
+}
+
+.lp__table-wrap {
+	overflow: auto;
+	border: 1px solid var(--lp-rule);
+	border-radius: 0.375rem;
+}
+
+.lp__table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.85rem;
+}
+
+.lp__table th,
+.lp__table td {
+	padding: 0.55rem 0.65rem;
+	border-bottom: 1px solid var(--lp-rule);
+	text-align: left;
+	vertical-align: top;
+}
+
+.lp__table th {
+	font-weight: 600;
+	background: color-mix(in oklab, canvastext 4%, canvas);
+}
+
+.lp__table tr:last-child td {
+	border-bottom: 0;
+}
+
+.lp__table code {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	font-size: 0.8rem;
+}
+
+.lp__status {
+	display: inline-block;
+	padding: 0.1rem 0.4rem;
+	border-radius: 0.25rem;
+	font-size: 0.75rem;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.lp__status--ok {
+	color: var(--lp-ok);
+}
+
+.lp__status--fail {
+	color: var(--lp-fail);
+}
+
+.lp__status--missing {
+	color: var(--lp-missing);
+}
+
+.lp__status--unknown {
+	color: var(--lp-unknown);
+}
+
+.lp__was {
+	color: var(--lp-muted);
+}
+
+.lp__empty {
+	color: var(--lp-muted);
+	text-align: center;
+}

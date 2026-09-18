@@ -1,12 +1,17 @@
 import { auditProject } from "../audit/scan";
 import type { AuditReport } from "../audit/types";
 import { initProject } from "./init";
+import { buildPreviewReport, type PreviewReport } from "./preview";
 
 export const AUDIT_TOOL_NAME = "audit";
 export const INIT_TOOL_NAME = "init";
+export const PREVIEW_TOOL_NAME = "preview";
+
+export const PREVIEW_RESOURCE_URI = "ui://arkenv/live-preview.html";
 
 export type ToolContent = {
 	content: Array<{ type: "text"; text: string }>;
+	structuredContent?: Record<string, unknown>;
 	isError?: boolean;
 };
 
@@ -20,6 +25,7 @@ export async function runAuditTool(cwd = process.cwd()): Promise<ToolContent> {
 	const report: AuditReport = await auditProject(cwd);
 	return {
 		content: [{ type: "text", text: JSON.stringify(report, null, 2) }],
+		structuredContent: report as unknown as Record<string, unknown>,
 	};
 }
 
@@ -37,6 +43,22 @@ export async function runInitTool(
 	const result = await initProject(cwd, extraArgs);
 	return {
 		content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+		structuredContent: result as unknown as Record<string, unknown>,
 		...(result.status === "error" ? { isError: true } : {}),
+	};
+}
+
+/**
+ * Run the MCP `preview` Live Preview tool (env health board payload).
+ *
+ * @param cwd Project directory
+ */
+export async function runPreviewTool(
+	cwd = process.cwd(),
+): Promise<ToolContent> {
+	const report: PreviewReport = await buildPreviewReport(cwd);
+	return {
+		content: [{ type: "text", text: JSON.stringify(report, null, 2) }],
+		structuredContent: report as unknown as Record<string, unknown>,
 	};
 }

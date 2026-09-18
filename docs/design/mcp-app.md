@@ -2,7 +2,7 @@
 
 Living evaluation, not an ADR. Update this file as options enter or leave the hat. Promoted decisions belong in `docs/adr/`.
 
-**Status:** working note for [#1862](https://github.com/yamcodes/arkenv/pull/1862). **Chosen public story:** lean **E1 + D4 + I2 + P2 + S2** (Live Preview env health board on `@arkenv/agent-plugin`, JSON fallback, keys + fail-why, redacted values).
+**Status:** working note for [#1862](https://github.com/yamcodes/arkenv/pull/1862). **Chosen public story:** lean **E1 + D4 + I2 + P2 + S2**. **POC:** `@arkenv/agent-plugin` `preview` MCP App shipped (heuristic D4-lite).
 
 ---
 
@@ -403,3 +403,4 @@ Implementation order inside P2:
 - 2026-09-18: **Correction** — MCP App is decided. Reframed hat around experience (Live Preview vs rivals); new lean **E1 + D4 + I2 + P2 + S2**. Prior “tools are enough” story marked closed/rejected as product answer.
 - 2026-09-18: Competitor pass — **Envin** has localhost Live Preview (validates E1; not MCP). **Varlock** has agent-safe `load` JSON, no preview GUI/MCP App. Lean unchanged; added E9/P6 as A-tier Envin parity, borrowed filters/search/redaction notes.
 - 2026-09-18: ORM pass — **Prisma Studio + MCP** (split surfaces, mutate guardrails) and **Drizzle Studio + Cube MCP App** (Studio category + real App-on-tool). Lean unchanged; frame E1 as Studio-for-`env`, S as Studio-in-chat leap.
+- 2026-09-18: **POC landed** in `@arkenv/agent-plugin`: `preview` tool + `ui://arkenv/live-preview.html` via `@modelcontextprotocol/ext-apps` (heuristic key extract + example presence + optional `check --json`). Still not full D4 inspect.
