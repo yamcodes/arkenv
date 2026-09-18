@@ -19,6 +19,15 @@ These skills are intended for users of ArkEnv to improve their development exper
 
   - [**the-hat**](./the-hat/SKILL.md): Hat → metrics → tier-list loop for comparing design alternatives across composing layers.
 
+  ### MCP Apps (SEP-1865)
+
+  Upstream skills from [modelcontextprotocol/ext-apps](https://github.com/modelcontextprotocol/ext-apps). Use when deepening `@arkenv/agent-plugin` with progressive UI (see [`docs/design/mcp-app.md`](../docs/design/mcp-app.md)).
+
+  - [**add-app-to-server**](./add-app-to-server/SKILL.md): Enrich an existing MCP server's tools with `ui://` resources.
+  - [**create-mcp-app**](./create-mcp-app/SKILL.md): Scaffold MCP App Views, lifecycle, and host integration patterns.
+
+  Not selected (out of scope for ArkEnv agent surfaces): `convert-web-app`, `migrate-oai-app`.
+
   ### GitHub workflows
 
   - [**changeset**](./changeset/SKILL.md): Creates changesets for semantic versioning, version bumps, and package releases.
