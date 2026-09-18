@@ -1,13 +1,5 @@
 # @arkenv/build
 
-## 1.0.0-rc.8
-
-### Patch Changes
-
-#### Enter the release candidate channel
-
-Packages now ship as `1.0.0-rc.n` under the `rc` npm tag (product path also points `latest` at the RC).
-
 ## 1.0.0-alpha.7
 
 ### Major Changes
