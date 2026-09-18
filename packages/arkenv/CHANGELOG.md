@@ -1,5 +1,22 @@
 # @arkenv/core
 
+## 1.0.0-rc.24
+
+### Patch Changes
+
+- #### Pin `skills add` to the v1 branch during pre-release _[`#1851`](https://github.com/yamcodes/arkenv/pull/1851) [`093aede`](https://github.com/yamcodes/arkenv/commit/093aede386e1a1b6c322ac4f0495bccdd3046934) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`arkenv init` now picks the skill source from the running CLI version: pre-release builds install from `https://github.com/yamcodes/arkenv/tree/v1`, and stable (GA) builds use the short `yamcodes/arkenv` form once v1 is the default branch.
+	
+	```bash
+	# pre-release (alpha / rc)
+	npx skills add https://github.com/yamcodes/arkenv/tree/v1
+	
+	# GA
+	npx skills add yamcodes/arkenv
+	```
+
 ## 1.0.0-rc.23
 
 ### Patch Changes
