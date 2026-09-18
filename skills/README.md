@@ -13,7 +13,7 @@ These skills are intended for users of ArkEnv to improve their development exper
 
   These skills are optimized for contributors and maintainers of this repository. They are marked with `internal: true` in their metadata.
 
-  Internal skills are automatically discovered by agents within this workspace via symlinks in `.agent/`, `.gemini/`, and `.github/`.
+  Internal skills are automatically discovered by agents within this workspace via symlinks in `.agents/` and `.github/`.
 
   ### Design
 

@@ -28,8 +28,8 @@
 		"docs-writer": {
 			"source": "google-gemini/gemini-cli",
 			"sourceType": "github",
-			"skillPath": ".gemini/skills/docs-writer/SKILL.md",
-			"computedHash": "ddb3671168efa5f2fe481740a57ca147619ffffe2cf764ada6229bde01fed3df"
+			"skillPath": "skills/docs-writer/SKILL.md",
+			"computedHash": "e583fa0953d35fe1fe3960d08b4d791f4e74cddd0842cb3a4e6eba64167f8f3d"
 		},
 		"excalidraw": {
 			"source": "github/awesome-copilot",
