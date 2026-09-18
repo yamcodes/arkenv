@@ -129,8 +129,7 @@ export function getInitCommand(
  * `skills add` source for all release channels (alpha / rc / GA).
  * Always pins the v1 tree URL so installs never depend on the repo default branch.
  */
-export const SKILLS_ADD_SOURCE =
-	"https://github.com/yamcodes/arkenv/tree/v1";
+export const SKILLS_ADD_SOURCE = "https://github.com/yamcodes/arkenv/tree/v1";
 
 /**
  * Returns the `skills add` source. Always the v1 tree URL for every channel.
