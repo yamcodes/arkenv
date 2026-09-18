@@ -95,7 +95,7 @@ export const env = arkenv({
 <summary>npm</summary>
 
 ```sh
-npx arkenv@alpha init
+npx arkenv@rc init
 ```
 
 </details>
@@ -104,7 +104,7 @@ npx arkenv@alpha init
 <summary>pnpm</summary>
 
 ```sh
-pnpm dlx arkenv@alpha init
+pnpm dlx arkenv@rc init
 ```
 
 </details>
@@ -113,7 +113,7 @@ pnpm dlx arkenv@alpha init
 <summary>Yarn</summary>
 
 ```sh
-yarn dlx arkenv@alpha init
+yarn dlx arkenv@rc init
 ```
 
 </details>
@@ -122,7 +122,7 @@ yarn dlx arkenv@alpha init
 <summary>Bun</summary>
 
 ```sh
-bunx arkenv@alpha init
+bunx arkenv@rc init
 ```
 
 </details>

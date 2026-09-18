@@ -37,11 +37,11 @@ Confirm these still hold on the tip you are about to cut from.
   [`apps/www/lib/roadmap/config.ts`](../apps/www/lib/roadmap/config.ts):
   - `v0-alpha-banner` - v0 site Alpha banner
   - `cli-postinstall-guard` - CLI import guard for v0 upgrades
-- [x] Changesets pre mode is still **alpha**:
-  [`.changeset/pre.json`](../.changeset/pre.json) has `"tag": "alpha"`.
-- [x] Site release channel default is still **alpha**:
+- [x] Changesets pre mode is **rc**:
+  [`.changeset/pre.json`](../.changeset/pre.json) has `"tag": "rc"`.
+- [x] Site release channel default is **rc**:
   [`apps/www/lib/config/release.ts`](../apps/www/lib/config/release.ts)
-  falls back to `"alpha"` when
+  falls back to `"rc"` when
   `NEXT_PUBLIC_ARKENV_RELEASE_TAG` / `ARKENV_RELEASE_TAG` are unset.
 - [x] Vite startup-validation contract landed via
   [#1840](https://github.com/yamcodes/arkenv/pull/1840) (merged into
@@ -99,8 +99,9 @@ explicitly not an RC gate.
 - Docs voice / AI-slop pass still owed — continuous / GA, not RC.
 - Upstream TanStack CLI catalog (#1818) still blocked.
 - ESM-only vs dual-publish (#1750) undecided for post-RC messaging.
-- ArkType.io ecosystem ArkEnv snippet still uses the old library
-  import — clear before announce / day-of `latest` → rc.
+- ArkType.io ecosystem snippet updated via
+  [arktypeio/arktype#1655](https://github.com/arktypeio/arktype/pull/1655)
+  (`@arkenv/core` + `npx arkenv init`) — no longer a soft blocker.
 - Remaining `ROADMAP_EXTRAS` (README prod links, changelog epoch, npm
   deprecate `@arkenv/cli`, DNS cutover, GA release + announcement)
   are launch-ops, not first-RC gates.
@@ -123,26 +124,26 @@ Documented in
 [CONTRIBUTING.md](./CONTRIBUTING.md) (Use Case 4). Tip today:
 
 ```json
-{ "mode": "pre", "tag": "alpha" }
+{ "mode": "pre", "tag": "rc" }
 ```
 
-- [ ] Exit alpha pre mode, then enter rc:
+- [x] Exit alpha pre mode, then enter rc:
 
   ```bash
   pnpm changeset pre exit
   pnpm changeset pre enter rc
   ```
 
-- [ ] Confirm [`.changeset/pre.json`](../.changeset/pre.json) shows
+- [x] Confirm [`.changeset/pre.json`](../.changeset/pre.json) shows
   `"tag": "rc"`.
 
-- [ ] Run `pnpm changeset version` (or land the Version Packages PR) so
+- [x] Run `pnpm changeset version` (or land the Version Packages PR) so
   publishable packages bump to `1.0.0-rc.n`.
 
 ### Publishable packages to bump (from `packages/*` on tip)
 
 Private helpers under `packages/internal/*` are not listed. Tip versions
-are still `1.0.0-alpha.*`:
+are `1.0.0-rc.n` after the channel flip:
 
 | Package                  | Path                      |
 | ------------------------ | ------------------------- |
@@ -159,12 +160,12 @@ are still `1.0.0-alpha.*`:
 | `@arkenv/agent-plugin`   | `packages/agent-plugin`   |
 | `@arkenv/tanstack-addon` | `packages/tanstack-addon` |
 
-- [ ] Every row above is on `1.0.0-rc.n` (or an intentional independent
+- [x] Every row above is on `1.0.0-rc.n` (or an intentional independent
   cadence you document in the Release notes).
 
 ### Site `RELEASE_TAG`
 
-- [ ] Flip default channel in
+- [x] Flip default channel in
   [`apps/www/lib/config/release.ts`](../apps/www/lib/config/release.ts)
   from `"alpha"` → `"rc"`, **or** set
   `NEXT_PUBLIC_ARKENV_RELEASE_TAG=rc` on the v1 / preview deploy.
@@ -173,27 +174,28 @@ are still `1.0.0-alpha.*`:
 
 ### Hardcoded `@alpha` / alpha copy (does not follow `RELEASE_TAG`)
 
-- [ ] [`README.md`](../README.md) - `npx arkenv@alpha init` and sibling
+- [x] [`README.md`](../README.md) - `npx arkenv@alpha init` and sibling
   package-manager lines
-- [ ] [`apps/www/content/docs/guides/migrating-to-v1.mdx`](../apps/www/content/docs/guides/migrating-to-v1.mdx)
+- [x] [`apps/www/content/docs/guides/migrating-to-v1.mdx`](../apps/www/content/docs/guides/migrating-to-v1.mdx)
   - lead still says packages ship as `1.0.0-alpha.x` under the
     `alpha` npm tag; update for RC
-- [ ] [`apps/www/content/docs/reference/agent-plugin.mdx`](../apps/www/content/docs/reference/agent-plugin.mdx)
+- [x] [`apps/www/content/docs/reference/agent-plugin.mdx`](../apps/www/content/docs/reference/agent-plugin.mdx)
   - `@arkenv/agent-plugin@alpha` in MCP-only host copy / JSON
-- [ ] [`packages/agent-plugin/README.md`](../packages/agent-plugin/README.md)
+- [x] [`packages/agent-plugin/README.md`](../packages/agent-plugin/README.md)
   - `npx -y @arkenv/agent-plugin@alpha` in the published-package setup
-- [ ] [`apps/www/content/docs/frameworks/tanstack-start.mdx`](../apps/www/content/docs/frameworks/tanstack-start.mdx)
+- [x] [`apps/www/content/docs/frameworks/tanstack-start.mdx`](../apps/www/content/docs/frameworks/tanstack-start.mdx)
   - `Pinning alphas` callout and exact `@arkenv/*` alpha-version guidance
 
 ### Explicit RC badge / banner on the site
 
-- [ ] Today the hero announcement slot is only
+- [x] Today the hero announcement slot is only
   [`RoadmapProgressCard`](../apps/www/components/page/roadmap-progress-card.tsx)
   on
   [`apps/www/app/(home)/page.tsx`](../apps/www/app/%28home%29/page.tsx)
   - there is **no** Release Candidate badge/banner yet. Add one (or
     extend the announcement chip) so the live site says Release
     Candidate while versions stay `-rc`.
+    Landed as [`ReleaseChannelBadge`](../apps/www/components/page/release-channel-badge.tsx).
 
 ### Flip `ROADMAP_EXTRAS` as items ship
 
