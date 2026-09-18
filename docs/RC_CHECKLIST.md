@@ -93,8 +93,16 @@ explicitly not an RC gate.
     Start guide overhaul;
     [#1807](https://github.com/yamcodes/arkenv/pull/1807) TanStack
     Start blog draft
+- [x] Feature freeze after blockers are decided: no new surface area on
+  `v1` until the next `rc.n` or GA unless it is a release-blocking
+  bugfix. Open PRs `#1819` / `#1807` stay parked; `#1818` stays
+  blocked/out of RC.
 
 ### Not-GA known gaps (RC announce copy)
+
+Canonical paste for RC Release notes. The checked sub-bullets under
+“Write a short Not-GA known gaps list” above are the verification
+scratchpad; keep this block as the announce wording.
 
 - Docs voice / AI-slop pass still owed — continuous / GA, not RC.
 - Upstream TanStack CLI catalog (#1818) still blocked.
@@ -105,10 +113,6 @@ explicitly not an RC gate.
 - Remaining `ROADMAP_EXTRAS` (README prod links, changelog epoch, npm
   deprecate `@arkenv/cli`, DNS cutover, GA release + announcement)
   are launch-ops, not first-RC gates.
-- [x] Feature freeze after blockers are decided: no new surface area on
-  `v1` until the next `rc.n` or GA unless it is a release-blocking
-  bugfix. Open PRs `#1819` / `#1807` stay parked; `#1818` stays
-  blocked/out of RC.
 
 ---
 
