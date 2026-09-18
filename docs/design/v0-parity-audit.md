@@ -60,13 +60,13 @@ Migration path:
 
 ## CLI
 
-| Capability                    | v0 (`@arkenv/cli`) | v1 (`arkenv`) | Notes |
-| ----------------------------- | ------------------ | ------------- | ----- |
-| `init`                        | ✓                  | ✓             | Hosting presets at scaffold time |
-| `check` (schema vs env)       | —                  | ✓             | Runtime validation focus |
-| `add` / `preset apply` / `preset remove` | ✓ | ✗ | AST mutation removed (#1716 / Discussion #1709) |
-| Dotenv formatting linter      | ✓ (historical)     | ✗             | Pruned (#1717 / Discussion #1710) |
-| Library `import` from CLI pkg | worked as runtime  | hard throw    | Points at `@arkenv/core` |
+| Capability                               | v0 (`@arkenv/cli`) | v1 (`arkenv`) | Notes                                           |
+| ---------------------------------------- | ------------------ | ------------- | ----------------------------------------------- |
+| `init`                                   | ✓                  | ✓             | Hosting presets at scaffold time                |
+| `check` (schema vs env)                  | —                  | ✓             | Runtime validation focus                        |
+| `add` / `preset apply` / `preset remove` | ✓                  | ✗             | AST mutation removed (#1716 / Discussion #1709) |
+| Dotenv formatting linter                 | ✓ (historical)     | ✗             | Pruned (#1717 / Discussion #1710)               |
+| Library `import` from CLI pkg            | worked as runtime  | hard throw    | Points at `@arkenv/core`                        |
 
 `init` still detects Vite (incl. TanStack Start), Next.js, Nuxt, Bun
 fullstack, Rsbuild, and vanilla Node.
