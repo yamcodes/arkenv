@@ -2,6 +2,8 @@ import * as matchers from "@testing-library/jest-dom/matchers";
 import { cleanup } from "@testing-library/react";
 import { afterEach, expect, vi } from "vitest";
 
+// Do not use `import "@testing-library/jest-dom/vitest"`: under pnpm it can
+// resolve a second vitest/chai copy and break rejects.toThrow(string).
 expect.extend(matchers);
 
 // Mock ResizeObserver for next-video/background-video dependency
