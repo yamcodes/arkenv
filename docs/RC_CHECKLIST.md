@@ -54,34 +54,60 @@ Confirm these still hold on the tip you are about to cut from.
 Decide what must land before the first RC publish, what parks, and what is
 explicitly not an RC gate.
 
-- [ ] Review open PRs into `v1` and mark each **RC blocker** or **park**:
-  - [ ] [#1819](https://github.com/yamcodes/arkenv/pull/1819) -
-    docs: overhaul TanStack Start guide (open)
-  - [ ] [#1807](https://github.com/yamcodes/arkenv/pull/1807) -
+- [x] Review open PRs into `v1` and mark each **RC blocker** or **park**:
+  - [x] [#1819](https://github.com/yamcodes/arkenv/pull/1819) -
+    docs: overhaul TanStack Start guide (open) — **park** (docs
+    rewrite; tip already has a TanStack Start guide + examples;
+    open review nits can land post-RC)
+  - [x] [#1807](https://github.com/yamcodes/arkenv/pull/1807) -
     docs(blog): TanStack Start post + author avatars + twoslash
-    popovers (draft)
+    popovers (draft) — **park** (marketing / draft)
   - [x] [#1840](https://github.com/yamcodes/arkenv/pull/1840) -
     Vite startup validation / plugin contract - **merged**; not an
     open PR anymore
-- [ ] Leave
+- [x] Leave
   [#1818](https://github.com/yamcodes/arkenv/issues/1818)
   (TanStack CLI upstream catalog add-on, label `blocked`) **out of
   RC** unless you explicitly promote it. Related Discussion:
   [#1817](https://github.com/yamcodes/arkenv/discussions/1817).
-- [ ] Write a short **Not-GA known gaps** list (paste into the RC GitHub
+- [x] Write a short **Not-GA known gaps** list (paste into the RC GitHub
   Release notes or keep under this heading). Candidates to verify,
   not invent:
-  - [ ] Upstream TanStack CLI catalog (#1818) still blocked
-  - [ ] Docs AI-slop / voice pass - full human MDX rewrite is **not** an
+  - [x] Upstream TanStack CLI catalog (#1818) still blocked
+  - [x] Docs AI-slop / voice pass - full human MDX rewrite is **not** an
     RC gate; do not hold the channel flip for it. Track as a known
     gap on the RC announce (see Explicitly not RC gates)
-  - [ ] Perfect completion of every `ROADMAP_EXTRAS` row before first
+  - [x] Perfect completion of every `ROADMAP_EXTRAS` row before first
     `rc` publish (see Explicitly not RC gates)
-  - [ ] Any other parked surface from Discussion
+  - [x] Any other parked surface from Discussion
     [#1709](https://github.com/yamcodes/arkenv/discussions/1709)
-- [ ] Feature freeze after blockers are decided: no new surface area on
+  - [x] ESM-only dual-publish decision still open
+    ([#1750](https://github.com/yamcodes/arkenv/discussions/1750)) —
+    tip packages are ESM-only; park for post-RC narrative, not an RC
+    gate
+  - [x] ArkType ecosystem snippet still teaches
+    `import arkenv from "arkenv"` — soft blocker for announce /
+    day-of `latest` → rc only (section C)
+  - [x] Open docs/marketing PRs parked (not API parity):
+    [#1819](https://github.com/yamcodes/arkenv/pull/1819) TanStack
+    Start guide overhaul;
+    [#1807](https://github.com/yamcodes/arkenv/pull/1807) TanStack
+    Start blog draft
+
+### Not-GA known gaps (RC announce copy)
+
+- Docs voice / AI-slop pass still owed — continuous / GA, not RC.
+- Upstream TanStack CLI catalog (#1818) still blocked.
+- ESM-only vs dual-publish (#1750) undecided for post-RC messaging.
+- ArkType.io ecosystem ArkEnv snippet still uses the old library
+  import — clear before announce / day-of `latest` → rc.
+- Remaining `ROADMAP_EXTRAS` (README prod links, changelog epoch, npm
+  deprecate `@arkenv/cli`, DNS cutover, GA release + announcement)
+  are launch-ops, not first-RC gates.
+- [x] Feature freeze after blockers are decided: no new surface area on
   `v1` until the next `rc.n` or GA unless it is a release-blocking
-  bugfix.
+  bugfix. Open PRs `#1819` / `#1807` stay parked; `#1818` stays
+  blocked/out of RC.
 
 ---
 
@@ -171,10 +197,11 @@ are still `1.0.0-alpha.*`:
 
 ### Flip `ROADMAP_EXTRAS` as items ship
 
-Still `done: false` on tip (do **not** mark these done until the work
-lands):
+Remaining `done: false` on tip (do **not** mark these done until the
+work lands):
 
-- [ ] `parity-audit` - Final v0 parity audit
+- [x] `parity-audit` - Final v0 parity audit — see
+  [`docs/design/v0-parity-audit.md`](./design/v0-parity-audit.md)
 - [ ] `readme-prod-links` - Update README links from alpha to production
 - [ ] `changelog-epoch` - Prepend changelog epoch warnings
 - [ ] `npm-deprecate-cli` - Deprecate `@arkenv/cli` on npm
@@ -273,29 +300,33 @@ each item is marked won't-do-for-v1 (or parked in Not-GA known gaps).
 
 Open on tip (re-verify):
 
-- [ ] [#1709](https://github.com/yamcodes/arkenv/discussions/1709) -
-  Pre-v1 surface area - park or cut decisions
-- [ ] [#1750](https://github.com/yamcodes/arkenv/discussions/1750) -
-  ESM-only - park vs ship before freeze
-- [ ] [#1817](https://github.com/yamcodes/arkenv/discussions/1817) -
+- [x] [#1709](https://github.com/yamcodes/arkenv/discussions/1709) -
+  Pre-v1 surface area - **park for RC**: outcomes already executed
+  (preset AST removed, dotenv linter pruned; floating packages +
+  keywords retained). No undecided API left for first `rc`.
+- [x] [#1750](https://github.com/yamcodes/arkenv/discussions/1750) -
+  ESM-only - **park** for post-RC narrative (tip is already ESM-only;
+  not an RC gate)
+- [x] [#1817](https://github.com/yamcodes/arkenv/discussions/1817) -
   TanStack CLI + Rsbuild - **not** an RC gate unless promoted
   (related issue [#1818](https://github.com/yamcodes/arkenv/issues/1818))
-- [ ] [#1798](https://github.com/yamcodes/arkenv/discussions/1798) -
-  unplugin vs host plugins - mark resolved if the dedicated
-  `@arkenv/rsbuild-plugin` decision shipped (package +
-  [`apps/www/content/docs/reference/rsbuild-plugin.mdx`](../apps/www/content/docs/reference/rsbuild-plugin.mdx)
-  exist on tip - confirm intent with maintainers)
-- [ ] [#1747](https://github.com/yamcodes/arkenv/discussions/1747) -
-  TanStack Start strategy - close/supersede if Vite example +
-  rsbuild path +
+- [x] [#1798](https://github.com/yamcodes/arkenv/discussions/1798) -
+  unplugin vs host plugins - **resolved for RC**: ship dedicated
+  `@arkenv/rsbuild-plugin` (+ Vite/Bun host packages). Unplugin
+  consolidation is post-v1 exploration only.
+- [x] [#1747](https://github.com/yamcodes/arkenv/discussions/1747) -
+  TanStack Start strategy - **superseded for RC** by Vite example +
+  Rsbuild path +
   [`apps/www/content/docs/frameworks/tanstack-start.mdx`](../apps/www/content/docs/frameworks/tanstack-start.mdx)
-  are enough
-- [ ] Docs feedback
+  (close/archive when convenient; not an RC blocker)
+- [x] Docs feedback
   [#1533](https://github.com/yamcodes/arkenv/discussions/1533)
   through
   [#1575](https://github.com/yamcodes/arkenv/discussions/1575)
   - skim for install/import `"arkenv"` confusion
-    (open on tip: 1533, 1534, 1545, 1574, 1575)
+    (open on tip: 1533, 1534, 1545, 1574, 1575) — migration guide +
+    CLI import guard cover the install path for RC; voice polish
+    stays Not-GA
 
 ### Explicitly NOT RC gates (Discussions)
 

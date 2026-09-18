@@ -14,7 +14,7 @@ RC checklist, and do not treat the RC checklist as a substitute for these
 
 ## 1. Pre-Launch Checklist (T-Minus 1–3 Days)
 
-- [ ] **v0 Parity & Test Suite**: All unit, integration, and e2e test suites passing across all packages on the `v1` branch.
+- [ ] **v0 Parity & Test Suite**: All unit, integration, and e2e test suites passing across all packages on the `v1` branch. Feature-surface audit (intentional breaks + host map): [`docs/design/v0-parity-audit.md`](./design/v0-parity-audit.md) — still re-confirm CI green before GA day.
 - [ ] **Release v0 Docs Snapshot to `v0.arkenv.js.org`**:
   - Deploy a frozen snapshot of the `dev` (v0) documentation branch to Vercel/Cloudflare Pages.
   - Assign domain: `v0.arkenv.js.org`.
