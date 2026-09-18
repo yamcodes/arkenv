@@ -16,7 +16,7 @@ ADR 0025's 2026-08-24 amendment added `@arkenv/standard/valibot` and `@arkenv/st
 
 - A `/zod` subpath would imply a Zod-specific adapter. The Standard Schema engine's value is validator-agnostic consumption of anything that implements the spec.
 - ADR 0019 already removed redundant re-exports (`./shared`) that duplicated a capability without adding semantics. A `/zod` alias is the same class of surface bloat.
-- Shipping `/zod` would invite `/yup`, `/typebox`, `/arktype`, and every later Standard Schema library, turning a zero-config root into a maintenance list.
+- Shipping `/zod` would invite `/typebox`, `/arktype`, and every later Standard Schema library, turning a zero-config root into a maintenance list.
 - `/valibot` and `/zod-mini` stay. They are not aliases: they bind a converter. Do not flatten Valibot onto the root import in docs or `arkenv init` to "prove" symmetry.
 
 Discoverability is a documentation problem. The Zod guide, `@arkenv/standard` reference, Choosing an engine, and the `arkenv init` Zod dialect already import from the root.

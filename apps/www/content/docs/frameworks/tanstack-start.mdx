@@ -8,6 +8,15 @@ validation. TanStack Start apps use ArkEnv to validate environment
 variables at boot, inline public keys into the client bundle, and keep
 server secrets inside server functions.
 
+When the Vite plugin is registered, it discovers and validates `env.ts` during
+Vite config resolution. Missing or invalid values abort the dev server or
+production build before it is ready, and relevant `.env` or schema changes are
+revalidated during HMR. Without the plugin, validation is import-driven and
+starts when a module first imports `env.ts`.
+
+This is the existing fail-fast contract, not a new lazy-validation option.
+ArkEnv does not add a default-off flag for lazy validation.
+
 For high-level architectural trade-offs, see
 [Frameworks](/docs/frameworks).
 
@@ -51,6 +60,11 @@ npx arkenv init
   [TanStack/cli#505](https://github.com/TanStack/cli/pull/505)).
   Configure via [Manual installation](#manual-installation) and
   [Rsbuild](#rsbuild).
+</Callout>
+
+<Callout type="info" title="Pinning RCs">
+  Until GA, pin exact `@arkenv/*` RC versions in the lockfile if you want
+  bit-for-bit reproducibility across machines and CI.
 </Callout>
 
 ## Manual installation
@@ -131,7 +145,7 @@ Install `@vitejs/plugin-react` if it is not already a dependency. If you
 aren't using ArkType, import the ArkEnv plugin from
 `@arkenv/vite-plugin/standard`.
 
-<Callout type="warn" title="React Refresh after tanstackStart()">
+<Callout type="warn" title="React Refresh must come after Start's plugin">
   Place `@vitejs/plugin-react` (or `@vitejs/plugin-react-swc`) **after**
   `tanstackStart()`. Without it, Vite cannot resolve `/@react-refresh`,
   SSR still renders, and client hydration fails so handlers never attach.
@@ -167,7 +181,7 @@ Create an `env.ts` file in your source tree. Keys your client bundle
 reads must match your bundler's client prefix: `VITE_` for Vite or
 `PUBLIC_` for Rsbuild. Everything else stays on the server.
 
-<Callout type="info" title="Import from `@arkenv/core`, not `arkenv`">
+<Callout type="info" title="Import from the runtime package, not the CLI">
   Runtime validation lives in `@arkenv/core` (ArkType) or
   `@arkenv/standard` (Zod/Valibot). The `arkenv` package is the
   interactive CLI only. Importing `arkenv` from the CLI package throws
@@ -286,7 +300,7 @@ Client components read public keys (`VITE_*` on Vite, `PUBLIC_*` on
 Rsbuild) from the same import. The plugin rewrites the client module so
 these values are inlined as coerced literals.
 
-<Callout type="warn" title="Do not read `import.meta.env` directly">
+<Callout type="warn" title="Use the env import, not import.meta.env">
   Reading `import.meta.env` skips ArkEnv. Import `{ env }` so public keys
   stay typed and coerced and server secrets stay out of the client
   bundle.

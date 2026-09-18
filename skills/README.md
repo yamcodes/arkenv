@@ -13,11 +13,15 @@ These skills are intended for users of ArkEnv to improve their development exper
 
   These skills are optimized for contributors and maintainers of this repository. They are marked with `internal: true` in their metadata.
 
-  Internal skills are automatically discovered by agents within this workspace via symlinks in `.agent/`, `.gemini/`, and `.github/`.
+  Internal skills are automatically discovered by agents within this workspace via symlinks in `.agents/` and `.github/`.
 
   ### Design
 
   - [**the-hat**](./the-hat/SKILL.md): Hat → metrics → tier-list loop for comparing design alternatives across composing layers.
+
+  ### Documentation
+
+  - [**docs-writer**](./docs-writer/SKILL.md): Mechanics for writing, reviewing, and editing docs (links, wrapping, structure). Pair with **the-voice** for ArkEnv register.
 
   ### GitHub workflows
 
@@ -37,7 +41,7 @@ These skills are intended for users of ArkEnv to improve their development exper
 To add the official `arkenv` skill to your AI agent (like Cursor, Claude Code, etc.), run:
 
 ```bash
-npx skills add yamcodes/arkenv
+npx skills add https://github.com/yamcodes/arkenv/tree/v1
 ```
 
 For more information about skills, visit [skills.sh](https://skills.sh).

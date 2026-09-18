@@ -68,7 +68,7 @@ jobs:
         run: pnpm install
       - name: Install Vercel CLI
         # Pin the CLI to avoid upstream breakage from newly published majors.
-        run: npm install --global vercel@54.7.1
+        run: npm install --global vercel@59.16.0
       - name: Pull Vercel Environment Information
         run: |
           if [ "$TARGET" = "arkenv.js.org" ]; then
