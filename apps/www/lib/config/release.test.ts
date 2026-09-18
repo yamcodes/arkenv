@@ -83,9 +83,7 @@ describe("release config", () => {
 		expect(RELEASE_CONFIG.tag).toBe("rc");
 		expect(RELEASE_CONFIG.packageSpecifier).toBe("arkenv@rc");
 		expect(RELEASE_CONFIG.initCommand).toBe("npx arkenv@rc init");
-		expect(RELEASE_CONFIG.agentPrompt).toContain(
-			"npx arkenv@rc init --agent",
-		);
+		expect(RELEASE_CONFIG.agentPrompt).toContain("npx arkenv@rc init --agent");
 		expect(RELEASE_CONFIG.agentPrompt).toContain(
 			"https://arkenv-v1.vercel.app/llms.txt",
 		);
