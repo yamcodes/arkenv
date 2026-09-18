@@ -64,7 +64,7 @@ Migration path:
 | ---------------------------------------- | ------------------ | ------------- | ----------------------------------------------- |
 | `init`                                   | ✓                  | ✓             | Hosting presets at scaffold time                |
 | `check` (schema vs env)                  | —                  | ✓             | Runtime validation focus                        |
-| `add` / `preset apply` / `preset remove` | ✓                  | ✗             | AST mutation removed (#1716 / Discussion #1709) |
+| `add` (v0) / `preset apply` / `preset remove` (v1 alpha) | ✓ | ✗ | AST mutation removed (#1716 / Discussion #1709). v0 shipped `add host`; v1 alpha renamed it to `preset apply` and `preset remove`, then dropped both. |
 | Dotenv formatting linter                 | ✓ (historical)     | ✗             | Pruned (#1717 / Discussion #1710)               |
 | Library `import` from CLI pkg            | worked as runtime  | hard throw    | Points at `@arkenv/core`                        |
 
