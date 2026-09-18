@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/tanstack-addon",
-	"version": "1.0.0-alpha.2",
+	"version": "1.0.0-rc.3",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"repository": {
 		"type": "git",

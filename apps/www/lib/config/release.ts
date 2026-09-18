@@ -1,7 +1,7 @@
 const rawTag =
 	process.env.NEXT_PUBLIC_ARKENV_RELEASE_TAG ??
 	process.env.ARKENV_RELEASE_TAG ??
-	"alpha";
+	"rc";
 
 /**
  * The active release channel tag for ArkEnv CLI (e.g. "alpha", "rc", or "" for GA).
@@ -89,7 +89,7 @@ export function getDocsUrl(env: NodeJS.ProcessEnv = process.env): string {
  *
  * @param pkg - Package name (defaults to "arkenv").
  * @param tag - Release tag override (defaults to `RELEASE_TAG`).
- * @returns Formatted package specifier (e.g. "arkenv@alpha" or "arkenv").
+ * @returns Formatted package specifier (e.g. "arkenv@rc" or "arkenv").
  */
 export function getPackageSpecifier(pkg = "arkenv", tag = RELEASE_TAG): string {
 	const trimmedTag = tag.trim();
@@ -102,7 +102,7 @@ export function getPackageSpecifier(pkg = "arkenv", tag = RELEASE_TAG): string {
  * @param packageManager - The target package manager ("npm", "pnpm", "bun", or "yarn").
  * @param tag - Release tag override (defaults to `RELEASE_TAG`).
  * @param args - CLI arguments to append (defaults to "init").
- * @returns The formatted command string (e.g. "npx arkenv@alpha init").
+ * @returns The formatted command string (e.g. "npx arkenv@rc init").
  */
 export function getInitCommand(
 	packageManager: PackageManager = "npm",

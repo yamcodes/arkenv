@@ -22,8 +22,8 @@ describe("release config", () => {
 		vi.unstubAllEnvs();
 	});
 
-	it("defaults RELEASE_TAG to alpha", () => {
-		expect(RELEASE_TAG).toBe("alpha");
+	it("defaults RELEASE_TAG to rc", () => {
+		expect(RELEASE_TAG).toBe("rc");
 	});
 
 	it("formats package specifier with tag or bare for GA", () => {
@@ -79,12 +79,12 @@ describe("release config", () => {
 	});
 
 	it("exports standard RELEASE_CONFIG", () => {
-		expect(RELEASE_CONFIG.channel).toBe("alpha");
-		expect(RELEASE_CONFIG.tag).toBe("alpha");
-		expect(RELEASE_CONFIG.packageSpecifier).toBe("arkenv@alpha");
-		expect(RELEASE_CONFIG.initCommand).toBe("npx arkenv@alpha init");
+		expect(RELEASE_CONFIG.channel).toBe("rc");
+		expect(RELEASE_CONFIG.tag).toBe("rc");
+		expect(RELEASE_CONFIG.packageSpecifier).toBe("arkenv@rc");
+		expect(RELEASE_CONFIG.initCommand).toBe("npx arkenv@rc init");
 		expect(RELEASE_CONFIG.agentPrompt).toContain(
-			"npx arkenv@alpha init --agent",
+			"npx arkenv@rc init --agent",
 		);
 		expect(RELEASE_CONFIG.agentPrompt).toContain(
 			"https://arkenv-v1.vercel.app/llms.txt",
