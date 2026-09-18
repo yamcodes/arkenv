@@ -51,13 +51,13 @@ What it does have that rhymes with our data plane:
 
 ### Score impact
 
-| Claim | After Envin / Varlock |
-| ----- | --------------------- |
-| E1 Live Preview as S | **Holds** — Envin proves demand; we win on MCP-native placement |
-| Clone Envin’s standalone browser CLI as the MCP App | **No** — different product surface; optional A-tier later sharing D4 |
-| Show raw values like Envin by default | **No for v1 App** — agent chat is a worse secret sink than a local tab; keep S2, optional S3 |
-| Audit-only App as primary | Still weaker — Envin’s board is env-health, not AST hygiene |
-| Invent status outside CLI | Still reject — Varlock’s load graph is the right “one truth” shape |
+| Claim                                               | After Envin / Varlock                                                                        |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| E1 Live Preview as S                                | **Holds** — Envin proves demand; we win on MCP-native placement                              |
+| Clone Envin’s standalone browser CLI as the MCP App | **No** — different product surface; optional A-tier later sharing D4                         |
+| Show raw values like Envin by default               | **No for v1 App** — agent chat is a worse secret sink than a local tab; keep S2, optional S3 |
+| Audit-only App as primary                           | Still weaker — Envin’s board is env-health, not AST hygiene                                  |
+| Invent status outside CLI                           | Still reject — Varlock’s load graph is the right “one truth” shape                           |
 
 ---
 
@@ -82,27 +82,27 @@ Prisma does **not** (today) appear to ship Studio itself as a SEP-1865 MCP App. 
 
 ### Mapping onto ArkEnv
 
-| ORM / env pattern | ArkEnv analogue |
-| ----------------- | --------------- |
-| `schema.prisma` / `schema.ts` | `env.ts` (`arkenv({…})`) |
-| Migrated DB / query client | Validated `env` object + loaded `.env*` |
-| Studio (browse resolved rows/tables) | **E1 Live Preview** (browse resolved keys/status) |
-| Studio edits *data*, migrate edits *schema* | Preview/check ≠ rewrite `env.ts`; init/example are separate tools |
-| Prisma MCP tools (introspect, query) | `preview` / `check` / `audit` / `init` JSON tools |
-| Drizzle Cube MCP App on `chart` | MCP App on `preview` |
-| Prisma AI mutate consent | Keep **I4** behind refusals / explicit consent (never default) |
-| Embeddable Studio + optional AI | A-tier: App nudges model (**I3**), not the other way around for v1 |
+| ORM / env pattern                           | ArkEnv analogue                                                    |
+| ------------------------------------------- | ------------------------------------------------------------------ |
+| `schema.prisma` / `schema.ts`               | `env.ts` (`arkenv({…})`)                                           |
+| Migrated DB / query client                  | Validated `env` object + loaded `.env*`                            |
+| Studio (browse resolved rows/tables)        | **E1 Live Preview** (browse resolved keys/status)                  |
+| Studio edits *data*, migrate edits *schema* | Preview/check ≠ rewrite `env.ts`; init/example are separate tools  |
+| Prisma MCP tools (introspect, query)        | `preview` / `check` / `audit` / `init` JSON tools                  |
+| Drizzle Cube MCP App on `chart`             | MCP App on `preview`                                               |
+| Prisma AI mutate consent                    | Keep **I4** behind refusals / explicit consent (never default)     |
+| Embeddable Studio + optional AI             | A-tier: App nudges model (**I3**), not the other way around for v1 |
 
 ### Score impact (ORM pass)
 
-| Claim | After Prisma / Drizzle |
-| ----- | ---------------------- |
-| E1 as S | **Strengthened** — “Studio for the resolved schema world” is the category pattern |
+| Claim                                   | After Prisma / Drizzle                                                                                                          |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| E1 as S                                 | **Strengthened** — “Studio for the resolved schema world” is the category pattern                                               |
 | MCP App (not only Studio tab) as S ship | **Strengthened** — ORMs still mostly split Studio↔MCP; Drizzle Cube shows App-on-tool; we can ship Studio-*in-chat* as the leap |
-| E4 schema editor as primary App | **Weakened** — Studios browse/edit *instances*; schema changes stay migrate/CLI/agent-code |
-| I4 hard mutate from iframe | **Weakened** — Prisma invests in AI mutate guardrails; we stay I2/I3 first |
-| P6 localhost preview | Still A-tier Envin/Studio parity, not a substitute for the App |
-| Docs-only MCP | Prisma has it as *one* tool among many — never the whole product |
+| E4 schema editor as primary App         | **Weakened** — Studios browse/edit *instances*; schema changes stay migrate/CLI/agent-code                                      |
+| I4 hard mutate from iframe              | **Weakened** — Prisma invests in AI mutate guardrails; we stay I2/I3 first                                                      |
+| P6 localhost preview                    | Still A-tier Envin/Studio parity, not a substitute for the App                                                                  |
+| Docs-only MCP                           | Prisma has it as *one* tool among many — never the whole product                                                                |
 
 ---
 
@@ -159,28 +159,28 @@ Items on different layers compose. “Live Preview vs audit table” is Layer E.
 
 ### Layer E — Experience (primary product)
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| E1 | **Live Preview / env health board** | Rows = schema keys; columns ≈ declared / present in example / validates / fail reason; optional boundary (server vs public). Envin-class UX, MCP-hosted. |
-| E2 | Audit findings viewer | Table of AST diagnostics (`unvalidated-access`, `secret-leak`, …). Strong, but code-hygiene not env-health. |
-| E3 | Init / setup wizard | Preset, framework, refusal/`--force` consent. One-shot onboarding, not ongoing product. |
-| E4 | Schema playground / editor in chat | Edit `env.ts` visually. Overlaps docs; high mutate footgun. |
-| E5 | Migrate assistant UI | Before/after `process.env` → `env.*` checklist. Narrow job; great later companion. |
-| E6 | Combined cockpit (E1+E2+E3 in one iframe) | Best eventual story; too wide for first ship. |
-| E7 | Pitch / demo App (homepage snippets in chat) | Marketing, not project truth. |
-| E8 | Maintainer dash (npm/GitHub) in chat | `apps/dash` job; wrong audience. |
-| E9 | Envin clone: only `arkenv preview` → localhost browser | Same board UX, **not** an MCP App. Useful parity later; does not satisfy the closed App decision. |
+| #  | Option                                                 | Notes                                                                                                                                                    |
+| -- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| E1 | **Live Preview / env health board**                    | Rows = schema keys; columns ≈ declared / present in example / validates / fail reason; optional boundary (server vs public). Envin-class UX, MCP-hosted. |
+| E2 | Audit findings viewer                                  | Table of AST diagnostics (`unvalidated-access`, `secret-leak`, …). Strong, but code-hygiene not env-health.                                              |
+| E3 | Init / setup wizard                                    | Preset, framework, refusal/`--force` consent. One-shot onboarding, not ongoing product.                                                                  |
+| E4 | Schema playground / editor in chat                     | Edit `env.ts` visually. Overlaps docs; high mutate footgun.                                                                                              |
+| E5 | Migrate assistant UI                                   | Before/after `process.env` → `env.*` checklist. Narrow job; great later companion.                                                                       |
+| E6 | Combined cockpit (E1+E2+E3 in one iframe)              | Best eventual story; too wide for first ship.                                                                                                            |
+| E7 | Pitch / demo App (homepage snippets in chat)           | Marketing, not project truth.                                                                                                                            |
+| E8 | Maintainer dash (npm/GitHub) in chat                   | `apps/dash` job; wrong audience.                                                                                                                         |
+| E9 | Envin clone: only `arkenv preview` → localhost browser | Same board UX, **not** an MCP App. Useful parity later; does not satisfy the closed App decision.                                                        |
 
 ### Layer D — Data plane
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| D1 | Audit report only | Powers E2; cannot truthfully drive E1 fail-why for values. |
-| D2 | `check` JSON only | Fail reasons for loaded env; weak on “declared but unused / not in example.” |
-| D3 | Schema inspect only | Keys + types; no runtime pass/fail. |
+| #  | Option                                              | Notes                                                                                                                                              |
+| -- | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D1 | Audit report only                                   | Powers E2; cannot truthfully drive E1 fail-why for values.                                                                                         |
+| D2 | `check` JSON only                                   | Fail reasons for loaded env; weak on “declared but unused / not in example.”                                                                       |
+| D3 | Schema inspect only                                 | Keys + types; no runtime pass/fail.                                                                                                                |
 | D4 | **Compose: inspect + `check` (+ example presence)** | Natural Live Preview payload. New `preview`/`status` tool. Shape inspiration: Varlock `load --agent --format json-full` (redacted per-item graph). |
-| D5 | Live `process.env` / dotenv watch (polling) | “Live” literally; Envin watches files via its CLI server. Higher tax + secret risk in chat. |
-| D6 | Homegrown status model in the App | Forbidden — drifts from CLI. |
+| D5 | Live `process.env` / dotenv watch (polling)         | “Live” literally; Envin watches files via its CLI server. Higher tax + secret risk in chat.                                                        |
+| D6 | Homegrown status model in the App                   | Forbidden — drifts from CLI.                                                                                                                       |
 
 ### Layer I — Interaction depth
 
@@ -193,23 +193,23 @@ Items on different layers compose. “Live Preview vs audit table” is Layer E.
 
 ### Layer P — Packaging
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| P1 | Status quo tools only (no App) | **Closed — rejected by product decision.** Kept so it cannot sneak back as S. |
-| P2 | Deepen `@arkenv/agent-plugin` (`registerAppTool` / `registerAppResource`) | Default; matches add-app-to-server. |
-| P3 | New `@arkenv/mcp-app` package | Only if UI/vite-singlefile deps poison the plugin. |
-| P4 | App shell in CLI (`arkenv mcp`) | Optional later packaging; not required for experience choice. |
-| P5 | Remote HTTP MCP App | Wrong trust boundary for local `.env` / `env.ts`. |
-| P6 | Standalone `arkenv preview` HTTP (Envin-style) sharing D4 | A-tier **parity** with Envin for humans outside chat; must reuse the same compose payload as the MCP App, not a second status engine. |
+| #  | Option                                                                    | Notes                                                                                                                                 |
+| -- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| P1 | Status quo tools only (no App)                                            | **Closed — rejected by product decision.** Kept so it cannot sneak back as S.                                                         |
+| P2 | Deepen `@arkenv/agent-plugin` (`registerAppTool` / `registerAppResource`) | Default; matches add-app-to-server.                                                                                                   |
+| P3 | New `@arkenv/mcp-app` package                                             | Only if UI/vite-singlefile deps poison the plugin.                                                                                    |
+| P4 | App shell in CLI (`arkenv mcp`)                                           | Optional later packaging; not required for experience choice.                                                                         |
+| P5 | Remote HTTP MCP App                                                       | Wrong trust boundary for local `.env` / `env.ts`.                                                                                     |
+| P6 | Standalone `arkenv preview` HTTP (Envin-style) sharing D4                 | A-tier **parity** with Envin for humans outside chat; must reuse the same compose payload as the MCP App, not a second status engine. |
 
 ### Layer S — Secret policy
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| S1 | Keys + status + messages only (never values) | Safest; matches audit today. |
-| S2 | **Keys + status + redacted “was …” hints** | Matches CLI/error voice + Varlock `--agent` redaction; enough for “why” in chat. |
-| S3 | Opt-in reveal value (host consent / button) | Envin-like fullness for humans; don’t require for v1. |
-| S4 | Show raw values by default | Envin’s local tab can afford this more than agent chat. Reject for MCP App default. |
+| #  | Option                                       | Notes                                                                               |
+| -- | -------------------------------------------- | ----------------------------------------------------------------------------------- |
+| S1 | Keys + status + messages only (never values) | Safest; matches audit today.                                                        |
+| S2 | **Keys + status + redacted “was …” hints**   | Matches CLI/error voice + Varlock `--agent` redaction; enough for “why” in chat.    |
+| S3 | Opt-in reveal value (host consent / button)  | Envin-like fullness for humans; don’t require for v1.                               |
+| S4 | Show raw values by default                   | Envin’s local tab can afford this more than agent chat. Reject for MCP App default. |
 
 ---
 
