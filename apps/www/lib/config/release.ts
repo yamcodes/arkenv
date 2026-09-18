@@ -126,16 +126,14 @@ export function getInitCommand(
 }
 
 /**
- * Returns the `skills add` source for the active release channel.
- * Pre-release (alpha/rc) pins the v1 GitHub tree URL; GA uses the short repo form.
+ * Returns the `skills add` source. Always the v1 GitHub tree URL so installs
+ * never depend on the repo default branch (still `dev`/v0 until an optional flip).
  *
- * @param tag - Release tag override (defaults to `RELEASE_TAG`).
+ * @param _tag - Unused; kept for call-site compatibility with release-channel helpers.
  * @returns Source argument for `npx skills add …`.
  */
-export function getSkillsAddSource(tag = RELEASE_TAG): string {
-	return tag.trim()
-		? "https://github.com/yamcodes/arkenv/tree/v1"
-		: "yamcodes/arkenv";
+export function getSkillsAddSource(_tag = RELEASE_TAG): string {
+	return "https://github.com/yamcodes/arkenv/tree/v1";
 }
 
 /**
