@@ -34,11 +34,11 @@ Constraints:
 
 Baseline substrate (already shipped):
 
-| Surface | Role relative to the App |
-| ------- | ------------------------ |
-| `arkenv init --agent` / `check` / inspect | Data + mutations the App and tools wrap |
+| Surface                                        | Role relative to the App                      |
+| ---------------------------------------------- | --------------------------------------------- |
+| `arkenv init --agent` / `check` / inspect      | Data + mutations the App and tools wrap       |
 | MCP `init` / `audit` in `@arkenv/agent-plugin` | Tools to keep / extend; App attaches to tools |
-| Coding-agent plugin | How hosts install the server |
+| Coding-agent plugin                            | How hosts install the server                  |
 
 ---
 
@@ -56,16 +56,16 @@ Items on different layers compose. “Live Preview vs audit table” is Layer E.
 
 ## Metrics
 
-| Metric | Question |
-| ------ | -------- |
-| **ArkEnv-shaped** | Does the View show *typed env validation* (declared keys, fail-fast reasons, client/server boundary), or a generic “env manager”? |
-| **Human glanceability** | Can a human answer “what’s broken and why?” in one look without reading a JSON dump? |
-| **Agent complementarity** | Does the View help the human steer while the model still gets structured tool JSON to act on? |
-| **Truthfulness** | Is every row backed by CLI/inspect/`check`/`audit` truth, or inventing a parallel status model? |
-| **Secret safety** | Can the iframe leak `.env` values into chat, logs, or host memory by default? |
-| **Ship slice** | Can v1 ship without boiling the ocean (watch mode, full editor, remote auth)? |
-| **Maintenance tax** | UI bundle size, host quirks, dual docs, package split? |
-| **Footguns** | Does the UI make dangerous writes (`--force`, rewrite schema) too easy? |
+| Metric                    | Question                                                                                                                          |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **ArkEnv-shaped**         | Does the View show *typed env validation* (declared keys, fail-fast reasons, client/server boundary), or a generic “env manager”? |
+| **Human glanceability**   | Can a human answer “what’s broken and why?” in one look without reading a JSON dump?                                              |
+| **Agent complementarity** | Does the View help the human steer while the model still gets structured tool JSON to act on?                                     |
+| **Truthfulness**          | Is every row backed by CLI/inspect/`check`/`audit` truth, or inventing a parallel status model?                                   |
+| **Secret safety**         | Can the iframe leak `.env` values into chat, logs, or host memory by default?                                                     |
+| **Ship slice**            | Can v1 ship without boiling the ocean (watch mode, full editor, remote auth)?                                                     |
+| **Maintenance tax**       | UI bundle size, host quirks, dual docs, package split?                                                                            |
+| **Footguns**              | Does the UI make dangerous writes (`--force`, rewrite schema) too easy?                                                           |
 
 ---
 
@@ -73,55 +73,55 @@ Items on different layers compose. “Live Preview vs audit table” is Layer E.
 
 ### Layer E — Experience (primary product)
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| E1 | **Live Preview / env health board** | Rows = schema keys; columns ≈ declared / present in example / validates / fail reason; optional boundary (server vs public). User’s sketch. |
-| E2 | Audit findings viewer | Table of AST diagnostics (`unvalidated-access`, `secret-leak`, …). Strong, but code-hygiene not env-health. |
-| E3 | Init / setup wizard | Preset, framework, refusal/`--force` consent. One-shot onboarding, not ongoing product. |
-| E4 | Schema playground / editor in chat | Edit `env.ts` visually. Overlaps docs; high mutate footgun. |
-| E5 | Migrate assistant UI | Before/after `process.env` → `env.*` checklist. Narrow job; great later companion. |
-| E6 | Combined cockpit (E1+E2+E3 in one iframe) | Best eventual story; too wide for first ship. |
-| E7 | Pitch / demo App (homepage snippets in chat) | Marketing, not project truth. |
-| E8 | Maintainer dash (npm/GitHub) in chat | `apps/dash` job; wrong audience. |
+| #  | Option                                       | Notes                                                                                                                                       |
+| -- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| E1 | **Live Preview / env health board**          | Rows = schema keys; columns ≈ declared / present in example / validates / fail reason; optional boundary (server vs public). User’s sketch. |
+| E2 | Audit findings viewer                        | Table of AST diagnostics (`unvalidated-access`, `secret-leak`, …). Strong, but code-hygiene not env-health.                                 |
+| E3 | Init / setup wizard                          | Preset, framework, refusal/`--force` consent. One-shot onboarding, not ongoing product.                                                     |
+| E4 | Schema playground / editor in chat           | Edit `env.ts` visually. Overlaps docs; high mutate footgun.                                                                                 |
+| E5 | Migrate assistant UI                         | Before/after `process.env` → `env.*` checklist. Narrow job; great later companion.                                                          |
+| E6 | Combined cockpit (E1+E2+E3 in one iframe)    | Best eventual story; too wide for first ship.                                                                                               |
+| E7 | Pitch / demo App (homepage snippets in chat) | Marketing, not project truth.                                                                                                               |
+| E8 | Maintainer dash (npm/GitHub) in chat         | `apps/dash` job; wrong audience.                                                                                                            |
 
 ### Layer D — Data plane
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| D1 | Audit report only | Powers E2; cannot truthfully drive E1 fail-why for values. |
-| D2 | `check` JSON only | Fail reasons for loaded env; weak on “declared but unused / not in example.” |
-| D3 | Schema inspect only | Keys + types; no runtime pass/fail. |
-| D4 | **Compose: inspect + `check` (+ example presence)** | Natural Live Preview payload. New `preview`/`status` tool likely. |
-| D5 | Live `process.env` / dotenv watch (polling) | “Live” literally; higher tax + secret risk. |
-| D6 | Homegrown status model in the App | Forbidden — drifts from CLI. |
+| #  | Option                                              | Notes                                                                        |
+| -- | --------------------------------------------------- | ---------------------------------------------------------------------------- |
+| D1 | Audit report only                                   | Powers E2; cannot truthfully drive E1 fail-why for values.                   |
+| D2 | `check` JSON only                                   | Fail reasons for loaded env; weak on “declared but unused / not in example.” |
+| D3 | Schema inspect only                                 | Keys + types; no runtime pass/fail.                                          |
+| D4 | **Compose: inspect + `check` (+ example presence)** | Natural Live Preview payload. New `preview`/`status` tool likely.            |
+| D5 | Live `process.env` / dotenv watch (polling)         | “Live” literally; higher tax + secret risk.                                  |
+| D6 | Homegrown status model in the App                   | Forbidden — drifts from CLI.                                                 |
 
 ### Layer I — Interaction depth
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| I1 | Display-only (tool result → UI) | Simplest SEP-1865 pattern; host calls tool, View paints. |
-| I2 | Display + UI-triggered refresh/recheck | View calls same tool(s) again; still read-mostly. |
-| I3 | + guided actions (copy fix prompt, “ask agent to fix key X”) | `updateModelContext` / `sendMessage`; soft mutate. |
-| I4 | + hard mutate (write schema, run `init --force`, edit `.env`) | Powerful; footgun-heavy for v1. |
+| #  | Option                                                        | Notes                                                    |
+| -- | ------------------------------------------------------------- | -------------------------------------------------------- |
+| I1 | Display-only (tool result → UI)                               | Simplest SEP-1865 pattern; host calls tool, View paints. |
+| I2 | Display + UI-triggered refresh/recheck                        | View calls same tool(s) again; still read-mostly.        |
+| I3 | + guided actions (copy fix prompt, “ask agent to fix key X”)  | `updateModelContext` / `sendMessage`; soft mutate.       |
+| I4 | + hard mutate (write schema, run `init --force`, edit `.env`) | Powerful; footgun-heavy for v1.                          |
 
 ### Layer P — Packaging
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| P1 | Status quo tools only (no App) | **Closed — rejected by product decision.** Kept so it cannot sneak back as S. |
-| P2 | Deepen `@arkenv/agent-plugin` (`registerAppTool` / `registerAppResource`) | Default; matches add-app-to-server. |
-| P3 | New `@arkenv/mcp-app` package | Only if UI/vite-singlefile deps poison the plugin. |
-| P4 | App shell in CLI (`arkenv mcp`) | Optional later packaging; not required for experience choice. |
-| P5 | Remote HTTP MCP App | Wrong trust boundary for local `.env` / `env.ts`. |
+| #  | Option                                                                    | Notes                                                                         |
+| -- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| P1 | Status quo tools only (no App)                                            | **Closed — rejected by product decision.** Kept so it cannot sneak back as S. |
+| P2 | Deepen `@arkenv/agent-plugin` (`registerAppTool` / `registerAppResource`) | Default; matches add-app-to-server.                                           |
+| P3 | New `@arkenv/mcp-app` package                                             | Only if UI/vite-singlefile deps poison the plugin.                            |
+| P4 | App shell in CLI (`arkenv mcp`)                                           | Optional later packaging; not required for experience choice.                 |
+| P5 | Remote HTTP MCP App                                                       | Wrong trust boundary for local `.env` / `env.ts`.                             |
 
 ### Layer S — Secret policy
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| S1 | Keys + status + messages only (never values) | Safest; matches audit today. |
-| S2 | **Keys + status + redacted “was …” hints** | Matches CLI/error voice (`was [REDACTED]`, `was a string`); enough for “why.” |
-| S3 | Opt-in reveal value (host consent / button) | Nice later; don’t require for v1. |
-| S4 | Show raw values by default | Reject. |
+| #  | Option                                       | Notes                                                                         |
+| -- | -------------------------------------------- | ----------------------------------------------------------------------------- |
+| S1 | Keys + status + messages only (never values) | Safest; matches audit today.                                                  |
+| S2 | **Keys + status + redacted “was …” hints**   | Matches CLI/error voice (`was [REDACTED]`, `was a string`); enough for “why.” |
+| S3 | Opt-in reveal value (host consent / button)  | Nice later; don’t require for v1.                                             |
+| S4 | Show raw values by default                   | Reject.                                                                       |
 
 ---
 
