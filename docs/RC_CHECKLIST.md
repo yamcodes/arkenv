@@ -99,8 +99,9 @@ explicitly not an RC gate.
 - Docs voice / AI-slop pass still owed — continuous / GA, not RC.
 - Upstream TanStack CLI catalog (#1818) still blocked.
 - ESM-only vs dual-publish (#1750) undecided for post-RC messaging.
-- ArkType.io ecosystem ArkEnv snippet still uses the old library
-  import — clear before announce / day-of `latest` → rc.
+- ArkType.io ecosystem snippet updated via
+  [arktypeio/arktype#1655](https://github.com/arktypeio/arktype/pull/1655)
+  (`@arkenv/core` + `npx arkenv init`) — no longer a soft blocker.
 - Remaining `ROADMAP_EXTRAS` (README prod links, changelog epoch, npm
   deprecate `@arkenv/cli`, DNS cutover, GA release + announcement)
   are launch-ops, not first-RC gates.
