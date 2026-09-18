@@ -2,14 +2,10 @@
 "arkenv": patch
 ---
 
-#### Pin `skills add` to the v1 branch during pre-release
+#### Pin `skills add` to the v1 branch
 
-`arkenv init` now picks the skill source from the running CLI version: pre-release builds install from `https://github.com/yamcodes/arkenv/tree/v1`, and stable (GA) builds use the short `yamcodes/arkenv` form once v1 is the default branch.
+`arkenv init` now installs the agent skill from `https://github.com/yamcodes/arkenv/tree/v1` so `skills add` resolves the v1 skill instead of the repo default branch — for both pre-release and GA builds.
 
 ```bash
-# pre-release (alpha / rc)
 npx skills add https://github.com/yamcodes/arkenv/tree/v1
-
-# GA
-npx skills add yamcodes/arkenv
 ```

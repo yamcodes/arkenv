@@ -126,16 +126,19 @@ export function getInitCommand(
 }
 
 /**
- * Returns the `skills add` source for the active release channel.
- * Pre-release (alpha/rc) pins the v1 GitHub tree URL; GA uses the short repo form.
+ * `skills add` source for all release channels (alpha / rc / GA).
+ * Always pins the v1 tree URL so installs never depend on the repo default branch.
+ */
+export const SKILLS_ADD_SOURCE =
+	"https://github.com/yamcodes/arkenv/tree/v1";
+
+/**
+ * Returns the `skills add` source. Always the v1 tree URL for every channel.
  *
- * @param tag - Release tag override (defaults to `RELEASE_TAG`).
  * @returns Source argument for `npx skills add …`.
  */
-export function getSkillsAddSource(tag = RELEASE_TAG): string {
-	return tag.trim()
-		? "https://github.com/yamcodes/arkenv/tree/v1"
-		: "yamcodes/arkenv";
+export function getSkillsAddSource(): string {
+	return SKILLS_ADD_SOURCE;
 }
 
 /**
@@ -151,7 +154,7 @@ export function getAgentPrompt(
 	docsUrl = getDocsUrl(),
 ): string {
 	const command = getInitCommand("npm", tag, "init --agent");
-	const skillsSource = getSkillsAddSource(tag);
+	const skillsSource = getSkillsAddSource();
 	return [
 		`Set up ArkEnv with \`${command}\`.`,
 		`For docs/reference, start from ${docsUrl}/llms.txt and fetch any linked pages as markdown (append \`.md\`).`,

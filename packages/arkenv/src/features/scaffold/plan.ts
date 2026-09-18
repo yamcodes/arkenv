@@ -1,8 +1,6 @@
 import type { LoggerPort as Reporter } from "@/shared/ports/logger.port";
 import type { ParsedTsConfig } from "@/shared/ports/project-scanner.port";
 import type { WorkspacePort as Workspace } from "@/shared/ports/workspace.port";
-import { parseSemver } from "@/shared/semver";
-import { version as pkgVersion } from "../../../package.json";
 import type { HostPreset } from "./presets";
 
 export type { Reporter, Workspace };
@@ -17,33 +15,13 @@ export type Framework =
 	| "rsbuild";
 export type PackageManager = "pnpm" | "yarn" | "npm" | "bun";
 
-/** Short `skills add` source once v1 is the default branch (GA). */
-export const SKILL_SOURCE_REPO = "yamcodes/arkenv";
-
 /**
- * Pre-release `skills add` source. Skills supports `/tree/<branch>`; the repo
- * default branch is still v0 until GA, so alpha/rc installs must pin `v1`.
+ * Source for `skills add`. Uses the v1 GitHub tree URL so installs resolve
+ * this branch instead of the repo default (skills supports `/tree/<branch>`).
+ * Always pin — do not rely on the default-branch flip for GA.
  */
-export const SKILL_SOURCE_V1_TREE =
+export const DEFAULT_SKILL_SOURCE =
 	"https://github.com/yamcodes/arkenv/tree/v1";
-
-/**
- * Resolves the `skills add` source for the running CLI version.
- * Pre-release builds pin the v1 tree URL; stable builds use the short repo form.
- *
- * @param version - SemVer string (defaults to this package's version).
- * @returns Source argument for `skills add`.
- */
-export function getDefaultSkillSource(version = pkgVersion): string {
-	const parsed = parseSemver(version);
-	const isPrerelease = (parsed?.prerelease.length ?? 0) > 0;
-	return isPrerelease ? SKILL_SOURCE_V1_TREE : SKILL_SOURCE_REPO;
-}
-
-/**
- * Source for `skills add` for this build (tree URL while this package is a prerelease).
- */
-export const DEFAULT_SKILL_SOURCE = getDefaultSkillSource();
 
 /**
  * Options chosen by the user or inferred for scaffolding the project.
