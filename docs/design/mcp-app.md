@@ -24,13 +24,13 @@ What must be true when we are done:
 
 Already shipped today (baseline, not a blank canvas):
 
-| Surface | Where | What |
-| ------- | ----- | ---- |
-| CLI agent protocol | `arkenv init --agent` / `--json` | Machine-readable scaffold + refusals |
-| Skill | `npx skills add yamcodes/arkenv` + plugin-bundled skill | Authorship / migration guidance |
-| MCP tools | `@arkenv/agent-plugin` stdio (`init`, `audit`) | Tool calls wrapping CLI + AST audit |
-| Coding-agent plugin | `npx plugins add yamcodes/arkenv` | Skills + `/arkenv:init` / `/arkenv:audit` + MCP |
-| Docs | `/docs/guides/ai` | Public install + prompt story |
+| Surface             | Where                                                   | What                                            |
+| ------------------- | ------------------------------------------------------- | ----------------------------------------------- |
+| CLI agent protocol  | `arkenv init --agent` / `--json`                        | Machine-readable scaffold + refusals            |
+| Skill               | `npx skills add yamcodes/arkenv` + plugin-bundled skill | Authorship / migration guidance                 |
+| MCP tools           | `@arkenv/agent-plugin` stdio (`init`, `audit`)          | Tool calls wrapping CLI + AST audit             |
+| Coding-agent plugin | `npx plugins add yamcodes/arkenv`                       | Skills + `/arkenv:init` / `/arkenv:audit` + MCP |
+| Docs                | `/docs/guides/ai`                                       | Public install + prompt story                   |
 
 So the hat is mostly about **interpreting the ask**, **what to deepen**, and **whether SEP-1865 UI is worth shipping** — not whether ArkEnv “has MCP.”
 
@@ -49,17 +49,17 @@ Items on different layers compose into a **stack**. “MCP app vs skill vs CLI�
 
 ## Metrics
 
-| Metric | Question |
-| ------ | -------- |
+| Metric                          | Question                                                                                                               |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | **Honesty to shipped surfaces** | Does the option acknowledge `@arkenv/agent-plugin` / CLI `--agent` / the skill, or does it invent a parallel universe? |
-| **Agent reliability** | Does the agent finish init/audit/migrate more often, with fewer invented APIs? |
-| **Host coverage** | Works in Cursor, Claude Code, Codex, and hosts with **no** MCP Apps UI? |
-| **Progressive enhancement** | If UI is absent or broken, does the same tool still return useful JSON/text? |
-| **Secret safety** | Can a careless tool or iframe expose `.env` values into chat or logs? |
-| **Maintenance tax** | Extra packages, UI bundles, host-specific bugs, dual docs stories? |
-| **Teachability** | One install path on `/docs/guides/ai`, or a maze of “plugin vs MCP vs app”? |
-| **Footguns** | Easy `--force`, mutate-schema-from-chat, or “agent rewrote env.ts wrong”? |
-| **Differentiation** | Does UI/tools show something ArkEnv uniquely owns (boundaries, prefixes, audit), or a generic env form? |
+| **Agent reliability**           | Does the agent finish init/audit/migrate more often, with fewer invented APIs?                                         |
+| **Host coverage**               | Works in Cursor, Claude Code, Codex, and hosts with **no** MCP Apps UI?                                                |
+| **Progressive enhancement**     | If UI is absent or broken, does the same tool still return useful JSON/text?                                           |
+| **Secret safety**               | Can a careless tool or iframe expose `.env` values into chat or logs?                                                  |
+| **Maintenance tax**             | Extra packages, UI bundles, host-specific bugs, dual docs stories?                                                     |
+| **Teachability**                | One install path on `/docs/guides/ai`, or a maze of “plugin vs MCP vs app”?                                            |
+| **Footguns**                    | Easy `--force`, mutate-schema-from-chat, or “agent rewrote env.ts wrong”?                                              |
+| **Differentiation**             | Does UI/tools show something ArkEnv uniquely owns (boundaries, prefixes, audit), or a generic env form?                |
 
 ---
 
@@ -67,49 +67,49 @@ Items on different layers compose into a **stack**. “MCP app vs skill vs CLI�
 
 ### Layer A — Job depth
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| A1 | Scaffold only (`init`) | Thin; audit left to greps. |
-| A2 | Scaffold + audit (**current**) | Plugin MCP tools today. |
-| A3 | A2 + schema inspect / `check` / `example` MCP tools | Wrap more CLI primitives; still text/JSON. |
-| A4 | Full lifecycle mutate (agent edits schema + syncs example + validates in a loop) | High power; high footgun. |
-| A5 | Interactive schema/env product as the job (editor-first) | Reinterprets ArkEnv as a chat UI app. |
-| A6 | Docs/RAG MCP only (fetch md, no project tools) | Useful but does not satisfy “use ArkEnv in my repo.” |
-| A7 | Maintainer/ops dashboard in chat (npm stats, releases) | Adjacent to `apps/dash`; not the coding-agent job. |
+| #  | Option                                                                           | Notes                                                |
+| -- | -------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| A1 | Scaffold only (`init`)                                                           | Thin; audit left to greps.                           |
+| A2 | Scaffold + audit (**current**)                                                   | Plugin MCP tools today.                              |
+| A3 | A2 + schema inspect / `check` / `example` MCP tools                              | Wrap more CLI primitives; still text/JSON.           |
+| A4 | Full lifecycle mutate (agent edits schema + syncs example + validates in a loop) | High power; high footgun.                            |
+| A5 | Interactive schema/env product as the job (editor-first)                         | Reinterprets ArkEnv as a chat UI app.                |
+| A6 | Docs/RAG MCP only (fetch md, no project tools)                                   | Useful but does not satisfy “use ArkEnv in my repo.” |
+| A7 | Maintainer/ops dashboard in chat (npm stats, releases)                           | Adjacent to `apps/dash`; not the coding-agent job.   |
 
 ### Layer B — Host surface (primary story)
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| B1 | Skill / prompts only | Exists; no structured tools. |
-| B2 | Plain MCP tools server | Exists inside agent-plugin. |
-| B3 | Coding-agent plugin bundle (skill + commands + MCP) | **Current public story** on `/docs/guides/ai`. |
-| B4 | MCP Apps UI (SEP-1865) on top of tools | Progressive enhancement; host support uneven (e.g. project-scoped Cursor quirks). |
-| B5 | Cursor rules / repo `AGENTS.md` snippets only | Cheap; no tooling. |
-| B6 | Remote / hosted MCP connector (HTTP + OAuth) | “Productized” install; secrets and tenancy hard. |
-| B7 | Native IDE extension (VS Code/Cursor extension API) | Not MCP; high tax. |
-| B8 | New “MCP App” package as the *only* story | Reject-by-default: erases plugin/skill. |
+| #  | Option                                              | Notes                                                                             |
+| -- | --------------------------------------------------- | --------------------------------------------------------------------------------- |
+| B1 | Skill / prompts only                                | Exists; no structured tools.                                                      |
+| B2 | Plain MCP tools server                              | Exists inside agent-plugin.                                                       |
+| B3 | Coding-agent plugin bundle (skill + commands + MCP) | **Current public story** on `/docs/guides/ai`.                                    |
+| B4 | MCP Apps UI (SEP-1865) on top of tools              | Progressive enhancement; host support uneven (e.g. project-scoped Cursor quirks). |
+| B5 | Cursor rules / repo `AGENTS.md` snippets only       | Cheap; no tooling.                                                                |
+| B6 | Remote / hosted MCP connector (HTTP + OAuth)        | “Productized” install; secrets and tenancy hard.                                  |
+| B7 | Native IDE extension (VS Code/Cursor extension API) | Not MCP; high tax.                                                                |
+| B8 | New “MCP App” package as the *only* story           | Reject-by-default: erases plugin/skill.                                           |
 
 ### Layer C — Package / runtime placement
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| C1 | Status quo: `@arkenv/agent-plugin` stdio via `npx` | Already published alpha. |
-| C2 | Deepen **same** package (more tools and/or UI resources) | One bin, one docs page. |
-| C3 | New package `@arkenv/mcp-app` (UI-focused) | Split brain with agent-plugin. |
-| C4 | Move MCP into CLI package (`arkenv mcp`) | Couples publish cadence to CLI; plugin still needs skills/commands. |
-| C5 | Embed server in `apps/www` / remote docs | Wrong trust boundary for project filesystem. |
-| C6 | External repo | Drift vs monorepo CI. |
+| #  | Option                                                   | Notes                                                               |
+| -- | -------------------------------------------------------- | ------------------------------------------------------------------- |
+| C1 | Status quo: `@arkenv/agent-plugin` stdio via `npx`       | Already published alpha.                                            |
+| C2 | Deepen **same** package (more tools and/or UI resources) | One bin, one docs page.                                             |
+| C3 | New package `@arkenv/mcp-app` (UI-focused)               | Split brain with agent-plugin.                                      |
+| C4 | Move MCP into CLI package (`arkenv mcp`)                 | Couples publish cadence to CLI; plugin still needs skills/commands. |
+| C5 | Embed server in `apps/www` / remote docs                 | Wrong trust boundary for project filesystem.                        |
+| C6 | External repo                                            | Drift vs monorepo CI.                                               |
 
 ### Layer D — Presentation richness
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| D1 | JSON/text tool results only (**current**) | Universal fallback. |
-| D2 | Audit results viewer (`ui://`) — table, severity, suggested fix | Best MCP Apps fit: structured diagnostics → UI. |
-| D3 | Init wizard UI (preset / framework / force confirmation) | Human consent for refusals; still must call CLI. |
-| D4 | Schema playground / key matrix editor in chat | Attractive; overlaps docs playground; secret risk if env-backed. |
-| D5 | Full product chrome (charts, dash, marketing) in iframe | Wrong job for coding agents. |
+| #  | Option                                                          | Notes                                                            |
+| -- | --------------------------------------------------------------- | ---------------------------------------------------------------- |
+| D1 | JSON/text tool results only (**current**)                       | Universal fallback.                                              |
+| D2 | Audit results viewer (`ui://`) — table, severity, suggested fix | Best MCP Apps fit: structured diagnostics → UI.                  |
+| D3 | Init wizard UI (preset / framework / force confirmation)        | Human consent for refusals; still must call CLI.                 |
+| D4 | Schema playground / key matrix editor in chat                   | Attractive; overlaps docs playground; secret risk if env-backed. |
+| D5 | Full product chrome (charts, dash, marketing) in iframe         | Wrong job for coding agents.                                     |
 
 ---
 
@@ -127,7 +127,7 @@ Items on different layers compose into a **stack**. “MCP app vs skill vs CLI�
 
 **A5 Editor-first product** — Solves a different problem (interactive config product). Host coverage and maintenance tax explode. Conflicts with code-first ArkEnv identity unless framed as optional review UI (then it becomes D4, not A5).
 
-**A6 Docs/RAG only** — Good complement, bad primary. Agents still hand-write `env.ts`. Low differentiation vs “fetch arkenv.js.org/*.md” which docs already support.
+**A6 Docs/RAG only** — Good complement, bad primary. Agents still hand-write `env.ts`. Low differentiation vs “fetch arkenv.js.org/\*.md” which docs already support.
 
 **A7 Maintainer dash in chat** — Out of scope for the coding-agent ask; keep in `apps/dash`.
 
