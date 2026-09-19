@@ -24,7 +24,7 @@ not run a second install command.
 ### MCP-only hosts
 
 If the host has no plugin marketplace, add the server to MCP config.
-`npx -y @arkenv/agent-plugin@rc` is the process the host spawns, not
+`npx -y @arkenv/agent-plugin` is the process the host spawns, not
 a follow-up to `plugins add`.
 
 ```json
@@ -32,7 +32,7 @@ a follow-up to `plugins add`.
   "mcpServers": {
     "arkenv": {
       "command": "npx",
-      "args": ["-y", "@arkenv/agent-plugin@rc"]
+      "args": ["-y", "@arkenv/agent-plugin"]
     }
   }
 }
