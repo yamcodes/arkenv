@@ -1,26 +1,5 @@
 # @arkenv/rsbuild-plugin
 
-## 1.0.0-rc.2
-
-### Patch Changes
-
-#### Enter the release candidate channel
-
-Packages now ship as `1.0.0-rc.n` under the `rc` npm tag (product path also points `latest` at the RC).
-<details><summary>Updated 3 dependencies</summary>
-
-<small>
-
-
-
-</small>
-
-- `@arkenv/core@1.0.0-rc.11`
-- `@arkenv/standard@1.0.0-rc.11`
-- `@arkenv/build@1.0.0-rc.8`
-
-</details>
-
 ## 1.0.0-alpha.1
 
 ### Minor Changes
