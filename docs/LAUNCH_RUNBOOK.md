@@ -15,9 +15,9 @@ RC checklist, and do not treat the RC checklist as a substitute for these
 ## 1. Pre-Launch Checklist (T-Minus 1–3 Days)
 
 - [ ] **v0 Parity & Test Suite**: All unit, integration, and e2e test suites passing across all packages on the `v1` branch. Feature-surface audit (intentional breaks + host map): [`docs/design/v0-parity-audit.md`](./design/v0-parity-audit.md) — still re-confirm CI green before GA day.
-- [ ] **Release v0 Docs Snapshot to `v0.arkenv.js.org`**:
-  - Deploy a frozen snapshot of the `dev` (v0) documentation branch to Vercel/Cloudflare Pages.
-  - Assign domain: `v0.arkenv.js.org`.
+- [ ] **Release v0 Docs Snapshot (Vercel archive URL)**:
+  - Deploy a frozen snapshot of the `dev` (v0) documentation branch to Vercel.
+  - Use a Vercel preview/alias URL (`*.vercel.app` or a project alias). Do **not** require a js.org subdomain PR.
   - Verify that old links, guides, and v0 API references resolve correctly.
 - [x] **Alpha Banner on Live v0 Site (`dev` branch)**:
   - Add announcement banner to `arkenv.js.org` (pointing to `https://arkenv-v1.vercel.app` and migration guide) during the final testing window.
@@ -52,6 +52,7 @@ RC checklist, and do not treat the RC checklist as a substitute for these
    retagging automatically — no separate flag to clear. You can remove
    the `NPM_TOKEN` secret later if it existed only for the RC window
    (that secret is the stage-only dist-tag token; publish stays on OIDC).
+   Local retags via `--local` never needed that secret.
 2. Generate the final version packages and changelogs:
    ```bash
    pnpm exec changeset version
@@ -90,11 +91,11 @@ npm deprecate @arkenv/cli "This package was renamed to 'arkenv' in v1. Please up
 1. In Vercel Project Settings for the v1 Docs app (`arkenv-v1`):
    - Add Domain: `arkenv.js.org` (and set as primary domain).
 2. Remove/redirect old domain mapping from the v0 project:
-   - Ensure `v0.arkenv.js.org` remains live and accessible.
+   - Ensure the v0 archive Vercel preview/alias URL remains live and accessible.
 3. Verify DNS propagation:
    ```bash
    curl -I https://arkenv.js.org
-   curl -I https://v0.arkenv.js.org
+   curl -I https://<v0-archive>.vercel.app   # or your chosen project alias
    ```
 
 ### Step 3.2: Verify Key Routes & Redirects
@@ -103,7 +104,7 @@ npm deprecate @arkenv/cli "This package was renamed to 'arkenv' in v1. Please up
 - [ ] Migration Guide: `https://arkenv.js.org/docs/guides/migrating-to-v1`
 - [ ] Getting Started: `https://arkenv.js.org/docs/getting-started`
 - [ ] Framework guides: Next.js, Nuxt, Vite, Bun
-- [ ] Legacy docs: `https://v0.arkenv.js.org`
+- [ ] Legacy docs: Vercel preview/alias URL for the v0 archive
 
 ---
 

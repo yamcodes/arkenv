@@ -12,7 +12,7 @@
 		"www": "turbo run dev --filter=www",
 		"dash": "nub run --filter=@arkenv/core build && nub run --filter @repo/dash dash",
 		"release": "nub run build:packages && changeset publish",
-		"point-latest-at-rc": "node scripts/point-latest-at-rc.js",
+		"point-latest-at-rc": "node scripts/point-latest-at-rc.js --from-rc --local",
 		"fix": "node scripts/fix.js",
 		"fix:unsafe": "node scripts/fix.js --unsafe",
 		"check": "biome check && nub run check:mdx && manypkg check",
