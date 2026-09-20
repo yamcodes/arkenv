@@ -32,23 +32,19 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Use Node.js
-        uses: actions/setup-node@v7
+      - name: Set up Nub
+        uses: ./.github/actions/setup-nub-ci
         with:
           node-version: 24
-          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install
 
       - name: Build packages
-        run: pnpm build:packages
+        run: nub run --no-check build:packages
 
       - name: Check examples sync
-        run: pnpm sync:examples:check
+        run: nub run --no-check sync:examples:check
 
   auto-sync:
     if: github.actor == 'renovate[bot]' && github.event_name == 'pull_request'
@@ -68,18 +64,16 @@ jobs:
           token: ${{ steps.generate-token.outputs.token }}
           ref: ${{ github.head_ref }}
 
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      - uses: ./.github/actions/setup-nub-ci
         with:
           node-version: 24
-          cache: pnpm
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.0
 
       - run: pnpm install
-      - run: pnpm build:packages
-      - run: pnpm sync:examples
+      - run: nub run --no-check build:packages
+      - run: nub run --no-check sync:examples
 
       - name: Commit example updates
         run: |

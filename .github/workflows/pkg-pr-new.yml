@@ -33,22 +33,20 @@ jobs:
         with:
           team: ${{ vars.TURBO_TEAM }}
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Install Node.js
-        uses: actions/setup-node@v7
+      - name: Set up Nub
+        uses: ./.github/actions/setup-nub-ci
         with:
           node-version: 24
-          cache: "pnpm"
 
       - name: Install deps
         run: pnpm install
 
       - name: Build
-        run: pnpm build --filter="./packages/*"
+        run: nub run --no-check build --filter="./packages/*"
         env:
           TURBO_FORCE: "true"
 
       - name: Release
-        run: pnpx pkg-pr-new publish --compact --pnpm './packages/*'
+        # -y: pkg-pr-new is not a workspace dep; nubx refuses undownloaded tools in CI.
+        # --node: pkg-pr-new ships a broken tsconfig; skip Nub's TS project load.
+        run: nubx --node -y pkg-pr-new publish --compact --pnpm './packages/*'

@@ -140,10 +140,13 @@ export function transformPackageJson(pkg, exampleConfig, catalog, options) {
 		transformed.packageManager = `${pm}@${version}`;
 	}
 
-	// Remove workspace-specific scripts (like pnpm -w run fix)
+	// Remove workspace-specific scripts (like nub run -w fix / pnpm -w run fix)
 	if (transformed.scripts) {
 		for (const [scriptName, scriptCmd] of Object.entries(transformed.scripts)) {
-			if (typeof scriptCmd === "string" && scriptCmd.includes("pnpm -w")) {
+			if (
+				typeof scriptCmd === "string" &&
+				(scriptCmd.includes("pnpm -w") || scriptCmd.includes("nub run -w"))
+			) {
 				delete transformed.scripts[scriptName];
 			}
 		}

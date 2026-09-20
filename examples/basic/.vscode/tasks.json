@@ -6,14 +6,14 @@
 			"script": "start",
 			"problemMatcher": ["$tsc"],
 			"label": "start",
-			"detail": "tsx --env-file .env index.ts"
+			"detail": "nub src/index.ts"
 		},
 		{
 			"type": "npm",
 			"script": "dev",
 			"problemMatcher": ["$tsc-watch"],
 			"label": "dev",
-			"detail": "tsx watch --env-file .env index.ts"
+			"detail": "nub watch src/index.ts"
 		}
 	]
 }

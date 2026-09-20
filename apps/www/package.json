@@ -4,18 +4,18 @@
 	"private": true,
 	"scripts": {
 		"mdx": "node ./bin/mdx",
-		"prebuild": "pnpm -w build --filter @arkenv/fumadocs-ui --filter @arkenv/nextjs && pnpm run mdx",
-		"predev": "pnpm -w build --filter @arkenv/fumadocs-ui --filter @arkenv/nextjs && pnpm run mdx",
+		"prebuild": "node ./bin/prebuild.js",
+		"predev": "nub run --filter @arkenv/fumadocs-ui --filter @arkenv/nextjs build && nub run mdx",
 		"build": "node ./bin/build next build",
 		"dev": "next dev",
 		"start": "next start",
 		"clean": "rimraf node_modules .next .source",
 		"clear-cache": "rimraf .next .source",
 		"test": "vitest",
-		"fix": "pnpm -w run fix",
-		"pretypecheck": "node -e 'try { require(\"@arkenv/nextjs/config\").setupArkEnv({ schemaPath: \"./env.ts\" }) } catch {}'",
+		"fix": "nub run -w fix",
+		"pretypecheck": "node ./bin/pretypecheck.js",
 		"typecheck": "tsc --noEmit",
-		"twoslash": "tsx bin/twoslash-mdx.ts"
+		"twoslash": "nub bin/twoslash-mdx.ts"
 	},
 	"dependencies": {
 		"@ark/util": "0.56.0",
@@ -72,6 +72,7 @@
 	},
 	"devDependencies": {
 		"@fumadocs/cli": "1.3.10",
+		"@nubjs/nub": "catalog:",
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@tailwindcss/postcss": "4.2.4",
@@ -93,7 +94,6 @@
 		"postcss": "8.5.14",
 		"rimraf": "catalog:",
 		"tailwindcss": "4.2.4",
-		"tsx": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:",
 		"zod-to-json-schema": "3.25.2"

@@ -14,7 +14,7 @@
 	"scripts": {
 		"typecheck": "tsc --noEmit",
 		"build": "tsc",
-		"fix": "pnpm -w run fix"
+		"fix": "nub run -w fix"
 	},
 	"devDependencies": {
 		"arktype": "catalog:",

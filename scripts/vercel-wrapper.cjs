@@ -8,9 +8,16 @@ if (args.length === 0) {
 	process.exit(1);
 }
 
-const child = spawn("vercel", args, {
-	stdio: ["inherit", "inherit", "pipe"],
-});
+// Tests set VERCEL_WRAPPER_BIN to a fake CLI. Deploy workflows leave it unset
+// and pin vercel via nubx so they need no global install / GITHUB_PATH dance.
+const overrideBin = process.env.VERCEL_WRAPPER_BIN;
+const child = overrideBin
+	? spawn(overrideBin, args, {
+			stdio: ["inherit", "inherit", "pipe"],
+		})
+	: spawn("nubx", ["-y", "-p", "vercel@59.16.0", "vercel", ...args], {
+			stdio: ["inherit", "inherit", "pipe"],
+		});
 
 let stderr = "";
 

@@ -18,6 +18,8 @@ Modern IDEs may still infer types from ArkEnv’s `.d.ts` files, but this is not
 
 ### Quickstart
 
+Scripts use [Nub](https://nubjs.com/) to run the app and load `.env` automatically.
+
 1. #### Install dependencies
 
    ```bash

@@ -14,7 +14,7 @@ const SHORT_MSG_WORKFLOWS = [
 ];
 
 /**
- * Run vercel-wrapper with a fake `vercel` binary on PATH.
+ * Run vercel-wrapper with a fake CLI via VERCEL_WRAPPER_BIN (nubx would ignore PATH).
  *
  * @param options Exit code, stderr, and extra env for the fake CLI
  */
@@ -34,7 +34,7 @@ process.exit(${options.exitCode});
 		encoding: "utf8",
 		env: {
 			...process.env,
-			PATH: `${dir}:${process.env.PATH}`,
+			VERCEL_WRAPPER_BIN: fakeBin,
 			GITHUB_STEP_SUMMARY: summaryPath,
 			...options.env,
 		},

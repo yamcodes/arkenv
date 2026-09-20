@@ -47,7 +47,7 @@
 		"test:once": "vitest run",
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules",
-		"fix": "pnpm -w run fix"
+		"fix": "nub run -w fix"
 	},
 	"files": [
 		"dist"

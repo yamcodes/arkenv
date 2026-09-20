@@ -3,9 +3,9 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"start": "tsx --env-file .env index.ts",
-		"dev": "tsx watch --env-file .env index.ts",
-		"dev:example": "tsx watch --env-file .env.example index.ts",
+		"start": "nub index.ts",
+		"dev": "nub watch index.ts",
+		"dev:example": "nub watch --env-file .env.example index.ts",
 		"build": "tsc",
 		"clean": "rimraf dist node_modules"
 	},
@@ -15,8 +15,8 @@
 		"zod": "^4.4.1"
 	},
 	"devDependencies": {
+		"@nubjs/nub": "^0.9.3",
 		"rimraf": "^6.1.3",
-		"tsx": "^4.21.0",
 		"typescript": "^6.0.3"
 	},
 	"packageManager": "npm@11.9.0"

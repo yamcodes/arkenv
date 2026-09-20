@@ -22,6 +22,9 @@ pnpm-debug.log*
 .env
 .env.local
 
+# Ephemeral CI Node pin (written by .github/actions/setup-nub-ci)
+.node-version
+
 # macOS-specific files
 .DS_Store
 

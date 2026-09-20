@@ -1,0 +1,20 @@
+name: Set up Nub (CI)
+description: >
+  Write a concrete .node-version pin so nubjs/setup-nub fronts a managed
+  Node and `nub run` / pnpm shims use that same version (not the runner host).
+  setup-nub does not front aliases like lts/* / latest — pass a concrete
+  version such as 24 or 26.
+inputs:
+  node-version:
+    description: Concrete Node version (e.g. 24, 26). Do not use lts/* or latest.
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Pin Node for nub
+      shell: bash
+      run: echo "${{ inputs.node-version }}" > .node-version
+    - uses: nubjs/setup-nub@v0
+      with:
+        shim: true
+        node-version: ${{ inputs.node-version }}

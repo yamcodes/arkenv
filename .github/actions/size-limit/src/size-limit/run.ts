@@ -29,7 +29,7 @@ export const runSizeLimit = async (
 
 		// Run size-limit with --continue to ensure we get results for all packages even if one fails
 		const proc = spawn(
-			["pnpm", "run", "size", "--continue", "--filter", filter],
+			["nub", "run", "size", "--continue", "--filter", filter],
 			{
 				env,
 				stdout: "pipe",

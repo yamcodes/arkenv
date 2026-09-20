@@ -47,24 +47,21 @@ jobs:
         with:
           team: ${{ vars.TURBO_TEAM }}
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Use Node.js
-        uses: actions/setup-node@v7
+      - name: Set up Nub
+        # Concrete 24 (latest 24.x is >=24.18.0 required by changesets).
+        # see: https://github.com/changesets/changesets/issues/2123#issuecomment-4814124084
+        uses: ./.github/actions/setup-nub-ci
         with:
-          # see: https://github.com/changesets/changesets/issues/2123#issuecomment-4814124084
-          node-version: ">=24.18.0"
-          cache: "pnpm"
+          node-version: 24
 
       - name: Install Dependencies
-        run: pnpm install
+        run: nub install
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v2.1.1
         with:
-          publish-script: pnpm run release
+          publish-script: nub run --no-check release
           github-token: ${{ steps.generate-token.outputs.token }}
 
       # Product RC path: also point npm `latest` at the just-published

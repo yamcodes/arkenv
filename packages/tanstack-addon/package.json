@@ -11,11 +11,11 @@
 	"license": "MIT",
 	"type": "module",
 	"scripts": {
-		"build": "tsx scripts/build.ts",
+		"build": "nub scripts/build.ts",
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules",
 		"test": "vitest run",
-		"fix": "pnpm -w run fix"
+		"fix": "nub run -w fix"
 	},
 	"files": [
 		"dist",
@@ -25,13 +25,13 @@
 		"@arkenv/core": "workspace:*",
 		"@arkenv/standard": "workspace:*",
 		"@arkenv/vite-plugin": "workspace:*",
+		"@nubjs/nub": "catalog:",
 		"@tanstack/create": "^0.70.0",
 		"@types/ejs": "^3.1.5",
 		"@types/node": "catalog:",
 		"arktype": "catalog:",
 		"ejs": "^3.1.10",
 		"rimraf": "catalog:",
-		"tsx": "catalog:",
 		"typescript": "catalog:",
 		"valibot": "catalog:",
 		"vitest": "catalog:",

@@ -5,7 +5,7 @@ import { arktypeTwoslashOptions } from "~/lib/twoslash-options";
 
 const mdxPath = process.argv[2];
 if (!mdxPath) {
-	console.error("Usage: tsx twoslash-mdx.ts <path-to-mdx>");
+	console.error("Usage: nub twoslash-mdx.ts <path-to-mdx>");
 	process.exit(1);
 }
 

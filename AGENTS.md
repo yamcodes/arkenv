@@ -2,7 +2,7 @@
 
 ## Cursor Cloud specific instructions
 
-ArkEnv is a pnpm + Turborepo monorepo for a TypeScript env-var validation library. There are no databases or external services; the product long-running process is the `www` docs site (Next.js). `apps/dash` is an optional maintainer dashboard and is not started by `pnpm dev` / `pnpm www`. Standard commands live in `package.json`, `docs/CONTRIBUTING.md`, and `docs/TESTING.md` — prefer those.
+ArkEnv is a Nub + Turborepo monorepo for a TypeScript env-var validation library (lockfile remains `pnpm-lock.yaml`). There are no databases or external services; the product long-running process is the `www` docs site (Next.js). `apps/dash` is an optional maintainer dashboard and is not started by `nub run dev` / `nub run www`. Standard commands live in `package.json`, `docs/CONTRIBUTING.md`, and `docs/TESTING.md` — prefer those.
 
 > This is the `v1` branch. Its package layout differs from `dev` (v0): here `packages/arkenv` is the **CLI** (published as `arkenv`) and the **core runtime** lives in `packages/core` (published as `@arkenv/core`). There is no `packages/cli` on `v1`. `v1` publishes pre-release versions (`1.0.0-alpha.x`) under the `alpha` npm tag.
 
@@ -10,27 +10,30 @@ ArkEnv is a pnpm + Turborepo monorepo for a TypeScript env-var validation librar
 
 - `packages/*` — the publishable library packages: `arkenv` (the CLI, in `packages/arkenv/`), `@arkenv/core` (core runtime, in `packages/core/`), `@arkenv/standard` (in `packages/standard/`), plus `@arkenv/nextjs`, `@arkenv/nuxt`, `@arkenv/vite-plugin`, `@arkenv/bun-plugin`, `@arkenv/build`, `@arkenv/agent-plugin`, and `@arkenv/fumadocs-ui` (which live in the `nextjs/`, `nuxt/`, `vite-plugin/`, `bun-plugin/`, `build/`, `agent-plugin/`, and `fumadocs-ui/` directories), plus internal helpers under `packages/internal/*`. These are the core product.
 - `apps/www` — the documentation website (Next.js 16 + Fumadocs). This is the product app.
-- `apps/dash` — optional maintainer Dashfy dashboard (GitHub + npm). Not in CI. Run with `pnpm dash` (Vite on [http://localhost:3001](http://localhost:3001), Dashfy server on [http://127.0.0.1:5001](http://127.0.0.1:5001)). Copy `apps/dash/.env.example` to `apps/dash/.env` first.
+- `apps/dash` — optional maintainer Dashfy dashboard (GitHub + npm). Not in CI. Run with `nub run dash` (Vite on [http://localhost:3001](http://localhost:3001), Dashfy server on [http://127.0.0.1:5001](http://127.0.0.1:5001)). Copy `apps/dash/.env.example` to `apps/dash/.env` first.
 - `apps/playwright-www` — Playwright e2e suite targeting `www`.
 - `apps/playgrounds/*` and `examples/*` — framework sandboxes / fixtures (optional).
 
 ### Common commands (run from repo root)
 
-- Build everything: `pnpm build` · packages only: `pnpm build:packages`
-- Run docs site (dev): `pnpm www` (serves on `http://localhost:3000`)
-- Maintainer dashboard: `pnpm dash` (Vite on `http://localhost:3001`; copy `apps/dash/.env.example` to `apps/dash/.env` first)
-- Lint/format + workspace validation: `pnpm check`
-- Typecheck: `pnpm typecheck`
-- Unit/integration tests: `pnpm test -- --run` (Vitest)
+Prefer [Nub](https://nubjs.com/) (`nub run`, `nubx`, `nub install`, `nub` / `nub watch`, `nub node`). It replaces `tsx` / `ts-node` / `tsconfig-paths` / `dotenv`, `pnpm run`, `npx` / `pnpm exec`, `pnpm install`, and `nvm`.
+
+- Install deps: `nub install`
+- Build everything: `nub run build` · packages only: `nub run build:packages`
+- Run docs site (dev): `nub run www` (serves on `http://localhost:3000`)
+- Maintainer dashboard: `nub run dash` (Vite on `http://localhost:3001`; copy `apps/dash/.env.example` to `apps/dash/.env` first)
+- Lint/format + workspace validation: `nub run check`
+- Typecheck: `nub run typecheck`
+- Unit/integration tests: `nub run test -- --run` (Vitest)
 - E2E: see caveat below.
 
 ### Non-obvious caveats
 
-- Bun is required for `@arkenv/bun-plugin` and some bun playground/example flows, and CI installs Bun 1.3.13. It is installed globally at `~/.bun/bin` (on `PATH` via `~/.bashrc` for login shells); if a session's shell can't find `bun`, run `export PATH="$HOME/.bun/bin:$PATH"`. Bun is not needed for the core build / `pnpm test` / running `www`.
-- Node 22 (current VM LTS) works for build/lint/test/run. Some `examples/*` and playgrounds declare `"engines": { "node": "24" }`, which only produces a harmless `Unsupported engine` warning under Node 22. CI runs the typecheck job on Node 24.
-- E2E must be run the CI way (against a production server), not against `pnpm www`. The Playwright config uses `next start` when `CI` is set and `next dev` otherwise; the dev server emits console errors that the smoke test forbids and can be overwhelmed by parallel workers (`ERR_CONNECTION_REFUSED`). Build `www` first (`pnpm build --filter=www...`), then run e.g. `CI=1 pnpm exec playwright test --project=chromium` from `apps/playwright-www`. Playwright browsers must be installed once per VM: `pnpm exec playwright install --with-deps chromium firefox` (webkit is macOS-only).
+- Bun is required for `@arkenv/bun-plugin` and some bun playground/example flows, and CI installs Bun 1.3.13. It is installed globally at `~/.bun/bin` (on `PATH` via `~/.bashrc` for login shells); if a session's shell can't find `bun`, run `export PATH="$HOME/.bun/bin:$PATH"`. Bun is not needed for the core build / `nub run test` / running `www`.
+- Node 22 (current VM LTS) works for build/lint/test/run. Some `examples/*` and playgrounds declare `"engines": { "node": "24" }`. Plain `pnpm`/`npm` only warn `Unsupported engine` under Node 22; Nub-driven scripts in those packages honor `engines.node` and may provision Node 24 instead of using the host. CI runs the typecheck job on Node 24. Prefer `nub node` over `nvm` when provisioning Node versions.
+- E2E must be run the CI way (against a production server), not against `nub run www`. The Playwright config uses `next start` when `CI` is set and `next dev` otherwise; the dev server emits console errors that the smoke test forbids and can be overwhelmed by parallel workers (`ERR_CONNECTION_REFUSED`). Build `www` first (`nub run build --filter=www...`), then run e.g. `CI=1 nubx playwright test --project=chromium` from `apps/playwright-www`. Playwright browsers must be installed once per VM: `nubx playwright install --with-deps chromium firefox` (webkit is macOS-only).
 - The CLI tests print `fatal: not a git repository` / `Using 'master' as the name...` git hints while running — this is expected (they scaffold temp git repos) and does not indicate failure.
-- To run a package that consumes the local (workspace) build, use a workspace playground (e.g. `apps/playgrounds/node`, which depends on `@arkenv/core: workspace:*`). Copy `.env.example` to `.env` first, then `pnpm start`. The `examples/*` projects are standalone npm projects that resolve the published packages (e.g. `@arkenv/core`) from npm, not the local build.
+- To run a package that consumes the local (workspace) build, use a workspace playground (e.g. `apps/playgrounds/node`, which depends on `@arkenv/core: workspace:*`). Copy `.env.example` to `.env` first, then `nub run start` (scripts use Nub to run TypeScript and load `.env`). The `examples/*` projects are standalone npm projects that resolve the published packages (e.g. `@arkenv/core`) from npm, not the local build.
 
 ## Learned User Preferences
 
@@ -38,7 +41,7 @@ ArkEnv is a pnpm + Turborepo monorepo for a TypeScript env-var validation librar
 - Use the full phrase "environment variables" in headings and SEO-facing copy; "env vars" is fine in subheads and body.
 - Match docs voice to turborepo.dev plus the existing getting-started and root docs (index, support policy, community).
 - Match homepage hero typography to turborepo.dev (heading size, weight, and text style).
-- Nub ([https://nubjs.com/](https://nubjs.com/)) is a real Node runner the user likes; never treat "Nub" as a typo for Bun.
+- Nub ([https://nubjs.com/](https://nubjs.com/)) is a real Node toolkit the user likes; never treat "Nub" as a typo for Bun. Prefer it over `tsx` / `ts-node` / `tsconfig-paths` / `dotenv`, `pnpm run`, `npx` / `pnpm exec`, `pnpm install`, and `nvm` in this repo (scripts, CI, CONTRIBUTING, AGENTS) and in `examples/` / `apps/playgrounds/`. User-facing docs and guides keep package-install tabs and stock defaults (`npx` / `node --env-file` / `tsx`) — do not push Nub there.
 - Do not claim "zero dependencies" without "runtime" unless talking only about core/standard.
 
 ## Learned Workspace Facts
@@ -49,5 +52,5 @@ ArkEnv is a pnpm + Turborepo monorepo for a TypeScript env-var validation librar
 - Site tagline (footer and similar surfaces): "Typesafe environment variables with ArkType, Zod, Valibot, or any Standard Schema."
 - Homepage `<title>` is punchy: "ArkEnv - Typesafe environment variables for TypeScript" (ASCII hyphen, not an en-dash). Docs pages use `[Page] | ArkEnv` (pipe, no "Docs"). Library names (ArkType, Zod, Valibot, Standard Schema) go in `<meta name="description">`, not the title. Middle dots (`·`) are for on-page text only.
 - "Zero runtime dependencies" is true of `@arkenv/core` (peer arktype only) and `@arkenv/standard` (none). It is not true of the CLI or framework plugins (they depend on `@arkenv/build`, `jiti`, `chokidar`, etc.).
-- Docs treat Nub as a first-class way to populate env before `arkenv()`; it is the recommended runner for plain Node.
+- Docs use package-install tabs and stock Node defaults for user-facing runner / install copy (`npx`, `node --env-file`, framework loaders). Nub is fine in examples/playgrounds and is the maintainer/repo runner; it is not the public default in guides.
 - turborepo.dev is the visual and docs-voice reference; clone its docs into a gitignored folder when needed.
