@@ -35,9 +35,13 @@ jobs:
             try {
               const parsed = JSON.parse(context.payload.inputs?.prompt || "{}");
               if (parsed["~pullfrog"]) {
-                prNumber = parsed.event?.issue_number;
                 headRef = parsed.event?.branch;
                 author = parsed.event?.context?.author;
+                // parsed.event.issue_number is present for both issues and PRs.
+                // Only treat as PR if branch or pull_request is present.
+                if (parsed.event?.branch || parsed.event?.pull_request) {
+                  prNumber = parsed.event?.pull_request?.number || parsed.event?.issue_number;
+                }
               }
             } catch (e) {
               // Not JSON, continue to regex
@@ -50,32 +54,34 @@ jobs:
               }
             }
 
-            if (!prNumber) {
-              core.setOutput("skip", "false")
-              return
-            }
-
             // If we don't have headRef or author from the JSON, fetch from API
-            if (!headRef || !author) {
-              const { data: pull } = await github.rest.pulls.get({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: prNumber,
-              });
-              headRef = pull.head.ref;
-              author = pull.user?.login;
+            if (prNumber && (!headRef || !author)) {
+              try {
+                const { data: pull } = await github.rest.pulls.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: prNumber,
+                });
+                headRef = headRef || pull.head.ref;
+                author = author || pull.user?.login;
+              } catch (error) {
+                core.info(`Could not fetch PR #${prNumber} (may be an issue or deleted PR): ${error.message}`);
+              }
             }
 
-            const botLogins = new Set(["arkenv-bot", "arkenv-bot[bot]"])
+            const botLogins = new Set(["arkenv-bot", "arkenv-bot[bot]"]);
             // Also skip the automated Sync PRs and changeset release PRs for dev and v1
-            const skipHeadRefs = new Set(["changeset-release/dev", "dev", "changeset-release/v1", "v1"])
-            const shouldSkip = skipHeadRefs.has(headRef) || botLogins.has(author)
+            const skipHeadRefs = new Set(["changeset-release/dev", "dev", "changeset-release/v1", "v1"]);
+            const shouldSkip = Boolean(
+              (headRef && skipHeadRefs.has(headRef)) ||
+              (author && botLogins.has(author))
+            );
 
             if (shouldSkip) {
-              core.info(`Skipping Pullfrog for ${headRef} by ${author}`)
+              core.info(`Skipping Pullfrog for ${headRef} by ${author}`);
             }
 
-            core.setOutput("skip", String(shouldSkip))
+            core.setOutput("skip", String(shouldSkip));
       - name: Checkout code
         if: steps.check-pr-source.outputs.skip != 'true'
         uses: actions/checkout@v7
