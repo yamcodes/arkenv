@@ -25,16 +25,8 @@
 }
 
 .roadmap-progress-card:hover {
-	border-color: color-mix(
-		in oklch,
-		var(--color-accent, oklch(74% 0.13 195)) 35%,
-		var(--color-fd-border, var(--color-rule))
-	);
-	background: color-mix(
-		in oklch,
-		var(--color-fd-accent, var(--color-paper-2)) 55%,
-		var(--color-fd-card, var(--color-paper-2))
-	);
+	border-color: color-mix(in oklch, var(--color-accent, oklch(74% 0.13 195)) 35%, var(--color-fd-border, var(--color-rule)));
+	background: color-mix(in oklch, var(--color-fd-accent, var(--color-paper-2)) 55%, var(--color-fd-card, var(--color-paper-2)));
 }
 
 .roadmap-progress-card:focus-visible {
@@ -57,20 +49,12 @@
 	max-width: none;
 	height: 0.4rem;
 	border-radius: var(--radius-pill, 999px);
-	background: color-mix(
-		in oklch,
-		var(--color-accent, oklch(74% 0.13 195)) 18%,
-		var(--color-fd-background, var(--color-paper))
-	);
+	background: color-mix(in oklch, var(--color-accent, oklch(74% 0.13 195)) 18%, var(--color-fd-background, var(--color-paper)));
 	overflow: hidden;
 }
 
 .roadmap-progress-card__track--stale {
-	background: color-mix(
-		in oklch,
-		var(--color-muted, var(--color-fd-muted-foreground)) 28%,
-		var(--color-fd-background, var(--color-paper))
-	);
+	background: color-mix(in oklch, var(--color-muted, var(--color-fd-muted-foreground)) 28%, var(--color-fd-background, var(--color-paper)));
 }
 
 .roadmap-progress-card__fill {
