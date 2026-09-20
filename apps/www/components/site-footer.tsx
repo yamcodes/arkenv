@@ -1,5 +1,5 @@
 import { DiscordListItem } from "~/components/discord-list-item";
-import { Logo } from "~/components/page/logo";
+import { LogoLink } from "~/components/page/logo";
 import { env } from "~/env";
 import { RELEASE_TAG } from "~/lib/config/release";
 
@@ -32,13 +32,7 @@ export function SiteFooter({
 		>
 			<div className="home-aurora__footer-grid">
 				<div className="home-aurora__footer-brand">
-					<a
-						href="/"
-						className="home-aurora__wordmark"
-						aria-label="ArkEnv home"
-					>
-						<Logo releaseTag={RELEASE_TAG} />
-					</a>
+					<LogoLink releaseTag={RELEASE_TAG} />
 					<p>Typesafe environment variables for ArkType, Zod, and Valibot.</p>
 				</div>
 

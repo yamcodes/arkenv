@@ -1,10 +1,10 @@
+import Link from "next/link";
 import { cn } from "~/lib/utils";
 import "./logo.css";
 
 /**
  * Brand mark — helm icon, optional “ArkEnv” wordmark, and optional RC chip.
- * The RC chip is decorative (not its own link); wrap `Logo` in the home link
- * so icon + wordmark + RC are one hit target.
+ * Prefer `LogoLink` for the home hit target so nav and footer share one wrapper.
  */
 export function Logo({
 	className,
@@ -66,5 +66,27 @@ export function Logo({
 				</span>
 			) : null}
 		</div>
+	);
+}
+
+/**
+ * Home link around {@link Logo} — shared by Site Nav and Site Footer so the
+ * brand unit (icon + wordmark + RC) is one hit target with one weight.
+ */
+export function LogoLink({
+	className,
+	releaseTag,
+}: {
+	className?: string;
+	releaseTag?: string;
+}) {
+	return (
+		<Link
+			href="/"
+			className={cn("logo-link", className)}
+			aria-label="ArkEnv home"
+		>
+			<Logo releaseTag={releaseTag} />
+		</Link>
 	);
 }

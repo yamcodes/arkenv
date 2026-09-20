@@ -143,19 +143,9 @@ main:has(.site-nav) {
 	}
 }
 
-.site-nav__wordmark {
-	display: inline-flex;
-	align-items: center;
-	flex-shrink: 0;
-	text-decoration: none;
+/* Pin mark size so home Aurora tokens cannot resize the brand vs docs */
+.site-nav__wordmark.logo-link {
 	color: var(--foreground);
-	border-radius: 0.25rem;
-	outline: none;
-}
-
-/* Pin mark + wordmark so home Aurora tokens cannot resize them vs docs */
-.site-nav__wordmark > div {
-	gap: 0.5rem;
 }
 
 .site-nav__wordmark svg {
@@ -163,19 +153,6 @@ main:has(.site-nav) {
 	height: var(--site-nav-logo-size) !important;
 	min-width: var(--site-nav-logo-size);
 	min-height: var(--site-nav-logo-size);
-}
-
-.site-nav__wordmark .logo__name {
-	font-size: var(--site-nav-wordmark-size);
-	font-weight: 500;
-	line-height: 1;
-	letter-spacing: -0.01em;
-	font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-}
-
-.site-nav__wordmark:focus-visible {
-	outline: 2px solid var(--ring, var(--color-focus, currentColor));
-	outline-offset: 2px;
 }
 
 /*

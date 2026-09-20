@@ -191,12 +191,8 @@
 	}
 }
 
-.site-footer-band .home-aurora__wordmark {
-	display: inline-flex;
-	align-items: center;
-	flex-shrink: 0;
+.site-footer-band .logo-link {
 	color: var(--color-fd-foreground);
-	text-decoration: none;
 }
 
 .site-footer-band .home-aurora__footer {
