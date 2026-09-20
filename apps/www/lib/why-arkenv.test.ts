@@ -1,10 +1,9 @@
 import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const whyArkEnv = readFileSync(
-	join(dirname(fileURLToPath(import.meta.url)), "why-arkenv.mdx"),
+	join(import.meta.dirname, "../content/docs/why-arkenv.mdx"),
 	"utf8",
 );
 
