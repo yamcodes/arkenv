@@ -1,10 +1,13 @@
-name: Deploy www (arkenv.js.org)
+name: Deploy www
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 on:
   push:
     branches:
+      # RC cutover (Option A): v1 owns Production / arkenv.js.org.
+      # main parks the v0 docs line on arkenv-v0.vercel.app (not --prod).
+      - v1
       - main
     paths:
       - "apps/www/**"
@@ -25,7 +28,7 @@ permissions:
   id-token: write
 
 jobs:
-  Deploy-Production:
+  Deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -38,13 +41,46 @@ jobs:
           node-version: 24
       - name: Install dependencies
         run: nub install
+      - name: Resolve deploy mode
+        id: mode
+        run: |
+          set -euo pipefail
+          case "${{ github.ref_name }}" in
+            v1)
+              echo "environment=production" >> "$GITHUB_OUTPUT"
+              echo "prod=true" >> "$GITHUB_OUTPUT"
+              echo "alias=arkenv-v1.vercel.app" >> "$GITHUB_OUTPUT"
+              ;;
+            main)
+              echo "environment=preview" >> "$GITHUB_OUTPUT"
+              echo "prod=false" >> "$GITHUB_OUTPUT"
+              echo "alias=arkenv-v0.vercel.app" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "Unexpected branch: ${{ github.ref_name }}" >&2
+              exit 1
+              ;;
+          esac
       - name: Pull Vercel Environment Information
-        run: node scripts/vercel-wrapper.cjs pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          ENVIRONMENT: ${{ steps.mode.outputs.environment }}
+        run: node scripts/vercel-wrapper.cjs pull --yes --environment="$ENVIRONMENT" --token="$VERCEL_TOKEN"
       - name: Build Project Artifacts
-        run: node scripts/vercel-wrapper.cjs build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          PROD: ${{ steps.mode.outputs.prod }}
+        run: |
+          if [ "$PROD" = "true" ]; then
+            node scripts/vercel-wrapper.cjs build --prod --token="$VERCEL_TOKEN"
+          else
+            node scripts/vercel-wrapper.cjs build --token="$VERCEL_TOKEN"
+          fi
       - name: Deploy Project Artifacts to Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          PROD: ${{ steps.mode.outputs.prod }}
+          ALIAS: ${{ steps.mode.outputs.alias }}
           GIT_ORG: ${{ github.repository_owner }}
           GIT_REPO: ${{ github.event.repository.name }}
           GIT_REF: ${{ github.ref_name }}
@@ -55,16 +91,35 @@ jobs:
         run: |
           set -o pipefail
           SHORT_MSG="${GIT_COMMIT_MESSAGE%%$'\n'*}"
-          # --prod already assigns production domains (arkenv.js.org / arkenv.vercel.app).
-          # Git meta keeps the deployment linked to main in the Vercel dashboard.
-          node scripts/vercel-wrapper.cjs deploy --prebuilt --prod --archive=tgz --token="$VERCEL_TOKEN" \
-            -m githubDeployment=1 \
-            -m githubOrg="$GIT_ORG" \
-            -m githubRepo="$GIT_REPO" \
-            -m githubCommitOrg="$GIT_ORG" \
-            -m githubCommitRepo="$GIT_REPO" \
-            -m githubCommitRef="$GIT_REF" \
-            -m githubCommitSha="$GIT_SHA" \
-            -m githubCommitMessage="$SHORT_MSG" \
-            -m githubCommitAuthorName="$GIT_COMMIT_AUTHOR_NAME" \
+          META_ARGS=(
+            -m githubDeployment=1
+            -m githubOrg="$GIT_ORG"
+            -m githubRepo="$GIT_REPO"
+            -m githubCommitOrg="$GIT_ORG"
+            -m githubCommitRepo="$GIT_REPO"
+            -m githubCommitRef="$GIT_REF"
+            -m githubCommitSha="$GIT_SHA"
+            -m githubCommitMessage="$SHORT_MSG"
+            -m githubCommitAuthorName="$GIT_COMMIT_AUTHOR_NAME"
             -m githubCommitAuthorLogin="$GIT_ACTOR"
+          )
+          deploy_log="$(mktemp)"
+          trap 'rm -f "$deploy_log"' EXIT
+          if [ "$PROD" = "true" ]; then
+            # --prod assigns Production domains (arkenv.js.org / arkenv.vercel.app).
+            # Also keep arkenv-v1.vercel.app pointed at the same deployment.
+            node scripts/vercel-wrapper.cjs deploy --prebuilt --prod --archive=tgz --token="$VERCEL_TOKEN" \
+              "${META_ARGS[@]}" | tee "$deploy_log"
+            DEPLOYMENT_URL="$(tail -n 1 "$deploy_log")"
+            echo "Deployed $GIT_SHA to production (arkenv.js.org)."
+            echo "Aliasing $DEPLOYMENT_URL -> $ALIAS"
+            node scripts/vercel-wrapper.cjs alias set "$DEPLOYMENT_URL" "$ALIAS" --token="$VERCEL_TOKEN"
+          else
+            # Legacy v0 line: preview deploy + stable archive alias (not --prod).
+            node scripts/vercel-wrapper.cjs deploy --prebuilt --archive=tgz --token="$VERCEL_TOKEN" \
+              "${META_ARGS[@]}" | tee "$deploy_log"
+            DEPLOYMENT_URL="$(tail -n 1 "$deploy_log")"
+            echo "Deployment URL: $DEPLOYMENT_URL"
+            echo "Aliasing $DEPLOYMENT_URL -> $ALIAS"
+            node scripts/vercel-wrapper.cjs alias set "$DEPLOYMENT_URL" "$ALIAS" --token="$VERCEL_TOKEN"
+          fi

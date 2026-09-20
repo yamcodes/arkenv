@@ -15,10 +15,13 @@ RC checklist, and do not treat the RC checklist as a substitute for these
 ## 1. Pre-Launch Checklist (T-Minus 1–3 Days)
 
 - [ ] **v0 Parity & Test Suite**: All unit, integration, and e2e test suites passing across all packages on the `v1` branch. Feature-surface audit (intentional breaks + host map): [`docs/design/v0-parity-audit.md`](./design/v0-parity-audit.md) — still re-confirm CI green before GA day.
-- [ ] **Release v0 Docs Snapshot to `v0.arkenv.js.org`**:
-  - Deploy a frozen snapshot of the `dev` (v0) documentation branch to Vercel/Cloudflare Pages.
-  - Assign domain: `v0.arkenv.js.org`.
+- [ ] **Release v0 Docs Snapshot to `arkenv-v0.vercel.app`**:
+  - Park the v0 documentation line on the Vercel alias
+    `https://arkenv-v0.vercel.app` (Actions: push to `main`, or
+    **Deploy www (manual SHA)** → `arkenv-v0.vercel.app`).
+  - Do **not** open a js.org subdomain PR for the archive.
   - Verify that old links, guides, and v0 API references resolve correctly.
+  - Leave `https://arkenv-dev.vercel.app` in place (do not delete).
 - [x] **Alpha Banner on Live v0 Site (`dev` branch)**:
   - Add announcement banner to `arkenv.js.org` (pointing to `https://arkenv-v1.vercel.app` and migration guide) during the final testing window.
 - [ ] **README and Production Links**:
@@ -85,16 +88,28 @@ npm deprecate @arkenv/cli "This package was renamed to 'arkenv' in v1. Please up
 
 ## 3. Launch Day: Website & Domain Cutover
 
-### Step 3.1: Switch Domain in Vercel
+### Step 3.1: Point Production at v1 (Actions + optional UI)
 
-1. In Vercel Project Settings for the v1 Docs app (`arkenv-v1`):
-   - Add Domain: `arkenv.js.org` (and set as primary domain).
-2. Remove/redirect old domain mapping from the v0 project:
-   - Ensure `v0.arkenv.js.org` remains live and accessible.
-3. Verify DNS propagation:
+**Preferred (RC Option A):** merge the Actions retarget so pushes to
+`v1` run `vercel --prod` (Production / `arkenv.js.org`), and pushes to
+`main` alias `arkenv-v0.vercel.app` only. Then trigger one `v1` deploy
+(push or **Deploy www (manual SHA)** → `arkenv.js.org`).
+
+**UI escape hatch:** promote the deployment behind
+`https://arkenv-v1.vercel.app` to Production in the Vercel dashboard
+(same project; no js.org DNS change). See the project store playbook
+`docs/branch-cutover-playbook.md` / `docs/vercel-apex-flip-steps.md`.
+
+After cutover:
+
+1. Ensure `https://arkenv-v0.vercel.app` serves the v0 archive.
+2. Do **not** delete `arkenv-dev.vercel.app` or `arkenv-v1.vercel.app`.
+3. Verify:
    ```bash
    curl -I https://arkenv.js.org
-   curl -I https://v0.arkenv.js.org
+   curl -I https://arkenv-v0.vercel.app
+   curl -I https://arkenv-v1.vercel.app
+   curl -I https://arkenv-dev.vercel.app
    ```
 
 ### Step 3.2: Verify Key Routes & Redirects
@@ -103,7 +118,7 @@ npm deprecate @arkenv/cli "This package was renamed to 'arkenv' in v1. Please up
 - [ ] Migration Guide: `https://arkenv.js.org/docs/guides/migrating-to-v1`
 - [ ] Getting Started: `https://arkenv.js.org/docs/getting-started`
 - [ ] Framework guides: Next.js, Nuxt, Vite, Bun
-- [ ] Legacy docs: `https://v0.arkenv.js.org`
+- [ ] Legacy docs: `https://arkenv-v0.vercel.app`
 
 ---
 
@@ -119,7 +134,9 @@ npm deprecate @arkenv/cli "This package was renamed to 'arkenv' in v1. Please up
 
 If an emergency regression occurs immediately following publish:
 
-1. **Docs Rollback**: Point `arkenv.js.org` back to the v0 project in Vercel.
+1. **Docs Rollback**: Redeploy the last good v0 SHA to Production
+   (**Deploy www (manual SHA)** → `arkenv.js.org`, or promote that
+   deployment in the Vercel UI).
 2. **npm Rollback**: Check existing dist-tags (`npm view @arkenv/core dist-tags`) and repoint dist-tags on npm:
    ```bash
    npm dist-tag add arkenv@<last-v0-version> latest

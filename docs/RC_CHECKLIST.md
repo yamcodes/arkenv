@@ -214,8 +214,8 @@ work lands):
 - [ ] `readme-prod-links` - Update README links from alpha to production
 - [ ] `changelog-epoch` - Prepend changelog epoch warnings
 - [ ] `npm-deprecate-cli` - Deprecate `@arkenv/cli` on npm
-- [ ] `v0-archive-dns-cutover` - Deploy `v0.arkenv.js.org` archive and
-  flip primary DNS
+- [ ] `v0-archive-dns-cutover` - Park v0 on `arkenv-v0.vercel.app` and
+  point Production / `arkenv.js.org` at `v1` (no js.org subdomain)
 - [ ] `release-v1` - Release v1
 - [ ] `v1-announcement` - Document v1 announcement
 
@@ -322,9 +322,9 @@ only when archive + README production links are ready; otherwise keep
 serving v1 from `https://arkenv-v1.vercel.app` until then. Full DNS
 detail: [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.
 
-- [ ] `arkenv.js.org` → v1 `www`; `v0.arkenv.js.org` archive
-- [ ] Optional: default GitHub branch → `v1` (repo default today is
-  `dev` - verify before changing)
+- [ ] `arkenv.js.org` → v1 `www` (`--prod` from `v1`); archive on
+  `arkenv-v0.vercel.app`
+- [x] Default GitHub branch → `v1` (already done)
 - [ ] GitHub Release for `1.0.0-rc.n` + announce blog + tweet
   (include Not-GA known gaps from section A, including the docs
   voice / AI-slop pass)
@@ -332,7 +332,7 @@ detail: [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.
   [arktypeio/arktype#1655](https://github.com/arktypeio/arktype/pull/1655)
   merged; snippet uses `@arkenv/core`
 - [ ] State the support window for alpha consumers and v0
-  (`v0.arkenv.js.org` + last v0 npm lines)
+  (`arkenv-v0.vercel.app` + last v0 npm lines)
 
 ---
 
