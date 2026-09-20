@@ -253,7 +253,7 @@ output and sets `latest` on each published package.
   separate flag.
 - **Auth:** Publish stays on OIDC trusted publishing. `npm dist-tag` is
   not covered by OIDC (the npm CLI still has no OIDC exchange for
-  dist-tag), so the supported path is a granular access token in the
+  dist-tag), so the CI path is a granular access token in the
   **`NPM_TOKEN`** repository secret (`NODE_AUTH_TOKEN` in the job).
   Preferred token setup:
   - Permissions: **Read and write (stage only)** — can move dist-tags,
@@ -264,15 +264,31 @@ output and sets `latest` on each published package.
   - No organization write access.
   - Rotate about every 90 days (token expiry).
     If the secret is missing, the step warns and skips (publish still
-    succeeds).
-- **One-shot promote:** Actions → **release** → **Run workflow** → enable
-  **promote_rc_to_latest** (points `latest` at current `@rc` without
-  publishing). Same gate + `NPM_TOKEN` requirement.
-- **Local dry-run:**
-  `node scripts/point-latest-at-rc.js --packages '[{"name":"arkenv","version":"1.0.0-rc.2"}]' --dry-run`
+    succeeds). CI needs `NPM_TOKEN`; the local path below does not.
+- **One-shot promote (CI):** Actions → **release** → **Run workflow** →
+  enable **promote_rc_to_latest** (points `latest` at current `@rc`
+  without publishing). Same gate + `NPM_TOKEN` requirement.
+- **Local break-glass (no `NPM_TOKEN`):** after `npm login`, from the
+  repo root:
 
-`1.0.0-rc.1` may still need a one-time manual `npm dist-tag add … latest`
-(or the workflow_dispatch promote) if automation lands after that publish.
+  ```bash
+  pnpm point-latest-at-rc -- --otp <code-from-authenticator>
+  # or: NPM_CONFIG_OTP=<code> pnpm point-latest-at-rc
+  ```
+
+  Runs `node scripts/point-latest-at-rc.js --from-rc --local`. Uses your
+  user npmrc. Prefer `--otp` / `NPM_CONFIG_OTP` so one OTP covers every
+  package (npm otherwise prompts once per `dist-tag add`). Without a
+  shared OTP, `dist-tag` writes inherit the TTY for interactive prompts
+  (real terminal only). Same pre.json gate. Prefer CI
+  **promote_rc_to_latest** when the secret works; this is escape-hatch
+  only. Agent walkthrough:
+  [skills/point-latest-at-rc/SKILL.md](../skills/point-latest-at-rc/SKILL.md).
+- **Local dry-run:** `pnpm point-latest-at-rc --dry-run`
+
+`1.0.0-rc.1` may still need a one-time retag if automation lands after
+that publish: CI **promote_rc_to_latest** first (needs `NPM_TOKEN`), or
+local break-glass `pnpm point-latest-at-rc`.
 
 - [ ] Publish `1.0.0-rc.n` for the publishable packages in section B
 - [ ] Confirm dist-tags: `@rc` → `1.0.0-rc.n`, and **`latest` → `1.0.0-rc.n`**

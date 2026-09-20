@@ -55,6 +55,7 @@ RC checklist, and do not treat the RC checklist as a substitute for these
    retagging automatically — no separate flag to clear. You can remove
    the `NPM_TOKEN` secret later if it existed only for the RC window
    (that secret is the stage-only dist-tag token; publish stays on OIDC).
+   Local retags via `--local` never needed that secret.
 2. Generate the final version packages and changelogs:
    ```bash
    pnpm exec changeset version
