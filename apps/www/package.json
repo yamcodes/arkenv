@@ -73,6 +73,7 @@
 	"devDependencies": {
 		"@babel/core": "^7.29.0",
 		"@fumadocs/cli": "1.3.10",
+		"@nubjs/nub": "catalog:",
 		"@repo/scope": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@rolldown/plugin-babel": "^0.2.3",
@@ -93,7 +94,6 @@
 		"babel-plugin-react-compiler": "^1.0.0",
 		"jsdom": "29.1.1",
 		"mdast-util-mdx-jsx": "3.2.0",
-		"@nubjs/nub": "catalog:",
 		"postcss": "8.5.14",
 		"rimraf": "catalog:",
 		"styled-jsx": "5.1.7",
