@@ -92,10 +92,10 @@ npm deprecate @arkenv/cli "This package was renamed to 'arkenv' in v1. Please up
 
 **Phased cutover (in-repo):**
 
-| Phase | Strategy | Effect |
-| --- | --- | --- |
-| **Now (RC)** | **Option A** — keep branch names | `v1` → `vercel --prod` (Production / `arkenv.js.org`). `main` → `arkenv-v0.vercel.app` only (not `--prod`). Keep `arkenv-dev.vercel.app` and `arkenv-v1.vercel.app`. |
-| **Later (GA)** | **Option B** — rename branches | Move the v1 line onto `main`/`dev`. Rename the old line to **`v0`**. Then leave `--prod` on `main` again. Out of scope for the RC Actions PR. |
+| Phase          | Strategy                         | Effect                                                                                                                                                               |
+| -------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Now (RC)**   | **Option A** — keep branch names | `v1` → `vercel --prod` (Production / `arkenv.js.org`). `main` → `arkenv-v0.vercel.app` only (not `--prod`). Keep `arkenv-dev.vercel.app` and `arkenv-v1.vercel.app`. |
+| **Later (GA)** | **Option B** — rename branches   | Move the v1 line onto `main`/`dev`. Rename the old line to **`v0`**. Then leave `--prod` on `main` again. Out of scope for the RC Actions PR.                        |
 
 **Preferred (RC Option A):** merge the Actions retarget so pushes to
 `v1` run `vercel --prod` (Production / `arkenv.js.org`), and pushes to
