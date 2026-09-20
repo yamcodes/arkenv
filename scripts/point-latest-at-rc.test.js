@@ -10,9 +10,11 @@ import {
 	parsePublishedPackages,
 	pointLatestAtRc,
 	resolveAuthToken,
+	resolveOtp,
 	runNpm,
 	shouldRetagLatest,
 	skipReasonForPre,
+	withOtp,
 	withUserconfig,
 	writeNpmrcAuth,
 } from "./point-latest-at-rc.js";
@@ -88,6 +90,23 @@ describe("withUserconfig", () => {
 	});
 });
 
+describe("withOtp", () => {
+	it("appends --otp when a code is provided", () => {
+		expect(
+			withOtp(["dist-tag", "add", "arkenv@1.0.0-rc.1", "latest"], "123456"),
+		).toEqual([
+			"dist-tag",
+			"add",
+			"arkenv@1.0.0-rc.1",
+			"latest",
+			"--otp",
+			"123456",
+		]);
+		expect(withOtp(["dist-tag", "ls"], "")).toEqual(["dist-tag", "ls"]);
+		expect(withOtp(["dist-tag", "ls"], undefined)).toEqual(["dist-tag", "ls"]);
+	});
+});
+
 describe("writeNpmrcAuth / createTempNpmrcPath", () => {
 	it("writes auth to a dedicated path without needing ~/.npmrc", () => {
 		const npmrcPath = createTempNpmrcPath();
@@ -107,6 +126,17 @@ describe("resolveAuthToken", () => {
 		);
 		expect(resolveAuthToken({ NPM_TOKEN: "b" })).toBe("b");
 		expect(resolveAuthToken({})).toBe("");
+	});
+});
+
+describe("resolveOtp", () => {
+	it("prefers options.otp over NPM_CONFIG_OTP", () => {
+		expect(resolveOtp({ otp: "111111", env: { NPM_CONFIG_OTP: "222222" } })).toBe(
+			"111111",
+		);
+		expect(resolveOtp({ env: { NPM_CONFIG_OTP: "222222" } })).toBe("222222");
+		expect(resolveOtp({ otp: "  333333  ", env: {} })).toBe("333333");
+		expect(resolveOtp({ env: {} })).toBe("");
 	});
 });
 
@@ -137,6 +167,25 @@ describe("parseArgs", () => {
 			local: true,
 			help: false,
 		});
+	});
+
+	it("parses --otp", () => {
+		expect(parseArgs(["--from-rc", "--local", "--otp", "123456"])).toEqual({
+			fromRc: true,
+			dryRun: false,
+			local: true,
+			otp: "123456",
+			help: false,
+		});
+	});
+
+	it("rejects --otp without a value", () => {
+		expect(() => parseArgs(["--from-rc", "--otp"])).toThrow(
+			/--otp requires a one-time password/,
+		);
+		expect(() => parseArgs(["--from-rc", "--otp", "--dry-run"])).toThrow(
+			/--otp requires a one-time password/,
+		);
 	});
 
 	it("ignores a bare -- separator (pnpm run-script)", () => {
@@ -302,6 +351,72 @@ describe("pointLatestAtRc", () => {
 			},
 		]);
 		expect(log.mock.calls.flat().join("\n")).toMatch(/yamcodes/);
+	});
+
+	it("passes --otp on every local dist-tag write (single OTP for the run)", () => {
+		const { root } = makeRoot({ mode: "pre", tag: "rc" }, "");
+		/** @type {{ args: string[]; opts?: { inherit?: boolean } }[]} */
+		const calls = [];
+		const result = pointLatestAtRc({
+			rootDir: root,
+			packagesJson:
+				'[{"name":"arkenv","version":"1.0.0-rc.2"},{"name":"@arkenv/core","version":"1.0.0-rc.2"}]',
+			local: true,
+			otp: "654321",
+			env: {},
+			execNpm: (args, opts) => {
+				calls.push({ args, opts });
+				if (args[0] === "whoami") return "yamcodes";
+				return "ok";
+			},
+		});
+		expect(result.status).toBe("ok");
+		expect(calls).toEqual([
+			{ args: ["whoami"], opts: undefined },
+			{
+				args: [
+					"dist-tag",
+					"add",
+					"arkenv@1.0.0-rc.2",
+					"latest",
+					"--otp",
+					"654321",
+				],
+				opts: { inherit: true },
+			},
+			{
+				args: [
+					"dist-tag",
+					"add",
+					"@arkenv/core@1.0.0-rc.2",
+					"latest",
+					"--otp",
+					"654321",
+				],
+				opts: { inherit: true },
+			},
+		]);
+	});
+
+	it("honors NPM_CONFIG_OTP when --otp is omitted", () => {
+		const { root } = makeRoot({ mode: "pre", tag: "rc" }, "");
+		/** @type {string[][]} */
+		const writes = [];
+		const result = pointLatestAtRc({
+			rootDir: root,
+			packagesJson: '[{"name":"arkenv","version":"1.0.0-rc.2"}]',
+			local: true,
+			env: { NPM_CONFIG_OTP: "998877" },
+			execNpm: (args) => {
+				if (args[0] === "whoami") return "yamcodes";
+				writes.push(args);
+				return "ok";
+			},
+		});
+		expect(result.status).toBe("ok");
+		expect(writes).toEqual([
+			["dist-tag", "add", "arkenv@1.0.0-rc.2", "latest", "--otp", "998877"],
+		]);
 	});
 
 	it("CI token path does not inherit stdio for dist-tag writes", () => {

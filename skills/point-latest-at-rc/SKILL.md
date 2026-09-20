@@ -19,6 +19,8 @@ Maintainer **break-glass** alternative to the release workflow’s
 `scripts/point-latest-at-rc.js --from-rc --local` so `npm dist-tag` uses
 your logged-in session. Write commands inherit stdin/stdout so npm can
 prompt for OTP when 2FA is on auth-and-writes (run from a real TTY).
+**Prefer a single OTP for the whole run** via `--otp <code>` or
+`NPM_CONFIG_OTP` — otherwise npm prompts once per package (~12 times).
 Trusted Publishing still covers **publish**; this skill only covers
 **dist-tag**.
 
@@ -43,9 +45,13 @@ npm whoami
 # 2. Optional dry-run (lists dist-tag commands; still resolves @rc)
 pnpm point-latest-at-rc --dry-run
 
-# 3. Retag (no NPM_TOKEN)
-pnpm point-latest-at-rc
+# 3. Retag (no NPM_TOKEN) — preferred: one OTP for all packages
+pnpm point-latest-at-rc -- --otp <code-from-authenticator>
+# or: NPM_CONFIG_OTP=<code> pnpm point-latest-at-rc
 ```
+
+Without `--otp` / `NPM_CONFIG_OTP`, run from a real TTY and expect one
+interactive OTP prompt per package.
 
 ## Verify
 
@@ -69,7 +75,8 @@ Expect `latest` and `rc` both at the same `1.0.0-rc.n`.
 | --- | --- |
 | Soft-skip without `--local` | Missing `NPM_TOKEN` — use `pnpm point-latest-at-rc` for this path |
 | `Local mode requires npm auth` | Not logged in — `npm login` |
-| `EOTP` / no OTP prompt | Not a TTY (piped/non-interactive) — run from a real terminal |
+| `EOTP` / no OTP prompt | Not a TTY (piped/non-interactive) — pass `--otp` / `NPM_CONFIG_OTP`, or run from a real terminal |
+| OTP prompt per package | Expected without `--otp` / `NPM_CONFIG_OTP` — pass one code for the whole run |
 | `E403` on dist-tag | User lacks write on that package |
 | Gate skip (`pre.json` / not `rc`) | Not in RC pre mode — do not force |
 

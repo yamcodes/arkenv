@@ -272,13 +272,15 @@ output and sets `latest` on each published package.
   repo root:
 
   ```bash
-  pnpm point-latest-at-rc
+  pnpm point-latest-at-rc -- --otp <code-from-authenticator>
+  # or: NPM_CONFIG_OTP=<code> pnpm point-latest-at-rc
   ```
 
   Runs `node scripts/point-latest-at-rc.js --from-rc --local`. Uses your
-  user npmrc; `dist-tag` writes inherit the TTY so interactive OTP works
-  (requires a real terminal, not a piped non-TTY). Same pre.json gate.
-  Prefer CI
+  user npmrc. Prefer `--otp` / `NPM_CONFIG_OTP` so one OTP covers every
+  package (npm otherwise prompts once per `dist-tag add`). Without a
+  shared OTP, `dist-tag` writes inherit the TTY for interactive prompts
+  (real terminal only). Same pre.json gate. Prefer CI
   **promote_rc_to_latest** when the secret works; this is escape-hatch
   only. Agent walkthrough:
   [skills/point-latest-at-rc/SKILL.md](../skills/point-latest-at-rc/SKILL.md).

@@ -18,6 +18,8 @@
  *   - Local: `--local` after `npm login` (uses your user npmrc; no
  *     `NPM_TOKEN`). Write commands (`dist-tag add`) use `stdio: "inherit"`
  *     so npm can prompt for OTP when 2FA is on auth-and-writes. Prefer
+ *     `--otp <code>` or `NPM_CONFIG_OTP` so one OTP covers every package
+ *     (otherwise npm prompts once per `dist-tag add` process). Prefer
  *     this when package Publishing access disallows tokens or the CI
  *     secret is not worth fighting.
  *
@@ -25,6 +27,7 @@
  *   node scripts/point-latest-at-rc.js --packages '[{"name":"pkg","version":"1.0.0-rc.2"}]'
  *   node scripts/point-latest-at-rc.js --from-rc
  *   node scripts/point-latest-at-rc.js --from-rc --local
+ *   node scripts/point-latest-at-rc.js --from-rc --local --otp 123456
  *   node scripts/point-latest-at-rc.js --packages '…' --dry-run
  */
 
@@ -148,11 +151,36 @@ export function withUserconfig(args, npmrcPath) {
 }
 
 /**
+ * Append `--otp <code>` so one OTP covers every write in the run
+ * (npm otherwise prompts once per process on auth-and-writes 2FA).
+ * @param {string[]} args
+ * @param {string | undefined} otp
+ * @returns {string[]}
+ */
+export function withOtp(args, otp) {
+	if (!otp) return args;
+	return [...args, "--otp", otp];
+}
+
+/**
  * @param {NodeJS.ProcessEnv} [env]
  * @returns {string}
  */
 export function resolveAuthToken(env = process.env) {
 	return env.NODE_AUTH_TOKEN || env.NPM_TOKEN || "";
+}
+
+/**
+ * Prefer an explicit `--otp` / options.otp; else honor `NPM_CONFIG_OTP`
+ * (npm's config env for the same value).
+ * @param {{ otp?: string; env?: NodeJS.ProcessEnv }} [options]
+ * @returns {string}
+ */
+export function resolveOtp(options = {}) {
+	const fromOption = String(options.otp ?? "").trim();
+	if (fromOption) return fromOption;
+	const env = options.env ?? process.env;
+	return String(env.NPM_CONFIG_OTP ?? "").trim();
 }
 
 /**
@@ -231,6 +259,7 @@ export function runNpm(args, opts = {}, exec = execFileSync) {
  *   fromRc?: boolean;
  *   dryRun?: boolean;
  *   local?: boolean;
+ *   otp?: string;
  *   env?: NodeJS.ProcessEnv;
  *   npmrcPath?: string;
  *   execNpm?: (args: string[], opts?: { inherit?: boolean }) => string;
@@ -245,6 +274,7 @@ export function pointLatestAtRc(options = {}) {
 	const log = options.log ?? console.log;
 	const warn = options.warn ?? console.warn;
 	const local = Boolean(options.local);
+	const otp = resolveOtp({ otp: options.otp, env });
 	const execNpm = options.execNpm ?? runNpm;
 
 	const { pre } = loadPreJson(rootDir);
@@ -322,7 +352,10 @@ export function pointLatestAtRc(options = {}) {
 	/** @type {string[][]} */
 	const commands = [];
 	for (const { name, version } of packages) {
-		const args = withUserconfig(distTagAddArgs(name, version), npmrcPath);
+		const args = withOtp(
+			withUserconfig(distTagAddArgs(name, version), npmrcPath),
+			otp,
+		);
 		commands.push(args);
 		const display = `npm ${args.join(" ")}`;
 		if (options.dryRun) {
@@ -330,8 +363,10 @@ export function pointLatestAtRc(options = {}) {
 			continue;
 		}
 		log(display);
-		// Local writes need a TTY for npm's otplease OTP prompt (EOTP
-		// otherwise when 2FA is auth-and-writes). CI uses a token.
+		// Local writes need a TTY for npm's otplease OTP prompt when no
+		// --otp / NPM_CONFIG_OTP is set (EOTP otherwise on auth-and-writes).
+		// With a shared OTP, inherit is still fine but no longer required.
+		// CI uses a token (usually Bypass 2FA) and does not inherit.
 		execNpm(args, { inherit: local });
 	}
 
@@ -340,10 +375,10 @@ export function pointLatestAtRc(options = {}) {
 
 /**
  * @param {string[]} argv
- * @returns {{ packagesJson?: string; fromRc: boolean; dryRun: boolean; local: boolean; help: boolean }}
+ * @returns {{ packagesJson?: string; fromRc: boolean; dryRun: boolean; local: boolean; otp?: string; help: boolean }}
  */
 export function parseArgs(argv) {
-	/** @type {{ packagesJson?: string; fromRc: boolean; dryRun: boolean; local: boolean; help: boolean }} */
+	/** @type {{ packagesJson?: string; fromRc: boolean; dryRun: boolean; local: boolean; otp?: string; help: boolean }} */
 	const result = { fromRc: false, dryRun: false, local: false, help: false };
 	for (let i = 0; i < argv.length; i++) {
 		const arg = argv[i];
@@ -359,6 +394,12 @@ export function parseArgs(argv) {
 			result.dryRun = true;
 		} else if (arg === "--local") {
 			result.local = true;
+		} else if (arg === "--otp") {
+			const value = argv[++i];
+			if (value == null || value.startsWith("--")) {
+				throw new Error("--otp requires a one-time password value");
+			}
+			result.otp = value;
 		} else if (arg === "--help" || arg === "-h") {
 			result.help = true;
 		} else {
@@ -377,9 +418,12 @@ export function parseArgs(argv) {
 function printHelp() {
 	console.log(`Usage:
   pnpm point-latest-at-rc
+  pnpm point-latest-at-rc -- --otp <code>
+  NPM_CONFIG_OTP=<code> pnpm point-latest-at-rc
   node scripts/point-latest-at-rc.js --packages '[{"name":"arkenv","version":"1.0.0-rc.2"}]'
   node scripts/point-latest-at-rc.js --from-rc
   node scripts/point-latest-at-rc.js --from-rc --local
+  node scripts/point-latest-at-rc.js --from-rc --local --otp 123456
   node scripts/point-latest-at-rc.js --packages '…' --dry-run
 
 Only runs while .changeset/pre.json has mode "pre" and tag "rc"
@@ -391,7 +435,9 @@ Auth:
          dist-tag). Soft-skips if the secret is missing.
   Local: pnpm point-latest-at-rc (wraps --from-rc --local after npm
          login; uses your user npmrc; no NPM_TOKEN). dist-tag writes
-         inherit the TTY so OTP works. Break-glass only — prefer
+         inherit the TTY so OTP works. Prefer --otp <code> or
+         NPM_CONFIG_OTP so one OTP covers all packages (else npm
+         prompts once per package). Break-glass only — prefer
          workflow_dispatch → promote_rc_to_latest when the secret
          works. See skills/point-latest-at-rc/SKILL.md.`);
 }
@@ -407,6 +453,7 @@ function main() {
 		fromRc: args.fromRc,
 		dryRun: args.dryRun,
 		local: args.local,
+		otp: args.otp,
 	});
 	// skipped (no token / not rc) exits 0 so a missing secret does not
 	// fail the release job after packages already published.
