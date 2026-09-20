@@ -1,0 +1,34 @@
+---
+title: ArkEnv v1 Release Candidate
+description: Outline for the v1 RC announcement — packages, docs cutover, and migrating from v0.
+author: Yam Borodetsky
+date: 2026-09-20
+draft: true
+---
+
+## What’s happening
+
+- ArkEnv **v1** is out as a **Release Candidate** (`1.0.0-rc.n`)
+- npm **`latest`** points at RC for the RC window (also published under the **`rc`** tag)
+- Docs apex (`https://arkenv.js.org`) serves **v1 / RC**
+- v0 docs stay available on the archive: [https://arkenv-v0.vercel.app](https://arkenv-v0.vercel.app)
+
+## If you’re on v0
+
+- `arkenv` on npm is now the **CLI**, not the runtime — importing it as a library throws
+- Runtime lives in **`@arkenv/core`** (ArkType) or **`@arkenv/standard`** (Zod / Valibot / Standard Schema)
+- Vite / Bun plugins no longer take a schema in the plugin call — use a canonical `./env` module
+
+## How to migrate
+
+- Read: [Migrating to v1](/docs/guides/migrating-to-v1) ([live](https://arkenv.js.org/docs/guides/migrating-to-v1))
+- Swap packages: remove v0 `arkenv` / `@arkenv/cli` → install `@arkenv/core` (+ `arktype`) or `@arkenv/standard`, plus `arkenv` as a **devDependency** (CLI)
+- Point imports at the new packages; keep `import { env } from "./env"`
+- Update Vite / Bun / Next / Nuxt wiring per the guide (transform-only plugins, no schema-in-plugin)
+
+## Read next / take action
+
+- [Migrating to v1](/docs/guides/migrating-to-v1)
+- [Getting started](/docs/getting-started)
+- v0 archive: [https://arkenv-v0.vercel.app](https://arkenv-v0.vercel.app)
+- Install / init: `npx arkenv init` (product `latest` → RC during this window)
