@@ -206,7 +206,7 @@ export function skipReasonForPre(pre) {
  *   log?: (message: string) => void;
  *   warn?: (message: string) => void;
  * }} [options]
- * @returns {{ status: "ok" | "skipped" | "error"; reason?: string; commands: string[][]; npmrcPath?: string }}
+ * @returns {{ status: "ok" | "skipped"; reason?: string; commands: string[][]; npmrcPath?: string }}
  */
 export function pointLatestAtRc(options = {}) {
 	const rootDir = options.rootDir ?? defaultRootDir;
@@ -337,16 +337,14 @@ function main() {
 		printHelp();
 		process.exit(0);
 	}
-	const result = pointLatestAtRc({
+	pointLatestAtRc({
 		packagesJson: args.packagesJson,
 		fromRc: args.fromRc,
 		dryRun: args.dryRun,
 	});
-	if (result.status === "error") {
-		process.exit(1);
-	}
 	// skipped (no token / not rc) exits 0 so a missing secret does not
 	// fail the release job after packages already published.
+	// Failures throw from pointLatestAtRc / execNpm and are caught below.
 }
 
 const isDirectRun =
