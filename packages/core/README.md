@@ -17,7 +17,7 @@
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
   <a href="https://arkenv.js.org/docs/getting-started">Get started</a>
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
-  <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/stackblitz?file=index.ts">Try on StackBlitz</a>
+  <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/v1/examples/stackblitz?file=index.ts">Try on StackBlitz</a>
   <br />
 </div>
 
