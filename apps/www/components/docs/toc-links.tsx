@@ -9,9 +9,10 @@ import { RoadmapProgressCard } from "~/components/page/roadmap-progress-card";
 import type { DocsFeedbackEmotion } from "~/lib/docs-feedback/emotions";
 
 /**
- * TOC page actions: scroll / edit / feedback + roadmap progress + Star card.
+ * TOC page actions: scroll / edit / feedback + Star card + roadmap progress.
  * Passed as `tableOfContent.footer` / popover footer.
  * Heart reaction on feedback briefly spotlights the star CTA below.
+ * Roadmap progress sits at the bottom of the rail, under Enjoying ArkEnv?.
  */
 export function DocsTocLinks({
 	pageTitle,
@@ -76,12 +77,12 @@ export function DocsTocLinks({
 				/>
 			</nav>
 
-			<RoadmapProgressCard percent={roadmapPercent} stale={roadmapStale} />
-
 			<DocsStarCard
 				spotlight={starSpotlight}
 				onSpotlightEnd={() => setStarSpotlight(false)}
 			/>
+
+			<RoadmapProgressCard percent={roadmapPercent} stale={roadmapStale} />
 		</div>
 	);
 }

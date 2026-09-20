@@ -2,7 +2,7 @@ import Link from "next/link";
 import "./roadmap-progress-card.css";
 
 /**
- * v1 progress meter for the docs TOC rail (beside Enjoying ArkEnv).
+ * v1 progress meter for the docs TOC rail (below Enjoying ArkEnv).
  * Links to `/roadmap`.
  *
  * When `stale`, the extras-only fallback would otherwise report `0%` — show a
