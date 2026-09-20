@@ -9,7 +9,12 @@
 	--lp-missing: #9a6700;
 	--lp-unknown: color-mix(in oklab, canvastext 45%, canvas);
 	--lp-chip: color-mix(in oklab, canvastext 8%, canvas);
-	font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
+	font-family:
+		ui-sans-serif,
+		system-ui,
+		-apple-system,
+		Segoe UI,
+		sans-serif;
 }
 
 * {

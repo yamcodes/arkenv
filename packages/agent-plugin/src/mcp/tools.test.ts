@@ -65,10 +65,7 @@ export const env = arkenv({
 });
 `,
 		);
-		await writeFile(
-			path.join(dir, ".env.example"),
-			"DATABASE_URL=\nPORT=\n",
-		);
+		await writeFile(path.join(dir, ".env.example"), "DATABASE_URL=\nPORT=\n");
 		const result = await runPreviewTool(dir);
 		const report = result.structuredContent as {
 			rows: Array<{ key: string; inExample: boolean | null; boundary: string }>;
@@ -76,11 +73,7 @@ export const env = arkenv({
 		};
 		expect(report.schemaPath).toBe("env.ts");
 		expect(report.rows.map((r) => r.key)).toEqual(
-			expect.arrayContaining([
-				"DATABASE_URL",
-				"PORT",
-				"NEXT_PUBLIC_APP_URL",
-			]),
+			expect.arrayContaining(["DATABASE_URL", "PORT", "NEXT_PUBLIC_APP_URL"]),
 		);
 		const publicRow = report.rows.find((r) => r.key === "NEXT_PUBLIC_APP_URL");
 		expect(publicRow?.boundary).toBe("public");

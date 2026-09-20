@@ -1,6 +1,8 @@
 /**
  * ArkEnv Live Preview MCP App (POC).
  */
+
+import type { CallToolResult } from "@modelcontextprotocol/client";
 import {
 	App,
 	applyDocumentTheme,
@@ -8,7 +10,6 @@ import {
 	applyHostStyleVariables,
 	type McpUiHostContext,
 } from "@modelcontextprotocol/ext-apps";
-import type { CallToolResult } from "@modelcontextprotocol/client";
 import "./live-preview.css";
 
 type PreviewRow = {
@@ -182,7 +183,9 @@ refreshBtn.addEventListener("click", async () => {
 	}
 });
 
-for (const chip of document.querySelectorAll<HTMLButtonElement>("[data-filter]")) {
+for (const chip of document.querySelectorAll<HTMLButtonElement>(
+	"[data-filter]",
+)) {
 	chip.addEventListener("click", () => {
 		filter = chip.dataset.filter as typeof filter;
 		for (const other of document.querySelectorAll(".lp__chip")) {

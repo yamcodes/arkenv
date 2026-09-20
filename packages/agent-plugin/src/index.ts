@@ -12,15 +12,15 @@ export type {
 	RuleId,
 } from "./audit/types";
 export { initProject } from "./mcp/init";
-export {
-	buildPreviewReport,
-	extractSchemaKeys,
-} from "./mcp/preview";
 export type {
 	PreviewBoundary,
 	PreviewReport,
 	PreviewRow,
 	PreviewStatus,
+} from "./mcp/preview";
+export {
+	buildPreviewReport,
+	extractSchemaKeys,
 } from "./mcp/preview";
 export { createMcpServer, startMcpServer } from "./mcp/server";
 export {

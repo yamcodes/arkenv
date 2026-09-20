@@ -68,7 +68,7 @@
 		"cross-env": "^10.1.0",
 		"rimraf": "catalog:",
 		"tsdown": "catalog:",
-		"vite": "^6.3.5",
+		"vite": "8.0.10",
 		"vite-plugin-singlefile": "^2.3.0",
 		"vitest": "catalog:"
 	}

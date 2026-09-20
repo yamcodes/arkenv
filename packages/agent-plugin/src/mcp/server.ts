@@ -2,9 +2,9 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+	RESOURCE_MIME_TYPE,
 	registerAppResource,
 	registerAppTool,
-	RESOURCE_MIME_TYPE,
 } from "@modelcontextprotocol/ext-apps/server";
 import { McpServer } from "@modelcontextprotocol/server";
 import { StdioServerTransport } from "@modelcontextprotocol/server/stdio";
@@ -129,5 +129,5 @@ async function readLivePreviewHtml(): Promise<string> {
 			// try next
 		}
 	}
-	return `<!doctype html><html><body><p>Live Preview UI missing — run <code>pnpm build</code> in @arkenv/agent-plugin.</p></body></html>`;
+	return "<!doctype html><html><body><p>Live Preview UI missing — run <code>pnpm build</code> in @arkenv/agent-plugin.</p></body></html>";
 }
