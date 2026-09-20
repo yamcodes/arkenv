@@ -409,12 +409,12 @@ Collapsing tool traces is intentional; **hiding interactive MCP Apps inside that
 
 **What we can do in ArkEnv:**
 
-| Action | Effect |
-| ------ | ------ |
+| Action                                                                                          | Effect                                                                                            |
+| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | Keep `structuredContent` for the App; make `content` a **short summary** (not a full JSON dump) | Stops agents/Cursor from promoting a fat table as the “main” result while the widget is collapsed |
-| Document “expand Worked for …” in docs / tool description | Reduces support friction |
-| Prefer global `~/.cursor/mcp.json` | Separate issue: project-scoped servers sometimes never `resources/read` |
-| File / upvote Cursor forum threads | Only real fix for pin-open widgets |
+| Document “expand Worked for …” in docs / tool description                                       | Reduces support friction                                                                          |
+| Prefer global `~/.cursor/mcp.json`                                                              | Separate issue: project-scoped servers sometimes never `resources/read`                           |
+| File / upvote Cursor forum threads                                                              | Only real fix for pin-open widgets                                                                |
 
 **What we cannot do:** force Cursor to keep the iframe visible after turn end — no MCP Apps API for that today.
 

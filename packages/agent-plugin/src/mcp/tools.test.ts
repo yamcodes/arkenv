@@ -169,11 +169,10 @@ describe("parseCheckStdout", () => {
 
 describe("buildPreviewRows", () => {
 	it("marks keys ok when check ran with no failures", () => {
-		const rows = buildPreviewRows(
-			["PORT", "HOST"],
-			new Set(["PORT", "HOST"]),
-			{ ran: true, failures: new Map() },
-		);
+		const rows = buildPreviewRows(["PORT", "HOST"], new Set(["PORT", "HOST"]), {
+			ran: true,
+			failures: new Map(),
+		});
 		expect(rows.every((r) => r.status === "ok")).toBe(true);
 		expect(rows[0]?.reason).toMatch(/Passed arkenv check/);
 	});

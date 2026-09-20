@@ -129,7 +129,8 @@ function rememberArgs(args: PreviewArgs | undefined) {
 }
 
 function argsForHydrate(): PreviewArgs {
-	if (typeof toolArgs.cwd === "string" && toolArgs.cwd) return { cwd: toolArgs.cwd };
+	if (typeof toolArgs.cwd === "string" && toolArgs.cwd)
+		return { cwd: toolArgs.cwd };
 	if (typeof report?.cwd === "string" && report.cwd) return { cwd: report.cwd };
 	return {};
 }
