@@ -41,7 +41,7 @@ Prefer [Nub](https://nubjs.com/) (`nub run`, `nubx`, `nub install`, `nub` / `nub
 - Use the full phrase "environment variables" in headings and SEO-facing copy; "env vars" is fine in subheads and body.
 - Match docs voice to turborepo.dev plus the existing getting-started and root docs (index, support policy, community).
 - Match homepage hero typography to turborepo.dev (heading size, weight, and text style).
-- Nub ([https://nubjs.com/](https://nubjs.com/)) is a real Node toolkit the user likes; never treat "Nub" as a typo for Bun. Prefer it over `tsx` / `ts-node` / `tsconfig-paths` / `dotenv`, `pnpm run`, `npx` / `pnpm exec`, `pnpm install`, and `nvm` in this repo.
+- Nub ([https://nubjs.com/](https://nubjs.com/)) is a real Node toolkit the user likes; never treat "Nub" as a typo for Bun. Prefer it over `tsx` / `ts-node` / `tsconfig-paths` / `dotenv`, `pnpm run`, `npx` / `pnpm exec`, `pnpm install`, and `nvm` in this repo (scripts, CI, CONTRIBUTING, AGENTS) and in `examples/` / `apps/playgrounds/`. User-facing docs and guides keep package-install tabs and stock defaults (`npx` / `node --env-file` / `tsx`) — do not push Nub there.
 - Do not claim "zero dependencies" without "runtime" unless talking only about core/standard.
 
 ## Learned Workspace Facts
@@ -52,5 +52,5 @@ Prefer [Nub](https://nubjs.com/) (`nub run`, `nubx`, `nub install`, `nub` / `nub
 - Site tagline (footer and similar surfaces): "Typesafe environment variables with ArkType, Zod, Valibot, or any Standard Schema."
 - Homepage `<title>` is punchy: "ArkEnv - Typesafe environment variables for TypeScript" (ASCII hyphen, not an en-dash). Docs pages use `[Page] | ArkEnv` (pipe, no "Docs"). Library names (ArkType, Zod, Valibot, Standard Schema) go in `<meta name="description">`, not the title. Middle dots (`·`) are for on-page text only.
 - "Zero runtime dependencies" is true of `@arkenv/core` (peer arktype only) and `@arkenv/standard` (none). It is not true of the CLI or framework plugins (they depend on `@arkenv/build`, `jiti`, `chokidar`, etc.).
-- Docs treat Nub as a first-class way to populate env before `arkenv()`; it is the recommended runner for plain Node.
+- Docs use package-install tabs and stock Node defaults for user-facing runner / install copy (`npx`, `node --env-file`, framework loaders). Nub is fine in examples/playgrounds and is the maintainer/repo runner; it is not the public default in guides.
 - turborepo.dev is the visual and docs-voice reference; clone its docs into a gitignored folder when needed.

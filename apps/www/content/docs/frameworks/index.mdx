@@ -56,22 +56,22 @@ or a Standard Schema validator.
 ArkEnv does not read `.env` files. Something else must load them before
 `arkenv()` runs.
 
-Next.js, Nuxt, Vite, and Bun already load `.env*` files. On plain Node,
-[Nub](https://nubjs.com/docs/runtime/env) is the recommended runner: it
-executes TypeScript and injects `.env` files before your process starts
-(replacing `tsx` / `ts-node` / `tsconfig-paths` / `dotenv`). Use
-`nub watch` for restart-on-change.
+Next.js, Nuxt, Vite, and Bun already load `.env*` files. On plain Node
+(20.6+), use the built-in `--env-file` flag:
 
 ```bash title="Terminal"
-nub src/index.ts
+node --env-file=.env dist/index.js
 ```
+
+For TypeScript in development, pass the same flag to your usual runner:
 
 ```bash title="Terminal"
-nub watch src/index.ts
+tsx --env-file=.env src/index.ts
 ```
 
-Plain Node's `node --env-file=.env` also works (you name each file yourself,
-and plain `node` does not run TypeScript). For NestJS applications, `@nestjs/cli` 11+ supports `nest start --env-file .env` — follow the [Use with NestJS](/docs/guides/use-with-nestjs) guide.
+For NestJS applications, `@nestjs/cli` 11+ supports
+`nest start --env-file .env` — follow the
+[Use with NestJS](/docs/guides/use-with-nestjs) guide.
 
 After values are in `process.env` (or a custom record), `arkenv()`
 validates them.
