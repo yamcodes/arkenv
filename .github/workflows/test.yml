@@ -176,16 +176,11 @@ jobs:
           retention-days: 30
   test-windows:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(join(github.event.pull_request.labels.*.name, ','), 'windows')
-    name: test-windows (${{ matrix.channel }})
     runs-on: windows-latest
     strategy:
       matrix:
-        include:
-          - channel: lts
-            node-version: 24
-          - channel: latest
-            node-version: 26
-    continue-on-error: ${{ matrix.channel == 'latest' }}
+        node-version: [24, 26]
+    continue-on-error: ${{ matrix.node-version == 26 }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -222,22 +217,17 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
-          name: test-results-windows-${{ matrix.channel }}
+          name: test-results-windows-${{ matrix.node-version }}
           path: "**/test-results/**"
           retention-days: 30
 
   test-macos:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(join(github.event.pull_request.labels.*.name, ','), 'macos')
-    name: test-macos (${{ matrix.channel }})
     runs-on: macos-latest
     strategy:
       matrix:
-        include:
-          - channel: lts
-            node-version: 24
-          - channel: latest
-            node-version: 26
-    continue-on-error: ${{ matrix.channel == 'latest' }}
+        node-version: [24, 26]
+    continue-on-error: ${{ matrix.node-version == 26 }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -274,6 +264,6 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
-          name: test-results-macos-${{ matrix.channel }}
+          name: test-results-macos-${{ matrix.node-version }}
           path: "**/test-results/**"
           retention-days: 30
