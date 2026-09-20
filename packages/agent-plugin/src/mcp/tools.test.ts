@@ -3,7 +3,12 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { initProject } from "./init";
-import { buildPreviewReport, extractSchemaKeys } from "./preview";
+import {
+	buildPreviewReport,
+	buildPreviewRows,
+	extractSchemaKeys,
+	parseCheckStdout,
+} from "./preview";
 import { createMcpServer } from "./server";
 import {
 	AUDIT_TOOL_NAME,
@@ -71,7 +76,11 @@ export const env = arkenv({
 			rows: Array<{ key: string; inExample: boolean | null; boundary: string }>;
 			schemaPath: string | null;
 		};
+		expect(result.content[0]?.text).toMatch(/Live Preview/);
+		expect(result.content[0]?.text).not.toMatch(/"rows"/);
+		expect(result.content[1]?.text).toMatch(/^arkenv-preview-json:/);
 		expect(report.schemaPath).toBe("env.ts");
+		expect(report.cwd).toBeTruthy();
 		expect(report.rows.map((r) => r.key)).toEqual(
 			expect.arrayContaining(["DATABASE_URL", "PORT", "NEXT_PUBLIC_APP_URL"]),
 		);
@@ -114,6 +123,66 @@ describe("buildPreviewReport", () => {
 		const report = await buildPreviewReport(dir);
 		expect(report.schemaPath).toBeNull();
 		expect(report.rows).toEqual([]);
-		expect(report.note).toMatch(/No env\.ts/);
+		expect(report.note).toMatch(/No env\.ts found under/);
+		expect(report.cwd).toBeTruthy();
+	});
+});
+
+describe("parseCheckStdout", () => {
+	it("treats ok:true with empty diagnostics as a successful run", () => {
+		const outcome = parseCheckStdout(
+			JSON.stringify({
+				ok: true,
+				commandId: "check",
+				diagnostics: [],
+				exitCode: 0,
+			}),
+		);
+		expect(outcome.ran).toBe(true);
+		expect(outcome.failures.size).toBe(0);
+	});
+
+	it("maps failing diagnostics by key", () => {
+		const outcome = parseCheckStdout(
+			JSON.stringify({
+				ok: false,
+				commandId: "check",
+				diagnostics: [
+					{
+						summary: "PORT must be a number",
+						meta: { key: "PORT", received: "abc" },
+					},
+				],
+				exitCode: 1,
+			}),
+		);
+		expect(outcome.ran).toBe(true);
+		expect(outcome.failures.get("PORT")?.summary).toMatch(/PORT/);
+	});
+
+	it("returns unavailable for empty or garbage stdout", () => {
+		expect(parseCheckStdout("").ran).toBe(false);
+		expect(parseCheckStdout("not json").ran).toBe(false);
+		expect(parseCheckStdout("{}").ran).toBe(false);
+	});
+});
+
+describe("buildPreviewRows", () => {
+	it("marks keys ok when check ran with no failures", () => {
+		const rows = buildPreviewRows(
+			["PORT", "HOST"],
+			new Set(["PORT", "HOST"]),
+			{ ran: true, failures: new Map() },
+		);
+		expect(rows.every((r) => r.status === "ok")).toBe(true);
+		expect(rows[0]?.reason).toMatch(/Passed arkenv check/);
+	});
+
+	it("does not treat empty failures as check unavailable", () => {
+		const rows = buildPreviewRows(["PORT"], new Set(["PORT"]), {
+			ran: false,
+			failures: new Map(),
+		});
+		expect(rows[0]?.status).toBe("unknown");
 	});
 });

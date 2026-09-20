@@ -44,7 +44,7 @@ export function createMcpServer(): McpServer {
 		{
 			title: "ArkEnv Live Preview",
 			description:
-				"Show an env health board: schema keys, .env.example presence, and check fail reasons (redacted). Renders an MCP App View when the host supports MCP Apps.",
+				"Show an env health board: schema keys, .env.example presence, and check fail reasons (redacted). Always pass cwd as the absolute project root that contains env.ts / src/env.ts — the MCP server process cwd is often wrong. Renders an MCP App View when the host supports MCP Apps. In Cursor, if the widget disappears after the turn, expand the “Worked for …” / “Explored …” group — Cursor currently collapses MCP Apps into tool traces.",
 			inputSchema: cwdSchema,
 			_meta: { ui: { resourceUri: PREVIEW_RESOURCE_URI } },
 		},
@@ -118,16 +118,20 @@ async function readLivePreviewHtml(): Promise<string> {
 	const here = path.dirname(fileURLToPath(import.meta.url));
 	const candidates = [
 		path.join(here, "live-preview.html"),
-		path.join(here, "mcp-app.html"),
-		path.join(here, "..", "live-preview.html"),
 		path.join(process.cwd(), "dist", "live-preview.html"),
 	];
 	for (const candidate of candidates) {
 		try {
-			return await readFile(candidate, "utf8");
+			const html = await readFile(candidate, "utf8");
+			// Never serve the vite entry (references ./src/ui/*.ts) — that mounts a blank iframe.
+			if (html.includes("src/ui/live-preview.ts")) continue;
+			if (!html.includes("<script")) continue;
+			return html;
 		} catch {
 			// try next
 		}
 	}
-	return "<!doctype html><html><body><p>Live Preview UI missing — run <code>pnpm build</code> in @arkenv/agent-plugin.</p></body></html>";
+	return `<!doctype html><html><body style="font:14px system-ui;padding:1rem">
+<p><strong>Live Preview UI missing.</strong> Run <code>pnpm build</code> in <code>@arkenv/agent-plugin</code>, then reload the MCP server.</p>
+</body></html>`;
 }

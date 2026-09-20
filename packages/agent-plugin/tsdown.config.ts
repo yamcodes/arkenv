@@ -8,4 +8,8 @@ export default defineConfig({
 	fixedExtension: false,
 	shims: true,
 	sourcemap: false,
+	// Preserve `dist/live-preview.html` from vite — tsdown's default clean
+	// wipes the MCP App bundle and the server then serves the unbundled
+	// source HTML (blank iframe in Cursor).
+	clean: false,
 });

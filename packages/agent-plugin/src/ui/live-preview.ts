@@ -25,8 +25,12 @@ type PreviewReport = {
 	schemaPath: string | null;
 	examplePath: string | null;
 	rows: PreviewRow[];
+	cwd?: string;
+	checkRan?: boolean;
 	note?: string;
 };
+
+type PreviewArgs = { cwd?: string };
 
 const root = document.getElementById("root")!;
 
@@ -70,20 +74,85 @@ const rowsEl = document.getElementById("rows")!;
 const refreshBtn = document.getElementById("refresh") as HTMLButtonElement;
 
 let report: PreviewReport | null = null;
+let toolArgs: PreviewArgs = {};
 let filter: "all" | "fail" | "missing" | "ok" = "all";
+let hydrateInFlight: Promise<void> | null = null;
+
+function isPreviewReport(value: unknown): value is PreviewReport {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		"rows" in value &&
+		Array.isArray((value as PreviewReport).rows)
+	);
+}
 
 function extractReport(result: CallToolResult): PreviewReport | null {
-	const structured = result.structuredContent as PreviewReport | undefined;
-	if (structured?.rows) return structured;
-	const text = result.content?.find((c) => c.type === "text");
-	if (text && "text" in text && typeof text.text === "string") {
+	const structured = result.structuredContent;
+	if (isPreviewReport(structured)) return structured;
+
+	for (const block of result.content ?? []) {
+		if (block.type !== "text" || !("text" in block)) continue;
+		const text = block.text;
+		if (typeof text !== "string") continue;
+
+		const marker = text.indexOf("arkenv-preview-json:");
+		if (marker !== -1) {
+			try {
+				const parsed: unknown = JSON.parse(
+					text.slice(marker + "arkenv-preview-json:".length),
+				);
+				if (isPreviewReport(parsed)) return parsed;
+			} catch {
+				// try other strategies
+			}
+		}
+
+		const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+		const candidate = fenced?.[1]?.trim() ?? text.trim();
+		if (!candidate.startsWith("{")) continue;
 		try {
-			return JSON.parse(text.text) as PreviewReport;
+			const parsed: unknown = JSON.parse(candidate);
+			if (isPreviewReport(parsed)) return parsed;
 		} catch {
-			return null;
+			// try next block
 		}
 	}
 	return null;
+}
+
+function rememberArgs(args: PreviewArgs | undefined) {
+	if (!args || typeof args !== "object") return;
+	if (typeof args.cwd === "string" && args.cwd.trim()) {
+		toolArgs = { ...toolArgs, cwd: args.cwd };
+	}
+}
+
+function argsForHydrate(): PreviewArgs {
+	if (typeof toolArgs.cwd === "string" && toolArgs.cwd) return { cwd: toolArgs.cwd };
+	if (typeof report?.cwd === "string" && report.cwd) return { cwd: report.cwd };
+	return {};
+}
+
+function applyToolResult(result: CallToolResult): boolean {
+	const next = extractReport(result);
+	if (!next) return false;
+	// Never replace a populated board with an empty "no schema" miss from a
+	// wrong-cwd refresh — unless we have no board yet.
+	if (
+		report &&
+		report.rows.length > 0 &&
+		next.rows.length === 0 &&
+		!next.schemaPath
+	) {
+		noteEl.hidden = false;
+		noteEl.textContent = `Ignored empty preview from cwd=${next.cwd ?? "(default)"}; keeping prior board.`;
+		return true;
+	}
+	report = next;
+	if (next.cwd) rememberArgs({ cwd: next.cwd });
+	render();
+	return true;
 }
 
 function render() {
@@ -96,7 +165,14 @@ function render() {
 		report.schemaPath ? `schema: ${report.schemaPath}` : "schema: —",
 		report.examplePath ? `example: ${report.examplePath}` : "example: —",
 		`${report.rows.length} keys`,
-	].join(" · ");
+		report.checkRan === true
+			? "check ran"
+			: report.checkRan === false
+				? "check unavailable"
+				: null,
+	]
+		.filter(Boolean)
+		.join(" · ");
 
 	if (report.note) {
 		noteEl.hidden = false;
@@ -155,32 +231,60 @@ function handleHostContextChanged(ctx: McpUiHostContext) {
 	if (ctx.styles?.css?.fonts) applyHostFonts(ctx.styles.css.fonts);
 }
 
+/**
+ * Re-call preview with the same cwd the host originally used. Hosts that strip
+ * structuredContent from tool-result still return it from callServerTool.
+ */
+async function hydrateFromServer(force = false) {
+	if (hydrateInFlight) return hydrateInFlight;
+	const args = argsForHydrate();
+	if (!args.cwd && !force && report?.rows.length) return;
+
+	hydrateInFlight = (async () => {
+		metaEl.textContent = args.cwd
+			? `Loading preview for ${args.cwd}…`
+			: "Loading preview from server…";
+		try {
+			const result = await app.callServerTool({
+				name: "preview",
+				arguments: args,
+			});
+			if (!applyToolResult(result)) {
+				noteEl.hidden = false;
+				noteEl.textContent =
+					"Preview tool returned no board payload. Reload the MCP server after rebuilding @arkenv/agent-plugin.";
+			}
+		} catch (error) {
+			noteEl.hidden = false;
+			noteEl.textContent = `Could not load preview: ${error instanceof Error ? error.message : String(error)}`;
+		} finally {
+			hydrateInFlight = null;
+		}
+	})();
+	return hydrateInFlight;
+}
+
 const app = new App({ name: "ArkEnv Live Preview", version: "0.0.0-poc" });
 
 app.onteardown = async () => ({});
 app.onerror = console.error;
 app.onhostcontextchanged = handleHostContextChanged;
 
-app.ontoolresult = (result) => {
-	report = extractReport(result);
-	render();
+app.ontoolinput = (params) => {
+	const args = (params.arguments ?? {}) as PreviewArgs;
+	rememberArgs(args);
 };
 
-refreshBtn.addEventListener("click", async () => {
+app.ontoolresult = (result) => {
+	if (applyToolResult(result)) return;
+	void hydrateFromServer(true);
+};
+
+refreshBtn.addEventListener("click", () => {
 	refreshBtn.disabled = true;
-	try {
-		const result = await app.callServerTool({
-			name: "preview",
-			arguments: {},
-		});
-		report = extractReport(result);
-		render();
-	} catch (error) {
-		noteEl.hidden = false;
-		noteEl.textContent = `Refresh failed: ${error instanceof Error ? error.message : String(error)}`;
-	} finally {
+	void hydrateFromServer(true).finally(() => {
 		refreshBtn.disabled = false;
-	}
+	});
 });
 
 for (const chip of document.querySelectorAll<HTMLButtonElement>(

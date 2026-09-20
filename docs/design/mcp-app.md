@@ -396,6 +396,30 @@ Implementation order inside P2:
 
 ---
 
+## Host caveat: Cursor collapses MCP App widgets
+
+**Symptom:** `preview` works and the iframe mounts, but after the agent turn Cursor folds tool activity into a “Worked for Ns” / “Explored …” group. The widget disappears; users mostly see a markdown/JSON **table** (from tool `content` or the model rewriting `structuredContent`) until they expand the group.
+
+**Cause (Cursor client, not our server):** documented by Cursor staff on the forum —
+
+- [MCP app is hidden by default](https://forum.cursor.com/t/mcp-app-is-hidden-by-default/166406)
+- [Widgets hidden after agent completes](https://forum.cursor.com/t/widgets-are-hidden-from-cursors-normal-chat-view-after-an-agent-completes-and-are-only-visible-when-the-conversation-is-expanded/166032)
+
+Collapsing tool traces is intentional; **hiding interactive MCP Apps inside that collapse is a tracked gap**. Conversation Density → Detailed does **not** fix it. No public ETA; staff deprioritized because expand works.
+
+**What we can do in ArkEnv:**
+
+| Action | Effect |
+| ------ | ------ |
+| Keep `structuredContent` for the App; make `content` a **short summary** (not a full JSON dump) | Stops agents/Cursor from promoting a fat table as the “main” result while the widget is collapsed |
+| Document “expand Worked for …” in docs / tool description | Reduces support friction |
+| Prefer global `~/.cursor/mcp.json` | Separate issue: project-scoped servers sometimes never `resources/read` |
+| File / upvote Cursor forum threads | Only real fix for pin-open widgets |
+
+**What we cannot do:** force Cursor to keep the iframe visible after turn end — no MCP Apps API for that today.
+
+---
+
 ## Changelog of this note
 
 - 2026-09-18: First write-up (misread ask as “whether MCP App”).
@@ -404,3 +428,7 @@ Implementation order inside P2:
 - 2026-09-18: Competitor pass — **Envin** has localhost Live Preview (validates E1; not MCP). **Varlock** has agent-safe `load` JSON, no preview GUI/MCP App. Lean unchanged; added E9/P6 as A-tier Envin parity, borrowed filters/search/redaction notes.
 - 2026-09-18: ORM pass — **Prisma Studio + MCP** (split surfaces, mutate guardrails) and **Drizzle Studio + Cube MCP App** (Studio category + real App-on-tool). Lean unchanged; frame E1 as Studio-for-`env`, S as Studio-in-chat leap.
 - 2026-09-18: **POC landed** in `@arkenv/agent-plugin`: `preview` tool + `ui://arkenv/live-preview.html` via `@modelcontextprotocol/ext-apps` (heuristic key extract + example presence + optional `check --json`). Still not full D4 inspect.
+- 2026-09-20: Documented Cursor “Worked for Ns” widget collapse + competing table UX; POC `content` switched to short summary so JSON dump doesn’t become the visible product.
+- 2026-09-20: Fixed preview treating `ok: true` + empty `diagnostics` as “check unavailable”; empty failures now mean pass when the check envelope parsed.
+- 2026-09-20: Blank MCP App iframe — `tsdown` clean wiped `dist/live-preview.html` and the server fell back to the unbundled vite entry; preserve HTML across server builds + reject source HTML + self-hydrate when hosts strip `structuredContent`.
+- 2026-09-20: Widget “No env.ts” while model had keys — hydrate/`callServerTool` omitted agent `cwd`; now thread cwd via toolinput + report + `arkenv-preview-json` content block; refuse to clobber a good board with an empty wrong-cwd miss.

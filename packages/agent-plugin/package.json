@@ -28,7 +28,7 @@
 	"scripts": {
 		"build:ui": "cross-env NODE_ENV=production vite build",
 		"build:server": "tsdown",
-		"build": "pnpm run build:server && pnpm run build:ui",
+		"build": "rimraf dist && pnpm run build:server && pnpm run build:ui",
 		"typecheck": "tsc --noEmit",
 		"test": "vitest",
 		"test:run": "vitest run",
