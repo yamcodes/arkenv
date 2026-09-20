@@ -214,8 +214,8 @@ work lands):
 - [ ] `readme-prod-links` - Update README links from alpha to production
 - [ ] `changelog-epoch` - Prepend changelog epoch warnings
 - [ ] `npm-deprecate-cli` - Deprecate `@arkenv/cli` on npm
-- [ ] `v0-archive-dns-cutover` - Deploy a Vercel preview/alias URL for
-  the v0 docs archive and flip primary DNS
+- [ ] `v0-archive-dns-cutover` - Park v0 on `arkenv-v0.vercel.app` and
+  point Production / `arkenv.js.org` at `v1` (no js.org subdomain)
 - [ ] `release-v1` - Release v1
 - [ ] `v1-announcement` - Document v1 announcement
 
@@ -333,15 +333,20 @@ local break-glass `pnpm point-latest-at-rc`.
 
 ## E. Site / GitHub cutover
 
-These overlap GA ops. Prefer executing DNS with the RC announce pack
+These overlap GA ops. Prefer flipping apex with the RC announce pack
 only when archive + README production links are ready; otherwise keep
-serving v1 from `https://arkenv-v1.vercel.app` until then. Full DNS
-detail: [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.
+serving v1 from `https://arkenv-v1.vercel.app` until then. Full steps:
+[LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.
 
-- [ ] `arkenv.js.org` → v1 `www`; v0 docs archive on a Vercel
-  preview/alias URL (`*.vercel.app` or project alias)
-- [ ] Optional: default GitHub branch → `v1` (repo default today is
-  `dev` - verify before changing)
+**Phased cutover:** **Now (RC) = Option A** — keep branch names; `v1`
+owns `--prod` / `arkenv.js.org`; `main` parks on `arkenv-v0.vercel.app`.
+**Later (GA) = Option B** — rename so the v1 line becomes `main`/`dev`
+and the old line becomes **`v0`**, then leave `--prod` on `main`. Do
+not rename branches during RC.
+
+- [ ] `arkenv.js.org` → v1 `www` (`--prod` from `v1`); archive on
+  `arkenv-v0.vercel.app`
+- [x] Default GitHub branch → `v1` (already done)
 - [ ] GitHub Release for `1.0.0-rc.n` + announce blog + tweet
   (include Not-GA known gaps from section A, including the docs
   voice / AI-slop pass)
@@ -349,7 +354,7 @@ detail: [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.
   [arktypeio/arktype#1655](https://github.com/arktypeio/arktype/pull/1655)
   merged; snippet uses `@arkenv/core`
 - [ ] State the support window for alpha consumers and v0
-  (Vercel archive URL + last v0 npm lines)
+  (`arkenv-v0.vercel.app` + last v0 npm lines)
 
 ---
 

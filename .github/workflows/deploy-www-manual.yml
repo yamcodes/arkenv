@@ -15,6 +15,7 @@ on:
         type: choice
         options:
           - arkenv-dev.vercel.app
+          - arkenv-v0.vercel.app
           - arkenv-v1.vercel.app
           - arkenv.js.org
 
@@ -50,8 +51,12 @@ jobs:
           set -euo pipefail
           case "$TARGET" in
             arkenv-dev.vercel.app) echo "git_ref=dev" >> "$GITHUB_OUTPUT" ;;
+            arkenv-v0.vercel.app) echo "git_ref=main" >> "$GITHUB_OUTPUT" ;;
             arkenv-v1.vercel.app) echo "git_ref=v1" >> "$GITHUB_OUTPUT" ;;
-            arkenv.js.org) echo "git_ref=main" >> "$GITHUB_OUTPUT" ;;
+            # Apex tracks v1 for dashboard metadata (Production owner).
+            # Rollback of a main/v0 SHA still builds that SHA; the label
+            # may say v1 — see LAUNCH_RUNBOOK §5.
+            arkenv.js.org) echo "git_ref=v1" >> "$GITHUB_OUTPUT" ;;
             *)
               echo "Unknown target: $TARGET" >&2
               exit 1

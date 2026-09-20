@@ -9,8 +9,10 @@ on:
     types: [opened, synchronize, ready_for_review]
   push:
     branches:
+      # Rolling branch preview for arkenv-dev.vercel.app only.
+      # v1 production + arkenv-v1.vercel.app are owned by deploy-www.yml.
+      # main → arkenv-v0.vercel.app is also owned by deploy-www.yml.
       - dev
-      - v1
 
 concurrency:
   group: preview-www-${{ github.event.pull_request.number || github.ref_name }}
@@ -18,7 +20,7 @@ concurrency:
 
 jobs:
   Deploy-Preview:
-    # Branch previews (push to dev/v1) always deploy. PR previews are opt-in:
+    # Branch preview (push to dev) always deploys. PR previews are opt-in:
     # they only deploy when the PR carries the `preview` label, regardless of draft state
     # or which branch the PR targets.
     # Fork authors cannot apply labels (triage+ required), so this is not self-serve spamable.

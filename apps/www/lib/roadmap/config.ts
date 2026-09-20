@@ -75,8 +75,7 @@ export const ROADMAP_EXTRAS: readonly RoadmapExtra[] = [
 	},
 	{
 		id: "v0-archive-dns-cutover",
-		title:
-			"Deploy a Vercel preview/alias URL for the v0 docs archive and flip primary DNS",
+		title: "Park v0 on arkenv-v0.vercel.app and point Production at v1",
 		done: false,
 		topic: "Docs",
 	},
