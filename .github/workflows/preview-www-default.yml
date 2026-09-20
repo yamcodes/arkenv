@@ -21,7 +21,6 @@ concurrency:
 jobs:
   Deploy-Preview:
     # Branch preview (push to dev) always deploys. PR previews are opt-in:
-
     # they only deploy when the PR carries the `preview` label, regardless of draft state
     # or which branch the PR targets.
     # Fork authors cannot apply labels (triage+ required), so this is not self-serve spamable.

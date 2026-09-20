@@ -19,7 +19,6 @@ on:
           - arkenv-v1.vercel.app
           - arkenv.js.org
 
-
 concurrency:
   group: deploy-www-manual-${{ inputs.target }}
   cancel-in-progress: true
@@ -63,7 +62,6 @@ jobs:
               exit 1
               ;;
           esac
-
           echo "short_msg=$(git log -1 --format=%s "$DEPLOY_SHA")" >> "$GITHUB_OUTPUT"
           echo "author_name=$(git log -1 --format=%an "$DEPLOY_SHA")" >> "$GITHUB_OUTPUT"
       - uses: pnpm/action-setup@v6

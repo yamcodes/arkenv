@@ -142,7 +142,6 @@ jobs:
               exit 0
               ;;
           esac
-
           if [ -z "$DEPLOYMENT_URL" ]; then
             echo "No deployment URL; skipping alias."
             exit 0
