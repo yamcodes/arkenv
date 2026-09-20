@@ -53,7 +53,7 @@ jobs:
         id: changesets
         uses: changesets/action@v2.1.1
         with:
-          publish-script: nub run release
+          publish-script: nub run --no-check release
           github-token: ${{ steps.generate-token.outputs.token }}
 
       - name: Sync main branch

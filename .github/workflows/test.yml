@@ -41,12 +41,12 @@ jobs:
       - name: Install dependencies
         run: nub install
       - name: Build packages
-        run: nub run build --filter=./packages/*
-      - run: nub run test
+        run: nub run --no-check build --filter=./packages/*
+      - run: nub run --no-check test
       - name: Verify build artifacts
-        run: nub run verify-artifacts
+        run: nub run --no-check verify-artifacts
       - name: Run E2E package tests
-        run: nub run test:e2e:package
+        run: nub run --no-check test:e2e:package
 
   test-typesafety:
     runs-on: ubuntu-latest
@@ -60,7 +60,7 @@ jobs:
         with:
           node-version: 24
       - run: nub install
-      - run: nub run typecheck
+      - run: nub run --no-check typecheck
 
   test-build:
     runs-on: ubuntu-latest
@@ -81,7 +81,7 @@ jobs:
         with:
           bun-version: 1.4.0
       - run: nub install
-      - run: nub run build
+      - run: nub run --no-check build
 
   test-vite-compatibility:
     runs-on: ubuntu-latest
@@ -101,13 +101,13 @@ jobs:
           node-version: 24
       - run: nub install
       - name: Build workspace packages
-        run: nub run build:packages
+        run: nub run --no-check build:packages
       - name: Apply overrides for Vite version
         run: node scripts/override-vite.js ${{ matrix.vite-version }}
       - name: Reinstall dependencies with overrides
         run: nub install --no-frozen-lockfile
       - name: Build vite-legacy playground
-        run: nub run build --filter=vite-legacy-playground
+        run: nub run --no-check build --filter=vite-legacy-playground
 
   test-e2e:
     runs-on: ubuntu-latest
@@ -143,13 +143,13 @@ jobs:
         # Chromium + Firefox only — matches playwright-www projects on Linux (webkit is macOS-only)
         run: nubx playwright install --with-deps chromium firefox
       - name: Build www and dependencies
-        run: nub run build --filter=www...
+        run: nub run --no-check build --filter=www...
       - name: Run ${{ matrix.suite }} tests (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        run: nub run test:${{ matrix.suite }} --affected --log-order=stream
+        run: nub run --no-check test:${{ matrix.suite }} --affected --log-order=stream
       - name: Run ${{ matrix.suite }} tests (dev/workflow_dispatch)
         if: ${{ github.event_name != 'pull_request' }}
-        run: nub run test:${{ matrix.suite }} --log-order=stream --filter="@repo/playwright-*"
+        run: nub run --no-check test:${{ matrix.suite }} --log-order=stream --filter="@repo/playwright-*"
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
@@ -193,9 +193,9 @@ jobs:
             windows-latest-pw-
       - name: Install Playwright browsers
         run: nubx playwright install --with-deps
-      - run: nub run build
-      - run: nub run test
-      - run: nub run test:e2e
+      - run: nub run --no-check build
+      - run: nub run --no-check test
+      - run: nub run --no-check test:e2e
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
@@ -240,9 +240,9 @@ jobs:
             macos-latest-pw-
       - name: Install Playwright browsers
         run: nubx playwright install --with-deps
-      - run: nub run build
-      - run: nub run test
-      - run: nub run test:e2e
+      - run: nub run --no-check build
+      - run: nub run --no-check test
+      - run: nub run --no-check test:e2e
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:

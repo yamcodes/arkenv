@@ -33,7 +33,7 @@ jobs:
         run: nub install
 
       - name: Generate contributors
-        run: nub run contributors:generate
+        run: nub run --no-check contributors:generate
 
       - name: Check for changes
         run: |
@@ -68,7 +68,7 @@ jobs:
           node-version: 24
 
       - run: nub install
-      - run: nub run contributors:generate
+      - run: nub run --no-check contributors:generate
 
       - name: Commit contributor updates
         run: |

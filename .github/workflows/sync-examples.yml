@@ -39,10 +39,10 @@ jobs:
         run: nub install
 
       - name: Build packages
-        run: nub run build:packages
+        run: nub run --no-check build:packages
 
       - name: Check examples sync
-        run: nub run sync:examples:check
+        run: nub run --no-check sync:examples:check
 
   auto-sync:
     if: github.actor == 'renovate[bot]' && github.event_name == 'pull_request'
@@ -67,8 +67,8 @@ jobs:
           node-version: 24
 
       - run: nub install
-      - run: nub run build:packages
-      - run: nub run sync:examples
+      - run: nub run --no-check build:packages
+      - run: nub run --no-check sync:examples
 
       - name: Commit example updates
         run: |

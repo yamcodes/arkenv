@@ -11,7 +11,9 @@ allowBuilds:
   '@sentry/cli': true
   '@tailwindcss/oxide': true
   '@vercel/speed-insights': true
-  bun: true
+  # Skip the npm `bun` package postinstall — it races under pnpm/nub
+  # (`@oven/bun-linux-x64` rename ENOENT) and CI already uses oven-sh/setup-bun.
+  bun: false
   core-js: true
   esbuild: true
   protobufjs: true
@@ -48,6 +50,9 @@ catalog:
 
 overrides:
   '@playwright/test': 1.59.1
+  # Single @types/node graph so vite-legacy matrix builds don't dual-resolve
+  # PluginOption across @types/node@24 vs @types/node@25.
+  '@types/node': 24.12.2
   import-in-the-middle: 2.0.6
   require-in-the-middle: 8.0.1
   # Keep a single fumadocs peer graph so @arkenv/fumadocs-ui shares
