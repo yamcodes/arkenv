@@ -5,9 +5,17 @@ on:
     branches:
       - dev
       - v1
+  workflow_dispatch:
+    inputs:
+      promote_rc_to_latest:
+        description: >
+          Point npm latest at current @rc versions (no publish). Requires the
+          NPM_TOKEN secret. Only while Changesets pre tag is rc.
+        type: boolean
+        default: false
 
 permissions:
-  id-token: write # Required for OIDC
+  id-token: write # Required for OIDC (npm publish only — not dist-tag)
   contents: read
 
 jobs:
@@ -19,7 +27,7 @@ jobs:
     # release on an autofix fixup from double-publishing. Removing either
     # guard reopens a race (stranding or double-publish).
     # See docs/adr/0006-branching-and-release-flow.md.
-    if: github.event.sender.login != 'autofix-ci[bot]'
+    if: github.event_name == 'push' && github.event.sender.login != 'autofix-ci[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Generate GitHub App Token
@@ -59,6 +67,25 @@ jobs:
           publish-script: pnpm run release
           github-token: ${{ steps.generate-token.outputs.token }}
 
+      # Product RC path: also point npm `latest` at the just-published
+      # versions so bare `npx arkenv` resolves to RC. Changesets pre mode
+      # only updates the `rc` dist-tag. Publish stays on OIDC; the npm CLI
+      # has no OIDC exchange for `dist-tag`, so secrets.NPM_TOKEN (granular
+      # stage-only token — dist-tag, not publish) is the supported path.
+      # Prefer "Read and write (stage only)", bypass 2FA, @arkenv + arkenv
+      # only, no org write; rotate ~90 days. Missing token skips soft
+      # (warns) so publish itself is not failed. Gate: .changeset/pre.json
+      # mode === "pre" && tag === "rc". `changeset pre exit` sets mode to
+      # "exit" (file deleted later by `changeset version`) and stops this.
+      # See docs/RC_CHECKLIST.md §C and scripts/point-latest-at-rc.js.
+      - name: Point latest at published RC
+        if: steps.changesets.outputs.published == 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: >
+          node scripts/point-latest-at-rc.js
+          --packages '${{ steps.changesets.outputs.published-packages }}'
+
       - name: Sync main branch
         if: steps.changesets.outputs.published == 'true' && github.ref_name == 'dev'
         run: |
@@ -68,3 +95,24 @@ jobs:
           git checkout main
           git merge dev --ff-only
           git push origin main
+
+  # One-shot: promote current @rc → latest without waiting for the next
+  # publish (e.g. after adding NPM_TOKEN, or if a publish retag was skipped).
+  promote-rc-latest:
+    name: Promote @rc → latest
+    if: github.event_name == 'workflow_dispatch' && inputs.promote_rc_to_latest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v7
+
+      - name: Use Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ">=24.18.0"
+          registry-url: https://registry.npmjs.org
+
+      - name: Point latest at current @rc
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: node scripts/point-latest-at-rc.js --from-rc
