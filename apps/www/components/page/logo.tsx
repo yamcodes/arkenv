@@ -1,28 +1,35 @@
 import { cn } from "~/lib/utils";
+import "./logo.css";
 
 /**
- * Logo component
- *
- * @param className - Optional className for custom styling
- * @param wordmark - When false, renders the icon only (default true)
- * @returns Logo component
+ * Brand mark — helm icon, optional “ArkEnv” wordmark, and optional RC chip.
+ * The RC chip is decorative (not its own link); wrap `Logo` in the home link
+ * so icon + wordmark + RC are one hit target.
  */
 export function Logo({
 	className,
 	wordmark = true,
+	releaseTag,
 }: {
 	className?: string;
 	wordmark?: boolean;
+	/**
+	 * Channel tag from `RELEASE_TAG` (pass from the server into client trees).
+	 * When `"rc"`, shows a non-interactive RC chip next to the wordmark.
+	 */
+	releaseTag?: string;
 }) {
+	const showRc = wordmark && releaseTag === "rc";
+
 	return (
-		<div className={cn("flex items-center gap-2", className)}>
+		<div className={cn("logo", className)}>
 			<svg
 				width="28"
 				height="28"
 				viewBox="0 0 12 12"
 				xmlns="http://www.w3.org/2000/svg"
 				aria-hidden="true"
-				className="size-7"
+				className="logo__icon size-7"
 			>
 				<path
 					className="stroke-cyan-500 dark:stroke-cyan-400"
@@ -49,7 +56,14 @@ export function Logo({
 				/>
 			</svg>
 			{wordmark ? (
-				<span className="text-fd-foreground font-semibold text-lg">ArkEnv</span>
+				<span className="logo__wordmark">
+					<span className="logo__name">ArkEnv</span>
+					{showRc ? (
+						<span className="logo__rc" aria-hidden="true">
+							RC
+						</span>
+					) : null}
+				</span>
 			) : null}
 		</div>
 	);

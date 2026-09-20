@@ -8,6 +8,7 @@ import {
 import { SiteFooter } from "~/components/site-footer";
 import "~/components/site-footer.css";
 import { SiteNavDocs } from "~/components/site-nav";
+import { RELEASE_TAG } from "~/lib/config/release";
 import { source } from "~/lib/source";
 import "./docs-chrome.css";
 
@@ -27,7 +28,10 @@ export default function Layout({ children }: { children: ReactNode }) {
 			 * SSR it here — portaling after paint is what made the bar jump.
 			 */}
 			<div id="docs-chrome-shell">
-				<SiteNavDocs sidebarTrigger={<DocsSidebarTrigger />} />
+				<SiteNavDocs
+					sidebarTrigger={<DocsSidebarTrigger />}
+					releaseTag={RELEASE_TAG}
+				/>
 				<DocsLayout
 					tree={source.pageTree}
 					sidebar={{

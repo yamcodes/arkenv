@@ -11,7 +11,6 @@ import {
 	HeroPlaygroundProvider,
 	InstallPanel,
 	QuickstartButton,
-	ReleaseChannelBadge,
 	RoadmapProgressCard,
 	RuntimeBloatShowcase,
 	SecureBoundary,
@@ -42,7 +41,6 @@ export default async function HomePage() {
 						className="home-aurora__badge rise"
 						style={{ animationDelay: "40ms" }}
 					>
-						<ReleaseChannelBadge />
 						<RoadmapProgressCard
 							percent={roadmap.percent}
 							stale={roadmap.stale}
