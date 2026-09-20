@@ -24,7 +24,10 @@ The biggest structural difference: on **dev**, the CLI and core library are sepa
 | Vite plugin | `packages/vite-plugin/` | `@arkenv/vite-plugin` | `packages/vite-plugin/` | `@arkenv/vite-plugin` |
 | Bun plugin | `packages/bun-plugin/` | `@arkenv/bun-plugin` | `packages/bun-plugin/` | `@arkenv/bun-plugin` |
 | Standard mode | `packages/standard/` | `@arkenv/standard` | `packages/standard/` | `@arkenv/standard` |
-| Internal utils | `packages/internal/` | `@arkenv/internal` | `packages/internal/` | `@arkenv/internal` |
+
+**Internal packages** (`packages/internal/`): private `@repo/types`,
+`@repo/scope`, `@repo/utils`, and `@repo/log`. They are never changeset
+targets.
 
 **Absent on v1:** `packages/cli/` - all CLI code lives under `packages/arkenv/src/`.
 
