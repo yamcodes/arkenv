@@ -20,7 +20,10 @@ function runWrapper(options) {
 	const fakeBin = join(dir, "vercel");
 	writeFileSync(
 		fakeBin,
-		`#!/bin/sh\nprintf '%s' ${JSON.stringify(options.stderr ?? "")} >&2\nexit ${options.exitCode}\n`,
+		`#!/usr/bin/env node
+process.stderr.write(${JSON.stringify(options.stderr ?? "")});
+process.exit(${options.exitCode});
+`,
 		{ mode: 0o755 },
 	);
 	const summaryPath = join(dir, "summary.md");
