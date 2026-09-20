@@ -4,9 +4,13 @@
 
 | Branch | Role | npm tag |
 |--------|------|---------|
-| `dev` | v0 maintenance - features and fixes land here first | `latest` |
-| `v1` | Upcoming breaking release - long-lived alpha branch | `next` (pre-release) |
-| `main` | Production docs; fast-forwarded from `dev` after publish | - |
+| `dev` | v0 maintenance - features and fixes land here first (when present) | `latest` (historical v0) |
+| `v1` | Upcoming breaking release - long-lived pre-release branch; **owns Production / `arkenv.js.org`** during RC | `alpha` / `beta` / `rc` |
+| `main` | v0 docs archive (`arkenv-v0.vercel.app`); fast-forwarded from `dev` after publish — **not** Vercel `--prod` | - |
+
+> **GA (Option B, later):** rename so the v1 line becomes `main`/`dev`
+> and the old line becomes `v0`. Until then, keep these names and the
+> Actions retarget above.
 
 Workflow source: `docs/CONTRIBUTING.md` Use Case 4.
 
