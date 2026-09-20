@@ -60,13 +60,13 @@ Migration path:
 
 ## CLI
 
-| Capability                    | v0 (`@arkenv/cli`) | v1 (`arkenv`) | Notes                             |                                                 |
-| ----------------------------- | ------------------ | ------------- | --------------------------------- | ----------------------------------------------- |
-| `init`                        | ✓                  | ✓             | Hosting presets at scaffold time  |                                                 |
-| `check` (schema vs env)       | —                  | ✓             | Runtime validation focus          |                                                 |
-| `add` / \`preset apply        | remove\`           | ✓             | ✗                                 | AST mutation removed (#1716 / Discussion #1709) |
-| Dotenv formatting linter      | ✓ (historical)     | ✗             | Pruned (#1717 / Discussion #1710) |                                                 |
-| Library `import` from CLI pkg | worked as runtime  | hard throw    | Points at `@arkenv/core`          |                                                 |
+| Capability                                               | v0 (`@arkenv/cli`) | v1 (`arkenv`) | Notes                                                                                                                                                 |
+| -------------------------------------------------------- | ------------------ | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `init`                                                   | ✓                  | ✓             | Hosting presets at scaffold time                                                                                                                      |
+| `check` (schema vs env)                                  | —                  | ✓             | Runtime validation focus                                                                                                                              |
+| `add` (v0) / `preset apply` / `preset remove` (v1 alpha) | ✓                  | ✗             | AST mutation removed (#1716 / Discussion #1709). v0 shipped `add host`; v1 alpha renamed it to `preset apply` and `preset remove`, then dropped both. |
+| Dotenv formatting linter                                 | ✓ (historical)     | ✗             | Pruned (#1717 / Discussion #1710)                                                                                                                     |
+| Library `import` from CLI pkg                            | worked as runtime  | hard throw    | Points at `@arkenv/core`                                                                                                                              |
 
 `init` still detects Vite (incl. TanStack Start), Next.js, Nuxt, Bun
 fullstack, Rsbuild, and vanilla Node.
@@ -111,13 +111,15 @@ Documented in ADRs / Discussions; do not reopen for the first RC:
 ## Test evidence (this cut)
 
 - `pnpm typecheck` — green on the audit branch.
-- Unit/integration via `vitest run` — green aside from sandbox-denied
-  `git init` / `pnpm dpdm` in CLI harness tests (not product failures).
-  CI on tip remains the source of truth for full suite + e2e
+- CI on [#1850](https://github.com/yamcodes/arkenv/pull/1850) —
+  `test`, `test-typesafety`, `test-build`, Vite compatibility matrix,
+  and `test-e2e` all succeeded before merge.
+- Local `vitest run` in the agent sandbox was incomplete (`git init` /
+  `pnpm dpdm` denied); CI is the source of truth for the full suite
   (`docs/TESTING.md`).
 
-Both product suites must stay green on tip before flipping
-`parity-audit` to `done`.
+`ROADMAP_EXTRAS` `parity-audit` was flipped to `done: true` with that CI
+evidence.
 
 ---
 

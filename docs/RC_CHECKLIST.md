@@ -93,8 +93,16 @@ explicitly not an RC gate.
     Start guide overhaul;
     [#1807](https://github.com/yamcodes/arkenv/pull/1807) TanStack
     Start blog draft
+- [x] Feature freeze after blockers are decided: no new surface area on
+  `v1` until the next `rc.n` or GA unless it is a release-blocking
+  bugfix. Open PRs `#1819` / `#1807` stay parked; `#1818` stays
+  blocked/out of RC.
 
 ### Not-GA known gaps (RC announce copy)
+
+Canonical paste for RC Release notes. The checked sub-bullets under
+“Write a short Not-GA known gaps list” above are the verification
+scratchpad; keep this block as the announce wording.
 
 - Docs voice / AI-slop pass still owed — continuous / GA, not RC.
 - Upstream TanStack CLI catalog (#1818) still blocked.
@@ -105,10 +113,6 @@ explicitly not an RC gate.
 - Remaining `ROADMAP_EXTRAS` (README prod links, changelog epoch, npm
   deprecate `@arkenv/cli`, DNS cutover, GA release + announcement)
   are launch-ops, not first-RC gates.
-- [x] Feature freeze after blockers are decided: no new surface area on
-  `v1` until the next `rc.n` or GA unless it is a release-blocking
-  bugfix. Open PRs `#1819` / `#1807` stay parked; `#1818` stays
-  blocked/out of RC.
 
 ---
 
@@ -163,16 +167,19 @@ are `1.0.0-rc.n` after the channel flip:
 - [x] Every row above is on `1.0.0-rc.n` (or an intentional independent
   cadence you document in the Release notes).
 
-### Site `RELEASE_TAG`
+### Site `RELEASE_TAG` / `INSTALL_TAG`
 
 - [x] Flip default channel in
   [`apps/www/lib/config/release.ts`](../apps/www/lib/config/release.ts)
   from `"alpha"` → `"rc"`, **or** set
   `NEXT_PUBLIC_ARKENV_RELEASE_TAG=rc` on the v1 / preview deploy.
-  Homepage install pills, agent prompt, and MDX `package-install`
-  tabs follow this constant (see AGENTS.md / release config JSDoc).
+  `RELEASE_TAG` drives the Release Candidate badge and channel labeling.
+- [x] Keep `INSTALL_TAG = ""` for bare homepage install pills, agent
+  prompt, and MDX `package-install` tabs (`npx arkenv init`,
+  `pnpm add @arkenv/*`). Ship that only after product `latest` → RC and
+  the apex docs cutover (see AGENTS.md / release config JSDoc).
 
-### Hardcoded `@alpha` / alpha copy (does not follow `RELEASE_TAG`)
+### Hardcoded `@alpha` / alpha copy (does not follow `INSTALL_TAG`)
 
 - [x] [`README.md`](../README.md) - `npx arkenv@alpha init` and sibling
   package-manager lines
@@ -361,8 +368,9 @@ Open on tip (re-verify):
 ## Shortest critical path
 
 1. **A** - Freeze: blockers vs park; Not-GA gaps; Discussions scan (F).
-2. **B** - Channel flip: changesets `rc`, versions, `RELEASE_TAG`,
-   hardcoded alpha copy, RC badge.
+2. **B** - Channel flip: changesets `rc`, versions, `RELEASE_TAG` (badge)
+   - `INSTALL_TAG` (bare CTAs after `latest` → RC), hardcoded alpha copy,
+     RC badge.
 3. **C** - Publish `1.0.0-rc.n`, point `latest` + `@rc`, smoke tests.
 4. Same-day pack after: import-guard URL polish (D), deprecate
    `@arkenv/cli` when ready, then DNS/announce (E) only if archive +

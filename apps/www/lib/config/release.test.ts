@@ -5,6 +5,7 @@ import {
 	getInitCommand,
 	getPackageSpecifier,
 	getSkillsAddSource,
+	INSTALL_TAG,
 	RELEASE_CONFIG,
 	RELEASE_TAG,
 } from "./release";
@@ -22,8 +23,9 @@ describe("release config", () => {
 		vi.unstubAllEnvs();
 	});
 
-	it("defaults RELEASE_TAG to rc", () => {
+	it("defaults RELEASE_TAG to rc and INSTALL_TAG to bare", () => {
 		expect(RELEASE_TAG).toBe("rc");
+		expect(INSTALL_TAG).toBe("");
 	});
 
 	it("formats package specifier with tag or bare for GA", () => {
@@ -31,17 +33,11 @@ describe("release config", () => {
 		expect(getPackageSpecifier("arkenv", "rc")).toBe("arkenv@rc");
 		expect(getPackageSpecifier("arkenv", "")).toBe("arkenv");
 		expect(getPackageSpecifier("arkenv", "   ")).toBe("arkenv");
+		expect(getPackageSpecifier("arkenv")).toBe("arkenv");
 	});
 
-	it("pins skills add to the v1 tree during pre-release and short form at GA", () => {
-		expect(getSkillsAddSource("alpha")).toBe(
-			"https://github.com/yamcodes/arkenv/tree/v1",
-		);
-		expect(getSkillsAddSource("rc")).toBe(
-			"https://github.com/yamcodes/arkenv/tree/v1",
-		);
-		expect(getSkillsAddSource("")).toBe("yamcodes/arkenv");
-		expect(getSkillsAddSource("   ")).toBe("yamcodes/arkenv");
+	it("always uses the short skills add source", () => {
+		expect(getSkillsAddSource()).toBe("yamcodes/arkenv");
 	});
 
 	it("formats init commands across all package managers", () => {
@@ -50,8 +46,8 @@ describe("release config", () => {
 		expect(getInitCommand("bun", "alpha")).toBe("bunx arkenv@alpha init");
 		expect(getInitCommand("yarn", "alpha")).toBe("yarn dlx arkenv@alpha init");
 
-		// GA / empty tag
-		expect(getInitCommand("npm", "")).toBe("npx arkenv init");
+		// Bare / empty tag (default INSTALL_TAG)
+		expect(getInitCommand("npm")).toBe("npx arkenv init");
 		expect(getInitCommand("pnpm", "")).toBe("pnpm dlx arkenv init");
 		expect(getInitCommand("bun", "")).toBe("bunx arkenv init");
 		expect(getInitCommand("yarn", "")).toBe("yarn dlx arkenv init");
@@ -69,29 +65,29 @@ describe("release config", () => {
 		);
 	});
 
-	it("formats agent prompt with active release tag", () => {
-		expect(getAgentPrompt("alpha", "https://arkenv.js.org")).toBe(
-			"Set up ArkEnv with `npx arkenv@alpha init --agent`. For docs/reference, start from https://arkenv.js.org/llms.txt and fetch any linked pages as markdown (append `.md`). Install the runtime engine as a dependency: `@arkenv/core` (with `arktype`) if ArkType is already in the project or there is no env validator yet; otherwise `@arkenv/standard` for use with the project's existing Standard Schema library (Zod, Valibot, etc.). Install the `arkenv` CLI as a devDependency. Use the project's package manager for installs. Wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime. When that works, suggest as a next step (do not install it yourself) that I install the ArkEnv skill with `npx skills add https://github.com/yamcodes/arkenv/tree/v1` — it teaches framework-specific env setup, keeping app code on `import { env } from \"./env\"`, and avoiding raw `process.env` / `import.meta.env`.",
-		);
+	it("formats agent prompt with bare install and short skills source", () => {
 		expect(getAgentPrompt("", "https://arkenv.js.org")).toBe(
 			"Set up ArkEnv with `npx arkenv init --agent`. For docs/reference, start from https://arkenv.js.org/llms.txt and fetch any linked pages as markdown (append `.md`). Install the runtime engine as a dependency: `@arkenv/core` (with `arktype`) if ArkType is already in the project or there is no env validator yet; otherwise `@arkenv/standard` for use with the project's existing Standard Schema library (Zod, Valibot, etc.). Install the `arkenv` CLI as a devDependency. Use the project's package manager for installs. Wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime. When that works, suggest as a next step (do not install it yourself) that I install the ArkEnv skill with `npx skills add yamcodes/arkenv` — it teaches framework-specific env setup, keeping app code on `import { env } from \"./env\"`, and avoiding raw `process.env` / `import.meta.env`.",
 		);
+		expect(getAgentPrompt("rc", "https://arkenv.js.org")).toBe(
+			"Set up ArkEnv with `npx arkenv@rc init --agent`. For docs/reference, start from https://arkenv.js.org/llms.txt and fetch any linked pages as markdown (append `.md`). Install the runtime engine as a dependency: `@arkenv/core` (with `arktype`) if ArkType is already in the project or there is no env validator yet; otherwise `@arkenv/standard` for use with the project's existing Standard Schema library (Zod, Valibot, etc.). Install the `arkenv` CLI as a devDependency. Use the project's package manager for installs. Wire the env schema into the app entry, start the app, and tell me when validation works from editor to runtime. When that works, suggest as a next step (do not install it yourself) that I install the ArkEnv skill with `npx skills add yamcodes/arkenv` — it teaches framework-specific env setup, keeping app code on `import { env } from \"./env\"`, and avoiding raw `process.env` / `import.meta.env`.",
+		);
 	});
 
-	it("exports standard RELEASE_CONFIG", () => {
+	it("exports standard RELEASE_CONFIG with bare install and RC channel", () => {
 		expect(RELEASE_CONFIG.channel).toBe("rc");
 		expect(RELEASE_CONFIG.tag).toBe("rc");
-		expect(RELEASE_CONFIG.packageSpecifier).toBe("arkenv@rc");
-		expect(RELEASE_CONFIG.initCommand).toBe("npx arkenv@rc init");
-		expect(RELEASE_CONFIG.agentPrompt).toContain("npx arkenv@rc init --agent");
+		expect(RELEASE_CONFIG.packageSpecifier).toBe("arkenv");
+		expect(RELEASE_CONFIG.initCommand).toBe("npx arkenv init");
+		expect(RELEASE_CONFIG.agentPrompt).toContain("npx arkenv init --agent");
 		expect(RELEASE_CONFIG.agentPrompt).toContain(
-			"https://arkenv-v1.vercel.app/llms.txt",
+			"https://arkenv.js.org/llms.txt",
 		);
 		expect(RELEASE_CONFIG.agentPrompt).toContain(
 			"suggest as a next step (do not install it yourself)",
 		);
 		expect(RELEASE_CONFIG.agentPrompt).toContain(
-			"npx skills add https://github.com/yamcodes/arkenv/tree/v1",
+			"npx skills add yamcodes/arkenv",
 		);
 		expect(RELEASE_CONFIG.agentPrompt).toContain("@arkenv/core");
 	});
@@ -117,18 +113,18 @@ describe("release config", () => {
 		expect(getDocsUrl()).toBe("https://prod.example");
 	});
 
-	it("ignores arkenv.js.org from VERCEL_PROJECT_PRODUCTION_URL during pre-release", () => {
+	it("accepts arkenv.js.org from VERCEL_PROJECT_PRODUCTION_URL during RC", () => {
 		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
 		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "arkenv.js.org");
 		vi.stubEnv("VERCEL_URL", "preview.example");
-		expect(getDocsUrl()).toBe("https://preview.example");
+		expect(getDocsUrl()).toBe("https://arkenv.js.org");
 	});
 
-	it("ignores https://arkenv.js.org from VERCEL_PROJECT_PRODUCTION_URL during pre-release", () => {
+	it("accepts https://arkenv.js.org from VERCEL_PROJECT_PRODUCTION_URL during RC", () => {
 		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
 		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "https://arkenv.js.org");
 		vi.stubEnv("VERCEL_URL", "preview.example");
-		expect(getDocsUrl()).toBe("https://preview.example");
+		expect(getDocsUrl()).toBe("https://arkenv.js.org");
 	});
 
 	it("resolves docs URL from VERCEL_URL for preview deploys", () => {
@@ -144,14 +140,14 @@ describe("release config", () => {
 		expect(getDocsUrl()).toBe("https://preview-client.example");
 	});
 
-	it("falls back to arkenv-v1.vercel.app when env is unset", () => {
+	it("falls back to arkenv.js.org when env is unset", () => {
 		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
 		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "");
 		vi.stubEnv("VERCEL_URL", "");
-		expect(getDocsUrl()).toBe("https://arkenv-v1.vercel.app");
+		expect(getDocsUrl()).toBe("https://arkenv.js.org");
 	});
 
-	it("uses the GA fallback and production host", async () => {
+	it("falls back to apex and accepts production host regardless of RELEASE_TAG", async () => {
 		vi.stubEnv("NEXT_PUBLIC_ARKENV_RELEASE_TAG", "");
 		vi.stubEnv("ARKENV_RELEASE_TAG", "");
 		vi.resetModules();
@@ -171,13 +167,11 @@ describe("release config", () => {
 		vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
 		vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "");
 		vi.stubEnv("VERCEL_URL", "arkenv-v1.vercel.app");
-		const prompt = getAgentPrompt("alpha");
+		const prompt = getAgentPrompt("");
 		expect(prompt).toContain(
 			"For docs/reference, start from https://arkenv-v1.vercel.app/llms.txt",
 		);
-		expect(prompt).toContain(
-			"npx skills add https://github.com/yamcodes/arkenv/tree/v1",
-		);
+		expect(prompt).toContain("npx skills add yamcodes/arkenv");
 		expect(prompt).toContain("do not install it yourself");
 		expect(prompt).toContain('import { env } from "./env"');
 		expect(prompt).toContain("devDependency");

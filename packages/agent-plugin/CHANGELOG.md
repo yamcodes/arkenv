@@ -1,12 +1,17 @@
 # @arkenv/agent-plugin
 
-## 1.0.0-rc.3
+## 1.0.0-rc.1
 
 ### Patch Changes
 
-#### Enter the release candidate channel
+- #### Drop pre-release tags from MCP spawn args _[`#1865`](https://github.com/yamcodes/arkenv/pull/1865) [`095a8ce`](https://github.com/yamcodes/arkenv/commit/095a8ce0e879971bd3a562e58fd0f160f2dbd127) [@yamcodes](https://github.com/yamcodes)_
 
-Packages now ship as `1.0.0-rc.n` under the `rc` npm tag (product path also points `latest` at the RC).
+	
+	`.mcp.json` now spawns `@arkenv/agent-plugin` without `@alpha` or `@rc`, so MCP clients resolve the package from the default npm tag.
+- #### Enter the release candidate channel _[`#1858`](https://github.com/yamcodes/arkenv/pull/1858) [`430b692`](https://github.com/yamcodes/arkenv/commit/430b692a858e7b22b30b16f06abcaacb31f97738) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Packages now ship as `1.0.0-rc.n` under the `rc` npm tag (product path also points `latest` at the RC).
 
 ## 1.0.0-alpha.2
 

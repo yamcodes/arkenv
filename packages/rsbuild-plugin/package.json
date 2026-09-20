@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/rsbuild-plugin",
-	"version": "1.0.0-rc.2",
+	"version": "1.0.0-rc.1",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"repository": {
 		"type": "git",

@@ -3,10 +3,10 @@ title: TanStack Start
 description: Learn how to use ArkEnv in a TanStack Start project.
 ---
 
-TanStack Start apps validate environment variables with `@arkenv/vite-plugin`
-or `@arkenv/rsbuild-plugin`, depending on your underlying bundler. ArkEnv
-inlines public keys (`VITE_` or `PUBLIC_`) into the client bundle, keeps server
-secrets inside server functions, and throws if client code reads them.
+TanStack Start is designed to work seamlessly with typesafe env
+validation. TanStack Start apps use ArkEnv to validate environment
+variables at boot, inline public keys into the client bundle, and keep
+server secrets inside server functions.
 
 When the Vite plugin is registered, it discovers and validates `env.ts` during
 Vite config resolution. Missing or invalid values abort the dev server or
@@ -20,108 +20,94 @@ ArkEnv does not add a default-off flag for lazy validation.
 For high-level architectural trade-offs, see
 [Frameworks](/docs/frameworks).
 
-:::warning[`arkenv` is CLI-only — import `@arkenv/core`]
-Runtime validation lives in `@arkenv/core` (ArkType) or `@arkenv/standard`
-(Zod/Valibot). The `arkenv` package on npm is the interactive CLI only.
-`import arkenv from "arkenv"` throws and points you at `@arkenv/core`.
-See [`init` reference](/docs/reference/init#import-the-validator-from-core).
-:::
-
 ## Quickstart
 
-You can create a new TanStack Start project with ArkEnv pre-configured using the
-official TanStack CLI add-on, or scaffold it into an existing project.
+Vite is the default path. The TanStack CLI add-on scaffolds the Vite
+plugin, an `env.ts` schema, and ArkType as the validator engine.
 
-### Create a new project with TanStack CLI
+### Create a new project
 
-Generate a new TanStack Start project with the ArkEnv add-on:
+Generate a TanStack Start app with ArkEnv wired in:
 
 ```package-install
 npx @tanstack/cli create my-app --add-ons https://arkenv.js.org/tanstack/info.json
 ```
 
-By default, the add-on scaffolds with **ArkType** (`@arkenv/core`) and includes the interactive demo route at `/demo/arkenv`.
+The add-on installs the validator runtime, registers
+`arkenvVitePlugin()` in `vite.config.ts`, writes `src/env.ts`, and
+pre-populates declared keys in `.env.example`.
 
-Configuration options supported by the add-on:
+### Existing projects
 
-- **Validator Engine**:
-  - **ArkType** (default) — installs `@arkenv/core` and `arktype`
-  - **Zod** — installs `@arkenv/standard` and `zod`
-  - **Valibot** — installs `@arkenv/standard` and `valibot`
-- **Interactive Demo Route**:
-  - **Include `/demo/arkenv`** (default) — scaffolds an interactive secret leak test showcasing server-only isolation in the browser
-  - **Skip demo route** — scaffolds only the schema definition and plugin configuration (automatically skipped when creating a project with `--no-examples` or the `blank` preset)
+If you already have a TanStack Start app on Vite, add ArkEnv with either
+the TanStack CLI add-on or the ArkEnv CLI:
 
-The add-on automatically:
-
-- Installs the required validator runtime and dev dependencies
-- Configures `arkenvVitePlugin()` in `vite.config.ts`
-- Generates `src/env.ts` with your selected validator engine
-- Pre-populates declared keys in `.env.example`
-
-<Callout type="info" title="Adding to an existing TanStack project">
-  If you already have a TanStack application, add ArkEnv directly with the TanStack CLI:
-
-  ```package-install
-  npx @tanstack/cli add https://arkenv.js.org/tanstack/info.json
-  ```
-</Callout>
-
-### Existing projects with ArkEnv CLI
-
-If you prefer using the ArkEnv CLI in an existing TanStack Start project:
+```package-install
+npx @tanstack/cli add https://arkenv.js.org/tanstack/info.json
+```
 
 ```package-install
 npx arkenv init
 ```
 
-The CLI detects `@tanstack/react-start` in your dependencies and installs
-`@arkenv/vite-plugin` the same way it does for Vite projects. For Rsbuild
-setups, follow [Manual installation](#manual-installation) below.
+`arkenv init` detects `@tanstack/react-start` and installs
+`@arkenv/vite-plugin` the same way it does for Vite projects.
 
-:::info[Pinning RCs]
-Until GA, pin exact `@arkenv/*` RC versions in the lockfile if you want
-bit-for-bit reproducibility across machines and CI.
-:::
+<Callout type="info" title="Using Rsbuild?">
+  ArkEnv fully supports Rsbuild via `@arkenv/rsbuild-plugin`.
+  `@tanstack/cli` does not currently support Rsbuild for scaffolding or
+  add-ons (track
+  [TanStack/cli#505](https://github.com/TanStack/cli/pull/505)).
+  Configure via [Manual installation](#manual-installation) and
+  [Rsbuild](#rsbuild).
+</Callout>
+
+<Callout type="info" title="Pinning RCs">
+  Until GA, pin exact `@arkenv/*` RC versions in the lockfile if you want
+  bit-for-bit reproducibility across machines and CI.
+</Callout>
 
 ## Manual installation
 
-Install the plugin that matches your bundler (`@arkenv/vite-plugin` for Vite or
-`@arkenv/rsbuild-plugin` for Rsbuild) alongside your chosen validation engine.
+Install the plugin that matches your bundler alongside your validation
+engine. Author bare `@arkenv/*` package names; the docs site applies the
+release tag automatically.
 
 <Callout type="info">
-  Prefer `@arkenv/core` and your host plugin as app dependencies — not the
-  `arkenv` CLI package.
+  Prefer `@arkenv/core` and your host plugin as app dependencies — not
+  the `arkenv` CLI package.
 </Callout>
 
-### ArkType engine
+### Vite
 
-For Vite:
+#### ArkType engine
 
 ```package-install
 npm install @arkenv/core arktype
 npm install -D @arkenv/vite-plugin
 ```
 
-For Rsbuild:
-
-```package-install
-npm install @arkenv/core arktype
-npm install -D @arkenv/rsbuild-plugin
-```
-
-### Standard Schema engine
+#### Standard Schema engine
 
 If you aren't using ArkType, install `@arkenv/standard`:
-
-For Vite:
 
 ```package-install
 npm install @arkenv/standard
 npm install -D @arkenv/vite-plugin
 ```
 
-For Rsbuild:
+### Rsbuild
+
+#### ArkType engine
+
+```package-install
+npm install @arkenv/core arktype
+npm install -D @arkenv/rsbuild-plugin
+```
+
+#### Standard Schema engine
+
+If you aren't using ArkType, install `@arkenv/standard`:
 
 ```package-install
 npm install @arkenv/standard
@@ -130,13 +116,14 @@ npm install -D @arkenv/rsbuild-plugin
 
 ## Configuration
 
-Register the plugin next to TanStack Start and React in your bundler config.
+Register the ArkEnv plugin next to TanStack Start and React in your
+bundler config.
 
 ### Vite
 
-TanStack Start's React recipe on Vite expects `viteReact()` after `tanstackStart()`
-(for JSX / Fast Refresh). Add `arkenvVitePlugin()` to the same `plugins`
-array:
+TanStack Start's React recipe on Vite expects `viteReact()` after
+`tanstackStart()` (for JSX / Fast Refresh). Add `arkenvVitePlugin()` to
+the same `plugins` array:
 
 ```ts title="./vite.config.ts"
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
@@ -158,20 +145,22 @@ Install `@vitejs/plugin-react` if it is not already a dependency. If you
 aren't using ArkType, import the ArkEnv plugin from
 `@arkenv/vite-plugin/standard`.
 
-:::warning[React Refresh plugin required for client hydration]
-TanStack Start React dev mode requires the React Refresh runtime (`/@react-refresh`). You must include `@vitejs/plugin-react` (or `@vitejs/plugin-react-swc`) in your Vite `plugins` array and place it **after** `tanstackStart()`.
-
-If the React plugin is missing, Vite fails to load the client entry (`/@react-refresh could not be resolved`). The page will still render via SSR, but client-side hydration fails, leaving interactive handlers (like `onClick` listeners) unattached.
-:::
+<Callout type="warn" title="React Refresh must come after Start's plugin">
+  Place `@vitejs/plugin-react` (or `@vitejs/plugin-react-swc`) **after**
+  `tanstackStart()`. Without it, Vite cannot resolve `/@react-refresh`,
+  SSR still renders, and client hydration fails so handlers never attach.
+</Callout>
 
 ### Rsbuild
 
-TanStack Start also supports [Rsbuild](https://rsbuild.dev) via `@tanstack/react-start/plugin/rsbuild`. Register `arkenvRsbuildPlugin()` in your `rsbuild.config.ts`:
+TanStack Start also supports [Rsbuild](https://rsbuild.dev) via
+`@tanstack/react-start/plugin/rsbuild`. Register
+`arkenvRsbuildPlugin()` in your `rsbuild.config.ts`:
 
 ```ts title="./rsbuild.config.ts"
 import { pluginReact } from "@rsbuild/plugin-react";
 import { tanstackStart } from "@tanstack/react-start/plugin/rsbuild";
-import arkenvRsbuildPlugin from "@arkenv/rsbuild-plugin";
+import { arkenvRsbuildPlugin } from "@arkenv/rsbuild-plugin";
 import { defineConfig } from "@rsbuild/core";
 
 export default defineConfig({
@@ -186,11 +175,19 @@ export default defineConfig({
 If you aren't using ArkType, import the plugin from
 `@arkenv/rsbuild-plugin/standard`.
 
-### Define your schema
+## Define your schema
 
-Create an `env.ts` file in your source tree. Keys your client bundle reads must
-match your bundler's client prefix: `VITE_` for Vite or `PUBLIC_` for Rsbuild.
-Everything else stays on the server:
+Create an `env.ts` file in your source tree. Keys your client bundle
+reads must match your bundler's client prefix: `VITE_` for Vite or
+`PUBLIC_` for Rsbuild. Everything else stays on the server.
+
+<Callout type="info" title="Import from the runtime package, not the CLI">
+  Runtime validation lives in `@arkenv/core` (ArkType) or
+  `@arkenv/standard` (Zod/Valibot). The `arkenv` package is the
+  interactive CLI only. Importing `arkenv` from the CLI package throws
+  and points you at `@arkenv/core`. See
+  [`init` reference](/docs/reference/init#import-the-validator-from-core).
+</Callout>
 
 <Tabs items={["Vite", "Rsbuild"]}>
   <Tab value="Vite">
@@ -220,22 +217,22 @@ Everything else stays on the server:
   </Tab>
 </Tabs>
 
-:::tip[Pass the schema as an object literal]
-Pass the object literal into `arkenv({ ... })`, or wrap a shared shape with
-`type(...)` from `@arkenv/core`. An untyped intermediate object can break
-overload inference.
-:::
+<Callout type="info" title="Pass the schema as an object literal">
+  Pass the object literal into `arkenv({ ... })`, or wrap a shared shape
+  with `type(...)` from `@arkenv/core`. An untyped intermediate object
+  can break overload inference.
+</Callout>
 
 ## Server functions and client access
 
-Read the validated `env` object from your schema module in routes and server
-functions.
+Read the validated `env` object from your schema module in routes and
+server functions.
 
 ### Server keys in createServerFn
 
-Server-only keys work inside `createServerFn` handlers. The handler runs on the
-server, where `env.ts` executes the real validation runtime against your
-process environment:
+Server-only keys work inside `createServerFn` handlers. The handler runs
+on the server, where `env.ts` executes the real validation runtime
+against your process environment:
 
 <Tabs items={["Vite", "Rsbuild"]}>
   <Tab value="Vite">
@@ -299,14 +296,15 @@ process environment:
 
 ### Client keys in components
 
-Client components read public keys (`VITE_*` on Vite, `PUBLIC_*` on Rsbuild)
-from the same import. The plugin rewrites the client module so these values
-are inlined as coerced literals.
+Client components read public keys (`VITE_*` on Vite, `PUBLIC_*` on
+Rsbuild) from the same import. The plugin rewrites the client module so
+these values are inlined as coerced literals.
 
-:::warning[Do not read `import.meta.env` directly]
-Reading `import.meta.env` skips ArkEnv. Import `{ env }` so public keys stay
-typed and coerced and server secrets stay out of the client bundle.
-:::
+<Callout type="warn" title="Use the env import, not import.meta.env">
+  Reading `import.meta.env` skips ArkEnv. Import `{ env }` so public keys
+  stay typed and coerced and server secrets stay out of the client
+  bundle.
+</Callout>
 
 Reading a server-only key in the browser throws instead of leaking:
 
@@ -329,29 +327,34 @@ Reading a server-only key in the browser throws instead of leaking:
 ## SSR and the client boundary
 
 TanStack Start builds two module graphs: the SSR graph for the server
-functions and routes you render on the server, and the client graph for what
-ships to the browser.
+functions and routes you render on the server, and the client graph for
+what ships to the browser.
 
-- **Server graph:** `env.ts` executes the real `@arkenv/core` runtime at boot
-  and validates your process environment before requests are served. `createServerFn`
-  handlers run on this graph, so they read real, validated values.
-- **Client graph:** `@arkenv/vite-plugin` or `@arkenv/rsbuild-plugin` transforms `env.ts` during the client
-  build. It inlines public values and replaces private server keys with
-  throwing getters, so the validator engine never ships to the browser.
+- **Server graph:** `env.ts` executes the real `@arkenv/core` runtime at
+  boot and validates your process environment before requests are
+  served. `createServerFn` handlers run on this graph, so they read
+  real, validated values.
+- **Client graph:** `@arkenv/vite-plugin` or `@arkenv/rsbuild-plugin`
+  transforms `env.ts` during the client build. It inlines public values
+  and replaces private server keys with throwing getters, so the
+  validator engine never ships to the browser.
 
-Like Vite and Rsbuild, TanStack Start loads `.env*` files in development. In production, the
-environment comes from the process that starts your server, so containers must
-inject variables before boot.
+Like Vite and Rsbuild, TanStack Start loads `.env*` files in
+development. In production, the environment comes from the process that
+starts your server, so containers must inject variables before boot.
 
 ## Examples
 
 Run a complete setup end to end:
 
-- [`with-tanstack-start`](https://github.com/yamcodes/arkenv/tree/v1/examples/with-tanstack-start): TanStack Start with Vite and `@arkenv/vite-plugin`.
-- [`with-tanstack-start-rsbuild`](https://github.com/yamcodes/arkenv/tree/v1/examples/with-tanstack-start-rsbuild): TanStack Start with Rsbuild and `@arkenv/rsbuild-plugin`.
+- [`with-tanstack-start`](https://github.com/yamcodes/arkenv/tree/v1/examples/with-tanstack-start):
+  TanStack Start with Vite and `@arkenv/vite-plugin`.
+- [`with-tanstack-start-rsbuild`](https://github.com/yamcodes/arkenv/tree/v1/examples/with-tanstack-start-rsbuild):
+  TanStack Start with Rsbuild and `@arkenv/rsbuild-plugin`.
 
-Both examples demonstrate server-only `DATABASE_URL` accessed inside `createServerFn`,
-public keys rendered in a client component, and a button that demonstrates the client-side throw.
+Both examples demonstrate server-only `DATABASE_URL` accessed inside
+`createServerFn`, public keys rendered in a client component, and a
+button that demonstrates the client-side throw.
 
 ## Next steps
 

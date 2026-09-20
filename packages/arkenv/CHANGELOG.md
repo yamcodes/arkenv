@@ -1,12 +1,13 @@
 # @arkenv/core
 
-## 1.0.0-rc.23
+## 1.0.0-rc.1
 
 ### Patch Changes
 
-#### Enter the release candidate channel
+- #### Enter the release candidate channel _[`#1858`](https://github.com/yamcodes/arkenv/pull/1858) [`430b692`](https://github.com/yamcodes/arkenv/commit/430b692a858e7b22b30b16f06abcaacb31f97738) [@yamcodes](https://github.com/yamcodes)_
 
-Packages now ship as `1.0.0-rc.n` under the `rc` npm tag (product path also points `latest` at the RC).
+	
+	Packages now ship as `1.0.0-rc.n` under the `rc` npm tag (product path also points `latest` at the RC).
 
 ## 1.0.0-alpha.22
 

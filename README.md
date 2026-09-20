@@ -14,16 +14,16 @@
 </p>
 
 > [!IMPORTANT]
-> You are viewing the **v1 branch**, a pre-release (alpha) version of ArkEnv. Track progress on the [v1 roadmap](https://arkenv-v1.vercel.app/roadmap).
+> You are viewing the **v1 branch**, a release candidate (RC) of ArkEnv. Track progress on the [v1 roadmap](https://arkenv.js.org/roadmap).
 >
 > TypeScript consumers must set `moduleResolution` to `"bundler"`, `"node16"`, or `"nodenext"`. Legacy `"node"` resolution does not load package `exports` subpaths such as `@arkenv/standard/valibot`.
 
 <div align="center">
-  <a href="https://arkenv-v1.vercel.app/docs">Docs</a>
+  <a href="https://arkenv.js.org/docs">Docs</a>
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
-  <a href="https://arkenv-v1.vercel.app/docs/getting-started">Get started</a>
+  <a href="https://arkenv.js.org/docs/getting-started">Get started</a>
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
-  <a href="https://arkenv-v1.vercel.app/docs/frameworks">Frameworks</a>
+  <a href="https://arkenv.js.org/docs/frameworks">Frameworks</a>
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
   <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/v1/examples/stackblitz?file=index.ts">Try on StackBlitz</a>
   <br />
@@ -34,7 +34,7 @@
 
 
 <h3 align="center">
-  First-class integrations: <a href="https://arkenv-v1.vercel.app/docs/frameworks/nextjs">Next.js</a>, <a href="https://arkenv-v1.vercel.app/docs/frameworks/nuxt">Nuxt</a>, <a href="https://arkenv-v1.vercel.app/docs/frameworks/vite">Vite</a>, <a href="https://arkenv-v1.vercel.app/docs/frameworks/tanstack-start">TanStack Start</a>, <a href="https://github.com/yamcodes/arkenv/tree/v1/examples/with-solid-start">SolidStart</a>, <a href="https://arkenv-v1.vercel.app/docs/getting-started">Node.js</a>, and <a href="https://arkenv-v1.vercel.app/docs/frameworks/bun">Bun fullstack</a>
+  First-class integrations: <a href="https://arkenv.js.org/docs/frameworks/nextjs">Next.js</a>, <a href="https://arkenv.js.org/docs/frameworks/nuxt">Nuxt</a>, <a href="https://arkenv.js.org/docs/frameworks/vite">Vite</a>, <a href="https://arkenv.js.org/docs/frameworks/tanstack-start">TanStack Start</a>, <a href="https://github.com/yamcodes/arkenv/tree/v1/examples/with-solid-start">SolidStart</a>, <a href="https://arkenv.js.org/docs/getting-started">Node.js</a>, and <a href="https://arkenv.js.org/docs/frameworks/bun">Bun fullstack</a>
 </h3>
 
 <br />
@@ -95,7 +95,7 @@ export const env = arkenv({
 <summary>npm</summary>
 
 ```sh
-npx arkenv@rc init
+npx arkenv init
 ```
 
 </details>
@@ -104,7 +104,7 @@ npx arkenv@rc init
 <summary>pnpm</summary>
 
 ```sh
-pnpm dlx arkenv@rc init
+pnpm dlx arkenv init
 ```
 
 </details>
@@ -113,7 +113,7 @@ pnpm dlx arkenv@rc init
 <summary>Yarn</summary>
 
 ```sh
-yarn dlx arkenv@rc init
+yarn dlx arkenv init
 ```
 
 </details>
@@ -122,14 +122,14 @@ yarn dlx arkenv@rc init
 <summary>Bun</summary>
 
 ```sh
-bunx arkenv@rc init
+bunx arkenv init
 ```
 
 </details>
 
 <br />
 
-### [Read the docs →](https://arkenv-v1.vercel.app/docs/getting-started)
+### [Read the docs →](https://arkenv.js.org/docs/getting-started)
 
 <br />
 
