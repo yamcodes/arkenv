@@ -176,9 +176,13 @@ describe("runNpm", () => {
 	it("inherits stdio for OTP-capable writes and does not trim null", () => {
 		const exec = vi.fn(() => null);
 		expect(
-			runNpm(["dist-tag", "add", "arkenv@1.0.0-rc.1", "latest"], {
-				inherit: true,
-			}, exec),
+			runNpm(
+				["dist-tag", "add", "arkenv@1.0.0-rc.1", "latest"],
+				{
+					inherit: true,
+				},
+				exec,
+			),
 		).toBe("");
 		expect(exec).toHaveBeenCalledWith(
 			"npm",
