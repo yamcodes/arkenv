@@ -1,10 +1,15 @@
 #!/usr/bin/env node
 /**
  * Under `turbo run build`, dependency packages and `mdx` already ran via
- * `dependsOn: ["^build", "mdx"]`. Re-running `nub run --filter @arkenv/nextjs
- * build` here races other playgrounds that consume `dist/` (missing
- * `@arkenv/nextjs`). Skip the nested rebuild when Turbo is driving the task;
- * keep it for bare `pnpm build` / `nub run build` in www.
+ * `dependsOn: ["^build", "mdx"]`. Re-running a nested rebuild here races other
+ * playgrounds that consume `dist/` (missing `@arkenv/nextjs`). Skip when Turbo
+ * is driving the task; keep it for bare `pnpm build` / `nub run build` in www
+ * (Vercel CLI).
+ *
+ * Filters use `...` so workspace deps (`@repo/log`, `@repo/utils`, …) build
+ * before `@arkenv/nextjs`. Without that, tsdown cannot resolve those packages
+ * for `alwaysBundle` and leaves them external — then `next.config` fails with
+ * `ERR_MODULE_NOT_FOUND` for `@repo/log/dist/index.js`.
  */
 import { spawnSync } from "node:child_process";
 
@@ -17,9 +22,9 @@ const result = spawnSync(
 	[
 		"run",
 		"--filter",
-		"@arkenv/fumadocs-ui",
+		"@arkenv/fumadocs-ui...",
 		"--filter",
-		"@arkenv/nextjs",
+		"@arkenv/nextjs...",
 		"build",
 	],
 	{ stdio: "inherit", shell: false },
