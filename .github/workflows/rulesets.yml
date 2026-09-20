@@ -94,6 +94,9 @@ jobs:
           fi
 
           echo "Resolved ruleset id: ${RULESET_ID}"
+          # Compare only fields the committed body owns. bypass_actors is
+          # intentionally omitted from the JSON; a PUT that omits the field
+          # leaves live bypass actors unchanged (see .github/rulesets/README.md).
           # -S so key-order noise from the API vs committed file is not a
           # false drift signal.
           gh api "repos/${OWNER}/${REPO}/rulesets/${RULESET_ID}" \
@@ -101,6 +104,7 @@ jobs:
             > /tmp/live.json
           jq -S '{name, target, enforcement, conditions, rules}' \
             "$RULESET_FILE" > /tmp/desired.json
+
 
           echo "::group::Live (comparable fields)"
           cat /tmp/live.json

@@ -30,17 +30,34 @@ Before a non-dry-run apply can succeed:
 
 ## Apply
 
+Both dry-run and apply run through the protected `rulesets` environment, so
+every workflow dispatch waits for reviewer approval.
+
 1. Open **Actions → rulesets → Run workflow**.
 2. Leave **dry_run** enabled (default) to print the live-vs-committed diff.
-3. Run again with **dry_run** disabled to `PUT` the committed body. The
-   protected `rulesets` environment will wait for maintainer approval.
+3. Run again with **dry_run** disabled to `PUT` the committed body.
 
-Break-glass (local, with an admin token that can manage rulesets):
+`default-branch.json` intentionally omits `bypass_actors`. Omitting that field
+on `PUT` leaves existing bypass actors unchanged (send `"bypass_actors": []`
+only if you mean to clear them). Bypass actors stay UI-managed.
+
+Break-glass (local, with an admin token that can manage rulesets). The list
+endpoint has no `conditions`, so resolve by name first, then fall back to the
+detail endpoint for `~DEFAULT_BRANCH`:
 
 ```sh
 RULESET_ID=$(gh api repos/yamcodes/arkenv/rulesets \
-  --jq '.[] | select(.name=="default-branch" or (.conditions.ref_name.include[]? == "~DEFAULT_BRANCH")) | .id' \
-  | head -n1)
+  --jq '.[] | select(.name=="default-branch") | .id')
+if [[ -z "$RULESET_ID" ]]; then
+  while IFS= read -r id; do
+    if gh api "repos/yamcodes/arkenv/rulesets/${id}" | jq -e \
+      '.conditions.ref_name.include | index("~DEFAULT_BRANCH")' \
+      >/dev/null; then
+      RULESET_ID=$id
+      break
+    fi
+  done < <(gh api repos/yamcodes/arkenv/rulesets --jq '.[].id')
+fi
 gh api --method PUT "repos/yamcodes/arkenv/rulesets/${RULESET_ID}" \
   --input .github/rulesets/default-branch.json
 ```

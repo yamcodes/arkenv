@@ -188,7 +188,9 @@ The job uses the protected `rulesets` environment and a dedicated
 `arkenv-infra` App (`INFRA_APP_ID` / `INFRA_APP_PRIVATE_KEY`). Setup steps
 live in [`.github/rulesets/README.md`](../.github/rulesets/README.md).
 
-Break-glass apply with an admin token:
+Break-glass apply with an admin token (prefer the detail-endpoint fallback in
+[`.github/rulesets/README.md`](../.github/rulesets/README.md) if the live
+ruleset is still named something other than `default-branch`):
 
 ```sh
 RULESET_ID=$(gh api repos/yamcodes/arkenv/rulesets \
