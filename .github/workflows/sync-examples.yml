@@ -36,7 +36,7 @@ jobs:
           node-version: 24
 
       - name: Install dependencies
-        run: nub install
+        run: pnpm install
 
       - name: Build packages
         run: nub run --no-check build:packages
@@ -66,7 +66,7 @@ jobs:
         with:
           node-version: 24
 
-      - run: nub install
+      - run: pnpm install
       - run: nub run --no-check build:packages
       - run: nub run --no-check sync:examples
 

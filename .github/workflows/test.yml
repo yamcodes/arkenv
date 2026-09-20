@@ -38,13 +38,13 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.0
+      # pnpm install (via nub shim): keep packageManager=pnpm's .pnpm layout.
+      # `nub install` uses node_modules/.store, and Vitest's NODE_PATH then
+      # cannot resolve workspace pkgs (@arkenv/core) from /tmp jiti fixtures.
       - name: Install dependencies
-        run: nub install
+        run: pnpm install
       - name: Build packages
         run: nub run --no-check build --filter=./packages/*
-      # Keep Nub's preload for tests: jiti loads of /tmp env.ts fixtures rely on
-      # it to resolve workspace `@arkenv/core`. Pair with verifyDepsBeforeRun:false
-      # and the direct dpdm call so shim races do not hang circular checks.
       - run: nub run --no-check test
       - name: Verify build artifacts
         run: nub run --no-check verify-artifacts
@@ -62,7 +62,7 @@ jobs:
       - uses: ./.github/actions/setup-nub-ci
         with:
           node-version: 24
-      - run: nub install
+      - run: pnpm install
       - run: nub run --no-check typecheck
 
   test-build:
@@ -84,7 +84,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.0
-      - run: nub install
+      - run: pnpm install
       # --node: outer nub run injects a TS preload that turbo children inherit.
       # Nuxt's tsconfig extends .nuxt/tsconfig.json before prepare, so the
       # preload aborts the playground build; plain Node lets Nuxt own that.
@@ -106,15 +106,15 @@ jobs:
       - uses: ./.github/actions/setup-nub-ci
         with:
           node-version: 24
-      - run: nub install
+      - run: pnpm install
       - name: Build workspace packages
         run: nub run --no-check build:packages
       - name: Apply overrides for Vite version
         run: node scripts/override-vite.js ${{ matrix.vite-version }}
       - name: Reinstall dependencies with overrides
-        run: nub install --no-frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
       - name: Build vite-legacy playground
-        run: nub run --no-check build --filter=vite-legacy-playground
+        run: nub run --no-check --node build --filter=vite-legacy-playground
 
   test-e2e:
     runs-on: ubuntu-latest
@@ -139,7 +139,7 @@ jobs:
       - uses: ./.github/actions/setup-nub-ci
         with:
           node-version: 24
-      - run: nub install
+      - run: pnpm install
       - uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
@@ -190,7 +190,7 @@ jobs:
         with:
           bun-version: 1.4.0
       - name: Install dependencies
-        run: nub install
+        run: pnpm install
       - uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
@@ -237,7 +237,7 @@ jobs:
         with:
           bun-version: 1.4.0
       - name: Install dependencies
-        run: nub install
+        run: pnpm install
       - uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright

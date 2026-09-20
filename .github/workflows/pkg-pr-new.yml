@@ -39,7 +39,7 @@ jobs:
           node-version: 24
 
       - name: Install deps
-        run: nub install
+        run: pnpm install
 
       - name: Build
         run: nub run --no-check build --filter="./packages/*"
