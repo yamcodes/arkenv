@@ -87,4 +87,4 @@ forward-port of `www-vitest-no-styled-jsx-babel` from `main`
 - Future contributors who see unknown-`jsx` warnings should mock the
   public Next/Fumadocs import that pulled styled-jsx in, or move the test
   to Playwright. They should not add a compiler.
-- #408 stays closed as a path: no SWC styled-jsx plugin in www Vitest.
+- \#408 stays closed as a path: no SWC styled-jsx plugin in www Vitest.
