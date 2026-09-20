@@ -247,8 +247,10 @@ After Changesets publishes in pre mode with tag `rc`,
 output and sets `latest` on each published package.
 
 - **Gate:** only while [`.changeset/pre.json`](../.changeset/pre.json)
-  has `"tag": "rc"`. Running `pnpm exec changeset pre exit` removes that
-  file, so the step no-ops at GA without a separate flag.
+  has `"mode": "pre"` and `"tag": "rc"`. Running
+  `pnpm exec changeset pre exit` sets `"mode": "exit"` (the file is
+  deleted later by `changeset version`), so the step no-ops without a
+  separate flag.
 - **Auth:** Publish stays on OIDC trusted publishing. `npm dist-tag` is
   not covered by OIDC (the npm CLI still has no OIDC exchange for
   dist-tag), so the supported path is a granular access token in the

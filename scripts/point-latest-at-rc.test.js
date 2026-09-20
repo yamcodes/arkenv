@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import {
+	createTempNpmrcPath,
 	distTagAddArgs,
 	listPublishablePackageNames,
 	parseArgs,
@@ -10,6 +11,9 @@ import {
 	pointLatestAtRc,
 	resolveAuthToken,
 	shouldRetagLatest,
+	skipReasonForPre,
+	withUserconfig,
+	writeNpmrcAuth,
 } from "./point-latest-at-rc.js";
 
 describe("shouldRetagLatest", () => {
@@ -19,6 +23,18 @@ describe("shouldRetagLatest", () => {
 		expect(shouldRetagLatest({ mode: "exit", tag: "rc" })).toBe(false);
 		expect(shouldRetagLatest(null)).toBe(false);
 		expect(shouldRetagLatest(undefined)).toBe(false);
+	});
+});
+
+describe("skipReasonForPre", () => {
+	it("distinguishes missing file, exit mode, and wrong tag", () => {
+		expect(skipReasonForPre(null)).toMatch(/pre\.json missing/);
+		expect(skipReasonForPre({ mode: "exit", tag: "rc" })).toMatch(
+			/mode is "exit"/,
+		);
+		expect(skipReasonForPre({ mode: "pre", tag: "alpha" })).toMatch(
+			/not rc/,
+		);
 	});
 });
 
@@ -55,6 +71,33 @@ describe("distTagAddArgs", () => {
 			"@arkenv/core@1.0.0-rc.2",
 			"latest",
 		]);
+	});
+});
+
+describe("withUserconfig", () => {
+	it("prefixes --userconfig when a path is provided", () => {
+		expect(withUserconfig(["dist-tag", "ls"], "/tmp/x.npmrc")).toEqual([
+			"--userconfig",
+			"/tmp/x.npmrc",
+			"dist-tag",
+			"ls",
+		]);
+		expect(withUserconfig(["view", "arkenv"], undefined)).toEqual([
+			"view",
+			"arkenv",
+		]);
+	});
+});
+
+describe("writeNpmrcAuth / createTempNpmrcPath", () => {
+	it("writes auth to a dedicated path without needing ~/.npmrc", () => {
+		const npmrcPath = createTempNpmrcPath();
+		writeNpmrcAuth("npm_test_token", npmrcPath);
+		expect(readFileSync(npmrcPath, "utf8")).toContain(
+			"_authToken=npm_test_token",
+		);
+		expect(npmrcPath).not.toBe(join(tmpdir(), "..", ".npmrc"));
+		expect(npmrcPath.includes("arkenv-npmrc-")).toBe(true);
 	});
 });
 
@@ -147,6 +190,23 @@ describe("pointLatestAtRc", () => {
 		expect(result.commands).toEqual([]);
 	});
 
+	it("skips when pre.json mode is exit (pre exit does not delete the file)", () => {
+		const { root, npmrcPath, env } = makeRoot({ mode: "exit", tag: "rc" });
+		const log = vi.fn();
+		const result = pointLatestAtRc({
+			rootDir: root,
+			packagesJson: '[{"name":"arkenv","version":"1.0.0-rc.2"}]',
+			env,
+			npmrcPath,
+			log,
+			execNpm: () => {
+				throw new Error("should not run npm");
+			},
+		});
+		expect(result.status).toBe("skipped");
+		expect(result.reason).toMatch(/mode is "exit"/);
+	});
+
 	it("skips soft when auth token is missing (OIDC cannot dist-tag)", () => {
 		const { root, npmrcPath } = makeRoot({ mode: "pre", tag: "rc" }, "");
 		const warn = vi.fn();
@@ -185,14 +245,28 @@ describe("pointLatestAtRc", () => {
 		});
 		expect(result.status).toBe("ok");
 		expect(result.commands).toEqual([
-			["dist-tag", "add", "arkenv@1.0.0-rc.2", "latest"],
-			["dist-tag", "add", "@arkenv/core@1.0.0-rc.2", "latest"],
+			[
+				"--userconfig",
+				npmrcPath,
+				"dist-tag",
+				"add",
+				"arkenv@1.0.0-rc.2",
+				"latest",
+			],
+			[
+				"--userconfig",
+				npmrcPath,
+				"dist-tag",
+				"add",
+				"@arkenv/core@1.0.0-rc.2",
+				"latest",
+			],
 		]);
 		expect(calls).toEqual([]);
 		expect(log.mock.calls.flat().join("\n")).toMatch(/\[dry-run\]/);
 	});
 
-	it("runs npm dist-tag add for each published package", () => {
+	it("runs npm dist-tag add via --userconfig temp auth (does not need ~/.npmrc)", () => {
 		const { root, npmrcPath, env } = makeRoot({ mode: "pre", tag: "rc" });
 		const calls = [];
 		const result = pointLatestAtRc({
@@ -206,7 +280,16 @@ describe("pointLatestAtRc", () => {
 			},
 		});
 		expect(result.status).toBe("ok");
-		expect(calls).toEqual([["dist-tag", "add", "arkenv@1.0.0-rc.2", "latest"]]);
+		expect(calls).toEqual([
+			[
+				"--userconfig",
+				npmrcPath,
+				"dist-tag",
+				"add",
+				"arkenv@1.0.0-rc.2",
+				"latest",
+			],
+		]);
 		expect(readFileSync(npmrcPath, "utf8")).toContain(
 			"_authToken=npm_test_token",
 		);
@@ -234,7 +317,59 @@ describe("pointLatestAtRc", () => {
 		expect(result.status).toBe("ok");
 		expect(calls).toEqual([
 			["view", "arkenv@rc", "version"],
-			["dist-tag", "add", "arkenv@1.0.0-rc.1", "latest"],
+			[
+				"--userconfig",
+				npmrcPath,
+				"dist-tag",
+				"add",
+				"arkenv@1.0.0-rc.1",
+				"latest",
+			],
+		]);
+	});
+
+	it("warns and skips packages without @rc instead of aborting --from-rc", () => {
+		const { root, npmrcPath, env } = makeRoot({ mode: "pre", tag: "rc" });
+		mkdirSync(join(root, "packages", "arkenv"), { recursive: true });
+		mkdirSync(join(root, "packages", "missing"), { recursive: true });
+		writeFileSync(
+			join(root, "packages", "arkenv", "package.json"),
+			JSON.stringify({ name: "arkenv", version: "1.0.0-rc.1" }),
+		);
+		writeFileSync(
+			join(root, "packages", "missing", "package.json"),
+			JSON.stringify({ name: "@arkenv/missing", version: "0.0.0" }),
+		);
+		const warn = vi.fn();
+		const calls = [];
+		const result = pointLatestAtRc({
+			rootDir: root,
+			fromRc: true,
+			env,
+			npmrcPath,
+			warn,
+			execNpm: (args) => {
+				calls.push(args);
+				if (args[0] === "view") {
+					if (args[1] === "arkenv@rc") return "1.0.0-rc.1";
+					throw new Error("404 Not Found - GET …/@arkenv/missing");
+				}
+				return "ok";
+			},
+		});
+		expect(result.status).toBe("ok");
+		expect(warn.mock.calls.flat().join("\n")).toMatch(/@arkenv\/missing/);
+		expect(calls).toEqual([
+			["view", "@arkenv/missing@rc", "version"],
+			["view", "arkenv@rc", "version"],
+			[
+				"--userconfig",
+				npmrcPath,
+				"dist-tag",
+				"add",
+				"arkenv@1.0.0-rc.1",
+				"latest",
+			],
 		]);
 	});
 });

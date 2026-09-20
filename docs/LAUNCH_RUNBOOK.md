@@ -46,16 +46,17 @@ RC checklist, and do not treat the RC checklist as a substitute for these
    ```bash
    pnpm exec changeset pre exit
    ```
-   This deletes `.changeset/pre.json`. The release workflow's
-   "Point latest at published RC" step is gated on that file's
-   `"tag": "rc"`, so it stops retagging automatically — no separate flag
-   to clear. You can remove the `NPM_TOKEN` secret later if it existed
-   only for the RC window (that secret is the stage-only dist-tag token;
-   publish stays on OIDC).
+   This sets `.changeset/pre.json` `"mode"` to `"exit"` (it does **not**
+   delete the file). The release workflow's "Point latest at published
+   RC" step requires `"mode": "pre"` and `"tag": "rc"`, so it stops
+   retagging automatically — no separate flag to clear. You can remove
+   the `NPM_TOKEN` secret later if it existed only for the RC window
+   (that secret is the stage-only dist-tag token; publish stays on OIDC).
 2. Generate the final version packages and changelogs:
    ```bash
    pnpm exec changeset version
    ```
+   This is what deletes `.changeset/pre.json` after exiting pre.
 3. Commit and merge the Version Packages PR to `v1`.
 
 ### Step 2.2: Promote Packages to `@latest`

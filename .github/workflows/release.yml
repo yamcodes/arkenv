@@ -75,7 +75,8 @@ jobs:
       # Prefer "Read and write (stage only)", bypass 2FA, @arkenv + arkenv
       # only, no org write; rotate ~90 days. Missing token skips soft
       # (warns) so publish itself is not failed. Gate: .changeset/pre.json
-      # tag === "rc"; `changeset pre exit` removes the file and stops this.
+      # mode === "pre" && tag === "rc". `changeset pre exit` sets mode to
+      # "exit" (file deleted later by `changeset version`) and stops this.
       # See docs/RC_CHECKLIST.md §C and scripts/point-latest-at-rc.js.
       - name: Point latest at published RC
         if: steps.changesets.outputs.published == 'true'

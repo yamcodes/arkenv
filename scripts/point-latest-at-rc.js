@@ -7,8 +7,9 @@
  * sets `latest`.
  *
  * Gates (all required):
- * - `.changeset/pre.json` exists with `"tag": "rc"` (exiting pre removes
- *   the file, so GA naturally disables this).
+ * - `.changeset/pre.json` has `"mode": "pre"` and `"tag": "rc"`.
+ *   `changeset pre exit` sets `"mode": "exit"` (the file is deleted later
+ *   by `changeset version`), so GA naturally disables this.
  * - A granular npm token in `NODE_AUTH_TOKEN` or `NPM_TOKEN` with
  *   **Read and write (stage only)** (dist-tag moves; not publish).
  *   Publish stays on OIDC trusted publishing. The npm CLI has no OIDC
@@ -21,8 +22,14 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { homedir } from "node:os";
+import {
+	existsSync,
+	mkdtempSync,
+	readdirSync,
+	readFileSync,
+	writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -123,6 +130,17 @@ export function distTagAddArgs(name, version) {
 }
 
 /**
+ * Prefix npm args with `--userconfig` when an auth npmrc path is set.
+ * @param {string[]} args
+ * @param {string | undefined} npmrcPath
+ * @returns {string[]}
+ */
+export function withUserconfig(args, npmrcPath) {
+	if (!npmrcPath) return args;
+	return ["--userconfig", npmrcPath, ...args];
+}
+
+/**
  * @param {NodeJS.ProcessEnv} [env]
  * @returns {string}
  */
@@ -133,7 +151,8 @@ export function resolveAuthToken(env = process.env) {
 /**
  * Write an npmrc auth line so `npm dist-tag` can authenticate.
  * Publish uses OIDC; dist-tag uses the NPM_TOKEN secret (no CLI OIDC
- * exchange for dist-tag).
+ * exchange for dist-tag). Callers pass this path via `--userconfig` so
+ * we never overwrite the developer's real `~/.npmrc`.
  *
  * @param {string} token
  * @param {string} npmrcPath
@@ -149,6 +168,33 @@ export function writeNpmrcAuth(token, npmrcPath, fs = {}) {
 }
 
 /**
+ * Create a temp directory + `.npmrc` path for auth (does not write yet).
+ * @param {{ mkdtempSync?: typeof mkdtempSync; tmpdir?: typeof tmpdir }} [fs]
+ * @returns {string}
+ */
+export function createTempNpmrcPath(fs = {}) {
+	const mkdtemp = fs.mkdtempSync ?? mkdtempSync;
+	const getTmp = fs.tmpdir ?? tmpdir;
+	const dir = mkdtemp(join(getTmp(), "arkenv-npmrc-"));
+	return join(dir, ".npmrc");
+}
+
+/**
+ * @param {unknown} pre
+ * @returns {string}
+ */
+export function skipReasonForPre(pre) {
+	if (pre == null) {
+		return "Not in Changesets pre mode (.changeset/pre.json missing); skipping latest retag";
+	}
+	const record = /** @type {{ mode?: unknown; tag?: unknown }} */ (pre);
+	if (record.mode !== "pre") {
+		return `Changesets pre.json mode is ${JSON.stringify(record.mode)} (not "pre"); skipping latest retag`;
+	}
+	return `Pre tag is ${JSON.stringify(record.tag)} (not rc); skipping latest retag`;
+}
+
+/**
  * @param {{
  *   rootDir?: string;
  *   packagesJson?: string;
@@ -160,7 +206,7 @@ export function writeNpmrcAuth(token, npmrcPath, fs = {}) {
  *   log?: (message: string) => void;
  *   warn?: (message: string) => void;
  * }} [options]
- * @returns {{ status: "ok" | "skipped" | "error"; reason?: string; commands: string[][] }}
+ * @returns {{ status: "ok" | "skipped" | "error"; reason?: string; commands: string[][]; npmrcPath?: string }}
  */
 export function pointLatestAtRc(options = {}) {
 	const rootDir = options.rootDir ?? defaultRootDir;
@@ -177,10 +223,7 @@ export function pointLatestAtRc(options = {}) {
 
 	const { pre } = loadPreJson(rootDir);
 	if (!shouldRetagLatest(pre)) {
-		const reason =
-			pre == null
-				? "Not in Changesets pre mode (.changeset/pre.json missing); skipping latest retag"
-				: `Pre tag is ${JSON.stringify(/** @type {{ tag?: unknown }} */ (pre).tag)} (not rc); skipping latest retag`;
+		const reason = skipReasonForPre(pre);
 		log(reason);
 		return { status: "skipped", reason, commands: [] };
 	}
@@ -197,13 +240,25 @@ export function pointLatestAtRc(options = {}) {
 	let packages;
 	if (options.fromRc) {
 		const names = listPublishablePackageNames(rootDir);
-		packages = names.map((name) => {
-			const version = execNpm(["view", `${name}@rc`, "version"]);
-			if (!version) {
-				throw new Error(`npm view ${name}@rc version returned empty`);
+		packages = [];
+		for (const name of names) {
+			try {
+				const version = execNpm(["view", `${name}@rc`, "version"]);
+				if (!version) {
+					warn(
+						`::warning::No @rc version for ${name}; skipping that package`,
+					);
+					continue;
+				}
+				packages.push({ name, version });
+			} catch (error) {
+				const detail =
+					error instanceof Error ? error.message : String(error);
+				warn(
+					`::warning::Could not resolve ${name}@rc (${detail}); skipping that package`,
+				);
 			}
-			return { name, version };
-		});
+		}
 	} else {
 		packages = parsePublishedPackages(options.packagesJson ?? "[]");
 	}
@@ -214,15 +269,17 @@ export function pointLatestAtRc(options = {}) {
 		return { status: "skipped", reason, commands: [] };
 	}
 
-	const npmrcPath = options.npmrcPath ?? join(homedir(), ".npmrc");
-	if (!options.dryRun) {
+	const npmrcPath =
+		options.npmrcPath ??
+		(options.dryRun ? undefined : createTempNpmrcPath());
+	if (!options.dryRun && npmrcPath) {
 		writeNpmrcAuth(token, npmrcPath);
 	}
 
 	/** @type {string[][]} */
 	const commands = [];
 	for (const { name, version } of packages) {
-		const args = distTagAddArgs(name, version);
+		const args = withUserconfig(distTagAddArgs(name, version), npmrcPath);
 		commands.push(args);
 		const display = `npm ${args.join(" ")}`;
 		if (options.dryRun) {
@@ -233,7 +290,7 @@ export function pointLatestAtRc(options = {}) {
 		execNpm(args);
 	}
 
-	return { status: "ok", commands };
+	return { status: "ok", commands, npmrcPath };
 }
 
 /**
@@ -272,7 +329,8 @@ function printHelp() {
   node scripts/point-latest-at-rc.js --from-rc
   node scripts/point-latest-at-rc.js --packages '…' --dry-run
 
-Only runs while .changeset/pre.json has tag "rc".
+Only runs while .changeset/pre.json has mode "pre" and tag "rc"
+(changeset pre exit sets mode "exit"; file deleted later by version).
 Requires NPM_TOKEN or NODE_AUTH_TOKEN (granular stage-only dist-tag
 token; OIDC covers publish only — no CLI OIDC exchange for dist-tag).`);
 }
