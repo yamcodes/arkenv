@@ -7,7 +7,6 @@ import { usePathname } from "next/navigation";
 import { type ReactNode, useEffect, useState } from "react";
 import { HeaderGithubLink } from "~/components/page/header-github-link";
 import { Logo } from "~/components/page/logo";
-import { ReleaseChannelBadge } from "~/components/page/release-channel-badge";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
 import { useFeatureFlag } from "~/hooks/use-feature-flag";
 import { FeatureFlag } from "~/lib/posthog/feature-flags";
@@ -191,9 +190,8 @@ export function SiteNav({
 								className="site-nav__wordmark"
 								aria-label="ArkEnv home"
 							>
-								<Logo />
+								<Logo releaseTag={releaseTag} />
 							</Link>
-							<ReleaseChannelBadge releaseTag={releaseTag} />
 						</div>
 
 						<nav className="site-nav__links" aria-label="Primary">
