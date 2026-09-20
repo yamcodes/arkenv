@@ -24,17 +24,13 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Use Node.js
-        uses: actions/setup-node@v7
+      - name: Set up Nub
+        uses: nubjs/setup-nub@v0
         with:
           node-version: 24
-          cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm install
+        run: nub install
 
       # Note: We only skip manypkg for Changesets-driven version bumps.
       # This avoids touching versions that haven't been published yet,

@@ -33,22 +33,18 @@ jobs:
         with:
           team: ${{ vars.TURBO_TEAM }}
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Install Node.js
-        uses: actions/setup-node@v7
+      - name: Set up Nub
+        uses: nubjs/setup-nub@v0
         with:
           node-version: 24
-          cache: "pnpm"
 
       - name: Install deps
-        run: pnpm install
+        run: nub install
 
       - name: Build
-        run: pnpm build --filter="./packages/*"
+        run: nub run build --filter="./packages/*"
         env:
           TURBO_FORCE: "true"
 
       - name: Release
-        run: pnpx pkg-pr-new publish --compact --pnpm './packages/*'
+        run: nubx pkg-pr-new publish --compact --pnpm './packages/*'

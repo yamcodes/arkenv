@@ -5,10 +5,10 @@
 	"type": "module",
 	"license": "AGPL-3.0-or-later",
 	"scripts": {
-		"dash": "concurrently -n server,client -c blue,green \"pnpm dash:server\" \"pnpm dash:client\"",
+		"dash": "concurrently -n server,client -c blue,green \"nub run dash:server\" \"nub run dash:client\"",
 		"dash:client": "vite",
 		"dash:server": "mkdir -p build && nub watch dashfy-server.ts",
-		"fix": "pnpm -w run fix",
+		"fix": "nub run -w fix",
 		"clean": "rimraf build node_modules"
 	},
 	"dependencies": {

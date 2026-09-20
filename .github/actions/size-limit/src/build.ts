@@ -13,7 +13,7 @@ export const installAndBuild = async (
 	if (isReleasePR) {
 		// Release PRs: install and build for the first time
 		console.log("📦 Installing dependencies for release PR...");
-		const installProc = spawn(["pnpm", "install"], {
+		const installProc = spawn(["nub", "install"], {
 			stdout: "pipe",
 			stderr: "pipe",
 		});
@@ -25,7 +25,7 @@ export const installAndBuild = async (
 
 		console.log("🔨 Building project for release PR...");
 		const buildProc = spawn(
-			["pnpm", "run", "build", "--filter", config.filter],
+			["nub", "run", "build", "--filter", config.filter],
 			{
 				stdout: "pipe",
 				stderr: "pipe",
@@ -40,7 +40,7 @@ export const installAndBuild = async (
 		// Regular PRs: reinstall and rebuild after baseline check
 		// (getBaselineSizes checks out base branch and overwrites node_modules)
 		console.log("📦 Reinstalling dependencies for current branch...");
-		const reinstallProc = spawn(["pnpm", "install"], {
+		const reinstallProc = spawn(["nub", "install"], {
 			stdout: "pipe",
 			stderr: "pipe",
 		});
@@ -53,7 +53,7 @@ export const installAndBuild = async (
 
 		console.log("🔨 Rebuilding project for current branch...");
 		const rebuildProc = spawn(
-			["pnpm", "run", "build", "--filter", config.filter],
+			["nub", "run", "build", "--filter", config.filter],
 			{
 				stdout: "pipe",
 				stderr: "pipe",

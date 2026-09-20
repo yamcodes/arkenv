@@ -14,7 +14,7 @@ The example demonstrates:
 
 ### Prerequisites
 
-Make sure you have [Node.js](https://nodejs.org) installed. We recommend using [Nub](https://nubjs.com/) (or [nvm](https://github.com/nvm-sh/nvm)) to install it. The example scripts use Nub to run TypeScript and load `.env` automatically.
+Make sure you have [Node.js](https://nodejs.org) installed. We recommend using [Nub](https://nubjs.com/) (`nub node`) to install and pin Node. The example scripts use Nub to run TypeScript and load `.env` automatically.
 
 ### Quickstart
 

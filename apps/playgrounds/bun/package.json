@@ -7,7 +7,7 @@
 		"dev": "bun --watch run index.ts",
 		"start": "bun run index.ts",
 		"build": "bun build index.ts --outdir ./dist",
-		"fix": "pnpm -w run fix",
+		"fix": "nub run -w fix",
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {

@@ -39,24 +39,20 @@ jobs:
         with:
           team: ${{ vars.TURBO_TEAM }}
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Use Node.js
-        uses: actions/setup-node@v7
+      - name: Set up Nub
+        uses: nubjs/setup-nub@v0
         with:
           # see: https://github.com/changesets/changesets/issues/2123#issuecomment-4814124084
           node-version: ">=24.18.0"
-          cache: "pnpm"
 
       - name: Install Dependencies
-        run: pnpm install
+        run: nub install
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v2.1.1
         with:
-          publish-script: pnpm run release
+          publish-script: nub run release
           github-token: ${{ steps.generate-token.outputs.token }}
 
       - name: Sync main branch

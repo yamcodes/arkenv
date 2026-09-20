@@ -33,13 +33,11 @@ jobs:
         uses: ./.github/actions/setup-turbo-remote-cache
         with:
           team: ${{ vars.TURBO_TEAM }}
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      - uses: nubjs/setup-nub@v0
         with:
           node-version: lts/*
-          cache: pnpm
       - name: Install dependencies
-        run: pnpm install
+        run: nub install
       - name: Install Vercel CLI
         # Pin the CLI to avoid upstream breakage from newly published majors.
         run: npm install --global vercel@59.16.0

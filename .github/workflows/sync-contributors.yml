@@ -24,25 +24,21 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Use Node.js
-        uses: actions/setup-node@v7
+      - name: Set up Nub
+        uses: nubjs/setup-nub@v0
         with:
           node-version: 24
-          cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm install
+        run: nub install
 
       - name: Generate contributors
-        run: pnpm contributors:generate
+        run: nub run contributors:generate
 
       - name: Check for changes
         run: |
           if [ -n "$(git status --porcelain)" ]; then
-            echo "❌ Contributors list is out of sync. Please run 'pnpm contributors:generate'."
+            echo "❌ Contributors list is out of sync. Please run 'nub run contributors:generate'."
             git diff
             exit 1
           else
@@ -67,14 +63,12 @@ jobs:
           token: ${{ steps.generate-token.outputs.token }}
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
 
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      - uses: nubjs/setup-nub@v0
         with:
           node-version: 24
-          cache: pnpm
 
-      - run: pnpm install
-      - run: pnpm contributors:generate
+      - run: nub install
+      - run: nub run contributors:generate
 
       - name: Commit contributor updates
         run: |

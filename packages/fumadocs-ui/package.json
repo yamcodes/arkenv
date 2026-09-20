@@ -42,7 +42,7 @@
 		"clean": "rimraf dist",
 		"typecheck": "tsc --noEmit",
 		"test": "vitest",
-		"fix": "pnpm -w run fix"
+		"fix": "nub run -w fix"
 	},
 	"dependencies": {
 		"clsx": "2.1.1",

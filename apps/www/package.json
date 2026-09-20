@@ -4,15 +4,15 @@
 	"private": true,
 	"scripts": {
 		"mdx": "node ./bin/mdx",
-		"prebuild": "pnpm -w build --filter @arkenv/fumadocs-ui --filter @arkenv/nextjs && pnpm run mdx",
-		"predev": "pnpm -w build --filter @arkenv/fumadocs-ui --filter @arkenv/nextjs && pnpm run mdx",
+		"prebuild": "nub run --filter @arkenv/fumadocs-ui --filter @arkenv/nextjs build && nub run mdx",
+		"predev": "nub run --filter @arkenv/fumadocs-ui --filter @arkenv/nextjs build && nub run mdx",
 		"build": "node ./bin/build next build",
 		"dev": "next dev",
 		"start": "next start",
 		"clean": "rimraf node_modules .next .source",
 		"clear-cache": "rimraf .next .source",
 		"test": "vitest",
-		"fix": "pnpm -w run fix",
+		"fix": "nub run -w fix",
 		"pretypecheck": "node -e 'try { require(\"@arkenv/nextjs/config\").setupArkEnv({ schemaPath: \"./env.ts\" }) } catch {}'",
 		"typecheck": "tsc --noEmit",
 		"twoslash": "nub bin/twoslash-mdx.ts"

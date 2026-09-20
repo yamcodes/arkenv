@@ -6,7 +6,7 @@
 		"start": "nub src/index.ts",
 		"dev": "nub watch src/index.ts",
 		"build": "tsc",
-		"fix": "pnpm -w run fix",
+		"fix": "nub run -w fix",
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {

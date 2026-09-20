@@ -58,7 +58,9 @@ ArkEnv does not read `.env` files. Something else must load them before
 
 Next.js, Nuxt, Vite, and Bun already load `.env*` files. On plain Node,
 [Nub](https://nubjs.com/docs/runtime/env) is the recommended runner: it
-executes TypeScript and injects `.env` files before your process starts.
+executes TypeScript and injects `.env` files before your process starts
+(replacing `tsx` / `ts-node` / `tsconfig-paths` / `dotenv`). Use
+`nub watch` for restart-on-change.
 
 ```bash title="Terminal"
 nub src/index.ts

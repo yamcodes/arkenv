@@ -59,13 +59,11 @@ jobs:
           esac
           echo "short_msg=$(git log -1 --format=%s "$DEPLOY_SHA" | head -n1)" >> "$GITHUB_OUTPUT"
           echo "author_name=$(git log -1 --format=%an "$DEPLOY_SHA")" >> "$GITHUB_OUTPUT"
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      - uses: nubjs/setup-nub@v0
         with:
           node-version: lts/*
-          cache: pnpm
       - name: Install dependencies
-        run: pnpm install
+        run: nub install
       - name: Install Vercel CLI
         # Pin the CLI to avoid upstream breakage from newly published majors.
         run: npm install --global vercel@59.16.0

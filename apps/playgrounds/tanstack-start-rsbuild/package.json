@@ -9,7 +9,7 @@
 		"build": "rsbuild build && tsc --noEmit",
 		"start": "rsbuild preview",
 		"preview": "rsbuild preview",
-		"fix": "pnpm -w run fix",
+		"fix": "nub run -w fix",
 		"clean": "rimraf dist node_modules .output"
 	},
 	"dependencies": {

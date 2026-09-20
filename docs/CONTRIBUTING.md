@@ -15,13 +15,18 @@ Don't let the label names give you the wrong impression: `ready for agent` simpl
 
 ## Development setup
 
-1. ### Install pnpm
+1. ### Install Nub
+
+   [Nub](https://nubjs.com/) is the recommended toolchain for this repo. It
+   replaces `tsx` / `ts-node` / `tsconfig-paths` / `dotenv`, `pnpm run`,
+   `npx` / `pnpm exec`, `pnpm install`, and `nvm` for local work, while
+   keeping the existing `pnpm-lock.yaml`.
 
    ```sh
-   curl -fsSL https://get.pnpm.io/install.sh | sh -
+   curl -fsSL https://nubjs.com/install.sh | bash
    ```
 
-   (Or follow the instructions in the [pnpm docs](https://pnpm.io/installation))
+   (Or `npm install -g @nubjs/nub`. See the [Nub docs](https://nubjs.com/docs).)
 
 2. ### Clone the repository
 
@@ -33,13 +38,13 @@ Don't let the label names give you the wrong impression: `ready for agent` simpl
 3. ### Install dependencies
 
    ```sh
-   pnpm install
+   nub install
    ```
 
 4. ### Run the docs site
 
    ```sh
-   pnpm www
+   nub run www
    ```
 
    This starts a single `next dev` server at
@@ -53,7 +58,7 @@ Don't let the label names give you the wrong impression: `ready for agent` simpl
 4. Update the documentation if needed
 5. Create a changeset for your changes:
    ```sh
-   pnpm changeset
+   nub run changeset
    ```
    This will prompt you to:
    - Select which packages you want to release
@@ -109,7 +114,7 @@ We use a **Dual-Branch Model** (`dev` and `main`) to ensure the production docum
 When adding functionality or new documentation pages for unreleased code:
 
 1. Create a feature branch off `dev`.
-2. Commit your code and run `pnpm changeset` to generate a version bump file.
+2. Commit your code and run `nub run changeset` to generate a version bump file.
 3. Open a Pull Request targeting `dev`.
 4. Merging to `dev` will deploy a Vercel Preview (for review), but it will **not** affect the production documentation site.
 
@@ -146,14 +151,14 @@ When working on a massive marketing push, docs facelift, or breaking API changes
 3. **Prevent drift:** Periodically merge `dev` into `v1` (e.g., weekly) to ensure `v1` receives all the hotfixes from production and doesn't suffer a massive merge conflict at the end.
 4. **Previews & Pre-releases (`alpha` ➔ `beta` ➔ `rc`):** Vercel will automatically deploy the `v1` branch as a Preview environment. To safely publish pre-release npm packages from this branch without affecting the `latest` npm tag, initialize Changesets pre-release mode by specifying the phase:
 
-   - **Alpha** (Initial unstable integration): `pnpm changeset pre enter alpha` (produces `1.0.0-alpha.0`, `1.0.0-alpha.1`, etc. published to `@alpha`)
-   - **Beta** (Feature complete, testing needed): `pnpm changeset pre enter beta` (produces `1.0.0-beta.0`, `1.0.0-beta.1`, etc. published to `@beta`)
-   - **Release Candidate** (API frozen, final validation): `pnpm changeset pre enter rc` (produces `1.0.0-rc.0`, `1.0.0-rc.1`, etc. published to `@rc`). Maintainer cut checklist (including the product decision to also point `latest` at `1.0.0-rc.n`): [RC_CHECKLIST.md](./RC_CHECKLIST.md).
+   - **Alpha** (Initial unstable integration): `nubx changeset pre enter alpha` (produces `1.0.0-alpha.0`, `1.0.0-alpha.1`, etc. published to `@alpha`)
+   - **Beta** (Feature complete, testing needed): `nubx changeset pre enter beta` (produces `1.0.0-beta.0`, `1.0.0-beta.1`, etc. published to `@beta`)
+   - **Release Candidate** (API frozen, final validation): `nubx changeset pre enter rc` (produces `1.0.0-rc.0`, `1.0.0-rc.1`, etc. published to `@rc`). Maintainer cut checklist (including the product decision to also point `latest` at `1.0.0-rc.n`): [RC_CHECKLIST.md](./RC_CHECKLIST.md).
 
    > [!IMPORTANT]
    > **SemVer Pre-release Identifiers vs Build Metadata**:
    > Always use dot-separated pre-release identifiers (e.g., `1.0.0-alpha.0`, `1.0.0-alpha.1`) to track sequential builds. Do NOT use build metadata with a plus sign (e.g., `1.0.0-alpha.0+build.1`), because the SemVer specification and npm ignore build metadata when determining version precedence. Npm will not allow publishing multiple packages with versions that differ only by build metadata.
-5. **The Big Release:** When Launch Day arrives, merge `v1` into `dev`. Then, run `pnpm changeset pre exit` to graduate from the pre-release phase to stable. The standard **Use Case 2** workflow takes over, producing a final "Version Packages" PR that publishes `1.0.0` to the `latest` tag and fast-forwards `main`.
+5. **The Big Release:** When Launch Day arrives, merge `v1` into `dev`. Then, run `nubx changeset pre exit` to graduate from the pre-release phase to stable. The standard **Use Case 2** workflow takes over, producing a final "Version Packages" PR that publishes `1.0.0` to the `latest` tag and fast-forwards `main`.
 
 ## Preview deployments
 
@@ -169,7 +174,7 @@ To redeploy an older commit to a stable URL without moving the branch, maintaine
 
 To create a changeset:
 
-1. Run `pnpm changeset`
+1. Run `nub run changeset`
 2. Follow the prompts to describe your changes
 3. Commit the generated `.changeset/*.md` file
 
