@@ -2,8 +2,8 @@
 	"name": "@playgrounds/esbuild-cjs",
 	"private": true,
 	"scripts": {
-		"build": "esbuild --bundle --format=cjs --platform=node --outfile=dist/index.cjs index.ts",
-		"start": "node dist/index.cjs",
+		"build": "nubx esbuild --bundle --format=cjs --platform=node --outfile=dist/index.cjs index.ts",
+		"start": "nub --node dist/index.cjs",
 		"test": "nub run build && nub run start"
 	},
 	"dependencies": {
