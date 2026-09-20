@@ -14,24 +14,16 @@ const SHORT_MSG_WORKFLOWS = [
 ];
 
 /**
- * Run vercel-wrapper with a fake `nubx` on PATH.
- *
- * The wrapper spawns `nubx -y -p vercel@… vercel <args>`, so the test stubs
- * `nubx` (not `vercel`) and treats a trailing `vercel` argv as the CLI entry.
+ * Run vercel-wrapper with a fake CLI via VERCEL_WRAPPER_BIN (nubx would ignore PATH).
  *
  * @param options Exit code, stderr, and extra env for the fake CLI
  */
 function runWrapper(options) {
 	const dir = mkdtempSync(join(tmpdir(), "vercel-wrapper-"));
-	const fakeNubx = join(dir, "nubx");
+	const fakeBin = join(dir, "vercel");
 	writeFileSync(
-		fakeNubx,
+		fakeBin,
 		`#!/usr/bin/env node
-const args = process.argv.slice(2);
-if (!args.includes("vercel")) {
-  process.stderr.write("fake nubx: expected vercel command\\n");
-  process.exit(2);
-}
 process.stderr.write(${JSON.stringify(options.stderr ?? "")});
 process.exit(${options.exitCode});
 `,
@@ -42,7 +34,7 @@ process.exit(${options.exitCode});
 		encoding: "utf8",
 		env: {
 			...process.env,
-			PATH: `${dir}:${process.env.PATH}`,
+			VERCEL_WRAPPER_BIN: fakeBin,
 			GITHUB_STEP_SUMMARY: summaryPath,
 			...options.env,
 		},

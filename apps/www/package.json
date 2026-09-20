@@ -4,8 +4,8 @@
 	"private": true,
 	"scripts": {
 		"mdx": "node ./bin/mdx",
-		"prebuild": "nub run build --filter=@arkenv/fumadocs-ui --filter=@arkenv/nextjs && nub run mdx",
-		"predev": "nub run build --filter=@arkenv/fumadocs-ui --filter=@arkenv/nextjs && nub run mdx",
+		"prebuild": "node ./bin/prebuild.js",
+		"predev": "nub run --filter @arkenv/fumadocs-ui --filter @arkenv/nextjs build && nub run mdx",
 		"build": "node ./bin/build next build",
 		"dev": "next dev",
 		"start": "next start",
@@ -13,7 +13,7 @@
 		"clear-cache": "rimraf .next .source",
 		"test": "vitest",
 		"fix": "nub run -w fix",
-		"pretypecheck": "node -e 'try { require(\"@arkenv/nextjs/config\").setupArkEnv({ schemaPath: \"./env.ts\" }) } catch {}' || true",
+		"pretypecheck": "node ./bin/pretypecheck.js",
 		"typecheck": "tsc --noEmit",
 		"twoslash": "nub bin/twoslash-mdx.ts"
 	},
