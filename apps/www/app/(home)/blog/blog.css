@@ -204,12 +204,6 @@ a.blog-page__author-name:hover {
 	font-variant-numeric: tabular-nums;
 }
 
-.blog-page__post-meta {
-	margin: 0;
-	font-size: 0.875rem;
-	color: var(--color-ink-3);
-}
-
 .blog-page__post-body {
 	margin-top: var(--space-lg);
 }

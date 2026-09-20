@@ -137,7 +137,7 @@ function ClientWidget() {
 
 ArkEnv doesn't fail silently or leak the secret into production source maps. Instead, the transformed client getter throws an immediate, explicit error in the browser:
 
-> `[arkenv] Cannot access server-only environment variable "DATABASE_URL" on the client.`
+> `Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)`
 
 This catches leaks immediately during development and unit testing before they reach production.
 

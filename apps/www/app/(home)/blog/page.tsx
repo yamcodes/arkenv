@@ -67,7 +67,7 @@ export default function BlogIndexPage() {
 										{avatarUrl ? (
 											<Image
 												src={avatarUrl}
-												alt={page.data.author}
+												alt=""
 												width={20}
 												height={20}
 												className="blog-page__avatar blog-page__avatar--sm"
