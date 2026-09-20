@@ -79,7 +79,7 @@ When forward-porting, do **not** revert v1 decisions already merged:
 - Framework `./shared` exports removed - use `import { type } from "arkenv"` / `@arkenv/core`
 - Core library split into `@arkenv/core`; CLI published as `arkenv`
 - Logging helpers may live in different packages than on dev (check latest v1 before porting)
-- Pre-release versioning (`1.0.0-alpha.x`) and `next` npm tag
+- Pre-release versioning (`1.0.0-alpha.x` → `beta` → `rc`) and matching npm tags (`@alpha`, `@beta`, `@rc`). v1 does not use a `next` tag.
 
 Always read the current v1 tree before porting - v1-only refactors land independently of dev.
 

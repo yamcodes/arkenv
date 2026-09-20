@@ -160,8 +160,12 @@ When working on a massive marketing push, docs facelift, or breaking API changes
    - **Develop against dev/v0**: All new features and bugfixes are first built and merged into the `dev` branch.
    - **Immediate manual porting**: Once a PR is merged into `dev`, the maintainer will manually forward-port the changes to `v1`, adapting the code to the new directory structure (e.g. under `packages/arkenv/src/` instead of `packages/cli/src/`).
    - **Update Changesets**: During the porting process, the maintainer will copy the changeset to the `v1` branch and manually update the YAML package name in the frontmatter to match the renamed package (e.g., change `"cli": patch` to `"arkenv": patch`).
-4. **Previews & Betas:** Pushes to `v1` run Production (`arkenv.js.org` via `--prod`) and keep `https://arkenv-v1.vercel.app` current. To safely publish pre-release npm packages from this branch (e.g., `1.0.0-next.0`) without affecting the `latest` npm tag, initialize Changesets pre-release mode on the `v1` branch by running `pnpm changeset pre enter next`. As you write `major` changesets for your breaking changes, they will be published under the `next` tag.
-5. **The Big Release:** When Launch Day arrives, merge `v1` into `dev`. Then, run `pnpm changeset pre exit` to graduate from the `next` pre-release phase to stable. The standard **Use Case 2** workflow takes over, producing a final "Version Packages" PR that publishes `1.0.0` to the `latest` tag and fast-forwards `main`.
+4. **Previews & Pre-releases (`alpha` ➔ `beta` ➔ `rc`):** Pushes to `v1` run Production (`arkenv.js.org` via `--prod`) and keep `https://arkenv-v1.vercel.app` current. To safely publish pre-release npm packages from this branch without affecting the `latest` npm tag, initialize Changesets pre-release mode by specifying the phase:
+
+   - **Alpha** (Initial unstable integration): `pnpm changeset pre enter alpha` (produces `1.0.0-alpha.0`, `1.0.0-alpha.1`, etc. published to `@alpha`)
+   - **Beta** (Feature complete, testing needed): `pnpm changeset pre enter beta` (produces `1.0.0-beta.0`, `1.0.0-beta.1`, etc. published to `@beta`)
+   - **Release Candidate** (API frozen, final validation): `pnpm changeset pre enter rc` (produces `1.0.0-rc.0`, `1.0.0-rc.1`, etc. published to `@rc`)
+5. **The Big Release:** When Launch Day arrives, merge `v1` into `dev`. Then, run `pnpm changeset pre exit` to graduate from the pre-release phase to stable. The standard **Use Case 2** workflow takes over, producing a final "Version Packages" PR that publishes `1.0.0` to the `latest` tag and fast-forwards `main`.
 
 ## Preview deployments
 
