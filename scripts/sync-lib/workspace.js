@@ -1,6 +1,9 @@
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ROOT_DIR } from "./constants.js";
+
+const publishedTagCache = new Map();
 
 /**
  * Parse the pnpm-workspace.yaml catalog section to get versions
@@ -66,4 +69,42 @@ export function getWorkspacePackageVersion(packageName) {
 		readFileSync(join(packageDir, "package.json"), "utf-8"),
 	);
 	return pkg.version;
+}
+
+/**
+ * Resolve the version currently published to an npm dist-tag.
+ *
+ * Examples are standalone npm projects, so they must pin a version that
+ * exists on the registry. Workspace prereleases (for example `1.0.0-rc.0`
+ * after a numbering reset) may not.
+ *
+ * @param packageName Package to look up
+ * @param tag Dist-tag such as `rc`, `alpha`, or `beta`
+ * @returns Published version, or `null` when the lookup fails
+ */
+export function lookupPublishedNpmVersion(packageName, tag) {
+	const key = `${packageName}@${tag}`;
+	if (publishedTagCache.has(key)) {
+		return publishedTagCache.get(key);
+	}
+
+	try {
+		const version = execFileSync(
+			"npm",
+			["view", packageName, "version", `--tag=${tag}`],
+			{
+				encoding: "utf8",
+				stdio: ["ignore", "pipe", "pipe"],
+			},
+		).trim();
+		const resolved = version || null;
+		publishedTagCache.set(key, resolved);
+		return resolved;
+	} catch (error) {
+		console.warn(
+			`Warning: Could not look up ${packageName}@${tag}: ${error.message}`,
+		);
+		publishedTagCache.set(key, null);
+		return null;
+	}
 }

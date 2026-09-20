@@ -5,8 +5,8 @@
  *
  * Playgrounds are the source of truth for examples. This script copies playground
  * files to the examples directory and transforms:
- * - `workspace:*` dependencies → `^<published-version>`
- * - `catalog:` dependencies → `^<catalog-version>`
+ * - `workspace:*` dependencies → last published npm version (`^` only when stable)
+ * - `catalog:` dependencies → `^<catalog-version>` (exact pin when prerelease)
  *
  * Usage:
  *   node scripts/sync-examples.js           # Sync all examples
