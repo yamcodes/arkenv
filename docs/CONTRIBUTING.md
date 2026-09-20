@@ -174,6 +174,29 @@ When working on a massive marketing push, docs facelift, or breaking API changes
    > Always use dot-separated pre-release identifiers (e.g., `1.0.0-alpha.0`, `1.0.0-alpha.1`) to track sequential builds. Do NOT use build metadata with a plus sign (e.g., `1.0.0-alpha.0+build.1`), because the SemVer specification and npm ignore build metadata when determining version precedence. Npm will not allow publishing multiple packages with versions that differ only by build metadata.
 5. **The Big Release:** When Launch Day arrives, merge `v1` into `dev`. Then, run `nubx changeset pre exit` to graduate from the pre-release phase to stable. The standard **Use Case 2** workflow takes over, producing a final "Version Packages" PR that publishes `1.0.0` to the `latest` tag and fast-forwards `main`.
 
+### Default-branch ruleset
+
+Required status checks for the default branch are defined in
+[`.github/rulesets/default-branch.json`](../.github/rulesets/default-branch.json).
+GitHub matches those contexts by exact string, so any change to the Node
+matrix in [`.github/workflows/test.yml`](../.github/workflows/test.yml) must
+update that ruleset file in the same PR.
+
+Maintainers apply the committed body with **Actions → rulesets → Run
+workflow** (dry-run first; disable dry-run only after reviewing the diff).
+The job uses the protected `rulesets` environment and a dedicated
+`arkenv-infra` App (`INFRA_APP_ID` / `INFRA_APP_PRIVATE_KEY`). Setup steps
+live in [`.github/rulesets/README.md`](../.github/rulesets/README.md).
+
+Break-glass apply with an admin token:
+
+```sh
+RULESET_ID=$(gh api repos/yamcodes/arkenv/rulesets \
+  --jq '.[] | select(.name=="default-branch") | .id')
+gh api --method PUT "repos/yamcodes/arkenv/rulesets/${RULESET_ID}" \
+  --input .github/rulesets/default-branch.json
+```
+
 ## Preview deployments
 
 PR previews for the `www` app are opt-in. A maintainer (triage+) applies the `preview` label to trigger a Vercel preview deployment when the label is added, and again on subsequent `synchronize` / `ready_for_review` events while the label remains (a preview is only produced when the `www` app is actually affected). This works for same-repo and fork PRs; fork authors cannot self-serve the label.

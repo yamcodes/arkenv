@@ -1,0 +1,127 @@
+# Apply the canonical default-branch ruleset from
+# .github/rulesets/default-branch.json.
+#
+# Requires a dedicated arkenv-infra GitHub App (administration: write +
+# metadata: read) wired as vars.INFRA_APP_ID / secrets.INFRA_APP_PRIVATE_KEY.
+# The apply job uses the protected `rulesets` environment — maintainers must
+# configure required reviewers on that environment before the first real apply.
+#
+# Do not trigger this on push. Dry-run defaults to true.
+
+name: rulesets
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Print live-vs-committed diff without mutating the live ruleset
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  apply:
+    name: Apply default-branch ruleset
+    runs-on: ubuntu-latest
+    environment: rulesets
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Generate infra App token
+        id: generate-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.INFRA_APP_ID }}
+          private-key: ${{ secrets.INFRA_APP_PRIVATE_KEY }}
+          permission-administration: write
+          permission-metadata: read
+
+      - name: Diff and optionally apply
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+          RULESET_FILE: .github/rulesets/default-branch.json
+        run: |
+          set -euo pipefail
+
+          if [[ ! -f "$RULESET_FILE" ]]; then
+            echo "::error::Missing $RULESET_FILE"
+            exit 1
+          fi
+
+          DESIRED_NAME=$(jq -r '.name' "$RULESET_FILE")
+          echo "Committed ruleset name: ${DESIRED_NAME}"
+
+          # List rulesets (summary), then resolve id by name with a
+          # ~DEFAULT_BRANCH fallback for the first rename from legacy names.
+          gh api "repos/${OWNER}/${REPO}/rulesets" > /tmp/rulesets.json
+
+          RULESET_ID=$(jq -r --arg name "$DESIRED_NAME" '
+            map(select(.name == $name)) |
+            if length == 1 then .[0].id
+            elif length > 1 then error("ambiguous ruleset name: \($name)")
+            else empty
+            end
+          ' /tmp/rulesets.json)
+
+          if [[ -z "${RULESET_ID}" ]]; then
+            echo "No ruleset named '${DESIRED_NAME}'; falling back to ~DEFAULT_BRANCH target"
+            # Detail endpoint is needed for conditions.
+            CANDIDATES=()
+            while IFS= read -r id; do
+              DETAIL=$(gh api "repos/${OWNER}/${REPO}/rulesets/${id}")
+              if echo "$DETAIL" | jq -e '
+                .conditions.ref_name.include | index("~DEFAULT_BRANCH")
+              ' >/dev/null; then
+                CANDIDATES+=("$id")
+              fi
+            done < <(jq -r '.[].id' /tmp/rulesets.json)
+
+            if [[ ${#CANDIDATES[@]} -eq 0 ]]; then
+              echo "::error::No ruleset named '${DESIRED_NAME}' and none target ~DEFAULT_BRANCH"
+              exit 1
+            fi
+            if [[ ${#CANDIDATES[@]} -gt 1 ]]; then
+              echo "::error::Multiple rulesets target ~DEFAULT_BRANCH: ${CANDIDATES[*]}"
+              exit 1
+            fi
+            RULESET_ID="${CANDIDATES[0]}"
+          fi
+
+          echo "Resolved ruleset id: ${RULESET_ID}"
+          # -S so key-order noise from the API vs committed file is not a
+          # false drift signal.
+          gh api "repos/${OWNER}/${REPO}/rulesets/${RULESET_ID}" \
+            | jq -S '{name, target, enforcement, conditions, rules}' \
+            > /tmp/live.json
+          jq -S '{name, target, enforcement, conditions, rules}' \
+            "$RULESET_FILE" > /tmp/desired.json
+
+          echo "::group::Live (comparable fields)"
+          cat /tmp/live.json
+          echo "::endgroup::"
+          echo "::group::Committed (desired)"
+          cat /tmp/desired.json
+          echo "::endgroup::"
+
+          if diff -u /tmp/live.json /tmp/desired.json; then
+            echo "✅ Live ruleset already matches ${RULESET_FILE}"
+          else
+            echo "⚠️ Live ruleset differs from ${RULESET_FILE}"
+          fi
+
+          if [[ "${DRY_RUN}" == "true" ]]; then
+            echo "Dry-run only — no mutation. Re-run with dry_run=false to apply."
+            exit 0
+          fi
+
+          echo "Applying ${RULESET_FILE} → ruleset ${RULESET_ID}"
+          gh api --method PUT \
+            "repos/${OWNER}/${REPO}/rulesets/${RULESET_ID}" \
+            --input "$RULESET_FILE"
+          echo "✅ Applied ${RULESET_FILE} to ruleset ${RULESET_ID}"

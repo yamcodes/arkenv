@@ -1,0 +1,69 @@
+{
+  "name": "default-branch",
+  "target": "branch",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [],
+      "include": [
+        "~DEFAULT_BRANCH"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "non_fast_forward"
+    },
+    {
+      "type": "pull_request",
+      "parameters": {
+        "required_approving_review_count": 0,
+        "dismiss_stale_reviews_on_push": false,
+        "required_reviewers": [],
+        "require_code_owner_review": false,
+        "require_last_push_approval": false,
+        "required_review_thread_resolution": false,
+        "require_extra_approval_for_unattributed_changes": true,
+        "allowed_merge_methods": [
+          "squash"
+        ]
+      }
+    },
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "strict_required_status_checks_policy": false,
+        "do_not_enforce_on_create": true,
+        "required_status_checks": [
+          {
+            "context": "test (24)",
+            "integration_id": 15368
+          },
+          {
+            "context": "test (26)",
+            "integration_id": 15368
+          },
+          {
+            "context": "test-build (24)",
+            "integration_id": 15368
+          },
+          {
+            "context": "test-build (26)",
+            "integration_id": 15368
+          },
+          {
+            "context": "test-e2e (e2e)",
+            "integration_id": 15368
+          },
+          {
+            "context": "test-typesafety",
+            "integration_id": 15368
+          }
+        ]
+      }
+    }
+  ]
+}
