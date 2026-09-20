@@ -179,6 +179,55 @@ main:has(.site-nav) {
 }
 
 /*
+ * Compact release-channel chip beside the wordmark (TanStack-style placement).
+ * Uses site tokens — not the hero announcement pill.
+ */
+.site-nav__rc {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	padding: 0.1rem 0.35rem;
+	border-radius: var(--site-nav-radius);
+	border: var(--rule-hair, 1px) solid
+		color-mix(in oklch, var(--color-accent, oklch(74% 0.13 195)) 40%, transparent);
+	background: color-mix(
+		in oklch,
+		var(--color-accent, oklch(74% 0.13 195)) 14%,
+		transparent
+	);
+	color: var(--color-accent, oklch(74% 0.13 195));
+	font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+	font-size: 0.625rem;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	line-height: 1.2;
+	text-decoration: none;
+	text-transform: uppercase;
+	transition:
+		background-color 120ms ease-out,
+		border-color 120ms ease-out;
+}
+
+.site-nav__rc:hover {
+	background: color-mix(
+		in oklch,
+		var(--color-accent, oklch(74% 0.13 195)) 22%,
+		transparent
+	);
+	border-color: color-mix(
+		in oklch,
+		var(--color-accent, oklch(74% 0.13 195)) 55%,
+		transparent
+	);
+}
+
+.site-nav__rc:focus-visible {
+	outline: 2px solid var(--ring, var(--color-focus, currentColor));
+	outline-offset: 2px;
+}
+
+/*
  * Compact / full chrome split at 1040px (home + docs).
  * Compact: wordmark + menu (docs also keeps search as an icon; sidebar trigger <960).
  * Full: wordmark + center links + action + utils.

@@ -1,9 +1,11 @@
-import { AnnouncementBadge } from "~/components/announcement-badge";
+import Link from "next/link";
 import { RELEASE_TAG } from "~/lib/config/release";
 
+const MIGRATING_TO_V1 = "/docs/guides/migrating-to-v1";
+
 /**
- * Hero announcement chip that names the active pre-release channel.
- * Only renders during RC so the live site does not pretend packages are GA.
+ * Compact header channel badge. Only renders during RC so the live chrome
+ * does not pretend packages are GA. Links to the v1 migration guide.
  */
 export function ReleaseChannelBadge() {
 	if (RELEASE_TAG !== "rc") {
@@ -11,8 +13,13 @@ export function ReleaseChannelBadge() {
 	}
 
 	return (
-		<AnnouncementBadge href="/docs/guides/migrating-to-v1" new>
-			Release Candidate
-		</AnnouncementBadge>
+		<Link
+			href={MIGRATING_TO_V1}
+			className="site-nav__rc"
+			title="Release Candidate — migrate to v1"
+			aria-label="Release Candidate — migrate to v1"
+		>
+			RC
+		</Link>
 	);
 }

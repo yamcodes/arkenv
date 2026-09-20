@@ -7,15 +7,20 @@ describe("ReleaseChannelBadge", () => {
 		vi.resetModules();
 	});
 
-	it("renders the Release Candidate chip when RELEASE_TAG is rc", async () => {
+	it("renders a compact RC link to the migration guide when RELEASE_TAG is rc", async () => {
 		vi.stubEnv("NEXT_PUBLIC_ARKENV_RELEASE_TAG", "rc");
 		vi.stubEnv("ARKENV_RELEASE_TAG", "rc");
 		const { ReleaseChannelBadge } = await import("./release-channel-badge");
 		render(<ReleaseChannelBadge />);
-		expect(screen.getByText("Release Candidate")).toBeInTheDocument();
-		expect(
-			screen.getByRole("link", { name: /release candidate/i }),
-		).toHaveAttribute("href", "/docs/guides/migrating-to-v1");
+		const link = screen.getByRole("link", {
+			name: /release candidate — migrate to v1/i,
+		});
+		expect(link).toHaveTextContent("RC");
+		expect(link).toHaveAttribute("href", "/docs/guides/migrating-to-v1");
+		expect(link).toHaveAttribute(
+			"title",
+			"Release Candidate — migrate to v1",
+		);
 	});
 
 	it("renders nothing when RELEASE_TAG is not rc", async () => {
