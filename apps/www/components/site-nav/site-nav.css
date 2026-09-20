@@ -189,13 +189,8 @@ main:has(.site-nav) {
 	flex-shrink: 0;
 	padding: 0.1rem 0.35rem;
 	border-radius: var(--site-nav-radius);
-	border: var(--rule-hair, 1px) solid
-		color-mix(in oklch, var(--color-accent, oklch(74% 0.13 195)) 40%, transparent);
-	background: color-mix(
-		in oklch,
-		var(--color-accent, oklch(74% 0.13 195)) 14%,
-		transparent
-	);
+	border: var(--rule-hair, 1px) solid color-mix(in oklch, var(--color-accent, oklch(74% 0.13 195)) 40%, transparent);
+	background: color-mix(in oklch, var(--color-accent, oklch(74% 0.13 195)) 14%, transparent);
 	color: var(--color-accent, oklch(74% 0.13 195));
 	font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 	font-size: 0.625rem;
@@ -210,16 +205,8 @@ main:has(.site-nav) {
 }
 
 .site-nav__rc:hover {
-	background: color-mix(
-		in oklch,
-		var(--color-accent, oklch(74% 0.13 195)) 22%,
-		transparent
-	);
-	border-color: color-mix(
-		in oklch,
-		var(--color-accent, oklch(74% 0.13 195)) 55%,
-		transparent
-	);
+	background: color-mix(in oklch, var(--color-accent, oklch(74% 0.13 195)) 22%, transparent);
+	border-color: color-mix(in oklch, var(--color-accent, oklch(74% 0.13 195)) 55%, transparent);
 }
 
 .site-nav__rc:focus-visible {

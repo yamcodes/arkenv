@@ -17,10 +17,7 @@ describe("ReleaseChannelBadge", () => {
 		});
 		expect(link).toHaveTextContent("RC");
 		expect(link).toHaveAttribute("href", "/docs/guides/migrating-to-v1");
-		expect(link).toHaveAttribute(
-			"title",
-			"Release Candidate — migrate to v1",
-		);
+		expect(link).toHaveAttribute("title", "Release Candidate — migrate to v1");
 	});
 
 	it("renders nothing when RELEASE_TAG is not rc", async () => {
