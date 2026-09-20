@@ -38,6 +38,7 @@ These groups share a theme. They remain separate ADRs (no nesting or history rew
 | Coercion / Standard Schema         | `coercion-schema-transformer`, `standard-mode-packaging-strategy`, `to-json-schema-escape-hatch`, `canonical-root-for-classic-zod`                                                                                                                    |
 | CLI / scaffold IR                  | `cli-hosting-preset-field-metadata`, `dotenv-linter-custom-parser-strategy`, `cli-schema-inspection`, `cli-env-example-command-name`                                                                                                                  |
 | www docs chrome                    | `drill-in-sidebar`, `mobile-sidebar-tree`, `site-nav-glass-chrome`                                                                                                                                                                                    |
+| www test toolchain                 | `www-vitest-no-styled-jsx-babel`                                                                                                                                                                                                                      |
 
 ## Tooling & agent skills
 
