@@ -1,40 +1,98 @@
 ---
 title: ArkEnv v1 Release Candidate
-description: Outline for the v1 RC announcement — packages, docs cutover, migrating from v0, and what newcomers get.
+description: ArkEnv v1 is a Release Candidate — typed env with your validator, framework boundaries included, and a clear path from v0.
 author: Yam Borodetsky
 date: 2026-09-20
 draft: true
 ---
 
-## What’s happening
+ArkEnv has officially reached a v1.0 Release Candidate. This is the build we
+expect to ship as 1.0, pending your final feedback, docs polish, and a few
+last-mile fixes. Now’s the perfect time to kick the tires and help us validate
+the final stretch. When 1.0 ships, we’ll update this post (same URL) with any
+final notes.
 
-- ArkEnv **v1** is out as a **Release Candidate** (`1.0.0-rc.n`)
-- npm **`latest`** points at RC for the RC window (also published under the **`rc`** tag)
-- Docs apex (`https://arkenv.js.org`) serves **v1 / RC**
-- v0 docs stay available on the archive: [https://arkenv-v0.vercel.app](https://arkenv-v0.vercel.app)
+For the RC window, npm `latest` points at the RC builds (`1.0.0-rc.n`, also
+under the `rc` tag). The docs apex at [arkenv.js.org](https://arkenv.js.org)
+serves v1. v0 docs stay on the archive at
+[arkenv-v0.vercel.app](https://arkenv-v0.vercel.app).
 
-## Notable for newcomers
+## Why this matters
 
-- **One schema → typed `env`:** declare keys once in `env.ts`; `arkenv()` validates at load and TypeScript infers the same types — no loose `process.env` / stringly helpers
-- **Bring your validator:** ArkType DSL via `@arkenv/core`, or Zod / Valibot / any [Standard Schema](https://standardschema.dev/) via `@arkenv/standard` — same fail-fast `ArkEnvError` DX either way
-- **Full-stack boundary built in:** Next.js, Nuxt, Vite, Bun (and related) integrations keep server secrets off the client while public keys stay typed
+ArkEnv isn’t another thin wrapper around `process.env`. It’s a typesafe
+environment variable contract for TypeScript apps: one schema, a validated
+`env` object, and fail-fast errors at load — before your app starts serving
+traffic with a stringly `PORT` or a truthy `"false"`.
+
+Whether you’re on ArkType, Zod, Valibot, or any
+[Standard Schema](https://standardschema.dev/) validator, you keep the tools
+you already know. ArkEnv just makes environment variables stop being the
+weakest typed surface in the stack.
+
+## What’s in v1
+
+- **One schema → typed `env`.** Declare keys once in `env.ts`. `arkenv()`
+  validates at load and TypeScript infers the same types. No loose
+  `process.env` helpers, no dual sources of truth.
+- **Bring your validator.** ArkType DSL via `@arkenv/core`, or Zod / Valibot /
+  Standard Schema via `@arkenv/standard`. Same fail-fast `ArkEnvError` DX
+  either way.
+- **Full-stack boundary built in.** Next.js, Nuxt, Vite, Bun, and TanStack
+  Start integrations keep server secrets off the client while public keys stay
+  typed.
+- **A real CLI.** `arkenv` on npm is the CLI (`init`, `check`) — not the
+  runtime. Scaffold and validate without treating the installer as a library.
+- **Canonical `./env` everywhere.** Framework plugins rewrite imports of your
+  env module. They no longer take a schema in the plugin call.
+
+Want the full tour? Start with the
+[Introduction](/docs) and
+[Getting started](/docs/getting-started).
+
+## Get started or upgrade
+
+Fresh project? Run the init CLI and follow Getting started:
+
+```bash
+npx arkenv init
+```
+
+Already on v0? Jump to [Migrating to v1](/docs/guides/migrating-to-v1). That
+guide stays current with the exact package swaps for the RC and the final 1.0.
+
+Coming from T3 Env instead? See
+[Migrating from T3 Env](/docs/guides/migrating-from-t3-env).
 
 ## If you’re on v0
 
-- `arkenv` on npm is now the **CLI**, not the runtime — importing it as a library throws
-- Runtime lives in **`@arkenv/core`** (ArkType) or **`@arkenv/standard`** (Zod / Valibot / Standard Schema)
-- Vite / Bun plugins no longer take a schema in the plugin call — use a canonical `./env` module
+The headline change is package identity:
 
-## How to migrate
+- **`arkenv` is the CLI.** Importing it as a library throws on purpose, so a
+  half-migrated app fails loudly instead of silently shipping the wrong thing.
+- **Runtime lives in `@arkenv/core`** (ArkType) or **`@arkenv/standard`**
+  (Zod / Valibot / Standard Schema).
+- **Vite and Bun plugins are transform-only.** Export `env` from a canonical
+  `./env` module; don’t pass a schema into the plugin.
 
-- Read: [Migrating to v1](/docs/guides/migrating-to-v1) ([live](https://arkenv.js.org/docs/guides/migrating-to-v1))
-- Swap packages: remove v0 `arkenv` / `@arkenv/cli` → install `@arkenv/core` (+ `arktype`) or `@arkenv/standard`, plus `arkenv` as a **devDependency** (CLI)
-- Point imports at the new packages; keep `import { env } from "./env"`
-- Update Vite / Bun / Next / Nuxt wiring per the guide (transform-only plugins, no schema-in-plugin)
+Keep `import { env } from "./env"` in application code. Point the schema
+module at the new packages. Update framework wiring per the migrate guide.
 
-## Read next / take action
+## Path to 1.0 stable
+
+We plan to cut 1.0 shortly after collecting RC feedback. Expect a few small RC
+iterations; any breaking changes will be clearly documented. As we approach
+stable, only light polish remains. No major API shifts.
+
+## Your feedback counts
+
+This is the moment when your feedback matters most. Try the RC in a new or
+existing project and tell us what you think via the docs feedback links. If you
+hit an issue, the migration notes and examples in the docs will help — and
+we’ll be quick to respond.
 
 - [Migrating to v1](/docs/guides/migrating-to-v1)
 - [Getting started](/docs/getting-started)
-- v0 archive: [https://arkenv-v0.vercel.app](https://arkenv-v0.vercel.app)
-- Install / init: `npx arkenv init` (product `latest` → RC during this window)
+- [Frameworks](/docs/frameworks)
+- v0 archive: [arkenv-v0.vercel.app](https://arkenv-v0.vercel.app)
+
+Thanks for building with us. Let’s ship 1.0, together.
