@@ -5,6 +5,7 @@ on:
     paths:
       - "apps/playgrounds/**"
       - "examples/**"
+      - "pnpm-workspace.yaml"
       - "scripts/sync-examples.js"
       - "scripts/sync-lib/**"
   push:
@@ -12,6 +13,7 @@ on:
     paths:
       - "apps/playgrounds/**"
       - "examples/**"
+      - "pnpm-workspace.yaml"
       - "scripts/sync-examples.js"
       - "scripts/sync-lib/**"
   workflow_dispatch:
@@ -65,6 +67,9 @@ jobs:
       - uses: ./.github/actions/setup-nub-ci
         with:
           node-version: 24
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.0
 
       - run: pnpm install
       - run: nub run --no-check build:packages
@@ -74,8 +79,8 @@ jobs:
         run: |
           git config --global user.email "237618717+arkenv-bot[bot]@users.noreply.github.com"
           git config --global user.name "arkenv-bot[bot]"
-          if [ -n "$(git status --porcelain examples)" ]; then
-            git add examples
+          if [ -n "$(git status --porcelain examples .github/renovate.json)" ]; then
+            git add examples .github/renovate.json
             git commit -m "chore(examples): sync generated examples"
             git push origin HEAD || {
               echo "❌ Failed to push example sync changes. Please re-run the workflow."
