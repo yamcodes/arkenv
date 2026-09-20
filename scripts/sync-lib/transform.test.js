@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { prereleaseChannel, transformPackageJson } from "./transform.js";
+import { PublishedLookupError } from "./workspace.js";
 
 describe("transformPackageJson", () => {
 	it("reads version from catalog", () => {
@@ -68,20 +69,21 @@ describe("transformPackageJson", () => {
 		expect(result.dependencies["@arkenv/core"]).toBe("^1.0.0");
 	});
 
-	it("falls back to the workspace prerelease when the dist-tag lookup misses", () => {
-		const result = transformPackageJson(
-			{
-				name: "playground",
-				dependencies: { "@arkenv/core": "workspace:*" },
-			},
-			{ name: "basic" },
-			{},
-			{
-				getWorkspacePackageVersion: () => "1.0.0-rc.0",
-				lookupPublished: () => null,
-			},
-		);
-		expect(result.dependencies["@arkenv/core"]).toBe("1.0.0-rc.0");
+	it("throws when the dist-tag lookup misses so check mode cannot fake drift", () => {
+		expect(() =>
+			transformPackageJson(
+				{
+					name: "playground",
+					dependencies: { "@arkenv/core": "workspace:*" },
+				},
+				{ name: "basic" },
+				{},
+				{
+					getWorkspacePackageVersion: () => "1.0.0-rc.0",
+					lookupPublished: () => null,
+				},
+			),
+		).toThrow(PublishedLookupError);
 	});
 });
 

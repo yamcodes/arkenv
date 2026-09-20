@@ -1,7 +1,10 @@
 import {
 	getWorkspacePackageVersion,
 	lookupPublishedNpmVersion,
+	PublishedLookupError,
 } from "./workspace.js";
+
+export { PublishedLookupError };
 
 /**
  * Dist-tag channel encoded in a SemVer prerelease (`1.0.0-rc.0` → `rc`).
@@ -36,7 +39,11 @@ export function exampleVersionSpec(
 		return `^${workspaceVersion}`;
 	}
 
-	return lookupPublished(packageName, channel) ?? workspaceVersion;
+	const published = lookupPublished(packageName, channel);
+	if (!published) {
+		throw new PublishedLookupError(packageName, channel);
+	}
+	return published;
 }
 
 /**

@@ -71,6 +71,23 @@ export function getWorkspacePackageVersion(packageName) {
 	return pkg.version;
 }
 
+export class PublishedLookupError extends Error {
+	/**
+	 * @param packageName Package whose dist-tag could not be resolved
+	 * @param tag Dist-tag such as `rc`, `alpha`, or `beta`
+	 * @param cause Optional underlying error
+	 */
+	constructor(packageName, tag, cause) {
+		super(`Could not look up ${packageName}@${tag} on npm`);
+		this.name = "PublishedLookupError";
+		this.packageName = packageName;
+		this.tag = tag;
+		if (cause) {
+			this.cause = cause;
+		}
+	}
+}
+
 /**
  * Resolve the version currently published to an npm dist-tag.
  *
@@ -78,9 +95,12 @@ export function getWorkspacePackageVersion(packageName) {
  * exists on the registry. Workspace prereleases (for example `1.0.0-rc.0`
  * after a numbering reset) may not.
  *
+ * Failed lookups are not cached, so a later retry can succeed.
+ *
  * @param packageName Package to look up
  * @param tag Dist-tag such as `rc`, `alpha`, or `beta`
- * @returns Published version, or `null` when the lookup fails
+ * @returns Published version
+ * @throws {PublishedLookupError} When the registry lookup fails
  */
 export function lookupPublishedNpmVersion(packageName, tag) {
 	const key = `${packageName}@${tag}`;
@@ -97,14 +117,15 @@ export function lookupPublishedNpmVersion(packageName, tag) {
 				stdio: ["ignore", "pipe", "pipe"],
 			},
 		).trim();
-		const resolved = version || null;
-		publishedTagCache.set(key, resolved);
-		return resolved;
+		if (!version) {
+			throw new PublishedLookupError(packageName, tag);
+		}
+		publishedTagCache.set(key, version);
+		return version;
 	} catch (error) {
-		console.warn(
-			`Warning: Could not look up ${packageName}@${tag}: ${error.message}`,
-		);
-		publishedTagCache.set(key, null);
-		return null;
+		if (error instanceof PublishedLookupError) {
+			throw error;
+		}
+		throw new PublishedLookupError(packageName, tag, error);
 	}
 }

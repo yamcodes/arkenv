@@ -15,7 +15,7 @@ import {
 	getAllFiles,
 	shouldExclude,
 } from "./fs-utils.js";
-import { transformPackageJson } from "./transform.js";
+import { PublishedLookupError, transformPackageJson } from "./transform.js";
 
 /**
  * Regenerate lock file based on package manager
@@ -73,6 +73,15 @@ function regenerateLockFile(examplePath, packageManager) {
 	} else {
 		console.warn(`  ⚠ Unknown package manager: ${packageManager}`);
 		return;
+	}
+
+	try {
+		execFileSync(bin, ["--version"], { stdio: "ignore" });
+	} catch (error) {
+		if (error.code === "ENOENT") {
+			console.warn(`  ⚠ Skipping lockfile regen: ${bin} is not on PATH`);
+			return;
+		}
 	}
 
 	const lockFilePath = join(examplePath, lockFile);
@@ -146,11 +155,16 @@ export function syncPlayground(
 			if (file === "package.json") {
 				// Special handling for package.json
 				const srcPkg = JSON.parse(readFileSync(srcFile, "utf-8"));
-				const transformedPkg = transformPackageJson(
-					srcPkg,
-					exampleConfig,
-					catalog,
-				);
+				let transformedPkg;
+				try {
+					transformedPkg = transformPackageJson(srcPkg, exampleConfig, catalog);
+				} catch (error) {
+					if (error instanceof PublishedLookupError) {
+						console.warn(`  ⚠ Skipping package.json check: ${error.message}`);
+						continue;
+					}
+					throw error;
+				}
 				const transformedContent = `${JSON.stringify(transformedPkg, null, "\t")}\n`;
 
 				if (!existsSync(destFile)) {
