@@ -131,9 +131,9 @@ describe("resolveAuthToken", () => {
 
 describe("resolveOtp", () => {
 	it("prefers options.otp over NPM_CONFIG_OTP", () => {
-		expect(resolveOtp({ otp: "111111", env: { NPM_CONFIG_OTP: "222222" } })).toBe(
-			"111111",
-		);
+		expect(
+			resolveOtp({ otp: "111111", env: { NPM_CONFIG_OTP: "222222" } }),
+		).toBe("111111");
 		expect(resolveOtp({ env: { NPM_CONFIG_OTP: "222222" } })).toBe("222222");
 		expect(resolveOtp({ otp: "  333333  ", env: {} })).toBe("333333");
 		expect(resolveOtp({ env: {} })).toBe("");
