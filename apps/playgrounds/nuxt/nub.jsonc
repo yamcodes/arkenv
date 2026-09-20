@@ -1,0 +1,6 @@
+{
+	// Nuxt generates .nuxt/tsconfig.json during prepare/build. Until then the
+	// root tsconfig extends a missing file, and Nub refuses to start. Run this
+	// playground on plain Node; Nuxt owns its own toolchain.
+	"nodeCompat": true
+}
