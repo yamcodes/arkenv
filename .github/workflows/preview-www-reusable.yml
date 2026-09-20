@@ -121,11 +121,12 @@ jobs:
           DEPLOYMENT_URL="$(tail -n 1 "$deploy_log")"
           echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> "$GITHUB_OUTPUT"
       # Explicit alias so branch domains stay current without native Vercel Git builds (#1460).
-      # Only on push to dev/v1 — labeled PR previews keep ephemeral URLs and must not steal these.
+      # Only on push to dev — labeled PR previews keep ephemeral URLs and must not steal these.
+      # v1 / main aliases are owned by deploy-www.yml (prod + arkenv-v1 / arkenv-v0).
       - name: Alias branch preview domain
         if: >-
           github.event_name == 'push' &&
-          (github.ref_name == 'dev' || github.ref_name == 'v1') &&
+          github.ref_name == 'dev' &&
           steps.affected.outputs.is_affected == 'true'
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -136,12 +137,12 @@ jobs:
         run: |
           case "$BRANCH" in
             dev) DOMAIN="arkenv-dev.vercel.app" ;;
-            v1) DOMAIN="arkenv-v1.vercel.app" ;;
             *)
               echo "No branch domain mapping for $BRANCH; skipping alias."
               exit 0
               ;;
           esac
+
           if [ -z "$DEPLOYMENT_URL" ]; then
             echo "No deployment URL; skipping alias."
             exit 0
