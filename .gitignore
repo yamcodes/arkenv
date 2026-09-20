@@ -96,5 +96,8 @@ skills/create-skill/scripts/__pycache__/
 tooling/
 job_logs.txt
 
+# Hallmark skill local memory (preflight cache + run diversification log)
+.hallmark/
+
 # Temporary test folders from bundling-interop tests
 packages/arkenv/test/temp-interop-*
