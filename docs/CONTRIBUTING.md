@@ -195,6 +195,11 @@ Stable www URLs (GitHub Actions + Vercel CLI, not native Vercel Git builds):
 
 To redeploy an older commit to a stable URL without moving the branch, maintainers can run **Actions → Deploy www (manual SHA)** and choose `arkenv-dev.vercel.app`, `arkenv-v0.vercel.app`, `arkenv-v1.vercel.app`, or production `arkenv.js.org`.
 
+**Phased cutover:** RC keeps these branch names (**Option A**). At GA
+(**Option B**, later), rename so the v1 line becomes `main`/`dev` and
+the old line becomes **`v0`**, then leave `--prod` on `main` again. See
+[LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.1.
+
 ## Changesets
 
 [Changesets](https://github.com/changesets/changesets) is used to manage versions and changelogs. Each PR that makes changes to the functionality of the package should include a changeset.

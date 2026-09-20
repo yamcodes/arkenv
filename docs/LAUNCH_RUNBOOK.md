@@ -90,15 +90,26 @@ npm deprecate @arkenv/cli "This package was renamed to 'arkenv' in v1. Please up
 
 ### Step 3.1: Point Production at v1 (Actions + optional UI)
 
+**Phased cutover (in-repo):**
+
+| Phase | Strategy | Effect |
+| --- | --- | --- |
+| **Now (RC)** | **Option A** — keep branch names | `v1` → `vercel --prod` (Production / `arkenv.js.org`). `main` → `arkenv-v0.vercel.app` only (not `--prod`). Keep `arkenv-dev.vercel.app` and `arkenv-v1.vercel.app`. |
+| **Later (GA)** | **Option B** — rename branches | Move the v1 line onto `main`/`dev`. Rename the old line to **`v0`**. Then leave `--prod` on `main` again. Out of scope for the RC Actions PR. |
+
 **Preferred (RC Option A):** merge the Actions retarget so pushes to
 `v1` run `vercel --prod` (Production / `arkenv.js.org`), and pushes to
 `main` alias `arkenv-v0.vercel.app` only. Then trigger one `v1` deploy
 (push or **Deploy www (manual SHA)** → `arkenv.js.org`).
 
+Also land the same `deploy-www.yml` on **`main`** (cherry-pick) so the
+old `main` `--prod` path cannot overwrite apex. Seed
+`arkenv-v0.vercel.app` once if the alias does not exist yet (manual SHA
+or first `main` push after the workflow lands).
+
 **UI escape hatch:** promote the deployment behind
 `https://arkenv-v1.vercel.app` to Production in the Vercel dashboard
-(same project; no js.org DNS change). See the project store playbook
-`docs/branch-cutover-playbook.md` / `docs/vercel-apex-flip-steps.md`.
+(same project; no js.org DNS change).
 
 After cutover:
 
@@ -111,6 +122,9 @@ After cutover:
    curl -I https://arkenv-v1.vercel.app
    curl -I https://arkenv-dev.vercel.app
    ```
+
+See also [CONTRIBUTING.md](./CONTRIBUTING.md) (Preview deployments) and
+[RC_CHECKLIST.md](./RC_CHECKLIST.md) §E.
 
 ### Step 3.2: Verify Key Routes & Redirects
 
@@ -136,7 +150,10 @@ If an emergency regression occurs immediately following publish:
 
 1. **Docs Rollback**: Redeploy the last good v0 SHA to Production
    (**Deploy www (manual SHA)** → `arkenv.js.org`, or promote that
-   deployment in the Vercel UI).
+   deployment in the Vercel UI). Manual apex deploys label Vercel git
+   metadata as `v1` by default (Production owner). A v0 rollback SHA
+   may still show `v1` in the dashboard; the deployed tree is the SHA
+   you chose.
 2. **npm Rollback**: Check existing dist-tags (`npm view @arkenv/core dist-tags`) and repoint dist-tags on npm:
    ```bash
    npm dist-tag add arkenv@<last-v0-version> latest

@@ -276,15 +276,26 @@ pnpm run test:e2e                     # E2E tests
 
 ### Git workflow
 
-**Branching:**
+**Branching (RC Option A docs topology):**
 
-- Create feature branches from `dev`
-- `dev` is the default branch and continuous integration target
-- **Base Branch & Comparisons**: Always use `origin/dev` (not `main` or `origin/main`) for any `git diff` checks, branch bases, or code comparisons unless explicitly instructed otherwise.
-- **PR Target Branch**: When opening a Pull Request (via `gh pr create` or the GitHub UI), always ensure the target base branch is set to `dev` (which is the default on GitHub), unless you are specifically applying a documentation hotfix directly to `main`.
-- `main` is the production release branch, updated only after a successful npm publish
-- The documentation site (`apps/www`) deploys strictly from `main` to prevent unreleased features from appearing live
-- To make immediate typo or cosmetic fixes to the live docs without a package release, push directly to `main` and use the `sync-main` workflow/skill to cherry-pick and reconcile those changes back into `dev`
+- Repo default branch is **`v1`**
+- Create feature branches from `v1` for the live product / docs line
+- **Base Branch & Comparisons**: Prefer `origin/v1` for v1-line
+  `git diff` checks, branch bases, and code comparisons unless you are
+  deliberately working the v0 archive on `main`
+- **PR Target Branch**: Open PRs against `v1` unless you are specifically
+  changing the legacy v0 archive on `main`
+- Production / `arkenv.js.org` tracks **`v1`** (`deploy-www.yml` +
+  `vercel --prod`). The same deploy also keeps
+  `https://arkenv-v1.vercel.app` current
+- `main` is the **v0 docs archive** (`https://arkenv-v0.vercel.app`),
+  updated after v0 publishes — it must **not** take Production
+- Live v1 typo / cosmetic doc fixes go through **`v1`**, not `main`.
+  `sync-main` only refreshes the v0 archive
+- Leave `https://arkenv-dev.vercel.app` in place when present
+- **GA later (Option B):** rename so the v1 line becomes `main`/`dev`
+  and the old line becomes `v0`, then leave `--prod` on `main` again —
+  out of scope for the RC Actions retarget
 - Use descriptive branch names
 
 **Versioning:**

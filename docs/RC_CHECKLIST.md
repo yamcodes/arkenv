@@ -317,10 +317,16 @@ output and sets `latest` on each published package.
 
 ## E. Site / GitHub cutover
 
-These overlap GA ops. Prefer executing DNS with the RC announce pack
+These overlap GA ops. Prefer flipping apex with the RC announce pack
 only when archive + README production links are ready; otherwise keep
-serving v1 from `https://arkenv-v1.vercel.app` until then. Full DNS
-detail: [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.
+serving v1 from `https://arkenv-v1.vercel.app` until then. Full steps:
+[LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.
+
+**Phased cutover:** **Now (RC) = Option A** — keep branch names; `v1`
+owns `--prod` / `arkenv.js.org`; `main` parks on `arkenv-v0.vercel.app`.
+**Later (GA) = Option B** — rename so the v1 line becomes `main`/`dev`
+and the old line becomes **`v0`**, then leave `--prod` on `main`. Do
+not rename branches during RC.
 
 - [ ] `arkenv.js.org` → v1 `www` (`--prod` from `v1`); archive on
   `arkenv-v0.vercel.app`
