@@ -3,14 +3,18 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"start": "node --env-file .env index.js",
-		"dev": "node --watch --env-file .env index.js",
+		"start": "nub index.js",
+		"dev": "nub watch index.js",
 		"fix": "pnpm -w run fix",
 		"clean": "rimraf dist node_modules"
 	},
 	"dependencies": {
 		"@arkenv/core": "workspace:*",
 		"arktype": "catalog:"
+	},
+	"devDependencies": {
+		"@nubjs/nub": "catalog:",
+		"rimraf": "catalog:"
 	},
 	"engines": {
 		"node": "24"

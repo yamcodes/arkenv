@@ -15,7 +15,7 @@
 		"fix": "pnpm -w run fix",
 		"pretypecheck": "node -e 'try { require(\"@arkenv/nextjs/config\").setupArkEnv({ schemaPath: \"./env.ts\" }) } catch {}'",
 		"typecheck": "tsc --noEmit",
-		"twoslash": "tsx bin/twoslash-mdx.ts"
+		"twoslash": "nub bin/twoslash-mdx.ts"
 	},
 	"dependencies": {
 		"@ark/util": "0.56.0",
@@ -93,11 +93,11 @@
 		"babel-plugin-react-compiler": "^1.0.0",
 		"jsdom": "29.1.1",
 		"mdast-util-mdx-jsx": "3.2.0",
+		"@nubjs/nub": "catalog:",
 		"postcss": "8.5.14",
 		"rimraf": "catalog:",
 		"styled-jsx": "5.1.7",
 		"tailwindcss": "4.2.4",
-		"tsx": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:",
 		"zod-to-json-schema": "3.25.2"

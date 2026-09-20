@@ -7,7 +7,7 @@
 	"scripts": {
 		"dash": "concurrently -n server,client -c blue,green \"pnpm dash:server\" \"pnpm dash:client\"",
 		"dash:client": "vite",
-		"dash:server": "mkdir -p build && tsx --env-file .env --watch dashfy-server.ts",
+		"dash:server": "mkdir -p build && nub watch dashfy-server.ts",
 		"fix": "pnpm -w run fix",
 		"clean": "rimraf build node_modules"
 	},
@@ -22,13 +22,13 @@
 		"react-dom": "catalog:"
 	},
 	"devDependencies": {
+		"@nubjs/nub": "catalog:",
 		"@types/node": "catalog:",
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",
 		"@vitejs/plugin-react": "catalog:",
 		"concurrently": "^9.0.1",
 		"rimraf": "catalog:",
-		"tsx": "catalog:",
 		"typescript": "catalog:",
 		"vite": "8.0.10"
 	}

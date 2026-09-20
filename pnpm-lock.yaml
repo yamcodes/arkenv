@@ -12,6 +12,9 @@ catalogs:
     '@axe-core/playwright':
       specifier: 4.11.3
       version: 4.11.3
+    '@nubjs/nub':
+      specifier: 0.9.3
+      version: 0.9.3
     '@size-limit/esbuild-why':
       specifier: 12.1.0
       version: 12.1.0
@@ -72,9 +75,6 @@ catalogs:
     tsdown:
       specifier: 0.21.10
       version: 0.21.10
-    tsx:
-      specifier: 4.21.0
-      version: 4.21.0
     typescript:
       specifier: 6.0.3
       version: 6.0.3
@@ -185,6 +185,9 @@ importers:
         specifier: 'catalog:'
         version: 19.2.5(react@19.2.5)
     devDependencies:
+      '@nubjs/nub':
+        specifier: 'catalog:'
+        version: 0.9.3
       '@types/node':
         specifier: 'catalog:'
         version: 24.12.2
@@ -203,9 +206,6 @@ importers:
       rimraf:
         specifier: 'catalog:'
         version: 6.1.3
-      tsx:
-        specifier: 'catalog:'
-        version: 4.21.0
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -360,6 +360,13 @@ importers:
       arktype:
         specifier: 'catalog:'
         version: 2.2.0
+    devDependencies:
+      '@nubjs/nub':
+        specifier: 'catalog:'
+        version: 0.9.3
+      rimraf:
+        specifier: 'catalog:'
+        version: 6.1.3
 
   apps/playgrounds/mix-and-match:
     dependencies:
@@ -373,12 +380,12 @@ importers:
         specifier: 4.4.1
         version: 4.4.1
     devDependencies:
+      '@nubjs/nub':
+        specifier: 'catalog:'
+        version: 0.9.3
       rimraf:
         specifier: 'catalog:'
         version: 6.1.3
-      tsx:
-        specifier: 'catalog:'
-        version: 4.21.0
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -429,15 +436,15 @@ importers:
         specifier: 4.4.1
         version: 4.4.1
     devDependencies:
+      '@nubjs/nub':
+        specifier: 'catalog:'
+        version: 0.9.3
       '@types/node':
         specifier: 'catalog:'
         version: 24.12.2
       rimraf:
         specifier: 'catalog:'
         version: 6.1.3
-      tsx:
-        specifier: 'catalog:'
-        version: 4.21.0
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -847,6 +854,9 @@ importers:
       '@fumadocs/cli':
         specifier: 1.3.10
         version: 1.3.10(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
+      '@nubjs/nub':
+        specifier: 'catalog:'
+        version: 0.9.3
       '@repo/scope':
         specifier: workspace:*
         version: link:../../packages/internal/scope
@@ -919,9 +929,6 @@ importers:
       tailwindcss:
         specifier: 4.2.4
         version: 4.2.4
-      tsx:
-        specifier: 'catalog:'
-        version: 4.21.0
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -1482,6 +1489,9 @@ importers:
       '@arkenv/vite-plugin':
         specifier: workspace:*
         version: link:../vite-plugin
+      '@nubjs/nub':
+        specifier: 'catalog:'
+        version: 0.9.3
       '@tanstack/create':
         specifier: ^0.70.0
         version: 0.70.0
@@ -1500,9 +1510,6 @@ importers:
       rimraf:
         specifier: 'catalog:'
         version: 6.1.3
-      tsx:
-        specifier: 'catalog:'
-        version: 4.21.0
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -3029,6 +3036,55 @@ packages:
   '@npmcli/promise-spawn@7.0.2':
     resolution: {integrity: sha512-xhfYPXoV5Dy4UkY0D+v2KkwvnDfiA/8Mt3sWCGI/hM03NsYIH8ZaG6QzS9x7pje5vHZBZJ2v6VRFVTWACnqcmQ==}
     engines: {node: ^16.14.0 || >=18.0.0}
+
+  '@nubjs/nub-darwin-arm64@0.9.3':
+    resolution: {integrity: sha512-cKEt0WUuV9OdyKhDl/VRc/k/QdfVgERT/P/3K1PxkCKiRl2/qveH5+1YKaGGWPGjGTyUvIeHQ5i1TxjuDYHXOg==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@nubjs/nub-darwin-x64@0.9.3':
+    resolution: {integrity: sha512-0fAQKb0/ImavRecYA7x9CGNIqZRPtUBxy82M7qgpo2ujqrB88iiTeDIUlCcYj4VfC1Fk3InCy2w7g7Nzbg7RaQ==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@nubjs/nub-linux-arm64-musl@0.9.3':
+    resolution: {integrity: sha512-13uUxr7/XsDXOTJ5S9YfwYZSCDYHbb7F1hfDfBrB7QJC57jCWqsBxgu9wyDR2VDG2kWwWMwUlehuwceoL8MK6g==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
+  '@nubjs/nub-linux-arm64@0.9.3':
+    resolution: {integrity: sha512-9NmcdYUTE7P/6fM3i5k//UtM/Kh9+51FygHF120UGDsG5uBBT+yDmwrccWGtvkq/9NHDqgDD0JA+SxppDovuDQ==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  '@nubjs/nub-linux-x64-musl@0.9.3':
+    resolution: {integrity: sha512-pUOMm4IRS5McEhuZB7t2VfDi6snqMTtDG5Q1I6bZVFxFo02DjUEWo0xJ+8MKlkXFYbJS+tXcTb0M4RWTIy46iw==}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@nubjs/nub-linux-x64@0.9.3':
+    resolution: {integrity: sha512-jwLQZkA2YFQ8QDGocZQxOTEdYM1o4ESom/YB+iYujI12gs1STjeSCl8Wfz2piKR9jMcNpg+rRP05hpLQ3KJNMA==}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  '@nubjs/nub-win32-arm64@0.9.3':
+    resolution: {integrity: sha512-il4iILGLMX/aYGFTLAw8LcV0Kn7eYVZP+GGjBbdTUPq6TuRC1GhkitVJUvIk9WwxVbFstJmpZfceNLpSRAEgFw==}
+    cpu: [arm64]
+    os: [win32]
+
+  '@nubjs/nub-win32-x64@0.9.3':
+    resolution: {integrity: sha512-e/hiFZ9m37QH0ti8ktDkh4poH+HCe8K/3NljUvCg9j2r5MEaKUqGPxbmuQ928U5XgyUcJOd2/AbWmrCn8KEmZQ==}
+    cpu: [x64]
+    os: [win32]
+
+  '@nubjs/nub@0.9.3':
+    resolution: {integrity: sha512-y+7iFyRFRaTmHXJeQXvnkutfhCH2D7f0WHIhbC/h9O911cp9VaPShxc/dIKL4bY6SBBGPIa9R6CcpFrURkKr7A==}
+    engines: {node: '>=18.19.0'}
+    hasBin: true
 
   '@nuxt/cli@3.35.2':
     resolution: {integrity: sha512-sCxNnFuYamqippdj+Cj4Nue55yaUvasaneyf2mnowK5/F1TKln/WVqTH18McxQ4baLlIlVapIFovKjJx1L8XMQ==}
@@ -14158,6 +14214,41 @@ snapshots:
     dependencies:
       which: 4.0.0
 
+  '@nubjs/nub-darwin-arm64@0.9.3':
+    optional: true
+
+  '@nubjs/nub-darwin-x64@0.9.3':
+    optional: true
+
+  '@nubjs/nub-linux-arm64-musl@0.9.3':
+    optional: true
+
+  '@nubjs/nub-linux-arm64@0.9.3':
+    optional: true
+
+  '@nubjs/nub-linux-x64-musl@0.9.3':
+    optional: true
+
+  '@nubjs/nub-linux-x64@0.9.3':
+    optional: true
+
+  '@nubjs/nub-win32-arm64@0.9.3':
+    optional: true
+
+  '@nubjs/nub-win32-x64@0.9.3':
+    optional: true
+
+  '@nubjs/nub@0.9.3':
+    optionalDependencies:
+      '@nubjs/nub-darwin-arm64': 0.9.3
+      '@nubjs/nub-darwin-x64': 0.9.3
+      '@nubjs/nub-linux-arm64': 0.9.3
+      '@nubjs/nub-linux-arm64-musl': 0.9.3
+      '@nubjs/nub-linux-x64': 0.9.3
+      '@nubjs/nub-linux-x64-musl': 0.9.3
+      '@nubjs/nub-win32-arm64': 0.9.3
+      '@nubjs/nub-win32-x64': 0.9.3
+
   '@nuxt/cli@3.35.2(@nuxt/schema@4.4.8)(cac@6.7.14)(magicast@0.5.2)':
     dependencies:
       '@bomb.sh/tab': 0.0.15(cac@6.7.14)(citty@0.2.2)
@@ -24603,6 +24694,7 @@ snapshots:
       get-tsconfig: 4.14.0
     optionalDependencies:
       fsevents: 2.3.3
+    optional: true
 
   turbo@2.10.0:
     optionalDependencies:
