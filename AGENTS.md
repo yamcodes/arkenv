@@ -37,7 +37,7 @@ Prefer [Nub](https://nubjs.com/) (`nub run`, `nubx`, `nub install`, `nub` / `nub
 
 ## Learned User Preferences
 
-- **Agent chat voice:** do not write telegram-style or ultra-terse replies. Use clear, complete sentences and enough context that the maintainer can follow without decoding shorthand (issue numbers, label jargon, and “locked / blocked / M1” style status dumps need a plain-language explanation). Stay focused and avoid fluff, but prefer readable prose over compression. When summarizing triage or CI, lead with what happened and what the human should do next, then fill in the details.
+- **Agent chat voice:** aim for a middle length — not telegram-terse, not bloated. Use clear complete sentences so the maintainer can follow without decoding shorthand, but keep replies short: what happened, what it means, and what to do next. Skip long restatements, exhaustive checklists, and extra detail unless asked.
 - Spell public copy as "Typesafe" (one word), not "Type-safe".
 - Use the full phrase "environment variables" in headings and SEO-facing copy; "env vars" is fine in subheads and body.
 - Match docs voice to turborepo.dev plus the existing getting-started and root docs (index, support policy, community).
