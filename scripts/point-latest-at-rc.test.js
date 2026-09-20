@@ -138,6 +138,15 @@ describe("parseArgs", () => {
 		});
 	});
 
+	it("ignores a bare -- separator (pnpm run-script)", () => {
+		expect(parseArgs(["--from-rc", "--local", "--", "--dry-run"])).toEqual({
+			fromRc: true,
+			dryRun: true,
+			local: true,
+			help: false,
+		});
+	});
+
 	it("rejects combining --packages and --from-rc", () => {
 		expect(() => parseArgs(["--packages", "[]", "--from-rc"])).toThrow(
 			/either --packages or --from-rc/,
@@ -232,7 +241,7 @@ describe("pointLatestAtRc", () => {
 		expect(result.status).toBe("skipped");
 		expect(result.reason).toMatch(/NPM_TOKEN/);
 		expect(result.reason).toMatch(/OIDC/);
-		expect(result.reason).toMatch(/--local/);
+		expect(result.reason).toMatch(/pnpm point-latest-at-rc/);
 		expect(warn).toHaveBeenCalled();
 	});
 

@@ -14,14 +14,15 @@ metadata:
 
 # Point npm `latest` at `@rc` (local / no CI token)
 
-Maintainer alternative to the release workflow’s `NPM_TOKEN` path. Reuses
-`scripts/point-latest-at-rc.js` with `--local` so `npm dist-tag` uses your
-logged-in session (OTP OK). Trusted Publishing still covers **publish**;
-this skill only covers **dist-tag**.
+Maintainer **break-glass** alternative to the release workflow’s
+`NPM_TOKEN` path. The root script `pnpm point-latest-at-rc` runs
+`scripts/point-latest-at-rc.js --from-rc --local` so `npm dist-tag` uses
+your logged-in session (OTP OK). Trusted Publishing still covers
+**publish**; this skill only covers **dist-tag**.
 
-Do **not** remove or disable the CI promote job. Prefer CI when
-`secrets.NPM_TOKEN` works; use this when it does not (or Yam chooses not
-to fight token / Publishing-access settings).
+Do **not** remove or disable the CI promote job. Prefer CI
+`promote_rc_to_latest` when `secrets.NPM_TOKEN` works; use this only when
+CI cannot (or as emergency retag).
 
 ## Preconditions
 
@@ -38,11 +39,10 @@ to fight token / Publishing-access settings).
 npm whoami
 
 # 2. Optional dry-run (lists dist-tag commands; still resolves @rc)
-node scripts/point-latest-at-rc.js --from-rc --dry-run
+pnpm point-latest-at-rc --dry-run
 
 # 3. Retag (no NPM_TOKEN)
-node scripts/point-latest-at-rc.js --from-rc --local
-# or: pnpm point-latest-at-rc -- --from-rc --local
+pnpm point-latest-at-rc
 ```
 
 ## Verify
@@ -65,14 +65,14 @@ Expect `latest` and `rc` both at the same `1.0.0-rc.n`.
 
 | Symptom | Likely cause |
 | --- | --- |
-| Soft-skip without `--local` | Missing `NPM_TOKEN` — add `--local` for this path |
+| Soft-skip without `--local` | Missing `NPM_TOKEN` — use `pnpm point-latest-at-rc` for this path |
 | `Local mode requires npm auth` | Not logged in — `npm login` |
 | `E403` on dist-tag | User lacks write on that package |
 | Gate skip (`pre.json` / not `rc`) | Not in RC pre mode — do not force |
 
 ## Related
 
-- Docs: `docs/RC_CHECKLIST.md` §C (CI + local alternatives)
+- Docs: `docs/RC_CHECKLIST.md` §C (CI primary; local break-glass)
 - CI: `.github/workflows/release.yml` → `promote_rc_to_latest` (needs
-  `NPM_TOKEN`; leave in place)
+  `NPM_TOKEN`; leave in place — primary path)
 - Script help: `node scripts/point-latest-at-rc.js --help`

@@ -238,7 +238,7 @@ export function pointLatestAtRc(options = {}) {
 	const token = resolveAuthToken(env);
 	if (!token && !options.dryRun && !local) {
 		const reason =
-			"NPM_TOKEN / NODE_AUTH_TOKEN is not set. OIDC does not cover npm dist-tag (no CLI OIDC exchange). Set the NPM_TOKEN repo secret to a granular stage-only token (dist-tag; not publish), then re-run or use workflow_dispatch → promote_rc_to_latest. Or run locally: node scripts/point-latest-at-rc.js --from-rc --local (after npm login).";
+			"NPM_TOKEN / NODE_AUTH_TOKEN is not set. OIDC does not cover npm dist-tag (no CLI OIDC exchange). Set the NPM_TOKEN repo secret to a granular stage-only token (dist-tag; not publish), then re-run or use workflow_dispatch → promote_rc_to_latest. Or run locally: pnpm point-latest-at-rc (after npm login).";
 		warn(`::warning::${reason}`);
 		return { status: "skipped", reason, commands: [] };
 	}
@@ -325,6 +325,10 @@ export function parseArgs(argv) {
 	const result = { fromRc: false, dryRun: false, local: false, help: false };
 	for (let i = 0; i < argv.length; i++) {
 		const arg = argv[i];
+		if (arg === "--") {
+			// pnpm may forward the run-script separator literally.
+			continue;
+		}
 		if (arg === "--packages") {
 			result.packagesJson = argv[++i] ?? "";
 		} else if (arg === "--from-rc") {
@@ -350,6 +354,7 @@ export function parseArgs(argv) {
 
 function printHelp() {
 	console.log(`Usage:
+  pnpm point-latest-at-rc
   node scripts/point-latest-at-rc.js --packages '[{"name":"arkenv","version":"1.0.0-rc.2"}]'
   node scripts/point-latest-at-rc.js --from-rc
   node scripts/point-latest-at-rc.js --from-rc --local
@@ -362,8 +367,10 @@ Auth:
   CI:    NPM_TOKEN or NODE_AUTH_TOKEN (granular stage-only dist-tag
          token; OIDC covers publish only — no CLI OIDC exchange for
          dist-tag). Soft-skips if the secret is missing.
-  Local: --local after npm login (uses your user npmrc; no NPM_TOKEN).
-         See skills/point-latest-at-rc/SKILL.md.`);
+  Local: pnpm point-latest-at-rc (wraps --from-rc --local after npm
+         login; uses your user npmrc; no NPM_TOKEN). Break-glass only —
+         prefer workflow_dispatch → promote_rc_to_latest when the secret
+         works. See skills/point-latest-at-rc/SKILL.md.`);
 }
 
 function main() {

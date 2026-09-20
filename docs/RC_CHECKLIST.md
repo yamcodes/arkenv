@@ -214,8 +214,8 @@ work lands):
 - [ ] `readme-prod-links` - Update README links from alpha to production
 - [ ] `changelog-epoch` - Prepend changelog epoch warnings
 - [ ] `npm-deprecate-cli` - Deprecate `@arkenv/cli` on npm
-- [ ] `v0-archive-dns-cutover` - Deploy `v0.arkenv.js.org` archive and
-  flip primary DNS
+- [ ] `v0-archive-dns-cutover` - Deploy a Vercel preview/alias URL for
+  the v0 docs archive and flip primary DNS
 - [ ] `release-v1` - Release v1
 - [ ] `v1-announcement` - Document v1 announcement
 
@@ -268,21 +268,23 @@ output and sets `latest` on each published package.
 - **One-shot promote (CI):** Actions → **release** → **Run workflow** →
   enable **promote_rc_to_latest** (points `latest` at current `@rc`
   without publishing). Same gate + `NPM_TOKEN` requirement.
-- **Local / no `NPM_TOKEN`:** after `npm login`, from the repo root:
+- **Local break-glass (no `NPM_TOKEN`):** after `npm login`, from the
+  repo root:
 
   ```bash
-  node scripts/point-latest-at-rc.js --from-rc --local
-  # or: pnpm point-latest-at-rc -- --from-rc --local
+  pnpm point-latest-at-rc
   ```
 
-  Uses your user npmrc (interactive OTP OK). Same pre.json gate. Agent
-  walkthrough: [skills/point-latest-at-rc/SKILL.md](../skills/point-latest-at-rc/SKILL.md).
-- **Local dry-run:**
-  `node scripts/point-latest-at-rc.js --from-rc --dry-run`
+  Runs `node scripts/point-latest-at-rc.js --from-rc --local`. Uses your
+  user npmrc (interactive OTP OK). Same pre.json gate. Prefer CI
+  **promote_rc_to_latest** when the secret works; this is escape-hatch
+  only. Agent walkthrough:
+  [skills/point-latest-at-rc/SKILL.md](../skills/point-latest-at-rc/SKILL.md).
+- **Local dry-run:** `pnpm point-latest-at-rc --dry-run`
 
 `1.0.0-rc.1` may still need a one-time retag if automation lands after
-that publish: CI **promote_rc_to_latest** (needs `NPM_TOKEN`), or local
-`node scripts/point-latest-at-rc.js --from-rc --local`.
+that publish: CI **promote_rc_to_latest** first (needs `NPM_TOKEN`), or
+local break-glass `pnpm point-latest-at-rc`.
 
 - [ ] Publish `1.0.0-rc.n` for the publishable packages in section B
 - [ ] Confirm dist-tags: `@rc` → `1.0.0-rc.n`, and **`latest` → `1.0.0-rc.n`**
@@ -332,7 +334,8 @@ only when archive + README production links are ready; otherwise keep
 serving v1 from `https://arkenv-v1.vercel.app` until then. Full DNS
 detail: [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.
 
-- [ ] `arkenv.js.org` → v1 `www`; `v0.arkenv.js.org` archive
+- [ ] `arkenv.js.org` → v1 `www`; v0 docs archive on a Vercel
+  preview/alias URL (`*.vercel.app` or project alias)
 - [ ] Optional: default GitHub branch → `v1` (repo default today is
   `dev` - verify before changing)
 - [ ] GitHub Release for `1.0.0-rc.n` + announce blog + tweet
@@ -342,7 +345,7 @@ detail: [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.
   [arktypeio/arktype#1655](https://github.com/arktypeio/arktype/pull/1655)
   merged; snippet uses `@arkenv/core`
 - [ ] State the support window for alpha consumers and v0
-  (`v0.arkenv.js.org` + last v0 npm lines)
+  (Vercel archive URL + last v0 npm lines)
 
 ---
 
