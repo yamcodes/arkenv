@@ -115,6 +115,7 @@ describe("parseArgs", () => {
 			packagesJson: "[]",
 			fromRc: false,
 			dryRun: true,
+			local: false,
 			help: false,
 		});
 	});
@@ -123,6 +124,16 @@ describe("parseArgs", () => {
 		expect(parseArgs(["--from-rc"])).toEqual({
 			fromRc: true,
 			dryRun: false,
+			local: false,
+			help: false,
+		});
+	});
+
+	it("parses --local", () => {
+		expect(parseArgs(["--from-rc", "--local"])).toEqual({
+			fromRc: true,
+			dryRun: false,
+			local: true,
 			help: false,
 		});
 	});
@@ -221,7 +232,49 @@ describe("pointLatestAtRc", () => {
 		expect(result.status).toBe("skipped");
 		expect(result.reason).toMatch(/NPM_TOKEN/);
 		expect(result.reason).toMatch(/OIDC/);
+		expect(result.reason).toMatch(/--local/);
 		expect(warn).toHaveBeenCalled();
+	});
+
+	it("local mode uses ambient npm auth without NPM_TOKEN or temp npmrc", () => {
+		const { root } = makeRoot({ mode: "pre", tag: "rc" }, "");
+		const calls = [];
+		const log = vi.fn();
+		const result = pointLatestAtRc({
+			rootDir: root,
+			packagesJson: '[{"name":"arkenv","version":"1.0.0-rc.2"}]',
+			local: true,
+			env: {},
+			log,
+			execNpm: (args) => {
+				calls.push(args);
+				if (args[0] === "whoami") return "yamcodes";
+				return "ok";
+			},
+		});
+		expect(result.status).toBe("ok");
+		expect(result.npmrcPath).toBeUndefined();
+		expect(calls).toEqual([
+			["whoami"],
+			["dist-tag", "add", "arkenv@1.0.0-rc.2", "latest"],
+		]);
+		expect(log.mock.calls.flat().join("\n")).toMatch(/yamcodes/);
+	});
+
+	it("local mode fails when npm whoami fails", () => {
+		const { root } = makeRoot({ mode: "pre", tag: "rc" }, "");
+		expect(() =>
+			pointLatestAtRc({
+				rootDir: root,
+				packagesJson: '[{"name":"arkenv","version":"1.0.0-rc.2"}]',
+				local: true,
+				env: {},
+				execNpm: (args) => {
+					if (args[0] === "whoami") throw new Error("ENEEDAUTH");
+					throw new Error("should not run");
+				},
+			}),
+		).toThrow(/Local mode requires npm auth/);
 	});
 
 	it("dry-runs dist-tag commands without calling npm add", () => {

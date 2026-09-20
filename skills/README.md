@@ -29,6 +29,7 @@ These skills are intended for users of ArkEnv to improve their development exper
   - [**forward-port**](./forward-port/SKILL.md): Ports merged `dev` (v0) changes onto `v1`, adapting paths and changeset names.
   - [**gh-cli**](./gh-cli/SKILL.md): Guidance for using the GitHub CLI (`gh`) for common repository tasks.
   - [**groom-issue**](./groom-issue/SKILL.md): Interactive grilling session to clarify and flesh out poorly written issues.
+  - [**point-latest-at-rc**](./point-latest-at-rc/SKILL.md): Point npm `latest` at current `@rc` using local npm auth (no CI `NPM_TOKEN`).
   - [**tackle-issue**](./tackle-issue/SKILL.md): Standardized workflow for managing issues from start to Pull Request.
 
   ### Code quality & refactoring

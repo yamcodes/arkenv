@@ -10,14 +10,19 @@
  * - `.changeset/pre.json` has `"mode": "pre"` and `"tag": "rc"`.
  *   `changeset pre exit` sets `"mode": "exit"` (the file is deleted later
  *   by `changeset version`), so GA naturally disables this.
- * - A granular npm token in `NODE_AUTH_TOKEN` or `NPM_TOKEN` with
- *   **Read and write (stage only)** (dist-tag moves; not publish).
- *   Publish stays on OIDC trusted publishing. The npm CLI has no OIDC
- *   exchange for `dist-tag`, so the repo secret is the supported path.
+ * - Auth (one of):
+ *   - CI: granular npm token in `NODE_AUTH_TOKEN` or `NPM_TOKEN` with
+ *     **Read and write (stage only)** (dist-tag moves; not publish).
+ *     Publish stays on OIDC trusted publishing. The npm CLI has no OIDC
+ *     exchange for `dist-tag`, so the repo secret is the CI path.
+ *   - Local: `--local` after `npm login` (uses your user npmrc; no
+ *     `NPM_TOKEN`). Prefer this when package Publishing access disallows
+ *     tokens or the CI secret is not worth fighting.
  *
  * Usage:
  *   node scripts/point-latest-at-rc.js --packages '[{"name":"pkg","version":"1.0.0-rc.2"}]'
  *   node scripts/point-latest-at-rc.js --from-rc
+ *   node scripts/point-latest-at-rc.js --from-rc --local
  *   node scripts/point-latest-at-rc.js --packages '…' --dry-run
  */
 
@@ -200,6 +205,7 @@ export function skipReasonForPre(pre) {
  *   packagesJson?: string;
  *   fromRc?: boolean;
  *   dryRun?: boolean;
+ *   local?: boolean;
  *   env?: NodeJS.ProcessEnv;
  *   npmrcPath?: string;
  *   execNpm?: (args: string[]) => string;
@@ -213,6 +219,7 @@ export function pointLatestAtRc(options = {}) {
 	const env = options.env ?? process.env;
 	const log = options.log ?? console.log;
 	const warn = options.warn ?? console.warn;
+	const local = Boolean(options.local);
 	const execNpm =
 		options.execNpm ??
 		((args) =>
@@ -229,11 +236,23 @@ export function pointLatestAtRc(options = {}) {
 	}
 
 	const token = resolveAuthToken(env);
-	if (!token && !options.dryRun) {
+	if (!token && !options.dryRun && !local) {
 		const reason =
-			"NPM_TOKEN / NODE_AUTH_TOKEN is not set. OIDC does not cover npm dist-tag (no CLI OIDC exchange). Set the NPM_TOKEN repo secret to a granular stage-only token (dist-tag; not publish), then re-run or use workflow_dispatch → promote_rc_to_latest.";
+			"NPM_TOKEN / NODE_AUTH_TOKEN is not set. OIDC does not cover npm dist-tag (no CLI OIDC exchange). Set the NPM_TOKEN repo secret to a granular stage-only token (dist-tag; not publish), then re-run or use workflow_dispatch → promote_rc_to_latest. Or run locally: node scripts/point-latest-at-rc.js --from-rc --local (after npm login).";
 		warn(`::warning::${reason}`);
 		return { status: "skipped", reason, commands: [] };
+	}
+
+	if (local && !options.dryRun) {
+		try {
+			const who = execNpm(["whoami"]);
+			log(`Using local npm auth as ${who || "(unknown)"}`);
+		} catch (error) {
+			const detail = error instanceof Error ? error.message : String(error);
+			throw new Error(
+				`Local mode requires npm auth (npm login / existing ~/.npmrc). npm whoami failed: ${detail}`,
+			);
+		}
 	}
 
 	/** @type {{ name: string; version: string }[]} */
@@ -266,10 +285,18 @@ export function pointLatestAtRc(options = {}) {
 		return { status: "skipped", reason, commands: [] };
 	}
 
-	const npmrcPath =
-		options.npmrcPath ?? (options.dryRun ? undefined : createTempNpmrcPath());
-	if (!options.dryRun && npmrcPath) {
-		writeNpmrcAuth(token, npmrcPath);
+	/** @type {string | undefined} */
+	let npmrcPath;
+	if (local) {
+		// Ambient user npmrc (~/.npmrc or project .npmrc). Do not write a
+		// temp --userconfig; that would ignore interactive login / OTP.
+		npmrcPath = undefined;
+	} else {
+		npmrcPath =
+			options.npmrcPath ?? (options.dryRun ? undefined : createTempNpmrcPath());
+		if (!options.dryRun && npmrcPath) {
+			writeNpmrcAuth(token, npmrcPath);
+		}
 	}
 
 	/** @type {string[][]} */
@@ -291,11 +318,11 @@ export function pointLatestAtRc(options = {}) {
 
 /**
  * @param {string[]} argv
- * @returns {{ packagesJson?: string; fromRc: boolean; dryRun: boolean; help: boolean }}
+ * @returns {{ packagesJson?: string; fromRc: boolean; dryRun: boolean; local: boolean; help: boolean }}
  */
 export function parseArgs(argv) {
-	/** @type {{ packagesJson?: string; fromRc: boolean; dryRun: boolean; help: boolean }} */
-	const result = { fromRc: false, dryRun: false, help: false };
+	/** @type {{ packagesJson?: string; fromRc: boolean; dryRun: boolean; local: boolean; help: boolean }} */
+	const result = { fromRc: false, dryRun: false, local: false, help: false };
 	for (let i = 0; i < argv.length; i++) {
 		const arg = argv[i];
 		if (arg === "--packages") {
@@ -304,6 +331,8 @@ export function parseArgs(argv) {
 			result.fromRc = true;
 		} else if (arg === "--dry-run") {
 			result.dryRun = true;
+		} else if (arg === "--local") {
+			result.local = true;
 		} else if (arg === "--help" || arg === "-h") {
 			result.help = true;
 		} else {
@@ -323,12 +352,18 @@ function printHelp() {
 	console.log(`Usage:
   node scripts/point-latest-at-rc.js --packages '[{"name":"arkenv","version":"1.0.0-rc.2"}]'
   node scripts/point-latest-at-rc.js --from-rc
+  node scripts/point-latest-at-rc.js --from-rc --local
   node scripts/point-latest-at-rc.js --packages '…' --dry-run
 
 Only runs while .changeset/pre.json has mode "pre" and tag "rc"
 (changeset pre exit sets mode "exit"; file deleted later by version).
-Requires NPM_TOKEN or NODE_AUTH_TOKEN (granular stage-only dist-tag
-token; OIDC covers publish only — no CLI OIDC exchange for dist-tag).`);
+
+Auth:
+  CI:    NPM_TOKEN or NODE_AUTH_TOKEN (granular stage-only dist-tag
+         token; OIDC covers publish only — no CLI OIDC exchange for
+         dist-tag). Soft-skips if the secret is missing.
+  Local: --local after npm login (uses your user npmrc; no NPM_TOKEN).
+         See skills/point-latest-at-rc/SKILL.md.`);
 }
 
 function main() {
@@ -341,6 +376,7 @@ function main() {
 		packagesJson: args.packagesJson,
 		fromRc: args.fromRc,
 		dryRun: args.dryRun,
+		local: args.local,
 	});
 	// skipped (no token / not rc) exits 0 so a missing secret does not
 	// fail the release job after packages already published.

@@ -253,7 +253,7 @@ output and sets `latest` on each published package.
   separate flag.
 - **Auth:** Publish stays on OIDC trusted publishing. `npm dist-tag` is
   not covered by OIDC (the npm CLI still has no OIDC exchange for
-  dist-tag), so the supported path is a granular access token in the
+  dist-tag), so the CI path is a granular access token in the
   **`NPM_TOKEN`** repository secret (`NODE_AUTH_TOKEN` in the job).
   Preferred token setup:
   - Permissions: **Read and write (stage only)** — can move dist-tags,
@@ -264,15 +264,25 @@ output and sets `latest` on each published package.
   - No organization write access.
   - Rotate about every 90 days (token expiry).
     If the secret is missing, the step warns and skips (publish still
-    succeeds).
-- **One-shot promote:** Actions → **release** → **Run workflow** → enable
-  **promote_rc_to_latest** (points `latest` at current `@rc` without
-  publishing). Same gate + `NPM_TOKEN` requirement.
-- **Local dry-run:**
-  `node scripts/point-latest-at-rc.js --packages '[{"name":"arkenv","version":"1.0.0-rc.2"}]' --dry-run`
+    succeeds). CI needs `NPM_TOKEN`; the local path below does not.
+- **One-shot promote (CI):** Actions → **release** → **Run workflow** →
+  enable **promote_rc_to_latest** (points `latest` at current `@rc`
+  without publishing). Same gate + `NPM_TOKEN` requirement.
+- **Local / no `NPM_TOKEN`:** after `npm login`, from the repo root:
 
-`1.0.0-rc.1` may still need a one-time manual `npm dist-tag add … latest`
-(or the workflow_dispatch promote) if automation lands after that publish.
+  ```bash
+  node scripts/point-latest-at-rc.js --from-rc --local
+  # or: pnpm point-latest-at-rc -- --from-rc --local
+  ```
+
+  Uses your user npmrc (interactive OTP OK). Same pre.json gate. Agent
+  walkthrough: [skills/point-latest-at-rc/SKILL.md](../skills/point-latest-at-rc/SKILL.md).
+- **Local dry-run:**
+  `node scripts/point-latest-at-rc.js --from-rc --dry-run`
+
+`1.0.0-rc.1` may still need a one-time retag if automation lands after
+that publish: CI **promote_rc_to_latest** (needs `NPM_TOKEN`), or local
+`node scripts/point-latest-at-rc.js --from-rc --local`.
 
 - [ ] Publish `1.0.0-rc.n` for the publishable packages in section B
 - [ ] Confirm dist-tags: `@rc` → `1.0.0-rc.n`, and **`latest` → `1.0.0-rc.n`**
