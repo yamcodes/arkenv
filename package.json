@@ -12,6 +12,7 @@
 		"www": "turbo run dev --filter=www",
 		"dash": "pnpm run build --filter=@arkenv/core && pnpm --filter @repo/dash dash",
 		"release": "pnpm run build:packages && changeset publish",
+		"point-latest-at-rc": "node scripts/point-latest-at-rc.js",
 		"fix": "node scripts/fix.js",
 		"fix:unsafe": "node scripts/fix.js --unsafe",
 		"check": "biome check && pnpm run check:mdx && manypkg check",

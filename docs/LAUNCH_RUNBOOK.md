@@ -46,6 +46,11 @@ RC checklist, and do not treat the RC checklist as a substitute for these
    ```bash
    pnpm exec changeset pre exit
    ```
+   This deletes `.changeset/pre.json`. The release workflow's
+   "Point latest at published RC" step is gated on that file's
+   `"tag": "rc"`, so it stops retagging automatically — no separate flag
+   to clear. You can remove the `NPM_TOKEN` secret later if it existed
+   only for the RC window (OIDC still covers publish).
 2. Generate the final version packages and changelogs:
    ```bash
    pnpm exec changeset version

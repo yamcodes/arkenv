@@ -239,9 +239,32 @@ semver version stays `-rc` and the site says Release Candidate. Keep the
 replaces `latest` with `1.0.0` per
 [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §2.
 
+### Automation (rc.2+)
+
+After Changesets publishes in pre mode with tag `rc`,
+[`.github/workflows/release.yml`](../.github/workflows/release.yml) runs
+`scripts/point-latest-at-rc.js` against the action's `published-packages`
+output and sets `latest` on each published package.
+
+- **Gate:** only while [`.changeset/pre.json`](../.changeset/pre.json)
+  has `"tag": "rc"`. Running `pnpm exec changeset pre exit` removes that
+  file, so the step no-ops at GA without a separate flag.
+- **Auth:** OIDC trusted publishing covers `npm publish` only — not
+  `npm dist-tag`. The retag step needs a classic npm write token in the
+  **`NPM_TOKEN`** repository secret (`NODE_AUTH_TOKEN` in the job). If the
+  secret is missing, the step warns and skips (publish still succeeds).
+- **One-shot promote:** Actions → **release** → **Run workflow** → enable
+  **promote_rc_to_latest** (points `latest` at current `@rc` without
+  publishing). Same gate + `NPM_TOKEN` requirement.
+- **Local dry-run:**
+  `node scripts/point-latest-at-rc.js --packages '[{"name":"arkenv","version":"1.0.0-rc.2"}]' --dry-run`
+
+`1.0.0-rc.1` may still need a one-time manual `npm dist-tag add … latest`
+(or the workflow_dispatch promote) if automation lands after that publish.
+
 - [ ] Publish `1.0.0-rc.n` for the publishable packages in section B
-- [ ] Set dist-tags: `@rc` → `1.0.0-rc.n`, and **`latest` → `1.0.0-rc.n`**
-  (product path)
+- [ ] Confirm dist-tags: `@rc` → `1.0.0-rc.n`, and **`latest` → `1.0.0-rc.n`**
+  (product path; automated on publish when `NPM_TOKEN` is set)
 - [ ] Smoke tests after publish:
   - [ ] Bare `npx arkenv init` (exercises `latest`)
   - [ ] `@arkenv/core` + `arktype` in a fresh Node app
