@@ -19,11 +19,17 @@ permissions:
   actions: write
 jobs:
   test:
+    # Stable channel labels keep ruleset required-check names fixed while
+    # setup-nub-ci still receives concrete majors (aliases unsupported).
+    name: test (${{ matrix.channel }})
     runs-on: ubuntu-latest
     strategy:
-      # Concrete majors only — setup-nub does not front lts/* / latest aliases.
       matrix:
-        node-version: [24, 26]
+        include:
+          - channel: lts
+            node-version: 24
+          - channel: latest
+            node-version: 26
       fail-fast: false
 
     steps:
@@ -66,10 +72,15 @@ jobs:
       - run: nub run --no-check typecheck
 
   test-build:
+    name: test-build (${{ matrix.channel }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [24, 26]
+        include:
+          - channel: lts
+            node-version: 24
+          - channel: latest
+            node-version: 26
       fail-fast: false
 
     steps:
@@ -165,11 +176,16 @@ jobs:
           retention-days: 30
   test-windows:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(join(github.event.pull_request.labels.*.name, ','), 'windows')
+    name: test-windows (${{ matrix.channel }})
     runs-on: windows-latest
     strategy:
       matrix:
-        node-version: [24, 26]
-    continue-on-error: ${{ matrix.node-version == 26 }}
+        include:
+          - channel: lts
+            node-version: 24
+          - channel: latest
+            node-version: 26
+    continue-on-error: ${{ matrix.channel == 'latest' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -206,17 +222,22 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
-          name: test-results-windows-${{ matrix.node-version }}
+          name: test-results-windows-${{ matrix.channel }}
           path: "**/test-results/**"
           retention-days: 30
 
   test-macos:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(join(github.event.pull_request.labels.*.name, ','), 'macos')
+    name: test-macos (${{ matrix.channel }})
     runs-on: macos-latest
     strategy:
       matrix:
-        node-version: [24, 26]
-    continue-on-error: ${{ matrix.node-version == 26 }}
+        include:
+          - channel: lts
+            node-version: 24
+          - channel: latest
+            node-version: 26
+    continue-on-error: ${{ matrix.channel == 'latest' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -253,6 +274,6 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
-          name: test-results-macos-${{ matrix.node-version }}
+          name: test-results-macos-${{ matrix.channel }}
           path: "**/test-results/**"
           retention-days: 30
