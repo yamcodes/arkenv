@@ -84,7 +84,11 @@ We **do not use Conventional Commits** (`feat:`, `fix:`, `chore:`, etc.). Instea
 
 ## Branching & Release Workflow
 
-We use a **Dual-Branch Model** (`dev` and `main`) to ensure the production documentation site is strictly synchronized with npm releases, meaning it never displays unreleased features. For the architectural reasoning behind this decision, see [ADR 0006: Branching and Release Flow](./adr/0006-branching-and-release-flow.md).
+We use a **Dual-Branch Model** (`dev` and `main`) for the v0 publish →
+archive line (historical ADR 0006 flow). **Production /
+`arkenv.js.org` tracks `v1`** during RC (Option A) — see the callout
+under the diagram. For the architectural reasoning behind the original
+dual-branch design, see [ADR 0006: Branching and Release Flow](./adr/0006-branching-and-release-flow.md).
 
 ```
                   ┌───────────────┐
@@ -92,7 +96,7 @@ We use a **Dual-Branch Model** (`dev` and `main`) to ensure the production docum
                   └───────┬───────┘
                           ▼
                     ┌───────────┐
-                    │    dev    │ (Default branch / Previews)
+                    │    dev    │ (v0 integration / Previews)
                     └─────┬─────┘
                           │ (Changeset version PR merged & published)
                           ▼
@@ -100,6 +104,10 @@ We use a **Dual-Branch Model** (`dev` and `main`) to ensure the production docum
                     │   main    │ (v0 docs archive → arkenv-v0.vercel.app)
                     └───────────┘
 ```
+
+> Diagram = v0 publish → archive path only. Live Production is on **`v1`**
+> (Option A callout below) — not shown as a second column here so the
+> historical dual-branch story stays readable.
 
 > **RC docs cutover (Option A):** Production / `arkenv.js.org` tracks
 > **`v1`** (`vercel --prod`). Pushes to **`main`** refresh the legacy
