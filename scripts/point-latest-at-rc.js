@@ -9,8 +9,10 @@
  * Gates (all required):
  * - `.changeset/pre.json` exists with `"tag": "rc"` (exiting pre removes
  *   the file, so GA naturally disables this).
- * - A classic npm write token in `NODE_AUTH_TOKEN` or `NPM_TOKEN`.
- *   OIDC trusted publishing covers `npm publish` only — not `dist-tag`.
+ * - A granular npm token in `NODE_AUTH_TOKEN` or `NPM_TOKEN` with
+ *   **Read and write (stage only)** (dist-tag moves; not publish).
+ *   Publish stays on OIDC trusted publishing. The npm CLI has no OIDC
+ *   exchange for `dist-tag`, so the repo secret is the supported path.
  *
  * Usage:
  *   node scripts/point-latest-at-rc.js --packages '[{"name":"pkg","version":"1.0.0-rc.2"}]'
@@ -130,7 +132,8 @@ export function resolveAuthToken(env = process.env) {
 
 /**
  * Write an npmrc auth line so `npm dist-tag` can authenticate.
- * OIDC trusted publishing does not authorize dist-tag operations.
+ * Publish uses OIDC; dist-tag uses the NPM_TOKEN secret (no CLI OIDC
+ * exchange for dist-tag).
  *
  * @param {string} token
  * @param {string} npmrcPath
@@ -185,7 +188,7 @@ export function pointLatestAtRc(options = {}) {
 	const token = resolveAuthToken(env);
 	if (!token && !options.dryRun) {
 		const reason =
-			"NPM_TOKEN / NODE_AUTH_TOKEN is not set. OIDC trusted publishing does not cover npm dist-tag. Add a classic npm write token as the NPM_TOKEN repo secret, then re-run or use workflow_dispatch → promote_rc_to_latest.";
+			"NPM_TOKEN / NODE_AUTH_TOKEN is not set. OIDC does not cover npm dist-tag (no CLI OIDC exchange). Set the NPM_TOKEN repo secret to a granular stage-only token (dist-tag; not publish), then re-run or use workflow_dispatch → promote_rc_to_latest.";
 		warn(`::warning::${reason}`);
 		return { status: "skipped", reason, commands: [] };
 	}
@@ -270,7 +273,8 @@ function printHelp() {
   node scripts/point-latest-at-rc.js --packages '…' --dry-run
 
 Only runs while .changeset/pre.json has tag "rc".
-Requires NPM_TOKEN or NODE_AUTH_TOKEN (OIDC does not cover dist-tag).`);
+Requires NPM_TOKEN or NODE_AUTH_TOKEN (granular stage-only dist-tag
+token; OIDC covers publish only — no CLI OIDC exchange for dist-tag).`);
 }
 
 function main() {

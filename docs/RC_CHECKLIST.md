@@ -249,10 +249,20 @@ output and sets `latest` on each published package.
 - **Gate:** only while [`.changeset/pre.json`](../.changeset/pre.json)
   has `"tag": "rc"`. Running `pnpm exec changeset pre exit` removes that
   file, so the step no-ops at GA without a separate flag.
-- **Auth:** OIDC trusted publishing covers `npm publish` only — not
-  `npm dist-tag`. The retag step needs a classic npm write token in the
-  **`NPM_TOKEN`** repository secret (`NODE_AUTH_TOKEN` in the job). If the
-  secret is missing, the step warns and skips (publish still succeeds).
+- **Auth:** Publish stays on OIDC trusted publishing. `npm dist-tag` is
+  not covered by OIDC (the npm CLI still has no OIDC exchange for
+  dist-tag), so the supported path is a granular access token in the
+  **`NPM_TOKEN`** repository secret (`NODE_AUTH_TOKEN` in the job).
+  Preferred token setup:
+  - Permissions: **Read and write (stage only)** — can move dist-tags,
+    cannot publish. Do not require a full publish-capable
+    "Read and write" token for this secret.
+  - Bypass 2FA: yes (required for CI).
+  - Packages: `@arkenv` scope + unscoped `arkenv` only.
+  - No organization write access.
+  - Rotate about every 90 days (token expiry).
+  If the secret is missing, the step warns and skips (publish still
+  succeeds).
 - **One-shot promote:** Actions → **release** → **Run workflow** → enable
   **promote_rc_to_latest** (points `latest` at current `@rc` without
   publishing). Same gate + `NPM_TOKEN` requirement.

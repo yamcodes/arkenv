@@ -69,9 +69,11 @@ jobs:
 
       # Product RC path: also point npm `latest` at the just-published
       # versions so bare `npx arkenv` resolves to RC. Changesets pre mode
-      # only updates the `rc` dist-tag. OIDC trusted publishing does NOT
-      # authorize `npm dist-tag` — this step needs secrets.NPM_TOKEN (classic
-      # write token with dist-tag permission). Missing token skips soft
+      # only updates the `rc` dist-tag. Publish stays on OIDC; the npm CLI
+      # has no OIDC exchange for `dist-tag`, so secrets.NPM_TOKEN (granular
+      # stage-only token — dist-tag, not publish) is the supported path.
+      # Prefer "Read and write (stage only)", bypass 2FA, @arkenv + arkenv
+      # only, no org write; rotate ~90 days. Missing token skips soft
       # (warns) so publish itself is not failed. Gate: .changeset/pre.json
       # tag === "rc"; `changeset pre exit` removes the file and stops this.
       # See docs/RC_CHECKLIST.md §C and scripts/point-latest-at-rc.js.

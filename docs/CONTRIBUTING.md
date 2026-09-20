@@ -148,7 +148,7 @@ When working on a massive marketing push, docs facelift, or breaking API changes
 
    - **Alpha** (Initial unstable integration): `pnpm changeset pre enter alpha` (produces `1.0.0-alpha.0`, `1.0.0-alpha.1`, etc. published to `@alpha`)
    - **Beta** (Feature complete, testing needed): `pnpm changeset pre enter beta` (produces `1.0.0-beta.0`, `1.0.0-beta.1`, etc. published to `@beta`)
-   - **Release Candidate** (API frozen, final validation): `pnpm changeset pre enter rc` (produces `1.0.0-rc.0`, `1.0.0-rc.1`, etc. published to `@rc`). Maintainer cut checklist (including the product decision to also point `latest` at `1.0.0-rc.n`): [RC_CHECKLIST.md](./RC_CHECKLIST.md). While pre tag is `rc`, the release workflow also points npm `latest` at each just-published version (needs the `NPM_TOKEN` secret for `dist-tag`; OIDC covers publish only). That retag stops after `changeset pre exit`.
+   - **Release Candidate** (API frozen, final validation): `pnpm changeset pre enter rc` (produces `1.0.0-rc.0`, `1.0.0-rc.1`, etc. published to `@rc`). Maintainer cut checklist (including the product decision to also point `latest` at `1.0.0-rc.n`): [RC_CHECKLIST.md](./RC_CHECKLIST.md). While pre tag is `rc`, the release workflow also points npm `latest` at each just-published version. That retag uses the `NPM_TOKEN` secret (granular **stage-only** token for dist-tags; publish stays on OIDC — the npm CLI has no OIDC exchange for `dist-tag`). Retag stops after `changeset pre exit`.
 
    > [!IMPORTANT]
    > **SemVer Pre-release Identifiers vs Build Metadata**:
