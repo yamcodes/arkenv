@@ -239,9 +239,44 @@ semver version stays `-rc` and the site says Release Candidate. Keep the
 replaces `latest` with `1.0.0` per
 [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §2.
 
+### Automation (rc.2+)
+
+After Changesets publishes in pre mode with tag `rc`,
+[`.github/workflows/release.yml`](../.github/workflows/release.yml) runs
+`scripts/point-latest-at-rc.js` against the action's `published-packages`
+output and sets `latest` on each published package.
+
+- **Gate:** only while [`.changeset/pre.json`](../.changeset/pre.json)
+  has `"mode": "pre"` and `"tag": "rc"`. Running
+  `pnpm exec changeset pre exit` sets `"mode": "exit"` (the file is
+  deleted later by `changeset version`), so the step no-ops without a
+  separate flag.
+- **Auth:** Publish stays on OIDC trusted publishing. `npm dist-tag` is
+  not covered by OIDC (the npm CLI still has no OIDC exchange for
+  dist-tag), so the supported path is a granular access token in the
+  **`NPM_TOKEN`** repository secret (`NODE_AUTH_TOKEN` in the job).
+  Preferred token setup:
+  - Permissions: **Read and write (stage only)** — can move dist-tags,
+    cannot publish. Do not require a full publish-capable
+    "Read and write" token for this secret.
+  - Bypass 2FA: yes (required for CI).
+  - Packages: `@arkenv` scope + unscoped `arkenv` only.
+  - No organization write access.
+  - Rotate about every 90 days (token expiry).
+    If the secret is missing, the step warns and skips (publish still
+    succeeds).
+- **One-shot promote:** Actions → **release** → **Run workflow** → enable
+  **promote_rc_to_latest** (points `latest` at current `@rc` without
+  publishing). Same gate + `NPM_TOKEN` requirement.
+- **Local dry-run:**
+  `node scripts/point-latest-at-rc.js --packages '[{"name":"arkenv","version":"1.0.0-rc.2"}]' --dry-run`
+
+`1.0.0-rc.1` may still need a one-time manual `npm dist-tag add … latest`
+(or the workflow_dispatch promote) if automation lands after that publish.
+
 - [ ] Publish `1.0.0-rc.n` for the publishable packages in section B
-- [ ] Set dist-tags: `@rc` → `1.0.0-rc.n`, and **`latest` → `1.0.0-rc.n`**
-  (product path)
+- [ ] Confirm dist-tags: `@rc` → `1.0.0-rc.n`, and **`latest` → `1.0.0-rc.n`**
+  (product path; automated on publish when `NPM_TOKEN` is set)
 - [ ] Smoke tests after publish:
   - [ ] Bare `npx arkenv init` (exercises `latest`)
   - [ ] `@arkenv/core` + `arktype` in a fresh Node app

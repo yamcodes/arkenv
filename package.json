@@ -10,8 +10,14 @@
 		"typecheck:packages": "turbo run typecheck --filter=./packages/*",
 		"docs": "turbo run dev --filter=www",
 		"www": "turbo run dev --filter=www",
+<<<<<<< HEAD
 		"dash": "nub run --filter=@arkenv/core build && nub run --filter @repo/dash dash",
 		"release": "nub run build:packages && changeset publish",
+=======
+		"dash": "pnpm run build --filter=@arkenv/core && pnpm --filter @repo/dash dash",
+		"release": "pnpm run build:packages && changeset publish",
+		"point-latest-at-rc": "node scripts/point-latest-at-rc.js",
+>>>>>>> origin/v1
 		"fix": "node scripts/fix.js",
 		"fix:unsafe": "node scripts/fix.js --unsafe",
 		"check": "biome check && nub run check:mdx && manypkg check",
