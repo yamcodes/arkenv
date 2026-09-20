@@ -25,10 +25,10 @@ Compatible agent runtimes expose `/arkenv:init` and `/arkenv:audit`.
 
 ## MCP server
 
-After this package is published (rc tag):
+After this package is published:
 
 ```bash
-npx -y @arkenv/agent-plugin@rc
+npx -y @arkenv/agent-plugin
 ```
 
 From a local clone, build first and point MCP at the bin:

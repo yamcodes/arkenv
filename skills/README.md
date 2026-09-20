@@ -41,7 +41,7 @@ These skills are intended for users of ArkEnv to improve their development exper
 To add the official `arkenv` skill to your AI agent (like Cursor, Claude Code, etc.), run:
 
 ```bash
-npx skills add https://github.com/yamcodes/arkenv/tree/v1
+npx skills add yamcodes/arkenv
 ```
 
 For more information about skills, visit [skills.sh](https://skills.sh).

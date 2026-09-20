@@ -32,6 +32,7 @@ For all work transitioning or porting features from the `v0` (dev) branch to the
 4. **CLI Import Restriction**:
    - The `arkenv` CLI package (`packages/arkenv`) must throw a clear error at runtime if imported or required as a library (using `require.main !== module`) to prevent accidental usage by users upgrading from `v0`.
 
-5. **Release Channel Configuration (`RELEASE_TAG`)**:
-   - Release channel tags (`"alpha"`, `"rc"`, `""` for GA) are controlled centrally in `apps/www/lib/config/release.ts` (`RELEASE_TAG`).
-   - When switching release channels (e.g. from `alpha` to `rc` or graduating to `1.0.0` GA with `""`), updating this single constant propagates tagged/untagged CLI commands across the homepage, copy actions, agent prompts, and all MDX `package-install` tabs with 0 MDX diffs.
+5. **Release Channel vs Install CTAs (`RELEASE_TAG` / `INSTALL_TAG`)**:
+   - Channel labeling (`"alpha"`, `"rc"`, `""` for GA) is controlled by `RELEASE_TAG` in `apps/www/lib/config/release.ts`. It drives the Release Candidate badge and channel copy — not install CTAs.
+   - User-facing install / init / MDX `package-install` tabs use `INSTALL_TAG` (via `getPackageSpecifier`, `getInitCommand`, and `normalizePackageManagerCommand`). Empty `INSTALL_TAG` yields bare commands (`npx arkenv init`, `pnpm add @arkenv/core`).
+   - Keep them independent when you want an RC badge while advertising bare installs (after product `latest` → RC and the apex docs cutover). Flip `RELEASE_TAG` alone when graduating the badge/channel; flip `INSTALL_TAG` alone when you need tagged install copy again.
