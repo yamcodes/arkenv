@@ -245,15 +245,12 @@ export function pointLatestAtRc(options = {}) {
 			try {
 				const version = execNpm(["view", `${name}@rc`, "version"]);
 				if (!version) {
-					warn(
-						`::warning::No @rc version for ${name}; skipping that package`,
-					);
+					warn(`::warning::No @rc version for ${name}; skipping that package`);
 					continue;
 				}
 				packages.push({ name, version });
 			} catch (error) {
-				const detail =
-					error instanceof Error ? error.message : String(error);
+				const detail = error instanceof Error ? error.message : String(error);
 				warn(
 					`::warning::Could not resolve ${name}@rc (${detail}); skipping that package`,
 				);
@@ -270,8 +267,7 @@ export function pointLatestAtRc(options = {}) {
 	}
 
 	const npmrcPath =
-		options.npmrcPath ??
-		(options.dryRun ? undefined : createTempNpmrcPath());
+		options.npmrcPath ?? (options.dryRun ? undefined : createTempNpmrcPath());
 	if (!options.dryRun && npmrcPath) {
 		writeNpmrcAuth(token, npmrcPath);
 	}

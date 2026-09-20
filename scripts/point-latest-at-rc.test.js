@@ -32,9 +32,7 @@ describe("skipReasonForPre", () => {
 		expect(skipReasonForPre({ mode: "exit", tag: "rc" })).toMatch(
 			/mode is "exit"/,
 		);
-		expect(skipReasonForPre({ mode: "pre", tag: "alpha" })).toMatch(
-			/not rc/,
-		);
+		expect(skipReasonForPre({ mode: "pre", tag: "alpha" })).toMatch(/not rc/);
 	});
 });
 

@@ -263,8 +263,8 @@ output and sets `latest` on each published package.
   - Packages: `@arkenv` scope + unscoped `arkenv` only.
   - No organization write access.
   - Rotate about every 90 days (token expiry).
-  If the secret is missing, the step warns and skips (publish still
-  succeeds).
+    If the secret is missing, the step warns and skips (publish still
+    succeeds).
 - **One-shot promote:** Actions → **release** → **Run workflow** → enable
   **promote_rc_to_latest** (points `latest` at current `@rc` without
   publishing). Same gate + `NPM_TOKEN` requirement.
