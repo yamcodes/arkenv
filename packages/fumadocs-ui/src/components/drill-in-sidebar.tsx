@@ -626,12 +626,23 @@ function AccordionTree() {
 	);
 }
 
-function AccordionNav({ className }: { className?: string }) {
+function AccordionNav({
+	banner,
+	className,
+}: {
+	banner?: ReactNode;
+	className?: string;
+}) {
 	return (
 		<div
 			data-docs-sidebar-tree=""
 			className={cn("flex w-full flex-col gap-0.5 pb-4", className)}
 		>
+			{banner ? (
+				<div data-docs-sidebar-banner="" className="mb-1">
+					{banner}
+				</div>
+			) : null}
 			<AccordionTree />
 		</div>
 	);
@@ -724,7 +735,13 @@ function DocsSidebarShell({
 	);
 }
 
-function DrillInNav({ className }: { className?: string }) {
+function DrillInNav({
+	banner,
+	className,
+}: {
+	banner?: ReactNode;
+	className?: string;
+}) {
 	return (
 		<div
 			data-docs-sidebar-tree=""
@@ -735,6 +752,11 @@ function DrillInNav({ className }: { className?: string }) {
 				className,
 			)}
 		>
+			{banner ? (
+				<div data-docs-sidebar-banner="" className="mb-1">
+					{banner}
+				</div>
+			) : null}
 			<DrillInTree />
 		</div>
 	);
@@ -747,7 +769,7 @@ function DrillInNav({ className }: { className?: string }) {
  */
 export function DrillInSidebar({
 	footer: _footer,
-	banner: _banner,
+	banner,
 	collapsible: _collapsible,
 	components: _components,
 	...rest
@@ -755,10 +777,13 @@ export function DrillInSidebar({
 	return (
 		<>
 			<DocsSidebarShell {...rest}>
-				<DrillInNav />
+				<DrillInNav banner={banner} />
 			</DocsSidebarShell>
 			<SidebarDrawer>
-				<AccordionNav className="min-h-0 flex-1 overflow-y-auto overscroll-contain pt-4" />
+				<AccordionNav
+					banner={banner}
+					className="min-h-0 flex-1 overflow-y-auto overscroll-contain pt-4"
+				/>
 			</SidebarDrawer>
 		</>
 	);

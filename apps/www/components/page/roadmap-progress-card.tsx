@@ -1,12 +1,12 @@
-import { AnnouncementBadge } from "~/components/announcement-badge";
+import Link from "next/link";
 import "./roadmap-progress-card.css";
 
 /**
- * v1 progress chip in the hero announcement slot. Uses `AnnouncementBadge`
- * for chrome + arrow; only the meter content is custom.
+ * v1 progress meter for the docs TOC rail (beside Enjoying ArkEnv).
+ * Links to `/roadmap`.
  *
  * When `stale`, the extras-only fallback would otherwise report `0%` — show a
- * neutral track with no percent so the marketing hero does not claim a wrong number.
+ * neutral track with no percent so the chrome does not claim a wrong number.
  */
 export function RoadmapProgressCard({
 	percent,
@@ -29,28 +29,31 @@ export function RoadmapProgressCard({
 		: `v1 roadmap ${clamped}% complete`;
 
 	return (
-		<AnnouncementBadge href="/roadmap" aria-label={ariaLabel}>
-			<span className="roadmap-progress-card">
-				<span className="roadmap-progress-card__label">{label}</span>
-				<span
-					className={
-						stale
-							? "roadmap-progress-card__track roadmap-progress-card__track--stale"
-							: "roadmap-progress-card__track"
-					}
-					aria-hidden="true"
-				>
-					{stale ? null : (
-						<span
-							className="roadmap-progress-card__fill"
-							style={{ width: `${clamped}%` }}
-						/>
-					)}
-				</span>
+		<Link
+			href="/roadmap"
+			data-no-underline
+			className="roadmap-progress-card"
+			aria-label={ariaLabel}
+		>
+			<span className="roadmap-progress-card__label">{label}</span>
+			<span
+				className={
+					stale
+						? "roadmap-progress-card__track roadmap-progress-card__track--stale"
+						: "roadmap-progress-card__track"
+				}
+				aria-hidden="true"
+			>
 				{stale ? null : (
-					<span className="roadmap-progress-card__pct">{clamped}%</span>
+					<span
+						className="roadmap-progress-card__fill"
+						style={{ width: `${clamped}%` }}
+					/>
 				)}
 			</span>
-		</AnnouncementBadge>
+			{stale ? null : (
+				<span className="roadmap-progress-card__pct">{clamped}%</span>
+			)}
+		</Link>
 	);
 }

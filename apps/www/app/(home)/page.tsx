@@ -11,7 +11,7 @@ import {
 	HeroPlaygroundProvider,
 	InstallPanel,
 	QuickstartButton,
-	RoadmapProgressCard,
+	ReleaseChannelBadge,
 	RuntimeBloatShowcase,
 	SecureBoundary,
 	SocialProof,
@@ -19,7 +19,6 @@ import {
 	WorksWith,
 } from "~/components/page";
 import { SiteFooter } from "~/components/site-footer";
-import { fetchRoadmap } from "~/lib/roadmap/fetch-roadmap";
 
 export const metadata: Metadata = {
 	title: "ArkEnv - Typesafe environment variables for TypeScript",
@@ -27,11 +26,7 @@ export const metadata: Metadata = {
 		"Typesafe environment variables with ArkType, Zod, Valibot, or any Standard Schema. Get a strictly typed env object from the validator you already use. No boilerplate. Zero dependencies.",
 };
 
-export const revalidate = 300;
-
-export default async function HomePage() {
-	const roadmap = await fetchRoadmap();
-
+export default function HomePage() {
 	return (
 		<div className="home-aurora__shell">
 			<div className="home-aurora__rails" aria-hidden="true" />
@@ -41,10 +36,7 @@ export default async function HomePage() {
 						className="home-aurora__badge rise"
 						style={{ animationDelay: "40ms" }}
 					>
-						<RoadmapProgressCard
-							percent={roadmap.percent}
-							stale={roadmap.stale}
-						/>
+						<ReleaseChannelBadge />
 					</div>
 					<div className="home-aurora__hero-copy">
 						<h1 id="home-hero" className="home-aurora__tagline">
