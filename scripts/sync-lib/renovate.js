@@ -43,7 +43,9 @@ export function syncRenovateConfig(exampleNames, checkOnly = false) {
 	const generated = generatedMatchFileNames([...new Set(exampleNames)].sort());
 	const current = content.slice(start, end + END_MARKER.length);
 	const updated =
-		content.slice(0, start) + generated + content.slice(end + END_MARKER.length);
+		content.slice(0, start) +
+		generated +
+		content.slice(end + END_MARKER.length);
 
 	if (checkOnly) {
 		return current !== generated;
