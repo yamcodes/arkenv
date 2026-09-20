@@ -31,7 +31,8 @@
 	},
 	"json": {
 		"parser": {
-			"allowComments": true
+			"allowComments": true,
+			"allowTrailingCommas": true
 		}
 	},
 	"assist": { "actions": { "source": { "organizeImports": "on" } } },
@@ -99,6 +100,14 @@
 		}
 	},
 	"overrides": [
+		{
+			"includes": [".github/renovate.json"],
+			"json": {
+				"formatter": {
+					"trailingCommas": "all"
+				}
+			}
+		},
 		{
 			"includes": ["**/examples/**/*", "**/playgrounds/**/*", "apps/dash/**/*"],
 			"linter": {

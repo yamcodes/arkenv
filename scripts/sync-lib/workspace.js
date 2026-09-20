@@ -1,6 +1,9 @@
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ROOT_DIR } from "./constants.js";
+
+const publishedTagCache = new Map();
 
 /**
  * Parse the pnpm-workspace.yaml catalog section to get versions
@@ -66,4 +69,63 @@ export function getWorkspacePackageVersion(packageName) {
 		readFileSync(join(packageDir, "package.json"), "utf-8"),
 	);
 	return pkg.version;
+}
+
+export class PublishedLookupError extends Error {
+	/**
+	 * @param packageName Package whose dist-tag could not be resolved
+	 * @param tag Dist-tag such as `rc`, `alpha`, or `beta`
+	 * @param cause Optional underlying error
+	 */
+	constructor(packageName, tag, cause) {
+		super(`Could not look up ${packageName}@${tag} on npm`);
+		this.name = "PublishedLookupError";
+		this.packageName = packageName;
+		this.tag = tag;
+		if (cause) {
+			this.cause = cause;
+		}
+	}
+}
+
+/**
+ * Resolve the version currently published to an npm dist-tag.
+ *
+ * Examples are standalone npm projects, so they must pin a version that
+ * exists on the registry. Workspace prereleases (for example `1.0.0-rc.0`
+ * after a numbering reset) may not.
+ *
+ * Failed lookups are not cached, so a later retry can succeed.
+ *
+ * @param packageName Package to look up
+ * @param tag Dist-tag such as `rc`, `alpha`, or `beta`
+ * @returns Published version
+ * @throws {PublishedLookupError} When the registry lookup fails
+ */
+export function lookupPublishedNpmVersion(packageName, tag) {
+	const key = `${packageName}@${tag}`;
+	if (publishedTagCache.has(key)) {
+		return publishedTagCache.get(key);
+	}
+
+	try {
+		const version = execFileSync(
+			"npm",
+			["view", packageName, "version", `--tag=${tag}`],
+			{
+				encoding: "utf8",
+				stdio: ["ignore", "pipe", "pipe"],
+			},
+		).trim();
+		if (!version) {
+			throw new PublishedLookupError(packageName, tag);
+		}
+		publishedTagCache.set(key, version);
+		return version;
+	} catch (error) {
+		if (error instanceof PublishedLookupError) {
+			throw error;
+		}
+		throw new PublishedLookupError(packageName, tag, error);
+	}
 }
