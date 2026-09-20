@@ -5,10 +5,13 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
-const wrapper = join(
-	dirname(fileURLToPath(import.meta.url)),
-	"vercel-wrapper.cjs",
-);
+const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
+const wrapper = join(repoRoot, "scripts", "vercel-wrapper.cjs");
+
+const SHORT_MSG_WORKFLOWS = [
+	".github/workflows/deploy-www.yml",
+	".github/workflows/preview-www-reusable.yml",
+];
 
 /**
  * Run vercel-wrapper with a fake `vercel` binary on PATH.
@@ -39,6 +42,21 @@ process.exit(${options.exitCode});
 	return { result, summaryPath };
 }
 
+/**
+ * Pull the SHORT_MSG assignment the workflow actually runs.
+ *
+ * @param yaml Workflow file contents
+ * @param rel Path for assertion messages
+ */
+function shortMsgAssignment(yaml, rel) {
+	const line = yaml
+		.split("\n")
+		.map((entry) => entry.trim())
+		.find((entry) => entry.startsWith("SHORT_MSG="));
+	expect(line, `${rel} must assign SHORT_MSG`).toBeTruthy();
+	return line;
+}
+
 describe("vercel-wrapper", () => {
 	it("emits a GitHub error annotation and step summary on failure", () => {
 		const { result, summaryPath } = runWrapper({
@@ -57,14 +75,20 @@ describe("vercel-wrapper", () => {
 	});
 
 	it("does not SIGPIPE when taking the first line of a multiline commit message", () => {
-		const script = `
-set -o pipefail
-GIT_COMMIT_MESSAGE=$'Deploy www\\n\\nCo-authored-by: someone <dev@example.com>'
-SHORT_MSG="\${GIT_COMMIT_MESSAGE%%$'\\n'*}"
-printf '%s' "$SHORT_MSG"
-`;
-		const result = spawnSync("bash", ["-c", script], { encoding: "utf8" });
-		expect(result.status).toBe(0);
-		expect(result.stdout).toBe("Deploy www");
+		for (const rel of SHORT_MSG_WORKFLOWS) {
+			const yaml = readFileSync(join(repoRoot, rel), "utf8");
+			const assignment = shortMsgAssignment(yaml, rel);
+			expect(assignment, rel).not.toMatch(/\|\s*head\b/);
+
+			const script = [
+				"set -o pipefail",
+				"GIT_COMMIT_MESSAGE=$'Deploy www\\n\\nCo-authored-by: someone <dev@example.com>'",
+				assignment,
+				"printf '%s' \"$SHORT_MSG\"",
+			].join("\n");
+			const result = spawnSync("bash", ["-c", script], { encoding: "utf8" });
+			expect(result.status, rel).toBe(0);
+			expect(result.stdout, rel).toBe("Deploy www");
+		}
 	});
 });
