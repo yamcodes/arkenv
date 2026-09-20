@@ -307,6 +307,10 @@ export function SiteNavDocs({
 	releaseTag: string;
 }) {
 	return (
-		<SiteNav showSearch sidebarTrigger={sidebarTrigger} releaseTag={releaseTag} />
+		<SiteNav
+			showSearch
+			sidebarTrigger={sidebarTrigger}
+			releaseTag={releaseTag}
+		/>
 	);
 }
