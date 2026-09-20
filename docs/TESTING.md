@@ -253,6 +253,10 @@ pnpm run test:e2e:package
 
 ### WWW application (`apps/www`)
 
+Biome `lint/a11y` stays on for `apps/www`. It is off for playgrounds,
+examples, and the create-skill eval viewer — those fixtures are not product
+UI. Playwright axe remains the www WCAG gate.
+
 **Unit Tests:**
 
 - ✅ Individual component rendering and behavior
