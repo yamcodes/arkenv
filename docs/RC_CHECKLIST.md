@@ -313,8 +313,10 @@ versions via `--from-workspace`).
 - [ ] Confirm Releases page **Latest** → `arkenv@1.0.0-rc.n` (or current RC)
 
 - [ ] Publish `1.0.0-rc.n` for the publishable packages in section B
+
 - [ ] Confirm dist-tags: `@rc` → `1.0.0-rc.n`, and **`latest` → `1.0.0-rc.n`**
   (product path; automated on publish when `NPM_TOKEN` is set)
+
 - [ ] Smoke tests after publish:
   - [ ] Bare `npx arkenv init` (exercises `latest`)
   - [ ] `@arkenv/core` + `arktype` in a fresh Node app
