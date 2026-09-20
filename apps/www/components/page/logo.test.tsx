@@ -1,6 +1,6 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import { Logo } from "./logo";
+import { Logo, LogoLink } from "./logo";
 
 describe("Logo", () => {
 	afterEach(() => {
@@ -47,5 +47,26 @@ describe("Logo", () => {
 		render(<Logo wordmark={false} releaseTag="rc" />);
 
 		expect(screen.queryByText("RC")).not.toBeInTheDocument();
+	});
+});
+
+describe("LogoLink", () => {
+	afterEach(() => {
+		cleanup();
+	});
+
+	it("wraps the brand mark in a home link", () => {
+		render(<LogoLink />);
+
+		const link = screen.getByRole("link", { name: "ArkEnv home" });
+		expect(link).toHaveAttribute("href", "/");
+		expect(link).toHaveClass("logo-link");
+		expect(screen.getByText("ArkEnv")).toBeInTheDocument();
+	});
+
+	it("forwards releaseTag to the brand mark", () => {
+		render(<LogoLink releaseTag="rc" />);
+
+		expect(screen.getByText("RC")).toBeInTheDocument();
 	});
 });
