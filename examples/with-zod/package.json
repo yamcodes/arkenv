@@ -6,7 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "nub watch src/index.ts",
-		"start": "nub src",
+		"start": "nub src/index.ts",
 		"build": "tsc",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
