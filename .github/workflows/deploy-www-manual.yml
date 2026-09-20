@@ -57,7 +57,7 @@ jobs:
               exit 1
               ;;
           esac
-          echo "short_msg=$(git log -1 --format=%s "$DEPLOY_SHA" | head -n1)" >> "$GITHUB_OUTPUT"
+          echo "short_msg=$(git log -1 --format=%s "$DEPLOY_SHA")" >> "$GITHUB_OUTPUT"
           echo "author_name=$(git log -1 --format=%an "$DEPLOY_SHA")" >> "$GITHUB_OUTPUT"
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v7
@@ -110,7 +110,11 @@ jobs:
             node scripts/vercel-wrapper.cjs deploy --prebuilt --prod --archive=tgz --token="$VERCEL_TOKEN" "${META_ARGS[@]}"
             echo "Deployed $GIT_SHA to production (arkenv.js.org)."
           else
-            DEPLOYMENT_URL=$(node scripts/vercel-wrapper.cjs deploy --prebuilt --archive=tgz --token="$VERCEL_TOKEN" "${META_ARGS[@]}" | tail -n 1)
+            deploy_log="$(mktemp)"
+            trap 'rm -f "$deploy_log"' EXIT
+            node scripts/vercel-wrapper.cjs deploy --prebuilt --archive=tgz --token="$VERCEL_TOKEN" "${META_ARGS[@]}" \
+              | tee "$deploy_log"
+            DEPLOYMENT_URL="$(tail -n 1 "$deploy_log")"
             echo "Deployment URL: $DEPLOYMENT_URL"
             echo "Aliasing $DEPLOYMENT_URL -> $TARGET"
             node scripts/vercel-wrapper.cjs alias set "$DEPLOYMENT_URL" "$TARGET" --token="$VERCEL_TOKEN"
