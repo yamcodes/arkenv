@@ -8,13 +8,9 @@ if (args.length === 0) {
 }
 
 // Pin via nubx so workflows need no global `vercel` install / GITHUB_PATH dance.
-const child = spawn(
-	"nubx",
-	["-y", "-p", "vercel@59.16.0", "vercel", ...args],
-	{
-		stdio: ["inherit", "inherit", "pipe"],
-	},
-);
+const child = spawn("nubx", ["-y", "-p", "vercel@59.16.0", "vercel", ...args], {
+	stdio: ["inherit", "inherit", "pipe"],
+});
 
 let stderr = "";
 
