@@ -32,7 +32,7 @@
 
 
 <h3 align="center">
-  First-class integrations: <a href="https://arkenv.js.org/docs/frameworks/nextjs">Next.js</a>, <a href="https://arkenv.js.org/docs/frameworks/nuxt">Nuxt</a>, <a href="https://arkenv.js.org/docs/frameworks/vite">Vite</a>, <a href="https://arkenv.js.org/docs/frameworks/tanstack-start">TanStack Start</a>, <a href="https://github.com/yamcodes/arkenv/tree/v1/examples/with-solid-start">SolidStart</a>, <a href="https://arkenv.js.org/docs/getting-started">Node.js</a>, and <a href="https://arkenv.js.org/docs/frameworks/bun">Bun fullstack</a>
+  First-class integrations: <a href="https://arkenv.js.org/docs/frameworks/nextjs">Next.js</a>, <a href="https://arkenv.js.org/docs/frameworks/nuxt">Nuxt</a>, <a href="https://arkenv.js.org/docs/frameworks/vite">Vite</a>, <a href="https://arkenv.js.org/docs/frameworks/tanstack-start">TanStack Start</a>, <a href="https://github.com/yamcodes/arkenv/tree/v1/examples/with-solid-start">SolidStart</a>, and <a href="https://arkenv.js.org/docs/frameworks/bun">Bun fullstack</a>
 </h3>
 
 <br />
