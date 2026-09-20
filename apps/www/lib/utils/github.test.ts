@@ -180,8 +180,7 @@ describe("github utilities", () => {
 			);
 
 			expect(result).toEqual({
-				title:
-					"Editing arkenv/docs/getting-started.md at v1 · yamcodes/arkenv",
+				title: "Editing arkenv/docs/getting-started.md at v1 · yamcodes/arkenv",
 				href: "https://github.com/yamcodes/arkenv/edit/v1/docs/getting-started.md",
 			});
 		});
