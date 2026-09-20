@@ -14,9 +14,7 @@
 </p>
 
 > [!IMPORTANT]
-> **v1** is in RC. On v0? [Migrate to v1](https://arkenv.js.org/docs/guides/migrating-to-v1).
->
-> TypeScript: set `moduleResolution` to `"bundler"`, `"node16"`, or `"nodenext"`.
+> **v1** is in RC. Still on v0? [Migrate to v1](https://arkenv.js.org/docs/guides/migrating-to-v1).
 
 <div align="center">
   <a href="https://arkenv.js.org/docs">Docs</a>
