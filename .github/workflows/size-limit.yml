@@ -52,6 +52,7 @@ jobs:
           team: ${{ vars.TURBO_TEAM }}
       - uses: nubjs/setup-nub@v0
         with:
+          shim: true
           node-version: 24
       - name: Install dependencies
         run: nub install

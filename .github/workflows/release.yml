@@ -42,6 +42,7 @@ jobs:
       - name: Set up Nub
         uses: nubjs/setup-nub@v0
         with:
+          shim: true
           # see: https://github.com/changesets/changesets/issues/2123#issuecomment-4814124084
           node-version: ">=24.18.0"
 

@@ -37,6 +37,7 @@ jobs:
           echo "TURBO_SCM_HEAD=${PR_HEAD_SHA}" >> "$GITHUB_ENV"
       - uses: nubjs/setup-nub@v0
         with:
+          shim: true
           node-version: lts/*
       - name: Install dependencies
         run: nub install

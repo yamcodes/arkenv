@@ -61,6 +61,7 @@ jobs:
           echo "author_name=$(git log -1 --format=%an "$DEPLOY_SHA")" >> "$GITHUB_OUTPUT"
       - uses: nubjs/setup-nub@v0
         with:
+          shim: true
           node-version: lts/*
       - name: Install dependencies
         run: nub install

@@ -33,6 +33,7 @@ jobs:
       - name: Set up Nub
         uses: nubjs/setup-nub@v0
         with:
+          shim: true
           node-version: 24
 
       - name: Install dependencies
@@ -64,6 +65,7 @@ jobs:
 
       - uses: nubjs/setup-nub@v0
         with:
+          shim: true
           node-version: 24
 
       - run: nub install
