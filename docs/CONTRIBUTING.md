@@ -151,15 +151,9 @@ When working on a massive marketing push, docs facelift, or breaking API changes
 3. **Prevent drift:** Periodically merge `dev` into `v1` (e.g., weekly) to ensure `v1` receives all the hotfixes from production and doesn't suffer a massive merge conflict at the end.
 4. **Previews & Pre-releases (`alpha` ➔ `beta` ➔ `rc`):** Vercel will automatically deploy the `v1` branch as a Preview environment. To safely publish pre-release npm packages from this branch without affecting the `latest` npm tag, initialize Changesets pre-release mode by specifying the phase:
 
-<<<<<<< HEAD
    - **Alpha** (Initial unstable integration): `nubx changeset pre enter alpha` (produces `1.0.0-alpha.0`, `1.0.0-alpha.1`, etc. published to `@alpha`)
    - **Beta** (Feature complete, testing needed): `nubx changeset pre enter beta` (produces `1.0.0-beta.0`, `1.0.0-beta.1`, etc. published to `@beta`)
-   - **Release Candidate** (API frozen, final validation): `nubx changeset pre enter rc` (produces `1.0.0-rc.0`, `1.0.0-rc.1`, etc. published to `@rc`). Maintainer cut checklist (including the product decision to also point `latest` at `1.0.0-rc.n`): [RC_CHECKLIST.md](./RC_CHECKLIST.md).
-=======
-   - **Alpha** (Initial unstable integration): `pnpm changeset pre enter alpha` (produces `1.0.0-alpha.0`, `1.0.0-alpha.1`, etc. published to `@alpha`)
-   - **Beta** (Feature complete, testing needed): `pnpm changeset pre enter beta` (produces `1.0.0-beta.0`, `1.0.0-beta.1`, etc. published to `@beta`)
-   - **Release Candidate** (API frozen, final validation): `pnpm changeset pre enter rc` (produces `1.0.0-rc.0`, `1.0.0-rc.1`, etc. published to `@rc`). Maintainer cut checklist (including the product decision to also point `latest` at `1.0.0-rc.n`): [RC_CHECKLIST.md](./RC_CHECKLIST.md). While pre tag is `rc`, the release workflow also points npm `latest` at each just-published version. That retag uses the `NPM_TOKEN` secret (granular **stage-only** token for dist-tags; publish stays on OIDC — the npm CLI has no OIDC exchange for `dist-tag`). Retag stops after `changeset pre exit` (sets `pre.json` mode to `"exit"`; the file is deleted later by `changeset version`).
->>>>>>> origin/v1
+   - **Release Candidate** (API frozen, final validation): `nubx changeset pre enter rc` (produces `1.0.0-rc.0`, `1.0.0-rc.1`, etc. published to `@rc`). Maintainer cut checklist (including the product decision to also point `latest` at `1.0.0-rc.n`): [RC_CHECKLIST.md](./RC_CHECKLIST.md). While pre tag is `rc`, the release workflow also points npm `latest` at each just-published version. That retag uses the `NPM_TOKEN` secret (granular **stage-only** token for dist-tags; publish stays on OIDC — the npm CLI has no OIDC exchange for `dist-tag`). Retag stops after `changeset pre exit` (sets `pre.json` mode to `"exit"`; the file is deleted later by `changeset version`).
 
    > [!IMPORTANT]
    > **SemVer Pre-release Identifiers vs Build Metadata**:
