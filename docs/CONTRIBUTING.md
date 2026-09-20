@@ -143,7 +143,21 @@ When working on a massive marketing push, docs facelift, or breaking API changes
 
 1. **Create a long-lived branch:** Branch off `dev` and name it `next` or `v1`.
 2. **Develop in parallel:** Merge all breaking code and marketing doc updates into `v1`. Meanwhile, you can continue merging normal bug fixes and minor features into `dev` and releasing them to `main` as usual.
-3. **Prevent drift:** Periodically merge `dev` into `v1` (e.g., weekly) to ensure `v1` receives all the hotfixes from production and doesn't suffer a massive merge conflict at the end.
+3. **Immediate forward-porting (dual-tracking) to prevent drift:** `v1`
+   renamed packages (`packages/cli` is now `packages/arkenv`; the old
+   `arkenv` runtime lives in `packages/core` as `@arkenv/core`). A naive
+   git merge of `dev`/`main` into `v1` causes severe tree conflicts. Use
+   a feature-driven forward-port instead:
+
+   - **Develop against `dev` (v0):** Land new features and bugfixes on
+     `dev` first unless they are `v1`-only.
+   - **Port by re-applying the PR diff:** After a change merges to
+     `dev`, re-apply it on `v1` (cherry-pick or manual patch). Adapt
+     paths and APIs. Do not merge `main` into `v1`.
+   - **Translate changeset package names:** Copy the changeset onto `v1`
+     and rewrite the YAML frontmatter to match this branch:
+     - `@arkenv/cli` (v0) ➔ `arkenv` (v1 CLI)
+     - `arkenv` (v0 runtime) ➔ `@arkenv/core` (v1 runtime)
 4. **Previews & Pre-releases (`alpha` ➔ `beta` ➔ `rc`):** Vercel will automatically deploy the `v1` branch as a Preview environment. To safely publish pre-release npm packages from this branch without affecting the `latest` npm tag, initialize Changesets pre-release mode by specifying the phase:
 
    - **Alpha** (Initial unstable integration): `pnpm changeset pre enter alpha` (produces `1.0.0-alpha.0`, `1.0.0-alpha.1`, etc. published to `@alpha`)
