@@ -13,6 +13,14 @@ on:
           NPM_TOKEN secret. Only while Changesets pre tag is rc.
         type: boolean
         default: false
+      mark_github_pre_as_latest:
+        description: >
+          Mark current workspace SemVer-prerelease GitHub Releases as Latest
+          (clears GitHub prerelease flag; make_latest on arkenv). Only while
+          Changesets pre mode is active. Must run on the v1 branch. Does not
+          change npm dist-tags.
+        type: boolean
+        default: false
 
 permissions:
   id-token: write # Required for OIDC (npm publish only — not dist-tag)
@@ -83,6 +91,27 @@ jobs:
           node scripts/point-latest-at-rc.js
           --packages '${{ steps.changesets.outputs.published-packages }}'
 
+      # Product RC path: GitHub Releases UI should show the current RC as
+      # Latest. changesets/action creates releases with
+      # prerelease: version.includes("-") and does not set make_latest.
+      # GitHub forbids Latest on prereleases, so we PATCH each published
+      # SemVer-prerelease release to prerelease=false and set
+      # make_latest=true on arkenv (else @arkenv/core; if neither is in
+      # the publish set, clear prerelease only — do not move Latest). Gate:
+      # .changeset/pre.json mode === "pre"; v1 only so a future `dev`
+      # alpha publish cannot steal Latest from the RC line. Does not
+      # touch npm dist-tags. See scripts/mark-github-releases-latest.js.
+      - name: Mark GitHub prereleases as Latest
+        if: >
+          steps.changesets.outputs.published == 'true' &&
+          github.ref_name == 'v1'
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: >
+          node scripts/mark-github-releases-latest.js
+          --packages '${{ steps.changesets.outputs.published-packages }}'
+
       - name: Sync main branch
         if: steps.changesets.outputs.published == 'true' && github.ref_name == 'dev'
         run: |
@@ -113,3 +142,36 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: node scripts/point-latest-at-rc.js --from-rc
+
+  # One-shot: clear GitHub Pre-release + set Latest on workspace pre tags
+  # (e.g. after landing this automation, or if a publish step was skipped).
+  mark-github-pre-latest:
+    name: Mark GitHub pre as Latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      inputs.mark_github_pre_as_latest &&
+      github.ref_name == 'v1'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Checkout Repo
+        uses: actions/checkout@v7
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+
+      - name: Use Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ">=24.18.0"
+
+      - name: Mark workspace prerelease GitHub Releases as Latest
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node scripts/mark-github-releases-latest.js --from-workspace

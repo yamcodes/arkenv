@@ -290,9 +290,32 @@ output and sets `latest` on each published package.
 that publish: CI **promote_rc_to_latest** first (needs `NPM_TOKEN`), or
 local break-glass `pnpm point-latest-at-rc`.
 
+### GitHub Releases Latest (RC / v1 pre)
+
+`changesets/action` creates one GitHub Release per published package with
+`prerelease: true` whenever the SemVer version contains `-`. GitHub
+**forbids** the Releases-page **Latest** badge on prereleases
+(`make_latest` is ignored while `prerelease: true`).
+
+**Chosen product path:** after publish on `v1` while Changesets pre mode
+is active, [`.github/workflows/release.yml`](../.github/workflows/release.yml)
+runs [`scripts/mark-github-releases-latest.js`](../scripts/mark-github-releases-latest.js):
+
+1. PATCH each published SemVer-prerelease release to `prerelease: false`
+   (required so Latest is allowed).
+2. Set `make_latest: "true"` on **`arkenv`** if published, else
+   **`@arkenv/core`**. If neither is in the publish set, clear
+   prerelease only — do **not** move Latest to an unrelated sibling.
+
+npm dist-tags are unchanged. One-shot (must run on the `v1` branch):
+Actions → **release** → **Run workflow** → enable
+**mark_github_pre_as_latest** (uses workspace package versions via
+`--from-workspace`).
+
 - [ ] Publish `1.0.0-rc.n` for the publishable packages in section B
 - [ ] Confirm dist-tags: `@rc` → `1.0.0-rc.n`, and **`latest` → `1.0.0-rc.n`**
   (product path; automated on publish when `NPM_TOKEN` is set)
+- [ ] Confirm Releases page **Latest** → `arkenv@1.0.0-rc.n` (or current RC)
 - [ ] Smoke tests after publish:
   - [ ] Bare `npx arkenv init` (exercises `latest`)
   - [ ] `@arkenv/core` + `arktype` in a fresh Node app
