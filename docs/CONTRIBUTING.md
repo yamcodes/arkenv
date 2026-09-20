@@ -84,7 +84,11 @@ We **do not use Conventional Commits** (`feat:`, `fix:`, `chore:`, etc.). Instea
 
 ## Branching & Release Workflow
 
-We use a **Dual-Branch Model** (`dev` and `main`) to ensure the production documentation site is strictly synchronized with npm releases, meaning it never displays unreleased features. For the architectural reasoning behind this decision, see [ADR 0006: Branching and Release Flow](./adr/0006-branching-and-release-flow.md).
+We use a **Dual-Branch Model** (`dev` and `main`) for the v0 publish →
+archive line (historical ADR 0006 flow). **Production /
+`arkenv.js.org` tracks `v1`** during RC (Option A) — see the callout
+under the diagram. For the architectural reasoning behind the original
+dual-branch design, see [ADR 0006: Branching and Release Flow](./adr/0006-branching-and-release-flow.md).
 
 ```
                   ┌───────────────┐
@@ -92,14 +96,26 @@ We use a **Dual-Branch Model** (`dev` and `main`) to ensure the production docum
                   └───────┬───────┘
                           ▼
                     ┌───────────┐
-                    │    dev    │ (Default branch / Previews)
+                    │    dev    │ (v0 integration / Previews)
                     └─────┬─────┘
                           │ (Changeset version PR merged & published)
                           ▼
                     ┌───────────┐
-                    │   main    │ (Production docs / Vercel prod)
+                    │   main    │ (v0 docs archive → arkenv-v0.vercel.app)
                     └───────────┘
 ```
+
+> Diagram = v0 publish → archive path only. Live Production is on **`v1`**
+> (Option A callout below) — not shown as a second column here so the
+> historical dual-branch story stays readable.
+
+> **RC docs cutover (Option A):** Production / `arkenv.js.org` tracks
+> **`v1`** (`vercel --prod`). Pushes to **`main`** refresh the legacy
+> archive at `https://arkenv-v0.vercel.app` and must **not** take
+> Production. `https://arkenv-dev.vercel.app` and
+> `https://arkenv-v1.vercel.app` stay as stable aliases. At GA (Option B,
+> later), rename so the v1 line becomes `main`/`dev` and the old line
+> becomes `v0` — out of scope for the RC Actions retarget.
 
 ### Key Workflows
 
@@ -120,21 +136,19 @@ When you are ready to publish the unreleased features currently sitting on `dev`
 2. Review the aggregated `CHANGELOG.md` and version bumps.
 3. Merge the "Version Packages" PR into `dev`.
 4. A GitHub workflow will automatically build and publish the packages to npm.
-5. Immediately after a successful publish, the workflow automatically fast-forwards the `main` branch to match `dev`. This push to `main` triggers the production documentation deploy.
+5. Immediately after a successful publish, the workflow automatically fast-forwards the `main` branch to match `dev`. This push to `main` refreshes the **v0 docs archive** (`https://arkenv-v0.vercel.app`), not Production. Production / `arkenv.js.org` tracks **`v1`**.
 
 #### Use Case 3: Fixing a Typo on the Live Docs
 
-When you need to fix a typo or make a cosmetic change to the live documentation *without* publishing a new npm package:
+When you need to fix a typo or make a cosmetic change to the **live v1**
+documentation *without* waiting on a package release:
 
-1. Do not use the standard `dev` feature workflow (otherwise your typo fix will be trapped in `dev` until the next npm release).
-2. Ask your AI Agent to invoke the `/sync-main` slash command, or manually run the `sync-main` skill.
-3. **If `dev` is clean** (no unreleased features): Merge your doc fix to `dev`, then run the `Sync main` GitHub workflow to fast-forward `main`.
-4. **If `dev` has unreleased features**: Use the script locally to cherry-pick your fix:
-   ```sh
-   ./scripts/sync-main.sh rescue <commit-hash>
-   ./scripts/sync-main.sh reconcile
-   ```
-   This ensures the fix hits `main` instantly while preventing Git history drift.
+1. Open a PR against **`v1`** (the branch that owns Production /
+   `arkenv.js.org`). Merging (or pushing) updates apex via
+   `deploy-www.yml`.
+2. For **legacy v0 archive** fixes only (`arkenv-v0.vercel.app`), use
+   the `sync-main` skill / `main` branch as before — that path no longer
+   flips Production.
 
 #### Use Case 4: Coordinating a Major Version (e.g., v1)
 
@@ -146,16 +160,33 @@ When working on a massive marketing push, docs facelift, or breaking API changes
    - **Develop against dev/v0**: All new features and bugfixes are first built and merged into the `dev` branch.
    - **Immediate manual porting**: Once a PR is merged into `dev`, the maintainer will manually forward-port the changes to `v1`, adapting the code to the new directory structure (e.g. under `packages/arkenv/src/` instead of `packages/cli/src/`).
    - **Update Changesets**: During the porting process, the maintainer will copy the changeset to the `v1` branch and manually update the YAML package name in the frontmatter to match the renamed package (e.g., change `"cli": patch` to `"arkenv": patch`).
-4. **Previews & Betas:** Pushes to `v1` deploy the docs via GitHub Actions (Vercel CLI) and alias `https://arkenv-v1.vercel.app` for marketing review. To safely publish pre-release npm packages from this branch (e.g., `1.0.0-next.0`) without affecting the `latest` npm tag, initialize Changesets pre-release mode on the `v1` branch by running `pnpm changeset pre enter next`. As you write `major` changesets for your breaking changes, they will be published under the `next` tag.
-5. **The Big Release:** When Launch Day arrives, merge `v1` into `dev`. Then, run `pnpm changeset pre exit` to graduate from the `next` pre-release phase to stable. The standard **Use Case 2** workflow takes over, producing a final "Version Packages" PR that publishes `1.0.0` to the `latest` tag and fast-forwards `main`.
+4. **Previews & Pre-releases (`alpha` ➔ `beta` ➔ `rc`):** Pushes to `v1` run Production (`arkenv.js.org` via `--prod`) and keep `https://arkenv-v1.vercel.app` current. To safely publish pre-release npm packages from this branch without affecting the `latest` npm tag, initialize Changesets pre-release mode by specifying the phase:
+
+   - **Alpha** (Initial unstable integration): `pnpm changeset pre enter alpha` (produces `1.0.0-alpha.0`, `1.0.0-alpha.1`, etc. published to `@alpha`)
+   - **Beta** (Feature complete, testing needed): `pnpm changeset pre enter beta` (produces `1.0.0-beta.0`, `1.0.0-beta.1`, etc. published to `@beta`)
+   - **Release Candidate** (API frozen, final validation): `pnpm changeset pre enter rc` (produces `1.0.0-rc.0`, `1.0.0-rc.1`, etc. published to `@rc`)
+5. **The Big Release:** When Launch Day arrives, merge `v1` into `dev`. Then, run `pnpm changeset pre exit` to graduate from the pre-release phase to stable. The standard **Use Case 2** workflow takes over, producing a final "Version Packages" PR that publishes `1.0.0` to the `latest` tag and fast-forwards `main`.
 
 ## Preview deployments
 
 PR previews for the `www` app are opt-in. A maintainer (triage+) applies the `preview` label to trigger a Vercel preview deployment when the label is added, and again on subsequent `synchronize` / `ready_for_review` events while the label remains (a preview is only produced when the `www` app is actually affected). This works for same-repo and fork PRs; fork authors cannot self-serve the label.
 
-Pushes to `dev` or `v1` always deploy via GitHub Actions (Vercel CLI). Those deploys pass git metadata and alias the rolling branch domains (`https://arkenv-dev.vercel.app`, `https://arkenv-v1.vercel.app`) so the domains stay current without relying on native Vercel Git builds. Labeled PR previews keep ephemeral deployment URLs and do not take over those branch domains.
+Stable www URLs (GitHub Actions + Vercel CLI, not native Vercel Git builds):
 
-To redeploy an older commit to a stable URL without moving the branch, maintainers can run **Actions → Deploy www (manual SHA)** and choose `arkenv-dev.vercel.app`, `arkenv-v1.vercel.app`, or production `arkenv.js.org`.
+| Branch / action                | Target                                                                              |
+| ------------------------------ | ----------------------------------------------------------------------------------- |
+| Push to **`v1`**               | Production (`arkenv.js.org`) via `--prod`, and alias `https://arkenv-v1.vercel.app` |
+| Push to **`main`**             | Archive alias `https://arkenv-v0.vercel.app` (preview deploy, **not** `--prod`)     |
+| Push to **`dev`** (if present) | Alias `https://arkenv-dev.vercel.app`                                               |
+| Labeled PR                     | Ephemeral preview URL only (does not take over the aliases above)                   |
+
+To redeploy an older commit to a stable URL without moving the branch, maintainers can run **Actions → Deploy www (manual SHA)** and choose `arkenv-dev.vercel.app`, `arkenv-v0.vercel.app`, `arkenv-v1.vercel.app`, or production `arkenv.js.org`.
+
+**Phased cutover:** RC keeps these branch names (**Option A**). At GA
+(**Option B**, later), rename so the v1 line becomes `main`/`dev` and
+the old line becomes **`v0`**, then leave `--prod` on `main` again.
+(Full launch steps live on the `v1` branch as `docs/LAUNCH_RUNBOOK.md`
+§3.1 — that file is not on this archive line.)
 
 ## Changesets
 
