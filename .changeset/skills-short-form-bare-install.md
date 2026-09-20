@@ -5,7 +5,7 @@
 
 #### Advertise short `skills add` and bare install commands
 
-With `v1` as the GitHub default branch (merge only after product `latest` → RC and the apex docs cutover):
+With `v1` as the GitHub default branch, short skills (`npx skills add yamcodes/arkenv`) are correct immediately. Bare install CTAs assume npm `latest` → RC, which lands right after Version Packages in the same sitting:
 
 - `arkenv init` and docs always use `npx skills add yamcodes/arkenv` (no `/tree/v1` URL)
 - Hero / docs install CTAs use bare `npx arkenv init` / `pnpm add @arkenv/*` via `INSTALL_TAG` (no `@rc` / `@alpha` tags); the Release Candidate badge stays on `RELEASE_TAG`
