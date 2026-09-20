@@ -369,8 +369,8 @@ Open on tip (re-verify):
 
 1. **A** - Freeze: blockers vs park; Not-GA gaps; Discussions scan (F).
 2. **B** - Channel flip: changesets `rc`, versions, `RELEASE_TAG` (badge)
-   + `INSTALL_TAG` (bare CTAs after `latest` → RC), hardcoded alpha copy,
-   RC badge.
+   - `INSTALL_TAG` (bare CTAs after `latest` → RC), hardcoded alpha copy,
+     RC badge.
 3. **C** - Publish `1.0.0-rc.n`, point `latest` + `@rc`, smoke tests.
 4. Same-day pack after: import-guard URL polish (D), deprecate
    `@arkenv/cli` when ready, then DNS/announce (E) only if archive +
