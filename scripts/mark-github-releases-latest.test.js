@@ -72,6 +72,15 @@ describe("pickLatestReleasePackage", () => {
 			pickLatestReleasePackage([{ name: "arkenv", version: "1.0.0" }]),
 		).toBeNull();
 	});
+
+	it("returns null when neither arkenv nor @arkenv/core is published", () => {
+		expect(
+			pickLatestReleasePackage([
+				{ name: "@arkenv/nextjs", version: "1.0.0-rc.1" },
+				{ name: "@arkenv/vite-plugin", version: "1.0.0-rc.1" },
+			]),
+		).toBeNull();
+	});
 });
 
 describe("parseRepository", () => {
@@ -176,6 +185,30 @@ describe("markGithubReleasesLatest", () => {
 		expect(logs.some((line) => line.includes("make_latest=true"))).toBe(true);
 	});
 
+	it("clears prerelease without moving Latest when preferred packages are absent", async () => {
+		const root = mkdtempSync(join(tmpdir(), "arkenv-gh-latest-"));
+		mkdirSync(join(root, ".changeset"), { recursive: true });
+		writeFileSync(
+			join(root, ".changeset", "pre.json"),
+			JSON.stringify({ mode: "pre", tag: "rc" }),
+		);
+
+		const logs = /** @type {string[]} */ ([]);
+		const result = await markGithubReleasesLatest({
+			rootDir: root,
+			packagesJson: '[{"name":"@arkenv/nextjs","version":"1.0.0-rc.1"}]',
+			dryRun: true,
+			log: (message) => logs.push(message),
+		});
+
+		expect(result.status).toBe("ok");
+		expect(result.updates).toEqual([
+			{ tag: "@arkenv/nextjs@1.0.0-rc.1", makeLatest: "false" },
+		]);
+		expect(logs.some((line) => line.includes("not moving Latest"))).toBe(true);
+		expect(logs.some((line) => line.includes("make_latest=true"))).toBe(false);
+	});
+
 	it("PATCHes releases with prerelease false and make_latest", async () => {
 		const root = mkdtempSync(join(tmpdir(), "arkenv-gh-latest-"));
 		mkdirSync(join(root, ".changeset"), { recursive: true });
@@ -235,6 +268,80 @@ describe("markGithubReleasesLatest", () => {
 		expect(calls[0]?.url).toContain("/releases/tags/arkenv%401.0.0-rc.1");
 		expect(calls[1]?.method).toBe("PATCH");
 		expect(JSON.parse(calls[1]?.body ?? "{}")).toEqual({
+			prerelease: false,
+			make_latest: "true",
+		});
+	});
+
+	it("warns and continues when one package's release lookup fails", async () => {
+		const root = mkdtempSync(join(tmpdir(), "arkenv-gh-latest-"));
+		mkdirSync(join(root, ".changeset"), { recursive: true });
+		writeFileSync(
+			join(root, ".changeset", "pre.json"),
+			JSON.stringify({ mode: "pre", tag: "rc" }),
+		);
+
+		/** @type {string[]} */
+		const patchBodies = [];
+		const warn = vi.fn();
+		const fetchImpl = vi.fn(async (url, init = {}) => {
+			const method = init.method ?? "GET";
+			const urlStr = String(url);
+			if (method === "GET" && urlStr.includes("nextjs")) {
+				return {
+					ok: false,
+					status: 404,
+					async text() {
+						return "Not Found";
+					},
+				};
+			}
+			if (method === "GET") {
+				return {
+					ok: true,
+					async json() {
+						return {
+							id: 99,
+							tag_name: "arkenv@1.0.0-rc.1",
+							prerelease: true,
+						};
+					},
+					async text() {
+						return "";
+					},
+				};
+			}
+			patchBodies.push(typeof init.body === "string" ? init.body : "");
+			return {
+				ok: true,
+				async json() {
+					return {};
+				},
+				async text() {
+					return "";
+				},
+			};
+		});
+
+		const result = await markGithubReleasesLatest({
+			rootDir: root,
+			packagesJson:
+				'[{"name":"@arkenv/nextjs","version":"1.0.0-rc.1"},{"name":"arkenv","version":"1.0.0-rc.1"}]',
+			env: {
+				GITHUB_TOKEN: "test-token",
+				GITHUB_REPOSITORY: "yamcodes/arkenv",
+			},
+			fetchImpl: /** @type {typeof fetch} */ (fetchImpl),
+			log: vi.fn(),
+			warn,
+		});
+
+		expect(result.status).toBe("ok");
+		expect(warn).toHaveBeenCalledWith(
+			expect.stringMatching(/@arkenv\/nextjs@1\.0\.0-rc\.1/),
+		);
+		expect(patchBodies).toHaveLength(1);
+		expect(JSON.parse(patchBodies[0] ?? "{}")).toEqual({
 			prerelease: false,
 			make_latest: "true",
 		});

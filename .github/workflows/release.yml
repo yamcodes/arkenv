@@ -17,7 +17,8 @@ on:
         description: >
           Mark current workspace SemVer-prerelease GitHub Releases as Latest
           (clears GitHub prerelease flag; make_latest on arkenv). Only while
-          Changesets pre mode is active. Does not change npm dist-tags.
+          Changesets pre mode is active. Must run on the v1 branch. Does not
+          change npm dist-tags.
         type: boolean
         default: false
 
@@ -95,7 +96,8 @@ jobs:
       # prerelease: version.includes("-") and does not set make_latest.
       # GitHub forbids Latest on prereleases, so we PATCH each published
       # SemVer-prerelease release to prerelease=false and set
-      # make_latest=true on arkenv (fallback @arkenv/core). Gate:
+      # make_latest=true on arkenv (else @arkenv/core; if neither is in
+      # the publish set, clear prerelease only — do not move Latest). Gate:
       # .changeset/pre.json mode === "pre"; v1 only so a future `dev`
       # alpha publish cannot steal Latest from the RC line. Does not
       # touch npm dist-tags. See scripts/mark-github-releases-latest.js.
@@ -145,7 +147,10 @@ jobs:
   # (e.g. after landing this automation, or if a publish step was skipped).
   mark-github-pre-latest:
     name: Mark GitHub pre as Latest
-    if: github.event_name == 'workflow_dispatch' && inputs.mark_github_pre_as_latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      inputs.mark_github_pre_as_latest &&
+      github.ref_name == 'v1'
     runs-on: ubuntu-latest
     steps:
       - name: Generate GitHub App Token

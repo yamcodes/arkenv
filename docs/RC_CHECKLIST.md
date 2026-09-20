@@ -303,20 +303,19 @@ runs [`scripts/mark-github-releases-latest.js`](../scripts/mark-github-releases-
 
 1. PATCH each published SemVer-prerelease release to `prerelease: false`
    (required so Latest is allowed).
-2. Set `make_latest: "true"` on **`arkenv`** (fallback `@arkenv/core`);
-   siblings get `make_latest: "false"`.
+2. Set `make_latest: "true"` on **`arkenv`** if published, else
+   **`@arkenv/core`**. If neither is in the publish set, clear
+   prerelease only — do **not** move Latest to an unrelated sibling.
 
-npm dist-tags are unchanged. One-shot: Actions → **release** → **Run
-workflow** → enable **mark_github_pre_as_latest** (uses workspace package
-versions via `--from-workspace`).
-
-- [ ] Confirm Releases page **Latest** → `arkenv@1.0.0-rc.n` (or current RC)
+npm dist-tags are unchanged. One-shot (must run on the `v1` branch):
+Actions → **release** → **Run workflow** → enable
+**mark_github_pre_as_latest** (uses workspace package versions via
+`--from-workspace`).
 
 - [ ] Publish `1.0.0-rc.n` for the publishable packages in section B
-
 - [ ] Confirm dist-tags: `@rc` → `1.0.0-rc.n`, and **`latest` → `1.0.0-rc.n`**
   (product path; automated on publish when `NPM_TOKEN` is set)
-
+- [ ] Confirm Releases page **Latest** → `arkenv@1.0.0-rc.n` (or current RC)
 - [ ] Smoke tests after publish:
   - [ ] Bare `npx arkenv init` (exercises `latest`)
   - [ ] `@arkenv/core` + `arktype` in a fresh Node app

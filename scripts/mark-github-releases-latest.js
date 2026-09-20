@@ -17,8 +17,8 @@
  * - `GITHUB_TOKEN` with permission to update releases.
  *
  * Preference: only one release can be Latest. Prefer `arkenv`, then
- * `@arkenv/core`. Sibling pre releases get `prerelease: false` so they
- * lose the Pre-release badge, but `make_latest: "false"`.
+ * `@arkenv/core`. If neither is in the publish set, do not move Latest
+ * (siblings may still get `prerelease: false` / `make_latest: "false"`).
  *
  * Usage:
  *   node scripts/mark-github-releases-latest.js --packages '[{"name":"arkenv","version":"1.0.0-rc.2"}]'
@@ -79,17 +79,18 @@ export function isSemverPrerelease(version) {
 
 /**
  * Pick which published package should receive `make_latest: "true"`.
+ * Only `arkenv` or `@arkenv/core` — never an arbitrary sibling, so a
+ * plugin-only publish cannot steal the Releases-page Latest badge.
  * @param {{ name: string; version: string }[]} packages
  * @returns {{ name: string; version: string } | null}
  */
 export function pickLatestReleasePackage(packages) {
 	const prereleases = packages.filter((pkg) => isSemverPrerelease(pkg.version));
-	if (prereleases.length === 0) return null;
 	for (const preferred of LATEST_PACKAGE_PREFERENCE) {
 		const hit = prereleases.find((pkg) => pkg.name === preferred);
 		if (hit) return hit;
 	}
-	return prereleases[0] ?? null;
+	return null;
 }
 
 /**
@@ -261,9 +262,9 @@ export async function markGithubReleasesLatest(options = {}) {
 
 	const latestPkg = pickLatestReleasePackage(packages);
 	if (!latestPkg) {
-		const reason = "No package selected for make_latest; nothing to do";
-		log(reason);
-		return { status: "skipped", reason, updates: [] };
+		log(
+			"No preferred package (arkenv / @arkenv/core) in this set; clearing prerelease only (not moving Latest)",
+		);
 	}
 
 	const token = env.GITHUB_TOKEN || "";
@@ -284,7 +285,9 @@ export async function markGithubReleasesLatest(options = {}) {
 	for (const pkg of packages) {
 		const tag = releaseTagName(pkg.name, pkg.version);
 		const makeLatest =
-			pkg.name === latestPkg.name && pkg.version === latestPkg.version
+			latestPkg != null &&
+			pkg.name === latestPkg.name &&
+			pkg.version === latestPkg.version
 				? "true"
 				: "false";
 		updates.push({ tag, makeLatest });
@@ -296,22 +299,29 @@ export async function markGithubReleasesLatest(options = {}) {
 		}
 
 		log(summary);
-		const release = await fetchReleaseByTag({
-			owner,
-			repo,
-			tag,
-			token,
-			fetchImpl: options.fetchImpl,
-		});
-		await updateReleaseLatest({
-			owner,
-			repo,
-			releaseId: release.id,
-			prerelease: false,
-			makeLatest,
-			token,
-			fetchImpl: options.fetchImpl,
-		});
+		try {
+			const release = await fetchReleaseByTag({
+				owner,
+				repo,
+				tag,
+				token,
+				fetchImpl: options.fetchImpl,
+			});
+			await updateReleaseLatest({
+				owner,
+				repo,
+				releaseId: release.id,
+				prerelease: false,
+				makeLatest,
+				token,
+				fetchImpl: options.fetchImpl,
+			});
+		} catch (error) {
+			const detail = error instanceof Error ? error.message : String(error);
+			warn(
+				`::warning::Could not update GitHub release ${tag} (${detail}); skipping that package`,
+			);
+		}
 	}
 
 	return { status: "ok", updates };
