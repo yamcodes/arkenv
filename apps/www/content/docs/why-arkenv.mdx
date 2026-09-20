@@ -23,11 +23,16 @@ already use. ArkEnv provides a typed `env` object from a TypeScript schema, plus
 | **First-class Vite support**        |      ✅     |    ✅    |    ❌   |             ✅            |  ❌  |    ❌    |
 | **First-class Nuxt support**        |      ✅     |    ✅    |    ✅   |             ❌            |  ❌  |    ❌    |
 | **Command Line Interface**          |      ✅     |    ✅    |    ❌   |             ❌            |  ❌  |    ❌    |
+| **Hosting presets**                 |      ✅     |    ❌    |    ✅   |             ❌            |  ❌  |    ❌    |
 | **Remote secret orchestration**     |      ❌     |    ✅    |    ❌   |             ❌            |  ❌  |    ❌    |
 | **Secret masking & log redaction**  |      ❌     |    ✅    |    ❌   |             ❌            |  ❌  |    ❌    |
 
 \* ArkType is supported directly without wrapping each key in ArkType's
 `type()`.
+
+Hosting presets in ArkEnv come from
+[`arkenv init --preset`](/docs/core-concepts/hosting-presets). T3 Env
+uses `extends` presets.
 
 ✅ Built-in / first-class support
 
