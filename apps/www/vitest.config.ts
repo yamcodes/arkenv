@@ -1,7 +1,6 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setupArkEnv } from "@arkenv/nextjs/config";
-import babel from "@rolldown/plugin-babel";
 import react from "@vitejs/plugin-react";
 import { defineProject } from "vitest/config";
 
@@ -13,12 +12,7 @@ try {
 }
 
 export default defineProject({
-	plugins: [
-		react(),
-		babel({
-			plugins: ["styled-jsx/babel"],
-		}),
-	],
+	plugins: [react()],
 	resolve: {
 		tsconfigPaths: true,
 	},

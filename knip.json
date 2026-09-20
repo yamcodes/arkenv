@@ -13,7 +13,7 @@
 		"packages/core/src/arktype/coercion/index.ts"
 	],
 	"ignoreDependencies": ["esbuild", "bun"],
-	"ignoreBinaries": ["tsx", "size-limit"],
+	"ignoreBinaries": ["nub", "nubx", "size-limit"],
 	"ignoreIssues": {
 		"packages/bun-plugin/src/index.ts": ["duplicates"],
 		"packages/core/src/arktype/index.ts": ["types"],
@@ -46,7 +46,6 @@
 				"remark-directive",
 				"remark-gemoji",
 				"require-in-the-middle",
-				"styled-jsx",
 				"unist-util-visit",
 				"valibot"
 			]

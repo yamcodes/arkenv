@@ -20,6 +20,7 @@ export const DEFAULT_EXCLUDES = [
 	".next",
 	".nuxt",
 	".output",
+	"nub.jsonc", // Monorepo-only Nub config; examples use stock Node
 	"next-env.d.ts",
 	".env",
 	".env.local",

@@ -68,7 +68,7 @@ export const getBaselineSizes = async (
 
 		// Install dependencies and build
 		try {
-			const installProc = spawn(["pnpm", "install"], {
+			const installProc = spawn(["nub", "install"], {
 				stdout: "pipe",
 				stderr: "pipe",
 			});
@@ -80,7 +80,7 @@ export const getBaselineSizes = async (
 				return baselineMap;
 			}
 
-			const buildProc = spawn(["pnpm", "run", "build", "--filter", filter], {
+			const buildProc = spawn(["nub", "run", "build", "--filter", filter], {
 				stdout: "pipe",
 				stderr: "pipe",
 			});

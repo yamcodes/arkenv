@@ -1,21 +1,76 @@
-import { getWorkspacePackageVersion } from "./workspace.js";
+import {
+	getWorkspacePackageVersion,
+	lookupPublishedNpmVersion,
+	PublishedLookupError,
+} from "./workspace.js";
+
+export { PublishedLookupError };
+
+/**
+ * Dist-tag channel encoded in a SemVer prerelease (`1.0.0-rc.0` → `rc`).
+ *
+ * @param version Workspace or catalog version
+ * @returns Channel name, or `null` for a stable version
+ */
+export function prereleaseChannel(version) {
+	const match = /^[0-9]+\.[0-9]+\.[0-9]+-([A-Za-z]+)/.exec(version);
+	return match ? match[1].toLowerCase() : null;
+}
+
+/**
+ * Pin a workspace package for a standalone example.
+ *
+ * Stable versions get a caret. Prereleases stay exact and, when the
+ * workspace version is not on npm yet, use the last published dist-tag
+ * for that channel (`@rc`, `@alpha`, `@beta`). Examples resolve published
+ * packages, not unpublished in-repo staging numbers.
+ *
+ * @param packageName Workspace package name
+ * @param workspaceVersion Version from the package's `package.json`
+ * @param lookupPublished Dist-tag lookup (injectable in tests)
+ */
+export function exampleVersionSpec(
+	packageName,
+	workspaceVersion,
+	lookupPublished = lookupPublishedNpmVersion,
+) {
+	const channel = prereleaseChannel(workspaceVersion);
+	if (!channel) {
+		return `^${workspaceVersion}`;
+	}
+
+	const published = lookupPublished(packageName, channel);
+	if (!published) {
+		throw new PublishedLookupError(packageName, channel);
+	}
+	return published;
+}
 
 /**
  * Transform dependencies from workspace/catalog format to published versions
+ *
+ * @param deps Dependency map from package.json
+ * @param catalog Workspace catalog versions
+ * @param options Optional version lookups for tests
  */
-export function transformDependencies(deps, catalog) {
+export function transformDependencies(deps, catalog, options = {}) {
 	if (!deps) return deps;
+
+	const getVersion =
+		options.getWorkspacePackageVersion ?? getWorkspacePackageVersion;
+	const lookupPublished = options.lookupPublished ?? lookupPublishedNpmVersion;
 
 	const transformed = {};
 
 	for (const [name, version] of Object.entries(deps)) {
 		if (version === "workspace:*" || version.startsWith("workspace:")) {
-			const publishedVersion = getWorkspacePackageVersion(name);
+			const publishedVersion = getVersion(name);
 			if (publishedVersion) {
-				const hasCaret = !publishedVersion.includes("-");
-				transformed[name] = hasCaret
-					? `^${publishedVersion}`
-					: publishedVersion;
+				transformed[name] = exampleVersionSpec(
+					name,
+					publishedVersion,
+					lookupPublished,
+				);
 			} else {
 				// Keep as-is if we can't find the version
 				transformed[name] = version;
@@ -39,8 +94,13 @@ export function transformDependencies(deps, catalog) {
 
 /**
  * Transform package.json for examples
+ *
+ * @param pkg Source playground package.json
+ * @param exampleConfig Playground `arkenvExamples` entry
+ * @param catalog Workspace catalog versions
+ * @param options Optional version lookups for tests
  */
-export function transformPackageJson(pkg, exampleConfig, catalog) {
+export function transformPackageJson(pkg, exampleConfig, catalog, options) {
 	const transformed = { ...pkg };
 
 	// Update name if specified in config
@@ -49,40 +109,44 @@ export function transformPackageJson(pkg, exampleConfig, catalog) {
 	}
 
 	// Transform dependencies
-	transformed.dependencies = transformDependencies(pkg.dependencies, catalog);
+	transformed.dependencies = transformDependencies(
+		pkg.dependencies,
+		catalog,
+		options,
+	);
 	transformed.devDependencies = transformDependencies(
 		pkg.devDependencies,
 		catalog,
+		options,
 	);
 	transformed.peerDependencies = transformDependencies(
 		pkg.peerDependencies,
 		catalog,
+		options,
 	);
 
 	// Remove pnpm-specific fields that don't apply to standalone examples
 	delete transformed.arkenvExamples;
 
-	// Update package manager if specified
+	// Update package manager if specified (version from workspace catalog)
 	if (exampleConfig.packageManager) {
-		// Get latest stable version for each package manager
-		const packageManagers = {
-			npm: "npm@11.9.0",
-			pnpm: "pnpm@10.23.0",
-		};
-
-		if (catalog[exampleConfig.packageManager]) {
-			transformed.packageManager = `${exampleConfig.packageManager}@${catalog[exampleConfig.packageManager]}`;
-		} else {
-			transformed.packageManager =
-				packageManagers[exampleConfig.packageManager] ||
-				exampleConfig.packageManager;
+		const pm = exampleConfig.packageManager;
+		const version = catalog[pm];
+		if (!version) {
+			throw new Error(
+				`Package manager "${pm}" not found in workspace catalog; add e.g. "${pm}: <version>"`,
+			);
 		}
+		transformed.packageManager = `${pm}@${version}`;
 	}
 
-	// Remove workspace-specific scripts (like pnpm -w run fix)
+	// Remove workspace-specific scripts (like nub run -w fix / pnpm -w run fix)
 	if (transformed.scripts) {
 		for (const [scriptName, scriptCmd] of Object.entries(transformed.scripts)) {
-			if (typeof scriptCmd === "string" && scriptCmd.includes("pnpm -w")) {
+			if (
+				typeof scriptCmd === "string" &&
+				(scriptCmd.includes("pnpm -w") || scriptCmd.includes("nub run -w"))
+			) {
 				delete transformed.scripts[scriptName];
 			}
 		}

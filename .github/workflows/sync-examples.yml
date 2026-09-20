@@ -5,6 +5,7 @@ on:
     paths:
       - "apps/playgrounds/**"
       - "examples/**"
+      - "pnpm-workspace.yaml"
       - "scripts/sync-examples.js"
       - "scripts/sync-lib/**"
   push:
@@ -12,6 +13,7 @@ on:
     paths:
       - "apps/playgrounds/**"
       - "examples/**"
+      - "pnpm-workspace.yaml"
       - "scripts/sync-examples.js"
       - "scripts/sync-lib/**"
   workflow_dispatch:
@@ -30,23 +32,19 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Use Node.js
-        uses: actions/setup-node@v7
+      - name: Set up Nub
+        uses: ./.github/actions/setup-nub-ci
         with:
           node-version: 24
-          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install
 
       - name: Build packages
-        run: pnpm build:packages
+        run: nub run --no-check build:packages
 
       - name: Check examples sync
-        run: pnpm sync:examples:check
+        run: nub run --no-check sync:examples:check
 
   auto-sync:
     if: github.actor == 'renovate[bot]' && github.event_name == 'pull_request'
@@ -66,22 +64,23 @@ jobs:
           token: ${{ steps.generate-token.outputs.token }}
           ref: ${{ github.head_ref }}
 
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      - uses: ./.github/actions/setup-nub-ci
         with:
           node-version: 24
-          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.0
 
       - run: pnpm install
-      - run: pnpm build:packages
-      - run: pnpm sync:examples
+      - run: nub run --no-check build:packages
+      - run: nub run --no-check sync:examples
 
       - name: Commit example updates
         run: |
           git config --global user.email "237618717+arkenv-bot[bot]@users.noreply.github.com"
           git config --global user.name "arkenv-bot[bot]"
-          if [ -n "$(git status --porcelain examples)" ]; then
-            git add examples
+          if [ -n "$(git status --porcelain examples .github/renovate.json)" ]; then
+            git add examples .github/renovate.json
             git commit -m "chore(examples): sync generated examples"
             git push origin HEAD || {
               echo "❌ Failed to push example sync changes. Please re-run the workflow."

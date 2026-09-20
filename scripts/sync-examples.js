@@ -5,8 +5,8 @@
  *
  * Playgrounds are the source of truth for examples. This script copies playground
  * files to the examples directory and transforms:
- * - `workspace:*` dependencies → `^<published-version>`
- * - `catalog:` dependencies → `^<catalog-version>`
+ * - `workspace:*` dependencies → last published npm version (`^` only when stable)
+ * - `catalog:` dependencies → `^<catalog-version>` (exact pin when prerelease)
  *
  * Usage:
  *   node scripts/sync-examples.js           # Sync all examples
@@ -17,6 +17,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { argv } from "node:process";
 import { PLAYGROUNDS_DIR } from "./sync-lib/constants.js";
+import { syncRenovateConfig } from "./sync-lib/renovate.js";
 import { syncPlayground } from "./sync-lib/sync.js";
 import { parseCatalog } from "./sync-lib/workspace.js";
 
@@ -39,6 +40,7 @@ function main() {
 		.map((d) => join(PLAYGROUNDS_DIR, d.name));
 
 	let hasChanges = false;
+	const generatedExampleNames = [];
 
 	for (const playgroundPath of playgroundDirs) {
 		const pkgPath = join(playgroundPath, "package.json");
@@ -65,6 +67,7 @@ function main() {
 				continue;
 			}
 
+			generatedExampleNames.push(exampleConfig.name);
 			const changes = syncPlayground(
 				playgroundPath,
 				exampleConfig,
@@ -80,6 +83,13 @@ function main() {
 				}
 			}
 		}
+	}
+
+	if (syncRenovateConfig(generatedExampleNames, checkOnly)) {
+		hasChanges = true;
+		console.log(
+			"\n  ✗ Renovate config is out of sync with playground metadata.",
+		);
 	}
 
 	if (checkOnly) {

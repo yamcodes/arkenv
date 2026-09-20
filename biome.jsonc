@@ -31,7 +31,8 @@
 	},
 	"json": {
 		"parser": {
-			"allowComments": true
+			"allowComments": true,
+			"allowTrailingCommas": true
 		}
 	},
 	"assist": { "actions": { "source": { "organizeImports": "on" } } },
@@ -100,15 +101,32 @@
 	},
 	"overrides": [
 		{
+			"includes": [".github/renovate.json"],
+			"json": {
+				"formatter": {
+					"trailingCommas": "all"
+				}
+			}
+		},
+		{
 			"includes": ["**/examples/**/*", "**/playgrounds/**/*", "apps/dash/**/*"],
 			"linter": {
 				"rules": {
+					"a11y": "off",
 					"suspicious": {
 						"noConsole": "off"
 					},
 					"style": {
 						"noNonNullAssertion": "off"
 					}
+				}
+			}
+		},
+		{
+			"includes": ["**/create-skill/eval-viewer/**"],
+			"linter": {
+				"rules": {
+					"a11y": "off"
 				}
 			}
 		},

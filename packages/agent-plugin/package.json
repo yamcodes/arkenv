@@ -33,7 +33,7 @@
 		"test": "vitest",
 		"test:run": "vitest run",
 		"clean": "rimraf dist node_modules",
-		"fix": "pnpm -w run fix"
+		"fix": "nub run -w fix"
 	},
 	"keywords": [
 		"arkenv",

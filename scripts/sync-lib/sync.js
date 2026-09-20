@@ -15,7 +15,7 @@ import {
 	getAllFiles,
 	shouldExclude,
 } from "./fs-utils.js";
-import { transformPackageJson } from "./transform.js";
+import { PublishedLookupError, transformPackageJson } from "./transform.js";
 
 /**
  * Regenerate lock file based on package manager
@@ -33,12 +33,16 @@ function regenerateLockFile(examplePath, packageManager) {
 
 	if (packageManager === "npm" || packageManager.startsWith("npm@")) {
 		bin = "npm";
+		// Published plugins may pin exact React peers while examples keep a
+		// caret range that resolves newer. Lockfiles still need to generate
+		// against an installable @arkenv dist-tag.
 		args = [
 			"install",
 			"--package-lock-only",
 			"--ignore-scripts",
 			"--no-audit",
 			"--no-fund",
+			"--legacy-peer-deps",
 		];
 		lockFile = "package-lock.json";
 	} else if (packageManager === "bun" || packageManager.startsWith("bun@")) {
@@ -69,6 +73,15 @@ function regenerateLockFile(examplePath, packageManager) {
 	} else {
 		console.warn(`  ⚠ Unknown package manager: ${packageManager}`);
 		return;
+	}
+
+	try {
+		execFileSync(bin, ["--version"], { stdio: "ignore" });
+	} catch (error) {
+		if (error.code === "ENOENT") {
+			console.warn(`  ⚠ Skipping lockfile regen: ${bin} is not on PATH`);
+			return;
+		}
 	}
 
 	const lockFilePath = join(examplePath, lockFile);
@@ -102,6 +115,10 @@ function regenerateLockFile(examplePath, packageManager) {
 				);
 			}
 		}
+
+		throw new Error(
+			`Failed to regenerate ${lockFile} in ${examplePath}. Examples must pin installable versions.`,
+		);
 	}
 }
 
@@ -138,11 +155,16 @@ export function syncPlayground(
 			if (file === "package.json") {
 				// Special handling for package.json
 				const srcPkg = JSON.parse(readFileSync(srcFile, "utf-8"));
-				const transformedPkg = transformPackageJson(
-					srcPkg,
-					exampleConfig,
-					catalog,
-				);
+				let transformedPkg;
+				try {
+					transformedPkg = transformPackageJson(srcPkg, exampleConfig, catalog);
+				} catch (error) {
+					if (error instanceof PublishedLookupError) {
+						console.warn(`  ⚠ Skipping package.json check: ${error.message}`);
+						continue;
+					}
+					throw error;
+				}
 				const transformedContent = `${JSON.stringify(transformedPkg, null, "\t")}\n`;
 
 				if (!existsSync(destFile)) {
@@ -171,6 +193,7 @@ export function syncPlayground(
 				// Check if this file is specific to the example (like .gitignore, lockfiles)
 				const exampleSpecificFiles = [
 					".gitignore",
+					".npmrc",
 					"bun.lock",
 					"bun.lockb",
 					"pnpm-lock.yaml",
@@ -192,6 +215,7 @@ export function syncPlayground(
 		// Remove existing files except for example-specific files
 		const exampleSpecificFiles = [
 			".gitignore",
+			".npmrc",
 			"bun.lock",
 			"bun.lockb",
 			"pnpm-lock.yaml",
@@ -224,6 +248,14 @@ export function syncPlayground(
 	// Regenerate lock file if package manager is specified
 	if (transformedPkg.packageManager) {
 		regenerateLockFile(examplePath, transformedPkg.packageManager);
+	}
+
+	// Prerelease @arkenv pins do not satisfy plugin peers like `^1.0.0`.
+	if (
+		transformedPkg.packageManager === "npm" ||
+		transformedPkg.packageManager?.startsWith("npm@")
+	) {
+		writeFileSync(join(examplePath, ".npmrc"), "legacy-peer-deps=true\n");
 	}
 
 	// Create .gitignore if it doesn't exist
