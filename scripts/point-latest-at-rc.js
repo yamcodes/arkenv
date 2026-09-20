@@ -16,8 +16,10 @@
  *     Publish stays on OIDC trusted publishing. The npm CLI has no OIDC
  *     exchange for `dist-tag`, so the repo secret is the CI path.
  *   - Local: `--local` after `npm login` (uses your user npmrc; no
- *     `NPM_TOKEN`). Prefer this when package Publishing access disallows
- *     tokens or the CI secret is not worth fighting.
+ *     `NPM_TOKEN`). Write commands (`dist-tag add`) use `stdio: "inherit"`
+ *     so npm can prompt for OTP when 2FA is on auth-and-writes. Prefer
+ *     this when package Publishing access disallows tokens or the CI
+ *     secret is not worth fighting.
  *
  * Usage:
  *   node scripts/point-latest-at-rc.js --packages '[{"name":"pkg","version":"1.0.0-rc.2"}]'
@@ -200,6 +202,29 @@ export function skipReasonForPre(pre) {
 }
 
 /**
+ * Run `npm` with captured stdout (CI / read commands) or inherited
+ * stdio (local writes that may need an interactive OTP prompt).
+ * `execFileSync` returns `null` when stdio is fully inherited — never
+ * `.trim()` that return value.
+ *
+ * @param {string[]} args
+ * @param {{ inherit?: boolean }} [opts]
+ * @param {typeof execFileSync} [exec]
+ * @returns {string}
+ */
+export function runNpm(args, opts = {}, exec = execFileSync) {
+	if (opts.inherit) {
+		exec("npm", args, { stdio: "inherit" });
+		return "";
+	}
+	const out = exec("npm", args, {
+		encoding: "utf8",
+		stdio: ["ignore", "pipe", "pipe"],
+	});
+	return String(out ?? "").trim();
+}
+
+/**
  * @param {{
  *   rootDir?: string;
  *   packagesJson?: string;
@@ -208,7 +233,7 @@ export function skipReasonForPre(pre) {
  *   local?: boolean;
  *   env?: NodeJS.ProcessEnv;
  *   npmrcPath?: string;
- *   execNpm?: (args: string[]) => string;
+ *   execNpm?: (args: string[], opts?: { inherit?: boolean }) => string;
  *   log?: (message: string) => void;
  *   warn?: (message: string) => void;
  * }} [options]
@@ -220,13 +245,7 @@ export function pointLatestAtRc(options = {}) {
 	const log = options.log ?? console.log;
 	const warn = options.warn ?? console.warn;
 	const local = Boolean(options.local);
-	const execNpm =
-		options.execNpm ??
-		((args) =>
-			execFileSync("npm", args, {
-				encoding: "utf8",
-				stdio: ["ignore", "pipe", "pipe"],
-			}).trim());
+	const execNpm = options.execNpm ?? runNpm;
 
 	const { pre } = loadPreJson(rootDir);
 	if (!shouldRetagLatest(pre)) {
@@ -289,7 +308,8 @@ export function pointLatestAtRc(options = {}) {
 	let npmrcPath;
 	if (local) {
 		// Ambient user npmrc (~/.npmrc or project .npmrc). Do not write a
-		// temp --userconfig; that would ignore interactive login / OTP.
+		// temp --userconfig (that would ignore interactive login). Write
+		// commands also pass inherit:true so stdin+stdout stay TTYs for OTP.
 		npmrcPath = undefined;
 	} else {
 		npmrcPath =
@@ -310,7 +330,9 @@ export function pointLatestAtRc(options = {}) {
 			continue;
 		}
 		log(display);
-		execNpm(args);
+		// Local writes need a TTY for npm's otplease OTP prompt (EOTP
+		// otherwise when 2FA is auth-and-writes). CI uses a token.
+		execNpm(args, { inherit: local });
 	}
 
 	return { status: "ok", commands, npmrcPath };
@@ -368,8 +390,9 @@ Auth:
          token; OIDC covers publish only — no CLI OIDC exchange for
          dist-tag). Soft-skips if the secret is missing.
   Local: pnpm point-latest-at-rc (wraps --from-rc --local after npm
-         login; uses your user npmrc; no NPM_TOKEN). Break-glass only —
-         prefer workflow_dispatch → promote_rc_to_latest when the secret
+         login; uses your user npmrc; no NPM_TOKEN). dist-tag writes
+         inherit the TTY so OTP works. Break-glass only — prefer
+         workflow_dispatch → promote_rc_to_latest when the secret
          works. See skills/point-latest-at-rc/SKILL.md.`);
 }
 

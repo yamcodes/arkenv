@@ -10,6 +10,7 @@ import {
 	parsePublishedPackages,
 	pointLatestAtRc,
 	resolveAuthToken,
+	runNpm,
 	shouldRetagLatest,
 	skipReasonForPre,
 	withUserconfig,
@@ -171,6 +172,31 @@ describe("listPublishablePackageNames", () => {
 	});
 });
 
+describe("runNpm", () => {
+	it("inherits stdio for OTP-capable writes and does not trim null", () => {
+		const exec = vi.fn(() => null);
+		expect(
+			runNpm(["dist-tag", "add", "arkenv@1.0.0-rc.1", "latest"], {
+				inherit: true,
+			}, exec),
+		).toBe("");
+		expect(exec).toHaveBeenCalledWith(
+			"npm",
+			["dist-tag", "add", "arkenv@1.0.0-rc.1", "latest"],
+			{ stdio: "inherit" },
+		);
+	});
+
+	it("captures and trims stdout for read commands", () => {
+		const exec = vi.fn(() => "  yamcodes\n");
+		expect(runNpm(["whoami"], {}, exec)).toBe("yamcodes");
+		expect(exec).toHaveBeenCalledWith("npm", ["whoami"], {
+			encoding: "utf8",
+			stdio: ["ignore", "pipe", "pipe"],
+		});
+	});
+});
+
 describe("pointLatestAtRc", () => {
 	/**
 	 * @param {{ tag?: string; mode?: string } | null} pre
@@ -247,6 +273,7 @@ describe("pointLatestAtRc", () => {
 
 	it("local mode uses ambient npm auth without NPM_TOKEN or temp npmrc", () => {
 		const { root } = makeRoot({ mode: "pre", tag: "rc" }, "");
+		/** @type {{ args: string[]; opts?: { inherit?: boolean } }[]} */
 		const calls = [];
 		const log = vi.fn();
 		const result = pointLatestAtRc({
@@ -255,8 +282,8 @@ describe("pointLatestAtRc", () => {
 			local: true,
 			env: {},
 			log,
-			execNpm: (args) => {
-				calls.push(args);
+			execNpm: (args, opts) => {
+				calls.push({ args, opts });
 				if (args[0] === "whoami") return "yamcodes";
 				return "ok";
 			},
@@ -264,10 +291,43 @@ describe("pointLatestAtRc", () => {
 		expect(result.status).toBe("ok");
 		expect(result.npmrcPath).toBeUndefined();
 		expect(calls).toEqual([
-			["whoami"],
-			["dist-tag", "add", "arkenv@1.0.0-rc.2", "latest"],
+			{ args: ["whoami"], opts: undefined },
+			{
+				args: ["dist-tag", "add", "arkenv@1.0.0-rc.2", "latest"],
+				opts: { inherit: true },
+			},
 		]);
 		expect(log.mock.calls.flat().join("\n")).toMatch(/yamcodes/);
+	});
+
+	it("CI token path does not inherit stdio for dist-tag writes", () => {
+		const { root, npmrcPath, env } = makeRoot({ mode: "pre", tag: "rc" });
+		/** @type {{ args: string[]; opts?: { inherit?: boolean } }[]} */
+		const calls = [];
+		const result = pointLatestAtRc({
+			rootDir: root,
+			packagesJson: '[{"name":"arkenv","version":"1.0.0-rc.2"}]',
+			env,
+			npmrcPath,
+			execNpm: (args, opts) => {
+				calls.push({ args, opts });
+				return "ok";
+			},
+		});
+		expect(result.status).toBe("ok");
+		expect(calls).toEqual([
+			{
+				args: [
+					"--userconfig",
+					npmrcPath,
+					"dist-tag",
+					"add",
+					"arkenv@1.0.0-rc.2",
+					"latest",
+				],
+				opts: { inherit: false },
+			},
+		]);
 	});
 
 	it("local mode fails when npm whoami fails", () => {

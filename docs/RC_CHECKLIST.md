@@ -276,7 +276,9 @@ output and sets `latest` on each published package.
   ```
 
   Runs `node scripts/point-latest-at-rc.js --from-rc --local`. Uses your
-  user npmrc (interactive OTP OK). Same pre.json gate. Prefer CI
+  user npmrc; `dist-tag` writes inherit the TTY so interactive OTP works
+  (requires a real terminal, not a piped non-TTY). Same pre.json gate.
+  Prefer CI
   **promote_rc_to_latest** when the secret works; this is escape-hatch
   only. Agent walkthrough:
   [skills/point-latest-at-rc/SKILL.md](../skills/point-latest-at-rc/SKILL.md).

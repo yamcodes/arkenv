@@ -17,8 +17,10 @@ metadata:
 Maintainer **break-glass** alternative to the release workflow’s
 `NPM_TOKEN` path. The root script `pnpm point-latest-at-rc` runs
 `scripts/point-latest-at-rc.js --from-rc --local` so `npm dist-tag` uses
-your logged-in session (OTP OK). Trusted Publishing still covers
-**publish**; this skill only covers **dist-tag**.
+your logged-in session. Write commands inherit stdin/stdout so npm can
+prompt for OTP when 2FA is on auth-and-writes (run from a real TTY).
+Trusted Publishing still covers **publish**; this skill only covers
+**dist-tag**.
 
 Do **not** remove or disable the CI promote job. Prefer CI
 `promote_rc_to_latest` when `secrets.NPM_TOKEN` works; use this only when
@@ -67,6 +69,7 @@ Expect `latest` and `rc` both at the same `1.0.0-rc.n`.
 | --- | --- |
 | Soft-skip without `--local` | Missing `NPM_TOKEN` — use `pnpm point-latest-at-rc` for this path |
 | `Local mode requires npm auth` | Not logged in — `npm login` |
+| `EOTP` / no OTP prompt | Not a TTY (piped/non-interactive) — run from a real terminal |
 | `E403` on dist-tag | User lacks write on that package |
 | Gate skip (`pre.json` / not `rc`) | Not in RC pre mode — do not force |
 
