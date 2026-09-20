@@ -70,9 +70,9 @@ forward-port of `www-vitest-no-styled-jsx-babel` from `main`
    cannot run without unmocked Next/Fumadocs chrome, move it to
    `apps/playwright-www`.
 3. **Do not `vi.mock("styled-jsx")`** or stub styled-jsx internals.
-4. **www does not depend on `@babel/core`, `@rolldown/plugin-babel`, or
-   `styled-jsx` for tests.** `styled-jsx` may still resolve transitively
-   via `next`.
+4. **www does not depend on `@babel/core`, `@rolldown/plugin-babel`,
+   `babel-plugin-react-compiler`, or `styled-jsx` for tests.**
+   `styled-jsx` may still resolve transitively via `next`.
 5. **Playwright owns real Next CSS, layouts, and route-level a11y.**
    jsdom tests do not compile or assert CSS-in-JS.
 6. **The CLI playground Babel graph is separate.** Do not edit playground
