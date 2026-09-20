@@ -138,17 +138,15 @@ When you are ready to publish the unreleased features currently sitting on `dev`
 
 #### Use Case 3: Fixing a Typo on the Live Docs
 
-When you need to fix a typo or make a cosmetic change to the live documentation *without* publishing a new npm package:
+When you need to fix a typo or make a cosmetic change to the **live v1**
+documentation *without* waiting on a package release:
 
-1. Do not use the standard `dev` feature workflow (otherwise your typo fix will be trapped in `dev` until the next npm release).
-2. Ask your AI Agent to invoke the `/sync-main` slash command, or manually run the `sync-main` skill.
-3. **If `dev` is clean** (no unreleased features): Merge your doc fix to `dev`, then run the `Sync main` GitHub workflow to fast-forward `main`.
-4. **If `dev` has unreleased features**: Use the script locally to cherry-pick your fix:
-   ```sh
-   ./scripts/sync-main.sh rescue <commit-hash>
-   ./scripts/sync-main.sh reconcile
-   ```
-   This ensures the fix hits `main` instantly while preventing Git history drift.
+1. Open a PR against **`v1`** (the branch that owns Production /
+   `arkenv.js.org`). Merging (or pushing) updates apex via
+   `deploy-www.yml`.
+2. For **legacy v0 archive** fixes only (`arkenv-v0.vercel.app`), use
+   the `sync-main` skill / `main` branch as before — that path no longer
+   flips Production.
 
 #### Use Case 4: Coordinating a Major Version (e.g., v1)
 
