@@ -10,7 +10,7 @@ export type ExampleRegistry = {
 };
 
 const REGISTRY_URL =
-	"https://raw.githubusercontent.com/yamcodes/arkenv/main/examples/registry.json";
+	"https://raw.githubusercontent.com/yamcodes/arkenv/v1/examples/registry.json";
 
 export class RegistryClient {
 	/**

@@ -155,7 +155,7 @@ export function SiteFooter({
 				<span>
 					Free and open-source under the{" "}
 					<a
-						href={`${githubRepoUrl}/blob/dev/LICENSE`}
+						href={`${githubRepoUrl}/blob/v1/LICENSE`}
 						target="_blank"
 						rel="noopener noreferrer"
 					>

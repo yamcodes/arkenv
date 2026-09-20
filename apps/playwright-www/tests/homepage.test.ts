@@ -91,7 +91,10 @@ test.describe("Homepage Interactivity", () => {
 			.locator("nav.site-nav__links")
 			.getByRole("link", { name: "Playground" });
 		await expect(playground).toBeVisible();
-		await expect(playground).toHaveAttribute("href", /stackblitz\.com/);
+		await expect(playground).toHaveAttribute(
+			"href",
+			/stackblitz\.com\/github\/yamcodes\/arkenv\/tree\/v1\/examples\/stackblitz/,
+		);
 		await expect(playground).toHaveAttribute("target", "_blank");
 		const rel = await playground.getAttribute("rel");
 		expect(rel).toContain("noopener");

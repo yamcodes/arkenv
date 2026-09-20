@@ -28,7 +28,7 @@ export const breakDownGithubUrl = (githubUrl?: string) => {
 	// Empty env values (common when vars are defined but blank) must not win over fallbacks.
 	const defaultBranch =
 		firstNonEmpty(env.NEXT_PUBLIC_GITHUB_BRANCH, env.VERCEL_GIT_COMMIT_REF) ??
-		"dev";
+		"v1";
 	const cleanUrl = url.replace(/\/$/, "");
 	const urlObj = new URL(cleanUrl);
 	const [owner, repo] = urlObj.pathname.split("/").filter(Boolean).slice(-2);
