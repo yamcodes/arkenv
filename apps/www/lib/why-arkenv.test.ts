@@ -26,9 +26,6 @@ describe("why-arkenv comparison cheatsheet", () => {
 	const header = whyArkEnv
 		.split("\n")
 		.find((line) => line.includes("| **ArkEnv** |"));
-	const hosting = whyArkEnv
-		.split("\n")
-		.find((line) => line.includes("| **Hosting presets**"));
 
 	it("keeps the v1 competitor columns", () => {
 		expect(cells(header)).toEqual([
@@ -42,16 +39,8 @@ describe("why-arkenv comparison cheatsheet", () => {
 		]);
 	});
 
-	it("lists hosting presets for ArkEnv init and T3 Env extends only", () => {
-		const [, arkEnv, varlock, t3Env, vitePlugin, znv, envalid] = cells(hosting);
-		expect(arkEnv).toBe("✅");
-		expect(varlock).toBe("❌");
-		expect(t3Env).toBe("✅");
-		expect(vitePlugin).toBe("❌");
-		expect(znv).toBe("❌");
-		expect(envalid).toBe("❌");
-		expect(whyArkEnv).toContain("`arkenv init --preset`");
-		expect(whyArkEnv).toContain("/docs/core-concepts/hosting-presets");
+	it("does not list hosting presets in the comparison table", () => {
+		expect(whyArkEnv).not.toContain("| **Hosting presets**");
 		expect(whyArkEnv).not.toContain("arkenv add host");
 	});
 });

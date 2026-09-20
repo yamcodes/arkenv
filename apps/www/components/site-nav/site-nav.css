@@ -165,7 +165,7 @@ main:has(.site-nav) {
 	min-height: var(--site-nav-logo-size);
 }
 
-.site-nav__wordmark span {
+.site-nav__wordmark .logo__name {
 	font-size: var(--site-nav-wordmark-size);
 	font-weight: 500;
 	line-height: 1;

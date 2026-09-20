@@ -12,6 +12,10 @@ APIs are frozen for the final validation pass before 1.0.0.
 If you are coming from T3 Env rather than ArkEnv v0, use
 [Migrating from T3 Env](/docs/guides/migrating-from-t3-env).
 
+Set TypeScript `moduleResolution` to `"bundler"`, `"node16"`, or
+`"nodenext"`. Legacy `"node"` does not load package `exports` subpaths
+such as `@arkenv/standard/valibot`.
+
 ## Package names
 
 On v0, `arkenv` on npm was the runtime. On v1 that name is the **CLI**.

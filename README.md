@@ -14,9 +14,7 @@
 </p>
 
 > [!IMPORTANT]
-> You are viewing the **v1 branch**, a release candidate (RC) of ArkEnv. Track progress on the [v1 roadmap](https://arkenv.js.org/roadmap).
->
-> TypeScript consumers must set `moduleResolution` to `"bundler"`, `"node16"`, or `"nodenext"`. Legacy `"node"` resolution does not load package `exports` subpaths such as `@arkenv/standard/valibot`.
+> **v1** is in RC. Still on v0? [Migrate to v1](https://arkenv.js.org/docs/guides/migrating-to-v1).
 
 <div align="center">
   <a href="https://arkenv.js.org/docs">Docs</a>
@@ -34,7 +32,7 @@
 
 
 <h3 align="center">
-  First-class integrations: <a href="https://arkenv.js.org/docs/frameworks/nextjs">Next.js</a>, <a href="https://arkenv.js.org/docs/frameworks/nuxt">Nuxt</a>, <a href="https://arkenv.js.org/docs/frameworks/vite">Vite</a>, <a href="https://arkenv.js.org/docs/frameworks/tanstack-start">TanStack Start</a>, <a href="https://github.com/yamcodes/arkenv/tree/v1/examples/with-solid-start">SolidStart</a>, <a href="https://arkenv.js.org/docs/getting-started">Node.js</a>, and <a href="https://arkenv.js.org/docs/frameworks/bun">Bun fullstack</a>
+  First-class integrations: <a href="https://arkenv.js.org/docs/frameworks/nextjs">Next.js</a>, <a href="https://arkenv.js.org/docs/frameworks/nuxt">Nuxt</a>, <a href="https://arkenv.js.org/docs/frameworks/vite">Vite</a>, <a href="https://arkenv.js.org/docs/frameworks/tanstack-start">TanStack Start</a>, <a href="https://github.com/yamcodes/arkenv/tree/v1/examples/with-solid-start">SolidStart</a>, and <a href="https://arkenv.js.org/docs/frameworks/bun">Bun fullstack</a>
 </h3>
 
 <br />
