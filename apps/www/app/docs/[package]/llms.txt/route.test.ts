@@ -8,7 +8,10 @@ vi.mock("~/lib/source", () => ({
 			children: [
 				{
 					type: "folder",
-					$ref: { folder: "getting-started", meta: "getting-started/meta.json" },
+					$ref: {
+						folder: "getting-started",
+						meta: "getting-started/meta.json",
+					},
 					index: {
 						type: "page",
 						url: "/docs/getting-started",
