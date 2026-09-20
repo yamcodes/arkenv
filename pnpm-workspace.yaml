@@ -4,6 +4,13 @@ packages:
   - apps/*
   - apps/playgrounds/*
 publishBranch: dev
+# pnpm 11 defaults this to "install". Under turbo / nub's pnpm shim, every
+# `pnpm run` / `pnpm exec` (including tests that shell out to `pnpm dpdm`)
+# then races a full workspace install — MODULE_NOT_FOUND, esbuild exit 127,
+# and circular-import timeouts. CI already runs `nub install` first; pair
+# with `nub run --no-check` so nub's own freshness install is also skipped.
+# (pnpm 11 ignores non-auth settings in .npmrc — this must live here.)
+verifyDepsBeforeRun: false
 allowBuilds:
   '@biomejs/biome': true
   '@nubjs/nub': true
