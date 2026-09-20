@@ -5,13 +5,18 @@ import { describe, it } from "vitest";
 describe("Circular Imports", () => {
 	it("should not have any circular imports", () => {
 		const packageRoot = join(__dirname, "..");
-		const dpdmBin = join(packageRoot, "../../node_modules/.bin/dpdm");
+		// Resolve the JS entry — not node_modules/.bin/dpdm — so Windows does
+		// not need the pnpm `.cmd` shim that execFileSync cannot launch.
+		// dpdm is a root-workspace dep; avoid createRequire from this package
+		// (WARN_PHANTOM_DEP) by walking to the repo root node_modules.
+		const dpdmJs = join(packageRoot, "../../node_modules/dpdm/lib/bin/dpdm.js");
 		try {
-			// Call dpdm directly — `pnpm dpdm` goes through the nub pnpm shim and
+			// Call dpdm via node — `pnpm dpdm` goes through the nub pnpm shim and
 			// can hang past vitest's default timeout under CI.
 			execFileSync(
-				dpdmBin,
+				process.execPath,
 				[
+					dpdmJs,
 					"src/index.ts",
 					"--no-warning",
 					"--no-tree",
