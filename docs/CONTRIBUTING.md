@@ -186,12 +186,12 @@ PR previews for the `www` app are opt-in. A maintainer (triage+) applies the `pr
 
 Stable www URLs (GitHub Actions + Vercel CLI, not native Vercel Git builds):
 
-| Branch / action | Target |
-| --- | --- |
-| Push to **`v1`** | Production (`arkenv.js.org`) via `--prod`, and alias `https://arkenv-v1.vercel.app` |
-| Push to **`main`** | Archive alias `https://arkenv-v0.vercel.app` (preview deploy, **not** `--prod`) |
-| Push to **`dev`** (if present) | Alias `https://arkenv-dev.vercel.app` |
-| Labeled PR | Ephemeral preview URL only (does not take over the aliases above) |
+| Branch / action                | Target                                                                              |
+| ------------------------------ | ----------------------------------------------------------------------------------- |
+| Push to **`v1`**               | Production (`arkenv.js.org`) via `--prod`, and alias `https://arkenv-v1.vercel.app` |
+| Push to **`main`**             | Archive alias `https://arkenv-v0.vercel.app` (preview deploy, **not** `--prod`)     |
+| Push to **`dev`** (if present) | Alias `https://arkenv-dev.vercel.app`                                               |
+| Labeled PR                     | Ephemeral preview URL only (does not take over the aliases above)                   |
 
 To redeploy an older commit to a stable URL without moving the branch, maintainers can run **Actions → Deploy www (manual SHA)** and choose `arkenv-dev.vercel.app`, `arkenv-v0.vercel.app`, `arkenv-v1.vercel.app`, or production `arkenv.js.org`.
 
