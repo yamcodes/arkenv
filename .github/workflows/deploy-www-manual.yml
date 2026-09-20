@@ -66,7 +66,9 @@ jobs:
         run: nub install
       - name: Install Vercel CLI
         # Pin the CLI to avoid upstream breakage from newly published majors.
-        run: npm install --global vercel@59.16.0
+        run: |
+          nub add -g vercel@59.16.0
+          echo "$(nub bin -g)" >> "$GITHUB_PATH"
       - name: Pull Vercel Environment Information
         run: |
           if [ "$TARGET" = "arkenv.js.org" ]; then

@@ -68,7 +68,9 @@ jobs:
       - name: Install Vercel CLI
         # Vercel 54 invokes pnpm with --unsafe-perm, which pnpm 12 removed.
         # Keep the CLI pinned while using a version that supports the workspace's pnpm.
-        run: npm install --global vercel@59.16.0
+        run: |
+          nub add -g vercel@59.16.0
+          echo "$(nub bin -g)" >> "$GITHUB_PATH"
       - name: Pull Vercel Environment Information
         if: steps.affected.outputs.is_affected == 'true'
         env:
