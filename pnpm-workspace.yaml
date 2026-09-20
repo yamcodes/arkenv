@@ -4,13 +4,23 @@ packages:
   - apps/*
   - apps/playgrounds/*
 publishBranch: dev
+# pnpm 11 defaults this to "install". Under turbo / nub's pnpm shim, every
+# `pnpm run` / `pnpm exec` (including tests that shell out to `pnpm dpdm`)
+# then races a full workspace install — MODULE_NOT_FOUND, esbuild exit 127,
+# and circular-import timeouts. CI already runs `nub install` first; pair
+# with `nub run --no-check` so nub's own freshness install is also skipped.
+# (pnpm 11 ignores non-auth settings in .npmrc — this must live here.)
+verifyDepsBeforeRun: false
 allowBuilds:
   '@biomejs/biome': true
+  '@nubjs/nub': true
   '@parcel/watcher': true
   '@sentry/cli': true
   '@tailwindcss/oxide': true
   '@vercel/speed-insights': true
-  bun: true
+  # Skip the npm `bun` package postinstall — it races under pnpm/nub
+  # (`@oven/bun-linux-x64` rename ENOENT) and CI already uses oven-sh/setup-bun.
+  bun: false
   core-js: true
   esbuild: true
   protobufjs: true
@@ -19,6 +29,7 @@ allowBuilds:
 catalog:
   '@ark/attest': 0.56.0
   '@axe-core/playwright': 4.11.3
+  '@nubjs/nub': 0.9.3
   '@size-limit/esbuild-why': 12.1.0
   '@size-limit/preset-small-lib': 12.1.0
   '@types/bun': 1.3.13
@@ -34,12 +45,13 @@ catalog:
   globals: 17.5.0
   jiti: 2.7.0
   next: 16.2.6
+  npm: 11.9.0
+  pnpm: 11.9.0
   react: 19.2.5
   react-dom: 19.2.5
   rimraf: 6.1.3
   size-limit: 12.1.0
   tsdown: 0.21.10
-  tsx: 4.21.0
   typescript: 6.0.3
   valibot: 1.3.1
   vitest: 4.1.5
@@ -47,6 +59,9 @@ catalog:
 
 overrides:
   '@playwright/test': 1.59.1
+  # Single @types/node graph so vite-legacy matrix builds don't dual-resolve
+  # PluginOption across @types/node@24 vs @types/node@25.
+  '@types/node': 24.12.2
   import-in-the-middle: 2.0.6
   require-in-the-middle: 8.0.1
   # Keep a single fumadocs peer graph so @arkenv/fumadocs-ui shares
@@ -63,3 +78,12 @@ minimumReleaseAgeExclude:
   - nitro@3.0.260903-beta
   - srvx@1.0.3
   - unstorage@2.0.0-alpha.10
+  - '@nubjs/nub-darwin-arm64@0.9.3'
+  - '@nubjs/nub-darwin-x64@0.9.3'
+  - '@nubjs/nub-linux-arm64-musl@0.9.3'
+  - '@nubjs/nub-linux-arm64@0.9.3'
+  - '@nubjs/nub-linux-x64-musl@0.9.3'
+  - '@nubjs/nub-linux-x64@0.9.3'
+  - '@nubjs/nub-win32-arm64@0.9.3'
+  - '@nubjs/nub-win32-x64@0.9.3'
+  - '@nubjs/nub@0.9.3'

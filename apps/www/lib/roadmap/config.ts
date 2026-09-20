@@ -33,12 +33,14 @@ export const ROADMAP_EXCLUDE_ISSUE_NUMBERS = new Set([
  * Launch / narrative items carried over from the old #683 issue body (plus
  * launch-meta issues folded out of the milestone checklist).
  * Flip `done` when each ships; order here is the public “Up next” order.
+ * RC cut sequencing (what must ship before first `1.0.0-rc.n` vs GA DNS):
+ * see `docs/RC_CHECKLIST.md`. GA launch-day ops: `docs/LAUNCH_RUNBOOK.md`.
  */
 export const ROADMAP_EXTRAS: readonly RoadmapExtra[] = [
 	{
 		id: "parity-audit",
 		title: "Final v0 parity audit",
-		done: false,
+		done: true,
 		topic: "Core",
 	},
 	{
@@ -73,7 +75,7 @@ export const ROADMAP_EXTRAS: readonly RoadmapExtra[] = [
 	},
 	{
 		id: "v0-archive-dns-cutover",
-		title: "Deploy v0.arkenv.js.org archive and flip primary DNS",
+		title: "Park v0 on arkenv-v0.vercel.app and point Production at v1",
 		done: false,
 		topic: "Docs",
 	},

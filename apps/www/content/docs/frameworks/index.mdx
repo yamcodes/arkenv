@@ -17,7 +17,7 @@ Choose your framework to get started:
 
   <Card href="/docs/frameworks/vite" title="Vite" description="@arkenv/vite-plugin transform mode and VITE_ keys." />
 
-  <Card href="/docs/frameworks/tanstack-start" title="TanStack Start" description="@arkenv/vite-plugin with tanstackStart() and createServerFn." />
+  <Card href="/docs/frameworks/tanstack-start" title="TanStack Start" description="@arkenv/vite-plugin / @arkenv/rsbuild-plugin with tanstackStart() and createServerFn." />
 
   <Card href="/docs/frameworks/bun" title="Bun fullstack dev server" description="@arkenv/bun-plugin for Bun bundler and fullstack apps." />
 
@@ -56,16 +56,22 @@ or a Standard Schema validator.
 ArkEnv does not read `.env` files. Something else must load them before
 `arkenv()` runs.
 
-Next.js, Nuxt, Vite, and Bun already load `.env*` files. On plain Node,
-[Nub](https://nubjs.com/docs/runtime/env) is the recommended runner: it
-executes TypeScript and injects `.env` files before your process starts.
+Next.js, Nuxt, Vite, and Bun already load `.env*` files. On plain Node
+(20.6+), use the built-in `--env-file` flag:
 
 ```bash title="Terminal"
-nub src/index.ts
+node --env-file=.env dist/index.js
 ```
 
-Plain Node's `node --env-file=.env` also works (you name each file yourself,
-and plain `node` does not run TypeScript). For NestJS applications, `@nestjs/cli` 11+ supports `nest start --env-file .env` — follow the [Use with NestJS](/docs/guides/use-with-nestjs) guide.
+For TypeScript in development, pass the same flag to your usual runner:
+
+```bash title="Terminal"
+tsx --env-file=.env src/index.ts
+```
+
+For NestJS applications, `@nestjs/cli` 11+ supports
+`nest start --env-file .env` — follow the
+[Use with NestJS](/docs/guides/use-with-nestjs) guide.
 
 After values are in `process.env` (or a custom record), `arkenv()`
 validates them.

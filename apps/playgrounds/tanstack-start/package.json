@@ -9,7 +9,7 @@
 		"build": "vite build && tsc --noEmit",
 		"start": "vite preview",
 		"preview": "vite preview",
-		"fix": "pnpm -w run fix",
+		"fix": "nub run -w fix",
 		"clean": "rimraf dist node_modules .output"
 	},
 	"dependencies": {

@@ -1,6 +1,6 @@
 {
 	"name": "@arkenv/bun-plugin",
-	"version": "1.0.0-alpha.14",
+	"version": "1.0.0-rc.1",
 	"author": "Yam Borodetsky <yam@yam.codes>",
 	"repository": {
 		"type": "git",
@@ -84,8 +84,8 @@
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules",
 		"test": "vitest",
-		"fix": "pnpm -w run fix",
-		"changeset": "pnpm -w run changeset",
+		"fix": "nub run -w fix",
+		"changeset": "nub run -w changeset",
 		"size": "size-limit --json > .size-limit.json"
 	},
 	"type": "module",

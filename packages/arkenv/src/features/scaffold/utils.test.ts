@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { code } from "@/shared/visuals";
 import type { ScaffoldingPlan } from "./plan";
+import { DEFAULT_SKILL_SOURCE } from "./plan";
 import { getInstallCommand, getNextStepsNote } from "./utils";
 
 describe("scaffold utils", () => {
@@ -238,7 +239,7 @@ describe("scaffold utils", () => {
 		it("falls back to default dlx command and package name if not configured in plan", () => {
 			const note = getNextStepsNote(basePlan, false);
 			expect(note.message).toContain(
-				`Install the AI skill: ${code("npx skills add yamcodes/arkenv")}`,
+				`Install the AI skill: ${code(`npx skills add ${DEFAULT_SKILL_SOURCE}`)}`,
 			);
 		});
 	});

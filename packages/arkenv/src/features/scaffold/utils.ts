@@ -1,6 +1,6 @@
 import dedent from "dedent";
 import { code } from "@/shared/visuals";
-import type { ScaffoldingPlan } from "./plan";
+import { DEFAULT_SKILL_SOURCE, type ScaffoldingPlan } from "./plan";
 
 /**
  * Build the package manager command used to install dependencies or run a bare install.
@@ -73,7 +73,7 @@ export function getNextStepsNote(
 	}
 
 	const dlx = plan.skill?.dlxCommand.join(" ") || "npx";
-	const packageName = plan.skill?.packageName || "yamcodes/arkenv";
+	const packageName = plan.skill?.packageName || DEFAULT_SKILL_SOURCE;
 
 	let message = "";
 	let step = 1;

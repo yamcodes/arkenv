@@ -4,6 +4,11 @@ description:
   Always use this skill when the task involves writing, reviewing, or editing
   files in the `/docs` directory or any `.md` files in the repository. For
   ArkEnv tone, register, or "fix the voice", also load the-voice.
+metadata:
+  author: Yam Borodetsky
+  original_author: Google
+  origin: github.com/google-gemini/gemini-cli
+  internal: true
 ---
 
 # `docs-writer` skill instructions
@@ -64,8 +69,8 @@ accessible.
   introductory overview paragraph before any lists or sub-headings.
 - **Text wrap:** Wrap text at 80 characters (except long links or tables).
 - **Casing:** Use sentence case for headings, titles, and bolded text.
-- **Naming:** Always refer to the project as `Gemini CLI` (never
-  `the Gemini CLI`).
+- **Naming:** Always refer to the project as `ArkEnv` (never
+  `the ArkEnv`).
 - **Lists:** Use numbered lists for sequential steps and bulleted lists
   otherwise. Keep list items parallel in structure.
 - **UI and code:** Use **bold** for UI elements and `code font` for filenames,
@@ -198,3 +203,10 @@ formatted and that all links are functional.
     install` first to ensure all formatting dependencies are available. Once all
     changes are complete, ask to execute `npm run format` to ensure consistent
     formatting across the project. If the user confirms, execute the command.
+
+## Credits
+
+This skill was originally created for the [Gemini CLI](https://github.com/google-gemini/gemini-cli)
+project and sourced from
+[github.com/google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli)
+(`.gemini/skills/docs-writer`).

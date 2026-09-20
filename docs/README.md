@@ -14,4 +14,7 @@ This directory contains internal contributor-facing documentation and architectu
 - [**`design/`**](./design/): Exploratory design notes that are not yet ADRs. Start with [design/boundary-error-identity.md](./design/boundary-error-identity.md) for validation vs boundary-access error identity. Command naming for schema → `.env.example` is [design/cli-env-example-command-name.md](./design/cli-env-example-command-name.md).
 - [**`CONTRIBUTING.md`**](./CONTRIBUTING.md): Guide on how to set up the local development environment, code conventions, and submit contributions.
 - [**`TESTING.md`**](./TESTING.md): Instructions for running and writing unit, integration, and E2E tests.
+- [**`www-vitest-styled-jsx.md`**](./www-vitest-styled-jsx.md): Pointer to ADR 0032 (`www-vitest-no-styled-jsx-babel`).
+- [**`RC_CHECKLIST.md`**](./RC_CHECKLIST.md): Maintainer checklist for the `1.0.0-rc.n` cut (channel flip, publish smoke tests, Discussions scan). Does not replace GA.
+- [**`LAUNCH_RUNBOOK.md`**](./LAUNCH_RUNBOOK.md): GA `v1.0.0` launch-day ops (npm `latest`, DNS cutover, announcements).
 - [**`ACKNOWLEDGEMENTS.md`**](./ACKNOWLEDGEMENTS.md): Credits and thanks to the projects and people who inspired and contributed to ArkEnv.

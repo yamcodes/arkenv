@@ -19,10 +19,17 @@ permissions:
   actions: write
 jobs:
   test:
+    # Stable channel labels keep ruleset required-check names fixed while
+    # setup-nub-ci still receives concrete majors (aliases unsupported).
+    name: test (${{ matrix.channel }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [lts/*, latest]
+        include:
+          - channel: lts
+            node-version: 24
+          - channel: latest
+            node-version: 26
       fail-fast: false
 
     steps:
@@ -31,23 +38,24 @@ jobs:
         uses: ./.github/actions/setup-turbo-remote-cache
         with:
           team: ${{ vars.TURBO_TEAM }}
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      - uses: ./.github/actions/setup-nub-ci
         with:
           node-version: ${{ matrix.node-version }}
-          cache: pnpm
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.0
+      # pnpm install (via nub shim): keep packageManager=pnpm's .pnpm layout.
+      # `nub install` uses node_modules/.store, and Vitest's NODE_PATH then
+      # cannot resolve workspace pkgs (@arkenv/core) from /tmp jiti fixtures.
       - name: Install dependencies
         run: pnpm install
       - name: Build packages
-        run: pnpm run build --filter=./packages/*
-      - run: pnpm run test
+        run: nub run --no-check build --filter=./packages/*
+      - run: nub run --no-check test
       - name: Verify build artifacts
-        run: pnpm run verify-artifacts
+        run: nub run --no-check verify-artifacts
       - name: Run E2E package tests
-        run: pnpm run test:e2e:package
+        run: nub run --no-check test:e2e:package
 
   test-typesafety:
     runs-on: ubuntu-latest
@@ -57,19 +65,23 @@ jobs:
         uses: ./.github/actions/setup-turbo-remote-cache
         with:
           team: ${{ vars.TURBO_TEAM }}
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      - uses: ./.github/actions/setup-nub-ci
         with:
           node-version: 24
-          cache: pnpm
       - run: pnpm install
-      - run: pnpm run typecheck
+      - run: nub run --no-check typecheck
 
   test-build:
+    name: test-build (${{ matrix.channel }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [lts/*, latest]
+        include:
+          - channel: lts
+            node-version: 24
+          - channel: latest
+            node-version: 26
+      fail-fast: false
 
     steps:
       - uses: actions/checkout@v7
@@ -77,16 +89,17 @@ jobs:
         uses: ./.github/actions/setup-turbo-remote-cache
         with:
           team: ${{ vars.TURBO_TEAM }}
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      - uses: ./.github/actions/setup-nub-ci
         with:
           node-version: ${{ matrix.node-version }}
-          cache: pnpm
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.0
       - run: pnpm install
-      - run: pnpm run build
+      # --node: outer nub run injects a TS preload that turbo children inherit.
+      # Nuxt's tsconfig extends .nuxt/tsconfig.json before prepare, so the
+      # preload aborts the playground build; plain Node lets Nuxt own that.
+      - run: nub run --no-check --node build
 
   test-vite-compatibility:
     runs-on: ubuntu-latest
@@ -101,20 +114,18 @@ jobs:
         uses: ./.github/actions/setup-turbo-remote-cache
         with:
           team: ${{ vars.TURBO_TEAM }}
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      - uses: ./.github/actions/setup-nub-ci
         with:
-          node-version: lts/*
-          cache: pnpm
+          node-version: 24
       - run: pnpm install
       - name: Build workspace packages
-        run: pnpm run build:packages
+        run: nub run --no-check build:packages
       - name: Apply overrides for Vite version
         run: node scripts/override-vite.js ${{ matrix.vite-version }}
       - name: Reinstall dependencies with overrides
         run: pnpm install --no-frozen-lockfile
       - name: Build vite-legacy playground
-        run: pnpm run build --filter=vite-legacy-playground
+        run: nub run --no-check --node build --filter=vite-legacy-playground
 
   test-e2e:
     runs-on: ubuntu-latest
@@ -136,11 +147,9 @@ jobs:
         run: |
           echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
           echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      - uses: ./.github/actions/setup-nub-ci
         with:
-          node-version: lts/*
-          cache: pnpm
+          node-version: 24
       - run: pnpm install
       - uses: actions/cache@v6
         with:
@@ -150,15 +159,15 @@ jobs:
             ubuntu-latest-pw-
       - name: Install Playwright browsers
         # Chromium + Firefox only — matches playwright-www projects on Linux (webkit is macOS-only)
-        run: pnpm exec playwright install --with-deps chromium firefox
+        run: nubx playwright install --with-deps chromium firefox
       - name: Build www and dependencies
-        run: pnpm run build --filter=www...
+        run: nub run --no-check build --filter=www...
       - name: Run ${{ matrix.suite }} tests (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        run: pnpm run test:${{ matrix.suite }} --affected --log-order=stream
+        run: nub run --no-check test:${{ matrix.suite }} --affected --log-order=stream
       - name: Run ${{ matrix.suite }} tests (dev/workflow_dispatch)
         if: ${{ github.event_name != 'pull_request' }}
-        run: pnpm run test:${{ matrix.suite }} --log-order=stream --filter="@repo/playwright-*"
+        run: nub run --no-check test:${{ matrix.suite }} --log-order=stream --filter="@repo/playwright-*"
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
@@ -170,8 +179,8 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        node-version: [lts/*, latest]
-    continue-on-error: ${{ matrix.node-version == 'latest' }}
+        node-version: [24, 26]
+    continue-on-error: ${{ matrix.node-version == 26 }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -185,11 +194,9 @@ jobs:
         run: |
           echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
           echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      - uses: ./.github/actions/setup-nub-ci
         with:
           node-version: ${{ matrix.node-version }}
-          cache: pnpm
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.0
@@ -203,20 +210,14 @@ jobs:
             windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-
             windows-latest-pw-
       - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps
-      - name: Sanitize node version for artifact name
-        id: sanitize
-        shell: bash
-        run: |
-          SANITIZED=$(echo "${{ matrix.node-version }}" | sed 's/[\/\*]/-/g')
-          echo "version=$SANITIZED" >> "$GITHUB_OUTPUT"
-      - run: pnpm build
-      - run: pnpm run test
-      - run: pnpm run test:e2e
+        run: nubx playwright install --with-deps
+      - run: nub run --no-check --node build
+      - run: nub run --no-check test
+      - run: nub run --no-check test:e2e
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
-          name: test-results-windows-${{ steps.sanitize.outputs.version }}
+          name: test-results-windows-${{ matrix.node-version }}
           path: "**/test-results/**"
           retention-days: 30
 
@@ -225,8 +226,8 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        node-version: [lts/*, latest]
-    continue-on-error: ${{ matrix.node-version == 'latest' }}
+        node-version: [24, 26]
+    continue-on-error: ${{ matrix.node-version == 26 }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -240,11 +241,9 @@ jobs:
         run: |
           echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
           echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      - uses: ./.github/actions/setup-nub-ci
         with:
           node-version: ${{ matrix.node-version }}
-          cache: pnpm
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.0
@@ -258,19 +257,13 @@ jobs:
             macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-
             macos-latest-pw-
       - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps
-      - name: Sanitize node version for artifact name
-        id: sanitize
-        shell: bash
-        run: |
-          SANITIZED=$(echo "${{ matrix.node-version }}" | sed 's/[\/\*]/-/g')
-          echo "version=$SANITIZED" >> "$GITHUB_OUTPUT"
-      - run: pnpm build
-      - run: pnpm run test
-      - run: pnpm run test:e2e
+        run: nubx playwright install --with-deps
+      - run: nub run --no-check --node build
+      - run: nub run --no-check test
+      - run: nub run --no-check test:e2e
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
-          name: test-results-macos-${{ steps.sanitize.outputs.version }}
+          name: test-results-macos-${{ matrix.node-version }}
           path: "**/test-results/**"
           retention-days: 30

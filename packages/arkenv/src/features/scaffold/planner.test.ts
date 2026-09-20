@@ -1,6 +1,7 @@
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import type { CollectedState } from "./plan";
+import { DEFAULT_SKILL_SOURCE } from "./plan";
 import { createPlan } from "./planner";
 
 describe("Planner", () => {
@@ -243,7 +244,7 @@ describe("Planner", () => {
 		};
 		const plan = createPlan(state);
 		expect(plan.skill).toBeDefined();
-		expect(plan.skill?.packageName).toBe("yamcodes/arkenv");
+		expect(plan.skill?.packageName).toBe(DEFAULT_SKILL_SOURCE);
 		expect(plan.skill?.dlxCommand).toEqual(["pnpm", "dlx"]);
 	});
 

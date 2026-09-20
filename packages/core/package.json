@@ -1,8 +1,8 @@
 {
 	"name": "@arkenv/core",
 	"type": "module",
-	"version": "1.0.0-alpha.10",
-	"description": "Typesafe environment variables parsing and validation with ArkType",
+	"version": "1.0.0-rc.1",
+	"description": "ArkType-powered typesafe environment variables for ArkType, Zod, and Valibot.",
 	"main": "./dist/index.js",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -32,7 +32,7 @@
 		"clean": "rimraf dist node_modules",
 		"test": "vitest",
 		"test:types": "vitest run --typecheck.only",
-		"fix": "pnpm -w run fix"
+		"fix": "nub run -w fix"
 	},
 	"files": [
 		"dist"

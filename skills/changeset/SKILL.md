@@ -239,7 +239,8 @@ pnpm changeset
 
 - Merging the "Version Packages" PR on `dev` triggers the publication of bumped packages to npm
 - Upon successful publish, the release workflow programmatically fast-forwards the `main` branch to `dev` (`git merge dev --ff-only`) and pushes it
-- The push to `main` triggers the production documentation website
+- The push to `main` refreshes the **v0 docs archive** (`https://arkenv-v0.vercel.app`), not Production
+- Production / `arkenv.js.org` tracks **`v1`** (`vercel --prod` via `deploy-www.yml`)
 
 ## Pre-release versions
 

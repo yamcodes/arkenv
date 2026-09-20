@@ -4,7 +4,7 @@
 	"scripts": {
 		"build": "esbuild --bundle --format=cjs --platform=node --outfile=dist/index.cjs index.ts",
 		"start": "node dist/index.cjs",
-		"test": "pnpm build && pnpm start"
+		"test": "nub run build && nub run start"
 	},
 	"dependencies": {
 		"@arkenv/core": "workspace:*",

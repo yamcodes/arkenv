@@ -39,6 +39,7 @@ export function ArkEnvScript({
 	return (
 		<script
 			id="arkenv-script"
+			// biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-serialized public env with `<` escaped
 			dangerouslySetInnerHTML={{ __html: scriptContent }}
 		/>
 	);

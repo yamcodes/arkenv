@@ -1,6 +1,6 @@
 ---
 name: sync-main
-description: Deploy documentation and infrastructure changes to production immediately without waiting for a new npm release. Use this skill whenever the user mentions 'hotfix docs', 'push doc changes live now', 'promote docs to main', 'bypass package release for docs', 'sync-main', 'sync main', or wants to rescue already-merged doc commits from dev. It handles cherry-picking to main and merging main back into dev to prevent git drift.
+description: Update the v0 docs archive on main (arkenv-v0.vercel.app) immediately without waiting for a new npm release. Use this skill whenever the user mentions 'hotfix docs', 'push doc changes live now', 'promote docs to main', 'bypass package release for docs', 'sync-main', 'sync main', or wants to rescue already-merged doc commits from dev. It handles cherry-picking to main and merging main back into dev to prevent git drift. Note: Production / arkenv.js.org tracks v1 — sync-main does not flip apex.
 metadata:
   internal: true
 ---
@@ -9,6 +9,7 @@ metadata:
 
 This skill enables you to safely sync documentation and tooling changes from the `dev` branch to `main` without waiting for the next package release, while ensuring that the `dev` and `main` branches remain in a clean, compatible topological state (preventing future merge conflicts).
 
+After the RC docs cutover (Option A), a push to `main` refreshes the **v0 archive** at `https://arkenv-v0.vercel.app`. It does **not** deploy Production / `arkenv.js.org` (that tracks `v1`). Use this skill for urgent **legacy v0** doc fixes, not for the live v1 site.
 ---
 
 ## Analysis Step (Do This First)
@@ -86,7 +87,9 @@ If the user explicitly approves **Option 3**, follow these steps using the helpe
 3. **Submit PR**:
    The script will attempt to create a PR to `main` via `gh` CLI. If it fails, help the user open the PR manually.
 4. **Deploy**:
-   Once the PR is merged to `main`, the production docs deploy immediately.
+   Once the PR is merged to `main`, the **v0 archive**
+   (`https://arkenv-v0.vercel.app`) refreshes. Production /
+   `arkenv.js.org` is unchanged (tracks `v1`).
 5. **Reconcile**:
    Merge `main` back into `dev` to prevent drift:
    ```bash

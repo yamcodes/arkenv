@@ -1,8 +1,8 @@
 {
 	"name": "@arkenv/standard",
 	"type": "module",
-	"version": "1.0.0-alpha.10",
-	"description": "Dependency-free, typesafe environment variables validation based on Standard Schema",
+	"version": "1.0.0-rc.1",
+	"description": "Standard Schema-powered Typesafe environment variables for ArkType, Zod, and Valibot.",
 	"main": "./dist/index.js",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -47,7 +47,7 @@
 		"test:once": "vitest run",
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist node_modules",
-		"fix": "pnpm -w run fix"
+		"fix": "nub run -w fix"
 	},
 	"files": [
 		"dist"

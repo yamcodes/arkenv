@@ -14,7 +14,7 @@ Because Zod implements the [Standard Schema](https://standardschema.dev/) specif
 
 ### Prerequisites
 
-Make sure you have [Node.js](https://nodejs.org) installed. We recommend using [nvm](https://github.com/nvm-sh/nvm) to install it.
+Make sure you have [Node.js](https://nodejs.org) installed. We recommend using [Nub](https://nubjs.com/) (`nub node`) to install and pin Node.
 
 ### Quickstart
 

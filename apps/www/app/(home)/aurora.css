@@ -336,6 +336,10 @@
 }
 
 .home-aurora__badge {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem;
 	justify-self: start;
 	margin-bottom: var(--space-sm);
 	max-width: 100%;

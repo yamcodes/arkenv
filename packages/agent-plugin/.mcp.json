@@ -2,7 +2,7 @@
 	"mcpServers": {
 		"arkenv": {
 			"command": "npx",
-			"args": ["-y", "@arkenv/agent-plugin@alpha"]
+			"args": ["-y", "@arkenv/agent-plugin"]
 		}
 	}
 }

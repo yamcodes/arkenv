@@ -28,7 +28,7 @@
 		"typecheck": "tsc --noEmit",
 		"test": "vitest",
 		"clean": "rimraf dist node_modules",
-		"fix": "pnpm -w run fix"
+		"fix": "nub run -w fix"
 	},
 	"devDependencies": {
 		"@repo/log": "workspace:*",
