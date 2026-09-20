@@ -11,8 +11,10 @@ export const RELEASE_TAG = rawTag.trim();
 
 /**
  * npm dist-tag used in user-facing install / init copy.
- * Empty so CTAs stay bare (`npx arkenv init`, `pnpm add @arkenv/core`) once
- * product `latest` points at the RC publish. Independent of {@link RELEASE_TAG}.
+ * Empty for bare CTAs (`npx arkenv init`, `pnpm add @arkenv/core`).
+ * Independent of {@link RELEASE_TAG} so the Release Candidate badge can stay
+ * on while install copy assumes product `latest` → RC. Do not ship this to a
+ * public surface until that dist-tag (and the apex docs cutover) land.
  */
 export const INSTALL_TAG = "";
 
@@ -84,11 +86,11 @@ export function getDocsUrl(env: NodeJS.ProcessEnv = process.env): string {
 }
 
 /**
- * Returns the npm package specifier with an optional release tag.
+ * Returns the npm package specifier with an optional install tag.
  * When the tag is empty or falsy, returns the bare package name.
  *
  * @param pkg - Package name (defaults to "arkenv").
- * @param tag - Release tag override (defaults to `INSTALL_TAG`).
+ * @param tag - Install tag override (defaults to `INSTALL_TAG`).
  * @returns Formatted package specifier (e.g. "arkenv@rc" or "arkenv").
  */
 export function getPackageSpecifier(pkg = "arkenv", tag = INSTALL_TAG): string {
@@ -97,10 +99,10 @@ export function getPackageSpecifier(pkg = "arkenv", tag = INSTALL_TAG): string {
 }
 
 /**
- * Returns the CLI command for the given package manager and release tag.
+ * Returns the CLI command for the given package manager and install tag.
  *
  * @param packageManager - The target package manager ("npm", "pnpm", "bun", or "yarn").
- * @param tag - Release tag override (defaults to `INSTALL_TAG`).
+ * @param tag - Install tag override (defaults to `INSTALL_TAG`).
  * @param args - CLI arguments to append (defaults to "init").
  * @returns The formatted command string (e.g. "npx arkenv init").
  */

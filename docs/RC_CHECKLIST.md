@@ -167,16 +167,19 @@ are `1.0.0-rc.n` after the channel flip:
 - [x] Every row above is on `1.0.0-rc.n` (or an intentional independent
   cadence you document in the Release notes).
 
-### Site `RELEASE_TAG`
+### Site `RELEASE_TAG` / `INSTALL_TAG`
 
 - [x] Flip default channel in
   [`apps/www/lib/config/release.ts`](../apps/www/lib/config/release.ts)
   from `"alpha"` → `"rc"`, **or** set
   `NEXT_PUBLIC_ARKENV_RELEASE_TAG=rc` on the v1 / preview deploy.
-  Homepage install pills, agent prompt, and MDX `package-install`
-  tabs follow this constant (see AGENTS.md / release config JSDoc).
+  `RELEASE_TAG` drives the Release Candidate badge and channel labeling.
+- [x] Keep `INSTALL_TAG = ""` for bare homepage install pills, agent
+  prompt, and MDX `package-install` tabs (`npx arkenv init`,
+  `pnpm add @arkenv/*`). Ship that only after product `latest` → RC and
+  the apex docs cutover (see AGENTS.md / release config JSDoc).
 
-### Hardcoded `@alpha` / alpha copy (does not follow `RELEASE_TAG`)
+### Hardcoded `@alpha` / alpha copy (does not follow `INSTALL_TAG`)
 
 - [x] [`README.md`](../README.md) - `npx arkenv@alpha init` and sibling
   package-manager lines
@@ -365,8 +368,9 @@ Open on tip (re-verify):
 ## Shortest critical path
 
 1. **A** - Freeze: blockers vs park; Not-GA gaps; Discussions scan (F).
-2. **B** - Channel flip: changesets `rc`, versions, `RELEASE_TAG`,
-   hardcoded alpha copy, RC badge.
+2. **B** - Channel flip: changesets `rc`, versions, `RELEASE_TAG` (badge)
+   + `INSTALL_TAG` (bare CTAs after `latest` → RC), hardcoded alpha copy,
+   RC badge.
 3. **C** - Publish `1.0.0-rc.n`, point `latest` + `@rc`, smoke tests.
 4. Same-day pack after: import-guard URL polish (D), deprecate
    `@arkenv/cli` when ready, then DNS/announce (E) only if archive +

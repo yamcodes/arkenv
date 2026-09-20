@@ -20,7 +20,8 @@ function withReleaseTag(specifier: string, tag: string): string {
  * - npm install / pnpm add / yarn add / bun install (not npm i, not bun add).
  * - bun x -> bunx.
  * - arkenv CLI runner commands use bare `arkenv` when {@link INSTALL_TAG} is
- *   empty (product `latest` → RC), or `@${tag}` when an override is passed.
+ *   empty (intended once product `latest` → RC), or `@${tag}` when an override
+ *   is passed.
  * - On install lines only, `@arkenv/*` packages are tagged the same way (or
  *   left bare when the tag is empty).
  * - Scoped packages on runner lines (such as `@arkenv/agent-plugin`) are preserved untagged.

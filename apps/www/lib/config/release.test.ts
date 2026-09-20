@@ -147,7 +147,7 @@ describe("release config", () => {
 		expect(getDocsUrl()).toBe("https://arkenv.js.org");
 	});
 
-	it("uses the GA fallback and production host", async () => {
+	it("falls back to apex and accepts production host regardless of RELEASE_TAG", async () => {
 		vi.stubEnv("NEXT_PUBLIC_ARKENV_RELEASE_TAG", "");
 		vi.stubEnv("ARKENV_RELEASE_TAG", "");
 		vi.resetModules();
