@@ -21,8 +21,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      # Concrete majors only — setup-nub does not front lts/* / latest aliases.
       matrix:
-        node-version: [lts/*, latest]
+        node-version: [24, 26]
       fail-fast: false
 
     steps:
@@ -31,9 +32,8 @@ jobs:
         uses: ./.github/actions/setup-turbo-remote-cache
         with:
           team: ${{ vars.TURBO_TEAM }}
-      - uses: nubjs/setup-nub@v0
+      - uses: ./.github/actions/setup-nub-ci
         with:
-          shim: true
           node-version: ${{ matrix.node-version }}
       - uses: oven-sh/setup-bun@v2
         with:
@@ -56,9 +56,8 @@ jobs:
         uses: ./.github/actions/setup-turbo-remote-cache
         with:
           team: ${{ vars.TURBO_TEAM }}
-      - uses: nubjs/setup-nub@v0
+      - uses: ./.github/actions/setup-nub-ci
         with:
-          shim: true
           node-version: 24
       - run: nub install
       - run: nub run typecheck
@@ -67,7 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [lts/*, latest]
+        node-version: [24, 26]
 
     steps:
       - uses: actions/checkout@v7
@@ -75,9 +74,8 @@ jobs:
         uses: ./.github/actions/setup-turbo-remote-cache
         with:
           team: ${{ vars.TURBO_TEAM }}
-      - uses: nubjs/setup-nub@v0
+      - uses: ./.github/actions/setup-nub-ci
         with:
-          shim: true
           node-version: ${{ matrix.node-version }}
       - uses: oven-sh/setup-bun@v2
         with:
@@ -98,10 +96,9 @@ jobs:
         uses: ./.github/actions/setup-turbo-remote-cache
         with:
           team: ${{ vars.TURBO_TEAM }}
-      - uses: nubjs/setup-nub@v0
+      - uses: ./.github/actions/setup-nub-ci
         with:
-          shim: true
-          node-version: lts/*
+          node-version: 24
       - run: nub install
       - name: Build workspace packages
         run: nub run build:packages
@@ -132,10 +129,9 @@ jobs:
         run: |
           echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
           echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
-      - uses: nubjs/setup-nub@v0
+      - uses: ./.github/actions/setup-nub-ci
         with:
-          shim: true
-          node-version: lts/*
+          node-version: 24
       - run: nub install
       - uses: actions/cache@v6
         with:
@@ -165,8 +161,8 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        node-version: [lts/*, latest]
-    continue-on-error: ${{ matrix.node-version == 'latest' }}
+        node-version: [24, 26]
+    continue-on-error: ${{ matrix.node-version == 26 }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -180,9 +176,8 @@ jobs:
         run: |
           echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
           echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
-      - uses: nubjs/setup-nub@v0
+      - uses: ./.github/actions/setup-nub-ci
         with:
-          shim: true
           node-version: ${{ matrix.node-version }}
       - uses: oven-sh/setup-bun@v2
         with:
@@ -198,19 +193,13 @@ jobs:
             windows-latest-pw-
       - name: Install Playwright browsers
         run: nubx playwright install --with-deps
-      - name: Sanitize node version for artifact name
-        id: sanitize
-        shell: bash
-        run: |
-          SANITIZED=$(echo "${{ matrix.node-version }}" | sed 's/[\/\*]/-/g')
-          echo "version=$SANITIZED" >> "$GITHUB_OUTPUT"
       - run: nub run build
       - run: nub run test
       - run: nub run test:e2e
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
-          name: test-results-windows-${{ steps.sanitize.outputs.version }}
+          name: test-results-windows-${{ matrix.node-version }}
           path: "**/test-results/**"
           retention-days: 30
 
@@ -219,8 +208,8 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        node-version: [lts/*, latest]
-    continue-on-error: ${{ matrix.node-version == 'latest' }}
+        node-version: [24, 26]
+    continue-on-error: ${{ matrix.node-version == 26 }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -234,9 +223,8 @@ jobs:
         run: |
           echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
           echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
-      - uses: nubjs/setup-nub@v0
+      - uses: ./.github/actions/setup-nub-ci
         with:
-          shim: true
           node-version: ${{ matrix.node-version }}
       - uses: oven-sh/setup-bun@v2
         with:
@@ -252,18 +240,12 @@ jobs:
             macos-latest-pw-
       - name: Install Playwright browsers
         run: nubx playwright install --with-deps
-      - name: Sanitize node version for artifact name
-        id: sanitize
-        shell: bash
-        run: |
-          SANITIZED=$(echo "${{ matrix.node-version }}" | sed 's/[\/\*]/-/g')
-          echo "version=$SANITIZED" >> "$GITHUB_OUTPUT"
       - run: nub run build
       - run: nub run test
       - run: nub run test:e2e
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
-          name: test-results-macos-${{ steps.sanitize.outputs.version }}
+          name: test-results-macos-${{ matrix.node-version }}
           path: "**/test-results/**"
           retention-days: 30

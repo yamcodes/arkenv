@@ -25,9 +25,8 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Set up Nub
-        uses: nubjs/setup-nub@v0
+        uses: ./.github/actions/setup-nub-ci
         with:
-          shim: true
           node-version: 24
 
       - name: Install dependencies

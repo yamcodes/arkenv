@@ -40,11 +40,11 @@ jobs:
           team: ${{ vars.TURBO_TEAM }}
 
       - name: Set up Nub
-        uses: nubjs/setup-nub@v0
+        # Concrete 24 (latest 24.x is >=24.18.0 required by changesets).
+        # see: https://github.com/changesets/changesets/issues/2123#issuecomment-4814124084
+        uses: ./.github/actions/setup-nub-ci
         with:
-          shim: true
-          # see: https://github.com/changesets/changesets/issues/2123#issuecomment-4814124084
-          node-version: ">=24.18.0"
+          node-version: 24
 
       - name: Install Dependencies
         run: nub install

@@ -34,9 +34,8 @@ jobs:
           team: ${{ vars.TURBO_TEAM }}
 
       - name: Set up Nub
-        uses: nubjs/setup-nub@v0
+        uses: ./.github/actions/setup-nub-ci
         with:
-          shim: true
           node-version: 24
 
       - name: Install deps
@@ -48,4 +47,5 @@ jobs:
           TURBO_FORCE: "true"
 
       - name: Release
-        run: nubx pkg-pr-new publish --compact --pnpm './packages/*'
+        # -y: pkg-pr-new is not a workspace dep; nubx refuses undownloaded tools in CI
+        run: nubx -y pkg-pr-new publish --compact --pnpm './packages/*'

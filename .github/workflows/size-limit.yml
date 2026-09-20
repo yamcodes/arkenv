@@ -50,9 +50,8 @@ jobs:
         uses: ./.github/actions/setup-turbo-remote-cache
         with:
           team: ${{ vars.TURBO_TEAM }}
-      - uses: nubjs/setup-nub@v0
+      - uses: ./.github/actions/setup-nub-ci
         with:
-          shim: true
           node-version: 24
       - name: Install dependencies
         run: nub install
