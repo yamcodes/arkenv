@@ -5,7 +5,7 @@
 	"scripts": {
 		"mdx": "node ./bin/mdx",
 		"prebuild": "node ./bin/prebuild.js",
-		"predev": "nub run --filter @arkenv/fumadocs-ui --filter @arkenv/nextjs build && nub run mdx",
+		"predev": "nub run --filter @arkenv/fumadocs-ui... --filter @arkenv/nextjs... build && nub run mdx",
 		"build": "node ./bin/build next build",
 		"dev": "next dev",
 		"start": "next start",
