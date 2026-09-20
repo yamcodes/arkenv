@@ -83,7 +83,11 @@ forward-port of `www-vitest-no-styled-jsx-babel` from `main`
 - Workspace Vitest no longer hangs because www compiled a Babel 7-only
   plugin on core 8.
 - `apps/www/package.json.test.ts` guards the empty Babel/`styled-jsx`
-  manifest. Re-adding those packages is the regression to catch.
+  manifest and a single `fumadocs-core` / `fumadocs-ui` lockfile snapshot.
+  Re-adding those packages or full-regenerating the lockfile is the
+  regression to catch. Next's optional `@babel/core` peer forks Fumadocs
+  into two React trees (`FrameworkProvider` dies at `www#build`). Keep
+  origin/`v1` snapshots and delete only the four www importer entries.
 - Future contributors who see unknown-`jsx` warnings should mock the
   public Next/Fumadocs import that pulled styled-jsx in, or move the test
   to Playwright. They should not add a compiler.
