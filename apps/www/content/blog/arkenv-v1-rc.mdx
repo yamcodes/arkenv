@@ -1,6 +1,6 @@
 ---
 title: ArkEnv v1 Release Candidate
-description: Outline for the v1 RC announcement — packages, docs cutover, and migrating from v0.
+description: Outline for the v1 RC announcement — packages, docs cutover, migrating from v0, and what newcomers get.
 author: Yam Borodetsky
 date: 2026-09-20
 draft: true
@@ -12,6 +12,12 @@ draft: true
 - npm **`latest`** points at RC for the RC window (also published under the **`rc`** tag)
 - Docs apex (`https://arkenv.js.org`) serves **v1 / RC**
 - v0 docs stay available on the archive: [https://arkenv-v0.vercel.app](https://arkenv-v0.vercel.app)
+
+## Notable for newcomers
+
+- **One schema → typed `env`:** declare keys once in `env.ts`; `arkenv()` validates at load and TypeScript infers the same types — no loose `process.env` / stringly helpers
+- **Bring your validator:** ArkType DSL via `@arkenv/core`, or Zod / Valibot / any [Standard Schema](https://standardschema.dev/) via `@arkenv/standard` — same fail-fast `ArkEnvError` DX either way
+- **Full-stack boundary built in:** Next.js, Nuxt, Vite, Bun (and related) integrations keep server secrets off the client while public keys stay typed
 
 ## If you’re on v0
 
