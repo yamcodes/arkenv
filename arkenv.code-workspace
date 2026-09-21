@@ -12,7 +12,9 @@
 			"source.organizeImports.biome": "explicit",
 			"source.fixAll.biome": "explicit"
 		},
-		"typescript.preferences.autoImportSpecifierExcludeRegexes": ["^(node:)?os$"],
+		"typescript.preferences.autoImportSpecifierExcludeRegexes": [
+			"^(node:)?os$"
+		],
 		"editor.tabSize": 2,
 		"editor.defaultFormatter": "biomejs.biome",
 		"[markdown]": {
