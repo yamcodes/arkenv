@@ -2,9 +2,9 @@
 
 Living evaluation, not an ADR. Update this file as options enter or leave the hat. Promoted decisions belong in `docs/adr/`.
 
-**Status:** working note for [#1911](https://github.com/yamcodes/arkenv/issues/1911). **Chosen public story:** undecided (maintainer gate); this note’s lean is **S = A2 + B4** (host/Next owns no-rebuild public env; hard-remove the surface for RC).
+**Status:** accepted as [ADR 0034](../adr/0034-no-nextjs-runtime-env-global.md) for [#1911](https://github.com/yamcodes/arkenv/issues/1911). **Chosen public story:** **S = A2 + B4 + C1**, with **A3 docs shipping** (dedicated Next.js + Docker guide + migrating-to-v1 note naming `next-runtime-env`).
 
-A prior issue comment leaned **B** ([comment](https://github.com/yamcodes/arkenv/issues/1911#issuecomment-5757900265)). This hat re-scores with ecosystem research and product-scope framing so that lean can be confirmed or reversed before agents implement.
+Maintainer locked **B** on the issue. Implementation removes the surface and documents the Docker story without a runtime global.
 
 ## Problem
 
@@ -123,13 +123,12 @@ Nuxt is not a counterexample to B4. Nuxt’s no-rebuild story rides **Nitro `run
 
 Solutions ranked as **answers to the whole problem** (stacks).
 
-**S (chosen / default story — lean)**
+**S (chosen / default story)**
 
-- **A2 + B4 + C1 (+ C4 migration line)** — Next public client env is build-time inlining via codegen `runtimeEnv`. No `ArkEnvScript`. No `__arkenv_env__`. Frameworks table stays true. RC drops the undocumented surface. Re-add later only with full docs if demand is proven.
+- **A2 + B4 + C1 + A3 docs + dedicated Docker guide** — Next public client env is build-time inlining via codegen `runtimeEnv`. No `ArkEnvScript`. No `__arkenv_env__`. Frameworks table stays true. RC drops the undocumented surface. Migrating-to-v1 and [Next.js and Docker](../../apps/www/content/docs/guides/nextjs-docker.mdx) name ecosystem tools (`next-runtime-env`) for no-rebuild client injection.
 
-**A (optional tuck-away — do not block RC)**
+**A (optional tuck-away — do not block)**
 
-- **A3 one-liner** after B4: in migrating-to-v1 or an advanced Docker note, mention that dedicated libraries (`next-runtime-env` and forks) exist for runtime public injection, and that they are outside ArkEnv’s support boundary.
 - **B5** only if a future major reopens A1 and we refuse to grow `@arkenv/nextjs`.
 
 **B**
@@ -212,9 +211,9 @@ export const env = arkenv({
 
 ## Current lean
 
-**Ship S now:** remove `ArkEnvScript` and `__arkenv_env__` (issue **B**), keep codegen on plain `process.env.KEY` inlining, add a migrating-to-v1 line, ADR the boundary.
+**Shipped:** remove `ArkEnvScript` and `__arkenv_env__` (issue **B**), codegen on plain `process.env.KEY` inlining, ADR 0034, migrating-to-v1 A3 note naming `next-runtime-env`, and the dedicated [Next.js and Docker](../../apps/www/content/docs/guides/nextjs-docker.mdx) guide.
 
-**Do not block on A-tier:** optional one-liner naming ecosystem libs is nice-to-have, not required to close [#1911](https://github.com/yamcodes/arkenv/issues/1911).
+**Still A-tier only:** `@arkenv/nextjs-runtime-env` (B5) — reopen post-1.0 if demand is proven.
 
 **Why this beats “document and keep” for 1.0:** documenting locks a Next-fighting transport into the v1 lifecycle; removal is reversible; the frameworks matrix and CONTEXT.md already describe ArkEnv as validation + host-honest boundary; #1906 set the RC precedent for dropping undocumented semi-public surfaces; Nuxt’s Docker story is host-native and not a template for a bespoke Next global.
 
@@ -223,3 +222,4 @@ export const env = arkenv({
 ## Changelog of this note
 
 - 2026-09-21: First write-up for #1911 (layers A/B/C, metrics, ecosystem research folded in, S lean = A2+B4+C1).
+- 2026-09-21: Decision locked B; A3 + dedicated Docker guide promoted into AC/S; ADR 0034 accepted.

@@ -221,13 +221,12 @@ describe("codegen process", () => {
 			'import { arkenv as coreArkenv } from "@arkenv/nextjs";',
 		);
 
-		// Check destructured runtimeEnv keys
+		// Check destructured runtimeEnv keys (Next inlines process.env.NEXT_PUBLIC_*)
 		expect(generatedContent).toContain(
-			'NEXT_PUBLIC_API_URL: typeof window !== "undefined" ? (globalThis as any).__arkenv_env__?.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_URL : process.env.NEXT_PUBLIC_API_URL,',
+			"NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,",
 		);
-		expect(generatedContent).toContain(
-			'NODE_ENV: typeof window !== "undefined" ? (globalThis as any).__arkenv_env__?.NODE_ENV ?? process.env.NODE_ENV : process.env.NODE_ENV,',
-		);
+		expect(generatedContent).toContain("NODE_ENV: process.env.NODE_ENV,");
+		expect(generatedContent).not.toContain("__arkenv_env__");
 	});
 
 	it("should handle custom output path relative importing", () => {

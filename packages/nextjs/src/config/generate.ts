@@ -5,8 +5,7 @@ function generateRuntimeEnvLines(
 	const allKeys = Array.from(new Set([...clientKeys, ...sharedKeys]));
 	return allKeys
 		.map(
-			(key) =>
-				`\t\t\t${key}: typeof window !== "undefined" ? (globalThis as any).__arkenv_env__?.${key} ?? process.env.${key} : process.env.${key},`,
+			(key) => `\t\t\t${key}: process.env.${key},`,
 		)
 		.join("\n");
 }
