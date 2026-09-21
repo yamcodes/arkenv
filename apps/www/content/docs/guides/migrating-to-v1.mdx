@@ -259,6 +259,25 @@ Full recipe:
 is a few bytes per key, no validator ships to the browser, and server
 secrets stay off the client.
 
+## CLI schema location
+
+Older init runs wrote a `package.json` `"arkenv"` field so the CLI could
+find a non-convention schema path. That pointer is gone. Discovery is
+`--schema` / `-s`, then convention paths (`env.ts`, `src/env.ts`, …).
+
+If your schema sits elsewhere, put the path on `--schema` in scripts:
+
+```json
+{
+  "scripts": {
+    "check": "arkenv check --schema config/env.ts"
+  }
+}
+```
+
+You can delete a leftover `"arkenv"` key from `package.json`; the CLI
+ignores it either way. See [check](/docs/reference/check).
+
 ## Deprecated APIs
 
 These still work on [`@arkenv/nextjs`](/docs/reference/nextjs) and

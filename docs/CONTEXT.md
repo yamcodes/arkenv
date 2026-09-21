@@ -44,8 +44,12 @@ The legacy v0 pattern (`arkenv(schema)` plugin argument with native-accessor `de
 *Avoid*: recommending schema/define or ambient `.d.ts` augmentations in v1 docs, CLI, or skills; framing SPA mode as a supported v1 path
 
 **Check**:
-CLI command `arkenv check` that validates the resolved environment (`process.env` plus optional `--env-file` overlays) against the project schema. Findings are not a crash: `--json` emits a completed envelope with `ok: true` and exit code `4`.
-*Avoid*: treating validation findings as `ok: false` or exit `1`; calling Check a dotenv loader (it does not load `.env` unless `--env-file` is passed); folding file lint rules, unquoted space detection, or AST syntax diagnostics onto Check (that belongs in dedicated ecosystem tools like `dotenv-linter`)
+CLI command `arkenv check` that validates the resolved environment (`process.env` plus optional `--env-file` overlays) against the project schema. Findings are not a crash: `--json` emits a completed envelope with `ok: true` and exit code `4`. Schema discovery is `--schema` / `-s` then convention paths (`env.ts`, `src/env.ts`, …) only — not a `package.json` `"arkenv"` field ([ADR 0033](./adr/0033-cli-schema-location-no-package-json.md)).
+*Avoid*: treating validation findings as `ok: false` or exit `1`; calling Check a dotenv loader (it does not load `.env` unless `--env-file` is passed); folding file lint rules, unquoted space detection, or AST syntax diagnostics onto Check (that belongs in dedicated ecosystem tools like `dotenv-linter`); teaching agents or docs to set `package.json` `"arkenv"` for CLI discovery
+
+**Schema location** (CLI discovery):
+How the CLI finds the schema module for `check` (and any other command that loads the schema): explicit `--schema` / `-s`, then convention candidates. Leftover `package.json` `"arkenv"` keys from older init runs are ignored. Runtime behavior stays in TypeScript via `arkenv()` options — not in `package.json`.
+*Avoid*: documenting or writing `package.json` `"arkenv"` / `"arkenv.schema"` as a supported CLI config surface; conflating discovery with `arkenv()` options
 
 **Lint**:
 Archived RFC ([Discussion #1710](https://github.com/yamcodes/arkenv/discussions/1710), superseding ADR 0017). File-level syntax, unquoted space detection, and whitespace formatting belong in dedicated ecosystem tools (e.g. `dotenv-linter`). ArkEnv focuses purely on runtime schema validation.

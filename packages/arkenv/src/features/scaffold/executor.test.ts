@@ -120,6 +120,25 @@ describe("Executor", () => {
 		expect(mockReporter.finish).toHaveBeenCalled();
 	});
 
+	it("does not write an arkenv schema pointer to package.json", async () => {
+		const packageJsonPath = "package.json";
+		mockExistingFiles.add(packageJsonPath);
+		vi.mocked(mockWorkspace.readFile).mockResolvedValue(
+			JSON.stringify({ name: "app" }),
+		);
+
+		// Use npm so configurePnpmBuilds does not rewrite package.json.
+		await executor.execute({
+			...defaultPlan,
+			install: { packageManager: "npm", dependencies: [] },
+		});
+
+		const packageJsonWrites = vi
+			.mocked(mockWorkspace.writeFile)
+			.mock.calls.filter(([filePath]) => filePath === packageJsonPath);
+		expect(packageJsonWrites).toHaveLength(0);
+	});
+
 	it("skips files with create action if they already exist", async () => {
 		mockExistingFiles.add("env.ts");
 		await executor.execute(defaultPlan);
