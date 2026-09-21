@@ -15,5 +15,5 @@ npx arkenv@latest add host cloudflare
 or
 
 ```bash
-npx arkenv@latest init --host-preset cloudflare
+npx arkenv@latest init --preset cloudflare
 ```

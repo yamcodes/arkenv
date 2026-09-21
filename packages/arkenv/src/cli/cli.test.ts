@@ -163,12 +163,12 @@ describe("CLI parser", () => {
 			expect(cli.validationError).toBeUndefined();
 		});
 
-		it("should not expand flag values immediately following value-taking flags (e.g. -H / --example)", () => {
-			const cli1 = new CLI(["node", "arkenv", "init", "-H", "-yq"]);
-			expect(cli1.args).toEqual(["init", "-H", "-yq"]);
+		it("should not expand flag values immediately following value-taking flags (e.g. -P / --example)", () => {
+			const cli1 = new CLI(["node", "arkenv", "init", "-P", "-yq"]);
+			expect(cli1.args).toEqual(["init", "-P", "-yq"]);
 			expect(cli1.isYes).toBe(false);
 			expect(cli1.isQuiet).toBe(false);
-			expect(cli1.validationError).toBe("Missing value for option: -H");
+			expect(cli1.validationError).toBe("Missing value for option: -P");
 
 			const cli2 = new CLI(["node", "arkenv", "init", "--example", "-abc"]);
 			expect(cli2.args).toEqual(["init", "--example", "-abc"]);
@@ -177,7 +177,7 @@ describe("CLI parser", () => {
 		});
 
 		it("should expand a bundle ending in a value-taking flag and parse its value correctly", () => {
-			const cli = new CLI(["node", "arkenv", "init", "-yqH", "netlify"]);
+			const cli = new CLI(["node", "arkenv", "init", "-yqP", "netlify"]);
 			expect(cli.isYes).toBe(true);
 			expect(cli.isQuiet).toBe(true);
 			expect(cli.hostPreset).toBe("netlify");
@@ -185,12 +185,12 @@ describe("CLI parser", () => {
 		});
 
 		it("should not expand dash-prefixed values after bundled value-taking flags", () => {
-			const cli = new CLI(["node", "arkenv", "init", "-yqH", "-abc"]);
-			expect(cli.args).toEqual(["init", "-y", "-q", "-H", "-abc"]);
+			const cli = new CLI(["node", "arkenv", "init", "-yqP", "-abc"]);
+			expect(cli.args).toEqual(["init", "-y", "-q", "-P", "-abc"]);
 			expect(cli.isYes).toBe(true);
 			expect(cli.isQuiet).toBe(true);
 			expect(cli.isAgent).toBe(false);
-			expect(cli.validationError).toBe("Missing value for option: -H");
+			expect(cli.validationError).toBe("Missing value for option: -P");
 		});
 
 		it("should ignore single-letter flags with dash or long flags", () => {
@@ -207,16 +207,14 @@ describe("CLI parser", () => {
 			const cli1 = new CLI(["node", "arkenv", "init", "--example"]);
 			expect(cli1.validationError).toBe("Missing value for option: --example");
 
-			const cli2 = new CLI(["node", "arkenv", "init", "--host-preset"]);
-			expect(cli2.validationError).toBe(
-				"Missing value for option: --host-preset",
-			);
+			const cli2 = new CLI(["node", "arkenv", "init", "--preset"]);
+			expect(cli2.validationError).toBe("Missing value for option: --preset");
 
 			const cli3 = new CLI(["node", "arkenv", "init", "--example", "--yes"]);
 			expect(cli3.validationError).toBe("Missing value for option: --example");
 
-			const cli4 = new CLI(["node", "arkenv", "init", "-yqH"]);
-			expect(cli4.validationError).toBe("Missing value for option: -H");
+			const cli4 = new CLI(["node", "arkenv", "init", "-yqP"]);
+			expect(cli4.validationError).toBe("Missing value for option: -P");
 		});
 	});
 
@@ -237,74 +235,75 @@ describe("CLI parser", () => {
 		});
 	});
 
-	describe("Host preset flag", () => {
-		it("should parse --host-preset flag", () => {
-			const cli1 = new CLI([
+	describe("Removed host-preset aliases", () => {
+		it("treats --host-preset as an unknown argument", () => {
+			const cli = new CLI([
 				"node",
 				"arkenv",
 				"init",
 				"--host-preset",
 				"vercel",
 			]);
+			expect(cli.validationError).toBe("Unknown argument: --host-preset");
+		});
+
+		it("treats -H as an unknown argument", () => {
+			const cli = new CLI(["node", "arkenv", "init", "-H", "vercel"]);
+			expect(cli.validationError).toBe("Unknown argument: -H");
+		});
+
+		it("treats -H inside a boolean bundle as an unknown argument", () => {
+			const cli = new CLI(["node", "arkenv", "init", "-yH"]);
+			expect(cli.args).toEqual(["init", "-y", "-H"]);
+			expect(cli.isYes).toBe(true);
+			expect(cli.validationError).toBe("Unknown argument: -H");
+		});
+	});
+
+	describe("Host preset flag", () => {
+		it("should parse --preset flag", () => {
+			const cli1 = new CLI(["node", "arkenv", "init", "--preset", "vercel"]);
 			expect(cli1.hostPreset).toBe("vercel");
 			expect(cli1.initInput.hostPreset).toBe("vercel");
 			expect(cli1.validationError).toBeUndefined();
 
-			const cli2 = new CLI([
-				"node",
-				"arkenv",
-				"init",
-				"--host-preset",
-				"netlify",
-			]);
+			const cli2 = new CLI(["node", "arkenv", "init", "--preset", "netlify"]);
 			expect(cli2.hostPreset).toBe("netlify");
 			expect(cli2.initInput.hostPreset).toBe("netlify");
 			expect(cli2.validationError).toBeUndefined();
 
-			const cli3 = new CLI(["node", "arkenv", "init", "--host-preset", "none"]);
+			const cli3 = new CLI(["node", "arkenv", "init", "--preset", "none"]);
 			expect(cli3.hostPreset).toBe("none");
 			expect(cli3.initInput.hostPreset).toBe("none");
 			expect(cli3.validationError).toBeUndefined();
 
-			const cli4 = new CLI([
-				"node",
-				"arkenv",
-				"init",
-				"--host-preset",
-				"vercle",
-			]);
+			const cli4 = new CLI(["node", "arkenv", "init", "--preset", "vercle"]);
 			expect(cli4.validationError).toBe("Invalid host preset: vercle");
 
 			const cli5 = new CLI([
 				"node",
 				"arkenv",
 				"init",
-				"--host-preset",
+				"--preset",
 				"cloudflare",
 			]);
 			expect(cli5.hostPreset).toBe("cloudflare");
 			expect(cli5.initInput.hostPreset).toBe("cloudflare");
 			expect(cli5.validationError).toBeUndefined();
 
-			const cli6 = new CLI([
-				"node",
-				"arkenv",
-				"init",
-				"--host-preset",
-				"railway",
-			]);
+			const cli6 = new CLI(["node", "arkenv", "init", "--preset", "railway"]);
 			expect(cli6.hostPreset).toBe("railway");
 			expect(cli6.initInput.hostPreset).toBe("railway");
 			expect(cli6.validationError).toBeUndefined();
 		});
 
-		it("should parse the -H alias for --host-preset", () => {
-			const cli = new CLI(["node", "arkenv", "init", "-H", "netlify"]);
+		it("should parse the -P alias for --preset", () => {
+			const cli = new CLI(["node", "arkenv", "init", "-P", "netlify"]);
 			expect(cli.hostPreset).toBe("netlify");
 			expect(cli.initInput.hostPreset).toBe("netlify");
 			expect(cli.validationError).toBeUndefined();
 
-			const invalid = new CLI(["node", "arkenv", "init", "-H", "vercle"]);
+			const invalid = new CLI(["node", "arkenv", "init", "-P", "vercle"]);
 			expect(invalid.validationError).toBe("Invalid host preset: vercle");
 		});
 	});
