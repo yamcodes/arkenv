@@ -87,9 +87,15 @@ if (!result.success) {
 ```
 
 `@arkenv/standard` mirrors the same shape via `@arkenv/standard/safe`.
-Framework integrations (Next.js, Nuxt, Vite, Bun) do not expose a
-non-throwing path — invalid env still fails the build or server start
-there on purpose.
+
+<Callout type="warn">
+  Framework plugins (Next.js, Nuxt, Vite, Bun, Rsbuild) do not ship a
+  `/safe` subpath, so a failed validation cannot soft-fail into the
+  client bundle — invalid env still fails the build or server start on
+  purpose. Call `arkenv` from `@arkenv/core/safe` or
+  `@arkenv/standard/safe` yourself if you need programmatic failure
+  handling outside a plugin.
+</Callout>
 
 ## Framework boundary errors
 
