@@ -28,48 +28,48 @@ Items on different layers compose. A complete answer is a **stack**.
 
 ## Metrics
 
-| Metric | Question |
-| ------ | -------- |
-| Host honesty | Does this fight Next’s documented build-time `NEXT_PUBLIC_*` model, or cooperate with it? |
-| Product scope fit | Is this validation/boundary work, or a parallel env-transport product? |
-| Tax fairness | Do Vercel/build-time users pay complexity for Docker no-rebuild users (and vice versa)? |
-| Agent / docs footguns | Can an agent invent this as required Next setup when the happy path never mentions it? |
-| Maintenance hell | How sticky is owning a `next-runtime-env`-shaped escape hatch across Next majors? |
-| Teachability | Can the frameworks matrix stay true (Nuxt yes / Next rebuild) without contradiction? |
-| Reversibility at RC | Cheap to remove now and re-add later, or cheap to document now and stuck for 1.x? |
-| Real demand honesty | Does the community Docker pain still get a path, even if ArkEnv does not own it? |
+| Metric                | Question                                                                                  |
+| --------------------- | ----------------------------------------------------------------------------------------- |
+| Host honesty          | Does this fight Next’s documented build-time `NEXT_PUBLIC_*` model, or cooperate with it? |
+| Product scope fit     | Is this validation/boundary work, or a parallel env-transport product?                    |
+| Tax fairness          | Do Vercel/build-time users pay complexity for Docker no-rebuild users (and vice versa)?   |
+| Agent / docs footguns | Can an agent invent this as required Next setup when the happy path never mentions it?    |
+| Maintenance hell      | How sticky is owning a `next-runtime-env`-shaped escape hatch across Next majors?         |
+| Teachability          | Can the frameworks matrix stay true (Nuxt yes / Next rebuild) without contradiction?      |
+| Reversibility at RC   | Cheap to remove now and re-add later, or cheap to document now and stuck for 1.x?         |
+| Real demand honesty   | Does the community Docker pain still get a path, even if ArkEnv does not own it?          |
 
 ## The hat
 
 ### Layer A — ownership of Next public-env-without-rebuild
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| A1 | **ArkEnv owns it first-class** | Compete with `next-runtime-env` / `next-dynenv`. Nuxt-parity marketing for Docker. |
-| A2 | **Host / Next owns it** | Rebuild per env, or fetch server-side and pass props. Official Next stance. |
-| A3 | **Ecosystem owns it** | Remove ArkEnv’s surface; docs mention `next-runtime-env` (or equivalent) for the Docker hole. |
-| A4 | **Docs recipe only** | No component; short DIY (entrypoint string-replace, custom layout script) in migrate/guides. |
-| A5 | **Defer ownership** | Leave status quo (wired but undocumented) until post-1.0. **Out of scope for RC hygiene** — scored so it cannot silently win. |
+| #  | Option                         | Notes                                                                                                                         |
+| -- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| A1 | **ArkEnv owns it first-class** | Compete with `next-runtime-env` / `next-dynenv`. Nuxt-parity marketing for Docker.                                            |
+| A2 | **Host / Next owns it**        | Rebuild per env, or fetch server-side and pass props. Official Next stance.                                                   |
+| A3 | **Ecosystem owns it**          | Remove ArkEnv’s surface; docs mention `next-runtime-env` (or equivalent) for the Docker hole.                                 |
+| A4 | **Docs recipe only**           | No component; short DIY (entrypoint string-replace, custom layout script) in migrate/guides.                                  |
+| A5 | **Defer ownership**            | Leave status quo (wired but undocumented) until post-1.0. **Out of scope for RC hygiene** — scored so it cannot silently win. |
 
 ### Layer B — surface fate
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| B1 | **Keep + document as happy path** | Issue option A, maximal. Layout always includes `<ArkEnvScript />`. |
+| #  | Option                                       | Notes                                                                                                       |
+| -- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| B1 | **Keep + document as happy path**            | Issue option A, maximal. Layout always includes `<ArkEnvScript />`.                                         |
 | B2 | **Keep + document as advanced escape hatch** | Still exported; codegen keeps global; docs put it under “Docker / runtime public env,” not getting started. |
-| B3 | **Soft-deprecate one release, then remove** | Warn on import / changelog; hard remove in next pre-release. |
-| B4 | **Hard remove now (RC)** | Issue option B. Delete component, drop `__arkenv_env__` from codegen + runtime merge. |
-| B5 | **Extract to optional package** | e.g. `@arkenv/nextjs-runtime-env`. Keeps core adapter lean. |
-| B6 | **Leave undocumented** | Status quo. **Rejected for RC** — this is the bug [#1911] exists to close. |
+| B3 | **Soft-deprecate one release, then remove**  | Warn on import / changelog; hard remove in next pre-release.                                                |
+| B4 | **Hard remove now (RC)**                     | Issue option B. Delete component, drop `__arkenv_env__` from codegen + runtime merge.                       |
+| B5 | **Extract to optional package**              | e.g. `@arkenv/nextjs-runtime-env`. Keeps core adapter lean.                                                 |
+| B6 | **Leave undocumented**                       | Status quo. **Rejected for RC** — this is the bug \[#1911] exists to close.                                 |
 
 ### Layer C — teaching / happy-path story
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| C1 | **Codegen `runtimeEnv` + Next inlining only** | Matches frameworks table today (“Requires rebuild”). |
-| C2 | **Dual story: inlining default + runtime script advanced** | Two transports in docs. |
-| C3 | **Runtime script as default Next client transport** | Flips the frameworks table; fights Next compiler story. |
-| C4 | **Migration-only mention** | After remove: one line in migrating-to-v1; no ongoing guide. |
+| #  | Option                                                     | Notes                                                        |
+| -- | ---------------------------------------------------------- | ------------------------------------------------------------ |
+| C1 | **Codegen `runtimeEnv` + Next inlining only**              | Matches frameworks table today (“Requires rebuild”).         |
+| C2 | **Dual story: inlining default + runtime script advanced** | Two transports in docs.                                      |
+| C3 | **Runtime script as default Next client transport**        | Flips the frameworks table; fights Next compiler story.      |
+| C4 | **Migration-only mention**                                 | After remove: one line in migrating-to-v1; no ongoing guide. |
 
 ## Evaluation
 
