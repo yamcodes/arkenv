@@ -52,6 +52,10 @@
 	letter-spacing: -0.05em;
 	overflow-wrap: normal;
 	color: var(--color-ink);
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem;
 }
 
 .blog-page__lede {
@@ -126,10 +130,6 @@
 	letter-spacing: 0.02em;
 	line-height: 1.2;
 	text-transform: uppercase;
-}
-
-.blog-page__header > .blog-page__draft-badge {
-	width: fit-content;
 }
 
 .blog-page__avatar {

@@ -53,10 +53,12 @@ export default async function BlogPostPage(props: {
 						← Blog
 					</Link>
 					<header className="blog-page__header">
-						{page.data.draft ? (
-							<span className="blog-page__draft-badge">Draft</span>
-						) : null}
-						<h1 className="blog-page__title">{page.data.title}</h1>
+						<h1 className="blog-page__title">
+							{page.data.title}
+							{page.data.draft ? (
+								<span className="blog-page__draft-badge">Draft</span>
+							) : null}
+						</h1>
 						{page.data.description ? (
 							<p className="blog-page__lede">{page.data.description}</p>
 						) : null}
