@@ -35,7 +35,7 @@ From a local clone, build first and point MCP at the bin:
 
 ```bash
 pnpm --filter @arkenv/agent-plugin build
-node ./packages/agent-plugin/dist/bin.js
+node ./packages/agent-plugin/bin.mjs
 ```
 
 Stdio MCP tools:
