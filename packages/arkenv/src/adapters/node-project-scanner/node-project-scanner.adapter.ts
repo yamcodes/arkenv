@@ -229,39 +229,4 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 			}
 		}
 	}
-
-	/**
-	 * Reads and parses the arkenv configuration field from the nearest package.json.
-	 */
-	async readArkenvConfig(
-		cwd = process.cwd(),
-	): Promise<{ schema: string } | null> {
-		const pkgPath = await this.findPackageJson(cwd);
-		if (!pkgPath) return null;
-
-		try {
-			const content = await fsp.readFile(pkgPath, "utf-8");
-			const pkg = JSON.parse(content);
-			if (!pkg.arkenv) return null;
-
-			if (typeof pkg.arkenv === "string") {
-				return {
-					schema: pkg.arkenv,
-				};
-			}
-
-			if (
-				typeof pkg.arkenv === "object" &&
-				typeof pkg.arkenv.schema === "string"
-			) {
-				return {
-					schema: pkg.arkenv.schema,
-				};
-			}
-
-			return null;
-		} catch {
-			return null;
-		}
-	}
 }

@@ -107,8 +107,4 @@ export type ProjectScannerPort = {
 	 * Finds the nearest package.json starting from the given directory.
 	 */
 	findPackageJson(startDir?: string): Promise<string | null>;
-	/**
-	 * Reads and parses the arkenv configuration field from the nearest package.json.
-	 */
-	readArkenvConfig(cwd?: string): Promise<{ schema: string } | null>;
 };

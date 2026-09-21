@@ -34,7 +34,7 @@ In v1, ArkEnv offers two first-class validation engines:
 - Initialize ArkEnv in new or existing projects using `pnpm dlx arkenv init` (or `npx arkenv init`).
 - Automatically detect frameworks (`Next.js`, `Nuxt`, `Vite`, `Bun`, etc.) and scaffold `env.ts`.
 - Select hosting provider preset during init (`--preset, -P <provider>` or `--host-preset, -H <provider>`).
-- Automatically configure `tsconfig.json` and schema configuration pointers in `package.json`.
+- Automatically configure `tsconfig.json` when needed. Schema discovery for CLI commands uses `--schema` or convention paths (`env.ts`, `src/env.ts`, …) — not a `package.json` `"arkenv"` field.
 
 ### Hosting presets
 
@@ -114,6 +114,7 @@ pnpm arkenv check [options]
 ```
 
 #### Options:
+- `--schema, -s <path>`: Explicit path to the schema module (overrides convention discovery).
 - `--verify-example [file]`: Verify that all declared schema keys are present in `.env.example` (or a custom example file path) without mutating files.
 - `--env-file <path>`: Specify one or more custom environment files to load.
 - `--json`: Output structured JSON diagnostics to stdout.
