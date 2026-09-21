@@ -45,19 +45,17 @@ describe("resolveSchemaPath", () => {
 		expect(resolved).toBe(path.resolve(cwd, "src/env.ts"));
 	});
 
-	it("ignores leftover package.json arkenv pointers (no scanner config read)", async () => {
+	it("prefers convention env.ts over an off-convention sibling", async () => {
 		const workspace = createWorkspace([
 			"/project/config/env.ts",
 			"/project/env.ts",
 		]);
 		const scanner = createScanner();
-		// Intentionally no readArkenvConfig — port no longer exposes it.
-		expect(
-			"readArkenvConfig" in scanner ? scanner.readArkenvConfig : undefined,
-		).toBeUndefined();
 
 		const resolved = await resolveSchemaPath(cwd, workspace, scanner);
 
+		// Off-convention paths only win via --schema; leftover package.json
+		// pointers are no longer consulted.
 		expect(resolved).toBe(path.resolve(cwd, "env.ts"));
 	});
 });

@@ -209,24 +209,4 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 			return { status: "unknown" };
 		}
 	}
-
-	/**
-	 * Finds the nearest package.json starting from the given directory.
-	 */
-	async findPackageJson(startDir = process.cwd()): Promise<string | null> {
-		let current = path.resolve(startDir);
-		while (true) {
-			const candidate = path.join(current, "package.json");
-			try {
-				await fsp.access(candidate);
-				return candidate;
-			} catch {
-				const parent = path.dirname(current);
-				if (parent === current) {
-					return null;
-				}
-				current = parent;
-			}
-		}
-	}
 }

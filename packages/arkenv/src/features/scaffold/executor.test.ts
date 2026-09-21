@@ -127,15 +127,16 @@ describe("Executor", () => {
 			JSON.stringify({ name: "app" }),
 		);
 
-		await executor.execute(defaultPlan);
+		// Use npm so configurePnpmBuilds does not rewrite package.json.
+		await executor.execute({
+			...defaultPlan,
+			install: { packageManager: "npm", dependencies: [] },
+		});
 
 		const packageJsonWrites = vi
 			.mocked(mockWorkspace.writeFile)
 			.mock.calls.filter(([filePath]) => filePath === packageJsonPath);
-		for (const [, content] of packageJsonWrites) {
-			const pkg = JSON.parse(String(content));
-			expect(pkg).not.toHaveProperty("arkenv");
-		}
+		expect(packageJsonWrites).toHaveLength(0);
 	});
 
 	it("skips files with create action if they already exist", async () => {

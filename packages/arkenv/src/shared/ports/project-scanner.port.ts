@@ -103,8 +103,4 @@ export type ProjectScannerPort = {
 	checkGitStatus(
 		cwd?: string,
 	): Promise<{ status: "clean" | "dirty" | "not_a_repo" | "unknown" }>;
-	/**
-	 * Finds the nearest package.json starting from the given directory.
-	 */
-	findPackageJson(startDir?: string): Promise<string | null>;
 };
