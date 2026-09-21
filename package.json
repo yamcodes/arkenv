@@ -61,5 +61,8 @@
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	},
+	"engines": {
+		"node": "24.21.0"
+	},
 	"packageManager": "pnpm@11.9.0"
 }

@@ -34,8 +34,6 @@ jobs:
 
       - name: Set up Nub
         uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
 
       - name: Install dependencies
         run: pnpm install
@@ -65,8 +63,6 @@ jobs:
           ref: ${{ github.head_ref }}
 
       - uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.0

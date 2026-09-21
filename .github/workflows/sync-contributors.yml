@@ -26,8 +26,6 @@ jobs:
 
       - name: Set up Nub
         uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
 
       - name: Install dependencies
         run: nub install
@@ -64,8 +62,6 @@ jobs:
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
 
       - uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
 
       - run: nub install
       - run: nub run --no-check contributors:generate
