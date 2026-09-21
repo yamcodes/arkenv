@@ -54,7 +54,7 @@ export default async function BlogPostPage(props: {
 					</Link>
 					<header className="blog-page__header">
 						<h1 className="blog-page__title">
-							{page.data.title}
+							{page.data.title}{" "}
 							{page.data.draft ? (
 								<span className="blog-page__draft-badge">Draft</span>
 							) : null}
