@@ -252,8 +252,10 @@ describe("CLI parser", () => {
 			expect(cli.validationError).toBe("Unknown argument: -H");
 		});
 
-		it("treats bundled -H as an unknown argument", () => {
-			const cli = new CLI(["node", "arkenv", "init", "-yqH", "vercel"]);
+		it("treats -H inside a boolean bundle as an unknown argument", () => {
+			const cli = new CLI(["node", "arkenv", "init", "-yH"]);
+			expect(cli.args).toEqual(["init", "-y", "-H"]);
+			expect(cli.isYes).toBe(true);
 			expect(cli.validationError).toBe("Unknown argument: -H");
 		});
 	});

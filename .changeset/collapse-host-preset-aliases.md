@@ -2,21 +2,16 @@
 "arkenv": major
 ---
 
-#### Remove `--host-preset` / `-H` aliases from `init`
+#### Remove the `--host-preset` / `-H` init aliases
 
-`arkenv init` now accepts only `--preset` / `-P` for the hosting-provider
-preset. The older `--host-preset` and `-H` spellings are rejected as unknown
-arguments.
+`arkenv init` now accepts only `--preset` / `-P` for hosting presets. The older
+`--host-preset` and `-H` forms are rejected as unknown arguments.
 
-```bash
-npx arkenv init --preset vercel
-npx arkenv init -P none
-```
-
-**BREAKING CHANGE**: Rename `--host-preset` / `-H` to `--preset` / `-P` in
-scripts and docs.
+**BREAKING CHANGE**: Rename the flag in scripts and docs:
 
 ```diff
-- npx arkenv init -H vercel
-+ npx arkenv init --preset vercel
+- arkenv init --host-preset vercel
+- arkenv init -H vercel
++ arkenv init --preset vercel
++ arkenv init -P vercel
 ```
