@@ -18,6 +18,19 @@ export function nestedBagMigrationErrorMessage(): string {
 }
 
 /**
+ * Build the migration error message for the removed `expose` / `shared` aliases.
+ *
+ * @returns The expose-alias migration error message
+ */
+export function removedExposeAliasErrorMessage(): string {
+	return (
+		"The expose and shared option aliases have been removed. " +
+		"Use exposeToClient instead. " +
+		`See ${NESTED_BAG_MIGRATION_URL}`
+	);
+}
+
+/**
  * Report whether a value is a plain object (not an array or null).
  *
  * @param value The value to test
@@ -38,16 +51,33 @@ function isStandardSchemaLike(value: unknown): boolean {
 }
 
 /**
- * Report whether a value looks like a nested schema bag (not a single validator).
+ * Report whether a value looks like a nested schema bag (not a flat env validator).
  *
  * Flat ArkType keys are strings; flat Standard Schema keys expose `~standard`.
- * Nested bags are plain objects of validators without that marker.
+ * Nested bags are plain objects of validators without that marker, or an ArkType
+ * `type({…})` instance (a function) wrapping a whole bucket.
  *
  * @param value The value to test
- * @returns `true` when the value is a nested bag object
+ * @returns `true` when the value is a nested bag object or ArkType type instance
  */
 function isSchemaBag(value: unknown): boolean {
+	if (typeof value === "function") {
+		return true;
+	}
 	return isPlainObject(value) && !isStandardSchemaLike(value);
+}
+
+/**
+ * Report whether options still use the removed `expose` / `shared` aliases.
+ *
+ * @param options The second `arkenv()` argument
+ * @returns `true` when a removed alias key is present
+ */
+export function hasRemovedExposeAlias(options: unknown): boolean {
+	if (!isPlainObject(options)) {
+		return false;
+	}
+	return "expose" in options || "shared" in options;
 }
 
 /**
@@ -92,11 +122,11 @@ export function isNestedBagCall(
 }
 
 /**
- * Throw when a call still uses the removed nested bag API.
+ * Throw when a call still uses the removed nested bag API or expose aliases.
  *
  * @param schemaOrOptions The first `arkenv()` argument
  * @param optionsOrIsServer The second `arkenv()` argument
- * @throws An error with migration instructions when the nested bag is detected
+ * @throws An error with migration instructions when a removed API is detected
  */
 export function assertNotNestedBag(
 	schemaOrOptions: unknown,
@@ -105,19 +135,39 @@ export function assertNotNestedBag(
 	if (isNestedBagCall(schemaOrOptions, optionsOrIsServer)) {
 		throw new Error(nestedBagMigrationErrorMessage());
 	}
+	if (hasRemovedExposeAlias(optionsOrIsServer)) {
+		throw new Error(removedExposeAliasErrorMessage());
+	}
 }
 
 /**
- * Detect nested bag blocks in schema source (`server: { … }`, etc.).
+ * Detect nested bag blocks in schema source (`server: { … }`, `client: type(…)`, etc.).
  *
  * Distinguishes flat env keys named `server` / `client` / `shared` (string or
- * validator expressions) from nested object bags.
+ * Standard Schema expressions) from nested object bags and `type(` / `z.object(`
+ * wrappers. Not comment/string-aware — a literal `server: {` inside a comment
+ * can false-positive.
  *
  * @param schemaArg The first-argument source text of an `arkenv()` / `createEnv()` call
  * @returns `true` when a nested bag block is present
  */
 export function hasNestedBagSource(schemaArg: string): boolean {
-	return /\b(?:server|client|shared)\s*:\s*\{/.test(schemaArg);
+	return /\b(?:server|client|shared)\s*:\s*(?:\{|[A-Za-z_$][\w$]*\s*\()/.test(
+		schemaArg,
+	);
+}
+
+/**
+ * Detect removed `expose` / `shared` option aliases in options source text.
+ *
+ * @param optionsArg The second-argument source text of an `arkenv()` call
+ * @returns `true` when a removed alias is present
+ */
+export function hasRemovedExposeAliasSource(optionsArg: string): boolean {
+	return (
+		/\bexpose(?!ToClient)\s*:\s*\[/.test(optionsArg) ||
+		/\bshared\s*:\s*\[/.test(optionsArg)
+	);
 }
 
 /**
@@ -129,5 +179,17 @@ export function hasNestedBagSource(schemaArg: string): boolean {
 export function assertNotNestedBagSource(schemaArg: string): void {
 	if (hasNestedBagSource(schemaArg)) {
 		throw new Error(nestedBagMigrationErrorMessage());
+	}
+}
+
+/**
+ * Throw when options source still uses the removed `expose` / `shared` aliases.
+ *
+ * @param optionsArg The second-argument source text of an `arkenv()` call
+ * @throws An error with migration guidance when a removed alias is detected
+ */
+export function assertNotRemovedExposeAliasSource(optionsArg: string): void {
+	if (hasRemovedExposeAliasSource(optionsArg)) {
+		throw new Error(removedExposeAliasErrorMessage());
 	}
 }

@@ -1,5 +1,8 @@
 import { parseBlockKeys } from "@arkenv/build";
-import { assertNotNestedBagSource } from "@repo/utils/nested-bag-migration-error";
+import {
+	assertNotNestedBagSource,
+	assertNotRemovedExposeAliasSource,
+} from "@repo/utils/nested-bag-migration-error";
 
 function parseExposeKeys(optionsArg: string): string[] {
 	const exposeMatch = optionsArg.match(/exposeToClient\s*:\s*\[([\s\S]*?)\]/);
@@ -140,6 +143,9 @@ export function extractKeys(content: string): {
 	}
 
 	assertNotNestedBagSource(args.schemaArg);
+	if (args.optionsArg) {
+		assertNotRemovedExposeAliasSource(args.optionsArg);
+	}
 
 	const trimmedSchema = args.schemaArg
 		.replace(/^\{/, "")

@@ -7,6 +7,7 @@ import {
 } from "@repo/log";
 import {
 	assertNotNestedBagSource,
+	assertNotRemovedExposeAliasSource,
 	hasNestedBagSource,
 	nestedBagMigrationErrorMessage,
 } from "@repo/utils/nested-bag-migration-error";
@@ -170,6 +171,9 @@ export function extractKeys(
 	}
 
 	assertNotNestedBagSource(args.schemaArg);
+	if (args.optionsArg) {
+		assertNotRemovedExposeAliasSource(args.optionsArg);
+	}
 
 	const trimmedSchema = args.schemaArg
 		.replace(/^\{/, "")

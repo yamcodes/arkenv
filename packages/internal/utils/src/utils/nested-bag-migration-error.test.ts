@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
 	assertNotNestedBag,
+	assertNotRemovedExposeAliasSource,
 	hasNestedBagSource,
+	hasRemovedExposeAlias,
+	hasRemovedExposeAliasSource,
 	isNestedBagCall,
 	NESTED_BAG_MIGRATION_URL,
 	nestedBagMigrationErrorMessage,
+	removedExposeAliasErrorMessage,
 } from "./nested-bag-migration-error";
 
 describe("nestedBagMigrationErrorMessage", () => {
@@ -31,6 +35,11 @@ describe("isNestedBagCall", () => {
 		expect(isNestedBagCall({ runtimeEnv: {} })).toBe(true);
 	});
 
+	it("detects ArkType type() wrappers as nested buckets", () => {
+		const typeLike = Object.assign(() => ({}), { infer: {} });
+		expect(isNestedBagCall({ server: typeLike })).toBe(true);
+	});
+
 	it("does not treat flat env keys named server as nested", () => {
 		expect(isNestedBagCall({ server: "string" })).toBe(false);
 		expect(
@@ -54,6 +63,15 @@ describe("isNestedBagCall", () => {
 	});
 });
 
+describe("hasRemovedExposeAlias", () => {
+	it("detects expose and shared option aliases", () => {
+		expect(hasRemovedExposeAlias({ expose: ["A"] })).toBe(true);
+		expect(hasRemovedExposeAlias({ shared: ["A"] })).toBe(true);
+		expect(hasRemovedExposeAlias({ exposeToClient: ["A"] })).toBe(false);
+		expect(hasRemovedExposeAlias(undefined)).toBe(false);
+	});
+});
+
 describe("assertNotNestedBag", () => {
 	it("throws the migration error for nested bags", () => {
 		expect(() =>
@@ -62,6 +80,15 @@ describe("assertNotNestedBag", () => {
 				runtimeEnv: {},
 			}),
 		).toThrow(nestedBagMigrationErrorMessage());
+	});
+
+	it("throws for removed expose / shared aliases", () => {
+		expect(() =>
+			assertNotNestedBag(
+				{ DATABASE_URL: "string" },
+				{ expose: ["DATABASE_URL"] },
+			),
+		).toThrow(removedExposeAliasErrorMessage());
 	});
 
 	it("does not throw for flat calls", () => {
@@ -75,8 +102,27 @@ describe("assertNotNestedBag", () => {
 });
 
 describe("hasNestedBagSource", () => {
-	it("detects nested object bags in source text", () => {
+	it("detects nested object bags and type() wrappers in source text", () => {
 		expect(hasNestedBagSource('server: { DATABASE_URL: "string" }')).toBe(true);
+		expect(
+			hasNestedBagSource('client: type({ NEXT_PUBLIC_X: "string" })'),
+		).toBe(true);
 		expect(hasNestedBagSource('server: "string"')).toBe(false);
+	});
+});
+
+describe("hasRemovedExposeAliasSource", () => {
+	it("detects expose / shared aliases without matching exposeToClient", () => {
+		expect(hasRemovedExposeAliasSource('expose: ["A"]')).toBe(true);
+		expect(hasRemovedExposeAliasSource('shared: ["A"]')).toBe(true);
+		expect(hasRemovedExposeAliasSource('exposeToClient: ["A"]')).toBe(false);
+	});
+});
+
+describe("assertNotRemovedExposeAliasSource", () => {
+	it("throws for removed aliases in options source", () => {
+		expect(() =>
+			assertNotRemovedExposeAliasSource('expose: ["CUSTOM"]'),
+		).toThrow(removedExposeAliasErrorMessage());
 	});
 });

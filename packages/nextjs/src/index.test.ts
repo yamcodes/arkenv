@@ -211,6 +211,27 @@ describe("arkenv (Client / SSR Entrypoint)", () => {
 			expect((env as any).CUSTOM_VAR).toBe("custom_val");
 		});
 
+		it("should reject removed expose / shared option aliases", () => {
+			expect(() =>
+				clientArkenv(
+					{
+						DATABASE_URL: "string",
+						NEXT_PUBLIC_API_URL: "string",
+						NODE_ENV: "string",
+						CUSTOM_VAR: "string",
+					},
+					{
+						expose: ["CUSTOM_VAR"],
+						runtimeEnv: {
+							NEXT_PUBLIC_API_URL: "https://api.example.com",
+							NODE_ENV: "test",
+							CUSTOM_VAR: "custom_val",
+						},
+					} as never,
+				),
+			).toThrow(/expose and shared option aliases/);
+		});
+
 		it("should not treat a flat env key named server as the nested bag API", () => {
 			const original = process.env.server;
 			process.env.server = "ok";

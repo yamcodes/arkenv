@@ -547,7 +547,7 @@ describe("Flat Mode config key extraction", () => {
 		expect(sharedKeys).toEqual(["NODE_ENV", "CUSTOM_EXPOSE"]);
 	});
 
-	it("should not treat removed expose / shared aliases as exposeToClient", () => {
+	it("should reject removed expose / shared option aliases", () => {
 		const source = `
 			import arkenv from "./env.gen";
 			export const env = arkenv({
@@ -559,7 +559,8 @@ describe("Flat Mode config key extraction", () => {
 			});
 		`;
 
-		const { sharedKeys } = extractKeys(source);
-		expect(sharedKeys).toEqual(["NODE_ENV"]);
+		expect(() => extractKeys(source)).toThrow(
+			/expose and shared option aliases/,
+		);
 	});
 });

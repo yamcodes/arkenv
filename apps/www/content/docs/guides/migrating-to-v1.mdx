@@ -282,9 +282,9 @@ ignores it either way. See [check](/docs/reference/check).
 ## Removed in v1
 
 These APIs no longer work on [`@arkenv/nextjs`](/docs/reference/nextjs)
-or [`@arkenv/nuxt`](/docs/reference/nuxt). Call sites throw a migration
-error at runtime (and static key extraction rejects nested schema
-source).
+or [`@arkenv/nuxt`](/docs/reference/nuxt). Call sites that still use them
+throw a migration error at runtime, and static key extraction rejects
+the same shapes in schema source.
 
 - Nested `arkenv({ server, client, shared, runtimeEnv })`. Use flat
   `arkenv(schema, { exposeToClient, runtimeEnv })` instead.
