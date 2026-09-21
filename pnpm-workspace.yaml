@@ -12,7 +12,7 @@ publishBranch: dev
 # (pnpm 11 ignores non-auth settings in .npmrc — this must live here.)
 verifyDepsBeforeRun: false
 # pnpm 11.9 can fail nested `pnpm run` when the default .pnpmfile.mjs is
-# missing (fixed in 11.21). Keep the no-op file at the repo root until we bump.
+# missing (pnpm/pnpm#11701, fixed in 11.21). Keep the no-op file until #1944.
 allowBuilds:
   '@biomejs/biome': true
   '@nubjs/nub': true
