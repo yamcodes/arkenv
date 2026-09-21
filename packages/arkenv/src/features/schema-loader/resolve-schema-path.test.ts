@@ -9,13 +9,13 @@ describe("resolveSchemaPath", () => {
 	function createWorkspace(existing: string[]): WorkspacePort {
 		const set = new Set(existing.map((p) => path.resolve(p)));
 		return {
-			exists: vi.fn(async (filePath: string) => set.has(path.resolve(filePath))),
+			exists: vi.fn(async (filePath: string) =>
+				set.has(path.resolve(filePath)),
+			),
 		} as unknown as WorkspacePort;
 	}
 
-	function createScanner(
-		suggested: string | null = null,
-	): ProjectScannerPort {
+	function createScanner(suggested: string | null = null): ProjectScannerPort {
 		return {
 			suggestDefaultEnvPath: vi.fn().mockResolvedValue(suggested),
 		} as unknown as ProjectScannerPort;
