@@ -44,4 +44,28 @@
 	.fd-twoslash-popover .fd-scroll-container {
 		max-height: 160px;
 	}
+
+	.fd-twoslash-popover .twoslash-popup-code {
+		display: block;
+		white-space: pre-wrap;
+		overflow-wrap: normal;
+		font-family: var(--font-mono);
+	}
+
+	.twoslash-popup-docs code {
+		display: inline;
+		padding: 0.1em 0.35em;
+		border-radius: 0.25rem;
+		background: var(--color-paper-3, color-mix(in oklch, var(--color-fd-muted) 60%, transparent));
+		font-family: var(--font-mono);
+		font-size: 0.875em;
+	}
+
+	.twoslash-popup-docs p {
+		margin: 0;
+	}
+
+	.twoslash-popup-docs p + p {
+		margin-top: 0.5rem;
+	}
 }
