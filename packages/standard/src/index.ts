@@ -24,19 +24,8 @@ export {
 
 /**
  * Configuration options for `arkenv` from `@arkenv/standard`.
- *
- * `safe` is reserved for call-site compat — pass `false` or omit. Use
- * `arkenv` from `@arkenv/standard/safe` for a result object.
  */
-export type StandardEnvConfig = Omit<ParseStandardConfig, "safe"> & {
-	/**
-	 * Reserved for call-site compat. Pass `false` or omit.
-	 * Use `arkenv` from `@arkenv/standard/safe` instead of `{ safe: true }`.
-	 *
-	 * @default false
-	 */
-	safe?: false;
-};
+export type StandardEnvConfig = ParseStandardConfig;
 
 type StandardEnvOutput<T extends Record<string, StandardSchemaV1>> = {
 	[K in keyof T]: StandardSchemaV1.InferOutput<T[K]>;

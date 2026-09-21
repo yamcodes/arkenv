@@ -90,14 +90,6 @@ export type ArkEnvConfig = {
 	 * @default false
 	 */
 	emptyAsUndefined?: boolean;
-
-	/**
-	 * Reserved for call-site compat. Pass `false` or omit.
-	 * Use `arkenv` from `@arkenv/core/safe` instead of `{ safe: true }`.
-	 *
-	 * @default false
-	 */
-	safe?: false;
 };
 
 export type { SafeArkEnvResult };

@@ -1,5 +1,16 @@
 import { describe, expectTypeOf, it } from "vitest";
-import { arkenv, type } from ".";
+import { arkenv, type, type ArkEnvConfig } from ".";
+
+describe("Type Regression (Issue #1912)", () => {
+	it("rejects safe on ArkEnvConfig", () => {
+		// @ts-expect-error safe is not a config option — use @arkenv/core/safe
+		const rejectFalse: ArkEnvConfig = { safe: false };
+		// @ts-expect-error safe is not a config option — use @arkenv/core/safe
+		const rejectTrue: ArkEnvConfig = { safe: true };
+		void rejectFalse;
+		void rejectTrue;
+	});
+});
 
 describe("Type Regression (Issue #796)", () => {
 	it("inline and explicit schemas infer the same type", () => {
