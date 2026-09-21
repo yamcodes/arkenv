@@ -54,6 +54,30 @@ describe("CheckUseCase", () => {
 		expect(memoryReporter.logs.some((l) => l.type === "error")).toBe(true);
 	});
 
+	it("returns exit code 2 when only leftover env/server.ts exists", async () => {
+		await fs.mkdir(path.join(tempDir, "env"), { recursive: true });
+		await fs.writeFile(
+			path.join(tempDir, "env/server.ts"),
+			`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ PORT: "number" });\n`,
+		);
+
+		(logger as any).options.isJson = true;
+		const exitCode = await useCase.execute({ cwd: tempDir });
+		expect(exitCode).toBe(2);
+
+		const reports = memoryReporter.logs.filter(
+			(l) => l.type === "reportErrored",
+		);
+		expect(reports).toHaveLength(1);
+		expect(reports[0].data).toMatchObject({
+			ok: false,
+			commandId: "check",
+			error: {
+				code: "CLI.SCHEMA_NOT_FOUND",
+			},
+		});
+	});
+
 	it("emits CLI.SCHEMA_NOT_FOUND in JSON mode when schema file is missing", async () => {
 		(logger as any).options.isJson = true;
 		const exitCode = await useCase.execute({ cwd: tempDir });

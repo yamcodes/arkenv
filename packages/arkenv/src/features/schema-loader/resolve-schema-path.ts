@@ -33,8 +33,6 @@ export async function resolveSchemaPath(
 		path.resolve(cwd, "src/env.js"),
 		path.resolve(cwd, "env.mjs"),
 		path.resolve(cwd, "src/env.mjs"),
-		path.resolve(cwd, "env/server.ts"),
-		path.resolve(cwd, "src/env/server.ts"),
 	];
 
 	const suggested = await scanner.suggestDefaultEnvPath(cwd);
