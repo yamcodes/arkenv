@@ -2,10 +2,7 @@ import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 
-export type BlogDateGitRunner = (
-	args: string[],
-	cwd: string,
-) => string | null;
+export type BlogDateGitRunner = (args: string[], cwd: string) => string | null;
 
 export type BlogDateOptions = {
 	cwd?: string;
@@ -81,9 +78,7 @@ export function getBlogFileCommitDate(
 	);
 	const date =
 		created ??
-		parseGitDate(
-			execGit(["log", "-1", "--format=%aI", "--", relative], cwd),
-		);
+		parseGitDate(execGit(["log", "-1", "--format=%aI", "--", relative], cwd));
 
 	cache.set(absolute, date);
 	return date;
