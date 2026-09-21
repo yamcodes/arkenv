@@ -7,9 +7,9 @@ and leftover v0 ambient `.d.ts` augmentations.
 
 ## Install the plugin
 
-The monorepo lists this package in the root `marketplace.json`, so the plugins
-CLI installs `packages/agent-plugin` instead of treating the repo root's
-`skills/` tree as a plugin:
+The monorepo lists this package in `.claude-plugin/marketplace.json`, so the
+plugins CLI installs `packages/agent-plugin` instead of treating the repo
+root's `skills/` tree as a plugin:
 
 ```bash
 npx plugins add yamcodes/arkenv
