@@ -12,6 +12,8 @@ inputs:
 runs:
   using: composite
   steps:
+    # nubjs/setup-nub#12: node-version fronts PATH only; nub run still
+    # follows .node-version. Rewrite the pin for this job (not committed).
     - name: Override Node pin for this job
       if: ${{ inputs.node-version != '' }}
       shell: bash
