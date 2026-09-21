@@ -1,5 +1,5 @@
+import { nestedBagMigrationErrorMessage } from "@repo/utils/nested-bag-migration-error";
 import { describe, expect, it } from "vitest";
-import { REMOVED_NESTED_BAG_MESSAGE } from "./removed-nested";
 import { parseSchemaShape } from "./schema-shape";
 
 describe("schema-shape helper", () => {
@@ -65,7 +65,7 @@ describe("schema-shape helper", () => {
 					} as never,
 					undefined,
 				),
-			).toThrow(REMOVED_NESTED_BAG_MESSAGE);
+			).toThrow(nestedBagMigrationErrorMessage());
 		});
 
 		it("does not treat a flat env key named server as nested", () => {

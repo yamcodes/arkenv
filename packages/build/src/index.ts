@@ -20,11 +20,6 @@ export {
 	loadValidatedEnv,
 } from "./load-validated-env";
 export {
-	assertNotRemovedNestedBagSource,
-	hasRemovedNestedBagSource,
-	REMOVED_NESTED_BAG_MESSAGE,
-} from "./removed-nested";
-export {
 	assertTransformModeCall,
 	isTransformModeCall,
 	SCHEMA_DEFINE_REMOVED,

@@ -5,12 +5,12 @@ import {
 	logErrorWithCauseVia,
 	logWatcherErrorWithCause,
 } from "@repo/log";
-import { watch as chokidarWatch, type FSWatcher } from "chokidar";
 import {
-	assertNotRemovedNestedBagSource,
-	hasRemovedNestedBagSource,
-	REMOVED_NESTED_BAG_MESSAGE,
-} from "./removed-nested";
+	assertNotNestedBagSource,
+	hasNestedBagSource,
+	nestedBagMigrationErrorMessage,
+} from "@repo/utils/nested-bag-migration-error";
+import { watch as chokidarWatch, type FSWatcher } from "chokidar";
 
 export {
 	DEFAULT_SCHEMA_LOCATIONS,
@@ -159,17 +159,17 @@ export function extractKeys(
 	const args = extractCallArguments(content);
 	if (!args) {
 		if (
-			hasRemovedNestedBagSource(content) ||
+			hasNestedBagSource(content) ||
 			extractBlock(content, "server") ||
 			extractBlock(content, "client") ||
 			extractBlock(content, "shared")
 		) {
-			throw new Error(REMOVED_NESTED_BAG_MESSAGE);
+			throw new Error(nestedBagMigrationErrorMessage());
 		}
 		return { serverKeys, clientKeys, sharedKeys };
 	}
 
-	assertNotRemovedNestedBagSource(args.schemaArg);
+	assertNotNestedBagSource(args.schemaArg);
 
 	const trimmedSchema = args.schemaArg
 		.replace(/^\{/, "")

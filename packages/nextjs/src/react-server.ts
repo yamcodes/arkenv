@@ -3,9 +3,9 @@ import { arkenv as coreArkenv } from "@arkenv/core";
 import { getSchemaKeys } from "@arkenv/core/issues";
 import type { $ } from "@repo/scope";
 import type { SchemaShape } from "@repo/types";
+import { assertNotNestedBag } from "@repo/utils/nested-bag-migration-error";
 import type { type as at, distill } from "arktype";
 import { arkenvInternal } from "./arkenv-internal";
-import { assertNotRemovedNestedBag } from "./removed-nested";
 import type { MergeExtends } from "./types";
 
 /**
@@ -30,7 +30,7 @@ export function arkenv<
 ): Readonly<distill.Out<at.infer<TSchema, $>> & MergeExtends<TExtends>>;
 
 export function arkenv(schema: any, options?: any): any {
-	assertNotRemovedNestedBag(schema);
+	assertNotNestedBag(schema, options);
 
 	return arkenvInternal(
 		schema,

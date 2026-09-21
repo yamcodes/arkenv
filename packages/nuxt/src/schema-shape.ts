@@ -1,5 +1,5 @@
 import type { Dict, SchemaShape } from "@repo/types";
-import { assertNotRemovedNestedBag } from "./removed-nested";
+import { assertNotNestedBag } from "@repo/utils/nested-bag-migration-error";
 
 /** Symbol key for the raw extended env values object on an env proxy. */
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
@@ -52,7 +52,7 @@ export function parseSchemaShape(
 	optionsOrIsServer?: FlatSchemaOptions | null | undefined,
 	context?: SchemaLayoutContext,
 ): ParsedSchemaShape {
-	assertNotRemovedNestedBag(schemaOrOptions);
+	assertNotNestedBag(schemaOrOptions, optionsOrIsServer);
 
 	const flatSchema = (schemaOrOptions || {}) as SchemaShape;
 	const options = (optionsOrIsServer || {}) as FlatSchemaOptions;

@@ -1,7 +1,7 @@
 import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/standard";
 import type { StandardSchemaV1 } from "@repo/types";
+import { assertNotNestedBag } from "@repo/utils/nested-bag-migration-error";
 import { arkenvInternal } from "@/arkenv-internal";
-import { assertNotRemovedNestedBag } from "@/removed-nested";
 import type { MergeExtends } from "../types";
 
 type ClientVisibleKeys<
@@ -44,7 +44,7 @@ export function arkenv<
 >;
 
 export function arkenv(schema: any, options?: any): any {
-	assertNotRemovedNestedBag(schema);
+	assertNotNestedBag(schema, options);
 
 	return arkenvInternal(
 		schema,

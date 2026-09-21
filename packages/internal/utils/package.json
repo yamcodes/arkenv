@@ -21,6 +21,11 @@
 			"types": "./dist/boundary-access-error.d.ts",
 			"import": "./dist/boundary-access-error.js",
 			"default": "./dist/boundary-access-error.js"
+		},
+		"./nested-bag-migration-error": {
+			"types": "./dist/nested-bag-migration-error.d.ts",
+			"import": "./dist/nested-bag-migration-error.js",
+			"default": "./dist/nested-bag-migration-error.js"
 		}
 	},
 	"scripts": {

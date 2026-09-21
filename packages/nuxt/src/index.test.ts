@@ -1,4 +1,5 @@
 import { ArkEnvError } from "@arkenv/core";
+import { nestedBagMigrationErrorMessage } from "@repo/utils/nested-bag-migration-error";
 import { afterEach, describe, expect, it } from "vitest";
 import { resetBootGateForTests } from "./boot-gate";
 import {
@@ -6,7 +7,6 @@ import {
 	setBootGateResult,
 } from "./boot-gate-state";
 import { arkenv } from "./index";
-import { REMOVED_NESTED_BAG_MESSAGE } from "./removed-nested";
 
 afterEach(() => {
 	resetBootGateForTests();
@@ -186,6 +186,6 @@ describe("arkenv (Nuxt runtime)", () => {
 				server: { DATABASE_URL: "string" },
 				client: { NUXT_PUBLIC_API_URL: "string" },
 			} as never),
-		).toThrow(REMOVED_NESTED_BAG_MESSAGE);
+		).toThrow(nestedBagMigrationErrorMessage());
 	});
 });

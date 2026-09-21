@@ -1,5 +1,5 @@
+import { assertNotNestedBag } from "@repo/utils/nested-bag-migration-error";
 import { type ArkenvInternalHooks, arkenvInternal } from "./arkenv-internal";
-import { assertNotRemovedNestedBag } from "./removed-nested";
 
 /**
  * Dispatch a flat-layout thin `arkenv()` call into {@link arkenvInternal}.
@@ -20,7 +20,7 @@ export function dispatchFlatThinArkenv(
 		ensureBootGate?: () => void;
 	},
 ): unknown {
-	assertNotRemovedNestedBag(schema);
+	assertNotNestedBag(schema, options);
 
 	const isServer = typeof window === "undefined";
 	const hooks: ArkenvInternalHooks | undefined =

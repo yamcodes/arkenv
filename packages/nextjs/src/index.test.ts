@@ -1,8 +1,8 @@
 import { ArkEnvError } from "@arkenv/core";
+import { nestedBagMigrationErrorMessage } from "@repo/utils/nested-bag-migration-error";
 import { describe, expect, it } from "vitest";
 import { arkenv as clientArkenv } from "./index";
 import { arkenv as serverArkenv } from "./react-server";
-import { REMOVED_NESTED_BAG_MESSAGE } from "./removed-nested";
 
 function expectBoundaryAccessError(run: () => unknown, key: string): void {
 	try {
@@ -89,7 +89,7 @@ describe("arkenv (RSC / Server Entrypoint)", () => {
 				server: { DATABASE_URL: "string" },
 				runtimeEnv: { DATABASE_URL: "postgres://localhost" },
 			} as never),
-		).toThrow(REMOVED_NESTED_BAG_MESSAGE);
+		).toThrow(nestedBagMigrationErrorMessage());
 	});
 });
 
@@ -154,7 +154,7 @@ describe("arkenv (Client / SSR Entrypoint)", () => {
 				client: { NEXT_PUBLIC_API_URL: "string" },
 				runtimeEnv: { NEXT_PUBLIC_API_URL: "https://api.example.com" },
 			} as never),
-		).toThrow(REMOVED_NESTED_BAG_MESSAGE);
+		).toThrow(nestedBagMigrationErrorMessage());
 	});
 
 	describe("Flat Mode", () => {
