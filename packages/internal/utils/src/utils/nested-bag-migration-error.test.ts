@@ -102,12 +102,19 @@ describe("assertNotNestedBag", () => {
 });
 
 describe("hasNestedBagSource", () => {
-	it("detects nested object bags and type() wrappers in source text", () => {
+	it("detects nested object bags and object-wrapper calls in source text", () => {
 		expect(hasNestedBagSource('server: { DATABASE_URL: "string" }')).toBe(true);
 		expect(
 			hasNestedBagSource('client: type({ NEXT_PUBLIC_X: "string" })'),
 		).toBe(true);
+		expect(
+			hasNestedBagSource('client: at.type({ NEXT_PUBLIC_X: "string" })'),
+		).toBe(true);
+		expect(
+			hasNestedBagSource("server: z.object({ DATABASE_URL: z.string() })"),
+		).toBe(true);
 		expect(hasNestedBagSource('server: "string"')).toBe(false);
+		expect(hasNestedBagSource("server: z.string()")).toBe(false);
 	});
 });
 

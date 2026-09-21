@@ -141,18 +141,20 @@ export function assertNotNestedBag(
 }
 
 /**
- * Detect nested bag blocks in schema source (`server: { … }`, `client: type(…)`, etc.).
+ * Detect nested bag blocks in schema source (`server: { … }`, `client: at.type({…})`, etc.).
  *
  * Distinguishes flat env keys named `server` / `client` / `shared` (string or
- * Standard Schema expressions) from nested object bags and `type(` / `z.object(`
- * wrappers. Not comment/string-aware — a literal `server: {` inside a comment
- * can false-positive.
+ * single-validator calls like `z.string()`) from nested object bags and
+ * object-wrapper calls (`type({…})`, `at.type({…})`, `z.object({…})`). The
+ * wrapper form requires `(` followed by `{` so flat `server: z.string()` is
+ * not matched. Not comment/string-aware — a literal `server: {` inside a
+ * comment can false-positive.
  *
  * @param schemaArg The first-argument source text of an `arkenv()` / `createEnv()` call
  * @returns `true` when a nested bag block is present
  */
 export function hasNestedBagSource(schemaArg: string): boolean {
-	return /\b(?:server|client|shared)\s*:\s*(?:\{|[A-Za-z_$][\w$]*\s*\()/.test(
+	return /\b(?:server|client|shared)\s*:\s*(?:\{|[A-Za-z_$][\w$.]*\s*\(\s*\{)/.test(
 		schemaArg,
 	);
 }
