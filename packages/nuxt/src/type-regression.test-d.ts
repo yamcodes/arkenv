@@ -92,18 +92,11 @@ describe("@arkenv/nuxt type regression", () => {
 
 	it("rejects the removed nested bag at the type level", () => {
 		arkenv(
-			// @ts-expect-error nested bag was removed — use flat arkenv(schema, options)
 			{
-				server: {
-					DATABASE_URL: "string",
-				},
-				client: {
-					NUXT_PUBLIC_API_URL: "string",
-				},
-				runtimeEnv: {
-					NUXT_PUBLIC_API_URL: "https://api.example.com",
-				},
+				NUXT_PUBLIC_API_URL: "string",
 			},
+			// @ts-expect-error boolean second arg (legacy nested isServer) was removed
+			true,
 		);
 	});
 

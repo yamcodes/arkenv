@@ -9,7 +9,9 @@ import {
 describe("nestedBagMigrationErrorMessage", () => {
 	it("points callers at the flat API and migration guide", () => {
 		const message = nestedBagMigrationErrorMessage();
-		expect(message).toContain("nested arkenv({ server, client, shared, runtimeEnv })");
+		expect(message).toContain(
+			"nested arkenv({ server, client, shared, runtimeEnv })",
+		);
 		expect(message).toContain("exposeToClient");
 		expect(message).toContain(NESTED_BAG_MIGRATION_URL);
 	});
@@ -23,9 +25,7 @@ describe("isNestedBagCall", () => {
 
 	it("detects nested bucket keys on the first argument", () => {
 		expect(isNestedBagCall({ server: { A: "string" } })).toBe(true);
-		expect(isNestedBagCall({ client: { NEXT_PUBLIC_B: "string" } })).toBe(
-			true,
-		);
+		expect(isNestedBagCall({ client: { NEXT_PUBLIC_B: "string" } })).toBe(true);
 		expect(isNestedBagCall({ shared: { C: "string" } })).toBe(true);
 		expect(isNestedBagCall({ runtimeEnv: {} })).toBe(true);
 	});

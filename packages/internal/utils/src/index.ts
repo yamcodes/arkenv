@@ -28,12 +28,6 @@ export {
 	boundaryAccessErrorMessage,
 } from "./utils/boundary-access-error";
 export {
-	assertNotNestedBag,
-	isNestedBagCall,
-	NESTED_BAG_MIGRATION_URL,
-	nestedBagMigrationErrorMessage,
-} from "./utils/nested-bag-migration-error";
-export {
 	buildEnvIssue,
 	formatStandardIssueMessage,
 	getStandardMeta,
@@ -42,6 +36,12 @@ export {
 } from "./utils/errors";
 export { BUILD_PREFIX, formatBuildError } from "./utils/format-build-error";
 export { indent } from "./utils/indent";
+export {
+	assertNotNestedBag,
+	isNestedBagCall,
+	NESTED_BAG_MIGRATION_URL,
+	nestedBagMigrationErrorMessage,
+} from "./utils/nested-bag-migration-error";
 export { isDebugSecrets, safeStringify, shouldRedact } from "./utils/redact";
 export {
 	extractJsonSchema,

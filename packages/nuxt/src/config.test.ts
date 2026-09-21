@@ -25,7 +25,9 @@ describe("Nuxt config parser", () => {
 			});
 		`;
 
-		expect(() => extractKeys(content)).toThrow(nestedBagMigrationErrorMessage());
+		expect(() => extractKeys(content)).toThrow(
+			nestedBagMigrationErrorMessage(),
+		);
 	});
 
 	it("should extract keys in flat layout", () => {

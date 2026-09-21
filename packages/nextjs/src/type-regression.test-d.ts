@@ -99,20 +99,13 @@ describe("@arkenv/nextjs type regression", () => {
 	});
 
 	it("rejects the removed nested bag at the type level", () => {
-		arkenv(
-			// @ts-expect-error nested bag was removed — use flat arkenv(schema, options)
-			{
-				server: {
-					DATABASE_URL: "string",
-				},
-				client: {
-					NEXT_PUBLIC_API_URL: "string",
-				},
-				runtimeEnv: {
-					NEXT_PUBLIC_API_URL: "https://api.example.com",
-				},
+		arkenv({
+			NEXT_PUBLIC_API_URL: "string",
+			// @ts-expect-error nested bag / runtimeEnv-in-schema was removed — use flat options
+			runtimeEnv: {
+				NEXT_PUBLIC_API_URL: "https://api.example.com",
 			},
-		);
+		});
 	});
 
 	it("rejects removed expose / shared option aliases", () => {

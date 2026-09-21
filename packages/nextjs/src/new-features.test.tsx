@@ -140,6 +140,8 @@ describe("nested bag removal", () => {
 					NEXT_PUBLIC_VAL: "hello",
 				},
 			} as never);
-		}).toThrow(/nested arkenv\(\{ server, client, shared, runtimeEnv \}\) bag was removed/);
+		}).toThrow(
+			/nested arkenv\(\{ server, client, shared, runtimeEnv \}\) bag was removed/,
+		);
 	});
 });
