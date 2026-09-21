@@ -70,13 +70,19 @@ export default function BlogIndexPage() {
 												alt=""
 												width={20}
 												height={20}
+												sizes="20px"
 												className="blog-page__avatar blog-page__avatar--sm"
-												unoptimized
 											/>
 										) : null}
 										<span>{page.data.author}</span>
 										<span aria-hidden="true">·</span>
 										<span>{formatDate(page.data.date)}</span>
+										{page.data.draft ? (
+											<>
+												<span aria-hidden="true">·</span>
+												<span className="blog-page__draft-badge">Draft</span>
+											</>
+										) : null}
 									</span>
 									<span className="blog-page__item-title">
 										{page.data.title}

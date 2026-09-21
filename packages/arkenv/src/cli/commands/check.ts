@@ -91,7 +91,7 @@ export class CheckUseCase {
 		if (!schemaPath) {
 			const summary = requestedSchema
 				? `Schema file not found at "${path.resolve(cwd, requestedSchema)}".`
-				: "Could not locate your schema file. Add an 'arkenv' entry to package.json or specify --schema <path>.";
+				: "Could not locate your schema file. Place it at a convention path (env.ts, src/env.ts, …) or specify --schema <path>.";
 
 			const nextActions: NextAction[] = [
 				{
@@ -109,7 +109,7 @@ export class CheckUseCase {
 						code: PROTOCOL_ERROR_CODES.CLI_SCHEMA_NOT_FOUND,
 						severity: "error",
 						summary,
-						why: "The schema file could not be found in package.json or convention paths.",
+						why: "The schema file could not be found via --schema or convention paths.",
 						docsUrl: "https://arkenv.js.org/docs/reference/check",
 						nextActions,
 					},

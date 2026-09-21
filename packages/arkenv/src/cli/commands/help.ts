@@ -92,8 +92,7 @@ export class HelpUseCase {
 		const checkOptions: HelpItem[] = [
 			{
 				left: "--schema, -s <path>",
-				right:
-					"Path to schema file (overrides package.json or convention discovery)",
+				right: "Path to schema file (overrides convention discovery)",
 			},
 			{
 				left: "--env-file <file>",

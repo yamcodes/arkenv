@@ -39,8 +39,9 @@ export { isPublishedBlogPage } from "./blog-published";
 
 /**
  * Blog pages for listing/RSS/sitemap.
- * Drafts are included only in `next dev` via `isPublishedBlogPage`;
- * production listing, RSS, and sitemap always omit drafts.
+ * Drafts are included on local `next dev` and Vercel preview / branch
+ * deploys via `isPublishedBlogPage`; production listing, RSS, and
+ * sitemap always omit them.
  */
 export function getBlogPages() {
 	return blog.getPages().filter((page) => isPublishedBlogPage(page));

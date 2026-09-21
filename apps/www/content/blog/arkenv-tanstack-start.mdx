@@ -1,77 +1,151 @@
 ---
 title: Typesafe environment variables in TanStack Start with ArkEnv
-description: How ArkEnv secures environment variables across TanStack Start server functions and client routes with zero client bundle bloat.
+description: Validate env vars at boot, read secrets inside createServerFn, and keep server keys out of the TanStack Start client bundle.
 author: Yam Borodetsky
 authorGithub: yamcodes
 date: 2026-09-05
 draft: true
 ---
 
-TanStack Start blurs the line between client and server code with `createServerFn`, but environment variables still demand strict boundaries. ArkEnv brings typesafe validation and automatic leak prevention to TanStack Start without shipping validation runtime bytes to the browser.
+This guide walks you through wiring ArkEnv into a TanStack Start app.
+You'll validate environment variables before the server is ready, read
+server secrets inside `createServerFn`, and keep those secrets out of
+the browser bundle.
 
-## The isomorphic dilemma in TanStack Start
+The complete working example lives in
+[`examples/with-tanstack-start`](https://github.com/yamcodes/arkenv/tree/v1/examples/with-tanstack-start).
+For Rsbuild and the full reference, see the
+[TanStack Start framework guide](/docs/frameworks/tanstack-start).
 
-In full-stack frameworks like TanStack Start, server loaders, server functions (`createServerFn`), and React UI components frequently live inside the same route file.
+## What you'll learn
 
-- **Client vs. server confusion**: When both worlds share files, raw `import.meta.env` lacks clear guardrails.
-- **Secret leakage**: An accidental reference to a database connection string or third-party secret key in a client component can easily be bundled into client JavaScript.
-- **Silent failures**: In untyped setups, missing environment variables only surface when a user triggers a route that executes an unconfigured service at runtime.
+1. Scaffolding ArkEnv with the TanStack CLI add-on or `arkenv init`
+2. Registering `@arkenv/vite-plugin` next to TanStack Start and React
+3. Defining a single `src/env.ts` schema with public `VITE_*` keys and
+   server-only secrets
+4. Reading validated env from `createServerFn` and client components
+5. Catching accidental client access to server secrets at runtime
 
-## The dual-graph mental model
+## Prerequisites
 
-TanStack Start builds on Vite, compiling two distinct module graphs: an SSR server graph and a client browser graph. `@arkenv/vite-plugin` hooks into both:
+- A TanStack Start app on Vite (or willingness to scaffold a new one)
+- Basic familiarity with React and TypeScript
+- Node.js and a package manager (`npm`, `pnpm`, `yarn`, or `bun`)
 
-1. **On the server graph (SSR)**: `src/env.ts` executes the real validation runtime at startup against `process.env`. If variables are missing or malformed, the process fails fast before serving requests.
-2. **On the client graph**: The plugin transforms `src/env.ts` during bundling. Public `VITE_*` keys are inlined as typed literals, while server-only keys are replaced with throwing getters.
-3. **Zero client runtime bloat**: The validation engine itself (`@arkenv/core` or `@arkenv/standard`) is completely stripped from the client bundle.
+## Nice to know
 
-## Quickstart
+- How TanStack Start's `createServerFn` and route loaders work
+- That Vite builds separate SSR and client module graphs
 
-Scaffold ArkEnv in an existing TanStack Start project with the CLI:
+## Setting up ArkEnv
+
+### Create a new project
+
+Generate a TanStack Start app with ArkEnv already wired in:
+
+```package-install
+npx @tanstack/cli create my-app --add-ons https://arkenv.js.org/tanstack/info.json
+```
+
+When the CLI runs, it asks a few setup questions — including which
+validator engine to use (ArkType, Zod, or Valibot) and whether to
+include the `/demo/arkenv` route. You can accept the defaults or pick
+what fits your project.
+
+The add-on installs the runtime packages, registers the Vite plugin in
+`vite.config.ts`, writes `src/env.ts`, and pre-populates declared keys
+in `.env.example`.
+
+### Existing projects
+
+If you already have a TanStack Start app on Vite, add ArkEnv with either
+the TanStack CLI add-on or the ArkEnv CLI:
+
+```package-install
+npx @tanstack/cli add https://arkenv.js.org/tanstack/info.json
+```
 
 ```package-install
 npx arkenv init
 ```
 
-The CLI detects `@tanstack/react-start` in your dependencies and registers `@arkenv/vite-plugin` in your `vite.config.ts`:
+`arkenv init` detects `@tanstack/react-start` (or `@tanstack/start`) and
+installs `@arkenv/vite-plugin` the same way it does for plain Vite
+projects.
+
+Install dependencies if the CLI did not already, then start your usual
+dev script (`npm run dev`, `pnpm dev`, and so on). You should land on
+the Start welcome page (or your existing app) with ArkEnv validating
+`src/env.ts` as Vite comes up.
+
+## Understanding the Vite config
+
+At this point your `vite.config.ts` should register TanStack Start,
+React, and ArkEnv in that order:
 
 ```ts title="vite.config.ts" twoslash
 // @noErrors
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import viteReact from "@vitejs/plugin-react";
 import arkenvVitePlugin from "@arkenv/vite-plugin";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  plugins: [tanstackStart({ srcDirectory: "src" }), arkenvVitePlugin()],
+  plugins: [
+    tanstackStart({ srcDirectory: "src" }),
+    // React's Vite plugin must come after Start's plugin
+    viteReact(),
+    arkenvVitePlugin(),
+  ],
 });
 ```
 
+In this config:
+
+- `tanstackStart()` owns Start's SSR and routing pipeline.
+- `viteReact()` must come **after** Start. Without it, Vite cannot
+  resolve `/@react-refresh`, SSR still renders, and client hydration
+  fails so handlers never attach.
+- `arkenvVitePlugin()` discovers and validates `src/env.ts` during Vite
+  config resolution. Missing or invalid values abort the dev server or
+  production build before it is ready.
+
+If you aren't using ArkType, import the plugin from
+`@arkenv/vite-plugin/standard` instead.
+
 ## Defining your schema
 
-ArkEnv uses a single `src/env.ts` file as the contract for all environment variables across your application.
+ArkEnv uses a single `src/env.ts` file as the contract for every
+environment variable in the app.
 
 ```ts title="src/env.ts" twoslash
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
-  // Server-only secrets
   DATABASE_URL: "string",
-
-  // Public variables accessible in client components
-  VITE_APP_NAME: "string = 'My TanStack App'",
-  VITE_API_URL: "string.url",
-
+  PORT: "number.port = 3000",
+  VITE_API_URL: "string = 'https://api.example.com'",
   NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
 ```
 
-- Prefix public variables with `VITE_` to expose them to the browser.
-- Leave secrets un-prefixed to keep them confined to the server.
-- You can also use `@arkenv/standard` if you are validating with Zod or Valibot.
+A few rules of thumb:
 
-## Reading variables: `createServerFn` vs. UI components
+- Prefix public variables with `VITE_` so the Vite plugin can inline
+  them into the client bundle.
+- Leave secrets un-prefixed so they stay on the server graph.
+- Prefer `@arkenv/core` with ArkType. Use `@arkenv/standard` if you
+  already validate with Zod or Valibot.
 
-Because TanStack Start routes blend server execution with client rendering, ArkEnv ensures that each layer accesses what it needs safely.
+Import `{ env }` from this module everywhere. Reading `import.meta.env`
+or `process.env` directly skips ArkEnv's types, coercion, and leak
+protection.
+
+## Reading variables: createServerFn vs. UI components
+
+TanStack Start routes often mix server loaders, server functions, and
+React UI in the same file. ArkEnv keeps each layer on the right side of
+the boundary.
 
 ```tsx title="src/routes/index.tsx" twoslash
 // @noErrors
@@ -79,8 +153,7 @@ Because TanStack Start routes blend server execution with client rendering, ArkE
 import arkenv from "@arkenv/core";
 export const env = arkenv({
   DATABASE_URL: "string",
-  VITE_APP_NAME: "string = 'My TanStack App'",
-  VITE_API_URL: "string.url",
+  VITE_API_URL: "string = 'https://api.example.com'",
   NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
 
@@ -88,12 +161,12 @@ export const env = arkenv({
 // ---cut---
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { env } from "./env";
+import { env } from "../env";
 
-// Server function runs exclusively on the server
+// Runs exclusively on the server
 const getDatabaseHost = createServerFn({ method: "GET" }).handler(() => {
-  const url = new URL(env.DATABASE_URL); // Validated at server boot
-  return url.host; // Safe to return to client
+  const url = new URL(env.DATABASE_URL); // validated at boot
+  return url.host; // safe to return to the client
 });
 
 export const Route = createFileRoute("/")({
@@ -106,17 +179,28 @@ function HomePage() {
 
   return (
     <main>
-      {/* Public key inlined into client bundle */}
-      <h1>{env.VITE_APP_NAME}</h1>
+      {/* Public key inlined into the client bundle */}
+      <h1>API: {env.VITE_API_URL}</h1>
       <p>Connected to: {dbHost}</p>
     </main>
   );
 }
 ```
 
+In this code:
+
+- `getDatabaseHost` reads `DATABASE_URL` inside a `createServerFn`
+  handler. That handler runs on the server graph, where `env.ts`
+  executes the real validation runtime against `process.env`.
+- The loader returns only `url.host` to the client — the secret itself
+  never crosses the wire.
+- `HomePage` reads `env.VITE_API_URL` in the component. The plugin
+  rewrites the client module so public values are inlined as coerced
+  literals.
+
 ## What happens when client code accesses a server secret?
 
-If a developer accidentally references a server key in client-side code:
+If someone accidentally references a server key in client-rendered code:
 
 ```tsx twoslash
 // @noErrors
@@ -128,29 +212,55 @@ export const env = arkenv({
 
 // @filename: index.tsx
 // ---cut---
-import { env } from "./env";
+import { env } from "../env";
 
 function ClientWidget() {
   return <div>{env.DATABASE_URL}</div>;
 }
 ```
 
-ArkEnv doesn't fail silently or leak the secret into production source maps. Instead, the transformed client getter throws an immediate, explicit error in the browser:
+ArkEnv does not fail silently or ship the secret into the client
+bundle. The transformed client getter throws immediately:
 
 > `Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)`
 
-This catches leaks immediately during development and unit testing before they reach production.
+That surfaces the leak during development (and in tests) before it
+reaches production.
 
-## Why ArkEnv for TanStack Start?
+## How the two module graphs fit together
 
-- **Vite-native architecture**: Transforms modules cleanly in the Vite pipeline rather than requiring runtime wrappers or polyfills.
-- **Fail-fast at boot**: Missing database URLs or API keys fail your deployment or container startup immediately, not during a user's request.
-- **Zero runtime dependencies**: `@arkenv/core` and `@arkenv/standard` add no extra runtime baggage to your production servers.
-- **Standard Schema support**: Use ArkType's concise syntax, or plug in Zod or Valibot without lock-in.
+TanStack Start builds on Vite, so you get two module graphs:
 
-## Try it out
+1. **Server graph (SSR):** `src/env.ts` runs the real `@arkenv/core` (or
+   `@arkenv/standard`) runtime at boot and validates your process
+   environment before requests are served. `createServerFn` handlers
+   live here.
+2. **Client graph:** `@arkenv/vite-plugin` transforms `src/env.ts`
+   during the client build. Public `VITE_*` keys become typed literals.
+   Server-only keys become throwing getters. The validation engine
+   itself never ships to the browser.
 
-You can explore a complete working example in the repository:
+Like Vite, TanStack Start loads `.env*` files in development. In
+production, the environment comes from the process that starts your
+server, so containers must inject variables before boot.
 
-- **Example Project**: [`examples/with-tanstack-start`](https://github.com/yamcodes/arkenv/tree/v1/examples/with-tanstack-start)
-- **Framework Guide**: [TanStack Start Documentation](/docs/frameworks/tanstack-start)
+## Conclusion
+
+You've wired ArkEnv into TanStack Start. In this guide you:
+
+- Scaffolded ArkEnv with the TanStack CLI add-on or `arkenv init`
+- Registered the Vite plugin beside Start and React
+- Defined a single schema with public and server-only keys
+- Read secrets inside `createServerFn` and public keys in components
+- Saw the runtime throw when a server key is read on the client
+
+Next steps:
+
+- Run the full example:
+  [`examples/with-tanstack-start`](https://github.com/yamcodes/arkenv/tree/v1/examples/with-tanstack-start)
+- Read the
+  [TanStack Start framework guide](/docs/frameworks/tanstack-start)
+  (includes Rsbuild)
+- Dig into
+  [Client vs. server](/docs/core-concepts/client-vs-server) and the
+  [`@arkenv/vite-plugin` reference](/docs/reference/vite-plugin)
