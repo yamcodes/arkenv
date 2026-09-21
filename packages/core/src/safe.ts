@@ -8,7 +8,7 @@ import { parse } from "./arktype";
 
 export type { SafeArkEnvResult };
 
-type SafeArkenvConfig = Omit<ArkEnvConfig, "safe">;
+type SafeArkenvConfig = ArkEnvConfig;
 
 /**
  * Parse environment variables and return a result object instead of throwing.

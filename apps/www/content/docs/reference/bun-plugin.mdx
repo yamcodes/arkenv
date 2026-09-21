@@ -46,11 +46,11 @@ Same transform call shape as
 | --------------------- | --------------- | ------------------------------------------------------------------ |
 | `schemaPath`          | auto (`env.ts`) | Schema module to transform                                         |
 | `clientPrefix`        | `BUN_PUBLIC_`   | Keys exposed to the client                                         |
-| Plus                  | (none)          | All [`ArkEnvConfig`](/docs/reference/options) fields except `safe` |
+| Plus                  | (none)          | All [`ArkEnvConfig`](/docs/reference/options) fields |
 | `logger` / `logLevel` | (none)          | Logging                                                            |
 
-A schema argument is rejected. Plugin config omits `safe` so failed
-validation cannot soft-fail into the bundle.
+A schema argument is rejected. Failed validation cannot soft-fail into
+the bundle.
 
 ## Next steps
 
