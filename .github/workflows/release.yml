@@ -65,12 +65,6 @@ jobs:
       - name: Install Dependencies
         run: nub install
 
-      # setup-nub-ci writes a concrete major into tracked `.node-version`.
-      # Restore the committed pin (`lts`) so changesets/action does not
-      # include that rewrite in the Version Packages commit/PR.
-      - name: Restore committed Node pin
-        run: git checkout -- .node-version
-
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v2.1.1

@@ -53,10 +53,4 @@ jobs:
       - name: Fix linting issues
         run: node scripts/fix.js
 
-      # setup-nub-ci writes a concrete major into the tracked `.node-version`
-      # so this job runs on 24. Restore the committed pin (`lts`) before
-      # autofix-ci commits, or the bot will clobber it on every PR/push.
-      - name: Restore committed Node pin
-        run: git checkout -- .node-version
-
       - uses: autofix-ci/action@7a166d7532b277f34e16238930461bf77f9d7ed8
