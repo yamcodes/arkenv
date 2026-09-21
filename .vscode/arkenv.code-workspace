@@ -1,10 +1,11 @@
 {
 	"settings": {
-		// Keep in sync with .vscode/settings.json. Window-scoped keys (vitest.rootConfig)
+		// Keep in sync with settings.json in this folder. Window-scoped keys (vitest.rootConfig)
 		// are ignored in folder settings when this workspace is open; resource-scoped
 		// keys here still apply to nested package folders, which do not inherit the
-		// root .vscode/settings.json.
-		"vitest.rootConfig": "./vitest.config.ts",
+		// single-folder .vscode/settings.json. Folder paths are relative to this file
+		// (under .vscode/), so they use ../...
+		"vitest.rootConfig": "../vitest.config.ts",
 		"editor.quickSuggestions": {
 			"strings": "on"
 		},
@@ -40,213 +41,213 @@
 	},
 	"folders": [
 		{
-			"path": ".",
+			"path": "..",
 			"name": "⛯  arkenv"
 		},
 		{
-			"path": "skills",
+			"path": "../skills",
 
 			"name": "✨ skills"
 		},
 		{
-			"path": "packages/arkenv",
+			"path": "../packages/arkenv",
 			"name": "🎁 arkenv"
 		},
 		{
-			"path": "packages/core",
+			"path": "../packages/core",
 
 			"name": "🎁 @arkenv/core"
 		},
 		{
-			"path": "packages/nextjs",
+			"path": "../packages/nextjs",
 			"name": "🎁 @arkenv/nextjs"
 		},
 		{
-			"path": "packages/nuxt",
+			"path": "../packages/nuxt",
 			"name": "🎁 @arkenv/nuxt"
 		},
 		{
-			"path": "packages/vite-plugin",
+			"path": "../packages/vite-plugin",
 			"name": "🎁 @arkenv/vite-plugin"
 		},
 		{
-			"path": "packages/rsbuild-plugin",
+			"path": "../packages/rsbuild-plugin",
 			"name": "🎁 @arkenv/rsbuild-plugin"
 		},
 		{
-			"path": "packages/bun-plugin",
+			"path": "../packages/bun-plugin",
 			"name": "🎁 @arkenv/bun-plugin"
 		},
 		{
-			"path": "packages/fumadocs-ui",
+			"path": "../packages/fumadocs-ui",
 			"name": "🎁 @arkenv/fumadocs-ui"
 		},
 		{
-			"path": "packages/build",
+			"path": "../packages/build",
 			"name": "🎁 @arkenv/build"
 		},
 		{
-			"path": "packages/agent-plugin",
+			"path": "../packages/agent-plugin",
 			"name": "🎁 @arkenv/agent-plugin"
 		},
 		{
-			"path": "packages/tanstack-addon",
+			"path": "../packages/tanstack-addon",
 			"name": "🎁 @arkenv/tanstack-addon"
 		},
 		{
-			"path": "packages/standard",
+			"path": "../packages/standard",
 			"name": "🎁 @arkenv/standard"
 		},
 		{
-			"path": "packages/internal/types",
+			"path": "../packages/internal/types",
 			"name": "📦 @repo/types"
 		},
 		{
-			"path": "packages/internal/scope",
+			"path": "../packages/internal/scope",
 			"name": "📦 @repo/scope"
 		},
 		{
-			"path": "packages/internal/log",
+			"path": "../packages/internal/log",
 			"name": "📦 @repo/log"
 		},
 		{
-			"path": "packages/internal/utils",
+			"path": "../packages/internal/utils",
 			"name": "📦 @repo/utils"
 		},
 		{
-			"path": "tmp",
+			"path": "../tmp",
 			"name": "🕒 temporary"
 		},
 		{
-			"path": "apps/www",
+			"path": "../apps/www",
 			"name": "🚀 www"
 		},
 		{
-			"path": "apps/playwright-www",
+			"path": "../apps/playwright-www",
 			"name": "🧪 playwright-www"
 		},
 		{
-			"path": "apps/dash",
+			"path": "../apps/dash",
 			"name": "📊 dash"
 		},
 		{
-			"path": "apps/playgrounds/nextjs",
+			"path": "../apps/playgrounds/nextjs",
 			"name": "🛝 next.js"
 		},
 		{
-			"path": "apps/playgrounds/nuxt",
+			"path": "../apps/playgrounds/nuxt",
 			"name": "🛝 nuxt"
 		},
 		{
-			"path": "apps/playgrounds/vite",
+			"path": "../apps/playgrounds/vite",
 			"name": "🛝 vite"
 		},
 		{
-			"path": "apps/playgrounds/node",
+			"path": "../apps/playgrounds/node",
 			"name": "🛝 node"
 		},
 		{
-			"path": "apps/playgrounds/bun",
+			"path": "../apps/playgrounds/bun",
 			"name": "🛝 bun"
 		},
 		{
-			"path": "apps/playgrounds/solid-start",
+			"path": "../apps/playgrounds/solid-start",
 			"name": "🛝 solid-start"
 		},
 		{
-			"path": "apps/playgrounds/tanstack-start",
+			"path": "../apps/playgrounds/tanstack-start",
 			"name": "🛝 tanstack-start"
 		},
 		{
-			"path": "apps/playgrounds/tanstack-start-rsbuild",
+			"path": "../apps/playgrounds/tanstack-start-rsbuild",
 			"name": "🛝 tanstack-start-rsbuild"
 		},
 		{
-			"path": "apps/playgrounds/bun-react",
+			"path": "../apps/playgrounds/bun-react",
 			"name": "🛝 bun-react"
 		},
 		{
-			"path": "apps/playgrounds/vite-legacy",
+			"path": "../apps/playgrounds/vite-legacy",
 			"name": "🛝 vite-legacy"
 		},
 		{
-			"path": "apps/playgrounds/mix-and-match",
+			"path": "../apps/playgrounds/mix-and-match",
 			"name": "🛝 mix-and-match"
 		},
 		{
-			"path": "apps/playgrounds/esbuild-cjs",
+			"path": "../apps/playgrounds/esbuild-cjs",
 			"name": "🛝 esbuild-cjs"
 		},
 		{
-			"path": "apps/playgrounds/arkenv-cli",
+			"path": "../apps/playgrounds/arkenv-cli",
 			"name": "🛝 arkenv-cli"
 		},
 		{
-			"path": "apps/playgrounds/js",
+			"path": "../apps/playgrounds/js",
 			"name": "🛝 js"
 		},
 		{
-			"path": "examples/basic",
+			"path": "../examples/basic",
 			"name": "💡 basic"
 		},
 		{
-			"path": "examples/basic-js",
+			"path": "../examples/basic-js",
 			"name": "💡 basic-js"
 		},
 		{
-			"path": "examples/with-nextjs",
+			"path": "../examples/with-nextjs",
 			"name": "💡 with-nextjs"
 		},
 		{
-			"path": "examples/with-nextjs-zod",
+			"path": "../examples/with-nextjs-zod",
 			"name": "💡 with-nextjs-zod"
 		},
 		{
-			"path": "examples/with-nuxt",
+			"path": "../examples/with-nuxt",
 			"name": "💡 with-nuxt"
 		},
 		{
-			"path": "examples/with-vite-react",
+			"path": "../examples/with-vite-react",
 			"name": "💡 with-vite-react"
 		},
 		{
-			"path": "examples/with-vite-react-zod",
+			"path": "../examples/with-vite-react-zod",
 			"name": "💡 with-vite-react-zod"
 		},
 		{
-			"path": "examples/with-bun",
+			"path": "../examples/with-bun",
 			"name": "💡 with-bun"
 		},
 		{
-			"path": "examples/with-bun-react",
+			"path": "../examples/with-bun-react",
 			"name": "💡 with-bun-react"
 		},
 		{
-			"path": "examples/with-solid-start",
+			"path": "../examples/with-solid-start",
 			"name": "💡 with-solid-start"
 		},
 		{
-			"path": "examples/with-tanstack-start",
+			"path": "../examples/with-tanstack-start",
 			"name": "💡 with-tanstack-start"
 		},
 		{
-			"path": "examples/with-tanstack-start-rsbuild",
+			"path": "../examples/with-tanstack-start-rsbuild",
 			"name": "💡 with-tanstack-start-rsbuild"
 		},
 		{
-			"path": "examples/with-zod",
+			"path": "../examples/with-zod",
 			"name": "💡 with-zod"
 		},
 		{
-			"path": "examples/with-valibot",
+			"path": "../examples/with-valibot",
 			"name": "💡 with-valibot"
 		},
 		{
-			"path": "examples/mix-and-match",
+			"path": "../examples/mix-and-match",
 			"name": "💡 mix-and-match"
 		},
 		{
-			"path": "examples/stackblitz",
+			"path": "../examples/stackblitz",
 			"name": "💡 stackblitz"
 		}
 	]
