@@ -6,6 +6,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteFooter } from "~/components/site-footer";
 import { getAuthorAvatarUrl, getAuthorGithub } from "~/lib/blog-author";
+import { isPublishedBlogPage } from "~/lib/blog-published";
 import { blog, getBlogPages, SITE_URL } from "~/lib/source";
 import { getMDXComponents } from "~/mdx-components";
 
@@ -24,8 +25,7 @@ export default async function BlogPostPage(props: {
 }) {
 	const params = await props.params;
 	const page = blog.getPage([params.slug]);
-	if (!page) notFound();
-	if (page.data.draft && process.env.NODE_ENV !== "development") notFound();
+	if (!page || !isPublishedBlogPage(page)) notFound();
 
 	const MDX = page.data.body;
 	const githubHandle = getAuthorGithub(
@@ -53,6 +53,9 @@ export default async function BlogPostPage(props: {
 						← Blog
 					</Link>
 					<header className="blog-page__header">
+						{page.data.draft ? (
+							<span className="blog-page__draft-badge">Draft</span>
+						) : null}
 						<h1 className="blog-page__title">{page.data.title}</h1>
 						{page.data.description ? (
 							<p className="blog-page__lede">{page.data.description}</p>
@@ -134,8 +137,7 @@ export async function generateMetadata(props: {
 }): Promise<Metadata> {
 	const params = await props.params;
 	const page = blog.getPage([params.slug]);
-	if (!page) notFound();
-	if (page.data.draft && process.env.NODE_ENV !== "development") notFound();
+	if (!page || !isPublishedBlogPage(page)) notFound();
 
 	const ogUrl = new URL(`${SITE_URL}/api/og`);
 	ogUrl.searchParams.set("title", page.data.title);
@@ -146,6 +148,7 @@ export async function generateMetadata(props: {
 	return {
 		title: `${page.data.title} | ArkEnv`,
 		description: page.data.description,
+		robots: page.data.draft ? { index: false, follow: false } : undefined,
 		openGraph: {
 			title: `${page.data.title} | ArkEnv`,
 			description: page.data.description,
