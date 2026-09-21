@@ -1,5 +1,8 @@
 {
 	"settings": {
+		// Pin Explorer to the root projects config so multi-root folders
+		// (examples, playgrounds) are not treated as Vitest projects.
+		"vitest.rootConfig": "./vitest.config.ts",
 		"files.associations": {
 			"turbo.json": "jsonc",
 			"tsconfig*.json": "jsonc",

@@ -1,4 +1,7 @@
 {
+	// Pin Explorer to the root projects config so multi-root folders
+	// (examples, playgrounds) are not treated as Vitest projects.
+	"vitest.rootConfig": "./vitest.config.ts",
 	// allow autocomplete for ArkType expressions like "string | num"
 	"editor.quickSuggestions": {
 		"strings": "on"
