@@ -11,6 +11,8 @@ inputs:
 runs:
   using: composite
   steps:
+    # Job-local only: this tracked file must not be committed. Workflows that
+    # commit or inspect `git status` restore it with `git checkout -- .node-version`.
     - name: Pin Node for nub
       shell: bash
       run: echo "${{ inputs.node-version }}" > .node-version
