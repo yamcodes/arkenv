@@ -36,6 +36,18 @@ export {
 } from "./utils/errors";
 export { BUILD_PREFIX, formatBuildError } from "./utils/format-build-error";
 export { indent } from "./utils/indent";
+export {
+	assertNotNestedBag,
+	assertNotNestedBagSource,
+	assertNotRemovedExposeAliasSource,
+	hasNestedBagSource,
+	hasRemovedExposeAlias,
+	hasRemovedExposeAliasSource,
+	isNestedBagCall,
+	NESTED_BAG_MIGRATION_URL,
+	nestedBagMigrationErrorMessage,
+	removedExposeAliasErrorMessage,
+} from "./utils/nested-bag-migration-error";
 export { isDebugSecrets, safeStringify, shouldRedact } from "./utils/redact";
 export {
 	extractJsonSchema,

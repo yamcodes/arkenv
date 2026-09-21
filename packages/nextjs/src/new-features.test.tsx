@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { setupArkEnv } from "./config";
 import { arkenv } from "./index";
 
@@ -23,7 +23,7 @@ describe("setupArkEnv non-wrapping API", () => {
 			schemaPath,
 			`
 			export const env = arkenv({
-				client: { NEXT_PUBLIC_VAL: "string" }
+				NEXT_PUBLIC_VAL: "string",
 			});
 			`,
 			"utf-8",
@@ -42,14 +42,9 @@ describe("setupArkEnv non-wrapping API", () => {
 	});
 });
 
-describe("legacy nested layout deprecation warning", () => {
-	it("should warn on legacy nested layout structure in development mode", () => {
-		const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-		const originalNodeEnv = process.env.NODE_ENV;
-		process.env.NODE_ENV = "development";
-
-		try {
-			// Call legacy signature
+describe("removed nested bag API", () => {
+	it("should throw a migration error for nested bag callers", () => {
+		expect(() =>
 			arkenv({
 				client: {
 					NEXT_PUBLIC_VAL: "string",
@@ -57,26 +52,7 @@ describe("legacy nested layout deprecation warning", () => {
 				runtimeEnv: {
 					NEXT_PUBLIC_VAL: "hello",
 				},
-			});
-
-			expect(warnSpy).toHaveBeenCalledTimes(1);
-			expect(warnSpy.mock.calls[0][0]).toContain(
-				"Deprecated: The nested layout structure",
-			);
-
-			// Calling it again should not warn (one-time warn)
-			arkenv({
-				client: {
-					NEXT_PUBLIC_VAL: "string",
-				},
-				runtimeEnv: {
-					NEXT_PUBLIC_VAL: "hello",
-				},
-			});
-			expect(warnSpy).toHaveBeenCalledTimes(1);
-		} finally {
-			process.env.NODE_ENV = originalNodeEnv;
-			warnSpy.mockRestore();
-		}
+			} as never),
+		).toThrow(/nested arkenv\(\{ server, client, shared/);
 	});
 });
