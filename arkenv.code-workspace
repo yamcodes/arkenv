@@ -1,11 +1,41 @@
 {
 	"settings": {
+		// Keep in sync with .vscode/settings.json. Window-scoped keys (vitest.rootConfig)
+		// are ignored in folder settings when this workspace is open; resource-scoped
+		// keys here still apply to nested package folders, which do not inherit the
+		// root .vscode/settings.json.
+		"vitest.rootConfig": "./vitest.config.ts",
+		"editor.quickSuggestions": {
+			"strings": "on"
+		},
+		"editor.codeActionsOnSave": {
+			"source.organizeImports.biome": "explicit",
+			"source.fixAll.biome": "explicit"
+		},
+		"typescript.preferences.autoImportSpecifierExcludeRegexes": [
+			"^(node:)?os$"
+		],
+		"editor.tabSize": 2,
+		"editor.defaultFormatter": "biomejs.biome",
+		"[markdown]": {
+			"editor.defaultFormatter": "yzhang.markdown-all-in-one"
+		},
+		"[jsonc]": {
+			"editor.defaultFormatter": "biomejs.biome"
+		},
+		"[json]": {
+			"editor.defaultFormatter": "biomejs.biome"
+		},
 		"files.associations": {
 			"turbo.json": "jsonc",
 			"tsconfig*.json": "jsonc",
 			".github/renovate.json": "jsonc",
 			"renovate.json": "jsonc",
 			"*.css": "tailwindcss"
+		},
+		"biome.enabled": false,
+		"[mdx]": {
+			"editor.defaultFormatter": "unifiedjs.vscode-mdx"
 		}
 	},
 	"folders": [

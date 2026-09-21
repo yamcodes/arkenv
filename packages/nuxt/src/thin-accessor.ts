@@ -1,39 +1,32 @@
+import { assertNotNestedBag } from "@repo/utils/nested-bag-migration-error";
 import { type ArkenvInternalHooks, arkenvInternal } from "./arkenv-internal";
-import { isLegacyNestedSchema } from "./schema-shape";
 
 /**
  * Dispatch a flat-layout thin `arkenv()` call into {@link arkenvInternal}.
  *
- * Shared by ArkType and Standard flat entries so legacy detection, server hooks,
- * and context construction stay unified.
+ * Shared by ArkType and Standard flat entries so server hooks and context
+ * construction stay unified.
  *
- * @param schemaOrOptions Schema or nested options object
- * @param optionsOrIsServer Flat options, legacy boolean, or undefined
- * @param options Optional server hooks (e.g. ensureBootGate)
+ * @param schema Schema definition
+ * @param options Flat options or undefined
+ * @param dispatchOptions Optional server hooks (e.g. ensureBootGate)
  * @returns The thin env proxy from {@link arkenvInternal}
+ * @throws An error when the removed nested bag API is detected
  */
 export function dispatchFlatThinArkenv(
-	schemaOrOptions: unknown,
-	optionsOrIsServer: unknown,
-	options?: {
+	schema: unknown,
+	options: unknown,
+	dispatchOptions?: {
 		ensureBootGate?: () => void;
 	},
 ): unknown {
+	assertNotNestedBag(schema, options);
+
 	const isServer = typeof window === "undefined";
 	const hooks: ArkenvInternalHooks | undefined =
-		isServer && options?.ensureBootGate
-			? { ensureBootGate: options.ensureBootGate }
+		isServer && dispatchOptions?.ensureBootGate
+			? { ensureBootGate: dispatchOptions.ensureBootGate }
 			: undefined;
 
-	const isLegacy = isLegacyNestedSchema(schemaOrOptions, optionsOrIsServer);
-	if (isLegacy) {
-		return arkenvInternal(schemaOrOptions as never, isServer, undefined, hooks);
-	}
-
-	return arkenvInternal(
-		schemaOrOptions as never,
-		optionsOrIsServer as never,
-		{ isServer },
-		hooks,
-	);
+	return arkenvInternal(schema as never, options as never, { isServer }, hooks);
 }
