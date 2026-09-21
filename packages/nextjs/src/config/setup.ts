@@ -129,8 +129,6 @@ export function setupArkEnv(
 
 			const aliases: Record<string, string> = {
 				"server-only": mockServerOnlyPath,
-				"./script": mockServerOnlyPath,
-				"./script.tsx": mockServerOnlyPath,
 				...internalOptions?._jitiAliases,
 			};
 
