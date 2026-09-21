@@ -120,7 +120,12 @@ change (`VERCEL_ENV` or `SHOW_BLOG_DRAFTS`), update tests. Teachability:
 “Drafts show locally and on PR previews; never on production.” Footgun:
 preview URLs are shareable — acceptable for OSS copy review; pair with B3
 if a draft is sensitive. **Important:** Vercel preview still has
-`NODE_ENV=production`; do **not** keep gating on `NODE_ENV` alone.
+`NODE_ENV=production`; do **not** keep gating on `NODE_ENV` alone. The
+gate is build-time on the static surfaces (`/blog`, RSS, sitemap); Vercel
+“Promote to production” rebuilds with `VERCEL_ENV=production`, but
+manually `vercel alias`-ing a preview deployment onto the production
+domain would keep the preview artifact (and its baked-in drafts) — avoid
+that.
 
 **A3 Always build + request gate** — Fit is poor without a CMS: MDX is
 already in the bundle. You pay Layer B forever so production can
@@ -285,6 +290,8 @@ real requirement. Do **not** build OAuth or Draft Mode for MDX-in-git.
 
 ## Changelog of this note
 
+- 2026-09-21: Note build-time gate + residual `vercel alias` leak vector
+  (Pullfrog review on #1907).
 - 2026-09-21: Implemented S (`VERCEL_ENV` gate + Draft badge + tests).
 - 2026-09-20: First write-up (field research, layers A/B/C, metrics, hat,
   tier list, S = A2+B1+C2).
