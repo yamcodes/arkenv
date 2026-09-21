@@ -1,11 +1,11 @@
 <p align="center">
-  <a href="https://github.com/yamcodes/arkenv/blob/main/apps/www/public/assets/icon.svg"><img alt="ArkEnv Logo" src="https://arkenv.js.org/assets/icon.svg" width="160px" align="center"/></a>
+  <a href="https://github.com/yamcodes/arkenv/blob/v1/apps/www/public/assets/icon.svg"><img alt="ArkEnv Logo" src="https://arkenv.js.org/assets/icon.svg" width="160px" align="center"/></a>
   <h1 align="center">ArkEnv</h1>
   <div align="center">
     <p align="center">
       Validate environment variables with your favorite validator <br/> on <a href="https://nextjs.org/">Next.js</a>, <a href="https://nuxt.com/">Nuxt</a>, <a href="https://nodejs.org/">Node.js</a>, <a href="https://vite.dev/">Vite</a>, and <a href="https://bun.com/">Bun</a>
     </p>
-    <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Amain"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/tests-badge.yml/badge.svg?branch=main"></a>
+    <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Av1"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/test.yml/badge.svg?branch=v1"></a>
     <a href="https://bundlephobia.com/package/arkenv"><img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/arkenv"></a>
     <a href="https://arktype.io/docs/ecosystem#arkenv"><img alt="ArkType Ecosystem" src="https://custom-icon-badges.demolab.com/badge/ArkType%20Ecosystem-0d1526?logo=arktype2&logoColor=e9eef9"></a>
     <a href="https://pullfrog.com"><img alt="Pullfrog" src="https://custom-icon-badges.demolab.com/badge/Powered%20by%20Pullfrog-2f4032?logo=pullfrog-white"></a>
@@ -17,7 +17,7 @@
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
   <a href="https://arkenv.js.org/docs/getting-started">Get started</a>
   <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
-  <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/main/examples/stackblitz?file=index.ts">Try on StackBlitz</a>
+  <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/v1/examples/stackblitz?file=index.ts">Try on StackBlitz</a>
   <br />
 </div>
 
@@ -86,7 +86,7 @@ bunx arkenv init
 
 If you love ArkEnv, you can support the project by **starring it on GitHub**!
 
-You are also welcome to [contribute to the project](https://github.com/yamcodes/arkenv/blob/main/docs/CONTRIBUTING.md) and join the wonderful people who have contributed:
+You are also welcome to [contribute to the project](https://github.com/yamcodes/arkenv/blob/v1/docs/CONTRIBUTING.md) and join the wonderful people who have contributed:
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -110,4 +110,4 @@ You are also welcome to [contribute to the project](https://github.com/yamcodes/
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-We [acknowledge](https://github.com/yamcodes/arkenv/blob/main/docs/ACKNOWLEDGEMENTS.md) the various projects and people that inspired ArkEnv.
+We [acknowledge](https://github.com/yamcodes/arkenv/blob/v1/docs/ACKNOWLEDGEMENTS.md) the various projects and people that inspired ArkEnv.

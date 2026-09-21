@@ -2,11 +2,10 @@
 
 import { useSearchContext } from "fumadocs-ui/contexts/search";
 import { ArrowUpRight, Menu, Search, X } from "lucide-react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type ReactNode, useEffect, useState } from "react";
 import { HeaderGithubLink } from "~/components/page/header-github-link";
-import { Logo } from "~/components/page/logo";
+import { LogoLink } from "~/components/page/logo";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
 import { useFeatureFlag } from "~/hooks/use-feature-flag";
 import { FeatureFlag } from "~/lib/posthog/feature-flags";
@@ -185,13 +184,10 @@ export function SiteNav({
 									{sidebarTrigger}
 								</div>
 							) : null}
-							<Link
-								href="/"
+							<LogoLink
 								className="site-nav__wordmark"
-								aria-label="ArkEnv home"
-							>
-								<Logo releaseTag={releaseTag} />
-							</Link>
+								releaseTag={releaseTag}
+							/>
 						</div>
 
 						<nav className="site-nav__links" aria-label="Primary">

@@ -13,7 +13,7 @@ describe("github utilities", () => {
 			expect(result).toEqual({
 				owner: "yamcodes",
 				repo: "arkenv",
-				defaultBranch: "dev",
+				defaultBranch: "v1",
 			});
 		});
 
@@ -23,7 +23,7 @@ describe("github utilities", () => {
 			expect(result).toEqual({
 				owner: "yamcodes",
 				repo: "arkenv",
-				defaultBranch: "dev",
+				defaultBranch: "v1",
 			});
 		});
 
@@ -36,7 +36,7 @@ describe("github utilities", () => {
 			expect(result).toEqual({
 				owner: "example",
 				repo: "repo",
-				defaultBranch: "dev",
+				defaultBranch: "v1",
 			});
 		});
 
@@ -98,7 +98,7 @@ describe("github utilities", () => {
 			});
 		});
 
-		it("should ignore blank branch env vars and fall back to dev", () => {
+		it("should ignore blank branch env vars and fall back to v1", () => {
 			vi.stubEnv("NEXT_PUBLIC_GITHUB_BRANCH", "   ");
 			vi.stubEnv("VERCEL_GIT_COMMIT_REF", "");
 
@@ -107,7 +107,7 @@ describe("github utilities", () => {
 			expect(result).toEqual({
 				owner: "yamcodes",
 				repo: "arkenv",
-				defaultBranch: "dev",
+				defaultBranch: "v1",
 			});
 		});
 
@@ -117,7 +117,7 @@ describe("github utilities", () => {
 			expect(result).toEqual({
 				owner: "yamcodes",
 				repo: "arkenv",
-				defaultBranch: "dev",
+				defaultBranch: "v1",
 			});
 		});
 
@@ -129,7 +129,7 @@ describe("github utilities", () => {
 			expect(result).toEqual({
 				owner: "yamcodes",
 				repo: "arkenv",
-				defaultBranch: "dev",
+				defaultBranch: "v1",
 			});
 		});
 
@@ -155,7 +155,7 @@ describe("github utilities", () => {
 			expect(result).toEqual({
 				owner: "tree",
 				repo: "main",
-				defaultBranch: "dev",
+				defaultBranch: "v1",
 			});
 		});
 	});
@@ -168,8 +168,8 @@ describe("github utilities", () => {
 			);
 
 			expect(result).toEqual({
-				title: "Editing arkenv/README.md at dev · yamcodes/arkenv",
-				href: "https://github.com/yamcodes/arkenv/edit/dev/README.md",
+				title: "Editing arkenv/README.md at v1 · yamcodes/arkenv",
+				href: "https://github.com/yamcodes/arkenv/edit/v1/README.md",
 			});
 		});
 
@@ -180,9 +180,8 @@ describe("github utilities", () => {
 			);
 
 			expect(result).toEqual({
-				title:
-					"Editing arkenv/docs/getting-started.md at dev · yamcodes/arkenv",
-				href: "https://github.com/yamcodes/arkenv/edit/dev/docs/getting-started.md",
+				title: "Editing arkenv/docs/getting-started.md at v1 · yamcodes/arkenv",
+				href: "https://github.com/yamcodes/arkenv/edit/v1/docs/getting-started.md",
 			});
 		});
 
@@ -193,8 +192,8 @@ describe("github utilities", () => {
 			const result = getLinkTitleAndHref("test.md");
 
 			expect(result).toEqual({
-				title: "Editing repo/test.md at dev · example/repo",
-				href: "https://github.com/example/repo/edit/dev/test.md",
+				title: "Editing repo/test.md at v1 · example/repo",
+				href: "https://github.com/example/repo/edit/v1/test.md",
 			});
 		});
 
@@ -218,8 +217,8 @@ describe("github utilities", () => {
 			const result = getLinkTitleAndHref("test.md");
 
 			expect(result).toEqual({
-				title: "Editing arkenv/test.md at dev · yamcodes/arkenv",
-				href: "https://github.com/yamcodes/arkenv/edit/dev/test.md",
+				title: "Editing arkenv/test.md at v1 · yamcodes/arkenv",
+				href: "https://github.com/yamcodes/arkenv/edit/v1/test.md",
 			});
 		});
 
@@ -230,8 +229,8 @@ describe("github utilities", () => {
 			);
 
 			expect(result).toEqual({
-				title: "Editing arkenv/src/index.ts at dev · yamcodes/arkenv",
-				href: "https://github.com/yamcodes/arkenv/edit/dev/src/index.ts",
+				title: "Editing arkenv/src/index.ts at v1 · yamcodes/arkenv",
+				href: "https://github.com/yamcodes/arkenv/edit/v1/src/index.ts",
 			});
 		});
 
@@ -245,7 +244,7 @@ describe("github utilities", () => {
 			);
 
 			expect(result.href).toBe(
-				"https://github.com/yamcodes/arkenv/edit/dev/apps/www/content/docs/index.mdx",
+				"https://github.com/yamcodes/arkenv/edit/v1/apps/www/content/docs/index.mdx",
 			);
 		});
 
@@ -256,7 +255,7 @@ describe("github utilities", () => {
 			);
 
 			expect(result.href).toBe(
-				"https://github.com/yamcodes/arkenv/edit/dev/apps/www/content/docs/index.mdx",
+				"https://github.com/yamcodes/arkenv/edit/v1/apps/www/content/docs/index.mdx",
 			);
 		});
 	});

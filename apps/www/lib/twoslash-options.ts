@@ -28,6 +28,28 @@ export type TwoslashNode =
 			code?: number | string;
 	  };
 
+export function cleanHoverDocs(docs: string): string {
+	if (!docs) return docs;
+	return docs
+		.replace(/{@link\s+([\s\S]*?)}/g, (_raw: string, content: string) => {
+			const cleaned = content.replace(/\s+/g, " ").trim();
+			const parts = cleaned.split(/\s*(?:\||\s)\s*/);
+			const target = parts[0];
+			const text = parts.slice(1).join(" ") || target;
+
+			return target.startsWith("http") ? `[${text}](${target})` : `\`${text}\``;
+		})
+		.split(/\n{2,}/)
+		.map((paragraph) =>
+			paragraph
+				.replace(/(?<!\n)\r?\n(?!\s*(?:[-*•]|\d+\.))/g, " ")
+				.replace(/[ \t]+/g, " ")
+				.trim(),
+		)
+		.filter(Boolean)
+		.join("\n\n");
+}
+
 export type ArkTypeTwoslashOptions = TransformerTwoslashOptions & {
 	filterNode?: (node: TwoslashNode) => boolean;
 };
@@ -36,6 +58,9 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 	explicitTrigger: true,
 	langs: ["ts", "tsx", "js", "jsx"],
 	twoslashOptions: arktypeTwoslashVfs,
+	rendererRich: {
+		processHoverDocs: cleanHoverDocs,
+	},
 	filterNode: (node: TwoslashNode) => {
 		switch (node.type) {
 			case "hover": {
@@ -66,23 +91,7 @@ export const arktypeTwoslashOptions: ArkTypeTwoslashOptions = {
 				}
 
 				if (node.docs) {
-					node.docs = node.docs
-						.replace(
-							/{@link\s+([\s\S]*?)}/g,
-							(_raw: string, content: string) => {
-								const cleaned = content.replace(/\s+/g, " ").trim();
-								const parts = cleaned.split(/\s*(?:\||\s)\s*/);
-								const target = parts[0];
-								const text = parts.slice(1).join(" ") || target;
-
-								return target.startsWith("http")
-									? `[${text}](${target})`
-									: `\`${text}\``;
-							},
-						)
-						.replace(/(?<!\n)\n(?!\n)/g, " ")
-						.replace(/\n{2,}/g, "\n\n")
-						.trim();
+					node.docs = cleanHoverDocs(node.docs);
 				}
 
 				const text = node.text.toLowerCase();

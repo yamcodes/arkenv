@@ -5,7 +5,7 @@
 	"fixed": [["@arkenv/core", "@arkenv/standard"]],
 	"linked": [],
 	"access": "public",
-	"baseBranch": "dev",
+	"baseBranch": "v1",
 	"updateInternalDependencies": "patch",
 	"bumpVersionsWithWorkspaceProtocolOnly": true,
 	"ignore": ["www", "*-playground", "@repo/playwright-www", "@repo/dash"]
