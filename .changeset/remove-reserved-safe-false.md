@@ -3,24 +3,32 @@
 "@arkenv/standard": major
 ---
 
-#### Remove reserved `safe?: false` from public config
+#### Remove reserved `safe` from main-factory config
 
-`ArkEnvConfig` and `StandardEnvConfig` no longer declare a reserved
-`safe?: false` field. Safe mode remains available only via
-`@arkenv/core/safe` and `@arkenv/standard/safe`.
+`ArkEnvConfig` and `StandardEnvConfig` no longer declare the reserved
+`safe?: false` field. Safe-mode parsing stays on the `/safe` subpaths.
 
-**BREAKING CHANGE**: Passing `{ safe: false }` (or any `safe` property)
-on the main `arkenv()` config is now a type error. Delete the property.
-For a result object instead of a throw, import `arkenv` from the `/safe`
-subpath:
+```ts
+import arkenv from "@arkenv/core";
+import arkenvSafe from "@arkenv/core/safe";
+
+export const env = arkenv({
+  PORT: "number.port = 3000",
+});
+
+const result = arkenvSafe(
+  { PORT: "number.port" },
+  { env: { PORT: "invalid" } },
+);
+```
+
+`@arkenv/standard` mirrors the same shape via `@arkenv/standard/safe`.
+
+**BREAKING CHANGE**: Passing `safe: false` on the main `arkenv()` config
+is no longer accepted. Delete the property; use `/safe` for result-object
+parsing.
 
 ```diff
-  import arkenv from "@arkenv/core";
 - export const env = arkenv(schema, { safe: false });
 + export const env = arkenv(schema);
-
-  // For a result object:
-- // (was never supported as `{ safe: true }` on the main entry)
-+ import arkenv from "@arkenv/core/safe";
-+ const result = arkenv(schema);
 ```

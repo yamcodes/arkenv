@@ -24,6 +24,9 @@ export {
 
 /**
  * Configuration options for `arkenv` from `@arkenv/standard`.
+ *
+ * For a result object instead of a throw, import `arkenv` from
+ * `@arkenv/standard/safe`.
  */
 export type StandardEnvConfig = ParseStandardConfig;
 

@@ -1,13 +1,8 @@
-import { describe, it } from "vitest";
+import { describe, expectTypeOf, it } from "vitest";
 import type { StandardEnvConfig } from ".";
 
 describe("Type Regression (Issue #1912)", () => {
-	it("rejects safe on StandardEnvConfig", () => {
-		// @ts-expect-error safe is not a config option — use @arkenv/standard/safe
-		const rejectFalse: StandardEnvConfig = { safe: false };
-		// @ts-expect-error safe is not a config option — use @arkenv/standard/safe
-		const rejectTrue: StandardEnvConfig = { safe: true };
-		void rejectFalse;
-		void rejectTrue;
+	it("does not expose reserved safe on StandardEnvConfig", () => {
+		expectTypeOf<StandardEnvConfig>().not.toHaveProperty("safe");
 	});
 });

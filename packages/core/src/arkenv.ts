@@ -112,7 +112,7 @@ type SchemaCaptureBag = {
  * Record `def` on the CLI schema-capture bag if capture is active.
  *
  * Shared by `arkenv` (throw path and `@arkenv/core/safe`) so CLI schema
- * inspection keeps working after migrating off `{ safe: true }`.
+ * inspection works for both entry points.
  *
  * @param def The schema definition passed to `arkenv()`
  * @returns `true` when capture consumed the call
