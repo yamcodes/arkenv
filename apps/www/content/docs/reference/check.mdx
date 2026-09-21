@@ -57,7 +57,8 @@ These flags are specific to `check`.
 ### `--schema <path>` / `-s`
 
 Explicit path to the schema module. Overrides convention discovery
-(`env.ts`, `src/env.ts`, and related extensions).
+(`env.ts`, `src/env.ts`, and related extensions). Split-layout filenames
+such as `env/server.ts` are not auto-discovered — pass `--schema` for those.
 
 ```package-install
 npx arkenv check --schema ./src/config/env.ts
