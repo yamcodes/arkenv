@@ -10,10 +10,10 @@ the hat. Promoted decisions belong in `docs/adr/`.
 
 Two different problems get conflated under “draft preview”:
 
-| Content model | Best-practice pattern | Why |
-| --- | --- | --- |
-| **Git / MDX in repo** (ArkEnv) | Include drafts on **preview / branch deploys**; exclude on **production** | Content only changes when you push. Hugo’s `--buildDrafts` on Netlify `deploy-preview`, and dedicated “drafts on” preview channels, are the long-standing pattern. |
-| **Headless CMS** (Sanity, Contentful, …) | Next.js / Vercel **Draft Mode** (secret → cookie → request-time fetch) | Content changes without a redeploy; you need ISR bypass + a preview API token. |
+| Content model                            | Best-practice pattern                                                     | Why                                                                                                                                                                |
+| ---------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Git / MDX in repo** (ArkEnv)           | Include drafts on **preview / branch deploys**; exclude on **production** | Content only changes when you push. Hugo’s `--buildDrafts` on Netlify `deploy-preview`, and dedicated “drafts on” preview channels, are the long-standing pattern. |
+| **Headless CMS** (Sanity, Contentful, …) | Next.js / Vercel **Draft Mode** (secret → cookie → request-time fetch)    | Content changes without a redeploy; you need ISR bypass + a preview API token.                                                                                     |
 
 Sources worth anchoring on:
 
@@ -65,47 +65,47 @@ into one false choice.
 
 ## Metrics
 
-| Metric | Question |
-| ------ | -------- |
-| **Fit to content model** | Does this match MDX-in-git (build-time), or is it solving CMS/ISR preview? |
-| **Reviewer friction** | Can Yam (or a reviewer) open one URL and see the draft without ceremony? |
-| **Leak surface** | How easily does a draft reach search indexes, RSS, or random visitors on production? |
-| **Ops / secret tax** | New env vars, cookies, OAuth apps, Flags projects, Deployment Protection? |
-| **Teachability** | Can CONTRIBUTING explain it in two sentences? |
-| **Footguns** | Easy to leave a draft on production, ship a secret in a Referer log, or break static generation? |
+| Metric                   | Question                                                                                         |
+| ------------------------ | ------------------------------------------------------------------------------------------------ |
+| **Fit to content model** | Does this match MDX-in-git (build-time), or is it solving CMS/ISR preview?                       |
+| **Reviewer friction**    | Can Yam (or a reviewer) open one URL and see the draft without ceremony?                         |
+| **Leak surface**         | How easily does a draft reach search indexes, RSS, or random visitors on production?             |
+| **Ops / secret tax**     | New env vars, cookies, OAuth apps, Flags projects, Deployment Protection?                        |
+| **Teachability**         | Can CONTRIBUTING explain it in two sentences?                                                    |
+| **Footguns**             | Easy to leave a draft on production, ship a secret in a Referer log, or break static generation? |
 
 ## The hat
 
 ### Layer A — Visibility scope
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| A1 | Local `development` only (status quo) | `isPublishedBlogPage` + slug `notFound` on `NODE_ENV !== "development"`. |
-| A2 | Local + Vercel **preview** (and optional `development`); production excludes | Gate on `VERCEL_ENV !== "production"` (and local when unset / `development`). Classic Hugo/Netlify preview-drafts. |
-| A3 | Always build drafts; gate only at request time on every host including production | Needs Layer B. Useful for CMS; heavy for static MDX. |
-| A4 | Separate always-on staging host that always builds drafts | Second project / branch deploy; permanent “drafts site.” |
-| A5 | Temporarily set `draft: false` for review, then flip back | Process, not product. Easy to forget on merge. |
-| A6 | Drafts live only on unmerged git branches; never `draft: true` in tree | Fuma’s “use another branch.” Listing still needs a filter if you merge early. |
+| #  | Option                                                                            | Notes                                                                                                              |
+| -- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| A1 | Local `development` only (status quo)                                             | `isPublishedBlogPage` + slug `notFound` on `NODE_ENV !== "development"`.                                           |
+| A2 | Local + Vercel **preview** (and optional `development`); production excludes      | Gate on `VERCEL_ENV !== "production"` (and local when unset / `development`). Classic Hugo/Netlify preview-drafts. |
+| A3 | Always build drafts; gate only at request time on every host including production | Needs Layer B. Useful for CMS; heavy for static MDX.                                                               |
+| A4 | Separate always-on staging host that always builds drafts                         | Second project / branch deploy; permanent “drafts site.”                                                           |
+| A5 | Temporarily set `draft: false` for review, then flip back                         | Process, not product. Easy to forget on merge.                                                                     |
+| A6 | Drafts live only on unmerged git branches; never `draft: true` in tree            | Fuma’s “use another branch.” Listing still needs a filter if you merge early.                                      |
 
 ### Layer B — Access control
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| B1 | No app gate — preview URL (+ robots noindex) is enough | Default for public OSS previews. |
-| B2 | Shared secret → cookie (Next.js Draft Mode / `/api/draft?secret=`) | Industry standard for CMS; secret in query leaks via Referer until cookie is set. |
-| B3 | Vercel Deployment Protection (password / Vercel SSO / GitHub) | Protects **whole** preview; zero app code. |
-| B4 | App-level GitHub OAuth / session (“authenticated user”) | Real auth product. Overkill for a few MDX drafts. |
-| B5 | Vercel Flags / feature flag unlock | What Fuma suggested; good for production gating, extra product surface. |
-| B6 | Obscure-only: draft slugs work for anyone who knows the URL; omitted from index | Security through obscurity; still crawls if linked. |
+| #  | Option                                                                          | Notes                                                                             |
+| -- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| B1 | No app gate — preview URL (+ robots noindex) is enough                          | Default for public OSS previews.                                                  |
+| B2 | Shared secret → cookie (Next.js Draft Mode / `/api/draft?secret=`)              | Industry standard for CMS; secret in query leaks via Referer until cookie is set. |
+| B3 | Vercel Deployment Protection (password / Vercel SSO / GitHub)                   | Protects **whole** preview; zero app code.                                        |
+| B4 | App-level GitHub OAuth / session (“authenticated user”)                         | Real auth product. Overkill for a few MDX drafts.                                 |
+| B5 | Vercel Flags / feature flag unlock                                              | What Fuma suggested; good for production gating, extra product surface.           |
+| B6 | Obscure-only: draft slugs work for anyone who knows the URL; omitted from index | Security through obscurity; still crawls if linked.                               |
 
 ### Layer C — Surface treatment
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| C1 | Allowed environments: same routes; drafts omitted from index/RSS/sitemap even there | Deep-link only. |
+| #  | Option                                                                                                     | Notes                                 |
+| -- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| C1 | Allowed environments: same routes; drafts omitted from index/RSS/sitemap even there                        | Deep-link only.                       |
 | C2 | Allowed environments: show in `/blog` with a clear **Draft** badge; still omit from production RSS/sitemap | Best for “did my preview include it?” |
-| C3 | Separate `/drafts/…` or `/blog/draft/…` prefix | Extra routes; CMS-ish. |
-| C4 | Production listing never; preview listing never; only direct slug | Easy to miss that the post exists. |
+| C3 | Separate `/drafts/…` or `/blog/draft/…` prefix                                                             | Extra routes; CMS-ish.                |
+| C4 | Production listing never; preview listing never; only direct slug                                          | Easy to miss that the post exists.    |
 
 ## Evaluation
 
@@ -163,12 +163,12 @@ unnecessary indirection. **C4** — maximizes “I don’t see it” confusion.
 
 ### Close call: A2+B1 vs A2+B3
 
-| | A2+B1 | A2+B3 |
-| --- | --- | --- |
-| Friction | Lowest | Login / password on every preview |
-| Leak | Anyone with the preview URL | Only allowed Vercel/GitHub users |
-| Tax | Code only | Vercel project setting |
-| When | Public OSS blog review | NDA / unreleased product copy |
+|          | A2+B1                       | A2+B3                             |
+| -------- | --------------------------- | --------------------------------- |
+| Friction | Lowest                      | Login / password on every preview |
+| Leak     | Anyone with the preview URL | Only allowed Vercel/GitHub users  |
+| Tax      | Code only                   | Vercel project setting            |
+| When     | Public OSS blog review      | NDA / unreleased product copy     |
 
 Ship A2+B1. Tuck B3 as optional ops, not app work.
 

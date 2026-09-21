@@ -80,7 +80,10 @@ describe("isPublishedBlogPage", () => {
 
 	it("includes draft pages in local development", () => {
 		expect(
-			isPublishedBlogPage({ data: { draft: true } }, { NODE_ENV: "development" }),
+			isPublishedBlogPage(
+				{ data: { draft: true } },
+				{ NODE_ENV: "development" },
+			),
 		).toBe(true);
 	});
 

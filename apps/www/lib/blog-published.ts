@@ -6,9 +6,7 @@
  * - Local without `VERCEL_ENV`: yes only when `NODE_ENV !== "production"`
  *   (`next dev`), so `next build` + `next start` stay draft-free
  */
-export function allowBlogDrafts(
-	env: NodeJS.ProcessEnv = process.env,
-): boolean {
+export function allowBlogDrafts(env: NodeJS.ProcessEnv = process.env): boolean {
 	const vercelEnv = env.VERCEL_ENV?.trim();
 	if (vercelEnv) {
 		return vercelEnv !== "production";
