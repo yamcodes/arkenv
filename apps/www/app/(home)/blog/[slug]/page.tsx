@@ -1,9 +1,11 @@
 import "../blog.css";
 import { InlineTOC } from "fumadocs-ui/components/inline-toc";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteFooter } from "~/components/site-footer";
+import { getAuthorAvatarUrl, getAuthorGithub } from "~/lib/blog-author";
 import { blog, getBlogPages, SITE_URL } from "~/lib/source";
 import { getMDXComponents } from "~/mdx-components";
 
@@ -26,6 +28,16 @@ export default async function BlogPostPage(props: {
 	if (page.data.draft && process.env.NODE_ENV !== "development") notFound();
 
 	const MDX = page.data.body;
+	const githubHandle = getAuthorGithub(
+		page.data.author,
+		page.data.authorGithub,
+	);
+	const avatarUrl = githubHandle
+		? getAuthorAvatarUrl(githubHandle, 64)
+		: undefined;
+	const githubUrl = githubHandle
+		? `https://github.com/${githubHandle}`
+		: undefined;
 
 	return (
 		<div className="home-aurora__shell">
@@ -45,9 +57,60 @@ export default async function BlogPostPage(props: {
 						{page.data.description ? (
 							<p className="blog-page__lede">{page.data.description}</p>
 						) : null}
-						<p className="blog-page__post-meta">
-							{formatDate(page.data.date)} · {page.data.author}
-						</p>
+						<div className="blog-page__post-author">
+							{avatarUrl ? (
+								githubUrl ? (
+									<a
+										href={githubUrl}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="blog-page__author-avatar-link"
+										aria-label={`${page.data.author} on GitHub`}
+										data-no-underline
+										data-no-arrow
+									>
+										<Image
+											src={avatarUrl}
+											alt={page.data.author}
+											width={32}
+											height={32}
+											className="blog-page__avatar"
+											unoptimized
+										/>
+									</a>
+								) : (
+									<Image
+										src={avatarUrl}
+										alt={page.data.author}
+										width={32}
+										height={32}
+										className="blog-page__avatar"
+										unoptimized
+									/>
+								)
+							) : null}
+							<div className="blog-page__author-details">
+								{githubUrl ? (
+									<a
+										href={githubUrl}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="blog-page__author-name"
+										data-no-underline
+										data-no-arrow
+									>
+										{page.data.author}
+									</a>
+								) : (
+									<span className="blog-page__author-name">
+										{page.data.author}
+									</span>
+								)}
+								<span className="blog-page__post-date">
+									{formatDate(page.data.date)}
+								</span>
+							</div>
+						</div>
 					</header>
 					<div className="blog-page__post-body prose">
 						<InlineTOC items={page.data.toc} />

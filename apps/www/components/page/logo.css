@@ -15,9 +15,29 @@
 
 .logo__name {
 	color: var(--color-fd-foreground, var(--foreground, inherit));
-	font-weight: 600;
+	font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+	font-weight: 500;
 	font-size: 1.125rem;
+	letter-spacing: -0.01em;
 	line-height: 1;
+}
+
+/*
+ * Home hit target — icon + wordmark + RC. Used by Site Nav and Site Footer.
+ */
+.logo-link {
+	display: inline-flex;
+	align-items: center;
+	flex-shrink: 0;
+	text-decoration: none;
+	color: inherit;
+	border-radius: 0.25rem;
+	outline: none;
+}
+
+.logo-link:focus-visible {
+	outline: 2px solid var(--ring, var(--color-focus, currentColor));
+	outline-offset: 2px;
 }
 
 /*
