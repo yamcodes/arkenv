@@ -1,5 +1,6 @@
 import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/standard";
 import type { StandardSchemaV1 } from "@repo/types";
+import { assertNotNestedBag } from "@repo/utils/nested-bag-migration-error";
 import { arkenvInternal } from "@/arkenv-internal";
 import type { MergeExtends } from "../types";
 
@@ -31,8 +32,6 @@ export function arkenv<
 	schema: TSchema,
 	options?: {
 		exposeToClient?: readonly TExpose[];
-		expose?: readonly TExpose[];
-		shared?: readonly TExpose[];
 		extends?: [...TExtends];
 		runtimeEnv?: Record<string, unknown>;
 	},
@@ -44,53 +43,12 @@ export function arkenv<
 		MergeExtends<TExtends>
 >;
 
-/**
- * Create a validated, typesafe environment configuration for Next.js applications in Standard Mode.
- *
- * @deprecated Use the unified flat layout signature instead: `arkenv(schema, options)`
- * @param options The environment validation configuration options
- * @returns A validated, readonly environment variables object wrapped in a security proxy
- */
-export function arkenv<
-	const TServer extends Record<string, StandardSchemaV1> = {},
-	const TClient extends Record<string, StandardSchemaV1> = {},
-	const TShared extends Record<string, StandardSchemaV1> = {},
->(options: {
-	server?: TServer;
-	client?: TClient & {
-		[K in keyof TClient]: K extends `NEXT_PUBLIC_${string}` ? unknown : never;
-	};
-	shared?: TShared;
-	runtimeEnv: Record<keyof TClient | keyof TShared, unknown> &
-		Record<string, unknown>;
-}): Readonly<{
-	[K in keyof (TServer & TClient & TShared)]: StandardSchemaV1.InferOutput<
-		(TServer & TClient & TShared)[K]
-	>;
-}>;
-
-export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
-	const isLegacy =
-		schemaOrOptions &&
-		typeof schemaOrOptions === "object" &&
-		("runtimeEnv" in schemaOrOptions ||
-			"server" in schemaOrOptions ||
-			"client" in schemaOrOptions ||
-			"shared" in schemaOrOptions);
-
-	if (isLegacy) {
-		return arkenvInternal(
-			schemaOrOptions,
-			false,
-			undefined,
-			coreArkenv,
-			getSchemaKeys,
-		);
-	}
+export function arkenv(schema: any, options?: any): any {
+	assertNotNestedBag(schema, options);
 
 	return arkenvInternal(
-		schemaOrOptions,
-		optionsOrIsServer,
+		schema,
+		options,
 		{ isServer: false },
 		coreArkenv,
 		getSchemaKeys,

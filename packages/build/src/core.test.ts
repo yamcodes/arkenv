@@ -80,10 +80,20 @@ describe("@arkenv/build schema discovery", () => {
 			});
 		`;
 		const res = extractKeys(content, "NUXT_PUBLIC_");
-		expect(res.isLegacy).toBe(false);
 		expect(res.serverKeys).toEqual(["DATABASE_URL"]);
 		expect(res.clientKeys).toEqual(["NUXT_PUBLIC_API_URL"]);
 		expect(res.sharedKeys).toEqual(["NODE_ENV", "CUSTOM_VAR"]);
+	});
+
+	it("rejects nested bag schemas", () => {
+		const content = `
+			export const env = arkenv({
+				server: { DATABASE_URL: "string" },
+				client: { NUXT_PUBLIC_API_URL: "string" },
+				shared: { NODE_ENV: "string" },
+			});
+		`;
+		expect(() => extractKeys(content, "NUXT_PUBLIC_")).toThrow(/nested arkenv/);
 	});
 
 	it("extracts flat keys when schema values contain delimiter-like characters", () => {

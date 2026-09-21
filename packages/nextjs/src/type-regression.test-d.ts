@@ -34,87 +34,101 @@ const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({
 
 describe("@arkenv/nextjs type regression", () => {
 	it("infers client variables as their validated type", () => {
-		const env = arkenv({
-			server: {
+		const env = arkenv(
+			{
 				DATABASE_URL: "string",
-			},
-			client: {
 				NEXT_PUBLIC_API_URL: "string",
 			},
-			runtimeEnv: {
-				NEXT_PUBLIC_API_URL: "https://api.example.com",
+			{
+				runtimeEnv: {
+					NEXT_PUBLIC_API_URL: "https://api.example.com",
+				},
 			},
-		});
+		);
 
 		expectTypeOf(env.NEXT_PUBLIC_API_URL).toBeString();
 	});
 
 	it("infers docs-style imports as string values", () => {
-		const env = arkenv({
-			client: {
+		const env = arkenv(
+			{
 				NEXT_PUBLIC_API_URL: "string",
 			},
-			runtimeEnv: {
-				NEXT_PUBLIC_API_URL: "https://api.example.com",
+			{
+				runtimeEnv: {
+					NEXT_PUBLIC_API_URL: "https://api.example.com",
+				},
 			},
-		});
+		);
 
 		const apiUrl = env.NEXT_PUBLIC_API_URL;
 
 		expectTypeOf(apiUrl).toBeString();
 	});
 
-	it("validates ArkType schema strings across schema sections", () => {
-		arkenv({
-			server: {
+	it("validates ArkType schema strings in the flat schema", () => {
+		arkenv(
+			{
 				DATABASE_URL: "string.url",
 				PORT: "number.port = 3000",
-			},
-			client: {
 				NEXT_PUBLIC_API_URL: "string.url",
-			},
-			shared: {
 				NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 			},
-			runtimeEnv: {
-				NEXT_PUBLIC_API_URL: "https://api.example.com",
-				NODE_ENV: "development",
+			{
+				runtimeEnv: {
+					NEXT_PUBLIC_API_URL: "https://api.example.com",
+					NODE_ENV: "development",
+				},
 			},
-		});
+		);
 	});
 
-	it("rejects invalid ArkType schema strings across schema sections", () => {
-		arkenv({
-			server: {
+	it("rejects invalid ArkType schema strings in the flat schema", () => {
+		arkenv(
+			{
+				// @ts-expect-error invalid ArkType schema string
 				DATABASE_URL: "not-a-valid-type",
-				PORT: "not-a-valid-type",
+				NEXT_PUBLIC_API_URL: "string.url",
 			},
-			client: {
-				NEXT_PUBLIC_API_URL: "not-a-valid-type",
+			{
+				runtimeEnv: {
+					NEXT_PUBLIC_API_URL: "https://api.example.com",
+				},
 			},
-			shared: {
-				NODE_ENV: "not-a-valid-type",
-			},
-			// @ts-expect-error invalid ArkType schema string
-			runtimeEnv: {
-				NEXT_PUBLIC_API_URL: "https://api.example.com",
-				NODE_ENV: "development",
-			},
-		});
+		);
 	});
 
-	it("enforces NEXT_PUBLIC_ client keys", () => {
-		// @ts-expect-error client variables must be prefixed with NEXT_PUBLIC_
-		arkenv({
-			client: {
-				NEXT_PUBLIC_API_URL: "string.url",
-				API_URL: "string.url",
+	it("rejects the removed nested bag at the type level", () => {
+		arkenv(
+			// @ts-expect-error nested bag was removed — use flat arkenv(schema, options)
+			{
+				server: {
+					DATABASE_URL: "string",
+				},
+				client: {
+					NEXT_PUBLIC_API_URL: "string",
+				},
+				runtimeEnv: {
+					NEXT_PUBLIC_API_URL: "https://api.example.com",
+				},
 			},
-			runtimeEnv: {
-				NEXT_PUBLIC_API_URL: "https://api.example.com",
-				API_URL: "https://api.example.com",
+		);
+	});
+
+	it("rejects removed expose / shared option aliases", () => {
+		arkenv(
+			{
+				CUSTOM_VAR: "string",
+				NEXT_PUBLIC_API_URL: "string",
 			},
-		});
+			{
+				// @ts-expect-error expose alias was removed — use exposeToClient
+				expose: ["CUSTOM_VAR"],
+				runtimeEnv: {
+					NEXT_PUBLIC_API_URL: "https://api.example.com",
+				},
+			},
+		);
 	});
 
 	it("correctly types Flat Mode environment variables and filters them on client", () => {

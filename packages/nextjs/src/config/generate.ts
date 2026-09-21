@@ -20,40 +20,6 @@ const GENERATED_FOOTER = `
 export default arkenv;
 `;
 
-export function generateFactoryCode(
-	clientKeys: string[],
-	sharedKeys: string[],
-	isStandard?: boolean,
-): string {
-	const runtimeEnvLines = generateRuntimeEnvLines(clientKeys, sharedKeys);
-	const importPath = isStandard ? "@arkenv/nextjs/standard" : "@arkenv/nextjs";
-	const coreName = "arkenv";
-	const callPrefix = "coreArkenv";
-
-	return `${GENERATED_HEADER}
-import { ${coreName} as coreArkenv } from "${importPath}";
-
-export function arkenv<
-	const TServer extends Record<string, any> = {},
-	const TClient extends Record<string, any> = {},
-	const TShared extends Record<string, any> = {},
->(options: {
-	server?: TServer;
-	client?: TClient & {
-		[K in keyof TClient]: K extends \`NEXT_PUBLIC_\${string}\` ? unknown : never;
-	};
-	shared?: TShared;
-}) {
-	return ${callPrefix}({
-		...options,
-		runtimeEnv: {
-			${runtimeEnvLines}
-		},
-	} as any) as any;
-}
-${GENERATED_FOOTER}`;
-}
-
 export function generateFlatFactoryCode(
 	clientKeys: string[],
 	sharedKeys: string[],

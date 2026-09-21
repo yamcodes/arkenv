@@ -1,110 +1,66 @@
-import { logBuildWarning } from "@repo/log";
 import type { Dict, SchemaShape } from "@repo/types";
 import { boundaryAccessErrorMessage } from "@repo/utils/boundary-access-error";
+import { assertNotNestedBag } from "@repo/utils/nested-bag-migration-error";
 
 export const EXTENDED_ENV = Symbol.for("arkenv.extended_env");
 export const ENV_KEYS = Symbol.for("arkenv.keys");
 export const SERVER_ONLY_KEYS = Symbol.for("arkenv.server_only_keys");
 
-export type LegacyNestedSchema = {
-	server?: SchemaShape;
-	client?: SchemaShape;
-	shared?: SchemaShape;
-	extends?: readonly unknown[];
-	runtimeEnv?: Dict<string>;
-};
-
 export type FlatSchemaOptions = {
 	extends?: readonly unknown[];
 	runtimeEnv?: Dict<string>;
-	/**
-	 * @deprecated Use `exposeToClient` instead.
-	 */
-	expose?: readonly string[];
-	/**
-	 * @deprecated Use `exposeToClient` instead.
-	 */
-	shared?: readonly string[];
 	exposeToClient?: readonly string[];
 };
-
-let hasWarnedLegacy = false;
 
 /**
  * Validate and wrap environment variables in a security proxy.
  *
  * @internal
+ * @param schemaOrOptions The flat schema definition
+ * @param options Flat options (exposeToClient / extends / runtimeEnv)
+ * @param context Server vs client layout context
+ * @param coreArkenv The core arkenv validation function (either `@arkenv/core` or `@arkenv/standard`)
+ * @param getSchemaKeysArg Extracts the declared key names from a schema object
+ * @returns The wrapped environment proxy object
+ * @throws An error when the removed nested bag is passed, a client key lacks the public prefix, or runtimeEnv is incomplete
  */
 export function arkenvInternal(
-	schemaOrOptions: SchemaShape | LegacyNestedSchema | null | undefined,
-	optionsOrIsServer: FlatSchemaOptions | boolean | null | undefined,
+	schemaOrOptions: SchemaShape | null | undefined,
+	options: FlatSchemaOptions | null | undefined,
 	context:
 		| {
 				isServer: boolean;
 				isShared?: boolean;
 		  }
 		| undefined,
-	/**
-	 * The core arkenv validation function (either `@arkenv/core` or `@arkenv/standard`).
-	 */
 	coreArkenv: (schema: any, config?: any) => Record<string, unknown>,
-	/**
-	 * Extracts the declared key names from a schema object.
-	 */
 	getSchemaKeysArg: (schema: SchemaShape) => string[],
 ): unknown {
-	let server: SchemaShape = {};
-	let client: SchemaShape = {};
-	let shared: SchemaShape = {};
-	let extendsList: readonly unknown[] = [];
-	let runtimeEnv: Dict<string> = {};
-	let isServer = false;
+	assertNotNestedBag(schemaOrOptions, options);
 
-	if (typeof optionsOrIsServer === "boolean") {
-		if (process.env.NODE_ENV === "development" && !hasWarnedLegacy) {
-			hasWarnedLegacy = true;
-			logBuildWarning(
-				"Deprecated: The nested layout structure (specifying 'server', 'client', or 'shared' keys in arkenv) is deprecated and will be removed in the next major version. Please migrate to the flat layout. See guide: https://arkenv.js.org/docs/frameworks/nextjs",
-			);
-		}
-		// Old nested schema behavior (backward compatible)
-		const legacySchema = schemaOrOptions as
-			| LegacyNestedSchema
-			| null
-			| undefined;
-		server = (legacySchema?.server || {}) as SchemaShape;
-		client = (legacySchema?.client || {}) as SchemaShape;
-		shared = (legacySchema?.shared || {}) as SchemaShape;
-		extendsList = legacySchema?.extends || [];
-		runtimeEnv = (legacySchema?.runtimeEnv || {}) as Dict<string>;
-		isServer =
-			(globalThis as any).__arkenv_force_server__ === true ||
-			!!optionsOrIsServer;
+	const server: SchemaShape = {};
+	const client: SchemaShape = {};
+	const shared: SchemaShape = {};
+	const flatSchema = (schemaOrOptions || {}) as SchemaShape;
+	const flatOptions = options || {};
+	const extendsList = flatOptions.extends || [];
+	const runtimeEnv = (flatOptions.runtimeEnv || {}) as Dict<string>;
+	const isServer =
+		(globalThis as any).__arkenv_force_server__ === true || !!context?.isServer;
+
+	if (context?.isShared) {
+		Object.assign(shared, flatSchema);
 	} else {
-		// New flat schema behavior
-		const flatSchema = (schemaOrOptions || {}) as SchemaShape;
-		const options = optionsOrIsServer || {};
-		extendsList = options.extends || [];
-		runtimeEnv = (options.runtimeEnv || {}) as Dict<string>;
-		isServer =
-			(globalThis as any).__arkenv_force_server__ === true ||
-			!!context?.isServer;
-
-		if (context?.isShared) {
-			shared = flatSchema;
-		} else {
-			const exposedKeys =
-				options.exposeToClient || options.expose || options.shared || [];
-			for (const key of Object.keys(flatSchema)) {
-				// NODE_ENV is implicitly shared as Next.js automatically inlines and replaces references to process.env.NODE_ENV in browser bundles.
-				// See: https://nextjs.org/docs/app/guides/environment-variables
-				if (exposedKeys.includes(key) || key === "NODE_ENV") {
-					shared[key] = flatSchema[key];
-				} else if (key.startsWith("NEXT_PUBLIC_")) {
-					client[key] = flatSchema[key];
-				} else {
-					server[key] = flatSchema[key];
-				}
+		const exposedKeys = flatOptions.exposeToClient || [];
+		for (const key of Object.keys(flatSchema)) {
+			// NODE_ENV is implicitly shared as Next.js automatically inlines and replaces references to process.env.NODE_ENV in browser bundles.
+			// See: https://nextjs.org/docs/app/guides/environment-variables
+			if (exposedKeys.includes(key) || key === "NODE_ENV") {
+				shared[key] = flatSchema[key];
+			} else if (key.startsWith("NEXT_PUBLIC_")) {
+				client[key] = flatSchema[key];
+			} else {
+				server[key] = flatSchema[key];
 			}
 		}
 	}

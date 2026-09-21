@@ -28,6 +28,12 @@ export {
 	boundaryAccessErrorMessage,
 } from "./utils/boundary-access-error";
 export {
+	assertNotNestedBag,
+	isNestedBagCall,
+	NESTED_BAG_MIGRATION_URL,
+	nestedBagMigrationErrorMessage,
+} from "./utils/nested-bag-migration-error";
+export {
 	buildEnvIssue,
 	formatStandardIssueMessage,
 	getStandardMeta,

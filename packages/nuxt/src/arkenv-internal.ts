@@ -6,14 +6,13 @@ import {
 	ENV_KEYS,
 	EXTENDED_ENV,
 	type FlatSchemaOptions,
-	type LegacyNestedSchema,
 	parseSchemaShape,
 	type SchemaLayoutContext,
 	SERVER_ONLY_KEYS,
 } from "./schema-shape";
 import { isForceServer } from "./validate-context";
 
-export type { FlatSchemaOptions, LegacyNestedSchema, SchemaLayoutContext };
+export type { FlatSchemaOptions, SchemaLayoutContext };
 export { ENV_KEYS, EXTENDED_ENV, SERVER_ONLY_KEYS };
 
 /**
@@ -34,8 +33,8 @@ export type ArkenvInternalHooks = {
  * function is the symmetric thin accessor: server and client both read the
  * already-coerced `runtimeConfig` / `__NUXT__` payload.
  *
- * @param schemaOrOptions The schema definition or the unified options object
- * @param optionsOrIsServer The options object or a boolean indicating if running on the server
+ * @param schemaOrOptions The flat schema definition
+ * @param options Flat options (exposeToClient / extends / runtimeEnv)
  * @param context The optional execution context containing server and entrypoint flags
  * @param hooks Optional server hooks (boot gate)
  * @returns The wrapped environment proxy object
@@ -43,26 +42,19 @@ export type ArkenvInternalHooks = {
  * @internal
  */
 export function arkenvInternal(
-	schemaOrOptions: SchemaShape | LegacyNestedSchema | null | undefined,
-	optionsOrIsServer: FlatSchemaOptions | boolean | null | undefined,
+	schemaOrOptions: SchemaShape | null | undefined,
+	options: FlatSchemaOptions | null | undefined,
 	context: SchemaLayoutContext | undefined,
 	hooks?: ArkenvInternalHooks,
 ): unknown {
-	const parsed = parseSchemaShape(schemaOrOptions, optionsOrIsServer, context);
+	const parsed = parseSchemaShape(schemaOrOptions, options, context);
 
 	if (isCapturing()) {
-		recordCapture(schemaOrOptions, optionsOrIsServer, context);
+		recordCapture(schemaOrOptions, options, context);
 		return createCaptureStub(parsed.declaredKeys);
 	}
 
-	const isServer =
-		isForceServer() ||
-		Boolean(
-			context?.isServer ||
-				(parsed.isLegacy &&
-					typeof optionsOrIsServer === "boolean" &&
-					optionsOrIsServer),
-		);
+	const isServer = isForceServer() || Boolean(context?.isServer);
 
 	const { server, client, shared, extendsList, runtimeEnv } = parsed;
 

@@ -24,7 +24,7 @@ describe("setupArkEnv non-wrapping API", () => {
 			schemaPath,
 			`
 			export const env = arkenv({
-				client: { NEXT_PUBLIC_VAL: "string" }
+				NEXT_PUBLIC_VAL: "string",
 			});
 			`,
 			"utf-8",
@@ -89,14 +89,16 @@ describe("dynamic client environment variable lookup", () => {
 			NEXT_PUBLIC_DYNAMIC: "dynamic-override",
 		};
 
-		const env = arkenv({
-			client: {
+		const env = arkenv(
+			{
 				NEXT_PUBLIC_DYNAMIC: "string",
 			},
-			runtimeEnv: {
-				NEXT_PUBLIC_DYNAMIC: "build-time-value",
+			{
+				runtimeEnv: {
+					NEXT_PUBLIC_DYNAMIC: "build-time-value",
+				},
 			},
-		});
+		);
 
 		expect(env.NEXT_PUBLIC_DYNAMIC).toBe("dynamic-override");
 
@@ -110,14 +112,16 @@ describe("dynamic client environment variable lookup", () => {
 			NEXT_PUBLIC_OTHER: "other-value",
 		};
 
-		const env = arkenv({
-			client: {
+		const env = arkenv(
+			{
 				NEXT_PUBLIC_DYNAMIC: "string",
 			},
-			runtimeEnv: {
-				NEXT_PUBLIC_DYNAMIC: "build-time-value",
+			{
+				runtimeEnv: {
+					NEXT_PUBLIC_DYNAMIC: "build-time-value",
+				},
 			},
-		});
+		);
 
 		expect(env.NEXT_PUBLIC_DYNAMIC).toBe("build-time-value");
 
@@ -125,14 +129,9 @@ describe("dynamic client environment variable lookup", () => {
 	});
 });
 
-describe("legacy nested layout deprecation warning", () => {
-	it("should warn on legacy nested layout structure in development mode", () => {
-		const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-		const originalNodeEnv = process.env.NODE_ENV;
-		process.env.NODE_ENV = "development";
-
-		try {
-			// Call legacy signature
+describe("nested bag removal", () => {
+	it("should throw a migration error for the nested bag API", () => {
+		expect(() => {
 			arkenv({
 				client: {
 					NEXT_PUBLIC_VAL: "string",
@@ -140,26 +139,7 @@ describe("legacy nested layout deprecation warning", () => {
 				runtimeEnv: {
 					NEXT_PUBLIC_VAL: "hello",
 				},
-			});
-
-			expect(warnSpy).toHaveBeenCalledTimes(1);
-			expect(warnSpy.mock.calls[0][0]).toContain(
-				"Deprecated: The nested layout structure",
-			);
-
-			// Calling it again should not warn (one-time warn)
-			arkenv({
-				client: {
-					NEXT_PUBLIC_VAL: "string",
-				},
-				runtimeEnv: {
-					NEXT_PUBLIC_VAL: "hello",
-				},
-			});
-			expect(warnSpy).toHaveBeenCalledTimes(1);
-		} finally {
-			process.env.NODE_ENV = originalNodeEnv;
-			warnSpy.mockRestore();
-		}
+			} as never);
+		}).toThrow(/nested arkenv\(\{ server, client, shared, runtimeEnv \}\) bag was removed/);
 	});
 });

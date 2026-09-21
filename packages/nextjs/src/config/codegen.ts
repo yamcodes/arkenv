@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { extractKeys } from "./extract";
-import { generateFactoryCode, generateFlatFactoryCode } from "./generate";
+import { generateFlatFactoryCode } from "./generate";
 import type { ArkEnvConfigOptions } from "./types";
 
 function detectStandard(content: string, forceStandard?: boolean): boolean {
@@ -80,10 +80,12 @@ export function runCodegen(
 	const fileContent = fs.readFileSync(schemaPath, "utf-8");
 	const isStandard = detectStandard(fileContent, forceStandard);
 
-	const { clientKeys, sharedKeys, isLegacy } = extractKeys(fileContent);
-	const generatedCode = isLegacy
-		? generateFactoryCode(clientKeys, sharedKeys, isStandard)
-		: generateFlatFactoryCode(clientKeys, sharedKeys, isStandard);
+	const { clientKeys, sharedKeys } = extractKeys(fileContent);
+	const generatedCode = generateFlatFactoryCode(
+		clientKeys,
+		sharedKeys,
+		isStandard,
+	);
 
 	const outputDir = path.dirname(outputPath);
 	if (!fs.existsSync(outputDir)) {

@@ -213,8 +213,8 @@ Package names for `@arkenv/nextjs` and `@arkenv/nuxt` did not change.
 After you switch the runtime import from `arkenv` to `@arkenv/core` (or
 the framework package), keep using `withArkEnv` or the Nuxt module.
 
-Nested `arkenv({ server, client, shared })` still runs. Prefer a flat
-schema. See
+Nested `arkenv({ server, client, shared })` is removed. Use a flat
+schema with `exposeToClient` for non-prefixed client keys. See
 [Client vs. server](/docs/core-concepts/client-vs-server)
 and the [Next.js](/docs/frameworks/nextjs) /
 [Nuxt](/docs/frameworks/nuxt) guides.
@@ -278,14 +278,27 @@ If your schema sits elsewhere, put the path on `--schema` in scripts:
 You can delete a leftover `"arkenv"` key from `package.json`; the CLI
 ignores it either way. See [check](/docs/reference/check).
 
-## Deprecated APIs
+## Removed APIs
 
-These still work on [`@arkenv/nextjs`](/docs/reference/nextjs) and
-[`@arkenv/nuxt`](/docs/reference/nuxt). They will be removed in a later
-release.
+These no longer work on [`@arkenv/nextjs`](/docs/reference/nextjs) or
+[`@arkenv/nuxt`](/docs/reference/nuxt):
 
 - Nested `arkenv({ server, client, shared })`. Use
-  `arkenv(schema, options)` instead.
+  `arkenv(schema, { exposeToClient })` instead:
+
+  ```ts
+  export const env = arkenv(
+    {
+      DATABASE_URL: "string",
+      NEXT_PUBLIC_API_URL: "string",
+      CUSTOM_PUBLIC: "string",
+    },
+    {
+      exposeToClient: ["CUSTOM_PUBLIC"],
+    },
+  );
+  ```
+
 - Options `expose` and `shared`. Use `exposeToClient`. See
   [Client vs. server](/docs/core-concepts/client-vs-server).
 - Config `layout: "simple"`. Use `"flat"`.

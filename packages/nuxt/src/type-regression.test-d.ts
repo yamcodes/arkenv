@@ -26,87 +26,101 @@ const createMockStandardSchema = <TOutput>(outputValue: TOutput) => ({
 
 describe("@arkenv/nuxt type regression", () => {
 	it("infers client variables as their validated type", () => {
-		const env = arkenv({
-			server: {
+		const env = arkenv(
+			{
 				DATABASE_URL: "string",
-			},
-			client: {
 				NUXT_PUBLIC_API_URL: "string",
 			},
-			runtimeEnv: {
-				NUXT_PUBLIC_API_URL: "https://api.example.com",
+			{
+				runtimeEnv: {
+					NUXT_PUBLIC_API_URL: "https://api.example.com",
+				},
 			},
-		});
+		);
 
 		expectTypeOf(env.NUXT_PUBLIC_API_URL).toBeString();
 	});
 
 	it("infers docs-style imports as string values", () => {
-		const env = arkenv({
-			client: {
+		const env = arkenv(
+			{
 				NUXT_PUBLIC_API_URL: "string",
 			},
-			runtimeEnv: {
-				NUXT_PUBLIC_API_URL: "https://api.example.com",
+			{
+				runtimeEnv: {
+					NUXT_PUBLIC_API_URL: "https://api.example.com",
+				},
 			},
-		});
+		);
 
 		const apiUrl = env.NUXT_PUBLIC_API_URL;
 
 		expectTypeOf(apiUrl).toBeString();
 	});
 
-	it("validates ArkType schema strings across schema sections", () => {
-		arkenv({
-			server: {
+	it("validates ArkType schema strings in the flat schema", () => {
+		arkenv(
+			{
 				DATABASE_URL: "string.url",
 				PORT: "number.port = 3000",
-			},
-			client: {
 				NUXT_PUBLIC_API_URL: "string.url",
-			},
-			shared: {
 				NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 			},
-			runtimeEnv: {
-				NUXT_PUBLIC_API_URL: "https://api.example.com",
-				NODE_ENV: "development",
+			{
+				runtimeEnv: {
+					NUXT_PUBLIC_API_URL: "https://api.example.com",
+					NODE_ENV: "development",
+				},
 			},
-		});
+		);
 	});
 
-	it("rejects invalid ArkType schema strings across schema sections", () => {
-		// @ts-expect-error invalid ArkType schema strings in nested layout
-		arkenv({
-			server: {
+	it("rejects invalid ArkType schema strings in the flat schema", () => {
+		arkenv(
+			{
+				// @ts-expect-error invalid ArkType schema string
 				DATABASE_URL: "not-a-valid-type",
-				PORT: "not-a-valid-type",
+				NUXT_PUBLIC_API_URL: "string.url",
 			},
-			client: {
-				NUXT_PUBLIC_API_URL: "not-a-valid-type",
+			{
+				runtimeEnv: {
+					NUXT_PUBLIC_API_URL: "https://api.example.com",
+				},
 			},
-			shared: {
-				NODE_ENV: "not-a-valid-type",
-			},
-			runtimeEnv: {
-				NUXT_PUBLIC_API_URL: "https://api.example.com",
-				NODE_ENV: "development",
-			},
-		});
+		);
 	});
 
-	it("enforces NUXT_PUBLIC_ client keys", () => {
-		arkenv({
-			client: {
-				NUXT_PUBLIC_API_URL: "string.url",
-				// @ts-expect-error client variables must be prefixed with NUXT_PUBLIC_
-				API_URL: "string.url",
+	it("rejects the removed nested bag at the type level", () => {
+		arkenv(
+			// @ts-expect-error nested bag was removed — use flat arkenv(schema, options)
+			{
+				server: {
+					DATABASE_URL: "string",
+				},
+				client: {
+					NUXT_PUBLIC_API_URL: "string",
+				},
+				runtimeEnv: {
+					NUXT_PUBLIC_API_URL: "https://api.example.com",
+				},
 			},
-			runtimeEnv: {
-				NUXT_PUBLIC_API_URL: "https://api.example.com",
-				API_URL: "https://api.example.com",
+		);
+	});
+
+	it("rejects removed expose / shared option aliases", () => {
+		arkenv(
+			{
+				CUSTOM_VAR: "string",
+				NUXT_PUBLIC_API_URL: "string",
 			},
-		});
+			{
+				// @ts-expect-error expose alias was removed — use exposeToClient
+				expose: ["CUSTOM_VAR"],
+				runtimeEnv: {
+					NUXT_PUBLIC_API_URL: "https://api.example.com",
+				},
+			},
+		);
 	});
 
 	it("correctly types flat layout environment variables", () => {

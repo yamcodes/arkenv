@@ -1,3 +1,4 @@
+import { nestedBagMigrationErrorMessage } from "@repo/utils/nested-bag-migration-error";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -8,7 +9,7 @@ import {
 } from "./config";
 
 describe("Nuxt config parser", () => {
-	it("should extract keys in nested layout", () => {
+	it("should reject nested layout extraction", () => {
 		const content = `
 			export const env = arkenv({
 				server: {
@@ -24,10 +25,7 @@ describe("Nuxt config parser", () => {
 			});
 		`;
 
-		const res = extractKeys(content);
-		expect(res.serverKeys).toEqual(["DATABASE_URL", "ADMIN_KEY"]);
-		expect(res.clientKeys).toEqual(["NUXT_PUBLIC_API_URL"]);
-		expect(res.sharedKeys).toEqual(["NODE_ENV"]);
+		expect(() => extractKeys(content)).toThrow(nestedBagMigrationErrorMessage());
 	});
 
 	it("should extract keys in flat layout", () => {
@@ -48,33 +46,29 @@ describe("Nuxt config parser", () => {
 		expect(res.sharedKeys).toEqual(["NODE_ENV", "CUSTOM_SHARED"]);
 	});
 
-	it("should handle parser edge cases with comments, nested objects, and templates", () => {
+	it("should handle flat parser edge cases with comments and templates", () => {
 		const content = `
 			export const env = arkenv({
-				server: {
-					// A single line comment
-					DATABASE_URL: "string", /* inline comment */
-					/* 
-					   Multi-line comment 
-					*/
-					ADMIN_KEY: "string",
-					NESTED: {
-						A: "string"
-					}
-				},
-				client: {
-					NUXT_PUBLIC_API_URL: "string = 'http://localhost'",
-					// NUXT_PUBLIC_IGNORE: "string"
-					NUXT_PUBLIC_TEMPLATE: \`string:\${1}\`
-				},
-				shared: {
-					NODE_ENV: "string"
-				}
+				// A single line comment
+				DATABASE_URL: "string", /* inline comment */
+				/* 
+				   Multi-line comment 
+				*/
+				ADMIN_KEY: "string",
+				NESTED_DESC: "host={localhost},port=5432",
+				NUXT_PUBLIC_API_URL: "string = 'http://localhost'",
+				// NUXT_PUBLIC_IGNORE: "string"
+				NUXT_PUBLIC_TEMPLATE: \`string:\${1}\`,
+				NODE_ENV: "string",
 			});
 		`;
 
 		const res = extractKeys(content);
-		expect(res.serverKeys).toEqual(["DATABASE_URL", "ADMIN_KEY", "NESTED"]);
+		expect(res.serverKeys).toEqual([
+			"DATABASE_URL",
+			"ADMIN_KEY",
+			"NESTED_DESC",
+		]);
 		expect(res.clientKeys).toEqual([
 			"NUXT_PUBLIC_API_URL",
 			"NUXT_PUBLIC_TEMPLATE",

@@ -1,10 +1,8 @@
-import { extractBlock, parseBlockKeys } from "@arkenv/build";
+import { parseBlockKeys } from "@arkenv/build";
+import { nestedBagMigrationErrorMessage } from "@repo/utils/nested-bag-migration-error";
 
 function parseExposeKeys(optionsArg: string): string[] {
-	const exposeMatch =
-		optionsArg.match(/exposeToClient\s*:\s*\[([\s\S]*?)\]/) ||
-		optionsArg.match(/expose\s*:\s*\[([\s\S]*?)\]/) ||
-		optionsArg.match(/shared\s*:\s*\[([\s\S]*?)\]/);
+	const exposeMatch = optionsArg.match(/exposeToClient\s*:\s*\[([\s\S]*?)\]/);
 	if (!exposeMatch) return [];
 
 	const keys: string[] = [];
@@ -125,20 +123,22 @@ function extractCallArguments(
 /**
  * Statically extract client and shared keys from the schema content.
  *
+ * Flat layout only. Nested bags throw a migration error.
+ *
  * @param content The schema file string content
  * @returns An object containing the extracted client and shared keys
+ * @throws An error when a nested bag shape is detected
  */
 export function extractKeys(content: string): {
 	clientKeys: string[];
 	sharedKeys: string[];
-	isLegacy?: boolean;
 } {
 	const clientKeys: string[] = [];
 	const sharedKeys: string[] = [];
 
 	const args = extractCallArguments(content);
 	if (!args) {
-		return { clientKeys, sharedKeys, isLegacy: false };
+		return { clientKeys, sharedKeys };
 	}
 
 	const trimmedSchema = args.schemaArg
@@ -146,17 +146,13 @@ export function extractKeys(content: string): {
 		.replace(/\}$/, "")
 		.trim();
 	const topKeys = parseBlockKeys(trimmedSchema);
-	const isLegacy =
+	const isNestedBag =
 		topKeys.includes("client") ||
 		topKeys.includes("server") ||
 		topKeys.includes("shared");
 
-	if (isLegacy) {
-		const clientBlock = extractBlock(args.schemaArg, "client");
-		if (clientBlock) clientKeys.push(...parseBlockKeys(clientBlock));
-		const sharedBlock = extractBlock(args.schemaArg, "shared");
-		if (sharedBlock) sharedKeys.push(...parseBlockKeys(sharedBlock));
-		return { clientKeys, sharedKeys, isLegacy };
+	if (isNestedBag) {
+		throw new Error(nestedBagMigrationErrorMessage());
 	}
 
 	const optionExposedKeys = args.optionsArg
@@ -173,5 +169,5 @@ export function extractKeys(content: string): {
 		}
 	}
 
-	return { clientKeys, sharedKeys, isLegacy };
+	return { clientKeys, sharedKeys };
 }
