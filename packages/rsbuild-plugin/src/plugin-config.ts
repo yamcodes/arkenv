@@ -5,6 +5,6 @@ import type { ParseStandardConfig as ArkEnvConfig } from "@repo/utils";
 /**
  * Combined config accepted by the Rsbuild plugin factory (transform + ArkEnv + logging).
  */
-export type RsbuildPluginFactoryConfig = Omit<ArkEnvConfig, "safe"> &
+export type RsbuildPluginFactoryConfig = ArkEnvConfig &
 	ArkEnvLogOptions &
 	RsbuildTransformOptions;

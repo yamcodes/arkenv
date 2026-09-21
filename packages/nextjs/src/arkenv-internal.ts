@@ -194,19 +194,9 @@ export function arkenvInternal(
 		}
 	}
 
-	const globalEnv =
-		typeof globalThis !== "undefined"
-			? (globalThis as any).__arkenv_env__
-			: undefined;
-
 	for (const key of Object.keys(runtimeEnv)) {
 		if (runtimeEnv[key] !== undefined) {
 			combinedEnv[key] = runtimeEnv[key];
-		}
-		if (globalEnv && globalEnv[key] !== undefined) {
-			if (key.startsWith("NEXT_PUBLIC_") || key in client || key in shared) {
-				combinedEnv[key] = globalEnv[key];
-			}
 		}
 	}
 

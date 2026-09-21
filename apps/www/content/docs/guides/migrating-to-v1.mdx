@@ -279,6 +279,22 @@ If your schema sits elsewhere, put the path on `--schema` in scripts:
 You can delete a leftover `"arkenv"` key from `package.json`; the CLI
 ignores it either way. See [check](/docs/reference/check).
 
+## Next.js `ArkEnvScript` removed
+
+`<ArkEnvScript />` and `globalThis.__arkenv_env__` are gone from
+`@arkenv/nextjs`. Client public env follows Next.js build-time inlining of
+`NEXT_PUBLIC_*` via codegen `runtimeEnv`. Runtime public-env injection
+without a rebuild is outside ArkEnv — use a dedicated ecosystem tool such
+as [`next-runtime-env`](https://github.com/expatfile/next-runtime-env), or
+keep dynamic public config on the server and pass it as props.
+
+See [Next.js and Docker](/docs/guides/nextjs-docker) for the bake-time
+default, the server-pass-props alternative, and when an ecosystem library
+is the right escape hatch.
+
+If you had `<ArkEnvScript />` in a root layout, delete the import and the
+component. Rebuild (or retag) images when public client values change.
+
 ## Removed in v1
 
 These APIs no longer work on [`@arkenv/nextjs`](/docs/reference/nextjs)

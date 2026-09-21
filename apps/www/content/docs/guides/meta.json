@@ -4,6 +4,7 @@
 		"index",
 		"ai",
 		"use-with-nestjs",
+		"nextjs-docker",
 		"migrating-to-v1",
 		"migrating-from-t3-env",
 		"migrating-from-a-getenv-helper"

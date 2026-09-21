@@ -41,7 +41,4 @@ export function arkenv(schema: any, options?: any): any {
 	);
 }
 
-export type { ArkEnvScriptProps } from "./script";
-export { ArkEnvScript } from "./script";
-
 export default arkenv;
