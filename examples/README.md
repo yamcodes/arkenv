@@ -4,8 +4,8 @@ This directory contains a collection of example projects that demonstrate variou
 
 ## Examples
 
-| Name                                                                                             | Description                                                                                                                                     |
-| ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name                                                                                           | Description                                                                                                                                     |
+| ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | [basic](https://github.com/yamcodes/arkenv/tree/v1/examples/basic)                             | Minimal example of *using ArkEnv in a [Node.js](https://nodejs.org/) app* for learning the fundamentals.                                        |
 | [with-nextjs](https://github.com/yamcodes/arkenv/tree/v1/examples/with-nextjs)                 | Minimal example of *using ArkEnv in a [Next.js](https://nextjs.org/) app*.                                                                      |
 | [with-nextjs-zod](https://github.com/yamcodes/arkenv/tree/v1/examples/with-nextjs-zod)         | Example of *using ArkEnv with [@arkenv/nextjs/standard](https://arkenv.js.org/docs/nextjs) and [Zod](https://zod.dev/)*.                        |
