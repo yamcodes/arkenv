@@ -35,7 +35,9 @@ describe("setupArkEnv non-wrapping API", () => {
 		expect(fs.existsSync(genPath)).toBe(true);
 
 		const generatedContent = fs.readFileSync(genPath, "utf-8");
-		expect(generatedContent).toContain("NEXT_PUBLIC_VAL: process.env.NEXT_PUBLIC_VAL,");
+		expect(generatedContent).toContain(
+			"NEXT_PUBLIC_VAL: process.env.NEXT_PUBLIC_VAL,",
+		);
 		expect(generatedContent).not.toContain("__arkenv_env__");
 	});
 });
