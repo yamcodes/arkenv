@@ -20,7 +20,8 @@ Don't let the label names give you the wrong impression: `ready for agent` simpl
    [Nub](https://nubjs.com/) is the recommended toolchain for this repo. It
    replaces `tsx` / `ts-node` / `tsconfig-paths` / `dotenv`, `pnpm run`,
    `npx` / `pnpm exec`, `pnpm install`, and `nvm` for local work, while
-   keeping the existing `pnpm-lock.yaml`.
+   keeping the existing `pnpm-lock.yaml`. Node is pinned to LTS in
+   `.node-version` and provisioned automatically on the next `nub` command.
 
    ```sh
    curl -fsSL https://nubjs.com/install.sh | bash

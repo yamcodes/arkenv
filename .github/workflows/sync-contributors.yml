@@ -35,6 +35,10 @@ jobs:
       - name: Generate contributors
         run: nub run --no-check contributors:generate
 
+      # setup-nub-ci dirties tracked `.node-version`; restore before porcelain.
+      - name: Restore committed Node pin
+        run: git checkout -- .node-version
+
       - name: Check for changes
         run: |
           if [ -n "$(git status --porcelain)" ]; then
@@ -74,6 +78,7 @@ jobs:
         run: |
           git config --global user.email "237618717+arkenv-bot[bot]@users.noreply.github.com"
           git config --global user.name "arkenv-bot[bot]"
+          git checkout -- .node-version
           if [ -n "$(git status --porcelain)" ]; then
             git add .
             git commit -m "chore: sync contributors"
