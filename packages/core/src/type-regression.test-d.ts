@@ -1,5 +1,11 @@
 import { describe, expectTypeOf, it } from "vitest";
-import { arkenv, type } from ".";
+import { type ArkEnvConfig, arkenv, type } from ".";
+
+describe("Type Regression (Issue #1912)", () => {
+	it("does not expose reserved safe on ArkEnvConfig", () => {
+		expectTypeOf<ArkEnvConfig>().not.toHaveProperty("safe");
+	});
+});
 
 describe("Type Regression (Issue #796)", () => {
 	it("inline and explicit schemas infer the same type", () => {

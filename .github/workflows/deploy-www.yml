@@ -32,6 +32,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # Full history so blog post dates resolve from first-add commits
+          # (shallow checkouts invent a fake "add" at the boundary commit).
+          fetch-depth: 0
       - name: Set up Turborepo Remote Cache
         uses: ./.github/actions/setup-turbo-remote-cache
         with:

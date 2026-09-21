@@ -1,0 +1,153 @@
+---
+title: Next.js and Docker
+description: Bake-time NEXT_PUBLIC_* values, runtime server secrets, and what to do when public env must change without a rebuild.
+---
+
+ArkEnv validates and types your Next.js environment variables. It does not
+replace Next.js’s build-time model for `NEXT_PUBLIC_*`. In Docker that means
+**public client values are baked at `next build`**, while **server secrets
+stay injectable at container start**.
+
+Nuxt can swap public config without rebuilding because Nitro’s
+`runtimeConfig` is a host feature. Next.js freezes `NEXT_PUBLIC_*` in the
+client bundle. `@arkenv/nextjs` respects that boundary instead of shipping a
+parallel browser global.
+
+## Default path: bake public values at build
+
+Enable Next.js standalone output so the image can copy
+`.next/standalone`. `withArkEnv` still validates the schema at build time,
+so every required key — including server secrets — needs a value during
+`npm run build`. Pass a build-only placeholder for secrets; inject the real
+value when the container starts.
+
+```ts title="next.config.ts"
+import type { NextConfig } from "next";
+import { withArkEnv } from "@arkenv/nextjs/config";
+
+const nextConfig: NextConfig = {
+  output: "standalone",
+};
+
+export default withArkEnv(nextConfig);
+```
+
+```dockerfile title="Dockerfile"
+FROM node:22-alpine AS build
+WORKDIR /app
+COPY . .
+ARG NEXT_PUBLIC_API_URL
+# Placeholder for build-time withArkEnv validation — not the runtime secret
+ARG DATABASE_URL=postgres://build:build@127.0.0.1:5432/build
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV DATABASE_URL=$DATABASE_URL
+RUN npm ci && npm run build
+
+FROM node:22-alpine
+WORKDIR /app
+COPY --from=build /app/.next/standalone ./
+COPY --from=build /app/.next/static ./.next/static
+COPY --from=build /app/public ./public
+CMD ["node", "server.js"]
+```
+
+```bash title="Terminal"
+# Staging image — public URL frozen into the client bundle
+docker build \
+  --build-arg NEXT_PUBLIC_API_URL=https://api.staging.example.com \
+  -t app:staging .
+
+docker run -e DATABASE_URL=postgres://… app:staging
+
+# Production — different public URL means a different build
+docker build \
+  --build-arg NEXT_PUBLIC_API_URL=https://api.example.com \
+  -t app:prod .
+```
+
+Keep the schema ordinary. `withArkEnv` codegen maps client keys to
+`process.env.*` so Next can inline them:
+
+```ts title="env.ts"
+import arkenv from "@/.arkenv";
+
+export const env = arkenv({
+  DATABASE_URL: "string.url",
+  NEXT_PUBLIC_API_URL: "string.url",
+});
+```
+
+`DATABASE_URL` can change on `docker run`. `NEXT_PUBLIC_API_URL` cannot —
+it was replaced at build time.
+
+<Callout type="info" title="Skipping validation at build">
+  If you refuse to pass even a placeholder secret into the build stage, set
+  `withArkEnv(nextConfig, { validate: false })`. You lose fail-fast checks
+  during `next build`; runtime (or a separate `arkenv check` in CI) must
+  catch missing keys instead.
+</Callout>
+
+## Dynamic public config: keep it off `NEXT_PUBLIC_*`
+
+When a value must vary per deploy without rebuilding the client bundle,
+do not put it on a `NEXT_PUBLIC_*` key. Read it on the server and pass it
+as props (or serve it from a Route Handler).
+
+```ts title="env.ts"
+import arkenv from "@/.arkenv";
+
+export const env = arkenv({
+  DATABASE_URL: "string.url",
+  // Server-only — not inlined into the client chunk
+  API_URL: "string.url",
+});
+```
+
+```tsx title="app/page.tsx"
+import { env } from "../env";
+import { ClientWidget } from "./client-widget";
+
+export default function Page() {
+  return <ClientWidget apiUrl={env.API_URL} />;
+}
+```
+
+```tsx title="app/client-widget.tsx"
+"use client";
+
+export function ClientWidget({ apiUrl }: { apiUrl: string }) {
+  return <p>API: {apiUrl}</p>;
+}
+```
+
+One image can then swap `API_URL` at container start. The browser never
+needed a build-time public literal. Build still needs placeholders (or
+`validate: false`) for every required server key, same as above.
+
+## Runtime public injection without rebuilds
+
+If you need client-side `NEXT_PUBLIC_*` values to change without a rebuild,
+that transport is outside ArkEnv. Use a dedicated ecosystem library such as
+[`next-runtime-env`](https://github.com/expatfile/next-runtime-env) (or a
+maintained fork), or an entrypoint that rewrites the built JS.
+
+ArkEnv still validates whatever lands in `process.env` on the server. It
+does not inject `globalThis.__arkenv_env__` or export `<ArkEnvScript />`.
+
+<Callout type="info" title="Why ArkEnv does not ship this">
+  Shipping a runtime public-env global would tax every Next user — including
+  Vercel and other build-per-environment deploys — for a Docker escape hatch
+  that fights Next’s compiler. Nuxt gets no-rebuild public env from Nitro;
+  Next does not, and polyfilling that gap belongs to a dedicated tool, not
+  the validation adapter.
+</Callout>
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/frameworks/nextjs" title="Next.js guide" description="withArkEnv, codegen, and NEXT_PUBLIC_ prefixes." />
+
+  <Card href="/docs/guides/migrating-to-v1" title="Migrating to v1" description="Removed ArkEnvScript and other v1 boundary changes." />
+
+  <Card href="/docs/frameworks" title="Frameworks" description="Which hosts rebuild for public env and which hydrate at runtime." />
+</Cards>

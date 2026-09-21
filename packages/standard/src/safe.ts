@@ -13,7 +13,7 @@ import type { StandardEnvConfig } from "./index";
 
 export type { SafeArkEnvResult };
 
-type SafeStandardEnvConfig = Omit<StandardEnvConfig, "safe">;
+type SafeStandardEnvConfig = StandardEnvConfig;
 
 type StandardEnvOutput<T extends Record<string, StandardSchemaV1>> = {
 	[K in keyof T]: StandardSchemaV1.InferOutput<T[K]>;

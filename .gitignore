@@ -73,6 +73,8 @@ ignore-me/
 
 # pnpm store
 .pnpm-store
+.npm_cache/
+.pnpm-home/
 
 
 #.gemini/
