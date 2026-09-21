@@ -74,8 +74,9 @@ export default async function BlogPostPage(props: {
 											alt={page.data.author}
 											width={32}
 											height={32}
+											sizes="32px"
 											className="blog-page__avatar"
-											unoptimized
+											priority
 										/>
 									</a>
 								) : (
@@ -84,8 +85,9 @@ export default async function BlogPostPage(props: {
 										alt={page.data.author}
 										width={32}
 										height={32}
+										sizes="32px"
 										className="blog-page__avatar"
-										unoptimized
+										priority
 									/>
 								)
 							) : null}

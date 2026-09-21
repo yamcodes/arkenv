@@ -12,6 +12,9 @@ import {
 const config = {
 	outputFileTracingRoot: path.join(__dirname, "../../"),
 	images: {
+		// Blog author PFPs are tiny and change rarely; cache optimized
+		// variants longer than the default so repeat visits stay fast.
+		minimumCacheTTL: 60 * 60 * 24 * 31,
 		remotePatterns: [
 			{
 				protocol: "https",

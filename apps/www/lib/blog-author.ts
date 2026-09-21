@@ -22,8 +22,12 @@ export function getAuthorGithub(
 }
 
 /**
- * Returns a direct GitHub avatar image URL.
+ * Returns a direct GitHub avatar image URL (no redirect).
+ *
+ * Prefer `avatars.githubusercontent.com` over `github.com/{user}.png`, which
+ * 302s with `Cache-Control: no-cache` and forces a cold fetch on every render
+ * when `next/image` is marked `unoptimized`.
  */
 export function getAuthorAvatarUrl(githubHandle: string, size = 64): string {
-	return `https://github.com/${githubHandle}.png?size=${size}`;
+	return `https://avatars.githubusercontent.com/${githubHandle}?s=${size}`;
 }

@@ -22,7 +22,7 @@ describe("blog-author", () => {
 
 	it("generates avatar url", () => {
 		expect(getAuthorAvatarUrl("yamcodes", 32)).toBe(
-			"https://github.com/yamcodes.png?size=32",
+			"https://avatars.githubusercontent.com/yamcodes?s=32",
 		);
 	});
 });

@@ -70,8 +70,8 @@ export default function BlogIndexPage() {
 												alt=""
 												width={20}
 												height={20}
+												sizes="20px"
 												className="blog-page__avatar blog-page__avatar--sm"
-												unoptimized
 											/>
 										) : null}
 										<span>{page.data.author}</span>
