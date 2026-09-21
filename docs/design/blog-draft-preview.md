@@ -3,8 +3,8 @@
 Living evaluation, not an ADR. Update this file as options enter or leave
 the hat. Promoted decisions belong in `docs/adr/`.
 
-**Status:** working note (no issue yet). **Chosen public story:**
-`A2 + B1 + C2` (implemented in `apps/www`).
+**Status:** working note for PR [#1907](https://github.com/yamcodes/arkenv/pull/1907).
+**Chosen public story:** `A2 + B1 + C2` (implemented in `apps/www`).
 
 ## Field research (what others do)
 
