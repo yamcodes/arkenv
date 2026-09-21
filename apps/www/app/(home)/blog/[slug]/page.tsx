@@ -59,9 +59,6 @@ export default async function BlogPostPage(props: {
 								<span className="blog-page__draft-badge">Draft</span>
 							) : null}
 						</h1>
-						{page.data.description ? (
-							<p className="blog-page__lede">{page.data.description}</p>
-						) : null}
 						<div className="blog-page__post-author">
 							{avatarUrl ? (
 								githubUrl ? (
