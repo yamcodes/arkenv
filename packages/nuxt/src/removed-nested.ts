@@ -4,8 +4,8 @@ const MIGRATION_GUIDE_URL = "https://arkenv.js.org/docs/guides/migrating-to-v1";
  * Migration-oriented error for callers still using the removed nested bag API.
  */
 export const REMOVED_NESTED_BAG_MESSAGE =
-	`The nested arkenv({ server, client, shared, runtimeEnv }) API has been removed. ` +
-	`Use flat arkenv(schema, { exposeToClient, runtimeEnv }) instead. ` +
+	"The nested arkenv({ server, client, shared, runtimeEnv }) API has been removed. " +
+	"Use flat arkenv(schema, { exposeToClient, runtimeEnv }) instead. " +
 	`See ${MIGRATION_GUIDE_URL}`;
 
 /**

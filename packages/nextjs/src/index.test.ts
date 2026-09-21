@@ -27,10 +27,7 @@ describe("arkenv (RSC / Server Entrypoint)", () => {
 		process.env.DATABASE_URL = "postgres://localhost:5432/db";
 
 		try {
-			const env = serverArkenv(
-				{ DATABASE_URL: "string" },
-				{ runtimeEnv: {} },
-			);
+			const env = serverArkenv({ DATABASE_URL: "string" }, { runtimeEnv: {} });
 			expect(env.DATABASE_URL).toBe("postgres://localhost:5432/db");
 		} finally {
 			if (originalEnv === undefined) {

@@ -34,8 +34,8 @@ export function arkenvInternal(
 	 */
 	getSchemaKeysArg: (schema: SchemaShape) => string[],
 ): unknown {
-	let server: SchemaShape = {};
-	let client: SchemaShape = {};
+	const server: SchemaShape = {};
+	const client: SchemaShape = {};
 	let shared: SchemaShape = {};
 
 	const flatSchema = (schemaOrOptions || {}) as SchemaShape;

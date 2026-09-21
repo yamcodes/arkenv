@@ -59,8 +59,8 @@ export function parseSchemaShape(
 	const extendsList = options.extends || [];
 	const runtimeEnv = (options.runtimeEnv || {}) as Dict<string>;
 
-	let server: SchemaShape = {};
-	let client: Record<string, unknown> = {};
+	const server: SchemaShape = {};
+	const client: Record<string, unknown> = {};
 	let shared: SchemaShape = {};
 
 	if (context?.isShared) {

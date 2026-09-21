@@ -69,11 +69,9 @@ describe("schema-shape helper", () => {
 		});
 
 		it("does not treat a flat env key named server as nested", () => {
-			const parsed = parseSchemaShape(
-				{ server: "string" },
-				undefined,
-				{ isServer: true },
-			);
+			const parsed = parseSchemaShape({ server: "string" }, undefined, {
+				isServer: true,
+			});
 			expect(Object.keys(parsed.server)).toEqual(["server"]);
 		});
 	});

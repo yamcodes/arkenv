@@ -28,10 +28,5 @@ export function dispatchFlatThinArkenv(
 			? { ensureBootGate: dispatchOptions.ensureBootGate }
 			: undefined;
 
-	return arkenvInternal(
-		schema as never,
-		options as never,
-		{ isServer },
-		hooks,
-	);
+	return arkenvInternal(schema as never, options as never, { isServer }, hooks);
 }

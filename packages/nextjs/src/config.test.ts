@@ -140,7 +140,9 @@ describe("config key extraction", () => {
 			});
 		`;
 
-		expect(() => extractKeys(source)).toThrow(/nested arkenv\(\{ server, client, shared/);
+		expect(() => extractKeys(source)).toThrow(
+			/nested arkenv\(\{ server, client, shared/,
+		);
 	});
 });
 
