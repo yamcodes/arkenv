@@ -33,16 +33,10 @@ describe("config key extraction", () => {
 		const source = `
 			import arkenv from "./env.gen";
 			export const env = arkenv({
-				server: {
-					DATABASE_URL: "string",
-				},
-				client: {
-					NEXT_PUBLIC_API_URL: "string",
-					NEXT_PUBLIC_APP_TITLE: "string = 'My App'",
-				},
-				shared: {
-					NODE_ENV: "string",
-				}
+				DATABASE_URL: "string",
+				NEXT_PUBLIC_API_URL: "string",
+				NEXT_PUBLIC_APP_TITLE: "string = 'My App'",
+				NODE_ENV: "string",
 			});
 		`;
 
@@ -58,12 +52,10 @@ describe("config key extraction", () => {
 	it("should handle single-line comments", () => {
 		const source = `
 			export const env = arkenv({
-				client: {
-					// This is a comment
-					NEXT_PUBLIC_VAR_1: "string",
-					// Another comment: with colon
-					NEXT_PUBLIC_VAR_2: "string",
-				}
+				// This is a comment
+				NEXT_PUBLIC_VAR_1: "string",
+				// Another comment: with colon
+				NEXT_PUBLIC_VAR_2: "string",
 			});
 		`;
 
@@ -74,12 +66,10 @@ describe("config key extraction", () => {
 	it("should handle multi-line comments", () => {
 		const source = `
 			export const env = arkenv({
-				client: {
-					/*
-					* Multi-line comment:
-					*/
-					NEXT_PUBLIC_VAR_1: "string",
-				}
+				/*
+				* Multi-line comment:
+				*/
+				NEXT_PUBLIC_VAR_1: "string",
 			});
 		`;
 
@@ -90,11 +80,9 @@ describe("config key extraction", () => {
 	it("should ignore string values that contain colons", () => {
 		const source = `
 			export const env = arkenv({
-				client: {
-					NEXT_PUBLIC_API_URL: "string = 'http://localhost:3000'",
-					NEXT_PUBLIC_NESTED: 'string = "foo:bar"',
-					NEXT_PUBLIC_TEMPLATE: \`string = "baz:qux"\`,
-				}
+				NEXT_PUBLIC_API_URL: "string = 'http://localhost:3000'",
+				NEXT_PUBLIC_NESTED: 'string = "foo:bar"',
+				NEXT_PUBLIC_TEMPLATE: \`string = "baz:qux"\`,
 			});
 		`;
 
@@ -109,10 +97,8 @@ describe("config key extraction", () => {
 	it("should extract quoted keys correctly", () => {
 		const source = `
 			export const env = arkenv({
-				client: {
-					"NEXT_PUBLIC_VAR_1": "string",
-					'NEXT_PUBLIC_VAR_2': "string",
-				}
+				"NEXT_PUBLIC_VAR_1": "string",
+				'NEXT_PUBLIC_VAR_2': "string",
 			});
 		`;
 
@@ -120,14 +106,12 @@ describe("config key extraction", () => {
 		expect(clientKeys).toEqual(["NEXT_PUBLIC_VAR_1", "NEXT_PUBLIC_VAR_2"]);
 	});
 
-	it("should ignore braces inside string templates or comments in extractBlock", () => {
+	it("should ignore braces inside string templates or comments", () => {
 		const source = `
 			export const env = arkenv({
-				client: {
-					NEXT_PUBLIC_VAR_1: "string = '{not-a-brace}'",
-					// {comment-brace}
-					NEXT_PUBLIC_VAR_2: "string = 'foo'",
-				}
+				NEXT_PUBLIC_VAR_1: "string = '{not-a-brace}'",
+				// {comment-brace}
+				NEXT_PUBLIC_VAR_2: "string = 'foo'",
 			});
 		`;
 
@@ -138,10 +122,8 @@ describe("config key extraction", () => {
 	it("should ignore nested keys inside complex values in parseBlockKeys", () => {
 		const source = `
 			export const env = arkenv({
-				client: {
-					NEXT_PUBLIC_VAR_1: type("string", { description: "nested:key" }),
-					NEXT_PUBLIC_VAR_2: "string",
-				}
+				NEXT_PUBLIC_VAR_1: type("string", { description: "nested:key" }),
+				NEXT_PUBLIC_VAR_2: "string",
 			});
 		`;
 
@@ -149,22 +131,18 @@ describe("config key extraction", () => {
 		expect(clientKeys).toEqual(["NEXT_PUBLIC_VAR_1", "NEXT_PUBLIC_VAR_2"]);
 	});
 
-	it("should extract keys when using ArkType 'type({...})' wrapper", () => {
+	it("should reject the removed nested bag API", () => {
 		const source = `
 			export const env = arkenv({
-				client: type({
-					NEXT_PUBLIC_VAR_1: "string",
-					NEXT_PUBLIC_VAR_2: "string",
-				}),
-				shared: at.type({
-					NODE_ENV: "string",
-				})
+				server: { DATABASE_URL: "string" },
+				client: { NEXT_PUBLIC_API_URL: "string" },
+				shared: { NODE_ENV: "string" },
 			});
 		`;
 
-		const { clientKeys, sharedKeys } = extractKeys(source);
-		expect(clientKeys).toEqual(["NEXT_PUBLIC_VAR_1", "NEXT_PUBLIC_VAR_2"]);
-		expect(sharedKeys).toEqual(["NODE_ENV"]);
+		expect(() => extractKeys(source)).toThrow(
+			/nested arkenv\(\{ server, client, shared/,
+		);
 	});
 });
 
@@ -189,12 +167,8 @@ describe("codegen process", () => {
 			`
 			import arkenv from "./env.gen";
 			export const env = arkenv({
-				client: {
-					NEXT_PUBLIC_API_URL: "string",
-				},
-				shared: {
-					NODE_ENV: "string",
-				}
+				NEXT_PUBLIC_API_URL: "string",
+				NODE_ENV: "string",
 			});
 			`,
 			"utf-8",
@@ -241,9 +215,7 @@ describe("codegen process", () => {
 			schemaPath,
 			`
 			export const env = arkenv({
-				client: {
-					NEXT_PUBLIC_API_URL: "string",
-				}
+				NEXT_PUBLIC_API_URL: "string",
 			});
 			`,
 			"utf-8",
@@ -266,10 +238,10 @@ describe("codegen process", () => {
 		// Wait! Let's check my template:
 		// Yes! The generated template does NOT import any config! It only imports coreArkenv from "@arkenv/nextjs"!
 		// Oh, wow! That is even simpler and cleaner!
-		// Wait, let's verify if my generateFactoryCode template has any relative import of config:
+		// Wait, let's verify if my generateFlatFactoryCode template has any relative import of config:
 		// No, it doesn't! It just exports the generic wrapper function `arkenv`.
-		// But wait! Why does `generateFactoryCode` compute `relativeImportPath`?
-		// Ah! In `generateFactoryCode`, we computed `relativeImportPath` but we didn't actually use it in the returned string template!
+		// But wait! Why does `generateFlatFactoryCode` compute `relativeImportPath`?
+		// Ah! In `generateFlatFactoryCode`, we computed `relativeImportPath` but we didn't actually use it in the returned string template!
 		// Oh, let me check my config.ts code:
 		// Yes, I defined:
 		// `let relativeImportPath = path.relative(outputDir, schemaPath);`
@@ -294,9 +266,7 @@ describe("codegen process", () => {
 			schemaPath,
 			`
 			export const env = arkenv({
-				client: {
-					NEXT_PUBLIC_API_URL: "string",
-				}
+				NEXT_PUBLIC_API_URL: "string",
 			});
 			`,
 			"utf-8",
@@ -332,7 +302,7 @@ describe("withArkEnv wrapper", () => {
 			schemaPath,
 			`
 			export const env = arkenv({
-				client: { NEXT_PUBLIC_API_URL: "string" }
+				NEXT_PUBLIC_API_URL: "string",
 			});
 			`,
 			"utf-8",
@@ -373,7 +343,7 @@ describe("withArkEnv wrapper", () => {
 			schemaPath,
 			`
 			export const env = arkenv({
-				client: { NEXT_PUBLIC_API_URL: "string" }
+				NEXT_PUBLIC_API_URL: "string",
 			});
 			`,
 			"utf-8",
@@ -420,7 +390,7 @@ describe("withArkEnv wrapper", () => {
 			schemaPath,
 			`
 			export const env = arkenv({
-				client: { NEXT_PUBLIC_API_URL: "string" }
+				NEXT_PUBLIC_API_URL: "string",
 			});
 			`,
 			"utf-8",
@@ -460,7 +430,7 @@ describe("withArkEnv wrapper", () => {
 
 		fs.writeFileSync(
 			schemaPath,
-			`export const env = arkenv({ client: { NEXT_PUBLIC_API_URL: "string" } });`,
+			`export const env = arkenv({ NEXT_PUBLIC_API_URL: "string" });`,
 			"utf-8",
 		);
 
@@ -496,7 +466,7 @@ describe("withArkEnv wrapper", () => {
 			schemaPath,
 			`
 			export const env = arkenv({
-				client: { NEXT_PUBLIC_API_URL: "string" }
+				NEXT_PUBLIC_API_URL: "string",
 			});
 			`,
 			"utf-8",
@@ -527,7 +497,7 @@ describe("withArkEnv wrapper", () => {
 
 		fs.writeFileSync(
 			schemaPath,
-			`export const env = arkenv({ client: { NEXT_PUBLIC_API_URL: "string" } });`,
+			`export const env = arkenv({ NEXT_PUBLIC_API_URL: "string" });`,
 			"utf-8",
 		);
 
@@ -567,17 +537,16 @@ describe("Flat Mode config key extraction", () => {
 			});
 		`;
 
-		const { clientKeys, sharedKeys, isLegacy } = extractKeys(source);
+		const { clientKeys, sharedKeys } = extractKeys(source);
 
 		expect(clientKeys).toEqual([
 			"NEXT_PUBLIC_API_URL",
 			"NEXT_PUBLIC_APP_TITLE",
 		]);
 		expect(sharedKeys).toEqual(["NODE_ENV", "CUSTOM_EXPOSE"]);
-		expect(isLegacy).toBe(false);
 	});
 
-	it("should support deprecated expose option in Flat Mode key extraction", () => {
+	it("should reject removed expose / shared option aliases", () => {
 		const source = `
 			import arkenv from "./env.gen";
 			export const env = arkenv({
@@ -589,23 +558,8 @@ describe("Flat Mode config key extraction", () => {
 			});
 		`;
 
-		const { sharedKeys } = extractKeys(source);
-		expect(sharedKeys).toEqual(["NODE_ENV", "CUSTOM_EXPOSE"]);
-	});
-
-	it("should support deprecated shared option in Flat Mode key extraction", () => {
-		const source = `
-			import arkenv from "./env.gen";
-			export const env = arkenv({
-				DATABASE_URL: "string",
-				NODE_ENV: "string",
-				CUSTOM_SHARED: "string",
-			}, {
-				shared: ["CUSTOM_SHARED"]
-			});
-		`;
-
-		const { sharedKeys } = extractKeys(source);
-		expect(sharedKeys).toEqual(["NODE_ENV", "CUSTOM_SHARED"]);
+		expect(() => extractKeys(source)).toThrow(
+			/expose and shared option aliases/,
+		);
 	});
 });

@@ -7,13 +7,10 @@ describe("arktypeTwoslashOptions", () => {
 		const result = twoslasher(
 			`// @filename: env.ts
 import arkenv from "@arkenv/nextjs";
-export const env = arkenv({
-	server: { DATABASE_URL: "string" },
-	client: { NEXT_PUBLIC_API_URL: "string" },
-	runtimeEnv: {
-		NEXT_PUBLIC_API_URL: "https://api.example.com",
-	}
-});
+export const env = arkenv(
+	{ NEXT_PUBLIC_API_URL: "string", DATABASE_URL: "string" },
+	{ runtimeEnv: { NEXT_PUBLIC_API_URL: "https://api.example.com" } }
+);
 
 // @filename: page.tsx
 // ---cut---

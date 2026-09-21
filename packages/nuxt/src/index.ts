@@ -6,29 +6,10 @@ import type { FlatSchemaOptions } from "./schema-shape";
 import { dispatchFlatThinArkenv } from "./thin-accessor";
 
 /**
- * Create a typesafe environment configuration for Nuxt (nested schema).
+ * Create a typesafe environment configuration for Nuxt.
  *
  * Reads already-coerced values from Nuxt `runtimeConfig` / `__NUXT__`.
  * This entry does not re-validate.
- *
- * @param options Nested server/client/shared schema options
- * @returns A readonly environment proxy
- */
-export function arkenv<
-	const TServer extends SchemaShape = {},
-	const TClient extends SchemaShape = {},
-	const TShared extends SchemaShape = {},
->(options: {
-	server?: EnvSchema<TServer>;
-	client?: EnvSchema<TClient> & {
-		[K in keyof TClient]: K extends `NUXT_PUBLIC_${string}` ? unknown : never;
-	};
-	shared?: EnvSchema<TShared>;
-	runtimeEnv?: Record<string, unknown>;
-}): Readonly<Infer<TServer & TClient & TShared>>;
-
-/**
- * Create a typesafe environment configuration for Nuxt (flat schema).
  *
  * @param schema Flat schema definition
  * @param options Optional extends / exposeToClient / runtimeEnv
@@ -40,10 +21,10 @@ export function arkenv<const TSchema extends SchemaShape = {}>(
 ): Readonly<Infer<TSchema>>;
 
 export function arkenv(
-	schemaOrOptions: SchemaShape | Record<string, unknown>,
-	optionsOrIsServer?: FlatSchemaOptions | boolean,
+	schema: SchemaShape | Record<string, unknown>,
+	options?: FlatSchemaOptions,
 ): unknown {
-	return dispatchFlatThinArkenv(schemaOrOptions, optionsOrIsServer, {
+	return dispatchFlatThinArkenv(schema, options, {
 		ensureBootGate,
 	});
 }

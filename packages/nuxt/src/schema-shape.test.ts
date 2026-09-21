@@ -1,34 +1,8 @@
+import { nestedBagMigrationErrorMessage } from "@repo/utils/nested-bag-migration-error";
 import { describe, expect, it } from "vitest";
-import { isLegacyNestedSchema, parseSchemaShape } from "./schema-shape";
+import { parseSchemaShape } from "./schema-shape";
 
 describe("schema-shape helper", () => {
-	describe("isLegacyNestedSchema", () => {
-		it("detects boolean optionsOrIsServer as legacy", () => {
-			expect(isLegacyNestedSchema({}, true)).toBe(true);
-			expect(isLegacyNestedSchema({}, false)).toBe(true);
-		});
-
-		it("detects nested schema buckets as legacy", () => {
-			expect(isLegacyNestedSchema({ server: { A: "string" } })).toBe(true);
-			expect(
-				isLegacyNestedSchema({ client: { NUXT_PUBLIC_B: "string" } }),
-			).toBe(true);
-			expect(isLegacyNestedSchema({ shared: { C: "string" } })).toBe(true);
-			expect(isLegacyNestedSchema({ runtimeEnv: {} })).toBe(true);
-		});
-
-		it("detects flat schema as non-legacy", () => {
-			expect(
-				isLegacyNestedSchema({ PORT: "number", NUXT_PUBLIC_HOST: "string" }),
-			).toBe(false);
-			expect(
-				isLegacyNestedSchema({ PORT: "number" }, { exposeToClient: ["PORT"] }),
-			).toBe(false);
-			expect(isLegacyNestedSchema(null)).toBe(false);
-			expect(isLegacyNestedSchema(undefined)).toBe(false);
-		});
-	});
-
 	describe("parseSchemaShape", () => {
 		it("parses flat schema with default NUXT_PUBLIC_ and NODE_ENV partitioning", () => {
 			const schema = {
@@ -38,7 +12,6 @@ describe("schema-shape helper", () => {
 			};
 
 			const parsed = parseSchemaShape(schema, undefined, { isServer: true });
-			expect(parsed.isLegacy).toBe(false);
 			expect(Object.keys(parsed.server)).toEqual(["DATABASE_URL"]);
 			expect(Object.keys(parsed.client)).toEqual(["NUXT_PUBLIC_API_URL"]);
 			expect(Object.keys(parsed.shared)).toEqual(["NODE_ENV"]);
@@ -81,26 +54,25 @@ describe("schema-shape helper", () => {
 			expect(parsed.publicKeys).toEqual(["SHARED_VAR"]);
 		});
 
-		it("parses legacy nested structure correctly", () => {
-			const legacy = {
-				server: { DB: "string" },
-				client: { NUXT_PUBLIC_CLIENT: "string" },
-				shared: { SHARED: "string" },
-				runtimeEnv: { DB: "val" },
-			};
+		it("rejects the removed nested bag API", () => {
+			expect(() =>
+				parseSchemaShape(
+					{
+						server: { DB: "string" },
+						client: { NUXT_PUBLIC_CLIENT: "string" },
+						shared: { SHARED: "string" },
+						runtimeEnv: { DB: "val" },
+					} as never,
+					undefined,
+				),
+			).toThrow(nestedBagMigrationErrorMessage());
+		});
 
-			const parsed = parseSchemaShape(legacy, true);
-			expect(parsed.isLegacy).toBe(true);
-			expect(Object.keys(parsed.server)).toEqual(["DB"]);
-			expect(Object.keys(parsed.client)).toEqual(["NUXT_PUBLIC_CLIENT"]);
-			expect(Object.keys(parsed.shared)).toEqual(["SHARED"]);
-			expect(parsed.declaredKeys).toEqual([
-				"DB",
-				"NUXT_PUBLIC_CLIENT",
-				"SHARED",
-			]);
-			expect(parsed.publicKeys).toEqual(["NUXT_PUBLIC_CLIENT", "SHARED"]);
-			expect(parsed.runtimeEnv).toEqual({ DB: "val" });
+		it("does not treat a flat env key named server as nested", () => {
+			const parsed = parseSchemaShape({ server: "string" }, undefined, {
+				isServer: true,
+			});
+			expect(Object.keys(parsed.server)).toEqual(["server"]);
 		});
 	});
 });

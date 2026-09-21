@@ -34,8 +34,6 @@ export function arkenv<
 	schema: TSchema,
 	options?: {
 		exposeToClient?: readonly TExpose[];
-		expose?: readonly TExpose[];
-		shared?: readonly TExpose[];
 		extends?: [...TExtends];
 		runtimeEnv?: Record<string, unknown>;
 	},
@@ -47,33 +45,8 @@ export function arkenv<
 		MergeExtends<TExtends>
 >;
 
-/**
- * Create a typesafe environment configuration for Nuxt (Standard Mode).
- *
- * @deprecated Use the unified flat layout signature instead: `arkenv(schema, options)`
- * @param options The environment validation configuration options
- * @returns A readonly environment variables object wrapped in a security proxy
- * @throws An error if any client-side variable is not prefixed with `NUXT_PUBLIC_`
- */
-export function arkenv<
-	const TServer extends Record<string, StandardSchemaV1> = {},
-	const TClient extends Record<string, StandardSchemaV1> = {},
-	const TShared extends Record<string, StandardSchemaV1> = {},
->(options: {
-	server?: TServer;
-	client?: TClient & {
-		[K in keyof TClient]: K extends `NUXT_PUBLIC_${string}` ? unknown : never;
-	};
-	shared?: TShared;
-	runtimeEnv?: Record<string, unknown>;
-}): Readonly<{
-	[K in keyof (TServer & TClient & TShared)]: StandardSchemaV1.InferOutput<
-		(TServer & TClient & TShared)[K]
-	>;
-}>;
-
-export function arkenv(schemaOrOptions: any, optionsOrIsServer?: any): any {
-	return dispatchFlatThinArkenv(schemaOrOptions, optionsOrIsServer, {
+export function arkenv(schema: any, options?: any): any {
+	return dispatchFlatThinArkenv(schema, options, {
 		ensureBootGate,
 	});
 }

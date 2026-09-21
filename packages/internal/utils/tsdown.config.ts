@@ -5,6 +5,7 @@ export default defineConfig({
 		index: "src/index.ts",
 		log: "src/utils/log-helpers.ts",
 		"boundary-access-error": "src/utils/boundary-access-error.ts",
+		"nested-bag-migration-error": "src/utils/nested-bag-migration-error.ts",
 	},
 	format: ["esm"],
 	// Unminified: published packages alwaysBundle this package. Pre-minified
