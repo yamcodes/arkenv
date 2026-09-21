@@ -1,6 +1,12 @@
 import { describe, expectTypeOf, it } from "vitest";
 import { type ArkEnvConfig, arkenv, type } from ".";
 
+describe("Type Regression (Issue #1912)", () => {
+	it("does not expose reserved safe on ArkEnvConfig", () => {
+		expectTypeOf<ArkEnvConfig>().not.toHaveProperty("safe");
+	});
+});
+
 describe("Type Regression (Issue #796)", () => {
 	it("inline and explicit schemas infer the same type", () => {
 		const inline = arkenv({ PORT: "number" }, { env: { PORT: "3000" } });
@@ -49,10 +55,6 @@ describe("Type Regression (Issue #796)", () => {
 	it("infers default values correctly", () => {
 		const env = arkenv({ WITH_DEFAULT: "string = 'default'" }, { env: {} });
 		expectTypeOf(env.WITH_DEFAULT).toBeString();
-	});
-
-	it("does not expose reserved safe on ArkEnvConfig", () => {
-		expectTypeOf<ArkEnvConfig>().not.toHaveProperty("safe");
 	});
 
 	/* 
