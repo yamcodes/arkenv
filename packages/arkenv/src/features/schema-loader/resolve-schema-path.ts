@@ -7,8 +7,9 @@ import type { ProjectScannerPort, WorkspacePort } from "@/shared/ports";
  * Honors an explicit `--schema`/`--file` path first, then flat convention
  * candidates (`env.ts`, `src/env.ts`, and related extensions). Split-layout
  * leftovers such as `env/server.ts` are not auto-discovered — pass
- * `--schema` for those. Leftover `package.json` `"arkenv"` fields are
- * ignored — CLI schema location is not a package.json config surface.
+ * `--schema` at a loadable module (typically the recipe client or a flat
+ * schema). Leftover `package.json` `"arkenv"` fields are ignored — CLI
+ * schema location is not a package.json config surface.
  *
  * @param cwd Working directory to search from
  * @param workspace Port used to test whether candidate files exist
