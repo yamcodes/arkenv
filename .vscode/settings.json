@@ -24,6 +24,10 @@
 		"editor.defaultFormatter": "biomejs.biome"
 	},
 	"files.associations": {
+		"turbo.json": "jsonc",
+		"tsconfig*.json": "jsonc",
+		".github/renovate.json": "jsonc",
+		"renovate.json": "jsonc",
 		"*.css": "tailwindcss"
 	},
 	"biome.enabled": false,
