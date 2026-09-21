@@ -1,5 +1,5 @@
 import { describe, expectTypeOf, it } from "vitest";
-import { arkenv, type, type ArkEnvConfig } from ".";
+import { type ArkEnvConfig, arkenv, type } from ".";
 
 describe("Type Regression (Issue #1912)", () => {
 	it("rejects safe on ArkEnvConfig", () => {

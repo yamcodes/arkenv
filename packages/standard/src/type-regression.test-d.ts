@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import { type StandardEnvConfig } from ".";
+import type { StandardEnvConfig } from ".";
 
 describe("Type Regression (Issue #1912)", () => {
 	it("rejects safe on StandardEnvConfig", () => {
