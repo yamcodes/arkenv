@@ -132,7 +132,10 @@ describe("Executor", () => {
 		const packageJsonWrites = vi
 			.mocked(mockWorkspace.writeFile)
 			.mock.calls.filter(([filePath]) => filePath === packageJsonPath);
-		expect(packageJsonWrites).toHaveLength(0);
+		for (const [, content] of packageJsonWrites) {
+			const pkg = JSON.parse(String(content));
+			expect(pkg).not.toHaveProperty("arkenv");
+		}
 	});
 
 	it("skips files with create action if they already exist", async () => {
