@@ -16,7 +16,6 @@ const FLAG_CONFIG = {
 	example: { long: "--example", short: "", kind: "value" },
 	noCodegen: { long: "--no-codegen", short: "", kind: "boolean" },
 	preset: { long: "--preset", short: "-P", kind: "value" },
-	hostPreset: { long: "--host-preset", short: "-H", kind: "value" },
 	schema: { long: "--schema", short: "-s", kind: "value" },
 	envFile: { long: "--env-file", short: "", kind: "value" },
 	verifyExample: {
@@ -121,12 +120,10 @@ export class CLI {
 		}
 
 		if (!this.validationError) {
-			const rawPresetVal =
-				this.getFlagValue(FLAG_CONFIG.preset.long, FLAG_CONFIG.preset.short) ??
-				this.getFlagValue(
-					FLAG_CONFIG.hostPreset.long,
-					FLAG_CONFIG.hostPreset.short,
-				);
+			const rawPresetVal = this.getFlagValue(
+				FLAG_CONFIG.preset.long,
+				FLAG_CONFIG.preset.short,
+			);
 			if (rawPresetVal !== undefined && !isHostPreset(rawPresetVal)) {
 				this.validationError = `Invalid host preset: ${rawPresetVal}`;
 			}
@@ -205,12 +202,10 @@ export class CLI {
 	}
 
 	get hostPreset(): HostPreset | undefined {
-		const val =
-			this.getFlagValue(FLAG_CONFIG.preset.long, FLAG_CONFIG.preset.short) ??
-			this.getFlagValue(
-				FLAG_CONFIG.hostPreset.long,
-				FLAG_CONFIG.hostPreset.short,
-			);
+		const val = this.getFlagValue(
+			FLAG_CONFIG.preset.long,
+			FLAG_CONFIG.preset.short,
+		);
 		if (val && isHostPreset(val)) {
 			return val;
 		}
