@@ -11,6 +11,8 @@ publishBranch: dev
 # with `nub run --no-check` so nub's own freshness install is also skipped.
 # (pnpm 11 ignores non-auth settings in .npmrc — this must live here.)
 verifyDepsBeforeRun: false
+# pnpm 11.9 can fail nested `pnpm run` when the default .pnpmfile.mjs is
+# missing (fixed in 11.21). Keep the no-op file at the repo root until we bump.
 allowBuilds:
   '@biomejs/biome': true
   '@nubjs/nub': true
