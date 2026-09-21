@@ -11,11 +11,13 @@ export type BlogDateOptions = {
 	statMtime?: (filePath: string) => Date;
 };
 
-const cache = new Map<string, Date | null>();
+const dateCache = new Map<string, Date | null>();
+const shallowCache = new Map<string, boolean>();
 
-/** Clear the in-process git-date cache (tests). */
+/** Clear the in-process git-date caches (tests). */
 export function clearBlogDateCache(): void {
-	cache.clear();
+	dateCache.clear();
+	shallowCache.clear();
 }
 
 function defaultExecGit(args: string[], cwd: string): string | null {
@@ -45,8 +47,26 @@ function parseGitDate(raw: string | null): Date | null {
 }
 
 /**
- * Publish date from git: the commit that added the file.
- * Falls back to the latest commit that touched it (shallow clones).
+ * Shallow clones invent a fake "add" for every file at the boundary commit
+ * (diffed against an empty tree). Prefer last-touch / mtime there instead.
+ */
+export function isShallowGitRepository(
+	cwd: string,
+	execGit: BlogDateGitRunner = defaultExecGit,
+): boolean {
+	const cached = shallowCache.get(cwd);
+	if (cached !== undefined) return cached;
+
+	const result = execGit(["rev-parse", "--is-shallow-repository"], cwd);
+	const shallow = result === "true";
+	shallowCache.set(cwd, shallow);
+	return shallow;
+}
+
+/**
+ * Publish date from git: the commit that added the file when history is
+ * complete. On shallow clones, skips the first-add lookup (boundary commits
+ * report every file as added) and uses the latest touch instead.
  */
 export function getBlogFileCommitDate(
 	filePath: string,
@@ -56,37 +76,42 @@ export function getBlogFileCommitDate(
 	const absolute = path.isAbsolute(filePath)
 		? filePath
 		: path.resolve(cwd, filePath);
-	const cached = cache.get(absolute);
+	const cached = dateCache.get(absolute);
 	if (cached !== undefined) return cached;
 
 	const relative = path.relative(cwd, absolute);
 	const execGit = options.execGit ?? defaultExecGit;
 
-	const created = parseGitDate(
-		execGit(
-			[
-				"log",
-				"--diff-filter=A",
-				"--follow",
-				"--format=%aI",
-				"-1",
-				"--",
-				relative,
-			],
-			cwd,
-		),
-	);
+	let created: Date | null = null;
+	if (!isShallowGitRepository(cwd, execGit)) {
+		created = parseGitDate(
+			execGit(
+				[
+					"log",
+					"--diff-filter=A",
+					"--follow",
+					"--format=%aI",
+					"-1",
+					"--",
+					relative,
+				],
+				cwd,
+			),
+		);
+	}
+
 	const date =
 		created ??
 		parseGitDate(execGit(["log", "-1", "--format=%aI", "--", relative], cwd));
 
-	cache.set(absolute, date);
+	dateCache.set(absolute, date);
 	return date;
 }
 
 /**
  * Blog post date: explicit frontmatter `date` wins; otherwise the file's
- * git commit date (first add, with last-touch / mtime fallbacks).
+ * git commit date (first add when history is deep, with last-touch / mtime
+ * fallbacks).
  */
 export function resolveBlogPostDate(
 	frontmatterDate: string | Date | undefined,
