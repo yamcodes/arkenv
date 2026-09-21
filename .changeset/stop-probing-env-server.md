@@ -2,16 +2,20 @@
 "arkenv": major
 ---
 
-#### Stop auto-discovering `env/server.ts` / `src/env/server.ts`
+#### Stop probing `env/server.ts` in CLI schema discovery
 
-CLI schema discovery no longer probes leftover strict-layout filenames.
-Convention paths stay flat (`env.ts`, `src/env.ts`, and related
-extensions). Split-recipe projects should pass `--schema` (or point
-`check` at the module they intend).
+Convention discovery no longer auto-resolves leftover split-layout filenames
+(`env/server.ts`, `src/env/server.ts`). Location remains `--schema` / `-s`,
+then flat convention paths (`env.ts`, `src/env.ts`, and related extensions).
 
 **BREAKING CHANGE**: If `arkenv check` previously found your schema only
-via `env/server.ts` or `src/env/server.ts`, pass that path explicitly:
+because `env/server.ts` (or `src/env/server.ts`) existed, pass `--schema`
+explicitly (or add a flat `env.ts` / `src/env.ts`):
 
-```bash
-npx arkenv check --schema ./env/server.ts
+```json
+{
+  "scripts": {
+    "check": "arkenv check --schema env/server.ts"
+  }
+}
 ```

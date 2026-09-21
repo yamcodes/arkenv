@@ -54,10 +54,10 @@ describe("CheckUseCase", () => {
 		expect(memoryReporter.logs.some((l) => l.type === "error")).toBe(true);
 	});
 
-	it("returns exit code 2 when only leftover env/server.ts exists", async () => {
+	it("returns exit code 2 when only a leftover env/server.ts exists", async () => {
 		await fs.mkdir(path.join(tempDir, "env"), { recursive: true });
 		await fs.writeFile(
-			path.join(tempDir, "env/server.ts"),
+			path.join(tempDir, "env", "server.ts"),
 			`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ PORT: "number" });\n`,
 		);
 
