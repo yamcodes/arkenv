@@ -1,22 +1,32 @@
 name: Set up Nub (CI)
 description: >
-  Write a concrete .node-version pin so nubjs/setup-nub fronts a managed
-  Node and `nub run` / pnpm shims use that same version (not the runner host).
-  setup-nub does not front aliases like lts/* / latest — pass a concrete
-  version such as 24 or 26.
+  Install Nub and Node from the committed `.node-version` pin. Pass
+  node-version only for a matrix job that must run a different major
+  (writes that version into `.node-version` so `nub run` uses it;
+  those jobs do not commit).
 inputs:
   node-version:
-    description: Concrete Node version (e.g. 24, 26). Do not use lts/* or latest.
-    required: true
+    description: Optional major override (e.g. 26). Omit to use `.node-version`.
+    required: false
+    default: ""
 runs:
   using: composite
   steps:
-    # Job-local only: this tracked file must not be committed. Workflows that
-    # commit or inspect `git status` restore it with `git checkout -- .node-version`.
-    - name: Pin Node for nub
+    # nubjs/setup-nub#12: node-version fronts PATH only; nub run still
+    # follows .node-version. Rewrite the pin for this job (not committed).
+    - name: Override Node pin for this job
+      if: ${{ inputs.node-version != '' }}
       shell: bash
       run: echo "${{ inputs.node-version }}" > .node-version
-    - uses: nubjs/setup-nub@v0
+    - name: Set up Nub (project pin)
+      if: ${{ inputs.node-version == '' }}
+      uses: nubjs/setup-nub@v0
+      with:
+        shim: true
+        node-version-file: .node-version
+    - name: Set up Nub (job override)
+      if: ${{ inputs.node-version != '' }}
+      uses: nubjs/setup-nub@v0
       with:
         shim: true
         node-version: ${{ inputs.node-version }}

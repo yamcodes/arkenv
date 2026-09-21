@@ -26,18 +26,12 @@ jobs:
 
       - name: Set up Nub
         uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
 
       - name: Install dependencies
         run: nub install
 
       - name: Generate contributors
         run: nub run --no-check contributors:generate
-
-      # setup-nub-ci dirties tracked `.node-version`; restore before porcelain.
-      - name: Restore committed Node pin
-        run: git checkout -- .node-version
 
       - name: Check for changes
         run: |
@@ -68,8 +62,6 @@ jobs:
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
 
       - uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
 
       - run: nub install
       - run: nub run --no-check contributors:generate
@@ -78,7 +70,6 @@ jobs:
         run: |
           git config --global user.email "237618717+arkenv-bot[bot]@users.noreply.github.com"
           git config --global user.name "arkenv-bot[bot]"
-          git checkout -- .node-version
           if [ -n "$(git status --porcelain)" ]; then
             git add .
             git commit -m "chore: sync contributors"

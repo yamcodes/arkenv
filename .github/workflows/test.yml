@@ -19,17 +19,16 @@ permissions:
   actions: write
 jobs:
   test:
-    # Stable channel labels keep ruleset required-check names fixed while
-    # setup-nub-ci still receives concrete majors (aliases unsupported).
+    # Channel labels stay `lts` / `latest` so required-check names stay
+    # fixed. `lts` reads `.node-version`; `latest` overrides to 26.
     name: test (${{ matrix.channel }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
           - channel: lts
-            node-version: 24
           - channel: latest
-            node-version: 26
+            node-version: "26"
       fail-fast: false
 
     steps:
@@ -66,8 +65,6 @@ jobs:
         with:
           team: ${{ vars.TURBO_TEAM }}
       - uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
       - run: pnpm install
       - run: nub run --no-check typecheck
 
@@ -78,9 +75,8 @@ jobs:
       matrix:
         include:
           - channel: lts
-            node-version: 24
           - channel: latest
-            node-version: 26
+            node-version: "26"
       fail-fast: false
 
     steps:
@@ -115,8 +111,6 @@ jobs:
         with:
           team: ${{ vars.TURBO_TEAM }}
       - uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
       - run: pnpm install
       - name: Build workspace packages
         run: nub run --no-check build:packages
@@ -148,8 +142,6 @@ jobs:
           echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
           echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
       - uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
       - run: pnpm install
       - uses: actions/cache@v6
         with:
@@ -179,8 +171,11 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        node-version: [24, 26]
-    continue-on-error: ${{ matrix.node-version == 26 }}
+        include:
+          - channel: pin
+          - channel: latest
+            node-version: "26"
+    continue-on-error: ${{ matrix.node-version == '26' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -205,7 +200,7 @@ jobs:
       - uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
-          key: windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.node-version }}
+          key: windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.channel }}
           restore-keys: |
             windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-
             windows-latest-pw-
@@ -217,7 +212,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
-          name: test-results-windows-${{ matrix.node-version }}
+          name: test-results-windows-${{ matrix.channel }}
           path: "**/test-results/**"
           retention-days: 30
 
@@ -226,8 +221,11 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        node-version: [24, 26]
-    continue-on-error: ${{ matrix.node-version == 26 }}
+        include:
+          - channel: pin
+          - channel: latest
+            node-version: "26"
+    continue-on-error: ${{ matrix.node-version == '26' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -252,7 +250,7 @@ jobs:
       - uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
-          key: macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.node-version }}
+          key: macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.channel }}
           restore-keys: |
             macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-
             macos-latest-pw-
@@ -264,6 +262,6 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
-          name: test-results-macos-${{ matrix.node-version }}
+          name: test-results-macos-${{ matrix.channel }}
           path: "**/test-results/**"
           retention-days: 30

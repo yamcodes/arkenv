@@ -56,20 +56,12 @@ jobs:
           team: ${{ vars.TURBO_TEAM }}
 
       - name: Set up Nub
-        # Concrete 24 (latest 24.x is >=24.18.0 required by changesets).
+        # Pin is `.node-version` (24.21.0; changesets needs >=24.18.0).
         # see: https://github.com/changesets/changesets/issues/2123#issuecomment-4814124084
         uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
 
       - name: Install Dependencies
         run: nub install
-
-      # setup-nub-ci writes a concrete major into tracked `.node-version`.
-      # Restore the committed pin (`lts`) so changesets/action does not
-      # include that rewrite in the Version Packages commit/PR.
-      - name: Restore committed Node pin
-        run: git checkout -- .node-version
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
@@ -141,7 +133,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: ">=24.18.0"
+          node-version-file: .node-version
           registry-url: https://registry.npmjs.org
 
       - name: Point latest at current @rc
@@ -174,7 +166,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: ">=24.18.0"
+          node-version-file: .node-version
 
       - name: Mark workspace prerelease GitHub Releases as Latest
         env:
