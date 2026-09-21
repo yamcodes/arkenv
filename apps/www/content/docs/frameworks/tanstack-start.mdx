@@ -33,6 +33,11 @@ Generate a TanStack Start app with ArkEnv wired in:
 npx @tanstack/cli create my-app --add-ons https://arkenv.js.org/tanstack/info.json
 ```
 
+When the CLI runs, it asks a few setup questions — including which
+validator engine to use (ArkType, Zod, or Valibot) and whether to
+include the `/demo/arkenv` route. You can accept the defaults or pick
+what fits your project.
+
 The add-on installs the validator runtime, registers
 `arkenvVitePlugin()` in `vite.config.ts`, writes `src/env.ts`, and
 pre-populates declared keys in `.env.example`.
@@ -50,8 +55,9 @@ npx @tanstack/cli add https://arkenv.js.org/tanstack/info.json
 npx arkenv init
 ```
 
-`arkenv init` detects `@tanstack/react-start` and installs
-`@arkenv/vite-plugin` the same way it does for Vite projects.
+`arkenv init` detects `@tanstack/react-start` (or `@tanstack/start`)
+and installs `@arkenv/vite-plugin` the same way it does for Vite
+projects.
 
 <Callout type="info" title="Using Rsbuild?">
   ArkEnv fully supports Rsbuild via `@arkenv/rsbuild-plugin`.
@@ -323,6 +329,15 @@ Reading a server-only key in the browser throws instead of leaking:
     ```
   </Tab>
 </Tabs>
+
+The transformed client getter fails loudly:
+
+> `Do not access server-only key 'DATABASE_URL' on the client since it will leak sensitive data (prevented by ArkEnv)`
+
+That surfaces the leak during development (and in tests) before it
+reaches production. See
+[Error reporting](/docs/core-concepts/error-reporting) for the full
+message shape.
 
 ## SSR and the client boundary
 
