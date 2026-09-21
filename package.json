@@ -36,7 +36,7 @@
 		"test:cli": "node scripts/test-cli.js",
 		"verify-artifacts": "node scripts/verify-artifacts.js",
 		"test:e2e:package": "node scripts/test-e2e-package.js",
-		"arkenv": "nub run --filter arkenv build && node packages/arkenv/dist/bin.js"
+		"arkenv": "nub run --filter arkenv build && node packages/arkenv/bin.mjs"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.14",

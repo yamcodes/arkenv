@@ -4,7 +4,7 @@
 	"version": "1.0.0-rc.1",
 	"description": "Interactive CLI for scaffolding ArkEnv projects",
 	"bin": {
-		"arkenv": "./dist/bin.js"
+		"arkenv": "./bin.mjs"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.js",
@@ -18,11 +18,12 @@
 		"./*": "./dist/*"
 	},
 	"files": [
+		"bin.mjs",
 		"dist"
 	],
 	"scripts": {
 		"build": "tsdown",
-		"start": "node ./dist/bin.js init",
+		"start": "node ./bin.mjs init",
 		"dev": "tsdown --watch",
 		"test": "vitest",
 		"test:run": "vitest run",
