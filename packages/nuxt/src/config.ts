@@ -104,7 +104,6 @@ export function extractKeys(content: string): {
 	serverKeys: string[];
 	clientKeys: string[];
 	sharedKeys: string[];
-	isLegacy?: boolean;
 } {
 	return coreExtractKeys(content, "NUXT_PUBLIC_");
 }

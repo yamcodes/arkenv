@@ -6,6 +6,11 @@ import {
 	logWatcherErrorWithCause,
 } from "@repo/log";
 import { watch as chokidarWatch, type FSWatcher } from "chokidar";
+import {
+	assertNotRemovedNestedBagSource,
+	hasRemovedNestedBagSource,
+	REMOVED_NESTED_BAG_MESSAGE,
+} from "./removed-nested";
 
 export {
 	DEFAULT_SCHEMA_LOCATIONS,
@@ -131,11 +136,13 @@ function extractCallArguments(
 
 /**
  * Extract environment variable keys statically from the schema file content.
- * Supports both legacy nested layout and flat layout with a parameterizable public prefix.
+ *
+ * Flat layout only. Nested `{ server, client, shared }` bags throw a migration error.
  *
  * @param content The string content of the schema file
  * @param publicPrefix An optional framework-specific public prefix (e.g. "NEXT_PUBLIC_" or "NUXT_PUBLIC_")
  * @returns An object containing arrays of server, client, and shared keys
+ * @throws An error when the schema still uses the removed nested bag API
  */
 export function extractKeys(
 	content: string,
@@ -144,7 +151,6 @@ export function extractKeys(
 	serverKeys: string[];
 	clientKeys: string[];
 	sharedKeys: string[];
-	isLegacy?: boolean;
 } {
 	const serverKeys: string[] = [];
 	const clientKeys: string[] = [];
@@ -152,89 +158,64 @@ export function extractKeys(
 
 	const args = extractCallArguments(content);
 	if (!args) {
-		const serverBlock = extractBlock(content, "server");
-		if (serverBlock) {
-			serverKeys.push(...parseBlockKeys(serverBlock));
+		if (
+			hasRemovedNestedBagSource(content) ||
+			extractBlock(content, "server") ||
+			extractBlock(content, "client") ||
+			extractBlock(content, "shared")
+		) {
+			throw new Error(REMOVED_NESTED_BAG_MESSAGE);
 		}
-
-		const clientBlock = extractBlock(content, "client");
-		if (clientBlock) {
-			clientKeys.push(...parseBlockKeys(clientBlock));
-		}
-
-		const sharedBlock = extractBlock(content, "shared");
-		if (sharedBlock) {
-			sharedKeys.push(...parseBlockKeys(sharedBlock));
-		}
-
-		return { serverKeys, clientKeys, sharedKeys, isLegacy: true };
+		return { serverKeys, clientKeys, sharedKeys };
 	}
+
+	assertNotRemovedNestedBagSource(args.schemaArg);
 
 	const trimmedSchema = args.schemaArg
 		.replace(/^\{/, "")
 		.replace(/\}$/, "")
 		.trim();
 	const topKeys = parseBlockKeys(trimmedSchema);
-	const isLegacy =
-		topKeys.includes("client") ||
-		topKeys.includes("server") ||
-		topKeys.includes("shared");
 
-	if (isLegacy) {
-		const clientBlock = extractBlock(args.schemaArg, "client");
-		if (clientBlock) {
-			clientKeys.push(...parseBlockKeys(clientBlock));
-		}
-		const sharedBlock = extractBlock(args.schemaArg, "shared");
-		if (sharedBlock) {
-			sharedKeys.push(...parseBlockKeys(sharedBlock));
-		}
-		const serverBlock = extractBlock(args.schemaArg, "server");
-		if (serverBlock) {
-			serverKeys.push(...parseBlockKeys(serverBlock));
-		}
-	} else {
-		const optionExposedKeys: string[] = [];
-		if (args.optionsArg) {
-			const exposeMatch =
-				args.optionsArg.match(/exposeToClient\s*:\s*\[([\s\S]*?)\]/) ||
-				args.optionsArg.match(/expose\s*:\s*\[([\s\S]*?)\]/) ||
-				args.optionsArg.match(/shared\s*:\s*\[([\s\S]*?)\]/);
-			if (exposeMatch) {
-				const matches = exposeMatch[1].matchAll(/['"`](.*?)['"`]/g);
-				for (const exposeMatchResult of matches) {
-					optionExposedKeys.push(exposeMatchResult[1]);
-				}
-			}
-		}
-
-		const assignFlatKeys = (keys: string[]) => {
-			for (const key of keys) {
-				if (optionExposedKeys.includes(key) || key === "NODE_ENV") {
-					sharedKeys.push(key);
-				} else if (publicPrefix && key.startsWith(publicPrefix)) {
-					clientKeys.push(key);
-				} else {
-					serverKeys.push(key);
-				}
-			}
-		};
-
-		assignFlatKeys(topKeys);
-
-		if (
-			topKeys.length === 0 &&
-			trimmedSchema.length > 0 &&
-			/\b[A-Z][A-Z0-9_]*\s*:/.test(trimmedSchema)
-		) {
-			const fallbackBlock = extractArkenvBlock(content);
-			if (fallbackBlock) {
-				assignFlatKeys(parseBlockKeys(fallbackBlock));
+	const optionExposedKeys: string[] = [];
+	if (args.optionsArg) {
+		const exposeMatch = args.optionsArg.match(
+			/exposeToClient\s*:\s*\[([\s\S]*?)\]/,
+		);
+		if (exposeMatch) {
+			const matches = exposeMatch[1].matchAll(/['"`](.*?)['"`]/g);
+			for (const exposeMatchResult of matches) {
+				optionExposedKeys.push(exposeMatchResult[1]);
 			}
 		}
 	}
 
-	return { serverKeys, clientKeys, sharedKeys, isLegacy };
+	const assignFlatKeys = (keys: string[]) => {
+		for (const key of keys) {
+			if (optionExposedKeys.includes(key) || key === "NODE_ENV") {
+				sharedKeys.push(key);
+			} else if (publicPrefix && key.startsWith(publicPrefix)) {
+				clientKeys.push(key);
+			} else {
+				serverKeys.push(key);
+			}
+		}
+	};
+
+	assignFlatKeys(topKeys);
+
+	if (
+		topKeys.length === 0 &&
+		trimmedSchema.length > 0 &&
+		/\b[A-Z][A-Z0-9_]*\s*:/.test(trimmedSchema)
+	) {
+		const fallbackBlock = extractArkenvBlock(content);
+		if (fallbackBlock) {
+			assignFlatKeys(parseBlockKeys(fallbackBlock));
+		}
+	}
+
+	return { serverKeys, clientKeys, sharedKeys };
 }
 
 /**

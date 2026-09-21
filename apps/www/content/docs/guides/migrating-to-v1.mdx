@@ -213,11 +213,12 @@ Package names for `@arkenv/nextjs` and `@arkenv/nuxt` did not change.
 After you switch the runtime import from `arkenv` to `@arkenv/core` (or
 the framework package), keep using `withArkEnv` or the Nuxt module.
 
-Nested `arkenv({ server, client, shared })` still runs. Prefer a flat
-schema. See
-[Client vs. server](/docs/core-concepts/client-vs-server)
-and the [Next.js](/docs/frameworks/nextjs) /
-[Nuxt](/docs/frameworks/nuxt) guides.
+Flat `arkenv(schema, { exposeToClient })` is the only supported call
+shape. Nested `{ server, client, shared, runtimeEnv }` bags and the
+old `expose` / `shared` option aliases are gone — see
+[Removed in v1](#removed-in-v1) below. Prefer the guides under
+[Client vs. server](/docs/core-concepts/client-vs-server),
+[Next.js](/docs/frameworks/nextjs), and [Nuxt](/docs/frameworks/nuxt).
 
 ## Strict layout removed (alpha hard cut)
 
@@ -278,16 +279,44 @@ If your schema sits elsewhere, put the path on `--schema` in scripts:
 You can delete a leftover `"arkenv"` key from `package.json`; the CLI
 ignores it either way. See [check](/docs/reference/check).
 
-## Deprecated APIs
+## Removed in v1
 
-These still work on [`@arkenv/nextjs`](/docs/reference/nextjs) and
-[`@arkenv/nuxt`](/docs/reference/nuxt). They will be removed in a later
-release.
+These APIs no longer work on [`@arkenv/nextjs`](/docs/reference/nextjs)
+or [`@arkenv/nuxt`](/docs/reference/nuxt). Call sites throw a migration
+error at runtime (and static key extraction rejects nested schema
+source).
 
-- Nested `arkenv({ server, client, shared })`. Use
-  `arkenv(schema, options)` instead.
+- Nested `arkenv({ server, client, shared, runtimeEnv })`. Use flat
+  `arkenv(schema, { exposeToClient, runtimeEnv })` instead.
 - Options `expose` and `shared`. Use `exposeToClient`. See
   [Client vs. server](/docs/core-concepts/client-vs-server).
+
+```diff
+- export const env = arkenv({
+-   server: { DATABASE_URL: "string" },
+-   client: { NEXT_PUBLIC_API_URL: "string" },
+-   shared: { NODE_ENV: "string" },
+-   runtimeEnv: { NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL, NODE_ENV: process.env.NODE_ENV },
+- });
++ export const env = arkenv(
++   {
++     DATABASE_URL: "string",
++     NEXT_PUBLIC_API_URL: "string",
++     NODE_ENV: "string",
++   },
++   {
++     runtimeEnv: {
++       NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
++       NODE_ENV: process.env.NODE_ENV,
++     },
++   },
++ );
+```
+
+## Deprecated APIs
+
+These still work for now. They will be removed in a later release.
+
 - Config `layout: "simple"`. Use `"flat"`.
 
 The [changelog](https://github.com/yamcodes/arkenv/releases) lists what

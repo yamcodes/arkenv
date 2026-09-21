@@ -14,24 +14,22 @@ The example defines the environment schema in a single `env.ts` file:
 import arkenv from "@/.arkenv";
 
 export const env = arkenv({
-  server: {
-    DATABASE_URL: "string = 'postgres://localhost:5432/mydb'",
-  },
-  client: {
-    NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-  },
-  shared: {
-    NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-  },
+  DATABASE_URL: "string = 'postgres://localhost:5432/mydb'",
+  NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 });
 ```
 
-### Key Configurations:
+### Key configurations
 
-1. **Server Schema**: Variables that are only accessible on the server.
-2. **Client Schema**: Variables that are exposed to the client (must begin with `NEXT_PUBLIC_` to match Next.js conventions).
-3. **Shared Schema**: Common variables like `NODE_ENV`.
-4. **Automatic Codegen**: ArkEnv automatically parses the keys and generates `.arkenv/env.gen.ts` via the `withArkEnv` wrapper in `next.config.ts`. Import it as `@/.arkenv`.
+1. **Server keys**: Variables without a `NEXT_PUBLIC_` prefix stay
+   server-only.
+2. **Client keys**: Variables prefixed with `NEXT_PUBLIC_` are exposed
+   to the client (Next.js convention). Use `exposeToClient` for
+   non-prefixed keys you need on the client.
+3. **Automatic codegen**: ArkEnv parses the keys and generates
+   `.arkenv/env.gen.ts` via the `withArkEnv` wrapper in
+   `next.config.ts`. Import it as `@/.arkenv`.
 
 ## Usage in Components
 

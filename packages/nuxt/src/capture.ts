@@ -3,7 +3,6 @@ import {
 	ENV_KEYS,
 	EXTENDED_ENV,
 	type FlatSchemaOptions,
-	type LegacyNestedSchema,
 	parseSchemaShape,
 	type SchemaLayoutContext,
 	SERVER_ONLY_KEYS,
@@ -16,13 +15,11 @@ type CaptureState = {
 	captures: CapturedSchemaCall[];
 };
 
-export type CaptureLegacyNested = LegacyNestedSchema;
-
 export type CaptureFlatOptions = FlatSchemaOptions;
 
 export type CapturedSchemaCall = {
-	schemaOrOptions: SchemaShape | LegacyNestedSchema;
-	optionsOrIsServer: FlatSchemaOptions | boolean | null | undefined;
+	schemaOrOptions: SchemaShape;
+	optionsOrIsServer: FlatSchemaOptions | null | undefined;
 	context: SchemaLayoutContext | undefined;
 };
 
@@ -76,19 +73,17 @@ export function isCapturing(): boolean {
 /**
  * Record an `arkenv()` call while capture mode is active.
  *
- * @param schemaOrOptions The schema definition or nested options object
- * @param optionsOrIsServer Flat options, legacy boolean, or undefined
+ * @param schemaOrOptions The schema definition
+ * @param optionsOrIsServer Flat options
  * @param context Optional server/client layout context
  */
 export function recordCapture(
-	schemaOrOptions: SchemaShape | LegacyNestedSchema | null | undefined,
-	optionsOrIsServer: FlatSchemaOptions | boolean | null | undefined,
+	schemaOrOptions: SchemaShape | null | undefined,
+	optionsOrIsServer: FlatSchemaOptions | null | undefined,
 	context: SchemaLayoutContext | undefined,
 ): void {
 	getCaptureState().captures.push({
-		schemaOrOptions: (schemaOrOptions || {}) as
-			| SchemaShape
-			| LegacyNestedSchema,
+		schemaOrOptions: (schemaOrOptions || {}) as SchemaShape,
 		optionsOrIsServer,
 		context,
 	});

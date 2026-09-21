@@ -7,6 +7,11 @@ export type { Logger, LogLevel } from "@repo/log";
 export { classifyEnvKeys } from "./classify-env-keys";
 export * from "./core";
 export {
+	assertNotRemovedNestedBagSource,
+	hasRemovedNestedBagSource,
+	REMOVED_NESTED_BAG_MESSAGE,
+} from "./removed-nested";
+export {
 	isDotEnvFile,
 	isEnvModuleId,
 	normalizeModuleId,

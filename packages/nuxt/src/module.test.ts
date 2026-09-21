@@ -51,9 +51,9 @@ describe("Nuxt module integration", () => {
 			schemaPath,
 			`
 			export const env = arkenv({
-				server: { DATABASE_URL: "string" },
-				client: { NUXT_PUBLIC_API_URL: "string" },
-				shared: { NODE_ENV: "string" }
+				DATABASE_URL: "string",
+				NUXT_PUBLIC_API_URL: "string",
+				NODE_ENV: "string",
 			});
 			`,
 		);
@@ -106,9 +106,9 @@ describe("Nuxt module integration", () => {
 			schemaPath,
 			`
 			export const env = arkenv({
-				server: { DATABASE_URL: "string" },
-				client: { NUXT_PUBLIC_API_URL: "string" },
-				shared: { NODE_ENV: "string" }
+				DATABASE_URL: "string",
+				NUXT_PUBLIC_API_URL: "string",
+				NODE_ENV: "string",
 			});
 			`,
 		);
