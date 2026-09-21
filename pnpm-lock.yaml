@@ -91,6 +91,8 @@ overrides:
   fumadocs-core: 16.8.7
   fumadocs-ui: 16.8.7
 
+pnpmfileChecksum: sha256-5wnxF9OhxHRpUlyhcFal1wY5CaDXJOSwb++5FgnMyrg=
+
 importers:
 
   .:
