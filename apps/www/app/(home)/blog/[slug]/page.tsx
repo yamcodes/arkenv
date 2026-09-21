@@ -76,7 +76,7 @@ export default async function BlogPostPage(props: {
 											height={32}
 											sizes="32px"
 											className="blog-page__avatar"
-											priority
+											preload
 										/>
 									</a>
 								) : (
@@ -87,7 +87,7 @@ export default async function BlogPostPage(props: {
 										height={32}
 										sizes="32px"
 										className="blog-page__avatar"
-										priority
+										preload
 									/>
 								)
 							) : null}
