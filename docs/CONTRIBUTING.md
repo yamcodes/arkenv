@@ -21,7 +21,8 @@ Don't let the label names give you the wrong impression: `ready for agent` simpl
    replaces `tsx` / `ts-node` / `tsconfig-paths` / `dotenv`, `pnpm run`,
    `npx` / `pnpm exec`, `pnpm install`, and `nvm` for local work, while
    keeping the existing `pnpm-lock.yaml`. Node is pinned to an exact
-   patch in `.node-version` (mirrored in root `package.json#engines.node`).
+   patch in `.node-version`. Root `package.json#engines.node` is a
+   range covering that pin and the latest CI channel (`>=24.21.0 <27`).
    Nub provisions that version on the next `nub` command; optional
    `nub node shim` makes bare `node` follow the same pin.
 
