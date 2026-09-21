@@ -1,8 +1,8 @@
-import arkenv from "arkenv";
+import arkenv from "@arkenv/core";
 
 const env = arkenv({
-	HOST: "string.ip | 'localhost'",
-	PORT: "0 <= number.integer <= 65535",
+	HOST: "string.host = 'localhost'",
+	PORT: "number.port = 3000",
 	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
 	DEBUGGING: "boolean = false",
 });
