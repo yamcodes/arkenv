@@ -11,8 +11,8 @@ export function ReleaseChannelBadge() {
 	}
 
 	return (
-		<AnnouncementBadge href="/blog/arkenv-v1-rc" new>
-			{"v1 RC is out — what's new"}
+		<AnnouncementBadge href="/blog/arkenv-v1-rc">
+			v1 RC is here
 		</AnnouncementBadge>
 	);
 }
