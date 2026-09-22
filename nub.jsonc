@@ -1,0 +1,19 @@
+{
+	"$schema": "https://nubjs.com/schema/latest.json",
+	// Isolated project-local .store for CI/local parity (forgoes the
+	// machine-shared global-virtual-store). verifyDeps: false matches the
+	// former verifyDepsBeforeRun: false so freshness installs do not race
+	// Turbo children.
+	"verifyDeps": false,
+	"install": {
+		"linker": {
+			"strategy": "isolated",
+			"hoist": true
+		},
+		// Empirically required: /tmp jiti fixtures (vite-plugin HMR tests,
+		// CLI check crash tests) resolve @arkenv/* / @repo/* via NODE_PATH
+		// into the store public hoist — they are not at the repo root
+		// without this.
+		"publicHoist": ["@arkenv/*", "@repo/*"]
+	}
+}

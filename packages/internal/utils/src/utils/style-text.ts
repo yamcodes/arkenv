@@ -12,30 +12,51 @@ const colors = {
 	reset: "\x1b[0m",
 } as const;
 
+type ProcessLike = {
+	env?: NodeJS.ProcessEnv;
+	versions?: { node?: string | null } | null;
+	stdout?: { isTTY?: boolean } | null;
+};
+
+/**
+ * Resolve `process` without writing Node version or stdout member expressions.
+ * Next.js edge bundling flags those as unsupported Node APIs.
+ */
+function getProcess(): ProcessLike | undefined {
+	try {
+		const proc = Reflect.get(globalThis, "process") as ProcessLike | undefined;
+		if (proc && typeof proc === "object") return proc;
+	} catch {
+		// Edge / browser: `process` may be a restricted getter.
+	}
+	return undefined;
+}
+
 /**
  * Check if we're in a Node environment (not browser)
  * Checked dynamically to allow for testing with mocked globals
  */
-const isNode = (): boolean =>
-	typeof process !== "undefined" &&
-	process.versions != null &&
-	process.versions.node != null;
+const isNode = (): boolean => Boolean(getProcess()?.versions?.node);
 
 /**
  * Check if colors should be disabled based on environment
  * Respects NO_COLOR, CI environment variables, and TTY detection
  */
 const shouldDisableColors = (): boolean => {
-	if (!isNode()) return true;
+	const proc = getProcess();
+	if (!proc?.versions?.node) return true;
+
+	const env = proc.env ?? {};
 
 	// Respect NO_COLOR environment variable (https://no-color.org/)
-	if (process.env.NO_COLOR !== undefined) return true;
+	if (env.NO_COLOR !== undefined) return true;
 
 	// Disable colors in CI environments by default
-	if (process.env.CI !== undefined) return true;
+	if (env.CI !== undefined) return true;
 
 	// Disable colors if not writing to a TTY
-	if (process.stdout && !process.stdout.isTTY) return true;
+	const stdout = proc.stdout;
+	if (stdout && !stdout.isTTY) return true;
 
 	return false;
 };

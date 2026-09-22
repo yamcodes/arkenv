@@ -5,7 +5,7 @@ on:
     paths:
       - "apps/playgrounds/**"
       - "examples/**"
-      - "pnpm-workspace.yaml"
+      - "package.json"
       - "scripts/sync-examples.js"
       - "scripts/sync-lib/**"
   push:
@@ -13,7 +13,7 @@ on:
     paths:
       - "apps/playgrounds/**"
       - "examples/**"
-      - "pnpm-workspace.yaml"
+      - "package.json"
       - "scripts/sync-examples.js"
       - "scripts/sync-lib/**"
   workflow_dispatch:
@@ -34,11 +34,9 @@ jobs:
 
       - name: Set up Nub
         uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
 
       - name: Install dependencies
-        run: pnpm install
+        run: nub install
 
       - name: Build packages
         run: nub run --no-check build:packages
@@ -65,13 +63,11 @@ jobs:
           ref: ${{ github.head_ref }}
 
       - uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.0
 
-      - run: pnpm install
+      - run: nub install
       - run: nub run --no-check build:packages
       - run: nub run --no-check sync:examples
 

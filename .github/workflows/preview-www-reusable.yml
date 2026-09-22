@@ -36,8 +36,6 @@ jobs:
           echo "TURBO_SCM_BASE=${PR_BASE_SHA}" >> "$GITHUB_ENV"
           echo "TURBO_SCM_HEAD=${PR_HEAD_SHA}" >> "$GITHUB_ENV"
       - uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
       - name: Install dependencies
         run: nub install
       - name: Check if www is affected

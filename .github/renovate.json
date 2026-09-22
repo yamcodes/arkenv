@@ -61,8 +61,7 @@
 				"packages/**",
 				"apps/**",
 				"tooling/**",
-				"package.json", // Root package.json,
-				"pnpm-workspace.yaml", // Catalog
+				"package.json", // Root package.json (incl. workspaces.catalog)
 				"examples/**",
 			],
 			"matchUpdateTypes": ["minor", "patch"],

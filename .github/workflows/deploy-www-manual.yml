@@ -65,8 +65,6 @@ jobs:
           echo "short_msg=$(git log -1 --format=%s "$DEPLOY_SHA")" >> "$GITHUB_OUTPUT"
           echo "author_name=$(git log -1 --format=%an "$DEPLOY_SHA")" >> "$GITHUB_OUTPUT"
       - uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
       - name: Install dependencies
         run: nub install
       - name: Pull Vercel Environment Information

@@ -1,7 +1,20 @@
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { styleText } from "./style-text";
 
+const styleTextSource = readFileSync(
+	join(dirname(fileURLToPath(import.meta.url)), "style-text.ts"),
+	"utf8",
+);
+
 describe("styleText", () => {
+	it("does not mention process.versions or process.stdout (Next.js edge static analysis)", () => {
+		expect(styleTextSource).not.toMatch(/process\.versions/);
+		expect(styleTextSource).not.toMatch(/process\.stdout/);
+	});
+
 	describe("in Node environment", () => {
 		beforeEach(() => {
 			// Ensure we're in a Node environment with TTY and no color-disabling env vars

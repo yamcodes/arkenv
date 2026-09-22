@@ -5,7 +5,6 @@ import {
 	HERO_DWELL_MS,
 	HERO_FIRST_DWELL_MS,
 	HERO_HEADLINE_NAMES,
-	HERO_MOBILE_HEADLINE_NAMES,
 	HeroNameCycle,
 } from "./hero-name-cycle";
 
@@ -57,7 +56,7 @@ describe("HeroNameCycle", () => {
 		).not.toBeInTheDocument();
 	});
 
-	it("starts on ArkType and cycles through each name on desktop", () => {
+	it("starts on ArkType and cycles through each name", () => {
 		vi.useFakeTimers();
 		render(<HeroNameCycle />);
 
@@ -85,27 +84,6 @@ describe("HeroNameCycle", () => {
 			vi.advanceTimersByTime(HERO_CYCLE_MS);
 		});
 		expect(currentHeadline()?.textContent).toBe("ArkType");
-	});
-
-	it("omits Standard Schema on mobile", () => {
-		vi.useFakeTimers();
-		mockMatchMedia({ "(max-width: 39.99rem)": true });
-		render(<HeroNameCycle />);
-
-		expect(currentHeadline()?.textContent).toBe("ArkType");
-
-		for (const name of HERO_MOBILE_HEADLINE_NAMES.slice(1)) {
-			act(() => {
-				vi.advanceTimersByTime(HERO_CYCLE_MS);
-			});
-			expect(currentHeadline()?.textContent).toBe(name);
-		}
-
-		act(() => {
-			vi.advanceTimersByTime(HERO_CYCLE_MS);
-		});
-		expect(currentHeadline()?.textContent).toBe("ArkType");
-		expect(screen.queryByText("Standard Schema")).toBeNull();
 	});
 
 	it("pauses while the pointer is over the cycling name", () => {

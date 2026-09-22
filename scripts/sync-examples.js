@@ -95,7 +95,7 @@ function main() {
 	if (checkOnly) {
 		if (hasChanges) {
 			console.log("\n❌ Examples are out of sync with playgrounds.");
-			console.log("Run 'pnpm sync:examples' to update them.");
+			console.log("Run 'nub run sync:examples' to update them.");
 			process.exit(1);
 		} else {
 			console.log("\n✓ All examples are in sync with playgrounds.");

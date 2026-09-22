@@ -35,11 +35,9 @@ jobs:
 
       - name: Set up Nub
         uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
 
       - name: Install deps
-        run: pnpm install
+        run: nub install
 
       - name: Build
         run: nub run --no-check build --filter="./packages/*"
@@ -49,4 +47,6 @@ jobs:
       - name: Release
         # -y: pkg-pr-new is not a workspace dep; nubx refuses undownloaded tools in CI.
         # --node: pkg-pr-new ships a broken tsconfig; skip Nub's TS project load.
-        run: nubx --node -y pkg-pr-new publish --compact --pnpm './packages/*'
+        # Default npm pack (not --pnpm): packageManager is nub@…, so nub's pnpm
+        # shim has no lockfile pin and fails to install a usable pnpm binary.
+        run: nubx --node -y pkg-pr-new publish --compact './packages/*'

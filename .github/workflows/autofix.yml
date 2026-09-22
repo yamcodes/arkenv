@@ -26,8 +26,6 @@ jobs:
 
       - name: Set up Nub
         uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
 
       - name: Install dependencies
         run: nub install

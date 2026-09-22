@@ -320,7 +320,7 @@ describe("pointLatestAtRc", () => {
 		expect(result.status).toBe("skipped");
 		expect(result.reason).toMatch(/NPM_TOKEN/);
 		expect(result.reason).toMatch(/OIDC/);
-		expect(result.reason).toMatch(/pnpm point-latest-at-rc/);
+		expect(result.reason).toMatch(/nub run point-latest-at-rc/);
 		expect(warn).toHaveBeenCalled();
 	});
 

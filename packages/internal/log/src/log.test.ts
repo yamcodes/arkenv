@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
 	BUILD_PREFIX,
@@ -178,6 +181,15 @@ describe("build log helpers", () => {
 });
 
 describe("colors", () => {
+	it("does not mention process.versions or process.stdout (Next.js edge static analysis)", () => {
+		const source = readFileSync(
+			join(dirname(fileURLToPath(import.meta.url)), "colors.ts"),
+			"utf8",
+		);
+		expect(source).not.toMatch(/process\.versions/);
+		expect(source).not.toMatch(/process\.stdout/);
+	});
+
 	it("disables colors when FORCE_COLOR is 0", () => {
 		vi.stubEnv("FORCE_COLOR", "0");
 		vi.stubEnv("NO_COLOR", undefined);

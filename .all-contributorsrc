@@ -2,7 +2,6 @@
   "projectName": "arkenv",
   "projectOwner": "yamcodes",
   "files": [
-    "README.md",
     "packages/core/README.md"
   ],
   "commitType": "docs",

@@ -23,7 +23,7 @@ import { SiteFooter } from "~/components/site-footer";
 export const metadata: Metadata = {
 	title: "ArkEnv - Typesafe environment variables for TypeScript",
 	description:
-		"Typesafe environment variables with ArkType, Zod, Valibot, or any Standard Schema. Get a strictly typed env object from the validator you already use. No boilerplate. Zero dependencies.",
+		"Typesafe environment variables with ArkType, Zod, or Valibot. Get a strictly typed env object from the validator you already use. No boilerplate. Zero dependencies.",
 };
 
 export default function HomePage() {

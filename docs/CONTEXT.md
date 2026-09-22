@@ -142,7 +142,7 @@ A scroll-driven increase in **Glass material** opacity/blur so content sliding u
 
 - **TypeScript 6** - Primary language with strict type checking
 - **ArkType 2** - Type validation library (peer dependency)
-- **pnpm 11** - Package manager for monorepo
+- **Nub** - Package manager and script runner for the monorepo (`nub.lock`)
 - **Turborepo 2** - Monorepo build system and task orchestration
 
 ### Build & development tools
@@ -272,10 +272,10 @@ A scroll-driven increase in **Glass material** opacity/blur so content sliding u
 **Running Tests:**
 
 ```bash
-pnpm test -- --run                    # All tests
-pnpm test --project arkenv -- --run  # Specific package
-pnpm test -- --run "integration"     # Integration tests only
-pnpm run test:e2e                     # E2E tests
+nub run test -- --run                    # All tests
+nub run test --project arkenv -- --run  # Specific package
+nub run test -- --run "integration"     # Integration tests only
+nub run test:e2e                         # E2E tests
 ```
 
 ### Git workflow
@@ -305,7 +305,7 @@ pnpm run test:e2e                     # E2E tests
 **Versioning:**
 
 - Uses **Changesets** for version management
-- Create changeset with `pnpm changeset` before committing
+- Create changeset with `nub run changeset` before committing
 - Changesets are in `.changeset/` directory
 - Only published packages (`packages/*`) require changesets
 - Examples and private applications don't need changesets
@@ -317,7 +317,7 @@ pnpm run test:e2e                     # E2E tests
 
 **Publishing:**
 
-- Run `pnpm release` after merging PRs to publish packages
+- Run `nub run release` after merging PRs to publish packages
 - Only packages in `packages/` are published to npm
 
 ## Design Decisions
@@ -340,7 +340,7 @@ pnpm run test:e2e                     # E2E tests
 - Package READMEs (`@arkenv/nextjs`, `@arkenv/nuxt`): light touch only — mention Standard Mode + `/standard`; no full README rewrite in this pass.
 - On validators pages, the secondary “Mixing with ArkType” section is short: one flat-layout mixed schema example; no full Zod/Valibot × layout tab matrix.
 - Core FAQ: keep “Do I have to use ArkType?” for validator choice; add a dedicated “Do I need to install `arktype`?” for the `@arkenv/standard` / `/standard` packaging story.
-- Validators page descriptions (and intro cards): “Use Zod, Valibot, or any Standard Schema validator — with or without ArkType.” Title stays “Zod, Valibot, and other Standard Schema validators.” Core `integrations/standard-schema` remains the mix-with-`@arkenv/core` guide.
+- Validators page descriptions (and intro cards): “Use Zod or Valibot — with or without ArkType.” Title can stay engine-oriented (“Zod, Valibot, and other Standard Schema validators”) in docs; top-line marketing (hero, footer, meta, README) names only the big three. Core `integrations/standard-schema` remains the mix-with-`@arkenv/core` guide.
 - Nuxt FAQ gets peer-engine parity with Next (“Why install `@arkenv/core` or `@arkenv/standard` alongside `@arkenv/nuxt`?”) plus the dedicated arktype-install FAQ on both framework FAQs.
 
 ## Domain context

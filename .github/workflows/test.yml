@@ -19,17 +19,16 @@ permissions:
   actions: write
 jobs:
   test:
-    # Stable channel labels keep ruleset required-check names fixed while
-    # setup-nub-ci still receives concrete majors (aliases unsupported).
+    # Channel labels stay `lts` / `latest` so required-check names stay
+    # fixed. `lts` reads `.node-version`; `latest` overrides to 26.
     name: test (${{ matrix.channel }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
           - channel: lts
-            node-version: 24
           - channel: latest
-            node-version: 26
+            node-version: "26"
       fail-fast: false
 
     steps:
@@ -44,11 +43,8 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.0
-      # pnpm install (via nub shim): keep packageManager=pnpm's .pnpm layout.
-      # `nub install` uses node_modules/.store, and Vitest's NODE_PATH then
-      # cannot resolve workspace pkgs (@arkenv/core) from /tmp jiti fixtures.
       - name: Install dependencies
-        run: pnpm install
+        run: nub install
       - name: Build packages
         run: nub run --no-check build --filter=./packages/*
       - run: nub run --no-check test
@@ -66,9 +62,7 @@ jobs:
         with:
           team: ${{ vars.TURBO_TEAM }}
       - uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
-      - run: pnpm install
+      - run: nub install
       - run: nub run --no-check typecheck
 
   test-build:
@@ -78,9 +72,8 @@ jobs:
       matrix:
         include:
           - channel: lts
-            node-version: 24
           - channel: latest
-            node-version: 26
+            node-version: "26"
       fail-fast: false
 
     steps:
@@ -95,10 +88,10 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.0
-      - run: pnpm install
-      # --node: outer nub run injects a TS preload that turbo children inherit.
-      # Nuxt's tsconfig extends .nuxt/tsconfig.json before prepare, so the
-      # preload aborts the playground build; plain Node lets Nuxt own that.
+      - run: nub install
+      # --node: outer nub run skips TS preload. Nested turbo children are still
+      # `nub run` under packageManager=nub; nuxt-playground keeps a stub
+      # `.nuxt/tsconfig.json` so that nested run can start before `nuxt prepare`.
       - run: nub run --no-check --node build
 
   test-vite-compatibility:
@@ -115,15 +108,13 @@ jobs:
         with:
           team: ${{ vars.TURBO_TEAM }}
       - uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
-      - run: pnpm install
+      - run: nub install
       - name: Build workspace packages
         run: nub run --no-check build:packages
       - name: Apply overrides for Vite version
         run: node scripts/override-vite.js ${{ matrix.vite-version }}
       - name: Reinstall dependencies with overrides
-        run: pnpm install --no-frozen-lockfile
+        run: nub install --no-frozen-lockfile
       - name: Build vite-legacy playground
         run: nub run --no-check --node build --filter=vite-legacy-playground
 
@@ -148,13 +139,11 @@ jobs:
           echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
           echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
       - uses: ./.github/actions/setup-nub-ci
-        with:
-          node-version: 24
-      - run: pnpm install
+      - run: nub install
       - uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
-          key: ubuntu-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}
+          key: ubuntu-latest-pw-${{ hashFiles('nub.lock') }}
           restore-keys: |
             ubuntu-latest-pw-
       - name: Install Playwright browsers
@@ -179,8 +168,11 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        node-version: [24, 26]
-    continue-on-error: ${{ matrix.node-version == 26 }}
+        include:
+          - channel: pin
+          - channel: latest
+            node-version: "26"
+    continue-on-error: ${{ matrix.node-version == '26' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -201,13 +193,13 @@ jobs:
         with:
           bun-version: 1.4.0
       - name: Install dependencies
-        run: pnpm install
+        run: nub install
       - uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
-          key: windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.node-version }}
+          key: windows-latest-pw-${{ hashFiles('nub.lock') }}-${{ matrix.channel }}
           restore-keys: |
-            windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-
+            windows-latest-pw-${{ hashFiles('nub.lock') }}-
             windows-latest-pw-
       - name: Install Playwright browsers
         run: nubx playwright install --with-deps
@@ -217,7 +209,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
-          name: test-results-windows-${{ matrix.node-version }}
+          name: test-results-windows-${{ matrix.channel }}
           path: "**/test-results/**"
           retention-days: 30
 
@@ -226,8 +218,11 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        node-version: [24, 26]
-    continue-on-error: ${{ matrix.node-version == 26 }}
+        include:
+          - channel: pin
+          - channel: latest
+            node-version: "26"
+    continue-on-error: ${{ matrix.node-version == '26' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -248,13 +243,13 @@ jobs:
         with:
           bun-version: 1.4.0
       - name: Install dependencies
-        run: pnpm install
+        run: nub install
       - uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
-          key: macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.node-version }}
+          key: macos-latest-pw-${{ hashFiles('nub.lock') }}-${{ matrix.channel }}
           restore-keys: |
-            macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-
+            macos-latest-pw-${{ hashFiles('nub.lock') }}-
             macos-latest-pw-
       - name: Install Playwright browsers
         run: nubx playwright install --with-deps
@@ -264,6 +259,6 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
-          name: test-results-macos-${{ matrix.node-version }}
+          name: test-results-macos-${{ matrix.channel }}
           path: "**/test-results/**"
           retention-days: 30

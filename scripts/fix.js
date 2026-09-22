@@ -26,11 +26,11 @@ const unsafe = args.includes("--unsafe");
 // Always run biome formatting
 const biomeArgs = unsafe ? ["--write", "--unsafe", "."] : ["--write", "."];
 console.log("Running biome check...");
-execSync(`pnpm exec biome check ${biomeArgs.join(" ")}`, { stdio: "inherit" });
+execSync(`nubx biome check ${biomeArgs.join(" ")}`, { stdio: "inherit" });
 
 // Run mdxlint formatting
 console.log("Running mdxlint fix...");
-execSync("pnpm run fix:mdx", { stdio: "inherit" });
+execSync("nub run fix:mdx", { stdio: "inherit" });
 
 // Post-process mdxlint output to fix over-aggressive escaping.
 // Walks the repo but skips node_modules/.git/dist and CHANGELOG.md so
@@ -46,7 +46,7 @@ normalizeMdxCodeIndent(process.cwd());
 // Conditionally run manypkg fix
 if (!skipManypkg) {
 	console.log("Running manypkg fix...");
-	execSync("pnpm exec manypkg fix", { stdio: "inherit" });
+	execSync("nubx manypkg fix", { stdio: "inherit" });
 } else {
 	console.log("Skipping manypkg fix (SKIP_MANYPKG or --skip-manypkg)");
 }

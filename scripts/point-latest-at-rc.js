@@ -2,7 +2,7 @@
  * Point npm `latest` at RC package versions.
  *
  * During the product RC window, bare installs (`npx arkenv`, untagged
- * `pnpm add @arkenv/core`) must resolve to the current `1.0.0-rc.n`.
+ * `nub add @arkenv/core`) must resolve to the current `1.0.0-rc.n`.
  * Changesets pre mode only updates the `rc` dist-tag; this script also
  * sets `latest`.
  *
@@ -287,7 +287,7 @@ export function pointLatestAtRc(options = {}) {
 	const token = resolveAuthToken(env);
 	if (!token && !options.dryRun && !local) {
 		const reason =
-			"NPM_TOKEN / NODE_AUTH_TOKEN is not set. OIDC does not cover npm dist-tag (no CLI OIDC exchange). Set the NPM_TOKEN repo secret to a granular stage-only token (dist-tag; not publish), then re-run or use workflow_dispatch → promote_rc_to_latest. Or run locally: pnpm point-latest-at-rc (after npm login).";
+			"NPM_TOKEN / NODE_AUTH_TOKEN is not set. OIDC does not cover npm dist-tag (no CLI OIDC exchange). Set the NPM_TOKEN repo secret to a granular stage-only token (dist-tag; not publish), then re-run or use workflow_dispatch → promote_rc_to_latest. Or run locally: nub run point-latest-at-rc (after npm login).";
 		warn(`::warning::${reason}`);
 		return { status: "skipped", reason, commands: [] };
 	}
@@ -417,9 +417,9 @@ export function parseArgs(argv) {
 
 function printHelp() {
 	console.log(`Usage:
-  pnpm point-latest-at-rc
-  pnpm point-latest-at-rc -- --otp <code>
-  NPM_CONFIG_OTP=<code> pnpm point-latest-at-rc
+  nub run point-latest-at-rc
+  nub run point-latest-at-rc -- --otp <code>
+  NPM_CONFIG_OTP=<code> nub run point-latest-at-rc
   node scripts/point-latest-at-rc.js --packages '[{"name":"arkenv","version":"1.0.0-rc.2"}]'
   node scripts/point-latest-at-rc.js --from-rc
   node scripts/point-latest-at-rc.js --from-rc --local
@@ -433,7 +433,7 @@ Auth:
   CI:    NPM_TOKEN or NODE_AUTH_TOKEN (granular stage-only dist-tag
          token; OIDC covers publish only — no CLI OIDC exchange for
          dist-tag). Soft-skips if the secret is missing.
-  Local: pnpm point-latest-at-rc (wraps --from-rc --local after npm
+  Local: nub run point-latest-at-rc (wraps --from-rc --local after npm
          login; uses your user npmrc; no NPM_TOKEN). dist-tag writes
          inherit the TTY so OTP works. Prefer --otp <code> or
          NPM_CONFIG_OTP so one OTP covers all packages (else npm
