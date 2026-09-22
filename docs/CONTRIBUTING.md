@@ -58,7 +58,11 @@ Don't let the label names give you the wrong impression: `ready for agent` simpl
 1. Fork the repository and create your branch from `dev`
 2. If you've added code that should be tested, add tests
 3. Ensure the test suite passes
-4. Update the documentation if needed
+4. Update the documentation if needed. The root `README.md` is a symlink
+   to `packages/core/README.md` (so GitHub and the npm package page stay
+   in sync). Edit `packages/core/README.md` when changing the README —
+   GitHub's blob **Edit** on the root path overwrites the symlink with a
+   copy and reintroduces drift.
 5. Create a changeset for your changes:
    ```sh
    nub run changeset
