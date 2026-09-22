@@ -49,15 +49,19 @@ process.exit(${options.exitCode ?? 0});
 	);
 	const summaryPath = join(dir, "summary.md");
 	const cliArgs = options.args ?? ["deploy"];
+	const env = {
+		...process.env,
+		VERCEL_WRAPPER_BIN: fakeBin,
+		GITHUB_STEP_SUMMARY: summaryPath,
+		...options.env,
+	};
+	// Nub's NODE_OPTIONS preload breaks the shebang fake CLI when cwd is outside
+	// the workspace (ERR_REQUIRE_CYCLE_MODULE). CI/Actions do not set it.
+	delete env.NODE_OPTIONS;
 	const result = spawnSync(process.execPath, [wrapper, ...cliArgs], {
 		encoding: "utf8",
 		cwd: options.cwd,
-		env: {
-			...process.env,
-			VERCEL_WRAPPER_BIN: fakeBin,
-			GITHUB_STEP_SUMMARY: summaryPath,
-			...options.env,
-		},
+		env,
 	});
 	return { result, summaryPath, dir };
 }

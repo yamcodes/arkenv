@@ -2,13 +2,6 @@ const { spawn } = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const args = process.argv.slice(2);
-
-if (args.length === 0) {
-	console.error("No arguments provided to vercel-wrapper.cjs");
-	process.exit(1);
-}
-
 /**
  * Whether this invocation is a `vercel build` (not pull/deploy/alias).
  *
@@ -102,6 +95,12 @@ module.exports = {
 };
 
 if (require.main === module) {
+	const args = process.argv.slice(2);
+	if (args.length === 0) {
+		console.error("No arguments provided to vercel-wrapper.cjs");
+		process.exit(1);
+	}
+
 	// Tests set VERCEL_WRAPPER_BIN to a fake CLI. Deploy workflows leave it unset
 	// and pin vercel via nubx so they need no global install / GITHUB_PATH dance.
 	const overrideBin = process.env.VERCEL_WRAPPER_BIN;
