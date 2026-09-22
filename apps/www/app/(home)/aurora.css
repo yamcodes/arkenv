@@ -72,10 +72,13 @@
 	animation: home-aurora-rise-blur 1s var(--ease-out-strong) backwards;
 }
 
-/* Scroll reveals - ScrollReveal only adds .reveal-hidden below the fold */
+/* Scroll reveals - ScrollReveal only adds .reveal-hidden below the fold.
+ * pointer-events: none so a mid-hydration / mid-transition click cannot
+ * focus the link without navigating (Chromium Playwright flake). */
 .home-aurora [data-reveal].reveal-hidden {
 	opacity: 0;
 	transform: translateY(18px);
+	pointer-events: none;
 }
 
 .home-aurora [data-reveal="blur"].reveal-hidden {
