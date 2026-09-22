@@ -1,6 +1,8 @@
 import fsp from "node:fs/promises";
 import path from "node:path";
 import type { ParsedTsConfig } from "@/shared/ports";
+import { walk } from "./env-scanner";
+import { findTsConfig, loadTsConfig } from "./tsconfig";
 
 async function hasConfig(cwd: string, files: string[]): Promise<boolean> {
 	for (const file of files) {
@@ -117,7 +119,6 @@ export async function detectBunFeatures(
 
 	if (features.includes("serve") && features.includes("build")) return features;
 
-	const { walk } = await import("./env-scanner");
 	const files = await walk(cwd);
 	let foundServe = features.includes("serve");
 	let foundBuild = features.includes("build");
@@ -210,7 +211,6 @@ export async function suggestDefaultEnvPath(
 ): Promise<string> {
 	let currentTsConfig = tsConfig;
 	if (!currentTsConfig) {
-		const { findTsConfig, loadTsConfig } = await import("./tsconfig");
 		const tsConfigPath = await findTsConfig(cwd);
 		if (tsConfigPath) {
 			currentTsConfig = await loadTsConfig(tsConfigPath);
