@@ -9,9 +9,7 @@ const publishedTagCache = new Map();
  * Read the workspace catalog from root package.json (`workspaces.catalog`).
  */
 export function parseCatalog() {
-	const pkg = JSON.parse(
-		readFileSync(join(ROOT_DIR, "package.json"), "utf-8"),
-	);
+	const pkg = JSON.parse(readFileSync(join(ROOT_DIR, "package.json"), "utf-8"));
 	const catalog = pkg.workspaces?.catalog;
 	if (!catalog || typeof catalog !== "object") {
 		throw new Error(

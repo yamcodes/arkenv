@@ -5,10 +5,7 @@ import { describe, expect, it } from "vitest";
 import packageJson from "./package.json";
 
 const lockfile = readFileSync(
-	path.join(
-		path.dirname(fileURLToPath(import.meta.url)),
-		"../../nub.lock",
-	),
+	path.join(path.dirname(fileURLToPath(import.meta.url)), "../../nub.lock"),
 	"utf8",
 );
 
