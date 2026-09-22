@@ -53,12 +53,6 @@ export class Executor {
 
 			s.stop("Configuration scaffolded!");
 
-			// 1b. Write arkenv schema pointer to package.json
-			await this.configurePackageJsonArkenv(
-				plan.install?.cwd ?? plan.cwd,
-				plan.metadata,
-			);
-
 			// 2. Install dependencies
 			if (plan.install && process.env.SKIP_INSTALL !== "true") {
 				if (plan.install.packageManager === "pnpm") {
@@ -301,33 +295,11 @@ export class Executor {
 
 	/**
 	 * Configure pnpm-specific whitelisting for esbuild and other native build dependencies.
+	 * Writes approved builds under `pnpm-workspace.yaml#allowBuilds` (supported since pnpm 10.26.0; `package.json#pnpm` is ignored on pnpm 11+).
 	 *
 	 * @param installCwd The directory where the installation will run
 	 */
 	private async configurePnpmBuilds(installCwd: string): Promise<void> {
-		const packageJsonPath = path.join(installCwd, "package.json");
-		if (await this.workspace.exists(packageJsonPath)) {
-			try {
-				const pkgContent = await this.workspace.readFile(packageJsonPath);
-				const pkg = JSON.parse(pkgContent);
-				pkg.pnpm = pkg.pnpm || {};
-				pkg.pnpm.onlyBuiltDependencies = pkg.pnpm.onlyBuiltDependencies || [];
-				for (const dep of APPROVED_PNPM_BUILDS) {
-					if (!pkg.pnpm.onlyBuiltDependencies.includes(dep)) {
-						pkg.pnpm.onlyBuiltDependencies.push(dep);
-					}
-				}
-				await this.workspace.writeFile(
-					packageJsonPath,
-					JSON.stringify(pkg, null, 2) + "\n",
-				);
-			} catch (e) {
-				this.reporter.warn(
-					`Could not update package.json with pnpm whitelisting: ${e}`,
-				);
-			}
-		}
-
 		const pnpmWorkspacePath = path.join(installCwd, "pnpm-workspace.yaml");
 		let workspaceContent = "";
 		if (await this.workspace.exists(pnpmWorkspacePath)) {
@@ -375,35 +347,5 @@ export class Executor {
 		}
 
 		return String(doc);
-	}
-
-	/**
-	 * Persist the arkenv schema entry to package.json.
-	 *
-	 * @param installCwd The directory containing package.json.
-	 * @param metadata The scaffolding plan metadata.
-	 */
-	private async configurePackageJsonArkenv(
-		installCwd: string,
-		metadata: ScaffoldingPlan["metadata"],
-	): Promise<void> {
-		const packageJsonPath = path.join(installCwd, "package.json");
-		if (await this.workspace.exists(packageJsonPath)) {
-			try {
-				const pkgContent = await this.workspace.readFile(packageJsonPath);
-				const pkg = JSON.parse(pkgContent);
-				pkg.arkenv = {
-					schema: metadata.displayPath,
-				};
-				await this.workspace.writeFile(
-					packageJsonPath,
-					JSON.stringify(pkg, null, 2) + "\n",
-				);
-			} catch (e) {
-				this.reporter.warn(
-					`Could not update package.json with arkenv schema entry: ${e}`,
-				);
-			}
-		}
 	}
 }

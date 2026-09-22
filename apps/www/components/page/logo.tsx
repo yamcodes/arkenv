@@ -1,28 +1,35 @@
+import Link from "next/link";
 import { cn } from "~/lib/utils";
+import "./logo.css";
 
 /**
- * Logo component
- *
- * @param className - Optional className for custom styling
- * @param wordmark - When false, renders the icon only (default true)
- * @returns Logo component
+ * Brand mark — helm icon, optional “ArkEnv” wordmark, and optional RC chip.
+ * Prefer `LogoLink` for the home hit target so nav and footer share one wrapper.
  */
 export function Logo({
 	className,
 	wordmark = true,
+	releaseTag,
 }: {
 	className?: string;
 	wordmark?: boolean;
+	/**
+	 * Channel tag from `RELEASE_TAG` (pass from the server into client trees).
+	 * When `"rc"`, shows a non-interactive RC chip next to the wordmark.
+	 */
+	releaseTag?: string;
 }) {
+	const showRc = wordmark && releaseTag === "rc";
+
 	return (
-		<div className={cn("flex items-center gap-2", className)}>
+		<div className={cn("logo", className)}>
 			<svg
 				width="28"
 				height="28"
 				viewBox="0 0 12 12"
 				xmlns="http://www.w3.org/2000/svg"
 				aria-hidden="true"
-				className="size-7"
+				className="logo__icon size-7"
 			>
 				<path
 					className="stroke-cyan-500 dark:stroke-cyan-400"
@@ -49,8 +56,37 @@ export function Logo({
 				/>
 			</svg>
 			{wordmark ? (
-				<span className="text-fd-foreground font-semibold text-lg">ArkEnv</span>
+				<span className="logo__wordmark">
+					<span className="logo__name">ArkEnv</span>
+					{showRc ? (
+						<span className="logo__rc" aria-hidden="true">
+							RC
+						</span>
+					) : null}
+				</span>
 			) : null}
 		</div>
+	);
+}
+
+/**
+ * Home link around {@link Logo} — shared by Site Nav and Site Footer so the
+ * brand unit (icon + wordmark + RC) is one hit target with one weight.
+ */
+export function LogoLink({
+	className,
+	releaseTag,
+}: {
+	className?: string;
+	releaseTag?: string;
+}) {
+	return (
+		<Link
+			href="/"
+			className={cn("logo-link", className)}
+			aria-label="ArkEnv home"
+		>
+			<Logo releaseTag={releaseTag} />
+		</Link>
 	);
 }

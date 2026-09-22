@@ -1,6 +1,7 @@
 import { DiscordListItem } from "~/components/discord-list-item";
-import { Logo } from "~/components/page/logo";
+import { LogoLink } from "~/components/page/logo";
 import { env } from "~/env";
+import { RELEASE_TAG } from "~/lib/config/release";
 
 /**
  * Shared site footer used on the home page and docs.
@@ -31,14 +32,8 @@ export function SiteFooter({
 		>
 			<div className="home-aurora__footer-grid">
 				<div className="home-aurora__footer-brand">
-					<a
-						href="/"
-						className="home-aurora__wordmark"
-						aria-label="ArkEnv home"
-					>
-						<Logo />
-					</a>
-					<p>Typesafe environment variables for ArkType, Zod, and Valibot.</p>
+					<LogoLink releaseTag={RELEASE_TAG} />
+					<p>Typesafe environment variables with ArkType, Zod, or Valibot.</p>
 				</div>
 
 				<nav aria-labelledby="footer-resources">
@@ -79,9 +74,6 @@ export function SiteFooter({
 						</li>
 						<li>
 							<a href="/docs/validators/valibot">Valibot</a>
-						</li>
-						<li>
-							<a href="/docs/validators">Standard Schema</a>
 						</li>
 					</ul>
 				</nav>
@@ -154,7 +146,7 @@ export function SiteFooter({
 				<span>
 					Free and open-source under the{" "}
 					<a
-						href={`${githubRepoUrl}/blob/dev/LICENSE`}
+						href={`${githubRepoUrl}/blob/v1/LICENSE`}
 						target="_blank"
 						rel="noopener noreferrer"
 					>

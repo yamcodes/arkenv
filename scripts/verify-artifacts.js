@@ -32,7 +32,7 @@ function checkFile(filePath) {
 	if (!fs.existsSync(absolutePath)) {
 		failures.push({
 			filePath,
-			error: "File not found. Make sure to run a build first: pnpm run build",
+			error: "File not found. Make sure to run a build first: nub run build",
 		});
 		return;
 	}
@@ -90,7 +90,7 @@ try {
 // 3. Check bundle size limits
 console.log("\n📦 Running size-limit validation...");
 try {
-	execSync("pnpm --filter @arkenv/core --filter @arkenv/standard run size", {
+	execSync("nub run --filter @arkenv/core --filter @arkenv/standard size", {
 		cwd: rootDir,
 		stdio: "inherit",
 	});

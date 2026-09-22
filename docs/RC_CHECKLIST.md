@@ -214,8 +214,8 @@ work lands):
 - [ ] `readme-prod-links` - Update README links from alpha to production
 - [ ] `changelog-epoch` - Prepend changelog epoch warnings
 - [ ] `npm-deprecate-cli` - Deprecate `@arkenv/cli` on npm
-- [ ] `v0-archive-dns-cutover` - Deploy `v0.arkenv.js.org` archive and
-  flip primary DNS
+- [ ] `v0-archive-dns-cutover` - Park v0 on `arkenv-v0.vercel.app` and
+  point Production / `arkenv.js.org` at `v1` (no js.org subdomain)
 - [ ] `release-v1` - Release v1
 - [ ] `v1-announcement` - Document v1 announcement
 
@@ -253,7 +253,7 @@ output and sets `latest` on each published package.
   separate flag.
 - **Auth:** Publish stays on OIDC trusted publishing. `npm dist-tag` is
   not covered by OIDC (the npm CLI still has no OIDC exchange for
-  dist-tag), so the supported path is a granular access token in the
+  dist-tag), so the CI path is a granular access token in the
   **`NPM_TOKEN`** repository secret (`NODE_AUTH_TOKEN` in the job).
   Preferred token setup:
   - Permissions: **Read and write (stage only)** — can move dist-tags,
@@ -264,19 +264,58 @@ output and sets `latest` on each published package.
   - No organization write access.
   - Rotate about every 90 days (token expiry).
     If the secret is missing, the step warns and skips (publish still
-    succeeds).
-- **One-shot promote:** Actions → **release** → **Run workflow** → enable
-  **promote_rc_to_latest** (points `latest` at current `@rc` without
-  publishing). Same gate + `NPM_TOKEN` requirement.
-- **Local dry-run:**
-  `node scripts/point-latest-at-rc.js --packages '[{"name":"arkenv","version":"1.0.0-rc.2"}]' --dry-run`
+    succeeds). CI needs `NPM_TOKEN`; the local path below does not.
+- **One-shot promote (CI):** Actions → **release** → **Run workflow** →
+  enable **promote_rc_to_latest** (points `latest` at current `@rc`
+  without publishing). Same gate + `NPM_TOKEN` requirement.
+- **Local break-glass (no `NPM_TOKEN`):** after `npm login`, from the
+  repo root:
 
-`1.0.0-rc.1` may still need a one-time manual `npm dist-tag add … latest`
-(or the workflow_dispatch promote) if automation lands after that publish.
+  ```bash
+  pnpm point-latest-at-rc -- --otp <code-from-authenticator>
+  # or: NPM_CONFIG_OTP=<code> pnpm point-latest-at-rc
+  ```
+
+  Runs `node scripts/point-latest-at-rc.js --from-rc --local`. Uses your
+  user npmrc. Prefer `--otp` / `NPM_CONFIG_OTP` so one OTP covers every
+  package (npm otherwise prompts once per `dist-tag add`). Without a
+  shared OTP, `dist-tag` writes inherit the TTY for interactive prompts
+  (real terminal only). Same pre.json gate. Prefer CI
+  **promote_rc_to_latest** when the secret works; this is escape-hatch
+  only. Agent walkthrough:
+  [skills/point-latest-at-rc/SKILL.md](../skills/point-latest-at-rc/SKILL.md).
+- **Local dry-run:** `pnpm point-latest-at-rc --dry-run`
+
+`1.0.0-rc.1` may still need a one-time retag if automation lands after
+that publish: CI **promote_rc_to_latest** first (needs `NPM_TOKEN`), or
+local break-glass `pnpm point-latest-at-rc`.
+
+### GitHub Releases Latest (RC / v1 pre)
+
+`changesets/action` creates one GitHub Release per published package with
+`prerelease: true` whenever the SemVer version contains `-`. GitHub
+**forbids** the Releases-page **Latest** badge on prereleases
+(`make_latest` is ignored while `prerelease: true`).
+
+**Chosen product path:** after publish on `v1` while Changesets pre mode
+is active, [`.github/workflows/release.yml`](../.github/workflows/release.yml)
+runs [`scripts/mark-github-releases-latest.js`](../scripts/mark-github-releases-latest.js):
+
+1. PATCH each published SemVer-prerelease release to `prerelease: false`
+   (required so Latest is allowed).
+2. Set `make_latest: "true"` on **`arkenv`** if published, else
+   **`@arkenv/core`**. If neither is in the publish set, clear
+   prerelease only — do **not** move Latest to an unrelated sibling.
+
+npm dist-tags are unchanged. One-shot (must run on the `v1` branch):
+Actions → **release** → **Run workflow** → enable
+**mark_github_pre_as_latest** (uses workspace package versions via
+`--from-workspace`).
 
 - [ ] Publish `1.0.0-rc.n` for the publishable packages in section B
 - [ ] Confirm dist-tags: `@rc` → `1.0.0-rc.n`, and **`latest` → `1.0.0-rc.n`**
   (product path; automated on publish when `NPM_TOKEN` is set)
+- [ ] Confirm Releases page **Latest** → `arkenv@1.0.0-rc.n` (or current RC)
 - [ ] Smoke tests after publish:
   - [ ] Bare `npx arkenv init` (exercises `latest`)
   - [ ] `@arkenv/core` + `arktype` in a fresh Node app
@@ -317,14 +356,20 @@ output and sets `latest` on each published package.
 
 ## E. Site / GitHub cutover
 
-These overlap GA ops. Prefer executing DNS with the RC announce pack
+These overlap GA ops. Prefer flipping apex with the RC announce pack
 only when archive + README production links are ready; otherwise keep
-serving v1 from `https://arkenv-v1.vercel.app` until then. Full DNS
-detail: [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.
+serving v1 from `https://arkenv-v1.vercel.app` until then. Full steps:
+[LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.
 
-- [ ] `arkenv.js.org` → v1 `www`; `v0.arkenv.js.org` archive
-- [ ] Optional: default GitHub branch → `v1` (repo default today is
-  `dev` - verify before changing)
+**Phased cutover:** **Now (RC) = Option A** — keep branch names; `v1`
+owns `--prod` / `arkenv.js.org`; `main` parks on `arkenv-v0.vercel.app`.
+**Later (GA) = Option B** — rename so the v1 line becomes `main`/`dev`
+and the old line becomes **`v0`**, then leave `--prod` on `main`. Do
+not rename branches during RC.
+
+- [ ] `arkenv.js.org` → v1 `www` (`--prod` from `v1`); archive on
+  `arkenv-v0.vercel.app`
+- [x] Default GitHub branch → `v1` (already done)
 - [ ] GitHub Release for `1.0.0-rc.n` + announce blog + tweet
   (include Not-GA known gaps from section A, including the docs
   voice / AI-slop pass)
@@ -332,7 +377,7 @@ detail: [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.
   [arktypeio/arktype#1655](https://github.com/arktypeio/arktype/pull/1655)
   merged; snippet uses `@arkenv/core`
 - [ ] State the support window for alpha consumers and v0
-  (`v0.arkenv.js.org` + last v0 npm lines)
+  (`arkenv-v0.vercel.app` + last v0 npm lines)
 
 ---
 

@@ -1,9 +1,12 @@
 import "../blog.css";
 import { InlineTOC } from "fumadocs-ui/components/inline-toc";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteFooter } from "~/components/site-footer";
+import { getAuthorAvatarUrl, getAuthorGithub } from "~/lib/blog-author";
+import { isPublishedBlogPage } from "~/lib/blog-published";
 import { blog, getBlogPages, SITE_URL } from "~/lib/source";
 import { getMDXComponents } from "~/mdx-components";
 
@@ -22,10 +25,19 @@ export default async function BlogPostPage(props: {
 }) {
 	const params = await props.params;
 	const page = blog.getPage([params.slug]);
-	if (!page) notFound();
-	if (page.data.draft && process.env.NODE_ENV !== "development") notFound();
+	if (!page || !isPublishedBlogPage(page)) notFound();
 
 	const MDX = page.data.body;
+	const githubHandle = getAuthorGithub(
+		page.data.author,
+		page.data.authorGithub,
+	);
+	const avatarUrl = githubHandle
+		? getAuthorAvatarUrl(githubHandle, 64)
+		: undefined;
+	const githubUrl = githubHandle
+		? `https://github.com/${githubHandle}`
+		: undefined;
 
 	return (
 		<div className="home-aurora__shell">
@@ -41,13 +53,68 @@ export default async function BlogPostPage(props: {
 						← Blog
 					</Link>
 					<header className="blog-page__header">
-						<h1 className="blog-page__title">{page.data.title}</h1>
-						{page.data.description ? (
-							<p className="blog-page__lede">{page.data.description}</p>
-						) : null}
-						<p className="blog-page__post-meta">
-							{formatDate(page.data.date)} · {page.data.author}
-						</p>
+						<h1 className="blog-page__title">
+							{page.data.title}{" "}
+							{page.data.draft ? (
+								<span className="blog-page__draft-badge">Draft</span>
+							) : null}
+						</h1>
+						<div className="blog-page__post-author">
+							{avatarUrl ? (
+								githubUrl ? (
+									<a
+										href={githubUrl}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="blog-page__author-avatar-link"
+										aria-label={`${page.data.author} on GitHub`}
+										data-no-underline
+										data-no-arrow
+									>
+										<Image
+											src={avatarUrl}
+											alt={page.data.author}
+											width={32}
+											height={32}
+											sizes="32px"
+											className="blog-page__avatar"
+											preload
+										/>
+									</a>
+								) : (
+									<Image
+										src={avatarUrl}
+										alt={page.data.author}
+										width={32}
+										height={32}
+										sizes="32px"
+										className="blog-page__avatar"
+										preload
+									/>
+								)
+							) : null}
+							<div className="blog-page__author-details">
+								{githubUrl ? (
+									<a
+										href={githubUrl}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="blog-page__author-name"
+										data-no-underline
+										data-no-arrow
+									>
+										{page.data.author}
+									</a>
+								) : (
+									<span className="blog-page__author-name">
+										{page.data.author}
+									</span>
+								)}
+								<span className="blog-page__post-date">
+									{formatDate(page.data.date)}
+								</span>
+							</div>
+						</div>
 					</header>
 					<div className="blog-page__post-body prose">
 						<InlineTOC items={page.data.toc} />
@@ -71,8 +138,7 @@ export async function generateMetadata(props: {
 }): Promise<Metadata> {
 	const params = await props.params;
 	const page = blog.getPage([params.slug]);
-	if (!page) notFound();
-	if (page.data.draft && process.env.NODE_ENV !== "development") notFound();
+	if (!page || !isPublishedBlogPage(page)) notFound();
 
 	const ogUrl = new URL(`${SITE_URL}/api/og`);
 	ogUrl.searchParams.set("title", page.data.title);
@@ -83,6 +149,7 @@ export async function generateMetadata(props: {
 	return {
 		title: `${page.data.title} | ArkEnv`,
 		description: page.data.description,
+		robots: page.data.draft ? { index: false, follow: false } : undefined,
 		openGraph: {
 			title: `${page.data.title} | ArkEnv`,
 			description: page.data.description,

@@ -11,9 +11,9 @@ schema keys, `.env.example` presence, and redacted check failures.
 
 ## Install the plugin
 
-The monorepo lists this package in the root `marketplace.json`, so the plugins
-CLI installs `packages/agent-plugin` instead of treating the repo root's
-`skills/` tree as a plugin:
+The monorepo lists this package in `.claude-plugin/marketplace.json`, so the
+plugins CLI installs `packages/agent-plugin` instead of treating the repo
+root's `skills/` tree as a plugin:
 
 ```bash
 npx plugins add yamcodes/arkenv
@@ -39,7 +39,7 @@ From a local clone, build first and point MCP at the bin:
 
 ```bash
 pnpm --filter @arkenv/agent-plugin build
-node ./packages/agent-plugin/dist/bin.js
+node ./packages/agent-plugin/bin.mjs
 ```
 
 Stdio MCP tools:

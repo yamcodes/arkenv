@@ -56,16 +56,15 @@ test.describe("Homepage Interactivity", () => {
 
 	test("should have functional 'Read the docs' button", async ({ page }) => {
 		await page.goto("/");
+		// Outro CTA (hero mobile "Read the docs" is display:none on desktop).
 		const docsButton = page
-			.getByRole("link", { name: "Read the docs" })
-			.first();
+			.locator(".home-aurora__outro")
+			.getByRole("link", { name: "Read the docs" });
 		await expect(docsButton).toBeVisible();
+		await expect(docsButton).toHaveAttribute("href", "/docs");
 
-		await Promise.all([
-			page.waitForURL("**/docs", { timeout: 30000 }),
-			docsButton.click(),
-		]);
-		await expect(page).toHaveURL("/docs");
+		await docsButton.click();
+		await expect(page).toHaveURL(/\/docs\/?$/);
 	});
 
 	test("should have GitHub star link with correct security attributes", async ({
@@ -91,7 +90,10 @@ test.describe("Homepage Interactivity", () => {
 			.locator("nav.site-nav__links")
 			.getByRole("link", { name: "Playground" });
 		await expect(playground).toBeVisible();
-		await expect(playground).toHaveAttribute("href", /stackblitz\.com/);
+		await expect(playground).toHaveAttribute(
+			"href",
+			/stackblitz\.com\/github\/yamcodes\/arkenv\/tree\/v1\/examples\/stackblitz/,
+		);
 		await expect(playground).toHaveAttribute("target", "_blank");
 		const rel = await playground.getAttribute("rel");
 		expect(rel).toContain("noopener");

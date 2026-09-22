@@ -146,7 +146,7 @@ test.describe("Docs table of contents", () => {
 		await expect(author).toBeVisible();
 		await expect(license).toHaveAttribute(
 			"href",
-			"https://github.com/yamcodes/arkenv/blob/dev/LICENSE",
+			"https://github.com/yamcodes/arkenv/blob/v1/LICENSE",
 		);
 		await expect(author).toHaveAttribute("href", "https://yam.codes");
 

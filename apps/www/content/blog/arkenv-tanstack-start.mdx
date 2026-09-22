@@ -1,0 +1,68 @@
+---
+title: Typesafe environment variables in TanStack Start with ArkEnv
+description: >-
+  Outline — announce ArkEnv for TanStack Start: CLI add-on, Vite plugin,
+  createServerFn-safe secrets, link to docs + example. Yam to write voice.
+author: Yam Borodetsky
+authorGithub: yamcodes
+draft: true
+---
+
+{/* Outline only — Yam writes the announce voice. Style target: short
+    TanStack Start v1–style announce (why / what’s available / tiny code
+    taste / CTA). Teaching walkthrough lives in the framework guide. */}
+
+## Why this matters
+
+- TanStack Start ships full-stack apps with server functions and a
+  client bundle — env vars are where secrets leak if the boundary is
+  soft
+- ArkEnv: one `env.ts` schema → typed `env`, fail-fast at Vite boot,
+  server secrets stay inside `createServerFn`, public `VITE_*` keys
+  stay typed on the client
+- Same contract as Vite / Next / Nuxt — Start just gets the wiring
+
+## What’s available
+
+- **TanStack CLI add-on** — scaffold or add via
+  `https://arkenv.js.org/tanstack/info.json` (`@tanstack/cli create` /
+  `add`)
+- **`arkenv init`** — detects `@tanstack/react-start` / `@tanstack/start`,
+  installs `@arkenv/vite-plugin`
+- **`@arkenv/vite-plugin`** — validate at config resolution; inline
+  public keys; throwing getters for server keys on the client graph
+- **Example** —
+  [`examples/with-tanstack-start`](https://github.com/yamcodes/arkenv/tree/v1/examples/with-tanstack-start)
+  (Rsbuild twin: `with-tanstack-start-rsbuild`)
+
+## Code taste
+
+{/* Keep this tiny — one schema + one serverFn read. Full snippets in docs. */}
+
+```ts
+// src/env.ts
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  DATABASE_URL: "string",
+  VITE_API_URL: "string = 'https://api.example.com'",
+});
+```
+
+```ts
+// inside createServerFn — server-only key is fine
+const host = new URL(env.DATABASE_URL).host;
+```
+
+- Client may read `env.VITE_API_URL`; `env.DATABASE_URL` throws instead
+  of shipping the secret
+
+## Read next
+
+- Guide (canonical):
+  [TanStack Start](/docs/frameworks/tanstack-start)
+- Example:
+  [`with-tanstack-start`](https://github.com/yamcodes/arkenv/tree/v1/examples/with-tanstack-start)
+- Related:
+  [Client vs. server](/docs/core-concepts/client-vs-server),
+  [`@arkenv/vite-plugin`](/docs/reference/vite-plugin)

@@ -5,6 +5,6 @@ import type { ParseStandardConfig as ArkEnvConfig } from "@repo/utils";
 /**
  * Combined config accepted by the Bun plugin factory (transform + ArkEnv + logging).
  */
-export type BunPluginFactoryConfig = Omit<ArkEnvConfig, "safe"> &
+export type BunPluginFactoryConfig = ArkEnvConfig &
 	ArkEnvLogOptions &
 	BunTransformOptions;

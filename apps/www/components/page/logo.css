@@ -1,0 +1,65 @@
+/* Shared brand mark (header Site Nav + footer). */
+
+.logo {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.logo__wordmark {
+	display: inline-flex;
+	align-items: center;
+	/* Tighter than the old header flex gap between wordmark and RC chip */
+	gap: 0.3rem;
+}
+
+.logo__name {
+	color: var(--color-fd-foreground, var(--foreground, inherit));
+	font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+	font-weight: 500;
+	font-size: 1.125rem;
+	letter-spacing: -0.01em;
+	line-height: 1;
+}
+
+/*
+ * Home hit target — icon + wordmark + RC. Used by Site Nav and Site Footer.
+ */
+.logo-link {
+	display: inline-flex;
+	align-items: center;
+	flex-shrink: 0;
+	text-decoration: none;
+	color: inherit;
+	border-radius: 0.25rem;
+	outline: none;
+}
+
+.logo-link:focus-visible {
+	outline: 2px solid var(--ring, var(--color-focus, currentColor));
+	outline-offset: 2px;
+}
+
+/*
+ * Decorative channel chip — part of the brand unit, not its own control.
+ * No hover / pointer / focus styles; clicks hit the wrapping home link.
+ */
+.logo__rc {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	padding: 0.2rem 0.3rem;
+	border-radius: 0.375rem;
+	border: var(--rule-hair, 1px) solid color-mix(in oklch, var(--color-accent, oklch(74% 0.13 195)) 40%, transparent);
+	background: color-mix(in oklch, var(--color-accent, oklch(74% 0.13 195)) 14%, transparent);
+	color: var(--color-accent, oklch(74% 0.13 195));
+	font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+	font-size: 0.5625rem;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	line-height: 1;
+	text-transform: uppercase;
+	pointer-events: none;
+	user-select: none;
+}

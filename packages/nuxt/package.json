@@ -23,6 +23,7 @@
 		"@repo/utils": "workspace:*",
 		"@size-limit/preset-small-lib": "catalog:",
 		"arktype": "catalog:",
+		"esbuild": "catalog:",
 		"nitropack": "^2.13.1",
 		"nuxt": "^4.4.8",
 		"rimraf": "catalog:",

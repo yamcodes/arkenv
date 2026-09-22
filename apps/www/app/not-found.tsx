@@ -4,6 +4,7 @@ import type { CSSProperties } from "react";
 import { DiscordListItem } from "~/components/discord-list-item";
 import { SiteNavHome } from "~/components/site-nav";
 import { env } from "~/env";
+import { RELEASE_TAG } from "~/lib/config/release";
 
 export default function NotFound() {
 	const githubRepoUrl = env.NEXT_PUBLIC_GITHUB_URL;
@@ -16,7 +17,7 @@ export default function NotFound() {
 				} as CSSProperties
 			}
 			nav={{
-				component: <SiteNavHome />,
+				component: <SiteNavHome releaseTag={RELEASE_TAG} />,
 			}}
 		>
 			<div className="flex flex-1 flex-col items-center justify-center text-center px-4 py-24 sm:py-32">

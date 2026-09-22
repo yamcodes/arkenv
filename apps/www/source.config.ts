@@ -14,6 +14,7 @@ import { createFileSystemTypesCache } from "fumadocs-twoslash/cache-fs";
 import remarkDirective from "remark-directive";
 import remarkGemoji from "remark-gemoji";
 import { z } from "zod";
+import { resolveBlogPostDate } from "./lib/blog-date";
 import { rehypeOptimizeInternalLinks } from "./lib/plugins/rehype-optimize-internal-links";
 import { remarkNormalizeCodeIndent } from "./lib/plugins/remark-normalize-code-indent";
 import { remarkNormalizePackageManagerCommands } from "./lib/plugins/remark-normalize-package-manager-commands";
@@ -122,11 +123,19 @@ function remarkDirectiveAdmonitionCustom(options: {
 export const blogPosts = defineCollections({
 	type: "doc",
 	dir: "content/blog",
-	schema: pageSchema.extend({
-		author: z.string(),
-		date: z.string().date().or(z.date()),
-		draft: z.boolean().optional(),
-	}),
+	schema: ({ path: filePath }) =>
+		pageSchema
+			.extend({
+				author: z.string(),
+				authorGithub: z.string().optional(),
+				/** Optional override; defaults to the file's git commit date. */
+				date: z.string().date().or(z.date()).optional(),
+				draft: z.boolean().optional(),
+			})
+			.transform((data) => ({
+				...data,
+				date: resolveBlogPostDate(data.date, filePath),
+			})),
 });
 
 export const docs = defineDocs({

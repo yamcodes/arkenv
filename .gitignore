@@ -11,6 +11,10 @@ dist-test/
 # dependencies
 node_modules/
 
+# Generated from package.json → workspaces.packages for Changesets/@manypkg
+# discovery under Nub identity. See scripts/ensure-manypkg-workspace.js.
+/pnpm-workspace.yaml
+
 # logs
 npm-debug.log*
 yarn-debug.log*
@@ -21,9 +25,6 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.local
-
-# Ephemeral CI Node pin (written by .github/actions/setup-nub-ci)
-.node-version
 
 # macOS-specific files
 .DS_Store
@@ -73,6 +74,8 @@ ignore-me/
 
 # pnpm store
 .pnpm-store
+.npm_cache/
+.pnpm-home/
 
 
 #.gemini/
@@ -95,6 +98,9 @@ skills/*-workspace/
 skills/create-skill/scripts/__pycache__/
 tooling/
 job_logs.txt
+
+# Hallmark skill local memory (preflight cache + run diversification log)
+.hallmark/
 
 # Temporary test folders from bundling-interop tests
 packages/arkenv/test/temp-interop-*

@@ -1,6 +1,6 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import { Logo } from "./logo";
+import { Logo, LogoLink } from "./logo";
 
 describe("Logo", () => {
 	afterEach(() => {
@@ -23,7 +23,50 @@ describe("Logo", () => {
 	it("accepts custom className", () => {
 		render(<Logo className="custom-class" />);
 
-		const container = screen.getByText("ArkEnv").parentElement;
+		const container = screen.getByText("ArkEnv").closest(".logo");
 		expect(container).toHaveClass("custom-class");
+	});
+
+	it("shows a decorative RC chip when releaseTag is rc", () => {
+		render(<Logo releaseTag="rc" />);
+
+		const rc = screen.getByText("RC");
+		expect(rc).toBeInTheDocument();
+		expect(rc.tagName).toBe("SPAN");
+		expect(rc).toHaveAttribute("aria-hidden", "true");
+		expect(rc.closest("a")).toBeNull();
+	});
+
+	it("hides the RC chip when releaseTag is not rc", () => {
+		render(<Logo releaseTag="alpha" />);
+
+		expect(screen.queryByText("RC")).not.toBeInTheDocument();
+	});
+
+	it("hides the RC chip when wordmark is false even if releaseTag is rc", () => {
+		render(<Logo wordmark={false} releaseTag="rc" />);
+
+		expect(screen.queryByText("RC")).not.toBeInTheDocument();
+	});
+});
+
+describe("LogoLink", () => {
+	afterEach(() => {
+		cleanup();
+	});
+
+	it("wraps the brand mark in a home link", () => {
+		render(<LogoLink />);
+
+		const link = screen.getByRole("link", { name: "ArkEnv home" });
+		expect(link).toHaveAttribute("href", "/");
+		expect(link).toHaveClass("logo-link");
+		expect(screen.getByText("ArkEnv")).toBeInTheDocument();
+	});
+
+	it("forwards releaseTag to the brand mark", () => {
+		render(<LogoLink releaseTag="rc" />);
+
+		expect(screen.getByText("RC")).toBeInTheDocument();
 	});
 });

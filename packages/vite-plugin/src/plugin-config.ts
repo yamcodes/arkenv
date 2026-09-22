@@ -5,6 +5,6 @@ import type { ParseStandardConfig as ArkEnvConfig } from "@repo/utils";
 /**
  * Combined config accepted by the Vite plugin factory (transform + ArkEnv + logging).
  */
-export type VitePluginFactoryConfig = Omit<ArkEnvConfig, "safe"> &
+export type VitePluginFactoryConfig = ArkEnvConfig &
 	ArkEnvLogOptions &
 	ViteTransformOptions;

@@ -17,16 +17,28 @@ Don't let the label names give you the wrong impression: `ready for agent` simpl
 
 1. ### Install Nub
 
-   [Nub](https://nubjs.com/) is the recommended toolchain for this repo. It
-   replaces `tsx` / `ts-node` / `tsconfig-paths` / `dotenv`, `pnpm run`,
-   `npx` / `pnpm exec`, `pnpm install`, and `nvm` for local work, while
-   keeping the existing `pnpm-lock.yaml`.
+   [Nub](https://nubjs.com/) is the package manager and toolchain for this
+   repo (`packageManager: nub@…`, lockfile `nub.lock`). It replaces
+   `tsx` / `ts-node` / `tsconfig-paths` / `dotenv`, `pnpm run`,
+   `npx` / `pnpm exec`, `pnpm install`, and `nvm` for local work.
+   Node is pinned to an exact patch in `.node-version`. Nub provisions
+   that version on the next `nub` command; optional `nub node shim`
+   makes bare `node` follow the same pin.
+
+   Do **not** run `pnpm install` (or npm/yarn) in this tree — Corepack
+   hard-errors on the Nub pin, and a `preinstall` guard fails fast with
+   a pointer to `nub install`. Mixing package managers shatters module
+   resolution under Turbo. After install, a gitignored packages-only
+   `pnpm-workspace.yaml` may appear — generated from
+   `package.json` → `workspaces.packages` so Changesets / `@manypkg`
+   can discover packages. Do not commit it.
 
    ```sh
    curl -fsSL https://nubjs.com/install.sh | bash
    ```
 
-   (Or `npm install -g @nubjs/nub`. See the [Nub docs](https://nubjs.com/docs).)
+   (Or `npm install -g @nubjs/nub`. See the [Nub docs](https://nubjs.com/docs).
+   If Corepack is enabled and blocks you, run `corepack disable`.)
 
 2. ### Clone the repository
 
@@ -55,7 +67,11 @@ Don't let the label names give you the wrong impression: `ready for agent` simpl
 1. Fork the repository and create your branch from `dev`
 2. If you've added code that should be tested, add tests
 3. Ensure the test suite passes
-4. Update the documentation if needed
+4. Update the documentation if needed. The root `README.md` is a symlink
+   to `packages/core/README.md` (so GitHub and the npm package page stay
+   in sync). Edit `packages/core/README.md` when changing the README —
+   GitHub's blob **Edit** on the root path overwrites the symlink with a
+   copy and reintroduces drift.
 5. Create a changeset for your changes:
    ```sh
    nub run changeset
@@ -103,9 +119,17 @@ We use a **Dual-Branch Model** (`dev` and `main`) to ensure the production docum
                           │ (Changeset version PR merged & published)
                           ▼
                     ┌───────────┐
-                    │   main    │ (Production docs / Vercel prod)
+                    │   main    │ (v0 docs archive → arkenv-v0.vercel.app)
                     └───────────┘
 ```
+
+> **RC docs cutover (Option A):** Production / `arkenv.js.org` tracks
+> **`v1`** (`vercel --prod`). Pushes to **`main`** refresh the legacy
+> archive at `https://arkenv-v0.vercel.app` and must **not** take
+> Production. `https://arkenv-dev.vercel.app` and
+> `https://arkenv-v1.vercel.app` stay as stable aliases. At GA (Option B,
+> later), rename so the v1 line becomes `main`/`dev` and the old line
+> becomes `v0` — out of scope for the RC Actions retarget.
 
 ### Key Workflows
 
@@ -126,21 +150,19 @@ When you are ready to publish the unreleased features currently sitting on `dev`
 2. Review the aggregated `CHANGELOG.md` and version bumps.
 3. Merge the "Version Packages" PR into `dev`.
 4. A GitHub workflow will automatically build and publish the packages to npm.
-5. Immediately after a successful publish, the workflow automatically fast-forwards the `main` branch to match `dev`. This push to `main` triggers the production documentation deploy.
+5. Immediately after a successful publish, the workflow automatically fast-forwards the `main` branch to match `dev`. This push to `main` refreshes the **v0 docs archive** (`https://arkenv-v0.vercel.app`), not Production. Production / `arkenv.js.org` tracks **`v1`**.
 
 #### Use Case 3: Fixing a Typo on the Live Docs
 
-When you need to fix a typo or make a cosmetic change to the live documentation *without* publishing a new npm package:
+When you need to fix a typo or make a cosmetic change to the **live v1**
+documentation *without* waiting on a package release:
 
-1. Do not use the standard `dev` feature workflow (otherwise your typo fix will be trapped in `dev` until the next npm release).
-2. Ask your AI Agent to invoke the `/sync-main` slash command, or manually run the `sync-main` skill.
-3. **If `dev` is clean** (no unreleased features): Merge your doc fix to `dev`, then run the `Sync main` GitHub workflow to fast-forward `main`.
-4. **If `dev` has unreleased features**: Use the script locally to cherry-pick your fix:
-   ```sh
-   ./scripts/sync-main.sh rescue <commit-hash>
-   ./scripts/sync-main.sh reconcile
-   ```
-   This ensures the fix hits `main` instantly while preventing Git history drift.
+1. Open a PR against **`v1`** (the branch that owns Production /
+   `arkenv.js.org`). Merging (or pushing) updates apex via
+   `deploy-www.yml`.
+2. For **legacy v0 archive** fixes only (`arkenv-v0.vercel.app`), use
+   the `sync-main` skill / `main` branch as before — that path no longer
+   flips Production.
 
 #### Use Case 4: Coordinating a Major Version (e.g., v1)
 
@@ -167,7 +189,7 @@ When working on a massive marketing push, docs facelift, or breaking API changes
 
    - **Alpha** (Initial unstable integration): `nubx changeset pre enter alpha` (produces `1.0.0-alpha.0`, `1.0.0-alpha.1`, etc. published to `@alpha`)
    - **Beta** (Feature complete, testing needed): `nubx changeset pre enter beta` (produces `1.0.0-beta.0`, `1.0.0-beta.1`, etc. published to `@beta`)
-   - **Release Candidate** (API frozen, final validation): `nubx changeset pre enter rc` (produces `1.0.0-rc.0`, `1.0.0-rc.1`, etc. published to `@rc`). Maintainer cut checklist (including the product decision to also point `latest` at `1.0.0-rc.n`): [RC_CHECKLIST.md](./RC_CHECKLIST.md). While pre tag is `rc`, the release workflow also points npm `latest` at each just-published version. That retag uses the `NPM_TOKEN` secret (granular **stage-only** token for dist-tags; publish stays on OIDC — the npm CLI has no OIDC exchange for `dist-tag`). Retag stops after `changeset pre exit` (sets `pre.json` mode to `"exit"`; the file is deleted later by `changeset version`).
+   - **Release Candidate** (API frozen, final validation): `nubx changeset pre enter rc` (produces `1.0.0-rc.0`, `1.0.0-rc.1`, etc. published to `@rc`). Maintainer cut checklist (including the product decision to also point `latest` at `1.0.0-rc.n`): [RC_CHECKLIST.md](./RC_CHECKLIST.md). While pre tag is `rc`, the release workflow also points npm `latest` at each just-published version. That retag uses the `NPM_TOKEN` secret (granular **stage-only** token for dist-tags; publish stays on OIDC — the npm CLI has no OIDC exchange for `dist-tag`). If CI auth is unavailable, retag locally with `pnpm point-latest-at-rc -- --otp <code>` after `npm login` (or `NPM_CONFIG_OTP=<code> pnpm point-latest-at-rc`; see [RC_CHECKLIST.md](./RC_CHECKLIST.md) §C and [skills/point-latest-at-rc/SKILL.md](../skills/point-latest-at-rc/SKILL.md)). Retag stops after `changeset pre exit` (sets `pre.json` mode to `"exit"`; the file is deleted later by `changeset version`).
 
    > [!IMPORTANT]
    > **SemVer Pre-release Identifiers vs Build Metadata**:
@@ -178,9 +200,23 @@ When working on a massive marketing push, docs facelift, or breaking API changes
 
 PR previews for the `www` app are opt-in. A maintainer (triage+) applies the `preview` label to trigger a Vercel preview deployment when the label is added, and again on subsequent `synchronize` / `ready_for_review` events while the label remains (a preview is only produced when the `www` app is actually affected). This works for same-repo and fork PRs; fork authors cannot self-serve the label.
 
-Pushes to `dev` or `v1` always deploy via GitHub Actions (Vercel CLI). Those deploys pass git metadata and alias the rolling branch domains (`https://arkenv-dev.vercel.app`, `https://arkenv-v1.vercel.app`) so the domains stay current without relying on native Vercel Git builds. Labeled PR previews keep ephemeral deployment URLs and do not take over those branch domains.
+Stable www URLs (GitHub Actions + Vercel CLI, not native Vercel Git builds):
 
-To redeploy an older commit to a stable URL without moving the branch, maintainers can run **Actions → Deploy www (manual SHA)** and choose `arkenv-dev.vercel.app`, `arkenv-v1.vercel.app`, or production `arkenv.js.org`.
+| Branch / action                | Target                                                                              |
+| ------------------------------ | ----------------------------------------------------------------------------------- |
+| Push to **`v1`**               | Production (`arkenv.js.org`) via `--prod`, and alias `https://arkenv-v1.vercel.app` |
+| Push to **`main`**             | Archive alias `https://arkenv-v0.vercel.app` (preview deploy, **not** `--prod`)     |
+| Push to **`dev`** (if present) | Alias `https://arkenv-dev.vercel.app`                                               |
+| Labeled PR                     | Ephemeral preview URL only (does not take over the aliases above)                   |
+
+To redeploy an older commit to a stable URL without moving the branch, maintainers can run **Actions → Deploy www (manual SHA)** and choose `arkenv-dev.vercel.app`, `arkenv-v0.vercel.app`, `arkenv-v1.vercel.app`, or production `arkenv.js.org`.
+
+**Nub identity and Vercel CLI builds:** Root `packageManager` is `nub@…`. Corepack does not know `nub`, and Vercel does not treat `nub.lock` as a recognized lockfile. Actions already run `nub install` before `vercel build`, so `scripts/vercel-wrapper.cjs` disables Corepack (`ENABLE_EXPERIMENTAL_COREPACK=0`) and marks install complete (`VERCEL_INSTALL_COMPLETED=1`) for build only — otherwise the CLI runs `corepack enable nub` (fatal) or falls back to `npm install` (breaks `workspace:*`). Do not re-enable Corepack on the Vercel project for these CLI builds. If a future `vercel` pin stops honoring `VERCEL_INSTALL_COMPLETED`, set the project Install Command to empty or `nub install` via the dashboard/API.
+
+**Phased cutover:** RC keeps these branch names (**Option A**). At GA
+(**Option B**, later), rename so the v1 line becomes `main`/`dev` and
+the old line becomes **`v0`**, then leave `--prod` on `main` again. See
+[LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.1.
 
 ## Changesets
 

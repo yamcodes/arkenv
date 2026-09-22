@@ -9,7 +9,7 @@ import { describe, expect, it } from "vitest";
 const exec = promisify(execCallback);
 const require = createRequire(import.meta.url);
 
-const cliPath = path.resolve(__dirname, "../dist/bin.js");
+const cliPath = path.resolve(__dirname, "../bin.mjs");
 const esmIndexPath = path.resolve(__dirname, "../dist/index.js");
 
 describe("library import guard", () => {

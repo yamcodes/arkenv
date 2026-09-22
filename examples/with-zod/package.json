@@ -17,11 +17,11 @@
 		"@nubjs/nub": "^0.9.3"
 	},
 	"dependencies": {
-		"@arkenv/standard": "^1.0.0-alpha.2",
+		"@arkenv/standard": "1.0.0-rc.1",
 		"zod": "^4.3.5"
 	},
 	"engines": {
-		"node": "24"
+		"node": ">=22"
 	},
 	"packageManager": "npm@11.13.0"
 }

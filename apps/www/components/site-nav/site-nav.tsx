@@ -2,11 +2,10 @@
 
 import { useSearchContext } from "fumadocs-ui/contexts/search";
 import { ArrowUpRight, Menu, Search, X } from "lucide-react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type ReactNode, useEffect, useState } from "react";
 import { HeaderGithubLink } from "~/components/page/header-github-link";
-import { Logo } from "~/components/page/logo";
+import { LogoLink } from "~/components/page/logo";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
 import { useFeatureFlag } from "~/hooks/use-feature-flag";
 import { FeatureFlag } from "~/lib/posthog/feature-flags";
@@ -137,12 +136,18 @@ export type SiteNavProps = {
 	 * Docs mobile only — sidebar tree toggle.
 	 */
 	sidebarTrigger?: ReactNode;
+	/**
+	 * Channel tag from `RELEASE_TAG` (resolved on the server). Required so the
+	 * RC badge does not re-read env in this client component.
+	 */
+	releaseTag: string;
 };
 
 export function SiteNav({
 	showGetStarted = false,
 	showSearch = false,
 	sidebarTrigger,
+	releaseTag,
 }: SiteNavProps) {
 	const pathname = usePathname();
 	const themeToggleEnabled = useFeatureFlag(FeatureFlag.THEME_TOGGLE);
@@ -179,13 +184,10 @@ export function SiteNav({
 									{sidebarTrigger}
 								</div>
 							) : null}
-							<Link
-								href="/"
+							<LogoLink
 								className="site-nav__wordmark"
-								aria-label="ArkEnv home"
-							>
-								<Logo />
-							</Link>
+								releaseTag={releaseTag}
+							/>
 						</div>
 
 						<nav className="site-nav__links" aria-label="Primary">
@@ -283,8 +285,8 @@ export function SiteNav({
 	);
 }
 
-export function SiteNavHome() {
-	return <SiteNav showGetStarted />;
+export function SiteNavHome({ releaseTag }: { releaseTag: string }) {
+	return <SiteNav showGetStarted releaseTag={releaseTag} />;
 }
 
 /**
@@ -293,8 +295,16 @@ export function SiteNavHome() {
  */
 export function SiteNavDocs({
 	sidebarTrigger,
+	releaseTag,
 }: {
 	sidebarTrigger?: ReactNode;
+	releaseTag: string;
 }) {
-	return <SiteNav showSearch sidebarTrigger={sidebarTrigger} />;
+	return (
+		<SiteNav
+			showSearch
+			sidebarTrigger={sidebarTrigger}
+			releaseTag={releaseTag}
+		/>
+	);
 }

@@ -2,7 +2,7 @@
  * Point npm `latest` at RC package versions.
  *
  * During the product RC window, bare installs (`npx arkenv`, untagged
- * `pnpm add @arkenv/core`) must resolve to the current `1.0.0-rc.n`.
+ * `nub add @arkenv/core`) must resolve to the current `1.0.0-rc.n`.
  * Changesets pre mode only updates the `rc` dist-tag; this script also
  * sets `latest`.
  *
@@ -10,14 +10,24 @@
  * - `.changeset/pre.json` has `"mode": "pre"` and `"tag": "rc"`.
  *   `changeset pre exit` sets `"mode": "exit"` (the file is deleted later
  *   by `changeset version`), so GA naturally disables this.
- * - A granular npm token in `NODE_AUTH_TOKEN` or `NPM_TOKEN` with
- *   **Read and write (stage only)** (dist-tag moves; not publish).
- *   Publish stays on OIDC trusted publishing. The npm CLI has no OIDC
- *   exchange for `dist-tag`, so the repo secret is the supported path.
+ * - Auth (one of):
+ *   - CI: granular npm token in `NODE_AUTH_TOKEN` or `NPM_TOKEN` with
+ *     **Read and write (stage only)** (dist-tag moves; not publish).
+ *     Publish stays on OIDC trusted publishing. The npm CLI has no OIDC
+ *     exchange for `dist-tag`, so the repo secret is the CI path.
+ *   - Local: `--local` after `npm login` (uses your user npmrc; no
+ *     `NPM_TOKEN`). Write commands (`dist-tag add`) use `stdio: "inherit"`
+ *     so npm can prompt for OTP when 2FA is on auth-and-writes. Prefer
+ *     `--otp <code>` or `NPM_CONFIG_OTP` so one OTP covers every package
+ *     (otherwise npm prompts once per `dist-tag add` process). Prefer
+ *     this when package Publishing access disallows tokens or the CI
+ *     secret is not worth fighting.
  *
  * Usage:
  *   node scripts/point-latest-at-rc.js --packages '[{"name":"pkg","version":"1.0.0-rc.2"}]'
  *   node scripts/point-latest-at-rc.js --from-rc
+ *   node scripts/point-latest-at-rc.js --from-rc --local
+ *   node scripts/point-latest-at-rc.js --from-rc --local --otp 123456
  *   node scripts/point-latest-at-rc.js --packages '…' --dry-run
  */
 
@@ -141,11 +151,36 @@ export function withUserconfig(args, npmrcPath) {
 }
 
 /**
+ * Append `--otp <code>` so one OTP covers every write in the run
+ * (npm otherwise prompts once per process on auth-and-writes 2FA).
+ * @param {string[]} args
+ * @param {string | undefined} otp
+ * @returns {string[]}
+ */
+export function withOtp(args, otp) {
+	if (!otp) return args;
+	return [...args, "--otp", otp];
+}
+
+/**
  * @param {NodeJS.ProcessEnv} [env]
  * @returns {string}
  */
 export function resolveAuthToken(env = process.env) {
 	return env.NODE_AUTH_TOKEN || env.NPM_TOKEN || "";
+}
+
+/**
+ * Prefer an explicit `--otp` / options.otp; else honor `NPM_CONFIG_OTP`
+ * (npm's config env for the same value).
+ * @param {{ otp?: string; env?: NodeJS.ProcessEnv }} [options]
+ * @returns {string}
+ */
+export function resolveOtp(options = {}) {
+	const fromOption = String(options.otp ?? "").trim();
+	if (fromOption) return fromOption;
+	const env = options.env ?? process.env;
+	return String(env.NPM_CONFIG_OTP ?? "").trim();
 }
 
 /**
@@ -195,14 +230,39 @@ export function skipReasonForPre(pre) {
 }
 
 /**
+ * Run `npm` with captured stdout (CI / read commands) or inherited
+ * stdio (local writes that may need an interactive OTP prompt).
+ * `execFileSync` returns `null` when stdio is fully inherited — never
+ * `.trim()` that return value.
+ *
+ * @param {string[]} args
+ * @param {{ inherit?: boolean }} [opts]
+ * @param {typeof execFileSync} [exec]
+ * @returns {string}
+ */
+export function runNpm(args, opts = {}, exec = execFileSync) {
+	if (opts.inherit) {
+		exec("npm", args, { stdio: "inherit" });
+		return "";
+	}
+	const out = exec("npm", args, {
+		encoding: "utf8",
+		stdio: ["ignore", "pipe", "pipe"],
+	});
+	return String(out ?? "").trim();
+}
+
+/**
  * @param {{
  *   rootDir?: string;
  *   packagesJson?: string;
  *   fromRc?: boolean;
  *   dryRun?: boolean;
+ *   local?: boolean;
+ *   otp?: string;
  *   env?: NodeJS.ProcessEnv;
  *   npmrcPath?: string;
- *   execNpm?: (args: string[]) => string;
+ *   execNpm?: (args: string[], opts?: { inherit?: boolean }) => string;
  *   log?: (message: string) => void;
  *   warn?: (message: string) => void;
  * }} [options]
@@ -213,13 +273,9 @@ export function pointLatestAtRc(options = {}) {
 	const env = options.env ?? process.env;
 	const log = options.log ?? console.log;
 	const warn = options.warn ?? console.warn;
-	const execNpm =
-		options.execNpm ??
-		((args) =>
-			execFileSync("npm", args, {
-				encoding: "utf8",
-				stdio: ["ignore", "pipe", "pipe"],
-			}).trim());
+	const local = Boolean(options.local);
+	const otp = resolveOtp({ otp: options.otp, env });
+	const execNpm = options.execNpm ?? runNpm;
 
 	const { pre } = loadPreJson(rootDir);
 	if (!shouldRetagLatest(pre)) {
@@ -229,11 +285,23 @@ export function pointLatestAtRc(options = {}) {
 	}
 
 	const token = resolveAuthToken(env);
-	if (!token && !options.dryRun) {
+	if (!token && !options.dryRun && !local) {
 		const reason =
-			"NPM_TOKEN / NODE_AUTH_TOKEN is not set. OIDC does not cover npm dist-tag (no CLI OIDC exchange). Set the NPM_TOKEN repo secret to a granular stage-only token (dist-tag; not publish), then re-run or use workflow_dispatch → promote_rc_to_latest.";
+			"NPM_TOKEN / NODE_AUTH_TOKEN is not set. OIDC does not cover npm dist-tag (no CLI OIDC exchange). Set the NPM_TOKEN repo secret to a granular stage-only token (dist-tag; not publish), then re-run or use workflow_dispatch → promote_rc_to_latest. Or run locally: nub run point-latest-at-rc (after npm login).";
 		warn(`::warning::${reason}`);
 		return { status: "skipped", reason, commands: [] };
+	}
+
+	if (local && !options.dryRun) {
+		try {
+			const who = execNpm(["whoami"]);
+			log(`Using local npm auth as ${who || "(unknown)"}`);
+		} catch (error) {
+			const detail = error instanceof Error ? error.message : String(error);
+			throw new Error(
+				`Local mode requires npm auth (npm login / existing ~/.npmrc). npm whoami failed: ${detail}`,
+			);
+		}
 	}
 
 	/** @type {{ name: string; version: string }[]} */
@@ -266,16 +334,28 @@ export function pointLatestAtRc(options = {}) {
 		return { status: "skipped", reason, commands: [] };
 	}
 
-	const npmrcPath =
-		options.npmrcPath ?? (options.dryRun ? undefined : createTempNpmrcPath());
-	if (!options.dryRun && npmrcPath) {
-		writeNpmrcAuth(token, npmrcPath);
+	/** @type {string | undefined} */
+	let npmrcPath;
+	if (local) {
+		// Ambient user npmrc (~/.npmrc or project .npmrc). Do not write a
+		// temp --userconfig (that would ignore interactive login). Write
+		// commands also pass inherit:true so stdin+stdout stay TTYs for OTP.
+		npmrcPath = undefined;
+	} else {
+		npmrcPath =
+			options.npmrcPath ?? (options.dryRun ? undefined : createTempNpmrcPath());
+		if (!options.dryRun && npmrcPath) {
+			writeNpmrcAuth(token, npmrcPath);
+		}
 	}
 
 	/** @type {string[][]} */
 	const commands = [];
 	for (const { name, version } of packages) {
-		const args = withUserconfig(distTagAddArgs(name, version), npmrcPath);
+		const args = withOtp(
+			withUserconfig(distTagAddArgs(name, version), npmrcPath),
+			otp,
+		);
 		commands.push(args);
 		const display = `npm ${args.join(" ")}`;
 		if (options.dryRun) {
@@ -283,7 +363,11 @@ export function pointLatestAtRc(options = {}) {
 			continue;
 		}
 		log(display);
-		execNpm(args);
+		// Local writes need a TTY for npm's otplease OTP prompt when no
+		// --otp / NPM_CONFIG_OTP is set (EOTP otherwise on auth-and-writes).
+		// With a shared OTP, inherit is still fine but no longer required.
+		// CI uses a token (usually Bypass 2FA) and does not inherit.
+		execNpm(args, { inherit: local });
 	}
 
 	return { status: "ok", commands, npmrcPath };
@@ -291,19 +375,31 @@ export function pointLatestAtRc(options = {}) {
 
 /**
  * @param {string[]} argv
- * @returns {{ packagesJson?: string; fromRc: boolean; dryRun: boolean; help: boolean }}
+ * @returns {{ packagesJson?: string; fromRc: boolean; dryRun: boolean; local: boolean; otp?: string; help: boolean }}
  */
 export function parseArgs(argv) {
-	/** @type {{ packagesJson?: string; fromRc: boolean; dryRun: boolean; help: boolean }} */
-	const result = { fromRc: false, dryRun: false, help: false };
+	/** @type {{ packagesJson?: string; fromRc: boolean; dryRun: boolean; local: boolean; otp?: string; help: boolean }} */
+	const result = { fromRc: false, dryRun: false, local: false, help: false };
 	for (let i = 0; i < argv.length; i++) {
 		const arg = argv[i];
+		if (arg === "--") {
+			// pnpm may forward the run-script separator literally.
+			continue;
+		}
 		if (arg === "--packages") {
 			result.packagesJson = argv[++i] ?? "";
 		} else if (arg === "--from-rc") {
 			result.fromRc = true;
 		} else if (arg === "--dry-run") {
 			result.dryRun = true;
+		} else if (arg === "--local") {
+			result.local = true;
+		} else if (arg === "--otp") {
+			const value = argv[++i];
+			if (value == null || value.startsWith("--")) {
+				throw new Error("--otp requires a one-time password value");
+			}
+			result.otp = value;
 		} else if (arg === "--help" || arg === "-h") {
 			result.help = true;
 		} else {
@@ -321,14 +417,29 @@ export function parseArgs(argv) {
 
 function printHelp() {
 	console.log(`Usage:
+  nub run point-latest-at-rc
+  nub run point-latest-at-rc -- --otp <code>
+  NPM_CONFIG_OTP=<code> nub run point-latest-at-rc
   node scripts/point-latest-at-rc.js --packages '[{"name":"arkenv","version":"1.0.0-rc.2"}]'
   node scripts/point-latest-at-rc.js --from-rc
+  node scripts/point-latest-at-rc.js --from-rc --local
+  node scripts/point-latest-at-rc.js --from-rc --local --otp 123456
   node scripts/point-latest-at-rc.js --packages '…' --dry-run
 
 Only runs while .changeset/pre.json has mode "pre" and tag "rc"
 (changeset pre exit sets mode "exit"; file deleted later by version).
-Requires NPM_TOKEN or NODE_AUTH_TOKEN (granular stage-only dist-tag
-token; OIDC covers publish only — no CLI OIDC exchange for dist-tag).`);
+
+Auth:
+  CI:    NPM_TOKEN or NODE_AUTH_TOKEN (granular stage-only dist-tag
+         token; OIDC covers publish only — no CLI OIDC exchange for
+         dist-tag). Soft-skips if the secret is missing.
+  Local: nub run point-latest-at-rc (wraps --from-rc --local after npm
+         login; uses your user npmrc; no NPM_TOKEN). dist-tag writes
+         inherit the TTY so OTP works. Prefer --otp <code> or
+         NPM_CONFIG_OTP so one OTP covers all packages (else npm
+         prompts once per package). Break-glass only — prefer
+         workflow_dispatch → promote_rc_to_latest when the secret
+         works. See skills/point-latest-at-rc/SKILL.md.`);
 }
 
 function main() {
@@ -341,6 +452,8 @@ function main() {
 		packagesJson: args.packagesJson,
 		fromRc: args.fromRc,
 		dryRun: args.dryRun,
+		local: args.local,
+		otp: args.otp,
 	});
 	// skipped (no token / not rc) exits 0 so a missing secret does not
 	// fail the release job after packages already published.

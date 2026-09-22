@@ -19,11 +19,20 @@ describe("BringYourOwnValidatorView", () => {
 			"Bring your own validator",
 		);
 		expect(screen.getByText(/mix and match/i).closest("p")).toHaveTextContent(
-			"Use ArkType or any Standard Schema you already have. Mix and match for incremental migration.",
+			"Use ArkType, Zod, or Valibot. Mix and match for incremental migration.",
 		);
-		expect(
-			screen.getByRole("link", { name: "Standard Schema" }),
-		).toHaveAttribute("href", "/docs/validators");
+		expect(screen.getByRole("link", { name: "ArkType" })).toHaveAttribute(
+			"href",
+			"/docs/validators/arktype",
+		);
+		expect(screen.getByRole("link", { name: "Zod" })).toHaveAttribute(
+			"href",
+			"/docs/validators/zod",
+		);
+		expect(screen.getByRole("link", { name: "Valibot" })).toHaveAttribute(
+			"href",
+			"/docs/validators/valibot",
+		);
 		expect(screen.getByRole("button", { name: "Copy" })).toBeInTheDocument();
 		expect(document.querySelector(".home-aurora__mvp-shiki")).toBeTruthy();
 	});

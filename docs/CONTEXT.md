@@ -44,8 +44,12 @@ The legacy v0 pattern (`arkenv(schema)` plugin argument with native-accessor `de
 *Avoid*: recommending schema/define or ambient `.d.ts` augmentations in v1 docs, CLI, or skills; framing SPA mode as a supported v1 path
 
 **Check**:
-CLI command `arkenv check` that validates the resolved environment (`process.env` plus optional `--env-file` overlays) against the project schema. Findings are not a crash: `--json` emits a completed envelope with `ok: true` and exit code `4`.
-*Avoid*: treating validation findings as `ok: false` or exit `1`; calling Check a dotenv loader (it does not load `.env` unless `--env-file` is passed); folding file lint rules, unquoted space detection, or AST syntax diagnostics onto Check (that belongs in dedicated ecosystem tools like `dotenv-linter`)
+CLI command `arkenv check` that validates the resolved environment (`process.env` plus optional `--env-file` overlays) against the project schema. Findings are not a crash: `--json` emits a completed envelope with `ok: true` and exit code `4`. Schema discovery is `--schema` / `-s` then convention paths (`env.ts`, `src/env.ts`, …) only — not a `package.json` `"arkenv"` field ([ADR 0033](./adr/0033-cli-schema-location-no-package-json.md)).
+*Avoid*: treating validation findings as `ok: false` or exit `1`; calling Check a dotenv loader (it does not load `.env` unless `--env-file` is passed); folding file lint rules, unquoted space detection, or AST syntax diagnostics onto Check (that belongs in dedicated ecosystem tools like `dotenv-linter`); teaching agents or docs to set `package.json` `"arkenv"` for CLI discovery
+
+**Schema location** (CLI discovery):
+How the CLI finds the schema module for `check` (and any other command that loads the schema): explicit `--schema` / `-s`, then convention candidates. Leftover `package.json` `"arkenv"` keys from older init runs are ignored. Runtime behavior stays in TypeScript via `arkenv()` options — not in `package.json`.
+*Avoid*: documenting or writing `package.json` `"arkenv"` / `"arkenv.schema"` as a supported CLI config surface; conflating discovery with `arkenv()` options
 
 **Lint**:
 Archived RFC ([Discussion #1710](https://github.com/yamcodes/arkenv/discussions/1710), superseding ADR 0017). File-level syntax, unquoted space detection, and whitespace formatting belong in dedicated ecosystem tools (e.g. `dotenv-linter`). ArkEnv focuses purely on runtime schema validation.
@@ -138,7 +142,7 @@ A scroll-driven increase in **Glass material** opacity/blur so content sliding u
 
 - **TypeScript 6** - Primary language with strict type checking
 - **ArkType 2** - Type validation library (peer dependency)
-- **pnpm 11** - Package manager for monorepo
+- **Nub** - Package manager and script runner for the monorepo (`nub.lock`)
 - **Turborepo 2** - Monorepo build system and task orchestration
 
 ### Build & development tools
@@ -268,29 +272,40 @@ A scroll-driven increase in **Glass material** opacity/blur so content sliding u
 **Running Tests:**
 
 ```bash
-pnpm test -- --run                    # All tests
-pnpm test --project arkenv -- --run  # Specific package
-pnpm test -- --run "integration"     # Integration tests only
-pnpm run test:e2e                     # E2E tests
+nub run test -- --run                    # All tests
+nub run test --project arkenv -- --run  # Specific package
+nub run test -- --run "integration"     # Integration tests only
+nub run test:e2e                         # E2E tests
 ```
 
 ### Git workflow
 
-**Branching:**
+**Branching (RC Option A docs topology):**
 
-- Create feature branches from `dev`
-- `dev` is the default branch and continuous integration target
-- **Base Branch & Comparisons**: Always use `origin/dev` (not `main` or `origin/main`) for any `git diff` checks, branch bases, or code comparisons unless explicitly instructed otherwise.
-- **PR Target Branch**: When opening a Pull Request (via `gh pr create` or the GitHub UI), always ensure the target base branch is set to `dev` (which is the default on GitHub), unless you are specifically applying a documentation hotfix directly to `main`.
-- `main` is the production release branch, updated only after a successful npm publish
-- The documentation site (`apps/www`) deploys strictly from `main` to prevent unreleased features from appearing live
-- To make immediate typo or cosmetic fixes to the live docs without a package release, push directly to `main` and use the `sync-main` workflow/skill to cherry-pick and reconcile those changes back into `dev`
+- Repo default branch is **`v1`**
+- Create feature branches from `v1` for the live product / docs line
+- **Base Branch & Comparisons**: Prefer `origin/v1` for v1-line
+  `git diff` checks, branch bases, and code comparisons unless you are
+  deliberately working the v0 archive on `main`
+- **PR Target Branch**: Open PRs against `v1` unless you are specifically
+  changing the legacy v0 archive on `main`
+- Production / `arkenv.js.org` tracks **`v1`** (`deploy-www.yml` +
+  `vercel --prod`). The same deploy also keeps
+  `https://arkenv-v1.vercel.app` current
+- `main` is the **v0 docs archive** (`https://arkenv-v0.vercel.app`),
+  updated after v0 publishes — it must **not** take Production
+- Live v1 typo / cosmetic doc fixes go through **`v1`**, not `main`.
+  `sync-main` only refreshes the v0 archive
+- Leave `https://arkenv-dev.vercel.app` in place when present
+- **GA later (Option B):** rename so the v1 line becomes `main`/`dev`
+  and the old line becomes `v0`, then leave `--prod` on `main` again —
+  out of scope for the RC Actions retarget
 - Use descriptive branch names
 
 **Versioning:**
 
 - Uses **Changesets** for version management
-- Create changeset with `pnpm changeset` before committing
+- Create changeset with `nub run changeset` before committing
 - Changesets are in `.changeset/` directory
 - Only published packages (`packages/*`) require changesets
 - Examples and private applications don't need changesets
@@ -302,7 +317,7 @@ pnpm run test:e2e                     # E2E tests
 
 **Publishing:**
 
-- Run `pnpm release` after merging PRs to publish packages
+- Run `nub run release` after merging PRs to publish packages
 - Only packages in `packages/` are published to npm
 
 ## Design Decisions
@@ -325,7 +340,7 @@ pnpm run test:e2e                     # E2E tests
 - Package READMEs (`@arkenv/nextjs`, `@arkenv/nuxt`): light touch only — mention Standard Mode + `/standard`; no full README rewrite in this pass.
 - On validators pages, the secondary “Mixing with ArkType” section is short: one flat-layout mixed schema example; no full Zod/Valibot × layout tab matrix.
 - Core FAQ: keep “Do I have to use ArkType?” for validator choice; add a dedicated “Do I need to install `arktype`?” for the `@arkenv/standard` / `/standard` packaging story.
-- Validators page descriptions (and intro cards): “Use Zod, Valibot, or any Standard Schema validator — with or without ArkType.” Title stays “Zod, Valibot, and other Standard Schema validators.” Core `integrations/standard-schema` remains the mix-with-`@arkenv/core` guide.
+- Validators page descriptions (and intro cards): “Use Zod or Valibot — with or without ArkType.” Title can stay engine-oriented (“Zod, Valibot, and other Standard Schema validators”) in docs; top-line marketing (hero, footer, meta, README) names only the big three. Core `integrations/standard-schema` remains the mix-with-`@arkenv/core` guide.
 - Nuxt FAQ gets peer-engine parity with Next (“Why install `@arkenv/core` or `@arkenv/standard` alongside `@arkenv/nuxt`?”) plus the dedicated arktype-install FAQ on both framework FAQs.
 
 ## Domain context
@@ -490,7 +505,7 @@ A non-interactive muted label that only **groups** sibling **Leaves** under a **
 
 - **Vanilla**: The default runtime-only core module for Node.js, Bun, and Deno. Uses `import { env } from "./env"`. Validated environment variables are accessed directly from the returned `env` object for typesafety. Primarily used for **server-side** or runtime-only validation. No plugins are required.
 - **Vite**: Integrated via `@arkenv/vite-plugin`. Validates during Vite dev/build and rewrites the client copy of `env.ts` so public `VITE_*` keys inline as literals and server secrets become throwing stubs. Application code uses `import { env } from "./env"` — not `import.meta.env`.
-- **Next.js**: Integrated via `@arkenv/nextjs`. **Flat layout** is the only first-class pattern: a single `env.ts`. Client-side keys must be statically destructured in a `runtimeEnv` block for Next inlining; `withArkEnv` generates a tailored factory in `.arkenv/env.gen.ts` (imported as `@/.arkenv`) that pre-fills `runtimeEnv`, enforces `NEXT_PUBLIC_` prefixing, and keeps server **values** off client components (conditional exports + proxy). Name/type isolation is a documented two-module recipe ([ADR 0020](./adr/0020-strict-layout-complexity-budget.md) / [#1690](https://github.com/yamcodes/arkenv/issues/1690)), not a layout engine — client module via codegen, server module via `@arkenv/core` plus optional `import "server-only"`. Dedicated `--strict` / `/client` `/server` were removed.
+- **Next.js**: Integrated via `@arkenv/nextjs`. **Flat layout** is the only first-class pattern: a single `env.ts`. Client-side keys must be statically destructured in a `runtimeEnv` block for Next inlining; `withArkEnv` generates a tailored factory in `.arkenv/env.gen.ts` (imported as `@/.arkenv`) that pre-fills `runtimeEnv`, enforces `NEXT_PUBLIC_` prefixing, and keeps server **values** off client components (conditional exports + proxy). Public client values are **build-time only** — there is no `<ArkEnvScript />` / `globalThis.__arkenv_env__` runtime override ([ADR 0034](./adr/0034-no-nextjs-runtime-env-global.md); Docker guide under guides). Name/type isolation is a documented two-module recipe ([ADR 0020](./adr/0020-strict-layout-complexity-budget.md) / [#1690](https://github.com/yamcodes/arkenv/issues/1690)), not a layout engine — client module via codegen, server module via `@arkenv/core` plus optional `import "server-only"`. Dedicated `--strict` / `/client` `/server` were removed.
   - **Standard Mode**: Import from `@arkenv/nextjs/standard` (peer: `@arkenv/standard`). ArkType is not required. Flat is the happy path; the split recipe applies the same as ArkType mode.
 - **Nuxt**: Integrated via `@arkenv/nuxt`. Exposes a Nuxt module (`@arkenv/nuxt/module`) that:
   - Automates environment variable validation during development (with file watching) and build for the configured `schemaPath` (flat `env.ts`).

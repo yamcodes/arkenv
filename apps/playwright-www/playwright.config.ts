@@ -76,8 +76,8 @@ export default defineConfig({
 	webServer: isCi
 		? {
 				// CI: Production server (faster, more stable, matches production)
-				// Requires: pnpm run build --filter=www... in GitHub Actions before tests
-				command: "pnpm --filter=www run start",
+				// Requires: nub run build --filter=www... in GitHub Actions before tests
+				command: "nub run --no-check --filter=www start",
 				url: "http://localhost:3000",
 				reuseExistingServer: false,
 				timeout: 120_000, // 2min should be enough for production server
@@ -87,7 +87,7 @@ export default defineConfig({
 			}
 		: {
 				// Local: Dev server (hot reload, sourcemaps, better DX)
-				command: "pnpm --filter=www run dev",
+				command: "nub run --no-check --filter=www dev",
 				url: "http://localhost:3000",
 				reuseExistingServer: true,
 				timeout: 120_000, // 2min for dev server cold start

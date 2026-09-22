@@ -4,7 +4,7 @@
 	"version": "1.0.0-rc.1",
 	"description": "ArkEnv coding-agent plugin with MCP tools and a Live Preview MCP App",
 	"bin": {
-		"arkenv-agent-plugin": "./dist/bin.js"
+		"arkenv-agent-plugin": "./bin.mjs"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.js",
@@ -17,6 +17,7 @@
 		}
 	},
 	"files": [
+		"bin.mjs",
 		"dist",
 		"commands",
 		"skills",

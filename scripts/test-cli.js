@@ -51,7 +51,7 @@ const tempDir = path.resolve(rootDir, "tmp", tempDirName);
 
 // 1. Build the CLI
 console.log("Building arkenv (CLI)...");
-execSync("pnpm --filter=arkenv build", { cwd: rootDir, stdio: "inherit" });
+execSync("nub run --filter=arkenv build", { cwd: rootDir, stdio: "inherit" });
 
 // 2. Prepare the directory
 console.log(`Preparing temporary directory: ${tempDir}`);
@@ -60,23 +60,22 @@ if (fs.existsSync(tempDir)) {
 }
 fs.mkdirSync(tempDir, { recursive: true });
 
-// Write .npmrc to prevent pnpm from complaining about workspace root installation
+// Keep nested installs from walking into the monorepo (pnpm shim + Nub).
 fs.writeFileSync(
 	path.join(tempDir, ".npmrc"),
 	"ignore-workspace-root-check=true\n",
 );
 
-// Write a dummy pnpm-workspace.yaml to isolate the playground from the parent monorepo workspace
-fs.writeFileSync(path.join(tempDir, "pnpm-workspace.yaml"), "packages: []\n");
-
 // Change current working directory to the temporary directory
 process.chdir(tempDir);
 
 if (isNew) {
-	// Setup a minimal package.json to isolate package installation inside this playground
+	// Own packageManager identity so Nub treats this dir as a project root
+	// instead of inheriting the monorepo's nub@… / workspaces.catalog.
 	const packageJson = {
 		name: "test-new-project",
 		private: true,
+		packageManager: "npm@10",
 	};
 	fs.writeFileSync("package.json", JSON.stringify(packageJson, null, 2));
 } else {
@@ -89,6 +88,7 @@ if (isNew) {
 		name: "test-existing-project",
 		version: "1.0.0",
 		private: true,
+		packageManager: "npm@10",
 		dependencies: {
 			react: "^19.0.0",
 		},
@@ -135,7 +135,7 @@ const extraArgs = process.argv.slice(process.argv[2] === mode ? 3 : 2);
 console.log(`Running arkenv init inside ${tempDir}...\n`);
 try {
 	execSync(
-		`node ${path.resolve(rootDir, "packages/arkenv/dist/bin.js")} init ${extraArgs.join(" ")}`,
+		`node ${path.resolve(rootDir, "packages/arkenv/bin.mjs")} init ${extraArgs.join(" ")}`,
 		{
 			cwd: tempDir,
 			stdio: "inherit",

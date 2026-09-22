@@ -97,7 +97,7 @@ export function ensurePackageDist(packageDir, entryFiles) {
 		return;
 	}
 
-	execSync("pnpm run build", {
+	execSync("nub run build", {
 		cwd: packageDir,
 		stdio: "inherit",
 	});

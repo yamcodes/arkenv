@@ -1,4 +1,5 @@
 import { ArkEnvError } from "@arkenv/core";
+import { nestedBagMigrationErrorMessage } from "@repo/utils/nested-bag-migration-error";
 import { afterEach, describe, expect, it } from "vitest";
 import { resetBootGateForTests } from "./boot-gate";
 import {
@@ -21,25 +22,11 @@ describe("arkenv (Nuxt runtime)", () => {
 		});
 
 		const env = arkenv({
-			server: {
-				DATABASE_URL: "string",
-			},
+			DATABASE_URL: "string",
 		});
 
 		expect(env.DATABASE_URL).toBe("postgres://localhost:5432/db");
 		delete process.env.DATABASE_URL;
-	});
-
-	it("should enforce NUXT_PUBLIC_ prefix for client keys at compile-time and runtime", () => {
-		expect(() => {
-			arkenv({
-				client: {
-					API_URL: "string",
-				},
-			});
-		}).toThrow(
-			"Client-side environment variables must be prefixed with 'NUXT_PUBLIC_'",
-		);
 	});
 
 	it("should allow accessing server-side, client, and shared variables on the server", () => {
@@ -50,15 +37,9 @@ describe("arkenv (Nuxt runtime)", () => {
 		});
 
 		const env = arkenv({
-			server: {
-				DATABASE_URL: "string",
-			},
-			client: {
-				NUXT_PUBLIC_API_URL: "string",
-			},
-			shared: {
-				NODE_ENV: "string",
-			},
+			DATABASE_URL: "string",
+			NUXT_PUBLIC_API_URL: "string",
+			NODE_ENV: "string",
 		});
 
 		expect(env.DATABASE_URL).toBe("postgres://localhost:5432/db");
@@ -81,15 +62,9 @@ describe("arkenv (Nuxt runtime)", () => {
 
 		try {
 			const env = arkenv({
-				server: {
-					DATABASE_URL: "string",
-				},
-				client: {
-					NUXT_PUBLIC_API_URL: "string",
-				},
-				shared: {
-					NODE_ENV: "string",
-				},
+				DATABASE_URL: "string",
+				NUXT_PUBLIC_API_URL: "string",
+				NODE_ENV: "string",
 			});
 
 			expect(env.NUXT_PUBLIC_API_URL).toBe("https://api.example.com");
@@ -147,9 +122,7 @@ describe("arkenv (Nuxt runtime)", () => {
 
 		try {
 			const env = arkenv({
-				client: {
-					NUXT_PUBLIC_API_URL: "string",
-				},
+				NUXT_PUBLIC_API_URL: "string",
 			});
 
 			const envRecord = env as Record<string, unknown>;
@@ -205,5 +178,14 @@ describe("arkenv (Nuxt runtime)", () => {
 		} finally {
 			(globalThis as any).window = originalWindow;
 		}
+	});
+
+	it("should reject the removed nested bag API", () => {
+		expect(() =>
+			arkenv({
+				server: { DATABASE_URL: "string" },
+				client: { NUXT_PUBLIC_API_URL: "string" },
+			} as never),
+		).toThrow(nestedBagMigrationErrorMessage());
 	});
 });

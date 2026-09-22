@@ -5,7 +5,7 @@ description: Choose between @arkenv/core and @arkenv/standard, then wire ArkType
 
 ArkEnv ships two engines. Both call `arkenv()`, share fail-fast errors,
 the coercion pipeline, and framework plugins. Shared
-[options](/docs/reference/options) (`env`, `coerce`, `safe`, …) apply
+[options](/docs/reference/options) (`env`, `coerce`, …) apply
 to both. `toJsonSchema` is on `@arkenv/standard` only; ArkType already
 exposes JSON Schema. The engines also differ in schema style and peer
 dependencies.
@@ -13,7 +13,7 @@ dependencies.
 |                                             | [`@arkenv/core`](/docs/reference/core) | [`@arkenv/standard`](/docs/reference/standard)                                                            |
 | ------------------------------------------- | -------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | Schema style                                | ArkType DSL strings + `type()`         | Per-key Standard Schema validators                                                                        |
-| Typical libraries                           | ArkType                                | Zod, Valibot, VineJS, Zod Mini, …                                                                         |
+| Typical libraries                           | ArkType                                | Zod, Valibot                                                                                              |
 | Runtime `dependencies`                      | None                                   | None                                                                                                      |
 | Peer `arktype`                              | Required                               | None                                                                                                      |
 | Env keywords (`string.host`, `number.port`) | Yes                                    | Use the validator's own APIs                                                                              |

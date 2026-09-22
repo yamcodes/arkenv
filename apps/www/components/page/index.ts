@@ -14,7 +14,6 @@ export { HeroPlaygroundProvider, useHeroPlayground } from "./hero-playground";
 export * from "./install-panel";
 export * from "./logo";
 export * from "./quickstart-button";
-export * from "./release-channel-badge";
 export * from "./roadmap-progress-card";
 export * from "./runtime-bloat-showcase";
 export * from "./scroll-reveal";

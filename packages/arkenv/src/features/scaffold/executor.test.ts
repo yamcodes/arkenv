@@ -120,6 +120,25 @@ describe("Executor", () => {
 		expect(mockReporter.finish).toHaveBeenCalled();
 	});
 
+	it("does not write an arkenv schema pointer to package.json", async () => {
+		const packageJsonPath = "package.json";
+		mockExistingFiles.add(packageJsonPath);
+		vi.mocked(mockWorkspace.readFile).mockResolvedValue(
+			JSON.stringify({ name: "app" }),
+		);
+
+		// Use npm so configurePnpmBuilds is skipped entirely.
+		await executor.execute({
+			...defaultPlan,
+			install: { packageManager: "npm", dependencies: [] },
+		});
+
+		const packageJsonWrites = vi
+			.mocked(mockWorkspace.writeFile)
+			.mock.calls.filter(([filePath]) => filePath === packageJsonPath);
+		expect(packageJsonWrites).toHaveLength(0);
+	});
+
 	it("skips files with create action if they already exist", async () => {
 		mockExistingFiles.add("env.ts");
 		await executor.execute(defaultPlan);
@@ -401,15 +420,13 @@ describe("Executor", () => {
 
 			await executor.execute(plan);
 
-			// Should update package.json
-			expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
+			// pnpm 11+ ignores package.json#pnpm settings; do not mutate package.json
+			expect(mockWorkspace.writeFile).not.toHaveBeenCalledWith(
 				expect.stringContaining("package.json"),
-				expect.stringContaining(
-					'"onlyBuiltDependencies": [\n      "esbuild"\n    ]',
-				),
+				expect.any(String),
 			);
 
-			// Should create pnpm-workspace.yaml
+			// Should create pnpm-workspace.yaml with allowBuilds
 			expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
 				expect.stringContaining("pnpm-workspace.yaml"),
 				expect.stringContaining("allowBuilds:\n  esbuild: true"),
@@ -432,7 +449,7 @@ describe("Executor", () => {
 			// Should not write to package.json for npm
 			expect(mockWorkspace.writeFile).not.toHaveBeenCalledWith(
 				expect.stringContaining("package.json"),
-				expect.stringContaining("onlyBuiltDependencies"),
+				expect.any(String),
 			);
 
 			// Should not write to pnpm-workspace.yaml

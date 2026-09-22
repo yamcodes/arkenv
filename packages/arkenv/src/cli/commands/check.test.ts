@@ -39,6 +39,10 @@ describe("CheckUseCase", () => {
 					"../../../../core/src/issues.ts",
 				),
 				arkenv: path.resolve(__dirname, "../../../../core/src/index.ts"),
+				"@repo/utils": path.resolve(
+					__dirname,
+					"../../../../internal/utils/src/index.ts",
+				),
 			},
 		});
 		useCase = new CheckUseCase(logger, workspace, scanner, schemaLoader);
@@ -52,6 +56,30 @@ describe("CheckUseCase", () => {
 		const exitCode = await useCase.execute({ cwd: tempDir });
 		expect(exitCode).toBe(2);
 		expect(memoryReporter.logs.some((l) => l.type === "error")).toBe(true);
+	});
+
+	it("returns exit code 2 when only a leftover env/server.ts exists", async () => {
+		await fs.mkdir(path.join(tempDir, "env"), { recursive: true });
+		await fs.writeFile(
+			path.join(tempDir, "env", "server.ts"),
+			`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ PORT: "number" });\n`,
+		);
+
+		(logger as any).options.isJson = true;
+		const exitCode = await useCase.execute({ cwd: tempDir });
+		expect(exitCode).toBe(2);
+
+		const reports = memoryReporter.logs.filter(
+			(l) => l.type === "reportErrored",
+		);
+		expect(reports).toHaveLength(1);
+		expect(reports[0].data).toMatchObject({
+			ok: false,
+			commandId: "check",
+			error: {
+				code: "CLI.SCHEMA_NOT_FOUND",
+			},
+		});
 	});
 
 	it("emits CLI.SCHEMA_NOT_FOUND in JSON mode when schema file is missing", async () => {
@@ -123,7 +151,37 @@ describe("CheckUseCase", () => {
 		).toBe(true);
 	});
 
-	it("discovers schema file from package.json arkenv config", async () => {
+	it("ignores leftover package.json arkenv config and discovers via convention", async () => {
+		const envPath = path.join(tempDir, "env.ts");
+		await fs.writeFile(
+			envPath,
+			`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ PORT: "number" });\n`,
+		);
+		// Off-convention path pointed by a leftover package.json field — must not win.
+		const schemaDir = path.join(tempDir, "config");
+		await fs.mkdir(schemaDir);
+		await fs.writeFile(
+			path.join(schemaDir, "env.ts"),
+			`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ HOST: "string" });\n`,
+		);
+		await fs.writeFile(
+			path.join(tempDir, "package.json"),
+			JSON.stringify({ name: "app", arkenv: { schema: "./config/env.ts" } }),
+		);
+
+		const originalEnv = { ...process.env };
+		process.env.PORT = "3000";
+		delete process.env.HOST;
+
+		try {
+			const exitCode = await useCase.execute({ cwd: tempDir });
+			expect(exitCode).toBe(0);
+		} finally {
+			process.env = originalEnv;
+		}
+	});
+
+	it("discovers schema via --schema when the file is off convention", async () => {
 		const schemaDir = path.join(tempDir, "config");
 		await fs.mkdir(schemaDir);
 		const envPath = path.join(schemaDir, "env.ts");
@@ -131,9 +189,31 @@ describe("CheckUseCase", () => {
 			envPath,
 			`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ PORT: "number" });\n`,
 		);
+
+		const originalEnv = { ...process.env };
+		process.env.PORT = "3000";
+
+		try {
+			const exitCode = await useCase.execute({
+				schema: "./config/env.ts",
+				cwd: tempDir,
+			});
+			expect(exitCode).toBe(0);
+		} finally {
+			process.env = originalEnv;
+		}
+	});
+
+	it("discovers schema via convention when package.json has no arkenv field", async () => {
+		const envPath = path.join(tempDir, "src", "env.ts");
+		await fs.mkdir(path.join(tempDir, "src"));
+		await fs.writeFile(
+			envPath,
+			`import { arkenv } from "@arkenv/core";\nexport const env = arkenv({ PORT: "number" });\n`,
+		);
 		await fs.writeFile(
 			path.join(tempDir, "package.json"),
-			JSON.stringify({ name: "app", arkenv: { schema: "./config/env.ts" } }),
+			JSON.stringify({ name: "app" }),
 		);
 
 		const originalEnv = { ...process.env };
