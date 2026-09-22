@@ -39,6 +39,10 @@ describe("CheckUseCase", () => {
 					"../../../../core/src/issues.ts",
 				),
 				arkenv: path.resolve(__dirname, "../../../../core/src/index.ts"),
+				"@repo/utils": path.resolve(
+					__dirname,
+					"../../../../internal/utils/src/index.ts",
+				),
 			},
 		});
 		useCase = new CheckUseCase(logger, workspace, scanner, schemaLoader);

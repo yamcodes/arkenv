@@ -17,19 +17,25 @@ Don't let the label names give you the wrong impression: `ready for agent` simpl
 
 1. ### Install Nub
 
-   [Nub](https://nubjs.com/) is the recommended toolchain for this repo. It
-   replaces `tsx` / `ts-node` / `tsconfig-paths` / `dotenv`, `pnpm run`,
-   `npx` / `pnpm exec`, `pnpm install`, and `nvm` for local work, while
-   keeping the existing `pnpm-lock.yaml`. Node is pinned to an exact
-   patch in `.node-version`. Nub provisions that version on the next
-   `nub` command; optional `nub node shim` makes bare `node` follow
-   the same pin.
+   [Nub](https://nubjs.com/) is the package manager and toolchain for this
+   repo (`packageManager: nub@…`, lockfile `nub.lock`). It replaces
+   `tsx` / `ts-node` / `tsconfig-paths` / `dotenv`, `pnpm run`,
+   `npx` / `pnpm exec`, `pnpm install`, and `nvm` for local work.
+   Node is pinned to an exact patch in `.node-version`. Nub provisions
+   that version on the next `nub` command; optional `nub node shim`
+   makes bare `node` follow the same pin.
+
+   Do **not** run `pnpm install` (or npm/yarn) in this tree — Corepack
+   hard-errors on the Nub pin, and a `preinstall` guard fails fast with
+   a pointer to `nub install`. Mixing package managers shatters module
+   resolution under Turbo.
 
    ```sh
    curl -fsSL https://nubjs.com/install.sh | bash
    ```
 
-   (Or `npm install -g @nubjs/nub`. See the [Nub docs](https://nubjs.com/docs).)
+   (Or `npm install -g @nubjs/nub`. See the [Nub docs](https://nubjs.com/docs).
+   If Corepack is enabled and blocks you, run `corepack disable`.)
 
 2. ### Clone the repository
 

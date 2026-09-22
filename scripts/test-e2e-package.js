@@ -12,17 +12,17 @@ console.log("🚀 Starting E2E Package Installation Tests...");
 
 // 1. Build the packages in the workspace
 console.log("\n📦 Building workspace packages...");
-execSync("pnpm run build:packages", { cwd: rootDir, stdio: "inherit" });
+execSync("nub run build:packages", { cwd: rootDir, stdio: "inherit" });
 
 // 2. Pack the core and standard packages
 const coreDir = path.join(rootDir, "packages/core");
 const standardDir = path.join(rootDir, "packages/standard");
 
 console.log("\n🎒 Packing @arkenv/core package...");
-execSync("pnpm pack", { cwd: coreDir, stdio: "inherit" });
+execSync("nub pack", { cwd: coreDir, stdio: "inherit" });
 
 console.log("\n🎒 Packing @arkenv/standard package...");
-execSync("pnpm pack", { cwd: standardDir, stdio: "inherit" });
+execSync("nub pack", { cwd: standardDir, stdio: "inherit" });
 
 // 3. Locate the tarballs
 const coreFiles = fs.readdirSync(coreDir);

@@ -142,7 +142,7 @@ A scroll-driven increase in **Glass material** opacity/blur so content sliding u
 
 - **TypeScript 6** - Primary language with strict type checking
 - **ArkType 2** - Type validation library (peer dependency)
-- **pnpm 11** - Package manager for monorepo
+- **Nub** - Package manager and script runner for the monorepo (`nub.lock`)
 - **Turborepo 2** - Monorepo build system and task orchestration
 
 ### Build & development tools
@@ -272,10 +272,10 @@ A scroll-driven increase in **Glass material** opacity/blur so content sliding u
 **Running Tests:**
 
 ```bash
-pnpm test -- --run                    # All tests
-pnpm test --project arkenv -- --run  # Specific package
-pnpm test -- --run "integration"     # Integration tests only
-pnpm run test:e2e                     # E2E tests
+nub run test -- --run                    # All tests
+nub run test --project arkenv -- --run  # Specific package
+nub run test -- --run "integration"     # Integration tests only
+nub run test:e2e                         # E2E tests
 ```
 
 ### Git workflow
@@ -305,7 +305,7 @@ pnpm run test:e2e                     # E2E tests
 **Versioning:**
 
 - Uses **Changesets** for version management
-- Create changeset with `pnpm changeset` before committing
+- Create changeset with `nub run changeset` before committing
 - Changesets are in `.changeset/` directory
 - Only published packages (`packages/*`) require changesets
 - Examples and private applications don't need changesets
@@ -317,7 +317,7 @@ pnpm run test:e2e                     # E2E tests
 
 **Publishing:**
 
-- Run `pnpm release` after merging PRs to publish packages
+- Run `nub run release` after merging PRs to publish packages
 - Only packages in `packages/` are published to npm
 
 ## Design Decisions
