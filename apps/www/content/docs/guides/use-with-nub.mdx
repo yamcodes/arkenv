@@ -56,13 +56,13 @@ Import-time validation is enough when every process that needs config
 imports `env` early. Use the next layers when you want a failure
 **before** application code runs, or without starting the app at all.
 
-| When | Mechanism | Fails if |
-| ---- | --------- | -------- |
-| Module load | `import { env } from "./env"` | First import of the schema module |
-| Before the entry under Nub | `preload` in `nub.jsonc` | Any `nub` / `nub run` / `nub watch` launch |
-| Dev / CI without running the app | `arkenv check` | Schema and environment disagree |
-| Before a build or deploy script | `arkenv check && …` in `package.json` | Check exits non-zero |
-| Bundler / framework build | Vite, Bun, Next.js, Nuxt adapters | Build or config setup |
+| When                             | Mechanism                             | Fails if                                   |
+| -------------------------------- | ------------------------------------- | ------------------------------------------ |
+| Module load                      | `import { env } from "./env"`         | First import of the schema module          |
+| Before the entry under Nub       | `preload` in `nub.jsonc`              | Any `nub` / `nub run` / `nub watch` launch |
+| Dev / CI without running the app | `arkenv check`                        | Schema and environment disagree            |
+| Before a build or deploy script  | `arkenv check && …` in `package.json` | Check exits non-zero                       |
+| Bundler / framework build        | Vite, Bun, Next.js, Nuxt adapters     | Build or config setup                      |
 
 ### Before the entry: `preload`
 
