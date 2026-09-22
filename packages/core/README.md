@@ -3,7 +3,7 @@
   <h1 align="center">ArkEnv</h1>
   <div align="center">
     <p align="center">
-      Typesafe environment variables with ArkType, Zod, or Valibot.<br/>
+      Typesafe environment variables with ArkType, Zod, and Valibot.<br/>
       No boilerplate. Zero runtime dependencies.
     </p>
     <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Av1"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/test.yml/badge.svg?branch=v1"></a>
