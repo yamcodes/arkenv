@@ -18,6 +18,7 @@ on:
       - "packages/fumadocs-ui/**"
       - "packages/internal/**"
       - ".github/workflows/deploy-www.yml"
+      - "scripts/vercel-wrapper.cjs"
       - "nub.lock"
 
 concurrency:
