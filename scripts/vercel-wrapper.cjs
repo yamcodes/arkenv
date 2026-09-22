@@ -35,18 +35,21 @@ function stripCorepackFromPulledEnv(cwd) {
 		} catch {
 			continue;
 		}
+		let removed = false;
 		const next = contents
 			.split(/\r?\n/)
 			.filter((line) => {
 				const trimmed = line.trim();
-				return (
-					trimmed !== "ENABLE_EXPERIMENTAL_COREPACK=1" &&
-					trimmed !== 'ENABLE_EXPERIMENTAL_COREPACK="1"' &&
-					!trimmed.startsWith("ENABLE_EXPERIMENTAL_COREPACK=")
-				);
+				if (trimmed.startsWith("ENABLE_EXPERIMENTAL_COREPACK=")) {
+					removed = true;
+					return false;
+				}
+				return true;
 			})
 			.join("\n");
-		if (next !== contents) {
+		// Only rewrite when a Corepack line was removed — avoid churn from
+		// trailing-newline differences alone.
+		if (removed) {
 			try {
 				fs.writeFileSync(filePath, next);
 			} catch {

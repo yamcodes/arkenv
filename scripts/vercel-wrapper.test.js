@@ -117,9 +117,11 @@ describe("vercel-wrapper", () => {
 	});
 
 	it("sanitizes Corepack and install env for build only", () => {
+		const cwd = mkdtempSync(join(tmpdir(), "vercel-wrapper-build-"));
 		const { result } = runWrapper({
 			args: ["build", "--token=fake"],
 			echoEnv: true,
+			cwd,
 			env: {
 				ENABLE_EXPERIMENTAL_COREPACK: "1",
 				VERCEL_INSTALL_COMPLETED_PATH: "/tmp/should-be-cleared",
