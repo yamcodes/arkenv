@@ -61,5 +61,73 @@
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	},
-	"packageManager": "pnpm@11.9.0"
+	"packageManager": "nub@0.9.3",
+	"devEngines": {
+		"packageManager": {
+			"name": "nub",
+			"version": "^0.9.3",
+			"onFail": "ignore"
+		}
+	},
+	"workspaces": {
+		"packages": [
+			"packages/*",
+			"packages/internal/*",
+			"apps/*",
+			"apps/playgrounds/*"
+		],
+		"catalog": {
+			"@ark/attest": "0.56.0",
+			"@axe-core/playwright": "4.11.3",
+			"@nubjs/nub": "0.9.3",
+			"@size-limit/esbuild-why": "12.1.0",
+			"@size-limit/preset-small-lib": "12.1.0",
+			"@types/bun": "1.3.13",
+			"@types/node": "24.12.2",
+			"@types/react": "19.2.14",
+			"@types/react-dom": "19.2.3",
+			"@vitejs/plugin-react": "6.0.1",
+			"@vitest/coverage-v8": "^4.1.5",
+			"@vitest/ui": "4.1.5",
+			"arktype": "2.2.0",
+			"bun": "1.3.13",
+			"esbuild": "0.28.0",
+			"globals": "17.5.0",
+			"jiti": "2.7.0",
+			"next": "16.2.6",
+			"npm": "11.9.0",
+			"pnpm": "11.9.0",
+			"react": "19.2.5",
+			"react-dom": "19.2.5",
+			"rimraf": "6.1.3",
+			"size-limit": "12.1.0",
+			"tsdown": "0.21.10",
+			"typescript": "6.0.3",
+			"valibot": "1.3.1",
+			"vitest": "4.1.5",
+			"zod": "4.4.1"
+		}
+	},
+	"overrides": {
+		"@playwright/test": "1.59.1",
+		"@types/node": "24.12.2",
+		"import-in-the-middle": "2.0.6",
+		"require-in-the-middle": "8.0.1",
+		"zod": "4.4.1",
+		"fumadocs-core": "16.8.7",
+		"fumadocs-ui": "16.8.7"
+	},
+	"allowScripts": {
+		"@biomejs/biome": true,
+		"@nubjs/nub": true,
+		"@parcel/watcher": true,
+		"@sentry/cli": true,
+		"@tailwindcss/oxide": true,
+		"@vercel/speed-insights": true,
+		"bun": false,
+		"core-js": true,
+		"esbuild": true,
+		"protobufjs": true,
+		"sharp": true
+	}
 }
