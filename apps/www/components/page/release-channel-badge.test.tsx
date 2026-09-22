@@ -13,10 +13,9 @@ describe("ReleaseChannelBadge", () => {
 		const { ReleaseChannelBadge } = await import("./release-channel-badge");
 		render(<ReleaseChannelBadge />);
 		expect(screen.getByText(/v1 RC is here/i)).toBeInTheDocument();
-		expect(screen.getByRole("link", { name: /v1 RC is here/i })).toHaveAttribute(
-			"href",
-			"/blog/arkenv-v1-rc",
-		);
+		expect(
+			screen.getByRole("link", { name: /v1 RC is here/i }),
+		).toHaveAttribute("href", "/blog/arkenv-v1-rc");
 	});
 
 	it("renders nothing when RELEASE_TAG is not rc", async () => {
