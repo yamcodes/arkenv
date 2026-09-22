@@ -82,8 +82,8 @@ if (isMain) {
 		if (checkOnly) {
 			if (result.changed) {
 				console.error(
-					`pnpm-workspace.yaml is missing or stale vs package.json workspaces.packages.\n` +
-						`Run: node scripts/ensure-manypkg-workspace.js`,
+					"pnpm-workspace.yaml is missing or stale vs package.json workspaces.packages.\n" +
+						"Run: node scripts/ensure-manypkg-workspace.js",
 				);
 				process.exit(1);
 			}
