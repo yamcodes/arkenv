@@ -48,7 +48,7 @@ export function readWorkspacePackages(pkgJson) {
  * @returns {string}
  */
 export function renderPnpmWorkspaceYaml(packages) {
-	return `${HEADER}packages:\n${packages.map((p) => `  - ${p}`).join("\n")}\n`;
+	return `${HEADER}packages:\n${packages.map((p) => `  - ${JSON.stringify(p)}`).join("\n")}\n`;
 }
 
 /**
