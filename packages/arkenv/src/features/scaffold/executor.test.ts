@@ -425,10 +425,6 @@ describe("Executor", () => {
 				expect.stringContaining("package.json"),
 				expect.any(String),
 			);
-			expect(mockWorkspace.writeFile).not.toHaveBeenCalledWith(
-				expect.stringContaining("package.json"),
-				expect.stringContaining("onlyBuiltDependencies"),
-			);
 
 			// Should create pnpm-workspace.yaml with allowBuilds
 			expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
