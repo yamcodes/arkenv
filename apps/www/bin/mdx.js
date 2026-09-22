@@ -4,7 +4,9 @@ const path = require("node:path");
 const { createRequire } = require("node:module");
 const { spawn } = require("node:child_process");
 
-const requireFromWww = createRequire(path.resolve(__dirname, "../package.json"));
+const requireFromWww = createRequire(
+	path.resolve(__dirname, "../package.json"),
+);
 
 // Ensure .arkenv types are generated for typechecking and runtime
 try {

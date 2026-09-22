@@ -4,7 +4,9 @@ const path = require("node:path");
 const { createRequire } = require("node:module");
 const { spawn } = require("node:child_process");
 
-const requireFromWww = createRequire(path.resolve(__dirname, "../package.json"));
+const requireFromWww = createRequire(
+	path.resolve(__dirname, "../package.json"),
+);
 
 // Skip postinstall during tests - types aren't needed for running tests
 if (process.env.SKIP_POSTINSTALL === "true") {
