@@ -340,7 +340,7 @@ nub run test:e2e                         # E2E tests
 - Package READMEs (`@arkenv/nextjs`, `@arkenv/nuxt`): light touch only — mention Standard Mode + `/standard`; no full README rewrite in this pass.
 - On validators pages, the secondary “Mixing with ArkType” section is short: one flat-layout mixed schema example; no full Zod/Valibot × layout tab matrix.
 - Core FAQ: keep “Do I have to use ArkType?” for validator choice; add a dedicated “Do I need to install `arktype`?” for the `@arkenv/standard` / `/standard` packaging story.
-- Validators page descriptions (and intro cards): “Use Zod, Valibot, or any Standard Schema validator — with or without ArkType.” Title stays “Zod, Valibot, and other Standard Schema validators.” Core `integrations/standard-schema` remains the mix-with-`@arkenv/core` guide.
+- Validators page descriptions (and intro cards): “Use Zod or Valibot — with or without ArkType.” Title can stay engine-oriented (“Zod, Valibot, and other Standard Schema validators”) in docs; top-line marketing (hero, footer, meta, README) names only the big three. Core `integrations/standard-schema` remains the mix-with-`@arkenv/core` guide.
 - Nuxt FAQ gets peer-engine parity with Next (“Why install `@arkenv/core` or `@arkenv/standard` alongside `@arkenv/nuxt`?”) plus the dedicated arktype-install FAQ on both framework FAQs.
 
 ## Domain context

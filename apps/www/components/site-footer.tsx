@@ -33,7 +33,7 @@ export function SiteFooter({
 			<div className="home-aurora__footer-grid">
 				<div className="home-aurora__footer-brand">
 					<LogoLink releaseTag={RELEASE_TAG} />
-					<p>Typesafe environment variables for ArkType, Zod, and Valibot.</p>
+					<p>Typesafe environment variables with ArkType, Zod, or Valibot.</p>
 				</div>
 
 				<nav aria-labelledby="footer-resources">
@@ -74,9 +74,6 @@ export function SiteFooter({
 						</li>
 						<li>
 							<a href="/docs/validators/valibot">Valibot</a>
-						</li>
-						<li>
-							<a href="/docs/validators">Standard Schema</a>
 						</li>
 					</ul>
 				</nav>

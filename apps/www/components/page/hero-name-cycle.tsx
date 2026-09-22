@@ -2,18 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-export const HERO_HEADLINE_NAMES = [
-	"ArkType",
-	"Zod",
-	"Valibot",
-	"Standard Schema",
-] as const;
-
-export const HERO_MOBILE_HEADLINE_NAMES = [
-	"ArkType",
-	"Zod",
-	"Valibot",
-] as const;
+export const HERO_HEADLINE_NAMES = ["ArkType", "Zod", "Valibot"] as const;
 
 /** Dwell on each name. Cycle is independent of the example tabs, so 3s not 3.5s. */
 export const HERO_DWELL_MS = 3000;
@@ -34,7 +23,6 @@ function prefersReducedMotion() {
 export function HeroNameCycle() {
 	const [index, setIndex] = useState(0);
 	const [reduceMotion, setReduceMotion] = useState(false);
-	const [isMobile, setIsMobile] = useState(false);
 	const [paused, setPaused] = useState(false);
 	const currentRef = useRef(index);
 	const prevRef = useRef(index);
@@ -55,32 +43,22 @@ export function HeroNameCycle() {
 		syncMotion();
 		mqMotion.addEventListener("change", syncMotion);
 
-		const mqMobile = window.matchMedia("(max-width: 39.99rem)");
-		const syncMobile = () => {
-			setIsMobile(mqMobile.matches);
-		};
-		syncMobile();
-		mqMobile.addEventListener("change", syncMobile);
-
 		return () => {
 			mqMotion.removeEventListener("change", syncMotion);
-			mqMobile.removeEventListener("change", syncMobile);
 		};
 	}, []);
-
-	const names = isMobile ? HERO_MOBILE_HEADLINE_NAMES : HERO_HEADLINE_NAMES;
 
 	useEffect(() => {
 		if (reduceMotion || paused) return;
 
 		const tick = () => {
 			if (document.hidden || prefersReducedMotion()) return;
-			setIndex((current) => (current + 1) % names.length);
+			setIndex((current) => (current + 1) % HERO_HEADLINE_NAMES.length);
 		};
 
 		const intervalId = window.setInterval(tick, HERO_DWELL_MS);
 		return () => window.clearInterval(intervalId);
-	}, [reduceMotion, paused, names.length]);
+	}, [reduceMotion, paused]);
 
 	return (
 		<span
@@ -90,7 +68,7 @@ export function HeroNameCycle() {
 		>
 			<span className="home-aurora__cycle-with">with{"\u00a0"}</span>
 			<span className="home-aurora__cycle-viewport">
-				{names.map((name, nameIndex) => {
+				{HERO_HEADLINE_NAMES.map((name, nameIndex) => {
 					if (nameIndex !== index && nameIndex !== previous) return null;
 					const pos = nameIndex === index ? "current" : "prev";
 					return (
