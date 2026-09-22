@@ -295,7 +295,7 @@ export class Executor {
 
 	/**
 	 * Configure pnpm-specific whitelisting for esbuild and other native build dependencies.
-	 * Writes approved builds under `pnpm-workspace.yaml#allowBuilds` (the live path on pnpm 12+).
+	 * Writes approved builds under `pnpm-workspace.yaml#allowBuilds` (supported since pnpm 10.26.0; `package.json#pnpm` is ignored on pnpm 11+).
 	 *
 	 * @param installCwd The directory where the installation will run
 	 */

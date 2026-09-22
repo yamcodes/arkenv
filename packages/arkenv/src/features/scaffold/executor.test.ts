@@ -420,7 +420,7 @@ describe("Executor", () => {
 
 			await executor.execute(plan);
 
-			// pnpm 12+ ignores package.json#pnpm settings; do not mutate package.json
+			// pnpm 11+ ignores package.json#pnpm settings; do not mutate package.json
 			expect(mockWorkspace.writeFile).not.toHaveBeenCalledWith(
 				expect.stringContaining("package.json"),
 				expect.any(String),
