@@ -10,5 +10,7 @@ export default defineConfig({
 	sourcemap: false,
 	deps: {
 		alwaysBundle: ["@repo/log", "@clack/prompts", "@repo/utils", "picocolors"],
+		// Opt out of tsdown's bundled-deps hint; alwaysBundle is the single policy.
+		onlyBundle: false,
 	},
 });
