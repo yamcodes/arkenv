@@ -28,7 +28,9 @@ Don't let the label names give you the wrong impression: `ready for agent` simpl
    Do **not** run `pnpm install` (or npm/yarn) in this tree — Corepack
    hard-errors on the Nub pin, and a `preinstall` guard fails fast with
    a pointer to `nub install`. Mixing package managers shatters module
-   resolution under Turbo.
+   resolution under Turbo. A packages-only root `pnpm-workspace.yaml`
+   mirrors the Nub workspace globs so Changesets / `@manypkg` can
+   discover packages; it is not an invitation to use pnpm for installs.
 
    ```sh
    curl -fsSL https://nubjs.com/install.sh | bash

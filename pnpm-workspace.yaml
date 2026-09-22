@@ -1,0 +1,10 @@
+# Packages-only mirror of `package.json` → `workspaces.packages`.
+# Nub owns install (`packageManager: nub@…`, `nub.lock`, catalog/overrides
+# in package.json). This file exists so Changesets and @manypkg can discover
+# the monorepo (they only recognize pnpm-workspace.yaml / yarn|npm lockfiles).
+# Do not run `pnpm install` — the preinstall guard will reject it.
+packages:
+  - packages/*
+  - packages/internal/*
+  - apps/*
+  - apps/playgrounds/*
