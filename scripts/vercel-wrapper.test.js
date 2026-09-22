@@ -1,14 +1,9 @@
 import { spawnSync } from "node:child_process";
-import {
-	mkdirSync,
-	mkdtempSync,
-	readFileSync,
-	writeFileSync,
-} from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createRequire } from "node:module";
 import { describe, expect, it } from "vitest";
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -160,7 +155,7 @@ describe("vercel-wrapper", () => {
 			[
 				"ENABLE_EXPERIMENTAL_COREPACK=1",
 				"SOME_OTHER=keep",
-				"ENABLE_EXPERIMENTAL_COREPACK=\"1\"",
+				'ENABLE_EXPERIMENTAL_COREPACK="1"',
 			].join("\n"),
 		);
 
@@ -203,10 +198,7 @@ describe("vercel-wrapper", () => {
 		const vercelDir = join(cwd, ".vercel");
 		mkdirSync(vercelDir);
 		const envFile = join(vercelDir, ".env.preview.local");
-		writeFileSync(
-			envFile,
-			"FOO=1\nENABLE_EXPERIMENTAL_COREPACK=1\nBAR=2\n",
-		);
+		writeFileSync(envFile, "FOO=1\nENABLE_EXPERIMENTAL_COREPACK=1\nBAR=2\n");
 		stripCorepackFromPulledEnv(cwd);
 		expect(readFileSync(envFile, "utf8")).toBe("FOO=1\nBAR=2\n");
 	});

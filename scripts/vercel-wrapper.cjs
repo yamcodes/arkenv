@@ -48,7 +48,7 @@ function stripCorepackFromPulledEnv(cwd) {
 				const trimmed = line.trim();
 				return (
 					trimmed !== "ENABLE_EXPERIMENTAL_COREPACK=1" &&
-					trimmed !== "ENABLE_EXPERIMENTAL_COREPACK=\"1\"" &&
+					trimmed !== 'ENABLE_EXPERIMENTAL_COREPACK="1"' &&
 					!trimmed.startsWith("ENABLE_EXPERIMENTAL_COREPACK=")
 				);
 			})
