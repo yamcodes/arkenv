@@ -113,8 +113,8 @@ and how much of the stack each tool covers:
   *names*. See [Client vs. server](/docs/core-concepts/client-vs-server)
   and [Migrating from T3 Env](/docs/guides/migrating-from-t3-env).
 - **Schema flexibility.** Native ArkType DSL without wrapping each key
-  in `type()`, or any Standard Schema validator. T3 Env speaks Standard
-  Schema; it does not take ArkType strings the same way.
+  in `type()`, or Zod / Valibot. T3 Env speaks Standard Schema; it does
+  not take ArkType strings the same way.
 
 ### vite-plugin-validate-env
 
@@ -129,8 +129,7 @@ across other runtimes if your stack expands.
 [znv](https://github.com/lostfictions/znv) is a lean, zero-dependency
 environment validator that pioneered clean runtime coercion. ArkEnv
 builds on that coercion model while decoupling from Zod, so you can use
-ArkType, Valibot, or any Standard Schema library with first-party
-framework integration.
+ArkType, Zod, or Valibot with first-party framework integration.
 
 ### Envalid
 
