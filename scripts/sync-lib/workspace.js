@@ -6,39 +6,19 @@ import { ROOT_DIR } from "./constants.js";
 const publishedTagCache = new Map();
 
 /**
- * Parse the pnpm-workspace.yaml catalog section to get versions
+ * Read the workspace catalog from root package.json (`workspaces.catalog`).
  */
 export function parseCatalog() {
-	const workspaceYaml = readFileSync(
-		join(ROOT_DIR, "pnpm-workspace.yaml"),
-		"utf-8",
+	const pkg = JSON.parse(
+		readFileSync(join(ROOT_DIR, "package.json"), "utf-8"),
 	);
-
-	const catalog = {};
-	let inCatalog = false;
-
-	for (const line of workspaceYaml.split("\n")) {
-		if (line.trim() === "catalog:") {
-			inCatalog = true;
-			continue;
-		}
-
-		if (inCatalog) {
-			// Check if we've exited the catalog section (non-indented line that's not empty)
-			if (line.trim() && !line.startsWith("  ") && !line.startsWith("\t")) {
-				break;
-			}
-
-			const match = line.match(
-				/^\s+["']?([^"':]+)["']?:\s*["']?([^"'\s]+)["']?/,
-			);
-			if (match) {
-				catalog[match[1]] = match[2];
-			}
-		}
+	const catalog = pkg.workspaces?.catalog;
+	if (!catalog || typeof catalog !== "object") {
+		throw new Error(
+			"Root package.json is missing workspaces.catalog (Nub identity)",
+		);
 	}
-
-	return catalog;
+	return { ...catalog };
 }
 
 /**

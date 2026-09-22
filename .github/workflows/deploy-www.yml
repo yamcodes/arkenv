@@ -18,7 +18,7 @@ on:
       - "packages/fumadocs-ui/**"
       - "packages/internal/**"
       - ".github/workflows/deploy-www.yml"
-      - "pnpm-lock.yaml"
+      - "nub.lock"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

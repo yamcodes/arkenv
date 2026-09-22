@@ -7,7 +7,7 @@ import packageJson from "./package.json";
 const lockfile = readFileSync(
 	path.join(
 		path.dirname(fileURLToPath(import.meta.url)),
-		"../../pnpm-lock.yaml",
+		"../../nub.lock",
 	),
 	"utf8",
 );

@@ -3,6 +3,7 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
+		"preinstall": "node scripts/preinstall-nub-guard.js",
 		"build": "turbo run build",
 		"build:packages": "turbo run build --filter=./packages/*",
 		"dev": "turbo run dev --ui tui",
@@ -57,7 +58,7 @@
 		"remark-frontmatter": "^5.0.0",
 		"remark-gfm": "^4.0.1",
 		"rimraf": "catalog:",
-		"turbo": "2.10.0",
+		"turbo": "2.11.2",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	},

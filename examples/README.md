@@ -44,7 +44,7 @@ Some examples of this mapping (not comprehensive):
 To modify an example:
 
 1. Make changes in the corresponding playground
-2. Run `pnpm sync:examples` to update the examples
+2. Run `nub run sync:examples` to update the examples
 3. Commit both the playground and example changes
 
 ### Adding a new example
@@ -61,7 +61,7 @@ To modify an example:
      ]
    }
    ```
-3. Run `pnpm sync:examples` to generate the example
+3. Run `nub run sync:examples` to generate the example
 4. Add the example to this README's list
 
 Each example follows this basic structure:

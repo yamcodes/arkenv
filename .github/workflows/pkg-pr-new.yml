@@ -37,7 +37,7 @@ jobs:
         uses: ./.github/actions/setup-nub-ci
 
       - name: Install deps
-        run: pnpm install
+        run: nub install
 
       - name: Build
         run: nub run --no-check build --filter="./packages/*"

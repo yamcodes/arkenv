@@ -2,7 +2,7 @@
 
 ## Cursor Cloud specific instructions
 
-ArkEnv is a Nub + Turborepo monorepo for a TypeScript env-var validation library (lockfile remains `pnpm-lock.yaml`). There are no databases or external services; the product long-running process is the `www` docs site (Next.js). `apps/dash` is an optional maintainer dashboard and is not started by `nub run dev` / `nub run www`. Standard commands live in `package.json`, `docs/CONTRIBUTING.md`, and `docs/TESTING.md` — prefer those.
+ArkEnv is a Nub + Turborepo monorepo for a TypeScript env-var validation library. **Nub is the package manager** (`packageManager: nub@…`, lockfile `nub.lock`, isolated `.store` via `nub.jsonc`) as well as the script runner — do not mix `pnpm install` into the same tree. There are no databases or external services; the product long-running process is the `www` docs site (Next.js). `apps/dash` is an optional maintainer dashboard and is not started by `nub run dev` / `nub run www`. Standard commands live in `package.json`, `docs/CONTRIBUTING.md`, and `docs/TESTING.md` — prefer those.
 
 > This is the `v1` branch. Its package layout differs from `dev` (v0): here `packages/arkenv` is the **CLI** (published as `arkenv`) and the **core runtime** lives in `packages/core` (published as `@arkenv/core`). There is no `packages/cli` on `v1`. `v1` publishes pre-release versions (`1.0.0-alpha.x`) under the `alpha` npm tag.
 

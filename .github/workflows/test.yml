@@ -43,11 +43,8 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.0
-      # pnpm install (via nub shim): keep packageManager=pnpm's .pnpm layout.
-      # `nub install` uses node_modules/.store, and Vitest's NODE_PATH then
-      # cannot resolve workspace pkgs (@arkenv/core) from /tmp jiti fixtures.
       - name: Install dependencies
-        run: pnpm install
+        run: nub install
       - name: Build packages
         run: nub run --no-check build --filter=./packages/*
       - run: nub run --no-check test
@@ -65,7 +62,7 @@ jobs:
         with:
           team: ${{ vars.TURBO_TEAM }}
       - uses: ./.github/actions/setup-nub-ci
-      - run: pnpm install
+      - run: nub install
       - run: nub run --no-check typecheck
 
   test-build:
@@ -91,7 +88,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.0
-      - run: pnpm install
+      - run: nub install
       # --node: outer nub run injects a TS preload that turbo children inherit.
       # Nuxt's tsconfig extends .nuxt/tsconfig.json before prepare, so the
       # preload aborts the playground build; plain Node lets Nuxt own that.
@@ -111,13 +108,13 @@ jobs:
         with:
           team: ${{ vars.TURBO_TEAM }}
       - uses: ./.github/actions/setup-nub-ci
-      - run: pnpm install
+      - run: nub install
       - name: Build workspace packages
         run: nub run --no-check build:packages
       - name: Apply overrides for Vite version
         run: node scripts/override-vite.js ${{ matrix.vite-version }}
       - name: Reinstall dependencies with overrides
-        run: pnpm install --no-frozen-lockfile
+        run: nub install --no-frozen-lockfile
       - name: Build vite-legacy playground
         run: nub run --no-check --node build --filter=vite-legacy-playground
 
@@ -142,11 +139,11 @@ jobs:
           echo "TURBO_SCM_BASE=${{ github.event.pull_request.base.sha || github.event.before }}" >> $GITHUB_ENV
           echo "TURBO_SCM_HEAD=${{ github.sha }}" >> $GITHUB_ENV
       - uses: ./.github/actions/setup-nub-ci
-      - run: pnpm install
+      - run: nub install
       - uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
-          key: ubuntu-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}
+          key: ubuntu-latest-pw-${{ hashFiles('nub.lock') }}
           restore-keys: |
             ubuntu-latest-pw-
       - name: Install Playwright browsers
@@ -196,13 +193,13 @@ jobs:
         with:
           bun-version: 1.4.0
       - name: Install dependencies
-        run: pnpm install
+        run: nub install
       - uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
-          key: windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.channel }}
+          key: windows-latest-pw-${{ hashFiles('nub.lock') }}-${{ matrix.channel }}
           restore-keys: |
-            windows-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-
+            windows-latest-pw-${{ hashFiles('nub.lock') }}-
             windows-latest-pw-
       - name: Install Playwright browsers
         run: nubx playwright install --with-deps
@@ -246,13 +243,13 @@ jobs:
         with:
           bun-version: 1.4.0
       - name: Install dependencies
-        run: pnpm install
+        run: nub install
       - uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
-          key: macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.channel }}
+          key: macos-latest-pw-${{ hashFiles('nub.lock') }}-${{ matrix.channel }}
           restore-keys: |
-            macos-latest-pw-${{ hashFiles('pnpm-lock.yaml') }}-
+            macos-latest-pw-${{ hashFiles('nub.lock') }}-
             macos-latest-pw-
       - name: Install Playwright browsers
         run: nubx playwright install --with-deps

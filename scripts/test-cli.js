@@ -51,7 +51,7 @@ const tempDir = path.resolve(rootDir, "tmp", tempDirName);
 
 // 1. Build the CLI
 console.log("Building arkenv (CLI)...");
-execSync("pnpm --filter=arkenv build", { cwd: rootDir, stdio: "inherit" });
+execSync("nub run --filter=arkenv build", { cwd: rootDir, stdio: "inherit" });
 
 // 2. Prepare the directory
 console.log(`Preparing temporary directory: ${tempDir}`);
