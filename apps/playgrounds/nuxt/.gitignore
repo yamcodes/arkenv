@@ -1,5 +1,4 @@
-.nuxt/*
-!.nuxt/tsconfig.json
+.nuxt
 .output
 .turbo
 node_modules

@@ -42,8 +42,9 @@ try {
 	process.exit(0);
 }
 
-// Resolve fumadocs-mdx via the www package graph (Nub identity — no pnpm exec)
-const fumadocsMdxBin = requireFromWww.resolve("fumadocs-mdx/dist/bin.js");
+// Resolve fumadocs-mdx via the www package graph (Nub identity — no pnpm exec).
+// Use the package `exports` entry (`./bin`), not a raw dist path.
+const fumadocsMdxBin = requireFromWww.resolve("fumadocs-mdx/bin");
 const child = spawn(process.execPath, [fumadocsMdxBin], {
 	stdio: "inherit",
 	cwd: path.resolve(__dirname, ".."),
