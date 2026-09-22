@@ -3,9 +3,12 @@ title: "@arkenv/standard"
 description: ArkType-free environment validation via Standard Schema.
 ---
 
-`@arkenv/standard` is the Standard Schema validation engine. It validates environment variables with any
-[Standard Schema](https://standardschema.dev/) validator (Zod, Valibot,
-and others). The root import has no runtime dependencies or peers.
+`@arkenv/standard` is the ArkType-free validation engine. First-class support
+is Zod and Valibot. It consumes
+[Standard Schema](https://standardschema.dev/) validators; libraries that only
+implement the validate hook may still need a `toJsonSchema` helper or a
+dedicated subpath (for example `@arkenv/standard/valibot`). The root import has
+no runtime dependencies or peers.
 
 - **If you use ArkType**, use [`@arkenv/core`](/docs/reference/core). It also supports Zod and Valibot. **You do not need to install both engines**.
 - **If you don't use ArkType**, use `@arkenv/standard`. This will keep your tree free of the `arktype` dependency.

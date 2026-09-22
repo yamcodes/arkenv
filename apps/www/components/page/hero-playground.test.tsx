@@ -147,11 +147,9 @@ describe("hero playground sync", () => {
 		});
 
 		expect(document.querySelector("[data-pos='current']")?.textContent).toBe(
-			"Standard Schema",
+			"ArkType",
 		);
-		expect(
-			screen.queryByRole("tab", { name: "Standard Schema" }),
-		).not.toBeInTheDocument();
+		expect(screen.queryByRole("tab", { name: "Valibot" })).not.toBeInTheDocument();
 	});
 
 	it("does not pause the H1 when the pointer enters the example", () => {
