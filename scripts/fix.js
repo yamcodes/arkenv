@@ -11,6 +11,7 @@
 
 import { execSync } from "node:child_process";
 import { argv, env } from "node:process";
+import { ensureManypkgWorkspace } from "./ensure-manypkg-workspace.js";
 import { normalizeMdxCodeIndent } from "./normalize-mdx-code-indent.js";
 import { unescapeMdxMarkers } from "./unescape-mdx-markers.js";
 
@@ -45,6 +46,9 @@ normalizeMdxCodeIndent(process.cwd());
 
 // Conditionally run manypkg fix
 if (!skipManypkg) {
+	// Materialize gitignored pnpm-workspace.yaml from Nub SoT so manypkg
+	// can discover packages (it does not understand Nub identity).
+	ensureManypkgWorkspace();
 	console.log("Running manypkg fix...");
 	execSync("nubx manypkg fix", { stdio: "inherit" });
 } else {

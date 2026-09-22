@@ -28,7 +28,10 @@ Don't let the label names give you the wrong impression: `ready for agent` simpl
    Do **not** run `pnpm install` (or npm/yarn) in this tree — Corepack
    hard-errors on the Nub pin, and a `preinstall` guard fails fast with
    a pointer to `nub install`. Mixing package managers shatters module
-   resolution under Turbo.
+   resolution under Turbo. After install, a gitignored packages-only
+   `pnpm-workspace.yaml` may appear — generated from
+   `package.json` → `workspaces.packages` so Changesets / `@manypkg`
+   can discover packages. Do not commit it.
 
    ```sh
    curl -fsSL https://nubjs.com/install.sh | bash
@@ -207,6 +210,8 @@ Stable www URLs (GitHub Actions + Vercel CLI, not native Vercel Git builds):
 | Labeled PR                     | Ephemeral preview URL only (does not take over the aliases above)                   |
 
 To redeploy an older commit to a stable URL without moving the branch, maintainers can run **Actions → Deploy www (manual SHA)** and choose `arkenv-dev.vercel.app`, `arkenv-v0.vercel.app`, `arkenv-v1.vercel.app`, or production `arkenv.js.org`.
+
+**Nub identity and Vercel CLI builds:** Root `packageManager` is `nub@…`. Corepack does not know `nub`, and Vercel does not treat `nub.lock` as a recognized lockfile. Actions already run `nub install` before `vercel build`, so `scripts/vercel-wrapper.cjs` disables Corepack (`ENABLE_EXPERIMENTAL_COREPACK=0`) and marks install complete (`VERCEL_INSTALL_COMPLETED=1`) for build only — otherwise the CLI runs `corepack enable nub` (fatal) or falls back to `npm install` (breaks `workspace:*`). Do not re-enable Corepack on the Vercel project for these CLI builds. If a future `vercel` pin stops honoring `VERCEL_INSTALL_COMPLETED`, set the project Install Command to empty or `nub install` via the dashboard/API.
 
 **Phased cutover:** RC keeps these branch names (**Option A**). At GA
 (**Option B**, later), rename so the v1 line becomes `main`/`dev` and

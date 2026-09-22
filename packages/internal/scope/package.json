@@ -35,7 +35,8 @@
 	"devDependencies": {
 		"arktype": "catalog:",
 		"tsdown": "catalog:",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	},
 	"peerDependencies": {
 		"arktype": "catalog:"
