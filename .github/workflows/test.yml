@@ -89,9 +89,9 @@ jobs:
         with:
           bun-version: 1.4.0
       - run: nub install
-      # --node: outer nub run injects a TS preload that turbo children inherit.
-      # Nuxt's tsconfig extends .nuxt/tsconfig.json before prepare, so the
-      # preload aborts the playground build; plain Node lets Nuxt own that.
+      # --node: outer nub run skips TS preload. Nested turbo children are still
+      # `nub run` under packageManager=nub; nuxt-playground keeps a stub
+      # `.nuxt/tsconfig.json` so that nested run can start before `nuxt prepare`.
       - run: nub run --no-check --node build
 
   test-vite-compatibility:

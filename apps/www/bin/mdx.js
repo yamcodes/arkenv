@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 
 const path = require("node:path");
-const { spawn, execSync } = require("node:child_process");
+const { createRequire } = require("node:module");
+const { spawn } = require("node:child_process");
+
+const requireFromWww = createRequire(path.resolve(__dirname, "../package.json"));
 
 // Ensure .arkenv types are generated for typechecking and runtime
 try {
@@ -37,19 +40,12 @@ if (majorVersion >= 25) {
 }
 // For Node.js 24 and below, leave existing NODE_OPTIONS unchanged
 
-// Check if pnpm is available
-try {
-	execSync("pnpm --version", { stdio: "ignore" });
-} catch {
-	console.error("Error: pnpm is required but not found in PATH");
-	process.exit(1);
-}
-
-// Spawn fumadocs-mdx with the appropriate NODE_OPTIONS
-// Use shell: true on Windows for command resolution, false on Unix for security
-const child = spawn("pnpm", ["exec", "fumadocs-mdx"], {
+// Resolve fumadocs-mdx via the www package graph (Nub identity — no pnpm exec)
+const fumadocsMdxBin = requireFromWww.resolve("fumadocs-mdx/dist/bin.js");
+const child = spawn(process.execPath, [fumadocsMdxBin], {
 	stdio: "inherit",
-	shell: process.platform === "win32",
+	cwd: path.resolve(__dirname, ".."),
+	shell: false,
 });
 
 // Forward exit code
