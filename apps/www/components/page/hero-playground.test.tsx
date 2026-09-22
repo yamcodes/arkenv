@@ -150,7 +150,11 @@ describe("hero playground sync", () => {
 			"ArkType",
 		);
 		expect(
+<<<<<<< Updated upstream
 			screen.queryByRole("tab", { name: "Valibot" }),
+=======
+			screen.queryByRole("tab", { name: "Standard Schema" }),
+>>>>>>> Stashed changes
 		).not.toBeInTheDocument();
 	});
 
