@@ -211,6 +211,8 @@ Stable www URLs (GitHub Actions + Vercel CLI, not native Vercel Git builds):
 
 To redeploy an older commit to a stable URL without moving the branch, maintainers can run **Actions → Deploy www (manual SHA)** and choose `arkenv-dev.vercel.app`, `arkenv-v0.vercel.app`, `arkenv-v1.vercel.app`, or production `arkenv.js.org`.
 
+**Nub identity and Vercel CLI builds:** Root `packageManager` is `nub@…`. Corepack does not know `nub`, and Vercel does not treat `nub.lock` as a recognized lockfile. Actions already run `nub install` before `vercel build`, so `scripts/vercel-wrapper.cjs` disables Corepack (`ENABLE_EXPERIMENTAL_COREPACK=0`) and marks install complete (`VERCEL_INSTALL_COMPLETED=1`) for build only — otherwise the CLI runs `corepack enable nub` (fatal) or falls back to `npm install` (breaks `workspace:*`). Do not re-enable Corepack on the Vercel project for these CLI builds. If a future `vercel` pin stops honoring `VERCEL_INSTALL_COMPLETED`, set the project Install Command to empty or `nub install` via the dashboard/API.
+
 **Phased cutover:** RC keeps these branch names (**Option A**). At GA
 (**Option B**, later), rename so the v1 line becomes `main`/`dev` and
 the old line becomes **`v0`**, then leave `--prod` on `main` again. See
