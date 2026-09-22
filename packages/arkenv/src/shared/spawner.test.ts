@@ -7,7 +7,7 @@ describe("spawner", () => {
 			const res = resolveDlxCommand(
 				"arkenv",
 				["init"],
-				"pnpm/9.0.0 npm/? node/v22.0.0 darwin arm64",
+				"pnpm/12.5.1 npm/? node/v22.0.0 darwin arm64",
 			);
 			expect(res).toEqual({
 				command: "pnpm",
@@ -61,7 +61,7 @@ describe("spawner", () => {
 			const resPnpm = resolveDlxCommand(
 				"arkenv",
 				["init"],
-				"pnpm/9.0.0 npm/? node/v22.0.0 darwin arm64",
+				"pnpm/12.5.1 npm/? node/v22.0.0 darwin arm64",
 				"alpha",
 			);
 			expect(resPnpm).toEqual({
@@ -117,7 +117,7 @@ describe("spawner", () => {
 				packageName: "arkenv",
 				args: ["init"],
 				tag: "alpha",
-				userAgent: "pnpm/9.0.0 node/v22.0.0 darwin arm64",
+				userAgent: "pnpm/12.5.1 node/v22.0.0 darwin arm64",
 				spawnFn: mockSpawn as any,
 			});
 

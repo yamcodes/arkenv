@@ -127,7 +127,7 @@ describe("Executor", () => {
 			JSON.stringify({ name: "app" }),
 		);
 
-		// Use npm so configurePnpmBuilds does not rewrite package.json.
+		// Use npm so configurePnpmBuilds is skipped entirely.
 		await executor.execute({
 			...defaultPlan,
 			install: { packageManager: "npm", dependencies: [] },
@@ -420,15 +420,13 @@ describe("Executor", () => {
 
 			await executor.execute(plan);
 
-			// Should update package.json
-			expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
+			// pnpm 11+ ignores package.json#pnpm settings; do not mutate package.json
+			expect(mockWorkspace.writeFile).not.toHaveBeenCalledWith(
 				expect.stringContaining("package.json"),
-				expect.stringContaining(
-					'"onlyBuiltDependencies": [\n      "esbuild"\n    ]',
-				),
+				expect.any(String),
 			);
 
-			// Should create pnpm-workspace.yaml
+			// Should create pnpm-workspace.yaml with allowBuilds
 			expect(mockWorkspace.writeFile).toHaveBeenCalledWith(
 				expect.stringContaining("pnpm-workspace.yaml"),
 				expect.stringContaining("allowBuilds:\n  esbuild: true"),
@@ -451,7 +449,7 @@ describe("Executor", () => {
 			// Should not write to package.json for npm
 			expect(mockWorkspace.writeFile).not.toHaveBeenCalledWith(
 				expect.stringContaining("package.json"),
-				expect.stringContaining("onlyBuiltDependencies"),
+				expect.any(String),
 			);
 
 			// Should not write to pnpm-workspace.yaml
