@@ -1,25 +1,27 @@
 import { describe, expect, it } from "vitest";
 import { prereleaseChannel, transformPackageJson } from "./transform.js";
-import { PublishedLookupError } from "./workspace.js";
+import { PublishedLookupError, parseCatalog } from "./workspace.js";
 
 describe("transformPackageJson", () => {
-	it("reads version from catalog", () => {
-		const catalog = {};
-		catalog["npm"] = "11.9.0";
-		const cfg = { name: "basic" };
-		cfg["packageManager"] = "npm";
-		const result = transformPackageJson({ name: "playground" }, cfg, catalog);
-		expect(result["packageManager"]).toBe("npm" + "@" + "11.9.0");
-		expect(result.name).toBe("arkenv-example-basic");
-	});
+	it("pins packageManager from the real workspace catalog", () => {
+		const catalog = parseCatalog();
+		expect(catalog.npm).toBeTruthy();
+		expect(catalog.bun).toBeTruthy();
 
-	it("sets bun from catalog", () => {
-		const catalog = {};
-		catalog["bun"] = "1.3.13";
-		const cfg = { name: "with-bun" };
-		cfg["packageManager"] = "bun";
-		const result = transformPackageJson({ name: "playground" }, cfg, catalog);
-		expect(result["packageManager"]).toBe("bun" + "@" + "1.3.13");
+		const npmResult = transformPackageJson(
+			{ name: "playground" },
+			{ name: "basic", packageManager: "npm" },
+			catalog,
+		);
+		expect(npmResult.packageManager).toBe(`npm@${catalog.npm}`);
+		expect(npmResult.name).toBe("arkenv-example-basic");
+
+		const bunResult = transformPackageJson(
+			{ name: "playground" },
+			{ name: "with-bun", packageManager: "bun" },
+			catalog,
+		);
+		expect(bunResult.packageManager).toBe(`bun@${catalog.bun}`);
 	});
 
 	it("throws when missing from catalog", () => {
