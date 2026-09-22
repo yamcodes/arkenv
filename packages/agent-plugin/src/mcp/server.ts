@@ -132,6 +132,6 @@ async function readLivePreviewHtml(): Promise<string> {
 		}
 	}
 	return `<!doctype html><html><body style="font:14px system-ui;padding:1rem">
-<p><strong>Live Preview UI missing.</strong> Run <code>pnpm build</code> in <code>@arkenv/agent-plugin</code>, then reload the MCP server.</p>
+<p><strong>Live Preview UI missing.</strong> Run <code>nub run build</code> in <code>@arkenv/agent-plugin</code>, then reload the MCP server.</p>
 </body></html>`;
 }

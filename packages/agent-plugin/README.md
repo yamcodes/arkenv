@@ -38,7 +38,7 @@ npx -y @arkenv/agent-plugin
 From a local clone, build first and point MCP at the bin:
 
 ```bash
-pnpm --filter @arkenv/agent-plugin build
+nub run --filter @arkenv/agent-plugin build
 node ./packages/agent-plugin/bin.mjs
 ```
 
