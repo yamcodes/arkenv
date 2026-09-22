@@ -70,6 +70,8 @@ jobs:
           ENVIRONMENT: ${{ steps.mode.outputs.environment }}
         run: node scripts/vercel-wrapper.cjs pull --yes --environment="$ENVIRONMENT" --token="$VERCEL_TOKEN"
       - name: Build Project Artifacts
+        # Nub is not a Corepack package manager; wrapper disables Corepack and
+        # skips Vercel install (CI already ran `nub install`). See CONTRIBUTING.
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           PROD: ${{ steps.mode.outputs.prod }}

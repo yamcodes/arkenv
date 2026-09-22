@@ -176,7 +176,7 @@ describe("vercel-wrapper", () => {
 		expect(result.status).toBe(0);
 		const payload = JSON.parse(result.stdout.trim());
 		expect(payload.ENABLE_EXPERIMENTAL_COREPACK).toBe("0");
-		expect(readFileSync(envFile, "utf8")).toBe("SOME_OTHER=keep\n");
+		expect(readFileSync(envFile, "utf8")).toBe("SOME_OTHER=keep");
 	});
 
 	it("buildChildEnv helpers match the build-only contract", () => {
