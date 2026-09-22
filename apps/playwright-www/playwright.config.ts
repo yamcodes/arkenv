@@ -47,11 +47,6 @@ export default defineConfig({
 		// Capture videos and screenshots only on failure to reduce CI artifact size
 		video: "retain-on-failure",
 		screenshot: "only-on-failure",
-		// Homepage ScrollReveal + CSS smooth scroll race Chromium clicks: mousedown
-		// focuses a transforming <a>, mouseup misses, navigation never starts.
-		// Reduced motion disables both (ScrollReveal early-returns; base.css skips
-		// scroll-behavior: smooth).
-		reducedMotion: "reduce",
 	},
 
 	projects: [
