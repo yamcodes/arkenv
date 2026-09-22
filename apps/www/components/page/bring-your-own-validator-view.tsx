@@ -24,8 +24,7 @@ export function BringYourOwnValidatorView({
 					Bring your own validator
 				</h2>
 				<p data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-					Use{" "}
-					<a href="/docs/validators/arktype">ArkType</a>,{" "}
+					Use <a href="/docs/validators/arktype">ArkType</a>,{" "}
 					<a href="/docs/validators/zod">Zod</a>, or{" "}
 					<a href="/docs/validators/valibot">Valibot</a>. Mix and match for
 					incremental migration.
