@@ -295,33 +295,11 @@ export class Executor {
 
 	/**
 	 * Configure pnpm-specific whitelisting for esbuild and other native build dependencies.
+	 * Writes approved builds under `pnpm-workspace.yaml#allowBuilds` (the live path on pnpm 12+).
 	 *
 	 * @param installCwd The directory where the installation will run
 	 */
 	private async configurePnpmBuilds(installCwd: string): Promise<void> {
-		const packageJsonPath = path.join(installCwd, "package.json");
-		if (await this.workspace.exists(packageJsonPath)) {
-			try {
-				const pkgContent = await this.workspace.readFile(packageJsonPath);
-				const pkg = JSON.parse(pkgContent);
-				pkg.pnpm = pkg.pnpm || {};
-				pkg.pnpm.onlyBuiltDependencies = pkg.pnpm.onlyBuiltDependencies || [];
-				for (const dep of APPROVED_PNPM_BUILDS) {
-					if (!pkg.pnpm.onlyBuiltDependencies.includes(dep)) {
-						pkg.pnpm.onlyBuiltDependencies.push(dep);
-					}
-				}
-				await this.workspace.writeFile(
-					packageJsonPath,
-					JSON.stringify(pkg, null, 2) + "\n",
-				);
-			} catch (e) {
-				this.reporter.warn(
-					`Could not update package.json with pnpm whitelisting: ${e}`,
-				);
-			}
-		}
-
 		const pnpmWorkspacePath = path.join(installCwd, "pnpm-workspace.yaml");
 		let workspaceContent = "";
 		if (await this.workspace.exists(pnpmWorkspacePath)) {
