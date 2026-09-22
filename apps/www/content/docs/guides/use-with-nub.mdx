@@ -1,0 +1,181 @@
+---
+title: Use with Nub
+description: Load .env with Nub, validate with ArkEnv — on import, before entry, at check time, or in builds.
+---
+
+ArkEnv is designed to work seamlessly with [Nub](https://nubjs.com/).
+ArkEnv validates and types your environment variables; Nub loads
+`.env*` files and runs TypeScript before your entrypoint starts.
+
+Nub is not a required runtime for ArkEnv. Getting started and the
+framework guides keep stock runners (`npx`, `node --env-file`,
+framework CLIs). Use this page when your project already runs under Nub
+— for example the [basic example](https://github.com/yamcodes/arkenv/tree/v1/examples/basic).
+
+## Who does what
+
+Nub injects `.env*` into `process.env` before Node starts (file runs,
+`nub run`, `nub watch`, and `nubx`). ArkEnv does not load dotenv files
+by itself. Calling `arkenv()` reads the active environment and fails
+fast when values are missing or wrong.
+
+```ts title="env.ts" twoslash
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+  DATABASE_URL: "string.url",
+  PORT: "0 <= number.integer <= 65535 = 3000",
+});
+```
+
+```ts title="src/index.ts"
+import { env } from "../env";
+
+console.log(env.PORT);
+```
+
+```bash title="Terminal"
+nub src/index.ts
+```
+
+That is the default path: Nub loads files, your entry imports `env`,
+validation runs at module load.
+
+<Callout type="info" title="Using Varlock with Nub?">
+  Nub can hand environment loading to
+  [Varlock](https://nubjs.com/docs/runtime/varlock) when a project has
+  an `@env-spec` `.env.schema`. That path replaces Nub's own `.env*`
+  loader and is a different product model from ArkEnv's TypeScript
+  `env.ts`. Prefer one owner for the environment — see
+  [Why ArkEnv?](/docs/why-arkenv#varlock).
+</Callout>
+
+## Validate earlier than the first import
+
+Import-time validation is enough when every process that needs config
+imports `env` early. Use the next layers when you want a failure
+**before** application code runs, or without starting the app at all.
+
+| When | Mechanism | Fails if |
+| ---- | --------- | -------- |
+| Module load | `import { env } from "./env"` | First import of the schema module |
+| Before the entry under Nub | `preload` in `nub.jsonc` | Any `nub` / `nub run` / `nub watch` launch |
+| Dev / CI without running the app | `arkenv check` | Schema and environment disagree |
+| Before a build or deploy script | `arkenv check && …` in `package.json` | Check exits non-zero |
+| Bundler / framework build | Vite, Bun, Next.js, Nuxt adapters | Build or config setup |
+
+### Before the entry: `preload`
+
+Nub's [`preload`](https://nubjs.com/docs/config) list runs after
+environment files load and before your entry file. Point it at the
+schema module so every Nub launch validates even scripts that never
+import `env`.
+
+```jsonc title="nub.jsonc"
+{
+  "$schema": "https://nubjs.com/schema/latest.json",
+  "preload": ["./env.ts"]
+}
+```
+
+Keep `env.ts` declarative: export `env` from `arkenv({ … })` and avoid
+import-time side effects that assume a full app boot. The same rule
+applies to [`arkenv check`](/docs/reference/check) schema capture.
+
+With `nub watch`, Nub already restarts when `.env*` files change. Pair
+that with preload (or an early import) so a bad edit fails the restart
+instead of serving with a stale process.
+
+### Dev and CI: `arkenv check`
+
+[`arkenv check`](/docs/reference/check) validates the resolved
+environment against the schema without starting your app. Use it in
+pre-commit hooks, local smoke scripts, and CI.
+
+Install the CLI as a `devDependency`, then run check:
+
+```package-install
+npm install -D arkenv
+```
+
+```package-install
+npx arkenv check
+```
+
+Under Nub, prefer the local bin through `nubx` so the check process
+inherits Nub's automatic `.env*` loading the same way a file run does:
+
+```bash title="Terminal"
+nubx arkenv check
+```
+
+Without Nub (or when you need a specific file set), pass
+`--env-file`. Check's own parser is literal dotenv — no `${VAR}`
+expansion — which matches Node's `--env-file`, not Nub's expanding
+loader:
+
+```package-install
+npx arkenv check --env-file .env --env-file .env.local
+```
+
+### Build and script gates
+
+Gate builds and deploy scripts on check so a bad environment fails
+before the compiler or bundler does expensive work:
+
+```json title="package.json"
+{
+  "scripts": {
+    "env:check": "arkenv check",
+    "build": "arkenv check && tsc",
+    "start": "nub src/index.ts",
+    "dev": "nub watch src/index.ts"
+  }
+}
+```
+
+`arkenv check` in a script uses the project's `node_modules/.bin` entry.
+On machines where you only ever run under Nub and want the same `.env*`
+cascade as `nub src/index.ts`, point the script at `nubx arkenv check`
+instead.
+
+### Framework builds
+
+If the app uses Vite, Bun's bundler, Next.js, or Nuxt, keep the matching
+ArkEnv adapter. Those plugins validate in the bundler or framework
+config pipeline. Running the app with `nub run dev` does not replace
+them — see [Frameworks](/docs/frameworks).
+
+## Optional: fail fast in the entry
+
+When you do not want project-wide preload, import `env` at the top of
+the process entry before other bootstrapping — the same pattern as
+[Use with NestJS](/docs/guides/use-with-nestjs):
+
+```ts title="src/index.ts"
+import { env } from "../env";
+import { createServer } from "node:http";
+
+createServer((_req, res) => {
+  res.end(`listening on ${env.PORT}`);
+}).listen(env.PORT);
+```
+
+## What not to add
+
+- A `nub-arkenv` CLI plugin — `nubx arkenv` and `npx arkenv` already run
+  the same binary; a plugin would only rename the verb.
+- A Varlock-style Nub hand-off for `env.ts` — ArkEnv's product surface
+  remains the imported `env` object and `arkenv check`, not an invisible
+  dotenv replacement inside Nub's runtime.
+
+## Next steps
+
+- [`arkenv check` reference](/docs/reference/check) — flags, exit codes,
+  and `--verify-example`
+- [Installation](/docs/getting-started/installation) — wire check into
+  scripts for any package manager
+- [Why ArkEnv?](/docs/why-arkenv) — how ArkEnv differs from Varlock and
+  other env tools
+- [Nub environment files](https://nubjs.com/docs/runtime/env) — `.env*`
+  cascade, modes, and expansion

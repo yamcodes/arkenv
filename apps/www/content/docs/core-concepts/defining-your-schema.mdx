@@ -18,6 +18,7 @@ the call site.
 | Moment               | What runs                                                                               |
 | -------------------- | --------------------------------------------------------------------------------------- |
 | Module load          | `arkenv()` validates the current `env` source (default `process.env`)                   |
+| Before the entry     | Optional: `arkenv check`, or Nub `preload` — see [Use with Nub](/docs/guides/use-with-nub) |
 | Next.js / Nuxt build | Framework wrappers validate during config or module setup                               |
 | Vite / Bun build     | Plugins validate in the bundler pipeline                                                |
 | Client bundle        | Public keys are already validated at build time; server secrets are stripped or guarded |
