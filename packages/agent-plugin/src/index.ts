@@ -12,10 +12,23 @@ export type {
 	RuleId,
 } from "./audit/types";
 export { initProject } from "./mcp/init";
+export type {
+	PreviewBoundary,
+	PreviewReport,
+	PreviewRow,
+	PreviewStatus,
+} from "./mcp/preview";
+export {
+	buildPreviewReport,
+	extractSchemaKeys,
+} from "./mcp/preview";
 export { createMcpServer, startMcpServer } from "./mcp/server";
 export {
 	AUDIT_TOOL_NAME,
 	INIT_TOOL_NAME,
+	PREVIEW_RESOURCE_URI,
+	PREVIEW_TOOL_NAME,
 	runAuditTool,
 	runInitTool,
+	runPreviewTool,
 } from "./mcp/tools";

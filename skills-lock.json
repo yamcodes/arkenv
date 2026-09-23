@@ -1,6 +1,12 @@
 {
 	"version": 1,
 	"skills": {
+		"add-app-to-server": {
+			"source": "modelcontextprotocol/ext-apps",
+			"sourceType": "github",
+			"skillPath": "plugins/mcp-apps/skills/add-app-to-server/SKILL.md",
+			"computedHash": "4a9008cab1c56e16b9a98375f6b405f6371ee9a6c2304bd0eb247b57d915c52a"
+		},
 		"bulletproof-react": {
 			"source": "grahamcrackers/skills",
 			"sourceType": "github",
@@ -12,6 +18,12 @@
 			"sourceType": "github",
 			"skillPath": "skills/changeset/SKILL.md",
 			"computedHash": "e2555f1af285f36cd74c21670306dce2cf290c966c2bb2b7603c8bdbe523b72e"
+		},
+		"create-mcp-app": {
+			"source": "modelcontextprotocol/ext-apps",
+			"sourceType": "github",
+			"skillPath": "plugins/mcp-apps/skills/create-mcp-app/SKILL.md",
+			"computedHash": "e929dfe91c22ec8078d48dd35f0350d6796c41aa7d597ebb6dff3e8384b2c3eb"
 		},
 		"create-skill": {
 			"source": "anthropics/skills",
