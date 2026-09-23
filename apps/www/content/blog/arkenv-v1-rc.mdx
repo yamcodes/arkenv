@@ -1,0 +1,83 @@
+---
+title: ArkEnv v1 Release Candidate
+description: ArkEnv has reached a v1.0 Release Candidate. This is the build we expect to ship as 1.0, pending your feedback on the APIs you rely on.
+author: Yam Borodetsky
+date: 2026-09-23
+draft: false
+---
+
+ArkEnv has officially reached a **v1.0 Release Candidate**. This is the build we
+expect to ship as 1.0, pending your feedback. Try it on a real project and
+tell us what you rely on.
+
+## Why this matters
+
+ArkEnv isn't another thin wrapper around `process.env`. It's a typesafe
+environment variable contract for TypeScript apps: one schema, a validated
+`env` object, and fail-fast errors at startup (or before), ensuring that your app only serves traffic when all required variables are present and valid. No more stringly `PORT` or a truthy `"false"`.
+
+Whether you're on ArkType, Zod (v3, v4 or mini), or Valibot, you can keep using the tools you already know and love. ArkEnv just makes environment variables stop being the
+weakest typed surface in the stack.
+
+## What's in v1
+
+- **One schema → typed `env`.** Declare keys once in `env.ts`. `arkenv()`
+  validates at startup and TypeScript infers the same types. No loose
+  `process.env` helpers, no dual sources of truth.
+- **Bring your own validator.** ArkType DSL via `@arkenv/core`, or Zod / Valibot via `@arkenv/standard`.
+  Same fail-fast `ArkEnvError` DX either way.
+- **Full-stack boundary built in.** Next.js, Nuxt, Vite, Bun, and TanStack Start integrations keep server secrets off the client while public keys stay typed.
+- **An interactive CLI.** Run `arkenv init` and `arkenv check` to scaffold and validate your environment variables from the terminal.
+- **Import from `./env` anywhere.** Your `env.ts` file is the schema. Anywhere you `import { env } from "./env"`, you get the validated `env` object. This works in plain Node.js or in supported frameworks.
+
+Want the full tour? Start with the
+[Introduction](/docs) and
+[Getting started](/docs/getting-started).
+
+## Get started or upgrade
+
+Fresh project? Run the init CLI and follow Getting started:
+
+```bash
+npx arkenv init
+```
+
+Already on v0? Jump to [Migrating to v1](/docs/guides/migrating-to-v1).
+
+Coming from T3 Env? See
+[Migrating from T3 Env](/docs/guides/migrating-from-t3-env).
+
+## If you're on v0
+
+Here's what you need to know:
+
+- **`arkenv` is now the CLI.** Importing it as a library now throws on purpose, with a clear migration outline.
+- **Runtime lives in `@arkenv/core`** (ArkType) or **`@arkenv/standard`**
+  (Zod / Valibot / Standard Schema).
+- **Vite and Bun plugins are transform-only.** Export `env` from a canonical
+  `./env` module; don't pass a schema into the plugin.
+
+Keep `import { env } from "./env"` in application code. Point the schema
+module at the new packages. Update framework wiring per [the migration guide](/docs/guides/migrating-to-v1).
+
+## Path to 1.0 stable
+
+We'll cut 1.0 after this feedback window. Expect a few small RC
+iterations. All core APIs and integrations with real usage stay. Unused APIs, and
+duplicated or exploratory work that never found a caller, can still cut
+out before stable. We'll document any removals.
+
+## Your feedback counts
+
+This is the moment when your feedback matters most. Try the RC in a new or
+existing project and tell us what you rely on. That's what keeps an API in
+1.0. Join the conversation:
+
+- [GitHub Discussions](https://github.com/yamcodes/arkenv/discussions)
+- [GitHub Issues](https://github.com/yamcodes/arkenv/issues) for bugs and
+  feature requests
+- [X](https://x.com/_yamcodes)
+
+See the [Community](/docs/community) page for more ways to get involved.
+
+Thanks for building with us. Let's ship 1.0, together.
