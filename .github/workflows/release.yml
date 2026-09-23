@@ -92,8 +92,16 @@ jobs:
       # Uses resolveSystemNpmInvocation so Nub PATH shims cannot block
       # `npm dist-tag`. See docs/RC_CHECKLIST.md §C and
       # scripts/point-latest-at-rc.js.
+      # Failure-tolerant: changesets/action can set published=true after a
+      # partial publish and still exit non-zero; without this gate the
+      # primary retag is skipped by success() and the published!='true'
+      # recovery step is also skipped, leaving latest stale until the
+      # next v1 push. Matches Mark GitHub prereleases as Latest.
       - name: Point latest at published RC
-        if: steps.changesets.outputs.published == 'true'
+        if: >
+          !cancelled() &&
+          (success() || failure()) &&
+          steps.changesets.outputs.published == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: >
@@ -103,8 +111,15 @@ jobs:
       # Recovery when a prior publish left `latest` unfinished (e.g. Nub
       # shim blocked dist-tag on the publish run). Idempotent; soft-skips
       # when pre.json is not mode=pre tag=rc.
+      # Intentional RC-window scope: while pre.json is pre/rc, this also
+      # runs on ordinary v1 pushes that did not publish (keeps latest
+      # pinned to @rc without waiting for workflow_dispatch). Same
+      # failure-tolerant gate as the Mark-workspace sibling so a failed
+      # Changesets step can still recover latest on that run.
       - name: Point latest at current @rc
         if: >
+          !cancelled() &&
+          (success() || failure()) &&
           steps.changesets.outputs.published != 'true' &&
           github.ref_name == 'v1'
         env:
@@ -138,6 +153,7 @@ jobs:
 
       # Same recovery path as Point latest at current @rc: finish Latest
       # after a prior publish when this push did not publish again.
+      # Same intentional RC-window every-v1-push scope (see sibling).
       - name: Mark workspace GitHub prereleases as Latest
         if: >
           !cancelled() &&
