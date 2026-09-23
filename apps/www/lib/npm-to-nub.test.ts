@@ -68,9 +68,7 @@ describe("convertNpmToNub", () => {
 	});
 
 	it("does not split on && or ; inside quotes", () => {
-		expect(convertNpmToNub('npx cowsay "a && b"')).toBe(
-			'nubx cowsay "a && b"',
-		);
+		expect(convertNpmToNub('npx cowsay "a && b"')).toBe('nubx cowsay "a && b"');
 		expect(convertNpmToNub("npx cowsay 'a; b'")).toBe("nubx cowsay 'a; b'");
 	});
 });

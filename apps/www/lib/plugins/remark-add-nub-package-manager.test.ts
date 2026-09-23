@@ -2,7 +2,6 @@ import { remarkNpm } from "fumadocs-core/mdx-plugins";
 import { describe, expect, it } from "vitest";
 import { remarkAddNubPackageManager } from "./remark-add-nub-package-manager";
 
-
 type AstNode = {
 	type: string;
 	name?: string;
@@ -175,9 +174,7 @@ describe("remarkAddNubPackageManager", () => {
 		const nubTab = tabs.children?.find(
 			(child) =>
 				child.name === "CodeBlockTab" &&
-				child.attributes?.some(
-					(a) => a.name === "value" && a.value === "nub",
-				),
+				child.attributes?.some((a) => a.name === "value" && a.value === "nub"),
 		);
 		expect(nubTab).toBeUndefined();
 	});
@@ -204,9 +201,7 @@ describe("remarkAddNubPackageManager", () => {
 		const nubTab = tabs?.children?.find(
 			(child) =>
 				child.name === "CodeBlockTab" &&
-				child.attributes?.some(
-					(a) => a.name === "value" && a.value === "nub",
-				),
+				child.attributes?.some((a) => a.name === "value" && a.value === "nub"),
 		);
 		expect(nubTab?.children?.[0]?.value).toBe("nubx arkenv init");
 
@@ -216,9 +211,7 @@ describe("remarkAddNubPackageManager", () => {
 		const nubTrigger = list?.children?.find(
 			(child) =>
 				child.name === "CodeBlockTabsTrigger" &&
-				child.attributes?.some(
-					(a) => a.name === "value" && a.value === "nub",
-				),
+				child.attributes?.some((a) => a.name === "value" && a.value === "nub"),
 		);
 		expect(nubTrigger?.children?.[0]).toEqual({ type: "text", value: "nub" });
 	});
@@ -241,9 +234,7 @@ describe("remarkAddNubPackageManager", () => {
 		const nubTab = tree.children?.[0]?.children?.find(
 			(child) =>
 				child.name === "CodeBlockTab" &&
-				child.attributes?.some(
-					(a) => a.name === "value" && a.value === "nub",
-				),
+				child.attributes?.some((a) => a.name === "value" && a.value === "nub"),
 		);
 		expect(nubTab?.children?.[0]?.value).toBe("nub add @arkenv/core arktype");
 	});
