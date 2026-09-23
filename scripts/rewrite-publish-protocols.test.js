@@ -74,6 +74,21 @@ describe("rewriteDependencySpec", () => {
 		);
 	});
 
+	it("expands bare workspace:^ / workspace:~ shorthand", () => {
+		expect(rewriteDependencySpec("@arkenv/build", "workspace:^", ctx)).toBe(
+			"^1.0.0-rc.2",
+		);
+		expect(rewriteDependencySpec("@arkenv/core", "workspace:~", ctx)).toBe(
+			"~1.0.0-rc.2",
+		);
+	});
+
+	it("throws when bare workspace:^ target is unknown", () => {
+		expect(() =>
+			rewriteDependencySpec("@missing/pkg", "workspace:^", ctx),
+		).toThrow(/not a workspace package/);
+	});
+
 	it("throws when workspace target is unknown", () => {
 		expect(() =>
 			rewriteDependencySpec("@missing/pkg", "workspace:*", ctx),

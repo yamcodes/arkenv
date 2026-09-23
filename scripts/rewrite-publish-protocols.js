@@ -107,7 +107,17 @@ export function rewriteDependencySpec(packageName, spec, ctx) {
 
 	if (spec.startsWith("workspace:")) {
 		const rest = spec.slice("workspace:".length);
-		// Explicit range / alias already usable on the registry.
+		// pnpm bare shorthand: workspace:^ / workspace:~ → ^<ver> / ~<ver>
+		if (rest === "^" || rest === "~") {
+			const version = ctx.versions.get(packageName);
+			if (!version) {
+				throw new Error(
+					`Cannot rewrite ${JSON.stringify(spec)} for ${packageName}: not a workspace package`,
+				);
+			}
+			return `${rest}${version}`;
+		}
+		// Explicit range already usable on the registry (workspace:^1.2.3, etc.).
 		if (
 			rest.startsWith("^") ||
 			rest.startsWith("~") ||
