@@ -309,12 +309,16 @@ describe("runNpm", () => {
 	it("prefixes npm-cli.js when using the system Node install", () => {
 		const exec = vi.fn(() => "ok\n");
 		expect(
-			runNpm(["view", "arkenv", "version"], {
-				npmInvocation: {
-					command: "/opt/node/bin/node",
-					argsPrefix: ["/opt/node/lib/node_modules/npm/bin/npm-cli.js"],
+			runNpm(
+				["view", "arkenv", "version"],
+				{
+					npmInvocation: {
+						command: "/opt/node/bin/node",
+						argsPrefix: ["/opt/node/lib/node_modules/npm/bin/npm-cli.js"],
+					},
 				},
-			}, exec),
+				exec,
+			),
 		).toBe("ok");
 		expect(exec).toHaveBeenCalledWith(
 			"/opt/node/bin/node",
