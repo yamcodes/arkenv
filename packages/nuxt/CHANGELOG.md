@@ -1,5 +1,63 @@
 # @arkenv/nuxt
 
+## 1.0.0-rc.2
+
+### Major Changes
+
+- #### Remove nested bag API and expose/shared aliases _[`#1929`](https://github.com/yamcodes/arkenv/pull/1929) [`0d2f24b`](https://github.com/yamcodes/arkenv/commit/0d2f24b36a8a88af8bf1dad9ec80cbd1165551e8) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`@arkenv/nextjs` and `@arkenv/nuxt` no longer accept nested
+	`arkenv({ server, client, shared, runtimeEnv })`. Flat
+	`arkenv(schema, { exposeToClient, runtimeEnv })` is the only call
+	shape. Option aliases `expose` and `shared` are gone — use
+	`exposeToClient` only. Static key extraction in `@arkenv/build` (and
+	Next codegen) rejects nested schema source with the same migration
+	error.
+	
+	```ts
+	import arkenv from "@arkenv/nextjs";
+	
+	export const env = arkenv(
+	  {
+	    DATABASE_URL: "string",
+	    NEXT_PUBLIC_API_URL: "string",
+	    NODE_ENV: "string",
+	  },
+	  {
+	    runtimeEnv: {
+	      NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+	      NODE_ENV: process.env.NODE_ENV,
+	    },
+	  },
+	);
+	```
+	
+	**BREAKING CHANGE**: Nested bags and `expose` / `shared` aliases were
+	removed.
+	
+	```diff
+	- arkenv({ server: {…}, client: {…}, shared: {…}, runtimeEnv: {…} })
+	- arkenv(schema, { expose: ["KEY"] })
+	+ arkenv(schema, { exposeToClient: ["KEY"], runtimeEnv: {…} })
+	```
+
+### Patch Changes
+
+<details><summary>Updated 3 dependencies</summary>
+
+<small>
+
+[`7684644`](https://github.com/yamcodes/arkenv/commit/76846449b8a634e24b59a6126958b2826cf975ef) [`0d2f24b`](https://github.com/yamcodes/arkenv/commit/0d2f24b36a8a88af8bf1dad9ec80cbd1165551e8) [`ed09bb0`](https://github.com/yamcodes/arkenv/commit/ed09bb05c27b5409a49430c0f2897b28fe26484d) [`f71bee1`](https://github.com/yamcodes/arkenv/commit/f71bee184ed2f2abfbc69a514a551310d14b3ca5) [`2fd0f33`](https://github.com/yamcodes/arkenv/commit/2fd0f335835f3c0918da7b547b6a43fed3dfa3d7)
+
+</small>
+
+- `@arkenv/core@1.0.0-rc.2`
+- `@arkenv/standard@1.0.0-rc.2`
+- `@arkenv/build@1.0.0-rc.2`
+
+</details>
+
 ## 1.0.0-rc.1
 
 ### Patch Changes

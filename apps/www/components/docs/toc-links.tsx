@@ -5,19 +5,25 @@ import { CircleArrowUp, Pencil } from "lucide-react";
 import { useState } from "react";
 import { DocsFeedbackButton } from "~/components/docs/docs-feedback";
 import { DocsStarCard } from "~/components/docs/docs-star-card";
+import { RoadmapProgressCard } from "~/components/page/roadmap-progress-card";
 import type { DocsFeedbackEmotion } from "~/lib/docs-feedback/emotions";
 
 /**
- * TOC page actions: scroll / edit / feedback + Star on GitHub card.
+ * TOC page actions: scroll / edit / feedback + Star card + roadmap progress.
  * Passed as `tableOfContent.footer` / popover footer.
  * Heart reaction on feedback briefly spotlights the star CTA below.
+ * Roadmap progress sits at the bottom of the rail, under Enjoying ArkEnv?.
  */
 export function DocsTocLinks({
 	pageTitle,
 	editHref,
+	roadmapPercent,
+	roadmapStale = false,
 }: {
 	pageTitle: string;
 	editHref: string;
+	roadmapPercent: number;
+	roadmapStale?: boolean;
 }) {
 	const tocItems = useTOCItems();
 	const [starSpotlight, setStarSpotlight] = useState(false);
@@ -75,6 +81,8 @@ export function DocsTocLinks({
 				spotlight={starSpotlight}
 				onSpotlightEnd={() => setStarSpotlight(false)}
 			/>
+
+			<RoadmapProgressCard percent={roadmapPercent} stale={roadmapStale} />
 		</div>
 	);
 }

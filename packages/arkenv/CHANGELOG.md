@@ -1,5 +1,75 @@
 # @arkenv/core
 
+## 1.0.0-rc.2
+
+### Major Changes
+
+- #### Remove the `--host-preset` / `-H` init aliases _[`#1927`](https://github.com/yamcodes/arkenv/pull/1927) [`9fd608a`](https://github.com/yamcodes/arkenv/commit/9fd608a1c502b35c05029fba39b9d170ae0cb6e7) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`arkenv init` now accepts only `--preset` / `-P` for hosting presets. The older
+	`--host-preset` and `-H` forms are rejected as unknown arguments.
+	
+	**BREAKING CHANGE**: Rename the flag in scripts and docs:
+	
+	```diff
+	- arkenv init --host-preset vercel
+	- arkenv init -H vercel
+	+ arkenv init --preset vercel
+	+ arkenv init -P vercel
+	```
+- #### Remove package.json `"arkenv"` schema pointer from CLI discovery _[`#1909`](https://github.com/yamcodes/arkenv/pull/1909) [`a98f6c0`](https://github.com/yamcodes/arkenv/commit/a98f6c03cfeea73af60fda2874c667f276f5659b) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`arkenv init` no longer writes a `package.json` `"arkenv"` field, and CLI
+	schema discovery no longer reads one. Location is `--schema` / `-s`, then
+	convention paths (`env.ts`, `src/env.ts`, …). Leftover `"arkenv"` keys are
+	ignored.
+	
+	**BREAKING CHANGE**: If you relied on `package.json` `"arkenv"` (string or
+	`{ "schema": "…" }`) for `arkenv check`, put the path on `--schema` in your
+	scripts instead:
+	
+	```json
+	{
+	  "scripts": {
+	    "check": "arkenv check --schema config/env.ts"
+	  }
+	}
+	```
+- #### Stop probing `env/server.ts` in CLI schema discovery _[`#1925`](https://github.com/yamcodes/arkenv/pull/1925) [`53098ef`](https://github.com/yamcodes/arkenv/commit/53098ef8182c504189c50bacbc4ddc64b3670963) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Convention discovery no longer auto-resolves leftover split-layout filenames
+	(`env/server.ts`, `src/env/server.ts`). Location remains `--schema` / `-s`,
+	then flat convention paths (`env.ts`, `src/env.ts`, and related extensions).
+	
+	**BREAKING CHANGE**: If `arkenv check` previously found your schema only
+	because `env/server.ts` (or `src/env/server.ts`) existed, point `--schema`
+	at a module the CLI can load — typically the recipe's client schema, or add
+	a flat `env.ts` / `src/env.ts`. Do not pass a server module that imports
+	`server-only`; Jiti loads schemas in plain Node and that import throws
+	outside the `react-server` condition.
+	
+	```json
+	{
+	  "scripts": {
+	    "check": "arkenv check --schema env/client.ts"
+	  }
+	}
+	```
+
+### Patch Changes
+
+- #### Stop writing pnpm onlyBuiltDependencies into package.json _[`#1955`](https://github.com/yamcodes/arkenv/pull/1955) [`ae3039a`](https://github.com/yamcodes/arkenv/commit/ae3039ad7a28ef9fa295a2ed9d6beb32d0928f33) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	When scaffolding with pnpm, ArkEnv now only updates `pnpm-workspace.yaml` with `allowBuilds` for approved native deps (such as `esbuild`). It no longer mutates `package.json#pnpm.onlyBuiltDependencies`, which pnpm 11+ ignores. The yaml `allowBuilds` path applies from pnpm 10.26.0 onward.
+- #### Fetch the example registry from the `v1` branch _[`#1903`](https://github.com/yamcodes/arkenv/pull/1903) [`e6c8f78`](https://github.com/yamcodes/arkenv/commit/e6c8f78fe7118abc4110ee657fd16211b433351e) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	The CLI example registry URL pointed at the archived `main` (v0) line. It now loads `examples/registry.json` from `v1`.
+
 ## 1.0.0-rc.1
 
 ### Patch Changes

@@ -15,9 +15,12 @@ import { notFound } from "next/navigation";
 import { DocsTocLinks } from "~/components/docs/toc-links";
 import { env } from "~/env";
 import { FeatureFlags } from "~/lib/feature-flags";
+import { fetchRoadmap } from "~/lib/roadmap/fetch-roadmap";
 import { source } from "~/lib/source";
 import { getLinkTitleAndHref } from "~/lib/utils";
 import { getMDXComponents } from "~/mdx-components";
+
+export const revalidate = 300;
 
 function getDocsEditHref(pagePath: string): string {
 	const normalizedPath = pagePath.replace(/^\/+/, "");
@@ -36,8 +39,14 @@ export default async function Page(props: {
 	const MDX = page.data.body;
 	const full = page.data.full;
 	const editHref = getDocsEditHref(page.path);
+	const roadmap = await fetchRoadmap();
 	const tocLinks = (
-		<DocsTocLinks pageTitle={page.data.title} editHref={editHref} />
+		<DocsTocLinks
+			pageTitle={page.data.title}
+			editHref={editHref}
+			roadmapPercent={roadmap.percent}
+			roadmapStale={roadmap.stale}
+		/>
 	);
 
 	// Floating Site Nav conflicts with the sticky TOC popover below 1200px; keep the desktop TOC rail only.
