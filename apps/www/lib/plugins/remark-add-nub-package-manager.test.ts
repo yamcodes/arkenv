@@ -17,6 +17,19 @@ function attr(name: string, value: unknown) {
 	return { type: "mdxJsxAttribute", name, value };
 }
 
+function getAttr(node: AstNode | undefined, name: string): unknown {
+	return node?.attributes?.find((a) => a.name === name)?.value;
+}
+
+/** Run fumadocs remarkNpm with the same persist id as `source.config.ts`. */
+function runRemarkNpm(tree: AstNode) {
+	const transform = remarkNpm({
+		persist: { id: "package-manager" },
+	});
+	// Unified transformers require (tree, file, next); file/next are unused here.
+	transform(tree as never, {} as never, undefined as never);
+}
+
 function packageManagerTabs(npmCommand: string): AstNode {
 	return {
 		type: "mdxJsxFlowElement",
@@ -181,9 +194,7 @@ describe("remarkAddNubPackageManager", () => {
 			],
 		};
 
-		remarkNpm({
-			persist: { id: "package-manager" },
-		})(tree as never);
+		runRemarkNpm(tree);
 		remarkAddNubPackageManager()(tree);
 
 		const tabs = tree.children?.[0];
@@ -224,9 +235,7 @@ describe("remarkAddNubPackageManager", () => {
 			],
 		};
 
-		remarkNpm({
-			persist: { id: "package-manager" },
-		})(tree as never);
+		runRemarkNpm(tree);
 		remarkAddNubPackageManager()(tree);
 
 		const nubTab = tree.children?.[0]?.children?.find(
@@ -239,7 +248,3 @@ describe("remarkAddNubPackageManager", () => {
 		expect(nubTab?.children?.[0]?.value).toBe("nub add @arkenv/core arktype");
 	});
 });
-
-function getAttr(node: AstNode | undefined, name: string): unknown {
-	return node?.attributes?.find((attr) => attr.name === name)?.value;
-}
