@@ -1,5 +1,81 @@
 # @arkenv/nextjs
 
+## 1.0.0-rc.2
+
+### Major Changes
+
+- #### Remove `ArkEnvScript` and `globalThis.__arkenv_env__` _[`#1930`](https://github.com/yamcodes/arkenv/pull/1930) [`46e140f`](https://github.com/yamcodes/arkenv/commit/46e140fe067bdcab5eda5b0d772a66f376568e36) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`<ArkEnvScript />` is no longer exported. Codegen `runtimeEnv` no longer
+	reads `globalThis.__arkenv_env__`; client public values follow Next.js
+	build-time inlining of `process.env.NEXT_PUBLIC_*`.
+	
+	**BREAKING CHANGE**: Delete any `<ArkEnvScript />` usage from your root
+	layout. Rebuild (or retag) images when public client values change. For
+	runtime public-env injection without a rebuild, use a dedicated
+	ecosystem tool such as `next-runtime-env`, or keep dynamic public config
+	on the server and pass it as props. See the Next.js and Docker guide.
+- #### Remove nested bag API and expose/shared aliases _[`#1929`](https://github.com/yamcodes/arkenv/pull/1929) [`0d2f24b`](https://github.com/yamcodes/arkenv/commit/0d2f24b36a8a88af8bf1dad9ec80cbd1165551e8) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`@arkenv/nextjs` and `@arkenv/nuxt` no longer accept nested
+	`arkenv({ server, client, shared, runtimeEnv })`. Flat
+	`arkenv(schema, { exposeToClient, runtimeEnv })` is the only call
+	shape. Option aliases `expose` and `shared` are gone — use
+	`exposeToClient` only. Static key extraction in `@arkenv/build` (and
+	Next codegen) rejects nested schema source with the same migration
+	error.
+	
+	```ts
+	import arkenv from "@arkenv/nextjs";
+	
+	export const env = arkenv(
+	  {
+	    DATABASE_URL: "string",
+	    NEXT_PUBLIC_API_URL: "string",
+	    NODE_ENV: "string",
+	  },
+	  {
+	    runtimeEnv: {
+	      NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+	      NODE_ENV: process.env.NODE_ENV,
+	    },
+	  },
+	);
+	```
+	
+	**BREAKING CHANGE**: Nested bags and `expose` / `shared` aliases were
+	removed.
+	
+	```diff
+	- arkenv({ server: {…}, client: {…}, shared: {…}, runtimeEnv: {…} })
+	- arkenv(schema, { expose: ["KEY"] })
+	+ arkenv(schema, { exposeToClient: ["KEY"], runtimeEnv: {…} })
+	```
+
+### Patch Changes
+
+- #### Widen the React peer dependency range _[`#1877`](https://github.com/yamcodes/arkenv/pull/1877) [`c18c102`](https://github.com/yamcodes/arkenv/commit/c18c10271b3fe731fd008100e173835b39df58c3) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Allow `@arkenv/nextjs` to work with React 18.2.0 and later in the React 18 line,
+	as well as every React 19 release, instead of requiring React 19.2.5. Install it
+	alongside a supported React version, such as `pnpm add @arkenv/nextjs react@^18.2.0`.
+<details><summary>Updated 3 dependencies</summary>
+
+<small>
+
+[`7684644`](https://github.com/yamcodes/arkenv/commit/76846449b8a634e24b59a6126958b2826cf975ef) [`0d2f24b`](https://github.com/yamcodes/arkenv/commit/0d2f24b36a8a88af8bf1dad9ec80cbd1165551e8) [`ed09bb0`](https://github.com/yamcodes/arkenv/commit/ed09bb05c27b5409a49430c0f2897b28fe26484d) [`f71bee1`](https://github.com/yamcodes/arkenv/commit/f71bee184ed2f2abfbc69a514a551310d14b3ca5) [`2fd0f33`](https://github.com/yamcodes/arkenv/commit/2fd0f335835f3c0918da7b547b6a43fed3dfa3d7)
+
+</small>
+
+- `@arkenv/core@1.0.0-rc.2`
+- `@arkenv/standard@1.0.0-rc.2`
+- `@arkenv/build@1.0.0-rc.2`
+
+</details>
+
 ## 1.0.0-rc.1
 
 ### Patch Changes

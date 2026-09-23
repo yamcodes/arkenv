@@ -1,5 +1,47 @@
 # @arkenv/standard
 
+## 1.0.0-rc.2
+
+### Major Changes
+
+- #### Remove reserved `safe` from main-factory config _[`#1924`](https://github.com/yamcodes/arkenv/pull/1924) [`ed09bb0`](https://github.com/yamcodes/arkenv/commit/ed09bb05c27b5409a49430c0f2897b28fe26484d) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`ArkEnvConfig` and `StandardEnvConfig` no longer declare the reserved
+	`safe?: false` field. Safe-mode parsing stays on the `/safe` subpaths.
+	
+	```ts
+	import arkenv from "@arkenv/core";
+	import arkenvSafe from "@arkenv/core/safe";
+	
+	export const env = arkenv({
+	  PORT: "number.port = 3000",
+	});
+	
+	const result = arkenvSafe(
+	  { PORT: "number.port" },
+	  { env: { PORT: "invalid" } },
+	);
+	```
+	
+	`@arkenv/standard` mirrors the same shape via `@arkenv/standard/safe`.
+	
+	**BREAKING CHANGE**: Passing `safe: false` on the main `arkenv()` config
+	is no longer accepted. Delete the property; use `/safe` for result-object
+	parsing.
+	
+	```diff
+	- export const env = arkenv(schema, { safe: false });
+	+ export const env = arkenv(schema);
+	```
+
+### Patch Changes
+
+- #### Avoid Node-only `process` APIs in color detection _[`#1939`](https://github.com/yamcodes/arkenv/pull/1939) [`7684644`](https://github.com/yamcodes/arkenv/commit/76846449b8a634e24b59a6126958b2826cf975ef) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	ANSI color helpers no longer read `process.versions` or `process.stdout` as static member expressions, so Next.js edge instrumentation no longer flags `@arkenv/core` when `env` is imported from edge files.
+
 ## 1.0.0-rc.1
 
 ### Patch Changes
