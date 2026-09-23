@@ -163,6 +163,9 @@ createServer((_req, res) => {
 
 ## What not to add
 
+These are durable product rejects
+([ADR 0035](https://github.com/yamcodes/arkenv/blob/v1/docs/adr/0035-no-nub-plugin-or-varlock-style-handoff.md)):
+
 - A `nub-arkenv` CLI plugin — `nubx arkenv` and `npx arkenv` already run
   the same binary; a plugin would only rename the verb.
 - A Varlock-style Nub hand-off for `env.ts` — ArkEnv's product surface
