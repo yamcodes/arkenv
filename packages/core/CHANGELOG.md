@@ -1,5 +1,57 @@
 # @arkenv/core
 
+## 1.0.0-rc.2
+
+### Major Changes
+
+- #### Remove reserved `safe` from main-factory config _[`#1924`](https://github.com/yamcodes/arkenv/pull/1924) [`ed09bb0`](https://github.com/yamcodes/arkenv/commit/ed09bb05c27b5409a49430c0f2897b28fe26484d) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`ArkEnvConfig` and `StandardEnvConfig` no longer declare the reserved
+	`safe?: false` field. Safe-mode parsing stays on the `/safe` subpaths.
+	
+	```ts
+	import arkenv from "@arkenv/core";
+	import arkenvSafe from "@arkenv/core/safe";
+	
+	export const env = arkenv({
+	  PORT: "number.port = 3000",
+	});
+	
+	const result = arkenvSafe(
+	  { PORT: "number.port" },
+	  { env: { PORT: "invalid" } },
+	);
+	```
+	
+	`@arkenv/standard` mirrors the same shape via `@arkenv/standard/safe`.
+	
+	**BREAKING CHANGE**: Passing `safe: false` on the main `arkenv()` config
+	is no longer accepted. Delete the property; use `/safe` for result-object
+	parsing.
+	
+	```diff
+	- export const env = arkenv(schema, { safe: false });
+	+ export const env = arkenv(schema);
+	```
+
+### Patch Changes
+
+- #### Avoid Node-only `process` APIs in color detection _[`#1939`](https://github.com/yamcodes/arkenv/pull/1939) [`7684644`](https://github.com/yamcodes/arkenv/commit/76846449b8a634e24b59a6126958b2826cf975ef) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	ANSI color helpers no longer read `process.versions` or `process.stdout` as static member expressions, so Next.js edge instrumentation no longer flags `@arkenv/core` when `env` is imported from edge files.
+- #### Point StackBlitz README link at the v1 example _[`#1905`](https://github.com/yamcodes/arkenv/pull/1905) [`f71bee1`](https://github.com/yamcodes/arkenv/commit/f71bee184ed2f2abfbc69a514a551310d14b3ca5) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	The core package README StackBlitz badge now opens `tree/v1/examples/stackblitz`, matching the v1 `@arkenv/core` playground instead of the stale `main` path.
+- #### Sync the package README with the repo README _[`#1949`](https://github.com/yamcodes/arkenv/pull/1949) [`2fd0f33`](https://github.com/yamcodes/arkenv/commit/2fd0f335835f3c0918da7b547b6a43fed3dfa3d7) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	The published `@arkenv/core` README now matches the root project README
+	(v1 imports, validator examples, RC callout). The outdated demo GIF that
+	showed a v0-shaped `import` is gone.
+
 ## 1.0.0-rc.1
 
 ### Patch Changes
