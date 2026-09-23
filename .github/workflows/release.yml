@@ -92,8 +92,16 @@ jobs:
       # Uses resolveSystemNpmInvocation so Nub PATH shims cannot block
       # `npm dist-tag`. See docs/RC_CHECKLIST.md §C and
       # scripts/point-latest-at-rc.js.
+      # Failure-tolerant: changesets/action can set published=true after a
+      # partial publish and still exit non-zero; without this gate the
+      # primary retag is skipped by success() and the published!='true'
+      # recovery step is also skipped, leaving latest stale until the
+      # next v1 push. Matches Mark GitHub prereleases as Latest.
       - name: Point latest at published RC
-        if: steps.changesets.outputs.published == 'true'
+        if: >
+          !cancelled() &&
+          (success() || failure()) &&
+          steps.changesets.outputs.published == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: >
