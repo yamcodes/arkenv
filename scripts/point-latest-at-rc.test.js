@@ -11,6 +11,7 @@ import {
 	pointLatestAtRc,
 	resolveAuthToken,
 	resolveOtp,
+	resolveSystemNpmInvocation,
 	runNpm,
 	shouldRetagLatest,
 	skipReasonForPre,
@@ -221,7 +222,62 @@ describe("listPublishablePackageNames", () => {
 	});
 });
 
+describe("resolveSystemNpmInvocation", () => {
+	it("prefers node + npm-cli.js from the same Node install", () => {
+		const exists = vi.fn((path) => String(path).endsWith("npm-cli.js"));
+		expect(
+			resolveSystemNpmInvocation({
+				execPath: "/opt/node/bin/node",
+				existsSync: exists,
+			}),
+		).toEqual({
+			command: "/opt/node/bin/node",
+			argsPrefix: ["/opt/node/lib/node_modules/npm/bin/npm-cli.js"],
+		});
+	});
+
+	it("falls back to npm next to node when npm-cli.js is missing", () => {
+		const exists = vi.fn((path) => String(path).endsWith("/npm"));
+		expect(
+			resolveSystemNpmInvocation({
+				execPath: "/opt/node/bin/node",
+				existsSync: exists,
+				platform: "linux",
+			}),
+		).toEqual({ command: "/opt/node/bin/npm", argsPrefix: [] });
+	});
+
+	it("skips Nub shim dirs when walking PATH", () => {
+		const exists = vi.fn((path) => path === "/usr/local/bin/npm");
+		expect(
+			resolveSystemNpmInvocation({
+				execPath: "/opt/node/bin/node",
+				existsSync: exists,
+				platform: "linux",
+				env: {
+					PATH: "/home/runner/.local/share/nub/shims:/usr/local/bin:/bin",
+				},
+			}),
+		).toEqual({ command: "/usr/local/bin/npm", argsPrefix: [] });
+		expect(exists).not.toHaveBeenCalledWith(
+			"/home/runner/.local/share/nub/shims/npm",
+		);
+	});
+
+	it("falls back to bare npm when nothing is adjacent or on PATH", () => {
+		expect(
+			resolveSystemNpmInvocation({
+				execPath: "/opt/node/bin/node",
+				existsSync: () => false,
+				env: { PATH: "" },
+			}),
+		).toEqual({ command: "npm", argsPrefix: [] });
+	});
+});
+
 describe("runNpm", () => {
+	const npmInvocation = { command: "npm", argsPrefix: [] };
+
 	it("inherits stdio for OTP-capable writes and does not trim null", () => {
 		const exec = vi.fn(() => null);
 		expect(
@@ -229,6 +285,7 @@ describe("runNpm", () => {
 				["dist-tag", "add", "arkenv@1.0.0-rc.1", "latest"],
 				{
 					inherit: true,
+					npmInvocation,
 				},
 				exec,
 			),
@@ -242,11 +299,36 @@ describe("runNpm", () => {
 
 	it("captures and trims stdout for read commands", () => {
 		const exec = vi.fn(() => "  yamcodes\n");
-		expect(runNpm(["whoami"], {}, exec)).toBe("yamcodes");
+		expect(runNpm(["whoami"], { npmInvocation }, exec)).toBe("yamcodes");
 		expect(exec).toHaveBeenCalledWith("npm", ["whoami"], {
 			encoding: "utf8",
 			stdio: ["ignore", "pipe", "pipe"],
 		});
+	});
+
+	it("prefixes npm-cli.js when using the system Node install", () => {
+		const exec = vi.fn(() => "ok\n");
+		expect(
+			runNpm(["view", "arkenv", "version"], {
+				npmInvocation: {
+					command: "/opt/node/bin/node",
+					argsPrefix: ["/opt/node/lib/node_modules/npm/bin/npm-cli.js"],
+				},
+			}, exec),
+		).toBe("ok");
+		expect(exec).toHaveBeenCalledWith(
+			"/opt/node/bin/node",
+			[
+				"/opt/node/lib/node_modules/npm/bin/npm-cli.js",
+				"view",
+				"arkenv",
+				"version",
+			],
+			{
+				encoding: "utf8",
+				stdio: ["ignore", "pipe", "pipe"],
+			},
+		);
 	});
 });
 

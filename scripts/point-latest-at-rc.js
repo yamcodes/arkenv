@@ -40,8 +40,66 @@ import {
 	writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { delimiter, dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+
+/**
+ * Resolve an npm invocation that bypasses Nub PATH shims.
+ *
+ * `nub pm shim` puts an `npm` stub early on PATH. In this repo
+ * (`packageManager: nub@…`) that stub refuses to run npm so a competing
+ * lockfile is not written. CI release jobs install those shims, so bare
+ * `execFileSync("npm", …)` fails with "refusing to run npm" even for
+ * `dist-tag` (which does not touch the lockfile).
+ *
+ * Prefer `node <npm-cli.js>` from the same Node install as
+ * `process.execPath` — absolute, shim-proof. Fall back to `npm` next to
+ * that Node, then the first non-shim `npm` on PATH.
+ *
+ * @param {{
+ *   execPath?: string;
+ *   existsSync?: typeof existsSync;
+ *   platform?: NodeJS.Platform;
+ *   env?: NodeJS.ProcessEnv;
+ * }} [opts]
+ * @returns {{ command: string; argsPrefix: string[] }}
+ */
+export function resolveSystemNpmInvocation(opts = {}) {
+	const execPath = opts.execPath ?? process.execPath;
+	const exists = opts.existsSync ?? existsSync;
+	const platform = opts.platform ?? process.platform;
+	const env = opts.env ?? process.env;
+	const nodeDir = dirname(execPath);
+	const npmCli = join(
+		nodeDir,
+		"..",
+		"lib",
+		"node_modules",
+		"npm",
+		"bin",
+		"npm-cli.js",
+	);
+	if (exists(npmCli)) {
+		return { command: execPath, argsPrefix: [npmCli] };
+	}
+	const npmBinName = platform === "win32" ? "npm.cmd" : "npm";
+	const npmBin = join(nodeDir, npmBinName);
+	if (exists(npmBin)) {
+		return { command: npmBin, argsPrefix: [] };
+	}
+	const pathEnv = env.PATH || env.Path || "";
+	for (const entry of pathEnv.split(delimiter)) {
+		if (!entry) continue;
+		// Nub install dirs look like `…/nub/shims` (setup-nub PATH prepend).
+		if (/(^|[/\\])nub[/\\]shims([/\\]|$)/i.test(entry)) continue;
+		const candidate = join(entry, npmBinName);
+		if (exists(candidate)) {
+			return { command: candidate, argsPrefix: [] };
+		}
+	}
+	// Last resort: PATH lookup (may still hit a Nub shim).
+	return { command: "npm", argsPrefix: [] };
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const defaultRootDir = join(__dirname, "..");
@@ -232,20 +290,27 @@ export function skipReasonForPre(pre) {
 /**
  * Run `npm` with captured stdout (CI / read commands) or inherited
  * stdio (local writes that may need an interactive OTP prompt).
- * `execFileSync` returns `null` when stdio is fully inherited — never
- * `.trim()` that return value.
+ * Uses {@link resolveSystemNpmInvocation} so Nub PATH shims cannot
+ * intercept (see that helper). `execFileSync` returns `null` when
+ * stdio is fully inherited — never `.trim()` that return value.
  *
  * @param {string[]} args
- * @param {{ inherit?: boolean }} [opts]
+ * @param {{
+ *   inherit?: boolean;
+ *   npmInvocation?: { command: string; argsPrefix: string[] };
+ * }} [opts]
  * @param {typeof execFileSync} [exec]
  * @returns {string}
  */
 export function runNpm(args, opts = {}, exec = execFileSync) {
+	const { command, argsPrefix } =
+		opts.npmInvocation ?? resolveSystemNpmInvocation();
+	const fullArgs = [...argsPrefix, ...args];
 	if (opts.inherit) {
-		exec("npm", args, { stdio: "inherit" });
+		exec(command, fullArgs, { stdio: "inherit" });
 		return "";
 	}
-	const out = exec("npm", args, {
+	const out = exec(command, fullArgs, {
 		encoding: "utf8",
 		stdio: ["ignore", "pipe", "pipe"],
 	});
