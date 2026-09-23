@@ -62,7 +62,9 @@ export function remarkAddNubPackageManager() {
 			if (isPackageManagerTabs(node)) {
 				const list = findChild(node, "CodeBlockTabsList");
 				const npmTab = findTab(node, "npm");
-				const npmCode = npmTab?.children?.find((child) => child.type === "code");
+				const npmCode = npmTab?.children?.find(
+					(child) => child.type === "code",
+				);
 
 				if (
 					list &&

@@ -87,16 +87,12 @@ describe("remarkAddNubPackageManager", () => {
 		const nubTrigger = list?.children?.find(
 			(child) =>
 				child.name === "CodeBlockTabsTrigger" &&
-				child.attributes?.some(
-					(a) => a.name === "value" && a.value === "nub",
-				),
+				child.attributes?.some((a) => a.name === "value" && a.value === "nub"),
 		);
 		const nubTab = tabs?.children?.find(
 			(child) =>
 				child.name === "CodeBlockTab" &&
-				child.attributes?.some(
-					(a) => a.name === "value" && a.value === "nub",
-				),
+				child.attributes?.some((a) => a.name === "value" && a.value === "nub"),
 		);
 
 		expect(nubTrigger?.children?.[0]).toEqual({ type: "text", value: "nub" });
@@ -118,9 +114,7 @@ describe("remarkAddNubPackageManager", () => {
 		const nubTab = tree.children?.[0]?.children?.find(
 			(child) =>
 				child.name === "CodeBlockTab" &&
-				child.attributes?.some(
-					(a) => a.name === "value" && a.value === "nub",
-				),
+				child.attributes?.some((a) => a.name === "value" && a.value === "nub"),
 		);
 		expect(nubTab?.children?.[0]?.value).toBe(
 			"nub add @arkenv/core arktype\nnub add -D @arkenv/vite-plugin",
@@ -139,9 +133,7 @@ describe("remarkAddNubPackageManager", () => {
 			type: "mdxJsxFlowElement",
 			name: "CodeBlockTab",
 			attributes: [attr("value", "nub")],
-			children: [
-				{ type: "code", lang: "bash", value: "nubx arkenv init" },
-			],
+			children: [{ type: "code", lang: "bash", value: "nubx arkenv init" }],
 		});
 		const tree: AstNode = { type: "root", children: [tabs] };
 
