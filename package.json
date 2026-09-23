@@ -13,7 +13,7 @@
 		"docs": "turbo run dev --filter=www",
 		"www": "turbo run dev --filter=www",
 		"dash": "nub run --filter=@arkenv/core build && nub run --filter @repo/dash dash",
-		"release": "nub run build:packages && node scripts/ensure-manypkg-workspace.js && changeset publish",
+		"release": "nub run build:packages && node scripts/ensure-manypkg-workspace.js && node scripts/changeset-publish.js",
 		"point-latest-at-rc": "node scripts/point-latest-at-rc.js --from-rc --local",
 		"fix": "node scripts/fix.js",
 		"fix:unsafe": "node scripts/fix.js --unsafe",

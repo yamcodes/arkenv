@@ -66,7 +66,9 @@ jobs:
       # changesets/action runs `changeset version` directly (not via
       # package.json scripts). Materialize the gitignored packages-only
       # pnpm-workspace.yaml from package.json workspaces.packages so
-      # @manypkg can discover packages under Nub identity.
+      # @manypkg can discover packages under Nub identity. Publish itself
+      # does not use pnpm — scripts/changeset-publish.js rewrites
+      # workspace:/catalog: then runs changeset publish via npm.
       - name: Materialize Changesets workspace shim
         run: node scripts/ensure-manypkg-workspace.js
 

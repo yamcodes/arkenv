@@ -8,6 +8,11 @@
  * The generated file is gitignored. Do not commit it. Do not run
  * `pnpm install` because of it — `nub install` owns the tree.
  *
+ * Release publish does **not** use pnpm: `scripts/changeset-publish.js`
+ * rewrites `workspace:` / `catalog:` then runs `changeset publish` via
+ * the npm tool. This shim exists only for package discovery
+ * (version PRs, manypkg check, Changesets CLI).
+ *
  * Usage:
  *   node scripts/ensure-manypkg-workspace.js
  *   node scripts/ensure-manypkg-workspace.js --check   # exit 1 if stale/missing
