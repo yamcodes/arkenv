@@ -30,6 +30,7 @@ Read at least two of these before a voice pass:
 - `apps/www/content/docs/community.mdx`
 - `apps/www/content/docs/frameworks/nextjs.mdx` (or Vite):
   `package-install` fences, authored as `npx` / `npm install`
+  (site tabs add pnpm / yarn / bun / nub)
 
 Canonical docs live under `apps/www/content/docs/`.
 

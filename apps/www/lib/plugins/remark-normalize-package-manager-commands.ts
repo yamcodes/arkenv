@@ -7,8 +7,10 @@ type AstNode = {
 };
 
 /**
- * Runs after fumadocs `remarkNpm` so generated tabs keep `bun install` and
- * `npm install` instead of `bun add` / `npm i`.
+ * Runs after fumadocs `remarkNpm` (and the Nub tab injector) so generated tabs
+ * keep `bun install` / `npm install` / `nub add` instead of `bun add` /
+ * `npm i`, and apply {@link INSTALL_TAG} to arkenv runners and `@arkenv/*`
+ * install lines.
  */
 export function remarkNormalizePackageManagerCommands() {
 	return (tree: AstNode) => {

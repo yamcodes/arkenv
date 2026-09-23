@@ -76,12 +76,14 @@ cadence. `stop-slop` must not flatten that lead.
 
 Commands the reader runs (`init`, `npm install`, `npx …`) use
 fumadocs `package-install` fences, not `bash`. Author **npm** form only:
-`npx …` or `npm install …`. Never `npm i`, `pnpm add`, `yarn add`, or
-`bun add` in the source. The site tabs the other managers. See
+`npx …` or `npm install …`. Never `npm i`, `pnpm add`, `yarn add`,
+`bun add`, or `nub add` in the source. The site tabs the other managers
+(including Nub as `nubx` / `nub add`). See
 `apps/www/content/docs/frameworks/nextjs.mdx` and
 `apps/www/lib/package-install-fences.test.ts`.
 
-Leave `bash` for non-install shell (git, curl, file copies). Leave
+Leave `bash` for non-install shell (git, curl, file copies) and for
+Nub-only runner examples that are not package-install tabs. Leave
 `json` MCP configs as JSON even if a field is `"npx"`. Prompt fences
 stay `text`.
 

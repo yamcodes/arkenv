@@ -1,10 +1,10 @@
 import { INSTALL_TAG } from "./config/release";
 
 const RUNNER_COMMAND_REGEX =
-	/\b(npx|pnpm\s+dlx|bunx|yarn\s+dlx)(\s+(?:--?[^\s`'"]+\s+)*)(?<![@\w-])arkenv(?:@[^\s/`'"]+)?(?=[\s`'"]|$)/g;
+	/\b(npx|pnpm\s+dlx|bunx|nubx|yarn\s+dlx)(\s+(?:--?[^\s`'"]+\s+)*)(?<![@\w-])arkenv(?:@[^\s/`'"]+)?(?=[\s`'"]|$)/g;
 
 const INSTALL_LINE_REGEX =
-	/(^|\n)(npm install|pnpm add|yarn add|bun install)([^\n]*)/g;
+	/(^|\n)(npm install|pnpm add|yarn add|bun install|nub add)([^\n]*)/g;
 
 const SCOPED_ARKENV_PACKAGE_REGEX = /@arkenv\/[\w-]+(?:@[^\s/`'"]+)?/g;
 
@@ -17,7 +17,8 @@ function withReleaseTag(specifier: string, tag: string): string {
 
 /**
  * Canonical verbs and release tagging in docs code fences and install tabs:
- * - npm install / pnpm add / yarn add / bun install (not npm i, not bun add).
+ * - npm install / pnpm add / yarn add / bun install / nub add (not npm i,
+ *   not bun add).
  * - bun x -> bunx.
  * - arkenv CLI runner commands use bare `arkenv` when {@link INSTALL_TAG} is
  *   empty (intended once product `latest` → RC), or `@${tag}` when an override
