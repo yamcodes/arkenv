@@ -51,4 +51,26 @@ describe("convertNpmToNub", () => {
 		expect(convertNpmToNub("npm run build")).toBe("nub run build");
 		expect(convertNpmToNub("npm exec eslint .")).toBe("nub exec eslint .");
 	});
+
+	it("rewrites npm/npx inside && and ; chains", () => {
+		expect(convertNpmToNub("cd app && npm install")).toBe(
+			"cd app && nub install",
+		);
+		expect(convertNpmToNub("cd app && npm install @arkenv/core")).toBe(
+			"cd app && nub add @arkenv/core",
+		);
+		expect(convertNpmToNub("npx arkenv init && npm install -D arkenv")).toBe(
+			"nubx arkenv init && nub add -D arkenv",
+		);
+		expect(convertNpmToNub("cd app; npm rm left-pad")).toBe(
+			"cd app; nub remove left-pad",
+		);
+	});
+
+	it("does not split on && or ; inside quotes", () => {
+		expect(convertNpmToNub('npx cowsay "a && b"')).toBe(
+			'nubx cowsay "a && b"',
+		);
+		expect(convertNpmToNub("npx cowsay 'a; b'")).toBe("nubx cowsay 'a; b'");
+	});
 });

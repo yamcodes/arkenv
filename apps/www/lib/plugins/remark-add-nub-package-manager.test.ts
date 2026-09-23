@@ -1,5 +1,7 @@
+import { remarkNpm } from "fumadocs-core/mdx-plugins";
 import { describe, expect, it } from "vitest";
 import { remarkAddNubPackageManager } from "./remark-add-nub-package-manager";
+
 
 type AstNode = {
 	type: string;
@@ -151,20 +153,93 @@ describe("remarkAddNubPackageManager", () => {
 	});
 
 	it("ignores CodeBlockTabs without the package-manager group", () => {
+		const tabs = packageManagerTabs("npx arkenv init");
+		tabs.attributes = [attr("defaultValue", "npm")];
+		const tree: AstNode = { type: "root", children: [tabs] };
+
+		remarkAddNubPackageManager()(tree);
+
+		const nubTab = tabs.children?.find(
+			(child) =>
+				child.name === "CodeBlockTab" &&
+				child.attributes?.some(
+					(a) => a.name === "value" && a.value === "nub",
+				),
+		);
+		expect(nubTab).toBeUndefined();
+	});
+
+	it("appends nub after real remarkNpm output", () => {
 		const tree: AstNode = {
 			type: "root",
 			children: [
 				{
-					type: "mdxJsxFlowElement",
-					name: "CodeBlockTabs",
-					attributes: [attr("defaultValue", "npm")],
-					children: [],
+					type: "code",
+					lang: "package-install",
+					value: "npx arkenv init",
 				},
 			],
 		};
 
+		remarkNpm({
+			persist: { id: "package-manager" },
+		})(tree as never);
 		remarkAddNubPackageManager()(tree);
 
-		expect(tree.children?.[0]?.children).toEqual([]);
+		const tabs = tree.children?.[0];
+		expect(tabs?.name).toBe("CodeBlockTabs");
+		expect(getAttr(tabs, "groupId")).toBe("package-manager");
+
+		const nubTab = tabs?.children?.find(
+			(child) =>
+				child.name === "CodeBlockTab" &&
+				child.attributes?.some(
+					(a) => a.name === "value" && a.value === "nub",
+				),
+		);
+		expect(nubTab?.children?.[0]?.value).toBe("nubx arkenv init");
+
+		const list = tabs?.children?.find(
+			(child) => child.name === "CodeBlockTabsList",
+		);
+		const nubTrigger = list?.children?.find(
+			(child) =>
+				child.name === "CodeBlockTabsTrigger" &&
+				child.attributes?.some(
+					(a) => a.name === "value" && a.value === "nub",
+				),
+		);
+		expect(nubTrigger?.children?.[0]).toEqual({ type: "text", value: "nub" });
+	});
+
+	it("converts install fences through real remarkNpm then the injector", () => {
+		const tree: AstNode = {
+			type: "root",
+			children: [
+				{
+					type: "code",
+					lang: "package-install",
+					value: "npm install @arkenv/core arktype",
+				},
+			],
+		};
+
+		remarkNpm({
+			persist: { id: "package-manager" },
+		})(tree as never);
+		remarkAddNubPackageManager()(tree);
+
+		const nubTab = tree.children?.[0]?.children?.find(
+			(child) =>
+				child.name === "CodeBlockTab" &&
+				child.attributes?.some(
+					(a) => a.name === "value" && a.value === "nub",
+				),
+		);
+		expect(nubTab?.children?.[0]?.value).toBe("nub add @arkenv/core arktype");
 	});
 });
+
+function getAttr(node: AstNode | undefined, name: string): unknown {
+	return node?.attributes?.find((attr) => attr.name === name)?.value;
+}
