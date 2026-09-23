@@ -31,9 +31,9 @@ describe("readWorkspacePackages", () => {
 
 describe("readWorkspaceCatalog", () => {
 	it("returns empty object when catalog is absent", () => {
-		expect(readWorkspaceCatalog({ workspaces: { packages: ["packages/*"] } })).toEqual(
-			{},
-		);
+		expect(
+			readWorkspaceCatalog({ workspaces: { packages: ["packages/*"] } }),
+		).toEqual({});
 	});
 
 	it("reads Nub workspaces.catalog", () => {
@@ -48,9 +48,9 @@ describe("readWorkspaceCatalog", () => {
 	});
 
 	it("rejects non-object or empty-string catalog entries", () => {
-		expect(() =>
-			readWorkspaceCatalog({ workspaces: { catalog: [] } }),
-		).toThrow(/workspaces\.catalog/);
+		expect(() => readWorkspaceCatalog({ workspaces: { catalog: [] } })).toThrow(
+			/workspaces\.catalog/,
+		);
 		expect(() =>
 			readWorkspaceCatalog({
 				workspaces: { catalog: { typescript: "" } },
