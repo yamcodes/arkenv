@@ -18,7 +18,7 @@ export const RELEASE_TAG = rawTag.trim();
  */
 export const INSTALL_TAG = "";
 
-export type PackageManager = "npm" | "pnpm" | "bun" | "yarn";
+export type PackageManager = "npm" | "pnpm" | "bun" | "yarn" | "nub";
 
 /**
  * Default/fallback docs origin.
@@ -101,7 +101,8 @@ export function getPackageSpecifier(pkg = "arkenv", tag = INSTALL_TAG): string {
 /**
  * Returns the CLI command for the given package manager and install tag.
  *
- * @param packageManager - The target package manager ("npm", "pnpm", "bun", or "yarn").
+ * @param packageManager - The target package manager ("npm", "pnpm", "bun",
+ *   "yarn", or "nub").
  * @param tag - Install tag override (defaults to `INSTALL_TAG`).
  * @param args - CLI arguments to append (defaults to "init").
  * @returns The formatted command string (e.g. "npx arkenv init").
@@ -124,6 +125,8 @@ export function getInitCommand(
 			return `bunx ${specifier}${suffix}`;
 		case "yarn":
 			return `yarn dlx ${specifier}${suffix}`;
+		case "nub":
+			return `nubx ${specifier}${suffix}`;
 	}
 }
 

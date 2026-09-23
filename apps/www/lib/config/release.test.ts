@@ -45,12 +45,14 @@ describe("release config", () => {
 		expect(getInitCommand("pnpm", "alpha")).toBe("pnpm dlx arkenv@alpha init");
 		expect(getInitCommand("bun", "alpha")).toBe("bunx arkenv@alpha init");
 		expect(getInitCommand("yarn", "alpha")).toBe("yarn dlx arkenv@alpha init");
+		expect(getInitCommand("nub", "alpha")).toBe("nubx arkenv@alpha init");
 
 		// Bare / empty tag (default INSTALL_TAG)
 		expect(getInitCommand("npm")).toBe("npx arkenv init");
 		expect(getInitCommand("pnpm", "")).toBe("pnpm dlx arkenv init");
 		expect(getInitCommand("bun", "")).toBe("bunx arkenv init");
 		expect(getInitCommand("yarn", "")).toBe("yarn dlx arkenv init");
+		expect(getInitCommand("nub", "")).toBe("nubx arkenv init");
 	});
 
 	it("formats init commands with custom args", () => {

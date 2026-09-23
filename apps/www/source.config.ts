@@ -16,6 +16,7 @@ import remarkGemoji from "remark-gemoji";
 import { z } from "zod";
 import { resolveBlogPostDate } from "./lib/blog-date";
 import { rehypeOptimizeInternalLinks } from "./lib/plugins/rehype-optimize-internal-links";
+import { remarkAddNubPackageManager } from "./lib/plugins/remark-add-nub-package-manager";
 import { remarkNormalizeCodeIndent } from "./lib/plugins/remark-normalize-code-indent";
 import { remarkNormalizePackageManagerCommands } from "./lib/plugins/remark-normalize-package-manager-commands";
 import { arktypeTwoslashOptions } from "./lib/twoslash-options";
@@ -161,6 +162,8 @@ export default defineConfig({
 			remarkGemoji,
 			remarkSteps,
 			remarkNormalizeCodeIndent,
+			// After fumadocs remarkNpm (preset): add Nub tab, then normalize verbs/tags.
+			remarkAddNubPackageManager,
 			remarkNormalizePackageManagerCommands,
 			remarkDirective,
 			[

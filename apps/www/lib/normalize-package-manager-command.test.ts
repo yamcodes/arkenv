@@ -33,6 +33,9 @@ describe("normalizePackageManagerCommand", () => {
 		expect(normalizePackageManagerCommand("yarn add @arkenv/core")).toBe(
 			"yarn add @arkenv/core",
 		);
+		expect(normalizePackageManagerCommand("nub add @arkenv/core")).toBe(
+			"nub add @arkenv/core",
+		);
 	});
 
 	it("keeps CLI runners bare by default", () => {
@@ -47,6 +50,9 @@ describe("normalizePackageManagerCommand", () => {
 		);
 		expect(normalizePackageManagerCommand("yarn dlx arkenv init")).toBe(
 			"yarn dlx arkenv init",
+		);
+		expect(normalizePackageManagerCommand("nubx arkenv init")).toBe(
+			"nubx arkenv init",
 		);
 	});
 
@@ -83,6 +89,12 @@ describe("normalizePackageManagerCommand", () => {
 		);
 		expect(normalizePackageManagerCommand("npx arkenv@alpha init", "rc")).toBe(
 			"npx arkenv@rc init",
+		);
+		expect(normalizePackageManagerCommand("nubx arkenv init", "rc")).toBe(
+			"nubx arkenv@rc init",
+		);
+		expect(normalizePackageManagerCommand("nub add @arkenv/core", "rc")).toBe(
+			"nub add @arkenv/core@rc",
 		);
 	});
 
