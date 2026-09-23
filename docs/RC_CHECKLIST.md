@@ -278,8 +278,10 @@ output and sets `latest` on each published package.
   `pre.json` is `pre`/`rc` is intentional: idempotent, keeps `latest`
   pinned to `@rc`, and soft-skips outside RC pre mode. Prefer a healthy
   stage-only `NPM_TOKEN` (expired/underscoped tokens fail the job on
-  those pushes; a missing token still soft-skips). The recovery steps
-  use `!cancelled() && (success() || failure())` so a failed Changesets
+  those pushes; a missing token still soft-skips). Both the primary
+  (`published == 'true'`, including partial publish) and recovery
+  (`published != 'true'`) retag steps use
+  `!cancelled() && (success() || failure())` so a failed Changesets
   publish step can still retag on the same run.
 - **Local break-glass (no `NPM_TOKEN`):** after `npm login`, from the
   repo root:
