@@ -251,6 +251,10 @@ output and sets `latest` on each published package.
   `pnpm exec changeset pre exit` sets `"mode": "exit"` (the file is
   deleted later by `changeset version`), so the step no-ops without a
   separate flag.
+- **npm binary:** the script resolves a real npm via
+  `resolveSystemNpmInvocation` (Node-adjacent `npm-cli.js`, then PATH
+  skipping `nub/shims`). Bare `npm` is intercepted by `nub pm shim` in
+  this repo and refuses to run.
 - **Auth:** Publish stays on OIDC trusted publishing. `npm dist-tag` is
   not covered by OIDC (the npm CLI still has no OIDC exchange for
   dist-tag), so the CI path is a granular access token in the
@@ -267,7 +271,10 @@ output and sets `latest` on each published package.
     succeeds). CI needs `NPM_TOKEN`; the local path below does not.
 - **One-shot promote (CI):** Actions → **release** → **Run workflow** →
   enable **promote_rc_to_latest** (points `latest` at current `@rc`
-  without publishing). Same gate + `NPM_TOKEN` requirement.
+  without publishing). Same gate + `NPM_TOKEN` requirement. On `v1`,
+  ordinary pushes also run `--from-rc` / `--from-workspace` recovery
+  when the Changesets step did not publish (finishes a prior partial
+  release without a manual dispatch).
 - **Local break-glass (no `NPM_TOKEN`):** after `npm login`, from the
   repo root:
 

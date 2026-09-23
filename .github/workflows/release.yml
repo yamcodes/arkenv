@@ -89,7 +89,9 @@ jobs:
       # (warns) so publish itself is not failed. Gate: .changeset/pre.json
       # mode === "pre" && tag === "rc". `changeset pre exit` sets mode to
       # "exit" (file deleted later by `changeset version`) and stops this.
-      # See docs/RC_CHECKLIST.md §C and scripts/point-latest-at-rc.js.
+      # Uses resolveSystemNpmInvocation so Nub PATH shims cannot block
+      # `npm dist-tag`. See docs/RC_CHECKLIST.md §C and
+      # scripts/point-latest-at-rc.js.
       - name: Point latest at published RC
         if: steps.changesets.outputs.published == 'true'
         env:
@@ -97,6 +99,17 @@ jobs:
         run: >
           node scripts/point-latest-at-rc.js
           --packages '${{ steps.changesets.outputs.published-packages }}'
+
+      # Recovery when a prior publish left `latest` unfinished (e.g. Nub
+      # shim blocked dist-tag on the publish run). Idempotent; soft-skips
+      # when pre.json is not mode=pre tag=rc.
+      - name: Point latest at current @rc
+        if: >
+          steps.changesets.outputs.published != 'true' &&
+          github.ref_name == 'v1'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: node scripts/point-latest-at-rc.js --from-rc
 
       # Product RC path: GitHub Releases UI should show the current RC as
       # Latest. changesets/action creates releases with
@@ -108,8 +121,12 @@ jobs:
       # .changeset/pre.json mode === "pre"; v1 only so a future `dev`
       # alpha publish cannot steal Latest from the RC line. Does not
       # touch npm dist-tags. See scripts/mark-github-releases-latest.js.
+      # Runs even if the dist-tag step failed so a shim/token issue does
+      # not leave Releases stuck as Pre-release.
       - name: Mark GitHub prereleases as Latest
         if: >
+          !cancelled() &&
+          (success() || failure()) &&
           steps.changesets.outputs.published == 'true' &&
           github.ref_name == 'v1'
         env:
@@ -118,6 +135,19 @@ jobs:
         run: >
           node scripts/mark-github-releases-latest.js
           --packages '${{ steps.changesets.outputs.published-packages }}'
+
+      # Same recovery path as Point latest at current @rc: finish Latest
+      # after a prior publish when this push did not publish again.
+      - name: Mark workspace GitHub prereleases as Latest
+        if: >
+          !cancelled() &&
+          (success() || failure()) &&
+          steps.changesets.outputs.published != 'true' &&
+          github.ref_name == 'v1'
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node scripts/mark-github-releases-latest.js --from-workspace
 
       - name: Sync main branch
         if: steps.changesets.outputs.published == 'true' && github.ref_name == 'dev'
