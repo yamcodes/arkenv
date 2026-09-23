@@ -39,6 +39,7 @@ These groups share a theme. They remain separate ADRs (no nesting or history rew
 | CLI / scaffold IR                  | `cli-hosting-preset-field-metadata`, `dotenv-linter-custom-parser-strategy`, `cli-schema-inspection`, `cli-env-example-command-name`, `cli-schema-location-no-package-json`                                                                                                           |
 | www docs chrome                    | `drill-in-sidebar`, `mobile-sidebar-tree`, `site-nav-glass-chrome`                                                                                                                                                                                                                    |
 | www test toolchain                 | `www-vitest-no-styled-jsx-babel`                                                                                                                                                                                                                                                      |
+| Host env pipeline rejects          | `nextjs-no-next-env-hook`, `no-nub-plugin-or-varlock-style-handoff`                                                                                                                                                                                                                   |
 
 ## Tooling & agent skills
 
