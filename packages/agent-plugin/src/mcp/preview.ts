@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 import { hasPublicPrefix } from "../audit/rules";
-import { resolveArkEnvCommand } from "./init";
+import { resolveLocalArkEnvCommand } from "./init";
 
 export type PreviewBoundary = "server" | "public" | "unknown";
 
@@ -262,9 +262,10 @@ export function parseCheckStdout(stdout: string): CheckOutcome {
 
 async function tryCheckDiagnostics(cwd: string): Promise<CheckOutcome> {
 	try {
-		const { command, prefixArgs } = await resolveArkEnvCommand(cwd);
-		const args = [...prefixArgs, "check", "--json"];
-		const { stdout } = await spawnCapture(command, args, cwd);
+		const resolved = await resolveLocalArkEnvCommand(cwd);
+		if (!resolved) return { ran: false, failures: new Map() };
+		const args = [...resolved.prefixArgs, "check", "--json"];
+		const { stdout } = await spawnCapture(resolved.command, args, cwd);
 		return parseCheckStdout(stdout);
 	} catch {
 		return { ran: false, failures: new Map() };
@@ -281,6 +282,8 @@ function redactReceived(value: string): string {
 	return "a string";
 }
 
+const CHECK_TIMEOUT_MS = 8_000;
+
 function spawnCapture(
 	command: string,
 	args: string[],
@@ -293,14 +296,22 @@ function spawnCapture(
 		});
 		let stdout = "";
 		let stderr = "";
+		const timer = setTimeout(() => {
+			child.kill("SIGTERM");
+			reject(new Error(`Timed out running ${command} ${args.join(" ")}`));
+		}, CHECK_TIMEOUT_MS);
 		child.stdout.on("data", (chunk: Buffer | string) => {
 			stdout += String(chunk);
 		});
 		child.stderr.on("data", (chunk: Buffer | string) => {
 			stderr += String(chunk);
 		});
-		child.on("error", reject);
+		child.on("error", (error) => {
+			clearTimeout(timer);
+			reject(error);
+		});
 		child.on("close", (code) => {
+			clearTimeout(timer);
 			resolve({ stdout, stderr, exitCode: code ?? 1 });
 		});
 	});

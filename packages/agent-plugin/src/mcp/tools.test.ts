@@ -59,6 +59,7 @@ describe("MCP tools", () => {
 	});
 
 	it("preview tool returns schema keys and example presence", async () => {
+		const started = Date.now();
 		const dir = await mkdtemp(path.join(tmpdir(), "arkenv-preview-"));
 		await writeFile(
 			path.join(dir, "env.ts"),
@@ -75,6 +76,7 @@ export const env = arkenv({
 		const report = result.structuredContent as {
 			rows: Array<{ key: string; inExample: boolean | null; boundary: string }>;
 			schemaPath: string | null;
+			cwd?: string;
 		};
 		expect(result.content[0]?.text).toMatch(/Live Preview/);
 		expect(result.content[0]?.text).not.toMatch(/"rows"/);
@@ -87,6 +89,7 @@ export const env = arkenv({
 		const publicRow = report.rows.find((r) => r.key === "NEXT_PUBLIC_APP_URL");
 		expect(publicRow?.boundary).toBe("public");
 		expect(publicRow?.inExample).toBe(false);
+		expect(Date.now() - started).toBeLessThan(4_000);
 	});
 
 	it("createMcpServer registers tools", () => {

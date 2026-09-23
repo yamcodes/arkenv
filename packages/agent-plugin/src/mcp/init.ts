@@ -44,14 +44,16 @@ export async function initProject(
 }
 
 /**
- * Resolve the local `arkenv` binary or fall back to `npx arkenv@latest`.
+ * Resolve a local `arkenv` binary (`ARKENV_BIN` or `node_modules/.bin/arkenv`).
+ *
+ * Does not fall back to `npx` — Live Preview must not hang CI / MCP hosts
+ * waiting on a network install of `arkenv@latest`.
  *
  * @param cwd Project directory
- * @returns Command plus args that precede `init`
  */
-export async function resolveArkEnvCommand(
+export async function resolveLocalArkEnvCommand(
 	cwd: string,
-): Promise<{ command: string; prefixArgs: string[] }> {
+): Promise<{ command: string; prefixArgs: string[] } | null> {
 	const fromEnv = process.env.ARKENV_BIN;
 	if (fromEnv) {
 		return { command: fromEnv, prefixArgs: [] };
@@ -61,8 +63,22 @@ export async function resolveArkEnvCommand(
 		await access(localBin);
 		return { command: localBin, prefixArgs: [] };
 	} catch {
-		return { command: "npx", prefixArgs: ["--yes", "arkenv@latest"] };
+		return null;
 	}
+}
+
+/**
+ * Resolve the local `arkenv` binary or fall back to `npx arkenv@latest`.
+ *
+ * @param cwd Project directory
+ * @returns Command plus args that precede `init`
+ */
+export async function resolveArkEnvCommand(
+	cwd: string,
+): Promise<{ command: string; prefixArgs: string[] }> {
+	const local = await resolveLocalArkEnvCommand(cwd);
+	if (local) return local;
+	return { command: "npx", prefixArgs: ["--yes", "arkenv@latest"] };
 }
 
 function spawnProcess(
