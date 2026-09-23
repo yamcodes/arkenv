@@ -30,9 +30,10 @@ Don't let the label names give you the wrong impression: `ready for agent` simpl
    a pointer to `nub install`. Mixing package managers shatters module
    resolution under Turbo. After install, a gitignored
    `pnpm-workspace.yaml` may appear — generated from
-   `package.json` → `workspaces.packages` (+ `workspaces.catalog`) so
-   Changesets / `@manypkg` can discover packages and so release publish
-   can rewrite `workspace:` / `catalog:` protocols. Do not commit it.
+   `package.json` → `workspaces.packages` so Changesets / `@manypkg`
+   can discover packages. Do not commit it. Release publish rewrites
+   `workspace:` / `catalog:` in `scripts/changeset-publish.js` and
+   does not run pnpm.
 
    ```sh
    curl -fsSL https://nubjs.com/install.sh | bash

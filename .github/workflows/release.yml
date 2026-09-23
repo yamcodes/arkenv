@@ -64,25 +64,13 @@ jobs:
         run: nub install
 
       # changesets/action runs `changeset version` directly (not via
-      # package.json scripts). Materialize the gitignored
-      # pnpm-workspace.yaml (packages + catalog) from package.json
-      # workspaces so @manypkg can discover packages under Nub identity
-      # and pnpm publish can rewrite workspace:/catalog: protocols.
+      # package.json scripts). Materialize the gitignored packages-only
+      # pnpm-workspace.yaml from package.json workspaces.packages so
+      # @manypkg can discover packages under Nub identity. Publish itself
+      # does not use pnpm — scripts/changeset-publish.js rewrites
+      # workspace:/catalog: then runs changeset publish via npm.
       - name: Materialize Changesets workspace shim
         run: node scripts/ensure-manypkg-workspace.js
-
-      # Real pnpm CLI for `changeset publish` only — do not `pnpm install`.
-      # The manypkg shim above makes Changesets detect tool=pnpm (needed for
-      # `workspace:` / `catalog:` rewrite on publish). setup-nub's PATH shim
-      # has no lockfile pin and bootstraps a broken `pnpm@latest` stub
-      # (SyntaxError). Same class of failure as pkg-pr-new.yml avoiding
-      # `--pnpm`. COREPACK_ENABLE_STRICT=0 lets the real CLI run despite
-      # packageManager: nub@… (pnpm's package-manager-strict default).
-      - name: Install pnpm for Changesets publish
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-          run_install: false
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
@@ -90,8 +78,6 @@ jobs:
         with:
           publish-script: nub run --no-check release
           github-token: ${{ steps.generate-token.outputs.token }}
-        env:
-          COREPACK_ENABLE_STRICT: "0"
 
       # Product RC path: also point npm `latest` at the just-published
       # versions so bare `npx arkenv` resolves to RC. Changesets pre mode
