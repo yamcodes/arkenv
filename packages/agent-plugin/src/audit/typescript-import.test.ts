@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 const SRC = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 const CLASSIC_TYPESCRIPT_IMPORT =
-	/(?:from\s+|require\s*\(\s*|import\s*\(\s*|import\s+)["']typescript(?:\/[^"']*)?["']/;
+	/(?:from\s+|require\s*\(\s*|import\s*\(\s*|import\s+)["'](?:@typescript\/typescript6|typescript(?!\/unstable\/)(?:\/[^"']*)?)["']/;
 
 async function sourceFiles(dir: string): Promise<string[]> {
 	const entries = await readdir(dir, { withFileTypes: true });
@@ -48,5 +48,7 @@ describe("agent-plugin TypeScript import boundary", () => {
 		for (const sample of samples) {
 			expect(CLASSIC_TYPESCRIPT_IMPORT.test(sample)).toBe(true);
 		}
+		const unstable = `from ${quote}${specifier}/unstable/sync${quote}`;
+		expect(CLASSIC_TYPESCRIPT_IMPORT.test(unstable)).toBe(false);
 	});
 });
