@@ -1,5 +1,5 @@
 ---
-title: Use with Nub
+title: Using ArkEnv with Nub
 description: Load .env with Nub, validate with ArkEnv — on import, before entry, at check time, or in builds.
 ---
 
@@ -81,7 +81,7 @@ validation runs at module load.
   [Why ArkEnv?](/docs/why-arkenv#varlock).
 </Callout>
 
-## Validate earlier than the first import
+## Validating earlier than the first import
 
 Import-time validation is enough when every process that needs config
 imports `env` early. Use the next layers when you want a failure
@@ -177,11 +177,11 @@ ArkEnv adapter. Those plugins validate in the bundler or framework
 config pipeline. Running the app with `nub run dev` does not replace
 them — see [Frameworks](/docs/frameworks).
 
-## Optional: fail fast in the entry
+## Failing fast in the entry
 
 When you do not want project-wide preload, import `env` at the top of
 the process entry before other bootstrapping — the same pattern as
-[Use with NestJS](/docs/guides/use-with-nestjs):
+[Using ArkEnv with NestJS](/docs/guides/use-with-nestjs):
 
 ```ts title="src/index.ts"
 import { env } from "../env";

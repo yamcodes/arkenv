@@ -1,5 +1,5 @@
 ---
-title: Use ArkEnv with Nub
+title: Using ArkEnv with Nub
 description: Nub loads your .env files. ArkEnv validates environment variables on import, before entry, or with arkenv check.
 author: Yam Borodetsky
 authorGithub: yamcodes
@@ -23,7 +23,7 @@ a value is missing or wrong.
   `node --env-file`, framework CLIs). Nub is optional.
 </Callout>
 
-## Fail earlier than the first import
+## Failing earlier than the first import
 
 Import-time validation is enough when every process that needs config
 imports `env` early. The next two gates run before the first import, or
@@ -39,12 +39,12 @@ Framework builds stay on the Vite, Next.js, Nuxt, and Bun adapters.
 `nub run dev` does not replace them.
 
 The walkthrough, including the schema and the `preload` snippet, is
-[Use with Nub](/docs/guides/use-with-nub).
+[Using ArkEnv with Nub](/docs/guides/use-with-nub).
 
 ## Next steps
 
 Read the guide for when each gate runs, then start a project the usual
 way if you are not on Nub yet.
 
-- [Use with Nub](/docs/guides/use-with-nub)
+- [Using ArkEnv with Nub](/docs/guides/use-with-nub)
 - [Getting started](/docs/getting-started)
