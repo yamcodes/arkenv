@@ -1,5 +1,22 @@
 # @arkenv/build
 
+## 1.0.0-rc.4
+
+### Major Changes
+
+- #### Remove the client/server key extractors _[`#2022`](https://github.com/yamcodes/arkenv/pull/2022) [`6370d28`](https://github.com/yamcodes/arkenv/commit/6370d289d2a657e7f45c368c3f09e0cba1143b3c) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`extractClientKeys` and `extractServerKeys` are no longer exported from `@arkenv/build`. `@arkenv/nextjs/config` and `@arkenv/nuxt` (including `@arkenv/nuxt/standard/config`) no longer re-export them. Flat-schema keys still come from `extractKeys` and `classifyEnvKeys`.
+	
+	**BREAKING CHANGE**: Those helpers scanned a schema file for an `arkenv()` block and returned its keys. Classify a flat `arkenv()` call instead.
+	
+	```ts
+	import { classifyEnvKeys } from "@arkenv/build";
+	
+	const { clientKeys, serverKeys } = classifyEnvKeys(source, ["NEXT_PUBLIC_"]);
+	```
+
 ## 1.0.0-rc.3
 
 ### Major Changes

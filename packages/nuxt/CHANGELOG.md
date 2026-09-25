@@ -1,5 +1,54 @@
 # @arkenv/nuxt
 
+## 1.0.0-rc.4
+
+### Major Changes
+
+- #### Remove the client/server key extractors _[`#2022`](https://github.com/yamcodes/arkenv/pull/2022) [`6370d28`](https://github.com/yamcodes/arkenv/commit/6370d289d2a657e7f45c368c3f09e0cba1143b3c) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`extractClientKeys` and `extractServerKeys` are no longer exported from `@arkenv/build`. `@arkenv/nextjs/config` and `@arkenv/nuxt` (including `@arkenv/nuxt/standard/config`) no longer re-export them. Flat-schema keys still come from `extractKeys` and `classifyEnvKeys`.
+	
+	**BREAKING CHANGE**: Those helpers scanned a schema file for an `arkenv()` block and returned its keys. Classify a flat `arkenv()` call instead.
+	
+	```ts
+	import { classifyEnvKeys } from "@arkenv/build";
+	
+	const { clientKeys, serverKeys } = classifyEnvKeys(source, ["NEXT_PUBLIC_"]);
+	```
+- #### Remove the `@arkenv/nuxt/standard/config` subpath _[`#2024`](https://github.com/yamcodes/arkenv/pull/2024) [`6956142`](https://github.com/yamcodes/arkenv/commit/695614279af4f4654483104bcaa65b1b6092362a) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`@arkenv/nuxt/standard/config` is no longer published. That entry only re-exported build helpers and was not a Standard Schema setup. Standard Schema apps still import the runtime from `@arkenv/nuxt/standard` and register `@arkenv/nuxt/standard/module`.
+	
+	```ts
+	import arkenv from "@arkenv/nuxt/standard";
+	```
+	
+	```ts
+	export default defineNuxtConfig({
+	  modules: ["@arkenv/nuxt/standard/module"],
+	});
+	```
+	
+	**BREAKING CHANGE**: `@arkenv/nuxt/standard/config` has been removed. Use `@arkenv/nuxt/standard` and `@arkenv/nuxt/standard/module`.
+
+### Patch Changes
+
+<details><summary>Updated 3 dependencies</summary>
+
+<small>
+
+[`6370d28`](https://github.com/yamcodes/arkenv/commit/6370d289d2a657e7f45c368c3f09e0cba1143b3c) [`3a7b92f`](https://github.com/yamcodes/arkenv/commit/3a7b92f1ff6f078f3a197d32bed277232d1db7c2)
+
+</small>
+
+- `@arkenv/build@1.0.0-rc.4`
+- `@arkenv/standard@1.0.0-rc.4`
+- `@arkenv/core@1.0.0-rc.4`
+
+</details>
+
 ## 1.0.0-rc.3
 
 ### Major Changes

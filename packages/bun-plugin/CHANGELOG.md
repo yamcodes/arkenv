@@ -1,5 +1,23 @@
 # @arkenv/bun-plugin
 
+## 1.0.0-rc.4
+
+### Patch Changes
+
+<details><summary>Updated 3 dependencies</summary>
+
+<small>
+
+[`6370d28`](https://github.com/yamcodes/arkenv/commit/6370d289d2a657e7f45c368c3f09e0cba1143b3c) [`3a7b92f`](https://github.com/yamcodes/arkenv/commit/3a7b92f1ff6f078f3a197d32bed277232d1db7c2)
+
+</small>
+
+- `@arkenv/build@1.0.0-rc.4`
+- `@arkenv/standard@1.0.0-rc.4`
+- `@arkenv/core@1.0.0-rc.4`
+
+</details>
+
 ## 1.0.0-rc.3
 
 ### Major Changes

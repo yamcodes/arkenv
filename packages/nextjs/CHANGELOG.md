@@ -1,5 +1,67 @@
 # @arkenv/nextjs
 
+## 1.0.0-rc.4
+
+### Major Changes
+
+- #### Remove the public `standard` option from `withArkEnv` _[`#2013`](https://github.com/yamcodes/arkenv/pull/2013) [`db358fe`](https://github.com/yamcodes/arkenv/commit/db358fe7bbcf229b3d2d887b442ea1f0d7ceb21e) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`withArkEnv` from `@arkenv/nextjs/config` no longer accepts `{ standard }`. Standard Schema codegen is selected by importing `withArkEnv` from `@arkenv/nextjs/standard/config`. That entry still forces generated `env.gen.ts` to import `@arkenv/nextjs/standard`.
+	
+	```ts
+	import { withArkEnv } from "@arkenv/nextjs/standard/config";
+	
+	export default withArkEnv(nextConfig);
+	```
+	
+	**BREAKING CHANGE**: `withArkEnv` no longer accepts `{ standard }`. Select Standard Schema codegen by importing from `@arkenv/nextjs/standard/config`.
+- #### Remove the client/server key extractors _[`#2022`](https://github.com/yamcodes/arkenv/pull/2022) [`6370d28`](https://github.com/yamcodes/arkenv/commit/6370d289d2a657e7f45c368c3f09e0cba1143b3c) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`extractClientKeys` and `extractServerKeys` are no longer exported from `@arkenv/build`. `@arkenv/nextjs/config` and `@arkenv/nuxt` (including `@arkenv/nuxt/standard/config`) no longer re-export them. Flat-schema keys still come from `extractKeys` and `classifyEnvKeys`.
+	
+	**BREAKING CHANGE**: Those helpers scanned a schema file for an `arkenv()` block and returned its keys. Classify a flat `arkenv()` call instead.
+	
+	```ts
+	import { classifyEnvKeys } from "@arkenv/build";
+	
+	const { clientKeys, serverKeys } = classifyEnvKeys(source, ["NEXT_PUBLIC_"]);
+	```
+
+### Minor Changes
+
+- #### Add a `react-server` condition to `@arkenv/nextjs/standard` _[`#2028`](https://github.com/yamcodes/arkenv/pull/2028) [`81785c4`](https://github.com/yamcodes/arkenv/commit/81785c4a4fd30f14a53a17e99db748cca8073020) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Server Components and Route Handlers can read server-only keys such as `DATABASE_URL` from `@arkenv/nextjs/standard`. Client Components and SSR still see public keys only. Reading a server-only key on the client throws.
+	
+	```ts
+	import arkenv from "@arkenv/nextjs/standard";
+	import * as z from "zod";
+	
+	export const env = arkenv({
+	  DATABASE_URL: z.url(),
+	  NEXT_PUBLIC_API_URL: z.url(),
+	});
+	```
+
+### Patch Changes
+
+<details><summary>Updated 3 dependencies</summary>
+
+<small>
+
+[`6370d28`](https://github.com/yamcodes/arkenv/commit/6370d289d2a657e7f45c368c3f09e0cba1143b3c) [`3a7b92f`](https://github.com/yamcodes/arkenv/commit/3a7b92f1ff6f078f3a197d32bed277232d1db7c2)
+
+</small>
+
+- `@arkenv/build@1.0.0-rc.4`
+- `@arkenv/standard@1.0.0-rc.4`
+- `@arkenv/core@1.0.0-rc.4`
+
+</details>
+
 ## 1.0.0-rc.3
 
 ### Major Changes
