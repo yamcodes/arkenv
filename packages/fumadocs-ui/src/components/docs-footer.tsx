@@ -1,7 +1,7 @@
 "use client";
 
-import { usePathname } from "fumadocs-core/framework";
-import Link from "fumadocs-core/link";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type * as PageTree from "fumadocs-core/page-tree";
 import type { FooterProps } from "fumadocs-ui/layouts/docs/page/slots/footer";
 import { useFooterItems } from "fumadocs-ui/utils/use-footer-items";

@@ -1,15 +1,9 @@
-import fs from "node:fs";
-import { createRequire } from "node:module";
+import arkTypePackageJson from "arkdark/package.json" with { type: "json" };
 import type { TransformerTwoslashOptions } from "fumadocs-twoslash";
 import { arktypeTwoslashVfs } from "./twoslash-vfs";
 
 export { root, wwwRoot } from "./twoslash-vfs";
-
-const require = createRequire(import.meta.url);
-
-export const arkTypePackageJson = JSON.parse(
-	fs.readFileSync(require.resolve("arkdark/package.json"), "utf8"),
-);
+export { arkTypePackageJson };
 
 /** Node passed to `twoslashOptions.filterNode` before positions are attached. */
 export type TwoslashFilterNode = {
