@@ -101,6 +101,7 @@ export const env = arkenv({
 ## Features
 
 - Use your existing TypeScript validator
+- No boilerplate
 - Zero runtime dependencies
 - Works in Node.js and all modern browsers
 - Fail-fast startup errors with redacted values
