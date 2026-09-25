@@ -1,5 +1,41 @@
 # @arkenv/standard
 
+## 1.0.0-rc.4
+
+### Major Changes
+
+- #### Move standard issue helpers to `/issues` _[`#2014`](https://github.com/yamcodes/arkenv/pull/2014) [`3a7b92f`](https://github.com/yamcodes/arkenv/commit/3a7b92f1ff6f078f3a197d32bed277232d1db7c2) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`formatIssues`, `getSchemaKeys`, and the `EnvIssue` types now live on
+	`@arkenv/standard/issues`, the same entry `@arkenv/core` already uses.
+	`arkenv`, `ArkEnvError`, and `SafeArkEnvResult` stay on the package root.
+	`/valibot` and `/zod-mini` no longer re-export the helpers.
+	
+	```ts
+	import arkenv from "@arkenv/standard/safe";
+	import { formatIssues } from "@arkenv/standard/issues";
+	import * as z from "zod";
+	
+	const result = arkenv(
+	  { PORT: z.coerce.number() },
+	  { env: { PORT: "invalid" } },
+	);
+	
+	if (!result.success) {
+	  console.error(formatIssues(result.issues));
+	}
+	```
+	
+	**BREAKING CHANGE**: Issue helpers moved off `@arkenv/standard`,
+	`@arkenv/standard/valibot`, and `@arkenv/standard/zod-mini`.
+	
+	```diff
+	- import arkenv, { formatIssues } from "@arkenv/standard";
+	+ import arkenv from "@arkenv/standard";
+	+ import { formatIssues } from "@arkenv/standard/issues";
+	```
+
 ## 1.0.0-rc.3
 
 No changes in this release.
