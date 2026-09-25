@@ -79,10 +79,10 @@ explicitly not an RC gate.
     `rc` publish (see Explicitly not RC gates)
   - [x] Any other parked surface from Discussion
     [#1709](https://github.com/yamcodes/arkenv/discussions/1709)
-  - [x] ESM-only dual-publish decision still open
+  - [x] ESM-only packaging
     ([#1750](https://github.com/yamcodes/arkenv/discussions/1750)) —
-    tip packages are ESM-only; park for post-RC narrative, not an RC
-    gate
+    shipped in [#1754](https://github.com/yamcodes/arkenv/pull/1754);
+    discussion closed. `1.0.0-rc.2` stays ESM-only.
   - [x] ArkType ecosystem snippet still teaches
     `import arkenv from "arkenv"` — soft blocker for announce /
     day-of `latest` → rc only (section C)
@@ -104,7 +104,6 @@ scratchpad; keep this block as the announce wording.
 
 - Docs voice / AI-slop pass still owed — continuous / GA, not RC.
 - Upstream TanStack CLI catalog (#1818) still blocked.
-- ESM-only vs dual-publish (#1750) undecided for post-RC messaging.
 - ArkType.io ecosystem snippet updated via
   [arktypeio/arktype#1655](https://github.com/arktypeio/arktype/pull/1655)
   (`@arkenv/core` + `npx arkenv init`) — no longer a soft blocker.
@@ -405,15 +404,18 @@ Open on tip (re-verify):
   (preset AST removed, dotenv linter pruned; floating packages +
   keywords retained). No undecided API left for first `rc`.
 - [x] [#1750](https://github.com/yamcodes/arkenv/discussions/1750) -
-  ESM-only - **park** for post-RC narrative (tip is already ESM-only;
-  not an RC gate)
+  ESM-only - **closed**. Shipped in
+  [#1754](https://github.com/yamcodes/arkenv/pull/1754). `1.0.0-rc.2`
+  stays ESM-only (`"type": "module"`, `.js` / `.d.ts`, no `require`
+  condition).
 - [x] [#1817](https://github.com/yamcodes/arkenv/discussions/1817) -
   TanStack CLI + Rsbuild - **not** an RC gate unless promoted
   (related issue [#1818](https://github.com/yamcodes/arkenv/issues/1818))
 - [x] [#1798](https://github.com/yamcodes/arkenv/discussions/1798) -
-  unplugin vs host plugins - **resolved for RC**: ship dedicated
-  `@arkenv/rsbuild-plugin` (+ Vite/Bun host packages). Unplugin
-  consolidation is post-v1 exploration only.
+  unplugin vs host plugins - **closed for v1**. Ship dedicated
+  `@arkenv/vite-plugin`, `@arkenv/bun-plugin`, and
+  `@arkenv/rsbuild-plugin`. Unplugin consolidation is post-v1
+  exploration only.
 - [x] [#1747](https://github.com/yamcodes/arkenv/discussions/1747) -
   TanStack Start strategy - **superseded for RC** by Vite example +
   Rsbuild path +

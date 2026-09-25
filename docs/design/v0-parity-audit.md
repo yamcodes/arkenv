@@ -103,7 +103,10 @@ Documented in ADRs / Discussions; do not reopen for the first RC:
 2. **Strict layout engine** — recipe only (ADR 0020).
 3. **CLI AST preset mutation** — init presets + doc snippets (Discussion #1709).
 4. **Custom dotenv style linter** — out of `arkenv check` (Discussion #1710).
-5. **CJS dual-publish on core packages** — tip is ESM-only (`"type": "module"`, no `require` export). Parked under Discussion [#1750](https://github.com/yamcodes/arkenv/discussions/1750); not an RC gate unless promoted.
+5. **CJS dual-publish on core packages** — not shipped; ESM-only landed in
+   [#1754](https://github.com/yamcodes/arkenv/pull/1754)
+   (`"type": "module"`, no `require` export). Discussion
+   [#1750](https://github.com/yamcodes/arkenv/discussions/1750) is closed.
 6. **Upstream TanStack CLI catalog** — [#1818](https://github.com/yamcodes/arkenv/issues/1818) blocked; community add-on URL still works.
 
 ---
@@ -130,6 +133,5 @@ Carry into RC Release notes (see `docs/RC_CHECKLIST.md` §A):
 - Docs voice / AI-slop pass still owed (not an RC gate).
 - ArkType ecosystem snippet still shows `import arkenv from "arkenv"` —
   soft blocker for announce / day-of `latest` → rc only.
-- ESM-only decision (#1750) still open for post-RC product narrative.
 - `#1819` TanStack Start guide overhaul and `#1807` blog draft are
   parked docs/marketing work, not API parity holes.
