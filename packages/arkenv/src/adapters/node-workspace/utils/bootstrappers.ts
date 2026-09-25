@@ -40,6 +40,44 @@ function entry(
 	return integrationEntry(pkg, standard === true, subpath);
 }
 
+const VITE_ENTRIES = ["@arkenv/vite-plugin", "@arkenv/vite-plugin/standard"];
+const RSBUILD_ENTRIES = [
+	"@arkenv/rsbuild-plugin",
+	"@arkenv/rsbuild-plugin/standard",
+];
+const NEXT_CONFIG_ENTRIES = [
+	"@arkenv/nextjs/config",
+	"@arkenv/nextjs/standard/config",
+];
+const NUXT_MODULE_ENTRIES = [
+	"@arkenv/nuxt/module",
+	"@arkenv/nuxt/standard/module",
+];
+
+/**
+ * Point existing integration imports at the engine selected for this init.
+ *
+ * @param items Magicast import records
+ * @param known Specifiers that belong to this integration entry
+ * @param wanted Specifier for the selected engine
+ * @returns Whether any import specifier changed
+ */
+function retargetImports(
+	items: { from?: string }[] | undefined,
+	known: readonly string[],
+	wanted: string,
+): boolean {
+	let changed = false;
+	for (const item of items ?? []) {
+		if (!item.from || !known.includes(item.from) || item.from === wanted) {
+			continue;
+		}
+		item.from = wanted;
+		changed = true;
+	}
+	return changed;
+}
+
 /**
  * Normalizes named import spacing in generated code.
  * magicast produces `import {Foo}`; this ensures `import { Foo }`.
@@ -139,19 +177,25 @@ export function transformViteConfig(
 		if (Array.isArray(config.plugins)) {
 			// Check if already exists using a word-boundary regex to avoid false positives
 			const hasPlugin = /\barkenv(?:Vite)?Plugin\b/.test(initialCode);
+			const wanted = entry("@arkenv/vite-plugin", input.standard);
 
-			if (!hasPlugin) {
-				// Add imports
+			if (hasPlugin) {
+				const changed = retargetImports(
+					mod.imports.$items,
+					VITE_ENTRIES,
+					wanted,
+				);
+				if (!changed) {
+					return { success: true, updated: false };
+				}
+			} else {
 				mod.imports.$add({
-					from: entry("@arkenv/vite-plugin", input.standard),
+					from: wanted,
 					local: "arkenvPlugin",
 					imported: "default",
 				});
 
 				config.plugins.push("__ARK_PLUGIN_PLACEHOLDER__");
-			} else {
-				// Already has plugin, nothing to do
-				return { success: true, updated: false };
 			}
 		} else {
 			return {
@@ -284,7 +328,17 @@ export function transformRsbuildConfig(
 				return false;
 			});
 
-			if (!hasPlugin) {
+			const wantedRsbuild = entry("@arkenv/rsbuild-plugin", input.standard);
+			if (hasPlugin) {
+				const changed = retargetImports(
+					mod.imports.$items,
+					RSBUILD_ENTRIES,
+					wantedRsbuild,
+				);
+				if (!changed) {
+					return { success: true, updated: false };
+				}
+			} else {
 				const rsbuildImports = (mod.imports.$items || []).filter(
 					(item) => item.from && item.from.startsWith("@arkenv/rsbuild-plugin"),
 				);
@@ -299,10 +353,12 @@ export function transformRsbuildConfig(
 
 				if (!existingImport) {
 					mod.imports.$add({
-						from: entry("@arkenv/rsbuild-plugin", input.standard),
+						from: wantedRsbuild,
 						local: "arkenvPlugin",
 						imported: "arkenvPlugin",
 					});
+				} else {
+					retargetImports(mod.imports.$items, RSBUILD_ENTRIES, wantedRsbuild);
 				}
 
 				const placeholder =
@@ -310,9 +366,6 @@ export function transformRsbuildConfig(
 						? "__ARK_PLUGIN__"
 						: `__ARK_PLUGIN__:${localName}`;
 				config.plugins.push(placeholder);
-			} else {
-				// Already has plugin, nothing to do
-				return { success: true, updated: false };
 			}
 		} else {
 			return {
@@ -375,39 +428,43 @@ export function transformNextjsConfig(
 			};
 		}
 
-		// Check if already wrapped with withArkEnv using the AST
-		if (
-			typeof mod.exports.default === "object" &&
-			"$type" in (mod.exports.default as object) &&
-			(mod.exports.default as { $type?: string }).$type === "function-call" &&
-			(mod.exports.default as { $callee?: string }).$callee === "withArkEnv"
-		) {
-			return { success: true, updated: false };
-		}
+		const wantedConfig = entry("@arkenv/nextjs", input.standard, "config");
+		const alreadyWrapped =
+			(typeof mod.exports.default === "object" &&
+				"$type" in (mod.exports.default as object) &&
+				(mod.exports.default as { $type?: string }).$type === "function-call" &&
+				(mod.exports.default as { $callee?: string }).$callee ===
+					"withArkEnv") ||
+			/\bwithArkEnv\b/.test(initialCode);
 
-		// Also check via regex for cases where withArkEnv is used inline
-		if (/\bwithArkEnv\b/.test(initialCode)) {
-			return { success: true, updated: false };
-		}
-
-		// Add import
-		mod.imports.$add({
-			from: entry("@arkenv/nextjs", input.standard, "config"),
-			imported: "withArkEnv",
-		});
-
-		// Wrap the default export with withArkEnv(...) using the AST
-		if (input.disableCodegen) {
-			mod.exports.default = builders.functionCall(
-				"withArkEnv",
-				mod.exports.default,
-				{ codegen: false },
+		if (alreadyWrapped) {
+			const changed = retargetImports(
+				mod.imports.$items,
+				NEXT_CONFIG_ENTRIES,
+				wantedConfig,
 			);
+			if (!changed) {
+				return { success: true, updated: false };
+			}
 		} else {
-			mod.exports.default = builders.functionCall(
-				"withArkEnv",
-				mod.exports.default,
-			);
+			mod.imports.$add({
+				from: wantedConfig,
+				imported: "withArkEnv",
+			});
+
+			// Wrap the default export with withArkEnv(...) using the AST
+			if (input.disableCodegen) {
+				mod.exports.default = builders.functionCall(
+					"withArkEnv",
+					mod.exports.default,
+					{ codegen: false },
+				);
+			} else {
+				mod.exports.default = builders.functionCall(
+					"withArkEnv",
+					mod.exports.default,
+				);
+			}
 		}
 
 		let code = generateCode(mod, {
@@ -474,13 +531,22 @@ export function transformNuxtConfig(
 
 		if (Array.isArray(config.modules)) {
 			const moduleId = entry("@arkenv/nuxt", input.standard, "module");
-			const hasModule =
-				config.modules.includes("@arkenv/nuxt/module") ||
-				config.modules.includes("@arkenv/nuxt/standard/module");
-
-			if (!hasModule) {
+			const hasWanted = config.modules.includes(moduleId);
+			let replaced = false;
+			for (let index = config.modules.length - 1; index >= 0; index--) {
+				const registered = config.modules[index];
+				if (
+					typeof registered === "string" &&
+					NUXT_MODULE_ENTRIES.includes(registered) &&
+					registered !== moduleId
+				) {
+					config.modules.splice(index, 1);
+					replaced = true;
+				}
+			}
+			if (!hasWanted) {
 				config.modules.push(moduleId);
-			} else {
+			} else if (!replaced) {
 				return { success: true, updated: false };
 			}
 		} else {

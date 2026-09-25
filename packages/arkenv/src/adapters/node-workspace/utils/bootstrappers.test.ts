@@ -149,6 +149,43 @@ describe("bootstrappers", () => {
 			expect(result.updated).toBe(false);
 		});
 
+		it("switches an existing Vite plugin import to the standard entry", () => {
+			const initialContent = dedent`
+				import arkenvPlugin from "@arkenv/vite-plugin"
+				export default {
+					plugins: [arkenvPlugin()]
+				}
+			`;
+
+			const result = transformViteConfig({
+				code: initialContent,
+				standard: true,
+			});
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain(
+				'import arkenvPlugin from "@arkenv/vite-plugin/standard"',
+			);
+			expect(result.code?.match(/arkenvPlugin\(\)/g)).toHaveLength(1);
+		});
+
+		it("switches a standard Vite plugin import back to the ArkType entry", () => {
+			const initialContent = dedent`
+				import arkenvPlugin from "@arkenv/vite-plugin/standard"
+				export default {
+					plugins: [arkenvPlugin()]
+				}
+			`;
+
+			const result = transformViteConfig({ code: initialContent });
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain(
+				'import arkenvPlugin from "@arkenv/vite-plugin"',
+			);
+			expect(result.code).not.toContain("@arkenv/vite-plugin/standard");
+		});
+
 		it("returns updated: true when plugin is injected", async () => {
 			const initialContent = dedent`
 				export default {
@@ -251,6 +288,26 @@ describe("bootstrappers", () => {
 			expect(result.updated).toBe(false);
 		});
 
+		it("switches an existing withArkEnv import to the standard config", () => {
+			const initialContent = dedent`
+				import { withArkEnv } from "@arkenv/nextjs/config"
+				export default withArkEnv({
+					reactStrictMode: true
+				})
+			`;
+
+			const result = transformNextjsConfig({
+				code: initialContent,
+				standard: true,
+			});
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain(
+				'import { withArkEnv } from "@arkenv/nextjs/standard/config"',
+			);
+			expect(result.code?.match(/withArkEnv\(/g)).toHaveLength(1);
+		});
+
 		it("does not duplicate if withArkEnv is referenced inline or elsewhere", () => {
 			const initialContent =
 				"const wrapped = withArkEnv(config);\nexport default wrapped;";
@@ -310,13 +367,46 @@ describe("bootstrappers", () => {
 			expect(result.code).toContain('"@arkenv/nuxt/standard/module"');
 		});
 
-		it("does not add a second nuxt module when the standard module is already present", () => {
+		it("replaces the standard nuxt module when ArkType is selected", () => {
 			const initialContent = dedent`
 				export default defineNuxtConfig({
 					modules: ["@arkenv/nuxt/standard/module"]
 				})
 			`;
 			const result = transformNuxtConfig({ code: initialContent });
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain('"@arkenv/nuxt/module"');
+			expect(result.code).not.toContain("@arkenv/nuxt/standard/module");
+		});
+
+		it("replaces the ArkType nuxt module when Zod or Valibot is selected", () => {
+			const initialContent = dedent`
+				export default defineNuxtConfig({
+					modules: ["@nuxt/eslint", "@arkenv/nuxt/module"]
+				})
+			`;
+			const result = transformNuxtConfig({
+				code: initialContent,
+				standard: true,
+			});
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain('"@arkenv/nuxt/standard/module"');
+			expect(result.code).not.toContain('"@arkenv/nuxt/module"');
+			expect(result.code).toContain('"@nuxt/eslint"');
+		});
+
+		it("keeps the standard nuxt module when it is already selected", () => {
+			const initialContent = dedent`
+				export default defineNuxtConfig({
+					modules: ["@arkenv/nuxt/standard/module"]
+				})
+			`;
+			const result = transformNuxtConfig({
+				code: initialContent,
+				standard: true,
+			});
 			expect(result.success).toBe(true);
 			expect(result.updated).toBe(false);
 		});
@@ -519,6 +609,26 @@ describe("bootstrappers", () => {
 			const result = transformRsbuildConfig({ code: initialContent });
 			expect(result.success).toBe(true);
 			expect(result.updated).toBe(false);
+		});
+
+		it("switches an existing Rsbuild plugin import to the standard entry", () => {
+			const initialContent = dedent`
+				import { arkenvRsbuildPlugin } from "@arkenv/rsbuild-plugin"
+				export default {
+					plugins: [arkenvRsbuildPlugin()]
+				}
+			`;
+
+			const result = transformRsbuildConfig({
+				code: initialContent,
+				standard: true,
+			});
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(true);
+			expect(result.code).toContain(
+				'import { arkenvRsbuildPlugin } from "@arkenv/rsbuild-plugin/standard"',
+			);
+			expect(result.code?.match(/arkenvRsbuildPlugin\(\)/g)).toHaveLength(1);
 		});
 
 		it("is idempotent when arkenvRsbuildPlugin is aliased in the import", async () => {

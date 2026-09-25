@@ -15,4 +15,6 @@ export const env = arkenv({
 });
 ```
 
+Re-running init replaces the other engine's entry. A Nuxt app that still registers `@arkenv/nuxt/module` switches to `@arkenv/nuxt/standard/module` when you choose Zod or Valibot, and the same replacement applies to the Next.js, Vite, and Rsbuild imports. Choosing ArkType switches those entries back.
+
 ArkType init is unchanged: it still installs `arktype` and uses the ArkType integration entry.

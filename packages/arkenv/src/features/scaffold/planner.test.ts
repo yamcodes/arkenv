@@ -230,7 +230,10 @@ describe("Planner", () => {
 				validator: "valibot",
 				bunFeatures: ["serve"],
 			},
-		] as const;
+		] satisfies Pick<
+			CollectedState["options"],
+			"framework" | "validator" | "bunFeatures"
+		>[];
 
 		for (const { framework, validator, ...rest } of cases) {
 			const plan = createPlan({
