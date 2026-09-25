@@ -88,7 +88,6 @@ describe("Reporters", () => {
 			reporter.refuse({
 				code: ERROR_CODES.GIT_TREE_DIRTY,
 				message: "Git working tree is not clean.",
-				retryWith: ["--force"],
 			});
 			expect(stdoutSpy).not.toHaveBeenCalled();
 			expect(stderrSpy).not.toHaveBeenCalled();
@@ -153,7 +152,13 @@ describe("Reporters", () => {
 				code: ERROR_CODES.REQUIREMENTS_NOT_MET,
 				message: "Technical requirements not met.",
 				why: "Technical requirements (e.g. Node.js version) were not met.",
-				retryWith: ["--force"],
+				nextActions: [
+					{
+						kind: "run-command",
+						label: "Re-run with --force to bypass this check",
+						command: "{bin} init --force",
+					},
+				],
 				details: {
 					requirements: [
 						{
@@ -203,38 +208,26 @@ describe("Reporters", () => {
 			});
 		});
 
-		it("refuse omits details when none are provided", () => {
+		it("refuse omits details when none are provided and does not invent nextActions", () => {
 			reporter.refuse({
 				code: ERROR_CODES.GIT_TREE_DIRTY,
 				message: "Git working tree is not clean.",
-				retryWith: ["--force"],
 			});
 			const payload = JSON.parse(stdoutSpy.mock.calls.at(-1)?.[0] as string);
-			expect(payload).toMatchObject({
+			expect(payload).toEqual({
 				ok: false,
 				commandId: "init",
 				error: {
 					code: ERROR_CODES.GIT_TREE_DIRTY,
 					severity: "error",
 					summary: "Git working tree is not clean.",
-					nextActions: [
-						{
-							kind: "run-command",
-							label: "Re-run with --force to bypass this check",
-							command: expect.stringMatching(/arkenv init --force/),
-						},
-					],
+					nextActions: [],
 				},
 				diagnostics: [],
-				nextActions: [
-					{
-						kind: "run-command",
-						label: "Re-run with --force to bypass this check",
-						command: expect.stringMatching(/arkenv init --force/),
-					},
-				],
+				nextActions: [],
 			});
 			expect(payload.error).not.toHaveProperty("meta");
+			expect(JSON.stringify(payload)).not.toContain("retryWith");
 		});
 
 		it("cancel logs errored envelope to stdout", () => {
@@ -301,7 +294,13 @@ describe("Reporters", () => {
 			const refusal = {
 				code: ERROR_CODES.NON_EMPTY_DIR,
 				message: "Directory is not empty and no package.json was found.",
-				retryWith: ["--force"],
+				nextActions: [
+					{
+						kind: "run-command" as const,
+						label: "Re-run with --force to scaffold into non-empty directory",
+						command: "{bin} init --force",
+					},
+				],
 			};
 			reporter.refuse(refusal);
 

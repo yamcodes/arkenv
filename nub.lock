@@ -702,8 +702,8 @@ importers:
   apps/www:
     dependencies:
       '@ark/util':
-        specifier: 0.56.0
-        version: 0.56.0
+        specifier: 0.56.4
+        version: 0.56.4
       '@arkenv/bun-plugin':
         specifier: workspace:*
         version: link:../../packages/bun-plugin
@@ -1602,9 +1602,6 @@ packages:
 
   '@ark/schema@0.56.4':
     resolution: {integrity: sha512-nd4OqaWdKZJeGF5zNmZysDQO7NyyJ1ycl4S7i16Hj1VxqL+x72Z66lOn7ErpsoMUZtCtslAMHMjqJhuQSxciyw==}
-
-  '@ark/util@0.56.0':
-    resolution: {integrity: sha512-BghfRC8b9pNs3vBoDJhcta0/c1J1rsoS1+HgVUreMFPdhz/CRAKReAu57YEllNaSy98rWAdY1gE+gFup7OXpgA==}
 
   '@ark/util@0.56.4':
     resolution: {integrity: sha512-KKqwGSia44cvuuDY70jGfbiUdG2E8F2cM4npdqvJ22S5a0LknlwG6nIrfQG1nF8fzxpzP30098wp0a8ASs0prQ==}
@@ -12599,8 +12596,6 @@ snapshots:
   '@ark/schema@0.56.4':
     dependencies:
       '@ark/util': 0.56.4
-
-  '@ark/util@0.56.0': {}
 
   '@ark/util@0.56.4': {}
 

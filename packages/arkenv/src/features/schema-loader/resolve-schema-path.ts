@@ -4,7 +4,7 @@ import type { ProjectScannerPort, WorkspacePort } from "@/shared/ports";
 /**
  * Resolve the path to the project's schema module.
  *
- * Honors an explicit `--schema`/`--file` path first, then flat convention
+ * Honors an explicit `--schema` path first, then flat convention
  * candidates (`env.ts`, `src/env.ts`, and related extensions). Split-layout
  * leftovers such as `env/server.ts` are not auto-discovered — pass
  * `--schema` at a loadable module (typically the recipe client or a flat
@@ -14,7 +14,7 @@ import type { ProjectScannerPort, WorkspacePort } from "@/shared/ports";
  * @param cwd Working directory to search from
  * @param workspace Port used to test whether candidate files exist
  * @param scanner Port used to suggest a default path
- * @param explicitPath Optional explicit schema path from `--schema` or `--file`
+ * @param explicitPath Optional explicit schema path from `--schema`
  * @returns Absolute path to an existing schema file, or undefined if none is found
  */
 export async function resolveSchemaPath(
