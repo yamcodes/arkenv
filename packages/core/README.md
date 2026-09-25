@@ -11,7 +11,6 @@
 
 <p align="center">
   <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Av1"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/test.yml/badge.svg?branch=v1"></a>
-  <a href="https://bundlejs.com/?q=%40arkenv%2Fcore&config=%7B%22esbuild%22%3A%7B%22external%22%3A%5B%22arktype%22%5D%7D%7D"><img alt="core bundle (gzipped)" src="https://img.shields.io/bundlejs/size/%40arkenv%2Fcore?externals=arktype&label=core%20bundle%20(gzipped)"></a>
   <a href="https://arktype.io/docs/ecosystem#arkenv"><img alt="ArkType Ecosystem" src="https://custom-icon-badges.demolab.com/badge/ArkType%20Ecosystem-0d1526?logo=arktype2&logoColor=e9eef9"></a>
   <a href="https://pullfrog.com"><img alt="Pullfrog" src="https://custom-icon-badges.demolab.com/badge/Powered%20by%20Pullfrog-2f4032?logo=pullfrog-white"></a>
   <a href="https://github.com/yamcodes/arkenv/blob/v1/LICENSE"><img alt="License" src="https://img.shields.io/github/license/yamcodes/arkenv"></a>
@@ -100,14 +99,14 @@ export const env = arkenv({
 
 ## Features
 
-- Use your existing TypeScript validator
-- No boilerplate
 - Zero runtime dependencies
 - Works in Node.js and all modern browsers
+- Tiny: `under 3kb` core bundle (gzipped)
+- Use your existing TypeScript validator
+- No boilerplate
+- Works with TypeScript and plain JS
 - Fail-fast startup errors with redacted values
 - One `env` object: [Next.js](https://arkenv.js.org/docs/frameworks/nextjs), [Nuxt](https://arkenv.js.org/docs/frameworks/nuxt), [Vite](https://arkenv.js.org/docs/frameworks/vite), [TanStack Start](https://arkenv.js.org/docs/frameworks/tanstack-start), [SolidStart](https://github.com/yamcodes/arkenv/tree/v1/examples/with-solid-start), and [Bun](https://arkenv.js.org/docs/frameworks/bun)
-- Coercion before validation
-- Works with TypeScript and plain JS
 
 <br/>
 
