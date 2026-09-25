@@ -40,7 +40,6 @@ const config = {
 	},
 	serverExternalPackages: [
 		"typescript",
-		"twoslash",
 		"ts-morph",
 		"import-in-the-middle",
 		"require-in-the-middle",

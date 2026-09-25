@@ -1,7 +1,6 @@
 // biome-ignore-all lint/suspicious/noConsole: This is a CLI debugging script
 import fs from "node:fs";
-import { createTwoslasher } from "twoslash";
-import { arktypeTwoslashOptions } from "~/lib/twoslash-options";
+import { runTwoslash } from "~/lib/twoslash-run";
 
 const mdxPath = process.argv[2];
 if (!mdxPath) {
@@ -11,42 +10,41 @@ if (!mdxPath) {
 
 const content = fs.readFileSync(mdxPath, "utf8");
 
-// Use the shared options, but we need the inner twoslashOptions property
-// which contains compilerOptions, extraFiles, etc.
-const options = arktypeTwoslashOptions.twoslashOptions;
-const twoslasher = createTwoslasher(options);
-
 const codeBlockRegex =
 	/```(ts|tsx|js|jsx)(?:[ \t]+[^\n]*?)?[ \t]+twoslash(?:[ \t]+[^\n]*?)?\r?\n([\s\S]*?)\r?\n[ \t]*```/g;
-let blockIndex = 1;
 
-for (const match of content.matchAll(codeBlockRegex)) {
-	const lang = match[1] ?? "ts";
-	const code = match[2];
-	if (code === undefined) continue;
-	console.log(`\n--- Block ${blockIndex++} ---`);
-	try {
-		const result = twoslasher(code, lang);
-
-		console.log("Hovers:");
-		for (const h of result.hovers) {
-			if (arktypeTwoslashOptions.filterNode?.(h) !== false) {
-				console.log(`  [${h.line}:${h.character}] ${h.text}`);
-				if (h.docs) {
-					console.log(`      Docs: ${h.docs}`);
+/**
+ * Typecheck every `twoslash` fence in an MDX file and print hovers and errors.
+ */
+async function main() {
+	let blockIndex = 1;
+	for (const match of content.matchAll(codeBlockRegex)) {
+		const lang = match[1] ?? "ts";
+		const code = match[2];
+		if (code === undefined) continue;
+		console.log(`\n--- Block ${blockIndex++} ---`);
+		try {
+			const result = await runTwoslash(code, lang);
+			console.log("Hovers:");
+			for (const node of result.nodes) {
+				if (node.type !== "hover" && node.type !== "query") continue;
+				console.log(`  [${node.line}:${node.character}] ${node.text}`);
+				if (node.docs) {
+					console.log(`      Docs: ${node.docs}`);
 				}
 			}
-		}
 
-		if (result.errors.length > 0) {
-			console.log("Errors:");
-			for (const e of result.errors) {
-				if (arktypeTwoslashOptions.filterNode?.(e) !== false) {
-					console.log(`  [${e.line}:${e.character}] ${e.text}`);
+			const errors = result.nodes.filter((node) => node.type === "error");
+			if (errors.length > 0) {
+				console.log("Errors:");
+				for (const node of errors) {
+					console.log(`  [${node.line}:${node.character}] ${node.text}`);
 				}
 			}
+		} catch (e) {
+			console.error("Twoslash error:", e);
 		}
-	} catch (e) {
-		console.error("Twoslash error:", e);
 	}
 }
+
+await main();

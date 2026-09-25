@@ -33,7 +33,7 @@ export function HeroEnvHover({ hovers }: HeroEnvHoverProps) {
 
 	return (
 		<span className="twoslash">
-			<Popup delay={180}>
+			<Popup openDelay={180}>
 				<PopupTrigger aria-label="Example type of env">
 					<code>env</code>
 				</PopupTrigger>

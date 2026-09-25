@@ -176,7 +176,7 @@ function hoverToReact(
 		keyPrefix: `${key}-p`,
 	});
 	return (
-		<Popup key={key} delay={300}>
+		<Popup key={key} openDelay={300}>
 			<PopupTrigger>{token}</PopupTrigger>
 			<PopupContent side="bottom" align="start">
 				{popupBody}

@@ -1,5 +1,5 @@
-import { createTwoslasher } from "twoslash";
 import { describe, expect, it } from "vitest";
+import { runTwoslash } from "~/lib/twoslash-run";
 import {
 	HERO_MVP_SNIPPETS,
 	heroMvpEngine,
@@ -8,20 +8,17 @@ import {
 import { heroTwoslashOptions } from "./hero-mvp-twoslash-options";
 
 describe("hero MVP snippets", () => {
-	it("typecheck in Twoslash", { timeout: 30_000 }, () => {
-		const slashers = {
-			arktype: createTwoslasher(heroTwoslashOptions("arktype").twoslashOptions),
-			standard: createTwoslasher(
-				heroTwoslashOptions("standard").twoslashOptions,
-			),
-		};
-
+	it("typecheck in Twoslash", { timeout: 30_000 }, async () => {
 		for (const snippet of HERO_MVP_SNIPPETS) {
-			const result = slashers[heroMvpEngine(snippet.host, snippet.validator)](
+			const engine = heroMvpEngine(snippet.host, snippet.validator);
+			const result = await runTwoslash(
 				snippet.code,
 				"ts",
+				heroTwoslashOptions(engine),
 			);
-			const errors = result.errors.filter((error) => error.code !== 2307);
+			const errors = result.nodes.filter(
+				(node) => node.type === "error" && node.code !== 2307,
+			);
 			expect(errors, `${snippet.host}/${snippet.validator}`).toEqual([]);
 		}
 	});

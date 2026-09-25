@@ -1,4 +1,5 @@
 import path from "node:path";
+import { filterTwoslashNode } from "~/lib/twoslash-options";
 import { arktypeTwoslashVfs, root, wwwRoot } from "~/lib/twoslash-vfs";
 
 export type HeroTwoslashEngine = "arktype" | "standard";
@@ -30,6 +31,7 @@ export function heroTwoslashOptions(engine: HeroTwoslashEngine) {
 		},
 		twoslashOptions: {
 			...arktypeTwoslashVfs,
+			filterNode: filterTwoslashNode,
 			compilerOptions: {
 				...compilerOptions,
 				paths,

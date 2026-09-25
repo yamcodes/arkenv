@@ -75,7 +75,7 @@ export async function GET(
 	}
 
 	// biome-ignore lint/suspicious/noExplicitAny: folderNode is cast for llms indexNode
-	const indexContent = llms(source).indexNode(folderNode as any);
+	const indexContent = await llms(source).indexNode(folderNode as any);
 
 	return new Response(indexContent, {
 		headers: {

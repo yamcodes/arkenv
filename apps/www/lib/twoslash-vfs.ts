@@ -1,6 +1,5 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import ts from "typescript";
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 export const root = path.resolve(currentDir, "../../..");
@@ -9,11 +8,11 @@ export const wwwRoot = path.join(root, "apps/www");
 /** Compiler VFS for Twoslash — no arkdark, safe to import from RSC. */
 export const arktypeTwoslashVfs = {
 	customTags: ["annotate", "log", "warn", "error"],
-	vfsRoot: wwwRoot,
+	cwd: wwwRoot,
 	compilerOptions: {
-		module: ts.ModuleKind.ESNext,
-		moduleResolution: ts.ModuleResolutionKind.Bundler,
-		target: ts.ScriptTarget.ES2022,
+		module: "esnext",
+		moduleResolution: "bundler",
+		target: "es2022",
 		baseUrl: wwwRoot,
 		paths: {
 			"@arkenv/core": [path.join(root, "packages/core/src/index.ts")],
