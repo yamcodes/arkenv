@@ -21,9 +21,9 @@ describe("bootstrappers", () => {
 			expect(result.success).toBe(true);
 
 			expect(result.code).toContain(
-				'import arkenvVitePlugin from "@arkenv/vite-plugin"',
+				'import arkenvPlugin from "@arkenv/vite-plugin"',
 			);
-			expect(result.code).toContain("arkenvVitePlugin()");
+			expect(result.code).toContain("arkenvPlugin()");
 		});
 
 		it("injects plugin into a simple object export", async () => {
@@ -35,7 +35,7 @@ describe("bootstrappers", () => {
 
 			const result = transformViteConfig({ code: initialContent });
 			expect(result.success).toBe(true);
-			expect(result.code).toContain("arkenvVitePlugin()");
+			expect(result.code).toContain("arkenvPlugin()");
 		});
 
 		it("handles missing plugins array", async () => {
@@ -48,7 +48,7 @@ describe("bootstrappers", () => {
 			const result = transformViteConfig({ code: initialContent });
 			expect(result.success).toBe(true);
 			expect(result.code).toContain("plugins: [");
-			expect(result.code).toContain("arkenvVitePlugin()");
+			expect(result.code).toContain("arkenvPlugin()");
 		});
 
 		it("preserves space indentation format", () => {
@@ -56,7 +56,7 @@ describe("bootstrappers", () => {
 				'import { defineConfig } from "vite";\n\nexport default defineConfig({\n  plugins: [],\n});\n';
 			const result = transformViteConfig({ code: initialContent });
 			expect(result.success).toBe(true);
-			expect(result.code).toContain("  plugins: [arkenvVitePlugin()]");
+			expect(result.code).toContain("  plugins: [arkenvPlugin()]");
 			expect(result.code?.endsWith("\n")).toBe(true);
 		});
 
@@ -65,7 +65,7 @@ describe("bootstrappers", () => {
 				'import { defineConfig } from "vite";\n\nexport default defineConfig({\n\tplugins: [],\n});\n';
 			const result = transformViteConfig({ code: initialContent });
 			expect(result.success).toBe(true);
-			expect(result.code).toContain("\tplugins: [arkenvVitePlugin()]");
+			expect(result.code).toContain("\tplugins: [arkenvPlugin()]");
 		});
 
 		it("preserves absence of trailing newline", () => {
@@ -119,9 +119,9 @@ describe("bootstrappers", () => {
 
 		it("does not duplicate plugin if already exists and returns updated: false", async () => {
 			const initialContent = dedent`
-				import arkenvVitePlugin from "@arkenv/vite-plugin"
+				import arkenvPlugin from "@arkenv/vite-plugin"
 				export default {
-					plugins: [arkenvVitePlugin()]
+					plugins: [arkenvPlugin()]
 				}
 			`;
 
@@ -339,9 +339,9 @@ describe("bootstrappers", () => {
 			expect(result.success).toBe(true);
 
 			expect(result.code).toContain(
-				'import { arkenvRsbuildPlugin } from "@arkenv/rsbuild-plugin"',
+				'import { arkenvPlugin } from "@arkenv/rsbuild-plugin"',
 			);
-			expect(result.code).toContain("arkenvRsbuildPlugin()");
+			expect(result.code).toContain("arkenvPlugin()");
 		});
 
 		it("injects plugin into a simple object export", async () => {
@@ -353,7 +353,7 @@ describe("bootstrappers", () => {
 
 			const result = transformRsbuildConfig({ code: initialContent });
 			expect(result.success).toBe(true);
-			expect(result.code).toContain("arkenvRsbuildPlugin()");
+			expect(result.code).toContain("arkenvPlugin()");
 		});
 
 		it("handles missing plugins array", async () => {
@@ -366,7 +366,7 @@ describe("bootstrappers", () => {
 			const result = transformRsbuildConfig({ code: initialContent });
 			expect(result.success).toBe(true);
 			expect(result.code).toContain("plugins: [");
-			expect(result.code).toContain("arkenvRsbuildPlugin()");
+			expect(result.code).toContain("arkenvPlugin()");
 		});
 
 		it("preserves space indentation format", () => {
@@ -374,7 +374,7 @@ describe("bootstrappers", () => {
 				'import { defineConfig } from "@rsbuild/core";\n\nexport default defineConfig({\n  plugins: [],\n});\n';
 			const result = transformRsbuildConfig({ code: initialContent });
 			expect(result.success).toBe(true);
-			expect(result.code).toContain("  plugins: [arkenvRsbuildPlugin()]");
+			expect(result.code).toContain("  plugins: [arkenvPlugin()]");
 			expect(result.code?.endsWith("\n")).toBe(true);
 		});
 
@@ -383,7 +383,7 @@ describe("bootstrappers", () => {
 				'import { defineConfig } from "@rsbuild/core";\n\nexport default defineConfig({\n\tplugins: [],\n});\n';
 			const result = transformRsbuildConfig({ code: initialContent });
 			expect(result.success).toBe(true);
-			expect(result.code).toContain("\tplugins: [arkenvRsbuildPlugin()]");
+			expect(result.code).toContain("\tplugins: [arkenvPlugin()]");
 		});
 
 		it("preserves absence of trailing newline", () => {
@@ -521,7 +521,7 @@ describe("bootstrappers", () => {
 			expect(result.success).toBe(true);
 			expect(result.updated).toBe(true);
 			expect(result.code).toContain("pluginReact()");
-			expect(result.code).toContain("arkenvRsbuildPlugin()");
+			expect(result.code).toContain("arkenvPlugin()");
 		});
 	});
 });

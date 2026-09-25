@@ -23,7 +23,7 @@ export const env = arkenv({
 ```ts title="rsbuild.config.ts"
 import { pluginReact } from "@rsbuild/plugin-react";
 import { tanstackStart } from "@tanstack/react-start/plugin/rsbuild";
-import { arkenvRsbuildPlugin } from "@arkenv/rsbuild-plugin";
+import { arkenvPlugin } from "@arkenv/rsbuild-plugin";
 import { defineConfig } from "@rsbuild/core";
 
 export default defineConfig({
@@ -33,7 +33,7 @@ export default defineConfig({
   plugins: [
     tanstackStart({ srcDirectory: "src" }),
     pluginReact(),
-    arkenvRsbuildPlugin(),
+    arkenvPlugin(),
   ],
 });
 ```

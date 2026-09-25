@@ -7,8 +7,7 @@ import type { BunTransformOptions } from "./env-module";
 
 export type { BunTransformOptions };
 
-const { arkenvPlugin: arkenvPluginInstance, hybrid: hybridObj } =
-	createBunPlugin("@arkenv/bun-plugin/standard");
+const arkenvPluginInstance = createBunPlugin("@arkenv/bun-plugin/standard");
 
 /**
  * Create a Bun plugin (Standard Schema) that rewrites `env.ts` in browser bundles.
@@ -19,6 +18,4 @@ const { arkenvPlugin: arkenvPluginInstance, hybrid: hybridObj } =
 export const arkenvPlugin: ((options?: BunPluginFactoryConfig) => BunPlugin) &
 	BunPlugin = arkenvPluginInstance;
 
-export const hybrid = hybridObj;
-export const arkenvBunPlugin = arkenvPlugin;
 export default arkenvPlugin;

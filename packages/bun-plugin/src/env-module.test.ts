@@ -9,7 +9,7 @@ import {
 	isEnvModuleId,
 	isTransformModeCall,
 } from "./env-module.js";
-import arkenvPlugin, { hybrid } from "./index.js";
+import arkenvPlugin from "./index.js";
 
 describe("transform mode helpers", () => {
 	it("detects transform-mode calls", () => {
@@ -88,10 +88,10 @@ describe("transform mode plugin", () => {
 		expect(typeof plugin.setup).toBe("function");
 	});
 
-	it("exposes hybrid as a zero-config browser transform plugin", () => {
-		expect(hybrid).toHaveProperty("name", "@arkenv/bun-plugin");
-		expect(hybrid).toHaveProperty("target", "browser");
-		expect(hybrid).toHaveProperty("setup");
+	it("exposes arkenvPlugin as a zero-config browser transform plugin", () => {
+		expect(arkenvPlugin).toHaveProperty("name", "@arkenv/bun-plugin");
+		expect(arkenvPlugin).toHaveProperty("target", "browser");
+		expect(arkenvPlugin).toHaveProperty("setup");
 	});
 
 	it("rewrites the env module via onLoad with coerced literals", async () => {

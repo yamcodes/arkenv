@@ -44,7 +44,7 @@ include the `/demo/arkenv` route. You can accept the defaults or pick
 what fits your project.
 
 The add-on installs the validator runtime, registers
-`arkenvVitePlugin()` in `vite.config.ts`, writes `src/env.ts`, and
+`arkenvPlugin()` in `vite.config.ts`, writes `src/env.ts`, and
 pre-populates declared keys in `.env.example`.
 
 ### Existing projects
@@ -143,13 +143,13 @@ bundler config.
 ### Vite
 
 TanStack Start's React recipe on Vite expects `viteReact()` after
-`tanstackStart()` (for JSX / Fast Refresh). Add `arkenvVitePlugin()` to
+`tanstackStart()` (for JSX / Fast Refresh). Add `arkenvPlugin()` to
 the same `plugins` array:
 
 ```ts title="./vite.config.ts"
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
-import arkenvVitePlugin from "@arkenv/vite-plugin";
+import arkenvPlugin from "@arkenv/vite-plugin";
 import { defineConfig } from "vite";
 
 export default defineConfig({
@@ -157,7 +157,7 @@ export default defineConfig({
     tanstackStart({ srcDirectory: "src" }),
     // React's Vite plugin must come after Start's plugin
     viteReact(),
-    arkenvVitePlugin(),
+    arkenvPlugin(),
   ],
 });
 ```
@@ -176,19 +176,19 @@ aren't using ArkType, import the ArkEnv plugin from
 
 TanStack Start also supports [Rsbuild](https://rsbuild.dev) via
 `@tanstack/react-start/plugin/rsbuild`. Register
-`arkenvRsbuildPlugin()` in your `rsbuild.config.ts`:
+`arkenvPlugin()` in your `rsbuild.config.ts`:
 
 ```ts title="./rsbuild.config.ts"
 import { pluginReact } from "@rsbuild/plugin-react";
 import { tanstackStart } from "@tanstack/react-start/plugin/rsbuild";
-import { arkenvRsbuildPlugin } from "@arkenv/rsbuild-plugin";
+import { arkenvPlugin } from "@arkenv/rsbuild-plugin";
 import { defineConfig } from "@rsbuild/core";
 
 export default defineConfig({
   plugins: [
     tanstackStart({ srcDirectory: "src" }),
     pluginReact(),
-    arkenvRsbuildPlugin(),
+    arkenvPlugin(),
   ],
 });
 ```

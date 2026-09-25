@@ -1,4 +1,4 @@
-import { arkenvRsbuildPlugin } from "@arkenv/rsbuild-plugin";
+import { arkenvPlugin } from "@arkenv/rsbuild-plugin";
 import { defineConfig } from "@rsbuild/core";
 import { pluginReact } from "@rsbuild/plugin-react";
 import { tanstackStart } from "@tanstack/react-start/plugin/rsbuild";
@@ -10,6 +10,6 @@ export default defineConfig({
 	plugins: [
 		tanstackStart({ srcDirectory: "src" }),
 		pluginReact(),
-		arkenvRsbuildPlugin(),
+		arkenvPlugin(),
 	],
 });

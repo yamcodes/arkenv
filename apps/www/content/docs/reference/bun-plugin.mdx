@@ -23,13 +23,11 @@ npm install @arkenv/standard
 
 ## Exports
 
-| Export                  | Role                                     |
-| ----------------------- | ---------------------------------------- |
-| default                 | `arkenvPlugin` hybrid plugin instance    |
-| named `arkenvPlugin`    | Hybrid plugin factory and instance       |
-| named `arkenvBunPlugin` | Host-explicit named alias                |
-| named `hybrid`          | Explicit zero-config hybrid plugin alias |
-| `./standard`            | Standard Schema plugin entry             |
+| Export               | Role                                       |
+| -------------------- | ------------------------------------------ |
+| default              | `arkenvPlugin` factory and plugin instance |
+| named `arkenvPlugin` | Factory and zero-config plugin instance    |
+| `./standard`         | Standard Schema plugin entry               |
 
 `arkenvPlugin` is both a factory (`arkenvPlugin({ schemaPath })`) and a
 `BunPlugin` object with `name`, `target`, and `setup`. You can preload

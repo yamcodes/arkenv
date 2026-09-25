@@ -21,5 +21,4 @@ export function arkenvPlugin(
 	return arkenvCreator(options);
 }
 
-export { arkenvPlugin as arkenvRsbuildPlugin };
 export default arkenvPlugin;

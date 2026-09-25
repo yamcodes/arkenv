@@ -225,12 +225,12 @@ plugins = ["@arkenv/bun-plugin"]
 In `Bun.build`:
 
 ```ts
-import arkenv from "@arkenv/bun-plugin";
+import arkenvPlugin from "@arkenv/bun-plugin";
 
 await Bun.build({
   entrypoints: ["./src/index.tsx"],
   outdir: "./dist",
-  plugins: [arkenv()],
+  plugins: [arkenvPlugin],
 });
 ```
 
