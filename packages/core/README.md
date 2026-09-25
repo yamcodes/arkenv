@@ -104,8 +104,7 @@ export const env = arkenv({
 - Your existing validator
 - Zero runtime dependencies
 - Works in Node.js and all modern browsers
-- Fail-fast startup errors
-- Redacted values in error output
+- Fail-fast startup errors with redacted values
 - One `env` object: [Next.js](https://arkenv.js.org/docs/frameworks/nextjs), [Nuxt](https://arkenv.js.org/docs/frameworks/nuxt), [Vite](https://arkenv.js.org/docs/frameworks/vite), [TanStack Start](https://arkenv.js.org/docs/frameworks/tanstack-start), [SolidStart](https://github.com/yamcodes/arkenv/tree/v1/examples/with-solid-start), and [Bun](https://arkenv.js.org/docs/frameworks/bun)
 - Coercion before validation
 - Works with TypeScript and plain JS
