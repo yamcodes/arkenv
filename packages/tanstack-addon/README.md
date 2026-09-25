@@ -10,6 +10,8 @@ Create a new TanStack Start app with ArkEnv pre-configured:
 tanstack create my-app --add-ons https://arkenv.js.org/tanstack/info.json
 ```
 
+`@tanstack/cli` does not include an `arkenv` add-on yet, so `--add-ons arkenv` fails.
+
 Or add to an existing project:
 
 ```bash

@@ -1,7 +1,7 @@
 {
 	"id": "arkenv",
 	"name": "ArkEnv",
-	"version": "1.0.0-alpha.1",
+	"version": "1.0.0-rc.2",
 	"description": "Typesafe environment variable validation with build-time validation and runtime leak protection.",
 	"type": "add-on",
 	"phase": "add-on",
