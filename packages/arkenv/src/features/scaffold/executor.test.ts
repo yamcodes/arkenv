@@ -283,6 +283,7 @@ describe("Executor", () => {
 		expect(mockWorkspace.bootstrapViteConfig).toHaveBeenCalledWith(
 			"vite.config.ts",
 			"./env",
+			{ standard: false },
 		);
 	});
 
@@ -296,6 +297,7 @@ describe("Executor", () => {
 		expect(mockWorkspace.findRsbuildConfig).toHaveBeenCalled();
 		expect(mockWorkspace.bootstrapRsbuildConfig).toHaveBeenCalledWith(
 			"rsbuild.config.ts",
+			{ standard: false },
 		);
 	});
 
@@ -320,7 +322,30 @@ describe("Executor", () => {
 		expect(mockWorkspace.bootstrapNextjsConfig).toHaveBeenCalledWith(
 			"next.config.ts",
 			undefined,
+			{ standard: false },
 		);
+	});
+
+	it("bootstraps Zod Next.js on the standard entry", async () => {
+		const plan: ScaffoldingPlan = {
+			...defaultPlan,
+			metadata: {
+				...defaultPlan.metadata,
+				framework: "nextjs",
+				validator: "zod",
+			},
+			bootstrap: { framework: "nextjs", importPath: "./env" },
+		};
+		await executor.execute(plan);
+		expect(mockWorkspace.bootstrapNextjsConfig).toHaveBeenCalledWith(
+			"next.config.ts",
+			undefined,
+			{ standard: true },
+		);
+		const script = vi
+			.mocked(mockWorkspace.execute)
+			.mock.calls.find((call) => call[0] === "node")?.[1]?.[1];
+		expect(script).toContain("runCodegen(schemaPath, outputPath, true)");
 	});
 
 	it("bootstraps nextjs but skips config if no config file found", async () => {

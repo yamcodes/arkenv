@@ -46,14 +46,6 @@ export type FrameworkStrategy = {
 	getDependencies(options: ProjectOptions): string[];
 
 	/**
-	 * Whether this framework requires arktype as a peer dependency.
-	 *
-	 * @param options The selected project options.
-	 * @returns True when arktype should be added to the install list.
-	 */
-	requiresArktypePeer(options: ProjectOptions): boolean;
-
-	/**
 	 * Build framework-specific bootstrap configuration for the executor.
 	 *
 	 * @param options The selected project options.

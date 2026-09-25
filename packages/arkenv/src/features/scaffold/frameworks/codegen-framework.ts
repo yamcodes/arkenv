@@ -41,10 +41,6 @@ export function createCodegenFrameworkStrategy(
 			return [packageName];
 		},
 
-		requiresArktypePeer() {
-			return true;
-		},
-
 		bootstrap(options) {
 			return shake({
 				framework: id,

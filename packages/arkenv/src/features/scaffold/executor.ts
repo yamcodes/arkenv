@@ -2,6 +2,7 @@ import path from "node:path";
 import { isMap, parseDocument } from "yaml";
 import { code, symbol } from "@/shared/visuals";
 import { cloneExample } from "./cloner";
+import { integrationEntry, usesStandardEngine } from "./engine";
 import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
 import { getInstallCommand, getNextStepsNote } from "./utils";
 
@@ -89,13 +90,17 @@ export class Executor {
 			// 4. Framework bootstrapping
 			let frameworkConfigBootstrapped = false;
 			if (plan.bootstrap) {
+				const standard = usesStandardEngine(plan.metadata.validator);
+				const engine = { standard };
 				if (plan.bootstrap.framework === "vite") {
 					const viteConfigPath = await this.workspace.findViteConfig(plan.cwd);
+					const vitePlugin = integrationEntry("@arkenv/vite-plugin", standard);
 					if (viteConfigPath) {
 						this.reporter.step("Bootstrapping Vite plugin...");
 						const result = await this.workspace.bootstrapViteConfig(
 							viteConfigPath,
 							plan.bootstrap.importPath || "./src/env",
+							engine,
 						);
 						if (result.success) {
 							if (result.updated) {
@@ -107,13 +112,11 @@ export class Executor {
 							this.reporter.warn(
 								`Could not automatically update ${code(path.basename(viteConfigPath))}: ${result.error}`,
 							);
-							this.reporter.info(
-								`Please add ${code("@arkenv/vite-plugin")} manually.`,
-							);
+							this.reporter.info(`Please add ${code(vitePlugin)} manually.`);
 						}
 					} else {
 						this.reporter.info(
-							`No Vite config found - please add ${code("@arkenv/vite-plugin")} to your Vite config manually.`,
+							`No Vite config found - please add ${code(vitePlugin)} to your Vite config manually.`,
 						);
 					}
 				} else if (plan.bootstrap.framework === "bun-fullstack") {
@@ -121,6 +124,7 @@ export class Executor {
 					const result = await this.workspace.bootstrapBunConfig(
 						bunConfigPath,
 						plan.bootstrap.bunFeatures,
+						engine,
 					);
 					if (result.success && result.instructions) {
 						this.reporter.info(result.instructions);
@@ -131,7 +135,7 @@ export class Executor {
 					// Only generate env.gen.ts when codegen is enabled
 					if (!plan.bootstrap.disableCodegen) {
 						this.reporter.step("Generating Next.js environment bindings...");
-						const script = `import('@arkenv/nextjs/config').then(({ runCodegen }) => { const path = require('path'); const schemaPath = path.resolve(process.cwd(), '${plan.metadata.displayPath}'); const outputPath = path.join(process.cwd(), '.arkenv', 'env.gen.ts'); runCodegen(schemaPath, outputPath); }).catch(err => { console.error(err); process.exit(1); });`;
+						const script = `import('@arkenv/nextjs/config').then(({ runCodegen }) => { const path = require('path'); const schemaPath = path.resolve(process.cwd(), '${plan.metadata.displayPath}'); const outputPath = path.join(process.cwd(), '.arkenv', 'env.gen.ts'); runCodegen(schemaPath, outputPath, ${standard}); }).catch(err => { console.error(err); process.exit(1); });`;
 						try {
 							await this.workspace.execute("node", ["-e", script], plan.cwd);
 							this.reporter.info(
@@ -162,6 +166,7 @@ export class Executor {
 							const result = await this.workspace.bootstrapNextjsConfig(
 								nextjsConfigPath,
 								plan.bootstrap.disableCodegen,
+								engine,
 							);
 							if (result.success) {
 								if (result.updated) {
@@ -189,10 +194,17 @@ export class Executor {
 				} else if (plan.bootstrap.framework === "nuxt") {
 					// Bootstrap Nuxt config wrapper
 					this.reporter.step("Bootstrapping Nuxt config...");
+					const nuxtModule = integrationEntry(
+						"@arkenv/nuxt",
+						standard,
+						"module",
+					);
 					const nuxtConfigPath = await this.workspace.findNuxtConfig(plan.cwd);
 					if (nuxtConfigPath) {
-						const result =
-							await this.workspace.bootstrapNuxtConfig(nuxtConfigPath);
+						const result = await this.workspace.bootstrapNuxtConfig(
+							nuxtConfigPath,
+							engine,
+						);
 						if (result.success) {
 							if (result.updated) {
 								this.reporter.info(
@@ -200,7 +212,7 @@ export class Executor {
 								);
 							} else {
 								this.reporter.info(
-									`${code(path.basename(nuxtConfigPath))} already registers @arkenv/nuxt/module`,
+									`${code(path.basename(nuxtConfigPath))} already registers ${nuxtModule}`,
 								);
 							}
 							frameworkConfigBootstrapped = true;
@@ -211,17 +223,23 @@ export class Executor {
 						}
 					} else {
 						this.reporter.info(
-							`No Nuxt config found. Please register ${code("@arkenv/nuxt/module")} manually.`,
+							`No Nuxt config found. Please register ${code(nuxtModule)} manually.`,
 						);
 					}
 				} else if (plan.bootstrap.framework === "rsbuild") {
 					this.reporter.step("Bootstrapping Rsbuild plugin...");
+					const rsbuildPlugin = integrationEntry(
+						"@arkenv/rsbuild-plugin",
+						standard,
+					);
 					const rsbuildConfigPath = await this.workspace.findRsbuildConfig(
 						plan.cwd,
 					);
 					if (rsbuildConfigPath) {
-						const result =
-							await this.workspace.bootstrapRsbuildConfig(rsbuildConfigPath);
+						const result = await this.workspace.bootstrapRsbuildConfig(
+							rsbuildConfigPath,
+							engine,
+						);
 						if (result.success) {
 							if (result.updated) {
 								this.reporter.info(
@@ -229,7 +247,7 @@ export class Executor {
 								);
 							} else {
 								this.reporter.info(
-									`${code(path.basename(rsbuildConfigPath))} already registers @arkenv/rsbuild-plugin`,
+									`${code(path.basename(rsbuildConfigPath))} already registers ${rsbuildPlugin}`,
 								);
 							}
 							frameworkConfigBootstrapped = true;
@@ -237,13 +255,11 @@ export class Executor {
 							this.reporter.warn(
 								`Could not automatically update ${code(path.basename(rsbuildConfigPath))}: ${result.error}`,
 							);
-							this.reporter.info(
-								`Please add ${code("@arkenv/rsbuild-plugin")} manually.`,
-							);
+							this.reporter.info(`Please add ${code(rsbuildPlugin)} manually.`);
 						}
 					} else {
 						this.reporter.info(
-							`No Rsbuild config found - please add ${code("@arkenv/rsbuild-plugin")} to your Rsbuild config manually.`,
+							`No Rsbuild config found - please add ${code(rsbuildPlugin)} to your Rsbuild config manually.`,
 						);
 					}
 				}

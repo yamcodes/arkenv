@@ -21,10 +21,6 @@ export const viteStrategy: FrameworkStrategy = {
 		return ["@arkenv/vite-plugin"];
 	},
 
-	requiresArktypePeer() {
-		return true;
-	},
-
 	bootstrap() {
 		return shake({ framework: "vite" as const });
 	},

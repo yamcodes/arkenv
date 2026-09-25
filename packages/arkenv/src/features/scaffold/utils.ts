@@ -1,4 +1,5 @@
 import { code } from "@/shared/visuals";
+import { integrationEntry, usesStandardEngine } from "./engine";
 import type { ScaffoldingPlan } from "./plan";
 
 /** Manual install printed in next steps. Init does not run this command. */
@@ -55,8 +56,13 @@ export function getNextStepsNote(
 			message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
 		} else {
 			if (needsManualConfig) {
+				const configEntry = integrationEntry(
+					"@arkenv/nextjs",
+					usesStandardEngine(plan.metadata.validator),
+					"config",
+				);
 				message += `${step++}. Wrap your Next.js config with ${code("withArkEnv")} inside ${code("next.config.ts")}:\n`;
-				message += `   ${code('import { withArkEnv } from "@arkenv/nextjs/config";')}\n`;
+				message += `   ${code(`import { withArkEnv } from "${configEntry}";`)}\n`;
 				message += `   ${code("export default withArkEnv(nextConfig);")}\n`;
 			}
 			message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;

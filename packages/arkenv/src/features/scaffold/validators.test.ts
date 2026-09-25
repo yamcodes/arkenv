@@ -157,6 +157,33 @@ describe("validators templates", () => {
 			expect(template).not.toContain("runtimeEnv:");
 		});
 
+		it("returns nextjs zod template on the standard entry when codegen is off", () => {
+			const options = {
+				validator: "zod" as const,
+				framework: "nextjs" as const,
+				path: "env.ts",
+				language: "ts" as const,
+				disableCodegen: true,
+			};
+			const template = getSimpleTemplate(options);
+			expect(template).toContain(
+				'import arkenv from "@arkenv/nextjs/standard"',
+			);
+			expect(template).toContain('import * as z from "zod"');
+		});
+
+		it("returns nuxt zod template on the standard entry", () => {
+			const options = {
+				validator: "zod" as const,
+				framework: "nuxt" as const,
+				path: "env.ts",
+				language: "ts" as const,
+			};
+			const template = getSimpleTemplate(options);
+			expect(template).toContain('import arkenv from "@arkenv/nuxt/standard"');
+			expect(template).toContain('import * as z from "zod"');
+		});
+
 		it("returns nextjs template for zod when validator is zod", () => {
 			const options = {
 				validator: "zod" as const,

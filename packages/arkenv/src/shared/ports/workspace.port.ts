@@ -49,17 +49,26 @@ export type ConfigPort = {
 	bootstrapViteConfig(
 		path: string,
 		importPath: string,
+		options?: { standard?: boolean },
 	): Promise<BootstrapResult>;
 	bootstrapBunConfig(
 		path: string | null | undefined,
 		features?: ("serve" | "build")[],
+		options?: { standard?: boolean },
 	): Promise<BootstrapResult>;
 	bootstrapNextjsConfig(
 		path: string,
 		disableCodegen?: boolean,
+		options?: { standard?: boolean },
 	): Promise<BootstrapResult>;
-	bootstrapNuxtConfig(path: string): Promise<BootstrapResult>;
-	bootstrapRsbuildConfig(path: string): Promise<BootstrapResult>;
+	bootstrapNuxtConfig(
+		path: string,
+		options?: { standard?: boolean },
+	): Promise<BootstrapResult>;
+	bootstrapRsbuildConfig(
+		path: string,
+		options?: { standard?: boolean },
+	): Promise<BootstrapResult>;
 };
 
 /**

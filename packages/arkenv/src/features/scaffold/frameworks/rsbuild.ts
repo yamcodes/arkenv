@@ -21,10 +21,6 @@ export const rsbuildStrategy: FrameworkStrategy = {
 		return ["@arkenv/rsbuild-plugin"];
 	},
 
-	requiresArktypePeer() {
-		return true;
-	},
-
 	bootstrap() {
 		return shake({ framework: "rsbuild" as const });
 	},
