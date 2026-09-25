@@ -2,9 +2,9 @@
   <a href="https://github.com/yamcodes/arkenv/blob/v1/apps/www/public/assets/icon-v1.svg"><img alt="ArkEnv Logo" src="https://arkenv.js.org/assets/icon-v1.svg" width="200px" align="center"/></a>
   <h1 align="center">ArkEnv</h1>
   <p align="center">
-    Typesafe environment variables with ArkType, Zod, or Valibot.
+    Typesafe environment variables with ArkType, Zod, or Valibot
     <br/>
-    by <a href="https://yam.codes">Yam Borodetsky</a>
+    by <a href="https://github.com/yamcodes">@yamcodes</a>
   </p>
 </p>
 <br/>
@@ -41,7 +41,7 @@
 
 ## What is ArkEnv?
 
-ArkEnv is a typesafe environment variable parser. Define your variables with ArkType, Zod, Valibot, or any Standard Schema. You get a strictly typed `env` object, and the app fails fast when a value is missing or invalid.
+ArkEnv is a TypeScript-first validation library. Define your environment variables with ArkType, Zod, Valibot, or any Standard Schema. You'll get back a strongly typed, validated `env` object.
 
 <details open>
 <summary>ArkType</summary>
@@ -98,11 +98,12 @@ export const env = arkenv({
 ## Features
 
 - Zero runtime dependencies in `@arkenv/core` and `@arkenv/standard`
+- Works in Node.js and all modern browsers
 - Fail-fast startup errors
 - Redacted values in error output
 - One `env` object: [Next.js](https://arkenv.js.org/docs/frameworks/nextjs), [Nuxt](https://arkenv.js.org/docs/frameworks/nuxt), [Vite](https://arkenv.js.org/docs/frameworks/vite), [TanStack Start](https://arkenv.js.org/docs/frameworks/tanstack-start), [SolidStart](https://github.com/yamcodes/arkenv/tree/v1/examples/with-solid-start), and [Bun](https://arkenv.js.org/docs/frameworks/bun)
 - Coercion before validation
-- TypeScript and plain JavaScript
+- Works with TypeScript and plain JS
 
 <br/>
 
