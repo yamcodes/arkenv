@@ -58,15 +58,53 @@ export default withArkEnv(async (phase, { defaultConfig }): Promise<NextConfig> 
 
 Your app schema imports the generated factory:
 
-```ts title="./env.ts"
-import arkenv from "@/.arkenv";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env.ts"
+    import arkenv from "@/.arkenv";
 
-export const env = arkenv({
-  DATABASE_URL: "string",
-  NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-});
-```
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    	NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./env.ts"
+    import arkenv from "@/.arkenv";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	DATABASE_URL: z.url(),
+    	NEXT_PUBLIC_API_URL: z.url().default("https://api.example.com"),
+    	NODE_ENV: z
+    		.enum(["development", "production", "test"])
+    		.default("development"),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts"
+    import arkenv from "@/.arkenv";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	DATABASE_URL: v.pipe(v.string(), v.url()),
+    	NEXT_PUBLIC_API_URL: v.optional(
+    		v.pipe(v.string(), v.url()),
+    		"https://api.example.com",
+    	),
+    	NODE_ENV: v.optional(
+    		v.picklist(["development", "production", "test"]),
+    		"development",
+    	),
+    });
+    ```
+  </Tab>
+</Tabs>
 
 ### `withArkEnv` options
 

@@ -31,15 +31,53 @@ Flat layout uses one `env.ts`. Prefixes decide which keys reach the
 client. This is the default when you run the CLI, and the right choice
 for most apps.
 
-```ts title="./env.ts"
-import arkenv from "@/.arkenv";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env.ts"
+    import arkenv from "@/.arkenv";
 
-export const env = arkenv({
-  DATABASE_URL: "string",
-  NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-});
-```
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    	NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./env.ts"
+    import arkenv from "@/.arkenv";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	DATABASE_URL: z.url(),
+    	NEXT_PUBLIC_API_URL: z.url().default("https://api.example.com"),
+    	NODE_ENV: z
+    		.enum(["development", "production", "test"])
+    		.default("development"),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts"
+    import arkenv from "@/.arkenv";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	DATABASE_URL: v.pipe(v.string(), v.url()),
+    	NEXT_PUBLIC_API_URL: v.optional(
+    		v.pipe(v.string(), v.url()),
+    		"https://api.example.com",
+    	),
+    	NODE_ENV: v.optional(
+    		v.picklist(["development", "production", "test"]),
+    		"development",
+    	),
+    });
+    ```
+  </Tab>
+</Tabs>
 
 Wire the Next.js config plugin so codegen and build-time exclusion run.
 The generated client factory lives in gitignored `.arkenv/`, imported as
@@ -87,8 +125,9 @@ client env so server code sees one object.
 ### Next.js
 
 Client module via codegen (`@/.arkenv`). Server module via
-`@arkenv/core` plus optional `import "server-only"` so Next fails the
-build if that file enters a client graph.
+`@arkenv/core` (ArkType), `@arkenv/standard` (Zod), or
+`@arkenv/standard/valibot` (Valibot), plus optional `import "server-only"`
+so Next fails the build if that file enters a client graph.
 
 <Files>
   <Folder name="env" defaultOpen>
@@ -98,27 +137,85 @@ build if that file enters a client graph.
   </Folder>
 </Files>
 
-```ts title="./env/client.ts"
-import arkenv from "@/.arkenv";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env/client.ts"
+    import arkenv from "@/.arkenv";
 
-export const env = arkenv({
-  NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-});
-```
+    export const env = arkenv({
+    	NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+    ```
 
-```ts title="./env/server.ts"
-import "server-only";
-import arkenv from "@arkenv/core";
-import { env as clientEnv } from "./client";
+    ```ts title="./env/server.ts"
+    import "server-only";
+    import arkenv from "@arkenv/core";
+    import { env as clientEnv } from "./client";
 
-export const env = arkenv(
-  {
-    DATABASE_URL: "string",
-  },
-  { extends: [clientEnv] },
-);
-```
+    export const env = arkenv(
+    	{ DATABASE_URL: "string" },
+    	{ extends: [clientEnv] },
+    );
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./env/client.ts"
+    import arkenv from "@/.arkenv";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	NEXT_PUBLIC_API_URL: z.url().default("https://api.example.com"),
+    	NODE_ENV: z
+    		.enum(["development", "production", "test"])
+    		.default("development"),
+    });
+    ```
+
+    ```ts title="./env/server.ts"
+    import "server-only";
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+    import { env as clientEnv } from "./client";
+
+    export const env = arkenv(
+    	{ DATABASE_URL: z.url() },
+    	{ extends: [clientEnv] },
+    );
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env/client.ts"
+    import arkenv from "@/.arkenv";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	NEXT_PUBLIC_API_URL: v.optional(
+    		v.pipe(v.string(), v.url()),
+    		"https://api.example.com",
+    	),
+    	NODE_ENV: v.optional(
+    		v.picklist(["development", "production", "test"]),
+    		"development",
+    	),
+    });
+    ```
+
+    ```ts title="./env/server.ts"
+    import "server-only";
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+    import { env as clientEnv } from "./client";
+
+    export const env = arkenv(
+    	{ DATABASE_URL: v.pipe(v.string(), v.url()) },
+    	{ extends: [clientEnv] },
+    );
+    ```
+  </Tab>
+</Tabs>
 
 Import from `./env/client` in Client Components and from `./env/server`
 on the server. Point `withArkEnv` / your schema path at the client
@@ -140,28 +237,79 @@ In Nuxt, place the server module inside `server/utils/env.ts`. Nitro automatical
   </Folder>
 </Files>
 
-```ts title="./env/client.ts"
-import arkenv from "@arkenv/nuxt";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env/client.ts"
+    import arkenv from "@arkenv/nuxt";
 
-export const env = arkenv({
-  NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-});
-```
+    export const env = arkenv({
+    	NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+    });
+    ```
 
-```ts title="./server/utils/env.ts"
-import arkenv from "@arkenv/core";
-import { env as clientEnv } from "~~/env/client";
+    ```ts title="./server/utils/env.ts"
+    import arkenv from "@arkenv/core";
+    import { env as clientEnv } from "~~/env/client";
 
-// Auto-imported by Nitro across server/api/* and server/routes/*
-export const env = arkenv(
-  {
-    DATABASE_URL: "string",
-  },
-  { extends: [clientEnv] },
-);
-```
+    // Auto-imported by Nitro across server/api/* and server/routes/*
+    export const env = arkenv(
+    	{ DATABASE_URL: "string" },
+    	{ extends: [clientEnv] },
+    );
+    ```
+  </Tab>
 
-Point `@arkenv/nuxt/module` at your client schema (`./env/client.ts`), and import `{ env } from "~/env/client"` inside Vue components.
+  <Tab value="Zod">
+    ```ts title="./env/client.ts"
+    import arkenv from "@arkenv/nuxt/standard";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	NUXT_PUBLIC_API_URL: z.url().default("https://api.example.com"),
+    });
+    ```
+
+    ```ts title="./server/utils/env.ts"
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+    import { env as clientEnv } from "~~/env/client";
+
+    // Auto-imported by Nitro across server/api/* and server/routes/*
+    export const env = arkenv(
+    	{ DATABASE_URL: z.url() },
+    	{ extends: [clientEnv] },
+    );
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env/client.ts"
+    import arkenv from "@arkenv/nuxt/standard";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	NUXT_PUBLIC_API_URL: v.optional(
+    		v.pipe(v.string(), v.url()),
+    		"https://api.example.com",
+    	),
+    });
+    ```
+
+    ```ts title="./server/utils/env.ts"
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+    import { env as clientEnv } from "~~/env/client";
+
+    // Auto-imported by Nitro across server/api/* and server/routes/*
+    export const env = arkenv(
+    	{ DATABASE_URL: v.pipe(v.string(), v.url()) },
+    	{ extends: [clientEnv] },
+    );
+    ```
+  </Tab>
+</Tabs>
+
+Point `@arkenv/nuxt/module` (or `@arkenv/nuxt/standard/module`) at your client schema (`./env/client.ts`), and import `{ env } from "~/env/client"` inside Vue components.
 
 ## Next.js runtime protection
 

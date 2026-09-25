@@ -10,8 +10,8 @@ implement the validate hook may still need a `toJsonSchema` helper or a
 dedicated subpath (for example `@arkenv/standard/valibot`). The root import has
 no runtime dependencies or peers.
 
-- **If you use ArkType**, use [`@arkenv/core`](/docs/reference/core). It also supports Zod and Valibot. **You do not need to install both engines**.
-- **If you don't use ArkType**, use `@arkenv/standard`. This will keep your tree free of the `arktype` dependency.
+- **If you use ArkType**, use [`@arkenv/core`](/docs/reference/core). **You do not need `@arkenv/standard`**.
+- **If you use Zod or Valibot**, use `@arkenv/standard`. This keeps `arktype` out of the tree. **You do not need `@arkenv/core`**.
 
 TypeScript must use `moduleResolution: "bundler" | "node16" | "nodenext"`.
 
@@ -23,16 +23,41 @@ npm install @arkenv/standard
 
 ## Usage
 
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/standard";
-import * as z from "zod";
+<Tabs items={["Zod", "Valibot"]}>
+  <Tab value="Zod">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
 
-export const env = arkenv({
-  PORT: z.int().min(0).max(65535).default(3000),
-  DATABASE_URL: z.url(),
-  NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
-});
-```
+    export const env = arkenv({
+    	PORT: z.int().min(0).max(65535).default(3000),
+    	DATABASE_URL: z.url(),
+    	NODE_ENV: z
+    		.enum(["development", "production", "test"])
+    		.default("development"),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	PORT: v.optional(
+    		v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)),
+    		3000,
+    	),
+    	DATABASE_URL: v.pipe(v.string(), v.url()),
+    	NODE_ENV: v.optional(
+    		v.picklist(["development", "production", "test"]),
+    		"development",
+    	),
+    });
+    ```
+  </Tab>
+</Tabs>
 
 ## Compared to `@arkenv/core`
 

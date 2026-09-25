@@ -72,7 +72,7 @@ and paste hosting provider fields directly into your `./env.ts` at any time.
 
   <Tab value="Valibot">
     ```ts title="env.ts"
-    import arkenv from "@arkenv/standard";
+    import { arkenv } from "@arkenv/standard/valibot";
     import * as v from "valibot";
 
     export const env = arkenv({
@@ -125,7 +125,7 @@ and paste hosting provider fields directly into your `./env.ts` at any time.
 
   <Tab value="Valibot">
     ```ts title="env.ts"
-    import arkenv from "@arkenv/standard";
+    import { arkenv } from "@arkenv/standard/valibot";
     import * as v from "valibot";
 
     export const env = arkenv({
@@ -179,7 +179,7 @@ and paste hosting provider fields directly into your `./env.ts` at any time.
 
   <Tab value="Valibot">
     ```ts title="env.ts"
-    import arkenv from "@arkenv/standard";
+    import { arkenv } from "@arkenv/standard/valibot";
     import * as v from "valibot";
 
     export const env = arkenv({
@@ -233,7 +233,7 @@ and paste hosting provider fields directly into your `./env.ts` at any time.
 
   <Tab value="Valibot">
     ```ts title="env.ts"
-    import arkenv from "@arkenv/standard";
+    import { arkenv } from "@arkenv/standard/valibot";
     import * as v from "valibot";
 
     export const env = arkenv({
@@ -287,7 +287,7 @@ and paste hosting provider fields directly into your `./env.ts` at any time.
 
   <Tab value="Valibot">
     ```ts title="env.ts"
-    import arkenv from "@arkenv/standard";
+    import { arkenv } from "@arkenv/standard/valibot";
     import * as v from "valibot";
 
     export const env = arkenv({
@@ -339,7 +339,7 @@ and paste hosting provider fields directly into your `./env.ts` at any time.
 
   <Tab value="Valibot">
     ```ts title="env.ts"
-    import arkenv from "@arkenv/standard";
+    import { arkenv } from "@arkenv/standard/valibot";
     import * as v from "valibot";
 
     export const env = arkenv({
@@ -362,33 +362,118 @@ Because ArkEnv gives full code ownership to your repository, you have complete c
 
 If a hosting provider introduces a new environment variable, add the variable directly to your schema:
 
-```ts title="./env.ts"
-export const env = arkenv({
-  DATABASE_URL: "string",
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env.ts"
+    import arkenv from "@arkenv/core";
 
-  // Add new or unlisted provider variables directly:
-  VERCEL_NEW_FEATURE: "string?",
-  VERCEL_ENV: "'production' | 'preview' | 'development'?",
-  VERCEL_URL: "string?",
-});
-```
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+
+    	// Add new or unlisted provider variables directly:
+    	VERCEL_NEW_FEATURE: "string?",
+    	VERCEL_ENV: "'production' | 'preview' | 'development'?",
+    	VERCEL_URL: "string?",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./env.ts"
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	DATABASE_URL: z.string(),
+
+    	// Add new or unlisted provider variables directly:
+    	VERCEL_NEW_FEATURE: z.string().optional(),
+    	VERCEL_ENV: z.enum(["production", "preview", "development"]).optional(),
+    	VERCEL_URL: z.string().optional(),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts"
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	DATABASE_URL: v.string(),
+
+    	// Add new or unlisted provider variables directly:
+    	VERCEL_NEW_FEATURE: v.optional(v.string()),
+    	VERCEL_ENV: v.optional(v.picklist(["production", "preview", "development"])),
+    	VERCEL_URL: v.optional(v.string()),
+    });
+    ```
+  </Tab>
+</Tabs>
 
 ### 2. Refining types and transformations
 
 You can modify field definitions to add stricter validations, regex constraints, default values, or runtime transformations (such as prefixing URLs with `https://`):
 
-```ts title="./env.ts"
-import { type } from "@arkenv/core";
-import arkenv from "@arkenv/core";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env.ts"
+    import arkenv, { type } from "@arkenv/core";
 
-export const env = arkenv({
-  // Custom transformed Vercel URL
-  VERCEL_URL: type("string?").pipe((url) => (url ? `https://${url}` : undefined)),
+    export const env = arkenv({
+    	// Custom transformed Vercel URL
+    	VERCEL_URL: type("string?").pipe((url) =>
+    		url ? `https://${url}` : undefined,
+    	),
 
-  // Stricter custom environment enum
-  VERCEL_ENV: "'production' | 'preview' | 'development' | 'staging'?",
-});
-```
+    	// Stricter custom environment enum
+    	VERCEL_ENV: "'production' | 'preview' | 'development' | 'staging'?",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./env.ts"
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	// Custom transformed Vercel URL
+    	VERCEL_URL: z
+    		.string()
+    		.optional()
+    		.transform((url) => (url ? `https://${url}` : undefined)),
+
+    	// Stricter custom environment enum
+    	VERCEL_ENV: z
+    		.enum(["production", "preview", "development", "staging"])
+    		.optional(),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts"
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	// Custom transformed Vercel URL
+    	VERCEL_URL: v.optional(
+    		v.pipe(
+    			v.string(),
+    			v.transform((url) => `https://${url}`),
+    		),
+    	),
+
+    	// Stricter custom environment enum
+    	VERCEL_ENV: v.optional(
+    		v.picklist(["production", "preview", "development", "staging"]),
+    	),
+    });
+    ```
+  </Tab>
+</Tabs>
 
 ## What each preset adds
 

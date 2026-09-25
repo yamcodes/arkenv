@@ -68,14 +68,42 @@ docker build \
 Keep the schema ordinary. `withArkEnv` codegen maps client keys to
 `process.env.*` so Next can inline them:
 
-```ts title="env.ts"
-import arkenv from "@/.arkenv";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="env.ts"
+    import arkenv from "@/.arkenv";
 
-export const env = arkenv({
-  DATABASE_URL: "string.url",
-  NEXT_PUBLIC_API_URL: "string.url",
-});
-```
+    export const env = arkenv({
+    	DATABASE_URL: "string.url",
+    	NEXT_PUBLIC_API_URL: "string.url",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="env.ts"
+    import arkenv from "@/.arkenv";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	DATABASE_URL: z.url(),
+    	NEXT_PUBLIC_API_URL: z.url(),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="env.ts"
+    import arkenv from "@/.arkenv";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	DATABASE_URL: v.pipe(v.string(), v.url()),
+    	NEXT_PUBLIC_API_URL: v.pipe(v.string(), v.url()),
+    });
+    ```
+  </Tab>
+</Tabs>
 
 `DATABASE_URL` can change on `docker run`. `NEXT_PUBLIC_API_URL` cannot —
 it was replaced at build time.
@@ -93,15 +121,45 @@ When a value must vary per deploy without rebuilding the client bundle,
 do not put it on a `NEXT_PUBLIC_*` key. Read it on the server and pass it
 as props (or serve it from a Route Handler).
 
-```ts title="env.ts"
-import arkenv from "@/.arkenv";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="env.ts"
+    import arkenv from "@/.arkenv";
 
-export const env = arkenv({
-  DATABASE_URL: "string.url",
-  // Server-only — not inlined into the client chunk
-  API_URL: "string.url",
-});
-```
+    export const env = arkenv({
+    	DATABASE_URL: "string.url",
+    	// Server-only — not inlined into the client chunk
+    	API_URL: "string.url",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="env.ts"
+    import arkenv from "@/.arkenv";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	DATABASE_URL: z.url(),
+    	// Server-only — not inlined into the client chunk
+    	API_URL: z.url(),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="env.ts"
+    import arkenv from "@/.arkenv";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	DATABASE_URL: v.pipe(v.string(), v.url()),
+    	// Server-only — not inlined into the client chunk
+    	API_URL: v.pipe(v.string(), v.url()),
+    });
+    ```
+  </Tab>
+</Tabs>
 
 ```tsx title="app/page.tsx"
 import { env } from "../env";

@@ -35,14 +35,18 @@ npm install -D @arkenv/bun-plugin
 
 ### Standard Schema engine
 
-If you aren't using ArkType, install `@arkenv/standard`:
+If you aren't using ArkType, install `@arkenv/standard` with Zod or
+Valibot, then import the plugin from `@arkenv/bun-plugin/standard`:
 
 ```package-install
-npm install @arkenv/standard
+npm install @arkenv/standard zod
 npm install -D @arkenv/bun-plugin
 ```
 
-Then, import the plugin from `@arkenv/bun-plugin/standard`.
+```package-install
+npm install @arkenv/standard valibot @valibot/to-json-schema
+npm install -D @arkenv/bun-plugin
+```
 
 ## Full-stack setup
 
@@ -53,15 +57,45 @@ plugin across your schema, dev server, and build script.
 
 Create your schema in `src/env.ts`:
 
-```ts title="./src/env.ts" twoslash
-import arkenv from "@arkenv/core";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./src/env.ts" twoslash
+    import arkenv from "@arkenv/core";
 
-export const env = arkenv({
-  DATABASE_URL: "string",
-  BUN_PUBLIC_API_URL: "string",
-  BUN_PUBLIC_DEBUG: "boolean = false",
-});
-```
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    	BUN_PUBLIC_API_URL: "string",
+    	BUN_PUBLIC_DEBUG: "boolean = false",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./src/env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	DATABASE_URL: z.url(),
+    	BUN_PUBLIC_API_URL: z.string(),
+    	BUN_PUBLIC_DEBUG: z.boolean().default(false),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./src/env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	DATABASE_URL: v.pipe(v.string(), v.url()),
+    	BUN_PUBLIC_API_URL: v.string(),
+    	BUN_PUBLIC_DEBUG: v.optional(v.boolean(), false),
+    });
+    ```
+  </Tab>
+</Tabs>
 
 ### Configure dev server
 
@@ -92,16 +126,47 @@ Import `{ env } from "./env"` in application code. Transform mode inlines public
 ## Backend-only Bun
 
 If your project runs exclusively on the server with no client bundling, skip the
-plugin and call `@arkenv/core` directly:
+plugin and call the runtime directly:
 
-```ts title="./src/env.ts" twoslash
-import arkenv from "@arkenv/core";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./src/env.ts" twoslash
+    import arkenv from "@arkenv/core";
 
-export const env = arkenv({
-  DATABASE_URL: "string",
-  PORT: "number.port = 3000",
-});
-```
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    	PORT: "number.port = 3000",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./src/env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	DATABASE_URL: z.url(),
+    	PORT: z.int().min(0).max(65535).default(3000),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./src/env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	DATABASE_URL: v.pipe(v.string(), v.url()),
+    	PORT: v.optional(
+    		v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)),
+    		3000,
+    	),
+    });
+    ```
+  </Tab>
+</Tabs>
 
 ## Client access
 
@@ -118,7 +183,7 @@ Types and options: [`@arkenv/bun-plugin`](/docs/reference/bun-plugin).
 
 Full-stack Bun applications separate server runtime execution from client bundle generation:
 
-- **Server execution:** Server entrypoints and backend APIs execute real `@arkenv/core` validation at startup, validating database URLs and backend secrets before serving traffic.
+- **Server execution:** Server entrypoints and backend APIs execute real `@arkenv/core` or `@arkenv/standard` validation at startup, validating database URLs and backend secrets before serving traffic.
 - **Client bundling:** During `Bun.build` runs or `[serve.static]` requests, `@arkenv/bun-plugin` transforms `env.ts` imports in client code. It inlines `BUN_PUBLIC_*` values as static literals and replaces server keys with throwing runtime stubs. Browser bundles omit the validator engine.
 
 ## Next steps

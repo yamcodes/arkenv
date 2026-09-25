@@ -105,25 +105,65 @@ Bundlers importing this helper into the browser either bundle the plaintext secr
 
 Replace the helper with a single declarative schema in `./env.ts`:
 
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/core";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/core";
 
-export const env = arkenv({
-  NAME: "string",
-  PORT: "number.port",
-  DEBUG: "boolean = false",
-  DATABASE_URL: "string.url",
-  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-});
+    export const env = arkenv({
+    	NAME: "string",
+    	PORT: "number.port",
+    	DEBUG: "boolean = false",
+    	DATABASE_URL: "string.url",
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
 
-env.PORT; // number
-env.DEBUG; // boolean
-```
+    env.PORT; // number
+    env.DEBUG; // boolean
+    ```
+  </Tab>
 
-<Callout type="info" title="Using Zod or Valibot?">
-  You can use `@arkenv/standard` with Zod (`z.number()`, `z.boolean()`) or
-  Valibot schemas with the same zero-config coercion.
-</Callout>
+  <Tab value="Zod">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	NAME: z.string(),
+    	PORT: z.int().min(0).max(65535),
+    	DEBUG: z.boolean().default(false),
+    	DATABASE_URL: z.url(),
+    	NODE_ENV: z
+    		.enum(["development", "production", "test"])
+    		.default("development"),
+    });
+
+    env.PORT; // number
+    env.DEBUG; // boolean
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	NAME: v.string(),
+    	PORT: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)),
+    	DEBUG: v.optional(v.boolean(), false),
+    	DATABASE_URL: v.pipe(v.string(), v.url()),
+    	NODE_ENV: v.optional(
+    		v.picklist(["development", "production", "test"]),
+    		"development",
+    	),
+    });
+
+    env.PORT; // number
+    env.DEBUG; // boolean
+    ```
+  </Tab>
+</Tabs>
 
 To scaffold ArkEnv in your project:
 

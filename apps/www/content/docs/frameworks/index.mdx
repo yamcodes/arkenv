@@ -39,7 +39,8 @@ adapters**:
 
 Vite, TanStack Start, and Bun evaluate two module graphs in full-stack and
 SSR apps.
-Application code imports `@arkenv/core` (or `@arkenv/standard`); the
+Application code imports `@arkenv/core` (ArkType), `@arkenv/standard`
+(Zod), or `@arkenv/standard/valibot` (Valibot); the
 plugin rewrites the **client** graph so public keys inline and server
 secrets become throwing stubs. Next.js and Nuxt use host adapters
 (`@arkenv/nextjs`, `@arkenv/nuxt`) with dedicated entrypoints and

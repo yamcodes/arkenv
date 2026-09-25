@@ -25,10 +25,11 @@ the cookbook below.
 
 ## Side by side
 
-The same keys, two declaration styles. Zod 4.2+ does not need
-`z.coerce`; ArkEnv coerces first.
+The same keys, three declaration styles. Zod 4.2+ does not need
+`z.coerce`, and Valibot does not need `v.transform(Number)`; ArkEnv
+coerces first.
 
-<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
+<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)", "Valibot (@arkenv/standard)"]}>
   <Tab value="ArkType (@arkenv/core)">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/core";
@@ -55,6 +56,25 @@ The same keys, two declaration styles. Zod 4.2+ does not need
     });
     ```
   </Tab>
+
+  <Tab value="Valibot (@arkenv/standard)">
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	DATABASE_URL: v.pipe(v.string(), v.url()),
+    	PORT: v.optional(
+    		v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)),
+    		3000,
+    	),
+    	NODE_ENV: v.optional(
+    		v.picklist(["development", "production", "test"]),
+    		"development",
+    	),
+    });
+    ```
+  </Tab>
 </Tabs>
 
 Install either stack the same way you would any env schema: one
@@ -66,10 +86,16 @@ ArkType engine:
 npm install @arkenv/core arktype
 ```
 
-Standard Schema engine:
+Standard Schema engine (Zod):
 
 ```package-install
-npm install @arkenv/standard
+npm install @arkenv/standard zod
+```
+
+Standard Schema engine (Valibot):
+
+```package-install
+npm install @arkenv/standard valibot @valibot/to-json-schema
 ```
 
 ## When each fits

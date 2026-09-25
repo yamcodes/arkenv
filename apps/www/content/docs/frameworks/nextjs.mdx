@@ -36,10 +36,15 @@ npm install @arkenv/core @arkenv/nextjs arktype
 
 ### Standard Schema engine
 
-If you aren't using ArkType, install `@arkenv/standard`:
+If you aren't using ArkType, install `@arkenv/standard` with Zod or
+Valibot:
 
 ```package-install
-npm install @arkenv/standard @arkenv/nextjs
+npm install @arkenv/standard @arkenv/nextjs zod
+```
+
+```package-install
+npm install @arkenv/standard @arkenv/nextjs valibot @valibot/to-json-schema
 ```
 
 ## Configuration
@@ -73,17 +78,57 @@ export default withArkEnv(async (phase, { defaultConfig }): Promise<NextConfig> 
 
 ## Schema
 
-Use a single `env.ts`. Client variables must use the `NEXT_PUBLIC_` prefix:
+Use a single `env.ts`. Client variables must use the `NEXT_PUBLIC_` prefix.
+Zod and Valibot use the same `@/.arkenv` factory; point `withArkEnv` at
+`@arkenv/nextjs/standard/config` (shown below).
 
-```ts title="./env.ts" twoslash
-import arkenv from "@/.arkenv";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@/.arkenv";
 
-export const env = arkenv({
-  DATABASE_URL: "string",
-  NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-});
-```
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    	NEXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@/.arkenv";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	DATABASE_URL: z.url(),
+    	NEXT_PUBLIC_API_URL: z.url().default("https://api.example.com"),
+    	NODE_ENV: z
+    		.enum(["development", "production", "test"])
+    		.default("development"),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@/.arkenv";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	DATABASE_URL: v.pipe(v.string(), v.url()),
+    	NEXT_PUBLIC_API_URL: v.optional(
+    		v.pipe(v.string(), v.url()),
+    		"https://api.example.com",
+    	),
+    	NODE_ENV: v.optional(
+    		v.picklist(["development", "production", "test"]),
+    		"development",
+    	),
+    });
+    ```
+  </Tab>
+</Tabs>
 
 Import `env` anywhere in your application. When client code accesses a server key
 such as `DATABASE_URL`, ArkEnv throws a runtime error to prevent data leaks.
@@ -93,8 +138,11 @@ values, use the optional [two-module recipe](/docs/core-concepts/client-vs-serve
 
 ## Standard Schema
 
-If you aren't using ArkType, import `withArkEnv` from the `/standard/config`
-subpath:
+Zod and Valibot both import `withArkEnv` from the `/standard/config`
+subpath. Valibot schemas also need the app to resolve
+`@arkenv/standard/valibot` (install `valibot` and
+`@valibot/to-json-schema`). The schema itself stays on `@/.arkenv`, as
+in the tabs above.
 
 ```ts title="./next.config.ts" twoslash
 import type { NextConfig } from "next";
@@ -103,18 +151,6 @@ import { withArkEnv } from "@arkenv/nextjs/standard/config";
 const nextConfig: NextConfig = {};
 
 export default withArkEnv(nextConfig);
-```
-
-Then define your schema in `env.ts` using your validator:
-
-```ts title="./env.ts" twoslash
-import arkenv from "@/.arkenv";
-import * as z from "zod";
-
-export const env = arkenv({
-  DATABASE_URL: z.url(),
-  NEXT_PUBLIC_API_URL: z.url().default("https://api.example.com"),
-});
 ```
 
 ## Read `env` in application code

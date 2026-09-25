@@ -16,7 +16,7 @@ Common cases:
 
 Export the schema once, then call `arkenv()` (or the framework/plugin entry) wherever you need a validated object.
 
-<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
+<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)", "Valibot (@arkenv/standard)"]}>
   <Tab value="ArkType (@arkenv/core)">
     ```ts title="./env-schema.ts" twoslash
     import arkenv, { type } from "@arkenv/core";
@@ -88,6 +88,46 @@ Export the schema once, then call `arkenv()` (or the framework/plugin entry) whe
     });
     ```
   </Tab>
+
+  <Tab value="Valibot (@arkenv/standard)">
+    ```ts title="./env-schema.ts"
+    import * as v from "valibot";
+
+    export const schema = {
+    	HOST: v.optional(v.string(), "localhost"),
+    	PORT: v.optional(
+    		v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)),
+    		3000,
+    	),
+    	VITE_API_URL: v.string(),
+    	DATABASE_URL: v.pipe(v.string(), v.url()),
+    };
+    ```
+
+    ```ts title="./env.ts"
+    import { arkenv } from "@arkenv/standard/valibot";
+    import { schema } from "./env-schema";
+
+    export const env = arkenv(schema);
+    ```
+
+    ```ts title="./vite.config.ts"
+    import { defineConfig, loadEnv } from "vite";
+    import arkenvPlugin from "@arkenv/vite-plugin/standard";
+    import { arkenv } from "@arkenv/standard/valibot";
+    import { schema } from "./env-schema";
+
+    const rootEnv = arkenv(schema, {
+    	env: loadEnv("development", process.cwd(), ""),
+    });
+
+    export default defineConfig({
+    	// Plugin is transform-only — no schema argument
+    	plugins: [arkenvPlugin()],
+    	server: { port: rootEnv.PORT },
+    });
+    ```
+  </Tab>
 </Tabs>
 
 TypeScript keeps full inference on every call site.
@@ -97,16 +137,48 @@ TypeScript keeps full inference on every call site.
 Compose two modules with `extends` when you need the optional
 [two-module recipe](/docs/core-concepts/client-vs-server#advanced-two-module-recipe):
 
-```ts title="./env/server.ts"
-import "server-only";
-import arkenv from "@arkenv/core";
-import { env as clientEnv } from "./client";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env/server.ts"
+    import "server-only";
+    import arkenv from "@arkenv/core";
+    import { env as clientEnv } from "./client";
 
-export const env = arkenv(
-  { DATABASE_URL: "string" },
-  { extends: [clientEnv] },
-);
-```
+    export const env = arkenv(
+    	{ DATABASE_URL: "string" },
+    	{ extends: [clientEnv] },
+    );
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./env/server.ts"
+    import "server-only";
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+    import { env as clientEnv } from "./client";
+
+    export const env = arkenv(
+    	{ DATABASE_URL: z.url() },
+    	{ extends: [clientEnv] },
+    );
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env/server.ts"
+    import "server-only";
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+    import { env as clientEnv } from "./client";
+
+    export const env = arkenv(
+    	{ DATABASE_URL: v.pipe(v.string(), v.url()) },
+    	{ extends: [clientEnv] },
+    );
+    ```
+  </Tab>
+</Tabs>
 
 `extends` merges the client env into the server env object. On Nuxt, use
 `@arkenv/nuxt` for the client module and never import the server module
@@ -116,7 +188,7 @@ from client code. See [client vs. server](/docs/core-concepts/client-vs-server#a
 
 Put the shared schema in an internal package, then call the host `arkenv` (or plugin) from each app:
 
-<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
+<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)", "Valibot (@arkenv/standard)"]}>
   <Tab value="ArkType (@arkenv/core)">
     ```ts title="./packages/env/src/schema.ts"
     import { type } from "@arkenv/core";
@@ -143,6 +215,24 @@ Put the shared schema in an internal package, then call the host `arkenv` (or pl
     	DATABASE_URL: z.url(),
     	NEXT_PUBLIC_API_URL: z.url(),
     } as const;
+    ```
+
+    ```ts title="./apps/web/env.ts"
+    import arkenv from "@/.arkenv";
+    import { appSchema } from "@repo/env";
+
+    export const env = arkenv(appSchema);
+    ```
+  </Tab>
+
+  <Tab value="Valibot (@arkenv/standard)">
+    ```ts title="./packages/env/src/schema.ts"
+    import * as v from "valibot";
+
+    export const appSchema = {
+    	DATABASE_URL: v.pipe(v.string(), v.url()),
+    	NEXT_PUBLIC_API_URL: v.pipe(v.string(), v.url()),
+    };
     ```
 
     ```ts title="./apps/web/env.ts"

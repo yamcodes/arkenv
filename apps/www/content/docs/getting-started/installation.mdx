@@ -39,10 +39,17 @@ npm install @arkenv/core
 npm install -D arkenv
 ```
 
-If you are using Standard Schema (Zod or Valibot):
+If you are using Zod:
 
 ```package-install
-npm install @arkenv/standard
+npm install @arkenv/standard zod
+npm install -D arkenv
+```
+
+If you are using Valibot:
+
+```package-install
+npm install @arkenv/standard valibot @valibot/to-json-schema
 npm install -D arkenv
 ```
 
@@ -177,11 +184,15 @@ add a framework package from the
 npm install @arkenv/core arktype
 ```
 
-If you aren't using ArkType, install
-[`@arkenv/standard`](/docs/reference/standard):
+If you use Zod or Valibot, install
+[`@arkenv/standard`](/docs/reference/standard) instead:
 
 ```package-install
-npm install @arkenv/standard
+npm install @arkenv/standard zod
+```
+
+```package-install
+npm install @arkenv/standard valibot @valibot/to-json-schema
 ```
 
 ### TypeScript module resolution
