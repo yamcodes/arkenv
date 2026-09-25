@@ -31,7 +31,7 @@
 <br/>
 
 <p align="center">
-  v1 is in RC. Read the <a href="https://arkenv.js.org/blog/arkenv-v1-rc">release notes</a> and <a href="https://arkenv.js.org/docs/guides/migrating-to-v1">migration guide</a>.
+  ArkEnv v1 is in RC. Read the <a href="https://arkenv.js.org/blog/arkenv-v1-rc">release notes</a> and <a href="https://arkenv.js.org/docs/guides/migrating-to-v1">migration guide</a>.
 </p>
 
 <br/>
