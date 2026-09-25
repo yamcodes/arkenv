@@ -14,6 +14,7 @@ import type { Infer as InferFromReactServer } from "./react-server";
 import { type as typeFromReactServer } from "./react-server";
 import arkenvStandard from "./standard";
 import { withArkEnv as withArkEnvStandard } from "./standard/config";
+import { arkenv as arkenvStandardServer } from "./standard/react-server";
 
 void typeFromRoot;
 void typeFromReactServer;
@@ -154,6 +155,23 @@ describe("@arkenv/nextjs type regression", () => {
 
 		// @ts-expect-error server-only variable is omitted/never on the client
 		env.DATABASE_URL;
+	});
+
+	it("exposes the full schema on the Standard react-server entry", () => {
+		const env = arkenvStandardServer(
+			{
+				DATABASE_URL: createMockStandardSchema("postgres://localhost/db"),
+				NEXT_PUBLIC_API_URL: createMockStandardSchema(""),
+			},
+			{
+				runtimeEnv: {
+					NEXT_PUBLIC_API_URL: "https://api.example.com",
+				},
+			},
+		);
+
+		expectTypeOf(env.DATABASE_URL).toBeString();
+		expectTypeOf(env.NEXT_PUBLIC_API_URL).toBeString();
 	});
 });
 

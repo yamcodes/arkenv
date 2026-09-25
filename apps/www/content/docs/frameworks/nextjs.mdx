@@ -142,10 +142,12 @@ Zod and Valibot both import `withArkEnv` from
 `@arkenv/nextjs/standard/config`. The schema itself stays on
 `@/.arkenv`, as in the tabs above.
 
-`@arkenv/nextjs/standard` binds the root `@arkenv/standard` engine.
-Zod 4.2+ coerces numbers and booleans from that entry. Valibot does
-not: there is no `@arkenv/nextjs/standard/valibot` binding, so
-installing `@valibot/to-json-schema` does not turn `v.number()` or
+`@arkenv/nextjs/standard` binds the root `@arkenv/standard` engine and
+publishes the same `react-server` condition as `.`. Server Components
+and Route Handlers resolve the full schema. Client code resolves public
+keys only. Zod 4.2+ coerces numbers and booleans from that entry.
+Valibot does not: there is no `@arkenv/nextjs/standard/valibot` binding,
+so installing `@valibot/to-json-schema` does not turn `v.number()` or
 `v.boolean()` into coerced fields here. Keep Valibot fields as strings
 on this entry, or validate them with
 [`@arkenv/standard/valibot`](/docs/validators/valibot) outside the

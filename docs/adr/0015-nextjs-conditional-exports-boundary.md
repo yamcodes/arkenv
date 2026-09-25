@@ -33,6 +33,7 @@ We adopt **Option 2**: the boundary is enforced by Next.js's module resolution o
 2. **Public-only client build.** The `default` build exposes only client and shared keys in its type surface and runtime proxy. Server-only keys are omitted from the generated `runtimeEnv` and from the client-resolved module.
 3. **Full-schema server build.** The `react-server` build exposes the complete schema, so Server Components get full type inference and runtime access.
 4. **Runtime proxy as a fail-safe.** Even if a developer imports the full `env` object into a Client Component (for example, in the flat layout where `env.ts` is a single file), the client-resolved build's proxy throws on access to server-only keys. The error surfaces during SSR, before the component reaches the browser.
+5. **Standard Mode uses the same conditions.** `./standard` publishes `react-server` and `default` in parallel with `.`. The server build calls `@arkenv/standard` with the full schema (`isServer: true`). The default build stays client-visible (`isServer: false`). Codegen still emits `import … from "@arkenv/nextjs/standard"`; Next.js selects the build.
 
 ## Consequences
 

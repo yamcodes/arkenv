@@ -7,6 +7,7 @@ export default defineConfig({
 		"src/config/index.ts",
 		"src/mock-server-only.ts",
 		"src/standard/index.ts",
+		"src/standard/react-server.ts",
 		"src/standard/config.ts",
 	],
 	format: ["esm"],

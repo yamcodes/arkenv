@@ -29,7 +29,7 @@ npm install @arkenv/standard @arkenv/nextjs zod
 | ------------------- | --------------------------------------------------------------------------- |
 | `.`                 | Unified `arkenv` (`react-server` condition for RSC, default for client/SSR) |
 | `./config`          | `withArkEnv`, `runCodegen`, config types                                    |
-| `./standard`        | Standard Schema unified entry                                               |
+| `./standard`        | Standard Schema unified entry (`react-server` for RSC, default for client)  |
 | `./standard/config` | Standard `withArkEnv` (forces Standard codegen)                             |
 
 ## `withArkEnv` options
@@ -153,6 +153,13 @@ export default withArkEnv(nextConfig);
 
 Public keys use the `NEXT_PUBLIC_` prefix. One schema file plus a runtime
 Proxy blocks server-key reads on the client.
+
+`.` and `./standard` publish the same export conditions. Next.js resolves
+`react-server` in Server Components and Route Handlers, so those imports
+see every schema key. Client Components and SSR resolve `default`, which
+exposes public keys only. Generated `env.gen.ts` still imports
+`@arkenv/nextjs` or `@arkenv/nextjs/standard`. The bundler selects the
+build from the importing context.
 
 For name/type isolation beyond values, see the
 [two-module recipe](/docs/core-concepts/client-vs-server#advanced-two-module-recipe).
