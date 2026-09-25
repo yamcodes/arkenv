@@ -9,12 +9,12 @@ Verified against tip `af94f540` on `v1` (2026-09-12). Re-check open
 PRs, Discussions, and `ROADMAP_EXTRAS` before you execute a cut.
 
 > **Note:** Shortest critical path: **A** (product freeze) → **B**
-> (channel flip) → **C** (publish + smoke). DNS, announce, and social
-> are a same-day pack after that (section E). Do not flip production DNS
-> or README production links until `readme-prod-links` and
-> `v0-archive-dns-cutover` in
+> (channel flip) → **C** (publish + smoke). Announce and social are a
+> same-day pack after that (section E). Production already serves `v1`
+> (`v0-archive-dns-cutover`). Do not rewrite README production links
+> until `readme-prod-links` in
 > [`apps/www/lib/roadmap/config.ts`](../apps/www/lib/roadmap/config.ts)
-> are done.
+> is done.
 
 ---
 
@@ -111,8 +111,8 @@ scratchpad; keep this block as the announce wording.
   [arktypeio/arktype#1655](https://github.com/arktypeio/arktype/pull/1655)
   (`@arkenv/core` + `npx arkenv init`) — no longer a soft blocker.
 - Remaining `ROADMAP_EXTRAS` (README prod links, changelog epoch, npm
-  deprecate `@arkenv/cli`, DNS cutover, GA release + announcement)
-  are launch-ops, not first-RC gates.
+  deprecate `@arkenv/cli`, GA release + announcement) are launch-ops,
+  not first-RC gates. DNS cutover (`v0-archive-dns-cutover`) has landed.
 
 ---
 
@@ -214,13 +214,14 @@ work lands):
 - [ ] `readme-prod-links` - Update README links from alpha to production
 - [ ] `changelog-epoch` - Prepend changelog epoch warnings
 - [ ] `npm-deprecate-cli` - Deprecate `@arkenv/cli` on npm
-- [ ] `v0-archive-dns-cutover` - Park v0 on `arkenv-v0.vercel.app` and
+- [x] `v0-archive-dns-cutover` - Park v0 on `arkenv-v0.vercel.app` and
   point Production / `arkenv.js.org` at `v1` (no js.org subdomain)
 - [ ] `release-v1` - Release v1
 - [ ] `v1-announcement` - Document v1 announcement
 
-First RC publish does **not** require every row above. DNS / production
-README flips wait on `readme-prod-links` + `v0-archive-dns-cutover`.
+First RC publish does **not** require every row above. Production
+already serves `v1`. README production-link copy still waits on
+`readme-prod-links`.
 
 ---
 
@@ -371,9 +372,9 @@ Actions → **release** → **Run workflow** → enable
 
 ## E. Site / GitHub cutover
 
-These overlap GA ops. Prefer flipping apex with the RC announce pack
-only when archive + README production links are ready; otherwise keep
-serving v1 from `https://arkenv-v1.vercel.app` until then. Full steps:
+These overlap GA ops. Apex already serves `v1`; `arkenv-v0.vercel.app`
+is the archive. README production-link copy still waits on
+`readme-prod-links`. Full steps:
 [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.
 
 **Phased cutover:** **Now (RC) = Option A** — keep branch names; `v1`
@@ -382,7 +383,7 @@ owns `--prod` / `arkenv.js.org`; `main` parks on `arkenv-v0.vercel.app`.
 and the old line becomes **`v0`**, then leave `--prod` on `main`. Do
 not rename branches during RC.
 
-- [ ] `arkenv.js.org` → v1 `www` (`--prod` from `v1`); archive on
+- [x] `arkenv.js.org` → v1 `www` (`--prod` from `v1`); archive on
   `arkenv-v0.vercel.app`
 - [x] Default GitHub branch → `v1` (already done)
 - [ ] GitHub Release for `1.0.0-rc.n` + announce blog + tweet
@@ -452,8 +453,8 @@ Open on tip (re-verify):
   known gap on the RC announce, do not hold the channel flip
 - Essay / Reddit / Habr timing - marketing schedule, not a publish gate
 - Perfect completion of every `ROADMAP_EXTRAS` before first `rc` publish
-- Flipping DNS / README to production before `readme-prod-links` and
-  `v0-archive-dns-cutover` are done
+- Rewriting README production links before `readme-prod-links` is done
+  (`v0-archive-dns-cutover` has landed)
 - ArkType ecosystem snippet - landed
   [arktypeio/arktype#1655](https://github.com/arktypeio/arktype/pull/1655);
   was never a reason to stay on alpha or delay tagging `rc`
