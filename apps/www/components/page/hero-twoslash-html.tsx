@@ -158,20 +158,29 @@ function hoverToReact(
 	options: ParseOptions,
 	key: string,
 ): ReactNode {
-	const popup = firstChildByClass(el.inner, "twoslash-popup-container");
-	const tokenHtml = popup ? el.inner.slice(popup.end) : el.inner;
+	const v4Content =
+		el.tag === "popup" ? firstChildByTag(el.inner, "popupcontent") : undefined;
+	const v4Trigger =
+		el.tag === "popup" ? firstChildByTag(el.inner, "popuptrigger") : undefined;
+	const v3Popup = firstChildByClass(el.inner, "twoslash-popup-container");
+	const popupInner = v4Content?.inner ?? v3Popup?.inner;
+	const tokenHtml = v4Trigger
+		? v4Trigger.inner
+		: v3Popup
+			? el.inner.slice(v3Popup.end)
+			: el.inner;
 	const token = parseShikiHtml(tokenHtml, {
 		...options,
 		keyPrefix: `${key}-t`,
 	});
-	if (!options.enablePopups || !popup) {
+	if (!options.enablePopups || !popupInner) {
 		return createElement(
 			el.tag,
 			{ ...domProps(el.attrs), key },
 			...parseShikiHtml(el.inner, { ...options, keyPrefix: `${key}-i` }),
 		);
 	}
-	const popupBody = parseShikiHtml(popup.inner, {
+	const popupBody = parseShikiHtml(popupInner, {
 		...options,
 		keyPrefix: `${key}-p`,
 	});
@@ -183,6 +192,26 @@ function hoverToReact(
 			</PopupContent>
 		</Popup>
 	);
+}
+
+function firstChildByTag(
+	html: string,
+	tag: string,
+): { inner: string; end: number } | undefined {
+	let i = 0;
+	while (i < html.length) {
+		while (i < html.length && html[i] !== "<") i += 1;
+		if (i >= html.length || html.startsWith("</", i)) return undefined;
+		if (html.startsWith("<!--", i)) {
+			const end = html.indexOf("-->", i + 4);
+			i = end === -1 ? html.length : end + 3;
+			continue;
+		}
+		const el = readElement(html, i);
+		if (el.tag === tag) return { inner: el.inner, end: el.end };
+		i = el.end;
+	}
+	return undefined;
 }
 
 function firstChildByClass(
