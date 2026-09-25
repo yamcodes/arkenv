@@ -5,8 +5,8 @@
     "": {
       "name": "arkenv-example-with-bun",
       "dependencies": {
-        "@arkenv/core": "1.0.0-rc.1",
-        "arktype": "^2.2.0",
+        "@arkenv/core": "1.0.0-rc.2",
+        "arktype": "^2.2.5",
       },
       "devDependencies": {
         "@types/bun": "^1.3.13",
@@ -16,19 +16,19 @@
     },
   },
   "packages": {
-    "@ark/schema": ["@ark/schema@0.56.0", "", { "dependencies": { "@ark/util": "0.56.0" } }, "sha512-ECg3hox/6Z/nLajxXqNhgPtNdHWC9zNsDyskwO28WinoFEnWow4IsERNz9AnXRhTZJnYIlAJ4uGn3nlLk65vZA=="],
+    "@ark/schema": ["@ark/schema@0.56.4", "", { "dependencies": { "@ark/util": "0.56.4" } }, "sha512-nd4OqaWdKZJeGF5zNmZysDQO7NyyJ1ycl4S7i16Hj1VxqL+x72Z66lOn7ErpsoMUZtCtslAMHMjqJhuQSxciyw=="],
 
-    "@ark/util": ["@ark/util@0.56.0", "", {}, "sha512-BghfRC8b9pNs3vBoDJhcta0/c1J1rsoS1+HgVUreMFPdhz/CRAKReAu57YEllNaSy98rWAdY1gE+gFup7OXpgA=="],
+    "@ark/util": ["@ark/util@0.56.4", "", {}, "sha512-KKqwGSia44cvuuDY70jGfbiUdG2E8F2cM4npdqvJ22S5a0LknlwG6nIrfQG1nF8fzxpzP30098wp0a8ASs0prQ=="],
 
-    "@arkenv/core": ["@arkenv/core@1.0.0-rc.1", "", { "peerDependencies": { "arktype": "^2.1.22" } }, "sha512-+GAifcTYJ7vKdbnSqO7y74GiQBvc0cr6fg/SYuUfo44k5MrM4nGj7+JHRD/ZME22RLygfoFvvR25+QQSPd0n7g=="],
+    "@arkenv/core": ["@arkenv/core@1.0.0-rc.2", "", { "peerDependencies": { "arktype": "^2.1.22" } }, "sha512-3KUzqWnSHXR/6PH06dA5qcBQU5OdY4u40wjUwR81nD/r5ajoe+S7/sqwa8XwpmxqbaF7YjKM9aVNbluSf8U4eg=="],
 
     "@types/bun": ["@types/bun@1.3.13", "", { "dependencies": { "bun-types": "1.3.13" } }, "sha512-9fqXWk5YIHGGnUau9TEi+qdlTYDAnOj+xLCmSTwXfAIqXr2x4tytJb43E9uCvt09zJURKXwAtkoH4nLQfzeTXw=="],
 
     "@types/node": ["@types/node@25.6.0", "", { "dependencies": { "undici-types": "~7.19.0" } }, "sha512-+qIYRKdNYJwY3vRCZMdJbPLJAtGjQBudzZzdzwQYkEPQd+PJGixUL5QfvCLDaULoLv+RhT3LDkwEfKaAkgSmNQ=="],
 
-    "arkregex": ["arkregex@0.0.5", "", { "dependencies": { "@ark/util": "0.56.0" } }, "sha512-ncYjBdLlh5/QnVsAA8De16Tc9EqmYM7y/WU9j+236KcyYNUXogpz3sC4ATIZYzzLxwI+0sEOaQLEmLmRleaEXw=="],
+    "arkregex": ["arkregex@0.0.10", "", { "dependencies": { "@ark/util": "0.56.4" } }, "sha512-+iDWBYBjH8w7wqEv8VY4loBwRldFxX84KNwKbobH3FJPay/18XI9sTesmXYpKyIrgbC5z/s16+vSJYHCC9FEvQ=="],
 
-    "arktype": ["arktype@2.2.0", "", { "dependencies": { "@ark/schema": "0.56.0", "@ark/util": "0.56.0", "arkregex": "0.0.5" } }, "sha512-t54MZ7ti5BhOEvzEkgKnWvqj+UbDfWig+DHr5I34xatymPusKLS0lQpNJd8M6DzmIto2QGszHfNKoFIT8tMCZQ=="],
+    "arktype": ["arktype@2.2.5", "", { "dependencies": { "@ark/schema": "0.56.4", "@ark/util": "0.56.4", "arkregex": "0.0.10" } }, "sha512-c9oqY1eBab2LceqvpWX50xae2HB8P/nJPxRhuhPVf5lEDi3WQpf7WQflJFMsyCiA3NGh6zENOlse30gWBzlwDg=="],
 
     "balanced-match": ["balanced-match@4.0.4", "", {}, "sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA=="],
 

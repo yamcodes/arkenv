@@ -3,7 +3,6 @@ import { ERROR_CODES, type Refusal } from "@/shared/errors";
 import {
 	type CompletedEnvelope,
 	type ErroredEnvelope,
-	type NextAction,
 	resolveNextActionBin,
 	sanitizeSecretText,
 } from "@/shared/protocol";
@@ -148,17 +147,7 @@ export class JsonReporter implements Reporter {
 	}
 
 	refuse(refusal: Refusal, commandId = "init") {
-		const nextActions: NextAction[] =
-			refusal.nextActions ??
-			(refusal.retryWith?.includes("--force")
-				? [
-						{
-							kind: "run-command",
-							label: "Re-run with --force to bypass this check",
-							command: `{bin} ${commandId} --force`,
-						},
-					]
-				: []);
+		const nextActions = refusal.nextActions ?? [];
 
 		this.reportErrored({
 			ok: false,

@@ -81,10 +81,6 @@ export type Refusal = {
 	 */
 	why?: string;
 	/**
-	 * Optional legacy / convenience array of retry flags (e.g. `["--force"]`).
-	 */
-	retryWith?: string[];
-	/**
 	 * Structured next actions for machine-executable remediation.
 	 */
 	nextActions?: NextAction[];

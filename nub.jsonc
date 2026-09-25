@@ -18,7 +18,8 @@
 		// Name pattern, not versions. @nubjs/nub and its platform optional
 		// packages ship together with the pinned packageManager, so a bump
 		// must install the same day. Every other package stays on Nub's
-		// default 24-hour cooling window.
+		// default 24-hour cooling window. A locked version still inside
+		// that window uses the exact-version escape hatch in .npmrc.
 		"minimumReleaseAgeExclude": ["@nubjs/*"]
 	}
 }
