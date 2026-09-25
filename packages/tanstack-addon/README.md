@@ -7,14 +7,10 @@ TanStack CLI add-on for ArkEnv environment variable validation.
 Create a new TanStack Start app with ArkEnv pre-configured:
 
 ```bash
-tanstack create my-app --add-ons arkenv
-```
-
-Until that catalog id is in a released `@tanstack/cli`, use the hosted add-on:
-
-```bash
 tanstack create my-app --add-ons https://arkenv.js.org/tanstack/info.json
 ```
+
+`@tanstack/cli` does not include an `arkenv` add-on yet, so `--add-ons arkenv` fails.
 
 Or add to an existing project:
 
