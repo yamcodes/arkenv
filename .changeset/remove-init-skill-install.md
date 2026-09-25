@@ -4,4 +4,4 @@
 
 #### Stop installing the agent skill during init
 
-`arkenv init` no longer prompts for or installs the ArkEnv agent skill, including under `--yes`. The skill is installed with `npx skills add yamcodes/arkenv`, or through `@arkenv/agent-plugin`.
+`arkenv init` no longer prompts for or installs the ArkEnv agent skill, including under `--yes`. When the skill is not already in the project, the next-steps note still prints `npx skills add yamcodes/arkenv`. `@arkenv/agent-plugin` already includes the skill.

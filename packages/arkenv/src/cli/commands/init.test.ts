@@ -62,6 +62,7 @@ describe("InitUseCase", () => {
 			suggestDefaultEnvPath: vi.fn().mockResolvedValue("./env.ts"),
 			getEnvExampleKeys: vi.fn().mockResolvedValue(null),
 			detectPackageManager: vi.fn().mockResolvedValue("pnpm"),
+			hasSkill: vi.fn().mockResolvedValue(false),
 			checkGitStatus: vi.fn().mockResolvedValue({ status: "clean" }),
 		} as unknown as ProjectScannerPort;
 
@@ -605,10 +606,11 @@ describe("InitUseCase", () => {
 		{ isYes: false, isAgent: false, label: "interactive" },
 		{ isYes: true, isAgent: false, label: "--yes" },
 		{ isYes: false, isAgent: true, label: "--agent" },
-	])("does not prompt for or record a skill install ($label)", async ({
+	])("does not prompt to install the skill ($label)", async ({
 		isYes,
 		isAgent,
 	}) => {
+		vi.mocked(scanner.hasSkill).mockResolvedValue(false);
 		vi.mocked(prompt.runWizard).mockResolvedValue({
 			path: "./env.ts",
 			validator: "arktype",
@@ -624,15 +626,37 @@ describe("InitUseCase", () => {
 		});
 
 		expect(result).not.toBeNull();
+		expect(result.options.skillDetected).toBe(false);
 		expect(result.options).not.toHaveProperty("installSkill");
-		expect(result.options).not.toHaveProperty("skillDetected");
 		expect(prompt.confirm).not.toHaveBeenCalledWith(
 			expect.stringContaining("agent skill"),
 			expect.anything(),
 			expect.anything(),
 		);
-		expect(logger.info).not.toHaveBeenCalledWith(
-			expect.stringContaining("ArkEnv agent skill detected."),
+	});
+
+	it("records a detected skill without prompting to install it", async () => {
+		vi.mocked(scanner.hasSkill).mockResolvedValue(true);
+		vi.mocked(prompt.runWizard).mockResolvedValue({
+			path: "./env.ts",
+			validator: "arktype",
+			framework: "vanilla",
+			language: "ts",
+		});
+
+		const result = await (useCase as any).collect({
+			isYes: true,
+			isForce: false,
+			isQuiet: false,
+			isAgent: false,
+		});
+
+		expect(result.options.skillDetected).toBe(true);
+		expect(result.options).not.toHaveProperty("installSkill");
+		expect(prompt.confirm).not.toHaveBeenCalledWith(
+			expect.stringContaining("agent skill"),
+			expect.anything(),
+			expect.anything(),
 		);
 	});
 

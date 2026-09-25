@@ -240,10 +240,12 @@ describe("Planner", () => {
 		const state: CollectedState = {
 			...defaultState,
 			isYes: true,
+			options: { ...defaultState.options, skillDetected: false },
 		};
 		const plan = createPlan(state);
 		expect(plan).not.toHaveProperty("skill");
 		expect(JSON.stringify(plan)).not.toContain("skills add");
+		expect(plan.metadata.skillDetected).toBe(false);
 	});
 
 	it("normalizes metadata paths", () => {

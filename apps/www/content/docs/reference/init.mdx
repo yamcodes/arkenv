@@ -115,6 +115,19 @@ Depending on the detected framework and flags, `init` writes:
 - Dependency installs for the chosen dialect (`@arkenv/core`, plugins,
   Zod/Valibot)
 
+`init` does not install the ArkEnv agent skill. On an existing project
+it checks whether the skill is already present. When it is not, the
+next-steps note prints the manual command. `--yes` and `--agent` do not
+run that command.
+
+```package-install
+npx skills add yamcodes/arkenv
+```
+
+That install is separate from scaffolding. `@arkenv/agent-plugin` already
+includes the skill, so skip the command when the plugin is installed.
+See [Agent skill](/docs/guides/ai#agent-skill).
+
 ## Import the validator from core
 
 The CLI package is not the validation library. Import `arkenv()` from

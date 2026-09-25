@@ -71,12 +71,21 @@ describe("scaffold utils", () => {
 			},
 		};
 
-		it("does not recommend installing the AI skill", () => {
+		it("recommends the manual skill install when the skill is absent", () => {
 			const note = getNextStepsNote(basePlan);
 			expect(note.title).toBe("Next steps");
+			expect(note.message).toContain(
+				`(Recommended) Install the AI skill: ${code("npx skills add yamcodes/arkenv")}`,
+			);
+		});
+
+		it("omits the skill recommendation when the skill is already present", () => {
+			const note = getNextStepsNote({
+				...basePlan,
+				metadata: { ...basePlan.metadata, skillDetected: true },
+			});
 			expect(note.message).not.toContain("Install the AI skill");
 			expect(note.message).not.toContain("skills add");
-			expect(note.message).not.toContain("/arkenv");
 		});
 
 		it("returns vite-specific instructions", () => {

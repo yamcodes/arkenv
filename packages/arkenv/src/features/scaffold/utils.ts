@@ -1,6 +1,9 @@
 import { code } from "@/shared/visuals";
 import type { ScaffoldingPlan } from "./plan";
 
+/** Manual install printed in next steps. Init does not run this command. */
+const SKILL_INSTALL_COMMAND = "npx skills add yamcodes/arkenv";
+
 /**
  * Build the package manager command used to install dependencies or run a bare install.
  *
@@ -60,6 +63,10 @@ export function getNextStepsNote(
 		}
 	} else {
 		message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
+	}
+
+	if (!plan.metadata.skillDetected) {
+		message += `${step++}. (Recommended) Install the AI skill: ${code(SKILL_INSTALL_COMMAND)}\n`;
 	}
 
 	return {

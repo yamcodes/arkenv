@@ -29,6 +29,11 @@ export type ProjectOptions = {
 	language: "ts"; // TODO: Support JS
 	overwriteEnvSchemaFile?: boolean;
 	envKeys?: string[];
+	/**
+	 * The ArkEnv agent skill is already present. Init does not install it;
+	 * this only suppresses the next-steps recommendation.
+	 */
+	skillDetected?: boolean;
 	disableCodegen?: boolean;
 	wrapNextjsConfig?: boolean;
 	envExampleContent?: string;
@@ -94,6 +99,7 @@ export type ScaffoldingPlan = {
 		mode: "existing" | "new";
 		example?: string;
 		name?: string;
+		skillDetected?: boolean;
 		disableCodegen?: boolean;
 	};
 	/**

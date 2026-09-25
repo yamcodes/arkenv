@@ -357,6 +357,8 @@ export class InitUseCase {
 			return null;
 		}
 
+		options.skillDetected = await this.scanner.hasSkill(targetDir);
+
 		// Handle existing env file prompt
 		const finalTargetPath = path.resolve(targetDir, options.path);
 

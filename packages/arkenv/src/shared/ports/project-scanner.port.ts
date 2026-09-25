@@ -91,6 +91,10 @@ export type ProjectScannerPort = {
 		tsConfig?: ParsedTsConfig | null,
 	): Promise<"pnpm" | "yarn" | "npm" | "bun">;
 	/**
+	 * Detect whether the ArkEnv agent skill is already installed.
+	 */
+	hasSkill(cwd?: string): Promise<boolean>;
+	/**
 	 * Check the Git working tree status in the target directory.
 	 *
 	 * @param cwd The directory to check for Git status
