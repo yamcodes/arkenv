@@ -35,8 +35,8 @@ describe("TanStack Add-on Compilation", () => {
 		expect(compiled.integrations).toEqual([
 			{
 				type: "vite-plugin",
-				import: "import arkenv from '@arkenv/vite-plugin'",
-				code: "arkenv()",
+				import: "import arkenvPlugin from '@arkenv/vite-plugin'",
+				code: "arkenvPlugin()",
 			},
 		]);
 

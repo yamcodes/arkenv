@@ -185,10 +185,10 @@ Register the plugin in `vite.config.ts` without schema arguments:
 
 ```ts title="vite.config.ts"
 import { defineConfig } from "vite";
-import arkenv from "@arkenv/vite-plugin";
+import arkenvPlugin from "@arkenv/vite-plugin";
 
 export default defineConfig({
-  plugins: [arkenv()],
+  plugins: [arkenvPlugin()],
 });
 ```
 
