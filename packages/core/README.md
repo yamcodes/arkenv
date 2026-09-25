@@ -97,7 +97,7 @@ export const env = arkenv({
 
 <br/>
 
-## Features
+## Why ArkEnv?
 
 - Zero runtime dependencies
 - Works in Node.js and all modern browsers
