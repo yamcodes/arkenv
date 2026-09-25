@@ -37,7 +37,7 @@ describe("transform mode helpers", () => {
 		).toBe(false);
 		expect(
 			isTransformModeCall({ env: { PUBLIC_FOO: "override" } }, undefined),
-		).toBe(true);
+		).toBe(false);
 		expect(isTransformModeCall({ coerce: true }, undefined)).toBe(false);
 	});
 
@@ -237,36 +237,6 @@ describe("transform mode plugin", () => {
 			addMissingDependency: vi.fn(),
 		});
 		expect(second).toContain("https://after.example.com");
-	});
-
-	it("overrides values loaded from dotenv with plugin env", async () => {
-		const tempProj = mkdtempSync(join(__dirname, "__fixtures__", ".tmp-unit-"));
-		temps.push(tempProj);
-		cpSync(fixtureDir, tempProj, { recursive: true });
-		writeFileSync(
-			join(tempProj, ".env.test"),
-			"PUBLIC_API_URL=https://loaded.example.com\nDATABASE_URL=postgres://fixture:5432/db\nPUBLIC_PORT=8080\nPUBLIC_DEBUG=true\n",
-		);
-
-		const plugin = arkenvPlugin({
-			schemaPath: "env.ts",
-			env: { PUBLIC_API_URL: "https://override.example.com" },
-		});
-		const { api, getTransform } = createFakeApi(tempProj);
-		plugin.setup(api as never);
-
-		const transform = getTransform();
-		expect(transform).toBeDefined();
-		if (!transform) return;
-
-		const result = await transform.handler({
-			code: "export const env = {}",
-			resourcePath: join(tempProj, "env.ts"),
-			addDependency: vi.fn(),
-			addMissingDependency: vi.fn(),
-		});
-		expect(result).toContain("https://override.example.com");
-		expect(result).not.toContain("https://loaded.example.com");
 	});
 
 	it("throws a discovery error when no env module exists", () => {

@@ -34,7 +34,7 @@ describe("transform mode helpers", () => {
 		);
 		expect(
 			isTransformModeCall({ env: { VITE_FOO: "override" } }, undefined),
-		).toBe(true);
+		).toBe(false);
 		expect(isTransformModeCall({ coerce: true }, undefined)).toBe(false);
 	});
 
@@ -259,51 +259,6 @@ describe("transform mode plugin", () => {
 		expect(clientModule?.code).toContain(
 			'"VITE_API_URL": "https://updated.example.com"',
 		);
-	});
-
-	it("overrides values loaded from dotenv with plugin env", async () => {
-		const root = mkdtempSync(join(tmpdir(), "arkenv-vite-env-override-"));
-		temps.push(root);
-		const schemaPath = join(root, "env.ts");
-		writeFileSync(
-			schemaPath,
-			'import arkenv from "@arkenv/core";\n\nexport const env = arkenv({ VITE_API_URL: "string" });\n',
-		);
-		writeFileSync(
-			join(root, ".env.test"),
-			"VITE_API_URL=https://loaded.example.com\n",
-		);
-		const plugin = arkenvPlugin({
-			schemaPath,
-			env: { VITE_API_URL: "https://override.example.com" },
-		}) as any;
-		const context = {} as any;
-
-		plugin.config?.call(
-			context,
-			{ root, envDir: root },
-			{ mode: "test", command: "serve" },
-		);
-		await plugin.configResolved?.call(context, {
-			root,
-			envDir: root,
-			envPrefix: "VITE_",
-		} as any);
-
-		const clientModule = await plugin.transform?.call(
-			{
-				environment: {
-					name: "client",
-					config: { consumer: "client" },
-				},
-			},
-			"export const env = {}",
-			schemaPath,
-		);
-		expect(clientModule?.code).toContain(
-			'"VITE_API_URL": "https://override.example.com"',
-		);
-		expect(clientModule?.code).not.toContain("https://loaded.example.com");
 	});
 
 	it("propagates invalid dotenv values during HMR", async () => {

@@ -78,6 +78,9 @@ describe("Bun Plugin", () => {
 
 	it("rejects runtime validation options", () => {
 		const plugin = arkenvPluginDefault as (a?: unknown) => unknown;
+		expect(() =>
+			plugin({ env: { BUN_PUBLIC_API_URL: "https://api.example.com" } }),
+		).toThrow(pluginOptionNotSupportedMessage(["env"]));
 		expect(() => plugin({ coerce: true })).toThrow(
 			pluginOptionNotSupportedMessage(["coerce"]),
 		);

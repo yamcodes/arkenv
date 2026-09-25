@@ -4,24 +4,19 @@
 "@arkenv/rsbuild-plugin": major
 ---
 
-#### Reject runtime validation options on bundler plugins
+#### Reject runtime options on bundler plugins
 
-Vite, Bun, and Rsbuild plugins now accept only build-time options: `schemaPath`, `clientPrefix`, `logger`, `logLevel`, and `env`. `env` is a build-time override merged over the loaded environment before `env.ts` is evaluated.
+Vite, Bun, and Rsbuild plugins now accept only `schemaPath`, `clientPrefix`, `logger`, and `logLevel`. The build validates the environment loaded for that compile. Variables already set on `process.env` win over env files.
 
 ```ts
 import { arkenvPlugin } from "@arkenv/vite-plugin";
 
 export default {
-  plugins: [
-    arkenvPlugin({
-      schemaPath: "src/env.ts",
-      env: { VITE_API_URL: "https://api.example.com" },
-    }),
-  ],
+  plugins: [arkenvPlugin({ schemaPath: "src/env.ts" })],
 };
 ```
 
-Set `coerce`, `onUndeclaredKey`, `arrayFormat`, `emptyAsUndefined`, `debugSecrets`, and `toJsonSchema` on `arkenv()` in `env.ts`. The plugin rejects those keys.
+Set `env`, `coerce`, `onUndeclaredKey`, `arrayFormat`, `emptyAsUndefined`, `debugSecrets`, and `toJsonSchema` on `arkenv()` in `env.ts`. The plugin rejects those keys.
 
 ```ts
 import arkenv from "@arkenv/core";
@@ -32,9 +27,9 @@ export const env = arkenv(
 );
 ```
 
-**BREAKING CHANGE**: Plugin option types no longer include runtime `arkenv()` fields other than `env`. Passing them now throws instead of being ignored.
+**BREAKING CHANGE**: Plugin option types no longer include runtime `arkenv()` fields, including `env`. Passing them now throws.
 
 ```diff
-- arkenvPlugin({ coerce: true })
-+ arkenvPlugin({ env: { PORT: "3000" } })
+- arkenvPlugin({ env: { PORT: "3000" }, coerce: true })
++ arkenvPlugin({ schemaPath: "src/env.ts" })
 ```

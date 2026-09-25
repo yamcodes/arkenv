@@ -23,9 +23,6 @@ describe("isTransformModeCall", () => {
 				undefined,
 			),
 		).toBe(true);
-		expect(isTransformModeCall({ env: { PORT: "3000" } }, undefined)).toBe(
-			true,
-		);
 		expect(isTransformModeCall({ logLevel: "silent" }, undefined)).toBe(true);
 	});
 
@@ -37,6 +34,9 @@ describe("isTransformModeCall", () => {
 			isTransformModeCall({ VITE_API_URL: "string" }, { coerce: true }),
 		).toBe(false);
 		expect(isTransformModeCall({ coerce: true }, undefined)).toBe(false);
+		expect(isTransformModeCall({ env: { PORT: "3000" } }, undefined)).toBe(
+			false,
+		);
 		expect(isTransformModeCall({ toJsonSchema: () => ({}) }, undefined)).toBe(
 			false,
 		);
@@ -46,23 +46,15 @@ describe("isTransformModeCall", () => {
 
 	it("limits allowed keys to build-time plugin options", () => {
 		expect([...TRANSFORM_OPTION_KEYS].sort()).toEqual(
-			["clientPrefix", "env", "logLevel", "logger", "schemaPath"].sort(),
+			["clientPrefix", "logLevel", "logger", "schemaPath"].sort(),
 		);
 	});
 });
 
 describe("assertTransformModeCall", () => {
-	it("accepts a build-time env override", () => {
-		expect(() =>
-			assertTransformModeCall(
-				{ env: { VITE_API_URL: "https://api.example.com" } },
-				undefined,
-			),
-		).not.toThrow();
-	});
-
 	it("rejects runtime validation keys as plugin options", () => {
 		for (const key of [
+			"env",
 			"coerce",
 			"toJsonSchema",
 			"onUndeclaredKey",

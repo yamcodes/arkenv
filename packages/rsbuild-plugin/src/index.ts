@@ -12,7 +12,7 @@ const arkenvCreator = createRsbuildPlugin("@arkenv/rsbuild-plugin");
 /**
  * Create an Rsbuild plugin that rewrites `env.ts` in client environments.
  *
- * @param options Transform options (`schemaPath`, `clientPrefix`, logging) plus a build-time `env` override
+ * @param options Transform options (`schemaPath`, `clientPrefix`) and logging
  * @returns The Rsbuild plugin instance
  */
 export function arkenvPlugin(

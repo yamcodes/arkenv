@@ -10,16 +10,17 @@ export const TRANSFORM_OPTION_KEYS = new Set([
 	"clientPrefix",
 	"logger",
 	"logLevel",
-	"env",
 ]);
 
 /**
  * Runtime `arkenv()` fields that bundler plugins must not accept.
  *
- * Mirrors the validation options on `ArkEnvConfig` / `StandardEnvConfig`
- * other than `env`, which stays as a build-time override.
+ * Mirrors the validation options on `ArkEnvConfig` / `StandardEnvConfig`,
+ * including `env` (the runtime parse source). The build reads the loaded
+ * environment instead.
  */
 export const RUNTIME_ONLY_OPTION_KEYS = new Set([
+	"env",
 	"onUndeclaredKey",
 	"coerce",
 	"toJsonSchema",
@@ -44,16 +45,6 @@ export type TransformOptions = {
 	 * Defaults to framework-specific prefix (e.g. `"VITE_"` or `"BUN_PUBLIC_"`).
 	 */
 	clientPrefix?: string | string[];
-	/**
-	 * Build-time environment override merged over the loaded environment
-	 * before the schema module is evaluated.
-	 *
-	 * This is not the runtime parse source. `env` on `arkenv()` in `env.ts`
-	 * still selects which record that call validates.
-	 *
-	 * All values must be strings (or `undefined`) to match `process.env` semantics.
-	 */
-	env?: Record<string, string | undefined>;
 };
 
 /** Thrown when a caller still uses the removed schema/`define` plugin signature. */
@@ -79,7 +70,7 @@ export function pluginOptionNotSupportedMessage(
  * Decide whether the first plugin argument is transform-mode options.
  *
  * Transform mode: `arkenv()`, `arkenv({})`, `arkenv({ schemaPath })`, or other
- * options-only bags (`clientPrefix`, `logger`, `logLevel`, `env`). A schema
+ * options-only bags (`clientPrefix`, `logger`, `logLevel`). A schema
  * object, a runtime-only validation key, or a second argument is rejected.
  *
  * @param first The first argument passed to the plugin factory

@@ -34,9 +34,7 @@ export function createTransformPlugin(
 		clientPrefix: clientPrefixOption,
 		...configWithoutTransformKeys
 	} = transformOptions;
-	const { pluginConfig, logOptions } = splitPluginConfig(
-		configWithoutTransformKeys,
-	);
+	const { logOptions } = splitPluginConfig(configWithoutTransformKeys);
 	const buildLog = resolveBuildLog({ ...factoryLogOptions, ...logOptions });
 
 	const state: {
@@ -62,10 +60,7 @@ export function createTransformPlugin(
 	const refreshTransformState = () => {
 		if (!state.schemaPath || !fs.existsSync(state.schemaPath)) return;
 
-		const loaded = {
-			...loadEnv(state.mode, state.envDir, ""),
-			...(pluginConfig.env as Record<string, string | undefined> | undefined),
-		};
+		const loaded = loadEnv(state.mode, state.envDir, "");
 
 		const validated = loadValidatedEnv(state.schemaPath, loaded, {
 			prefix: "ArkEnv Vite plugin:",

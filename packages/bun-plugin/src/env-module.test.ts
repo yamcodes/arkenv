@@ -29,7 +29,7 @@ describe("transform mode helpers", () => {
 		).toBe(false);
 		expect(
 			isTransformModeCall({ env: { BUN_PUBLIC_FOO: "override" } }, undefined),
-		).toBe(true);
+		).toBe(false);
 		expect(isTransformModeCall({ coerce: true }, undefined)).toBe(false);
 	});
 
@@ -197,53 +197,6 @@ describe("transform mode plugin", () => {
 				path: join(fixtureDir, "index.ts"),
 			});
 			expect(result).toBeUndefined();
-		} finally {
-			process.env = previous;
-		}
-	});
-
-	it("overrides values loaded from the environment with plugin env", async () => {
-		const fixtureDir = join(__dirname, "__fixtures__", "transform-env");
-		const previous = { ...process.env };
-		Object.assign(process.env, {
-			BUN_PUBLIC_API_URL: "https://loaded.example.com",
-			BUN_PUBLIC_DEBUG: "true",
-			BUN_PUBLIC_PORT: "8080",
-			DATABASE_URL: "postgres://fixture:5432/db",
-			NODE_ENV: "test",
-		});
-
-		try {
-			const plugin = arkenvPlugin({
-				schemaPath: join(fixtureDir, "env.ts"),
-				env: { BUN_PUBLIC_API_URL: "https://override.example.com" },
-			});
-			let onStart: (() => void | Promise<void>) | undefined;
-			let onLoad:
-				| ((args: {
-						path: string;
-				  }) =>
-						| { contents?: string }
-						| undefined
-						| Promise<{ contents?: string } | undefined>)
-				| undefined;
-
-			plugin.setup({
-				onStart(cb: () => void | Promise<void>) {
-					onStart = cb;
-				},
-				onLoad(_opts: { filter: RegExp }, cb: NonNullable<typeof onLoad>) {
-					onLoad = cb;
-				},
-			} as any);
-
-			await onStart?.();
-			const result = await onLoad?.({
-				path: join(fixtureDir, "env.ts"),
-			});
-			const code = result?.contents ?? "";
-			expect(code).toContain("https://override.example.com");
-			expect(code).not.toContain("https://loaded.example.com");
 		} finally {
 			process.env = previous;
 		}

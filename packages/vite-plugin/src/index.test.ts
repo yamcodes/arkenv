@@ -62,6 +62,9 @@ describe("plugin factory", () => {
 
 	it("rejects runtime validation options", () => {
 		const plugin = arkenvPluginDefault as (a?: unknown) => unknown;
+		expect(() =>
+			plugin({ env: { VITE_API_URL: "https://api.example.com" } }),
+		).toThrow(pluginOptionNotSupportedMessage(["env"]));
 		expect(() => plugin({ coerce: true })).toThrow(
 			pluginOptionNotSupportedMessage(["coerce"]),
 		);

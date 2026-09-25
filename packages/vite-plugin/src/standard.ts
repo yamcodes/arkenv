@@ -12,7 +12,7 @@ const arkenvCreator = createVitePlugin("@arkenv/vite-plugin/standard");
 /**
  * Create a Vite plugin (Standard Schema) that rewrites `env.ts` in the client graph.
  *
- * @param options Transform options (`schemaPath`, `clientPrefix`, logging) plus a build-time `env` override
+ * @param options Transform options (`schemaPath`, `clientPrefix`) and logging
  * @returns The Vite plugin instance
  */
 export function arkenvPlugin(options?: VitePluginFactoryConfig): Plugin {

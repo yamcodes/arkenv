@@ -42,21 +42,20 @@ in `bunfig.toml` (`plugins = ["@arkenv/bun-plugin"]`), register in
 Same transform call shape as
 [`@arkenv/vite-plugin`](/docs/reference/vite-plugin):
 
-| Option                | Default         | Meaning                                                                                      |
-| --------------------- | --------------- | -------------------------------------------------------------------------------------------- |
-| `schemaPath`          | auto (`env.ts`) | Schema module to transform                                                                   |
-| `clientPrefix`        | `BUN_PUBLIC_`   | Keys exposed to the client                                                                   |
-| `env`                 | (none)          | Build-time override merged over the loaded environment before the schema module is evaluated |
-| `logger` / `logLevel` | (none)          | Logging                                                                                      |
+| Option                | Default         | Meaning                    |
+| --------------------- | --------------- | -------------------------- |
+| `schemaPath`          | auto (`env.ts`) | Schema module to transform |
+| `clientPrefix`        | `BUN_PUBLIC_`   | Keys exposed to the client |
+| `logger` / `logLevel` | (none)          | Logging                    |
 
-`env` on the plugin is a build-time override for this compile. It is not
-the runtime parse source. `env` on [`arkenv()`](/docs/reference/options)
-in `env.ts` still selects which record that call validates.
+The plugin validates `process.env` for that build. To point one build at
+different values, set them in the environment before Bun runs.
 
 <Callout type="info" title="Runtime options stay on arkenv()">
-  Set `coerce`, `onUndeclaredKey`, `arrayFormat`, `emptyAsUndefined`,
-  `debugSecrets`, and `toJsonSchema` on `arkenv()` in `env.ts`. The plugin
-  rejects them. See [Options](/docs/reference/options).
+  Set `env`, `coerce`, `onUndeclaredKey`, `arrayFormat`,
+  `emptyAsUndefined`, `debugSecrets`, and `toJsonSchema` on `arkenv()` in
+  `env.ts`. The plugin rejects them. See
+  [Options](/docs/reference/options).
 </Callout>
 
 A schema argument is rejected. Plugin config has no safe mode — failed

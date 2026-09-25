@@ -13,7 +13,7 @@ const { arkenvPlugin: arkenvPluginInstance, hybrid: hybridObj } =
 /**
  * Create a Bun plugin that rewrites `env.ts` in browser bundles.
  *
- * @param options Transform options (`schemaPath`, `clientPrefix`, logging) plus a build-time `env` override
+ * @param options Transform options (`schemaPath`, `clientPrefix`) and logging
  * @returns The Bun plugin instance
  */
 export const arkenvPlugin: ((options?: BunPluginFactoryConfig) => BunPlugin) &
