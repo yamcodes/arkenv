@@ -32,6 +32,12 @@ const nextConfig: NextConfig = {
 export default withArkEnv(nextConfig);
 ```
 
+<Callout type="info" title="Zod or Valibot">
+  Import `withArkEnv` from `@arkenv/nextjs/standard/config`. The ArkType
+  import above generates a factory that cannot parse `z.url()` or
+  `v.pipe(...)`.
+</Callout>
+
 ```dockerfile title="Dockerfile"
 FROM node:22-alpine AS build
 WORKDIR /app

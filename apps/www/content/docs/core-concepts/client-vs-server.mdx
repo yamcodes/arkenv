@@ -92,7 +92,17 @@ const nextConfig: NextConfig = {};
 export default withArkEnv(nextConfig);
 ```
 
-On Nuxt, import from `@arkenv/nuxt` and register `@arkenv/nuxt/module`. Vite and Bun plugins read the same schema and only inline public keys into the client.
+<Callout type="info" title="Zod or Valibot">
+  Import `withArkEnv` from `@arkenv/nextjs/standard/config`. Codegen emits
+  the Standard Schema factory only from that entry (or when the schema
+  file text contains `@arkenv/standard`). The ArkType import above cannot
+  parse `z.url()` or `v.pipe(...)`.
+</Callout>
+
+On Nuxt, ArkType imports from `@arkenv/nuxt` and registers
+`@arkenv/nuxt/module`. Zod and Valibot import from `@arkenv/nuxt/standard`
+and register `@arkenv/nuxt/standard/module`. Vite and Bun plugins read the
+same schema and only inline public keys into the client.
 
 ### What flat layout protects
 

@@ -61,9 +61,16 @@ export default defineNuxtConfig({
 ## Schema
 
 Use a single `env.ts`. Public keys must use the `NUXT_PUBLIC_` prefix.
-Zod and Valibot both import `@arkenv/nuxt/standard`. For Valibot, also
-install `valibot` and `@valibot/to-json-schema`. See
-[Valibot](/docs/validators/valibot).
+Zod and Valibot both import `@arkenv/nuxt/standard` and register
+`@arkenv/nuxt/standard/module`.
+
+`@arkenv/nuxt/standard` binds the root `@arkenv/standard` engine. Zod
+4.2+ coerces numbers and booleans from that entry. Valibot does not:
+there is no `@arkenv/nuxt/standard/valibot` binding, so installing
+`@valibot/to-json-schema` does not coerce `v.number()` or `v.boolean()`
+here. Keep Valibot fields as strings on this entry, or validate them
+with [`@arkenv/standard/valibot`](/docs/validators/valibot) outside the
+Nuxt module.
 
 <Tabs items={["ArkType", "Zod", "Valibot"]}>
   <Tab value="ArkType">

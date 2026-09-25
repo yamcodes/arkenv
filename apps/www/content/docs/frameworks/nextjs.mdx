@@ -138,11 +138,18 @@ values, use the optional [two-module recipe](/docs/core-concepts/client-vs-serve
 
 ## Standard Schema
 
-Zod and Valibot both import `withArkEnv` from the `/standard/config`
-subpath. Valibot schemas also need the app to resolve
-`@arkenv/standard/valibot` (install `valibot` and
-`@valibot/to-json-schema`). The schema itself stays on `@/.arkenv`, as
-in the tabs above.
+Zod and Valibot both import `withArkEnv` from
+`@arkenv/nextjs/standard/config`. The schema itself stays on
+`@/.arkenv`, as in the tabs above.
+
+`@arkenv/nextjs/standard` binds the root `@arkenv/standard` engine.
+Zod 4.2+ coerces numbers and booleans from that entry. Valibot does
+not: there is no `@arkenv/nextjs/standard/valibot` binding, so
+installing `@valibot/to-json-schema` does not turn `v.number()` or
+`v.boolean()` into coerced fields here. Keep Valibot fields as strings
+on this entry, or validate them with
+[`@arkenv/standard/valibot`](/docs/validators/valibot) outside the
+Next.js factory.
 
 ```ts title="./next.config.ts" twoslash
 import type { NextConfig } from "next";
