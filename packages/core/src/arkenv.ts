@@ -149,10 +149,6 @@ export function arkenv<T extends CompiledEnvSchema>(
 export function arkenv<
 	const T extends SchemaShape,
 	const D extends EnvSchema<T> | CompiledEnvSchema,
->(def: D, config?: ArkEnvConfig): ArkenvOutput<T, D>;
-export function arkenv<
-	const T extends SchemaShape,
-	const D extends EnvSchema<T> | CompiledEnvSchema,
 >(def: D, config: ArkEnvConfig = {}): ArkenvOutput<T, D> {
 	if (recordIfCapturing(def)) {
 		// Capture records the schema only. The returned object has no values, so

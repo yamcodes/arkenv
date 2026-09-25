@@ -1,3 +1,4 @@
+import { attest } from "@ark/attest";
 import { describe, expectTypeOf, it } from "vitest";
 import { type ArkEnvConfig, arkenv, type } from ".";
 
@@ -57,15 +58,12 @@ describe("Type Regression (Issue #796)", () => {
 		expectTypeOf(env.WITH_DEFAULT).toBeString();
 	});
 
-	/* 
-	   TODO: Re-enable completion snapshots once @ark/attest supports arktype@2.2.0.
-	   Currently deferred due to a version conflict (Scope already named Array).
-	   
-	   Local Issue: https://github.com/yamcodes/arkenv/issues/895
-	   Upstream Issue: https://github.com/arktypeio/arktype/issues/1617
-
-	   it("snapshots DSL completions for inline values", () => {
-	       attest(() => arkenv({ PORT: "n" })).completions({ n: ["never", "null", "number"] });
-	   });
-	*/
+	it("snapshots DSL completions for inline values", () => {
+		attest(() =>
+			// @ts-expect-error incomplete DSL prefix is only here to snapshot completions
+			arkenv({ PORT: "n" }),
+		).completions({
+			n: ["never", "null", "number"],
+		});
+	});
 });
