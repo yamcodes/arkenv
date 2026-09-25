@@ -103,7 +103,7 @@ Documented in ADRs / Discussions; do not reopen for the first RC:
 2. **Strict layout engine** — recipe only (ADR 0020).
 3. **CLI AST preset mutation** — init presets + doc snippets (Discussion #1709).
 4. **Custom dotenv style linter** — out of `arkenv check` (Discussion #1710).
-5. **CJS dual-publish on core packages** — shipped ESM-only in
+5. **CJS dual-publish on core packages** — not shipped; ESM-only landed in
    [#1754](https://github.com/yamcodes/arkenv/pull/1754)
    (`"type": "module"`, no `require` export). Discussion
    [#1750](https://github.com/yamcodes/arkenv/discussions/1750) is closed.
