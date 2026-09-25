@@ -7,7 +7,7 @@
       No boilerplate. Zero runtime dependencies.
     </p>
     <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Av1"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/test.yml/badge.svg?branch=v1"></a>
-    <a href="https://bundlephobia.com/package/@arkenv/core"><img alt="core bundle (gzipped)" src="https://img.shields.io/bundlephobia/minzip/%40arkenv%2Fcore?label=core%20bundle%20(gzipped)"></a>
+    <a href="https://bundlephobia.com/package/@arkenv/core"><img alt="core bundle (gzipped)" src="https://img.shields.io/badge/core_bundle_(gzipped)-2.8_kB-blue"></a>
     <a href="https://arktype.io/docs/ecosystem#arkenv"><img alt="ArkType Ecosystem" src="https://custom-icon-badges.demolab.com/badge/ArkType%20Ecosystem-0d1526?logo=arktype2&logoColor=e9eef9"></a>
     <a href="https://pullfrog.com"><img alt="Pullfrog" src="https://custom-icon-badges.demolab.com/badge/Powered%20by%20Pullfrog-2f4032?logo=pullfrog-white"></a>
   </div>
