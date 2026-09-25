@@ -74,21 +74,24 @@ They differ in schema style and peers.
 
 ## Exports
 
-These are the public names from `@arkenv/standard`.
+The main entry is the throw-path runtime. Issue helpers and the
+non-throwing parser live on subpaths so the default import stays small.
 
-| Export               | Kind                       | Role                                                         |
-| -------------------- | -------------------------- | ------------------------------------------------------------ |
-| `arkenv`             | function (default + named) | Validate a Standard Schema field map                         |
-| `ArkEnvError`        | class                      | Thrown on validation failure                                 |
-| `formatIssues`       | function                   | Format issues                                                |
-| `getSchemaKeys`      | function                   | List schema keys                                             |
-| Config / issue types | types                      | `StandardEnvConfig` extends core options with `toJsonSchema` |
+| Export              | Kind                       | Role                                             |
+| ------------------- | -------------------------- | ------------------------------------------------ |
+| `arkenv`            | function (default + named) | Validate a Standard Schema field map             |
+| `ArkEnvError`       | class                      | Thrown on validation failure                     |
+| `SafeArkEnvResult`  | type                       | Result shape returned by `@arkenv/standard/safe` |
+| `StandardEnvConfig` | type                       | Extends core options with `toJsonSchema`         |
 
 ### Subpaths
+
+Issue formatting and the non-throwing parser are separate entries.
 
 | Import                      | Role                                                                                           |
 | --------------------------- | ---------------------------------------------------------------------------------------------- |
 | `@arkenv/standard`          | Root engine (throw path). Dependency-free. Zod works zero-config.                              |
+| `@arkenv/standard/issues`   | `formatIssues`, `getSchemaKeys`, and `EnvIssue` / `EnvIssueCode` / `EnvIssueMeta`              |
 | `@arkenv/standard/safe`     | `arkenv` — result object instead of a throw (default + named export)                           |
 | `@arkenv/standard/valibot`  | Same `arkenv`, pre-configured for Valibot. `valibot` + `@valibot/to-json-schema` are required. |
 | `@arkenv/standard/zod-mini` | Same `arkenv`, pre-configured for Zod Mini. `zod` is required.                                 |
