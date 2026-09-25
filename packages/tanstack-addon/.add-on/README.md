@@ -15,4 +15,4 @@ import { env } from "#/env";
 console.log(env.VITE_API_URL);
 ```
 
-Docs: https://arkenv.js.org/docs/frameworks/tanstack-start
+Docs: [https://arkenv.js.org/docs/frameworks/tanstack-start](https://arkenv.js.org/docs/frameworks/tanstack-start)
