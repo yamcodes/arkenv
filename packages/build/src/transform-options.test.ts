@@ -77,6 +77,9 @@ describe("assertTransformModeCall", () => {
 				assertTransformModeCall({ [key]: true }, undefined),
 			).not.toThrow(SCHEMA_DEFINE_REMOVED);
 		}
+		expect(
+			pluginOptionNotSupportedMessage(["coerce", "arrayFormat"]),
+		).toContain("are not plugin options");
 	});
 
 	it("still rejects a schema map and a two-argument call as the removed API", () => {

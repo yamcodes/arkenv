@@ -70,8 +70,9 @@ export function pluginOptionNotSupportedMessage(
 	keys: readonly string[],
 ): string {
 	const listed = keys.map((key) => `\`${key}\``).join(", ");
-	const verb = keys.length === 1 ? "is" : "are";
-	return `${listed} ${verb} not a plugin option. Set runtime validation options on \`arkenv()\` in \`env.ts\`.`;
+	const phrase =
+		keys.length === 1 ? "is not a plugin option" : "are not plugin options";
+	return `${listed} ${phrase}. Set runtime validation options on \`arkenv()\` in \`env.ts\`.`;
 }
 
 /**

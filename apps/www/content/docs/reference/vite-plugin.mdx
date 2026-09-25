@@ -37,7 +37,7 @@ Pass transform options only. A schema argument is rejected.
 | --------------------- | -------------------------- | -------------------------------------------------------------------------------------------- |
 | `schemaPath`          | auto (`env.ts`)            | Schema module to transform                                                                   |
 | `clientPrefix`        | Vite `envPrefix` (`VITE_`) | Keys exposed to the client                                                                   |
-| `env`                 | loaded environment         | Build-time override merged over the loaded environment before the schema module is evaluated |
+| `env`                 | (none)                     | Build-time override merged over the loaded environment before the schema module is evaluated |
 | `logger` / `logLevel` | (none)                     | Logging                                                                                      |
 
 `env` on the plugin is a build-time override for this compile. It is not
