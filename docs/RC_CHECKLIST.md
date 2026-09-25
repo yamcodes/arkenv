@@ -355,13 +355,11 @@ Actions → **release** → **Run workflow** → enable
   [`packages/arkenv/src/index.ts`](../packages/arkenv/src/index.ts)
   is enough to flip `latest` **if** docs and README stop teaching
   runtime import from `"arkenv"`.
-- [ ] Update the guard message to link an **absolute URL** to the
-  migrating-to-v1 guide path `/docs/guides/migrating-to-v1` (not the
-  homepage). During pre-DNS, build that URL from the same origin
-  strategy as `getDocsUrl()` in
-  [`apps/www/lib/config/release.ts`](../apps/www/lib/config/release.ts)
-  (today’s pre-release fallback is `https://arkenv-v1.vercel.app`)
-  so the link does not 404 on the v0 domain `https://arkenv.js.org`.
+- [ ] Update the guard message to link the absolute
+  `https://arkenv.js.org/docs/guides/migrating-to-v1` (not the
+  homepage). Apex serves v1, so the pre-DNS origin workaround
+  (`getDocsUrl()` falling back to `https://arkenv-v1.vercel.app` so
+  the link would not 404 on a v0 `arkenv.js.org`) is no longer needed.
 - [ ] **No migration codemod for RC** - ship guard + migration guide +
   `arkenv init`. Revisit post-RC only if support volume warrants it.
 - [ ] `npm deprecate` `@arkenv/cli` when ready
