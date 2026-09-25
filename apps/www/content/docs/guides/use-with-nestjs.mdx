@@ -118,7 +118,7 @@ export const EnvProvider = {
 
 Register `EnvProvider` in your module's `providers` array (and `exports` if used across modules), then inject `ENV` into services using `@Inject(ENV) private readonly env: Env`.
 
-## 5. Avoiding ConfigModule validation
+## 5. Why avoid ConfigModule validation
 
 Do not pass an ArkEnv schema shape into `@nestjs/config`'s `ConfigModule.forRoot({ validationSchema })`.
 
