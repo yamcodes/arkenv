@@ -2,6 +2,15 @@
 "@arkenv/core": patch
 ---
 
-#### Restore inline schema completions
+#### Restore inline ArkType DSL completions
 
-Inline `arkenv({ KEY: "..." })` schemas complete ArkType DSL keywords again. A catch-all overload was hiding the contextual type that powers those suggestions. The safe entry from `@arkenv/core/safe` uses the same signatures.
+A partial keyword inside an inline schema suggests ArkType keywords again. `"n"` completes to `never`, `null`, and `number`, the same suggestions as `type({ ... })`. This applies to `arkenv` from `@arkenv/core` and from `@arkenv/core/safe`.
+
+```ts
+import arkenv from "@arkenv/core";
+
+export const env = arkenv({
+	PORT: "number.port = 3000",
+	HOST: "string.host",
+});
+```
