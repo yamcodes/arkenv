@@ -21,6 +21,9 @@ const demoRouteTemplate = readFileSync(
 	"utf-8",
 );
 
+/** Range emitted for `@arkenv/core`, `@arkenv/standard`, and `@arkenv/vite-plugin`. */
+const ARKENV_RANGE = "^1.0.0-rc.2";
+
 describe("Template Rendering", () => {
 	describe("src/env.ts.ejs", () => {
 		it("renders ArkType syntax by default when no options provided", () => {
@@ -96,8 +99,8 @@ describe("Template Rendering", () => {
 			expect(parsed.dependencies["@arkenv/core"]).toBeDefined();
 			expect(parsed.dependencies.arktype).toBeDefined();
 			expect(parsed.dependencies["@arkenv/standard"]).toBeUndefined();
-			expect(parsed.devDependencies["@arkenv/vite-plugin"]).toBe("^1.0.0-rc.2");
-			expect(parsed.dependencies["@arkenv/core"]).toBe("^1.0.0-rc.2");
+			expect(parsed.devDependencies["@arkenv/vite-plugin"]).toBe(ARKENV_RANGE);
+			expect(parsed.dependencies["@arkenv/core"]).toBe(ARKENV_RANGE);
 		});
 
 		it("renders valid JSON with Zod dependencies", () => {
@@ -106,10 +109,10 @@ describe("Template Rendering", () => {
 			});
 			const parsed = JSON.parse(rendered);
 
-			expect(parsed.dependencies["@arkenv/standard"]).toBeDefined();
+			expect(parsed.dependencies["@arkenv/standard"]).toBe(ARKENV_RANGE);
 			expect(parsed.dependencies.zod).toBeDefined();
 			expect(parsed.dependencies["@arkenv/core"]).toBeUndefined();
-			expect(parsed.devDependencies["@arkenv/vite-plugin"]).toBeDefined();
+			expect(parsed.devDependencies["@arkenv/vite-plugin"]).toBe(ARKENV_RANGE);
 		});
 
 		it("renders valid JSON with Valibot dependencies", () => {
@@ -118,10 +121,10 @@ describe("Template Rendering", () => {
 			});
 			const parsed = JSON.parse(rendered);
 
-			expect(parsed.dependencies["@arkenv/standard"]).toBeDefined();
+			expect(parsed.dependencies["@arkenv/standard"]).toBe(ARKENV_RANGE);
 			expect(parsed.dependencies.valibot).toBeDefined();
 			expect(parsed.dependencies["@arkenv/core"]).toBeUndefined();
-			expect(parsed.devDependencies["@arkenv/vite-plugin"]).toBeDefined();
+			expect(parsed.devDependencies["@arkenv/vite-plugin"]).toBe(ARKENV_RANGE);
 		});
 
 		it("renders valid JSON when keyed by remote URL ID", () => {
@@ -132,8 +135,9 @@ describe("Template Rendering", () => {
 			});
 			const parsed = JSON.parse(rendered);
 
-			expect(parsed.dependencies["@arkenv/standard"]).toBeDefined();
+			expect(parsed.dependencies["@arkenv/standard"]).toBe(ARKENV_RANGE);
 			expect(parsed.dependencies.zod).toBeDefined();
+			expect(parsed.devDependencies["@arkenv/vite-plugin"]).toBe(ARKENV_RANGE);
 		});
 	});
 
