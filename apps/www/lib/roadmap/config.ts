@@ -76,7 +76,7 @@ export const ROADMAP_EXTRAS: readonly RoadmapExtra[] = [
 	{
 		id: "v0-archive-dns-cutover",
 		title: "Park v0 on arkenv-v0.vercel.app and point Production at v1",
-		done: false,
+		done: true,
 		topic: "Docs",
 	},
 	{
