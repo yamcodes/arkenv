@@ -245,11 +245,12 @@ export class CLI {
 		return input;
 	}
 
+	/**
+	 * Return the parsed input consumed by the check command.
+	 */
 	get checkInput(): CheckInput {
 		return {
-			...(this.schema !== undefined
-				? { schema: this.schema, file: this.schema }
-				: {}),
+			...(this.schema !== undefined ? { schema: this.schema } : {}),
 			...(this.envFiles.length > 0 ? { envFiles: this.envFiles } : {}),
 			...(this.verifyExample !== undefined
 				? { verifyExample: this.verifyExample }

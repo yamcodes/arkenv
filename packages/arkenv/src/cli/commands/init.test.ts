@@ -133,7 +133,12 @@ describe("InitUseCase", () => {
 		expect(logger.refuse).toHaveBeenCalledWith(
 			expect.objectContaining({
 				code: ERROR_CODES.NON_EMPTY_DIR,
-				retryWith: ["--force"],
+				nextActions: [
+					expect.objectContaining({
+						kind: "run-command",
+						command: "{bin} init --force",
+					}),
+				],
 			}),
 			"init",
 		);
@@ -247,7 +252,12 @@ describe("InitUseCase", () => {
 		expect(logger.refuse).toHaveBeenCalledWith(
 			expect.objectContaining({
 				code: ERROR_CODES.NON_EMPTY_DIR,
-				retryWith: ["--force"],
+				nextActions: [
+					expect.objectContaining({
+						kind: "run-command",
+						command: "{bin} init --force",
+					}),
+				],
 			}),
 			"init",
 		);
@@ -309,7 +319,12 @@ describe("InitUseCase", () => {
 			expect.objectContaining({
 				code: ERROR_CODES.REQUIREMENTS_NOT_MET,
 				message: "Technical requirements not met.",
-				retryWith: ["--force"],
+				nextActions: [
+					expect.objectContaining({
+						kind: "run-command",
+						command: "{bin} init --force",
+					}),
+				],
 				details: {
 					requirements: [
 						{
@@ -505,7 +520,12 @@ describe("InitUseCase", () => {
 			expect.objectContaining({
 				code: ERROR_CODES.GIT_TREE_DIRTY,
 				message: "Git working tree is not clean.",
-				retryWith: ["--force"],
+				nextActions: [
+					expect.objectContaining({
+						kind: "run-command",
+						command: "{bin} init --force",
+					}),
+				],
 			}),
 			"init",
 		);

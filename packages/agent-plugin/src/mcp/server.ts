@@ -61,7 +61,7 @@ export function createMcpServer(): Server {
 			{
 				name: INIT_TOOL_NAME,
 				description:
-					"Scaffold ArkEnv by running `arkenv init --agent`. Never pass --force unless a previous refusal listed it in retryWith.",
+					"Scaffold ArkEnv by running `arkenv init --agent`. Never pass --force unless a previous refusal's nextActions include a run-command with --force.",
 				inputSchema: INIT_INPUT_SCHEMA,
 			},
 		],

@@ -5,9 +5,9 @@
     "": {
       "name": "arkenv-example-with-bun-react",
       "dependencies": {
-        "@arkenv/bun-plugin": "1.0.0-rc.1",
-        "@arkenv/core": "1.0.0-rc.1",
-        "arktype": "^2.2.0",
+        "@arkenv/bun-plugin": "1.0.0-rc.2",
+        "@arkenv/core": "1.0.0-rc.2",
+        "arktype": "^2.2.5",
         "react": "^19.2.5",
         "react-dom": "^19.2.5",
       },
@@ -20,15 +20,15 @@
     },
   },
   "packages": {
-    "@ark/schema": ["@ark/schema@0.56.0", "", { "dependencies": { "@ark/util": "0.56.0" } }, "sha512-ECg3hox/6Z/nLajxXqNhgPtNdHWC9zNsDyskwO28WinoFEnWow4IsERNz9AnXRhTZJnYIlAJ4uGn3nlLk65vZA=="],
+    "@ark/schema": ["@ark/schema@0.56.4", "", { "dependencies": { "@ark/util": "0.56.4" } }, "sha512-nd4OqaWdKZJeGF5zNmZysDQO7NyyJ1ycl4S7i16Hj1VxqL+x72Z66lOn7ErpsoMUZtCtslAMHMjqJhuQSxciyw=="],
 
-    "@ark/util": ["@ark/util@0.56.0", "", {}, "sha512-BghfRC8b9pNs3vBoDJhcta0/c1J1rsoS1+HgVUreMFPdhz/CRAKReAu57YEllNaSy98rWAdY1gE+gFup7OXpgA=="],
+    "@ark/util": ["@ark/util@0.56.4", "", {}, "sha512-KKqwGSia44cvuuDY70jGfbiUdG2E8F2cM4npdqvJ22S5a0LknlwG6nIrfQG1nF8fzxpzP30098wp0a8ASs0prQ=="],
 
-    "@arkenv/build": ["@arkenv/build@1.0.0-rc.1", "", { "dependencies": { "chokidar": "^4.0.3", "jiti": "2.7.0" } }, "sha512-NNEtV96UnS8QTzbiH1odZ8/we9J+Djb5fMZ2wchqNRMdC1LHY6dQLotPA//VqmEWepECONioYp0W7ebhECUZTQ=="],
+    "@arkenv/build": ["@arkenv/build@1.0.0-rc.2", "", { "dependencies": { "chokidar": "^4.0.3", "jiti": "2.7.0" } }, "sha512-XayN0Fw6wYqq5hLQIHRNdFE1gsqsLe1maKEKLfZ4bmUXmfys83fQPmej6fsVT5OqkNOpukAi9TgGxhe7ECyoNQ=="],
 
-    "@arkenv/bun-plugin": ["@arkenv/bun-plugin@1.0.0-rc.1", "", { "dependencies": { "@arkenv/build": "1.0.0-rc.1", "jiti": "2.7.0" }, "peerDependencies": { "@arkenv/core": "^1.0.0", "@arkenv/standard": "^1.0.0", "arktype": "^2.1.22", "bun": "^1.0.0" }, "optionalPeers": ["@arkenv/core", "@arkenv/standard", "arktype"] }, "sha512-30v6Uyu9RgO5KxNSBOvLAC3LSiYUTfXBWqtD94JzJkpSqtgekKrGT+dXR773gj4kFFowkD3SPzvf4TWJyRIg2A=="],
+    "@arkenv/bun-plugin": ["@arkenv/bun-plugin@1.0.0-rc.2", "", { "dependencies": { "@arkenv/build": "1.0.0-rc.2", "jiti": "2.7.0" }, "peerDependencies": { "@arkenv/core": "^1.0.0", "@arkenv/standard": "^1.0.0", "arktype": "^2.1.22", "bun": "^1.0.0" }, "optionalPeers": ["@arkenv/core", "@arkenv/standard", "arktype"] }, "sha512-+gwxCIuB6LEgRxswyjKD2SDCemtyYKPFGkoKD54krmCpmBtkYNBv84ZofYB7A6u1zm2ci5+/2pm2HYwOrkiC2w=="],
 
-    "@arkenv/core": ["@arkenv/core@1.0.0-rc.1", "", { "peerDependencies": { "arktype": "^2.1.22" } }, "sha512-+GAifcTYJ7vKdbnSqO7y74GiQBvc0cr6fg/SYuUfo44k5MrM4nGj7+JHRD/ZME22RLygfoFvvR25+QQSPd0n7g=="],
+    "@arkenv/core": ["@arkenv/core@1.0.0-rc.2", "", { "peerDependencies": { "arktype": "^2.1.22" } }, "sha512-3KUzqWnSHXR/6PH06dA5qcBQU5OdY4u40wjUwR81nD/r5ajoe+S7/sqwa8XwpmxqbaF7YjKM9aVNbluSf8U4eg=="],
 
     "@oven/bun-darwin-aarch64": ["@oven/bun-darwin-aarch64@1.3.13", "", { "os": "darwin", "cpu": "arm64" }, "sha512-qAS6Hg8Q14ckfBuqJ2Zh7gBQSVSUHeibSq4OFqBTv6DzyJuxYlr0sdYQzmYmnbPxbqobekqUDTa/4XEaqRi7vg=="],
 
@@ -62,9 +62,9 @@
 
     "@types/react-dom": ["@types/react-dom@19.2.3", "", { "peerDependencies": { "@types/react": "^19.2.0" } }, "sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ=="],
 
-    "arkregex": ["arkregex@0.0.5", "", { "dependencies": { "@ark/util": "0.56.0" } }, "sha512-ncYjBdLlh5/QnVsAA8De16Tc9EqmYM7y/WU9j+236KcyYNUXogpz3sC4ATIZYzzLxwI+0sEOaQLEmLmRleaEXw=="],
+    "arkregex": ["arkregex@0.0.10", "", { "dependencies": { "@ark/util": "0.56.4" } }, "sha512-+iDWBYBjH8w7wqEv8VY4loBwRldFxX84KNwKbobH3FJPay/18XI9sTesmXYpKyIrgbC5z/s16+vSJYHCC9FEvQ=="],
 
-    "arktype": ["arktype@2.2.0", "", { "dependencies": { "@ark/schema": "0.56.0", "@ark/util": "0.56.0", "arkregex": "0.0.5" } }, "sha512-t54MZ7ti5BhOEvzEkgKnWvqj+UbDfWig+DHr5I34xatymPusKLS0lQpNJd8M6DzmIto2QGszHfNKoFIT8tMCZQ=="],
+    "arktype": ["arktype@2.2.5", "", { "dependencies": { "@ark/schema": "0.56.4", "@ark/util": "0.56.4", "arkregex": "0.0.10" } }, "sha512-c9oqY1eBab2LceqvpWX50xae2HB8P/nJPxRhuhPVf5lEDi3WQpf7WQflJFMsyCiA3NGh6zENOlse30gWBzlwDg=="],
 
     "balanced-match": ["balanced-match@4.0.4", "", {}, "sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA=="],
 

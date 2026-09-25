@@ -28,7 +28,6 @@ import {
  */
 export type CheckInput = {
 	schema?: string;
-	file?: string;
 	envFiles?: string[];
 	verifyExample?: boolean | string;
 	isQuiet?: boolean;
@@ -67,7 +66,7 @@ export class CheckUseCase {
 	 */
 	async execute(input: CheckInput): Promise<number> {
 		const cwd = input.cwd ?? process.cwd();
-		const requestedSchema = input.schema ?? input.file;
+		const requestedSchema = input.schema;
 		const isJson = Boolean(this.logger.isJson || input.isJson || input.isAgent);
 
 		// 1. Detect framework to suggest appropriate .env file (e.g. .env.local for Next.js)

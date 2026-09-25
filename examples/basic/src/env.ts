@@ -1,4 +1,4 @@
-import arkenv, { type } from "@arkenv/core";
+import arkenv from "@arkenv/core";
 
 // 1. Define the environment schema.
 // ArkEnv automatically parses, coerces, and validates environment variables.
@@ -29,7 +29,7 @@ export const env = arkenv(
 		API_KEY: "string | undefined",
 
 		// Parsing arrays (e.g. from JSON formatted lists)
-		MY_ARRAY: type("(number | boolean)[]").default(() => []),
+		MY_ARRAY: "(number | boolean)[] = []",
 	},
 	{
 		// Enable array parsing from JSON strings
