@@ -14,6 +14,11 @@
 		// CLI check crash tests) resolve @arkenv/* / @repo/* via NODE_PATH
 		// into the store public hoist — they are not at the repo root
 		// without this.
-		"publicHoist": ["@arkenv/*", "@repo/*"]
+		"publicHoist": ["@arkenv/*", "@repo/*"],
+		// Name pattern, not versions. @nubjs/nub and its platform optional
+		// packages ship together with the pinned packageManager, so a bump
+		// must install the same day. Every other package stays on Nub's
+		// default 24-hour cooling window.
+		"minimumReleaseAgeExclude": ["@nubjs/*"]
 	}
 }
