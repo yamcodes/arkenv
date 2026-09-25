@@ -2,6 +2,9 @@ import { ArkEnvError } from "@arkenv/core";
 import { describe, expect, it } from "vitest";
 
 import arkenvStandard, { arkenv as namedArkenvStandard } from "./standard";
+import serverDefault, {
+	arkenv as serverArkenvStandard,
+} from "./standard/react-server";
 
 // Mock Standard Schema validator
 const mockSchema = <TOutput>(outputValue: TOutput) => ({
@@ -18,16 +21,14 @@ const mockSchema = <TOutput>(outputValue: TOutput) => ({
 describe("Next.js Standard Mode Flat Layout", () => {
 	it("exports arkenv as both named and default", () => {
 		expect(arkenvStandard).toBe(namedArkenvStandard);
+		expect(serverDefault).toBe(serverArkenvStandard);
 	});
 
-	it("correctly handles flat layout and splits keys by prefix / options at runtime", () => {
+	it("allows server-only keys on the react-server build", () => {
 		process.env.DATABASE_URL = "postgres://localhost:5432/db";
-		(
-			globalThis as { __arkenv_force_server__?: boolean }
-		).__arkenv_force_server__ = true;
 
 		try {
-			const env = namedArkenvStandard(
+			const env = serverArkenvStandard(
 				{
 					DATABASE_URL: mockSchema(""),
 					NEXT_PUBLIC_API_URL: mockSchema(""),
@@ -44,13 +45,11 @@ describe("Next.js Standard Mode Flat Layout", () => {
 				},
 			);
 
-			expect((env as any).DATABASE_URL).toBe("postgres://localhost:5432/db");
+			expect(env.DATABASE_URL).toBe("postgres://localhost:5432/db");
 			expect(env.NEXT_PUBLIC_API_URL).toBe("https://api.example.com");
 			expect(env.NODE_ENV).toBe("test");
 			expect(env.CUSTOM_VAR).toBe("custom_val");
 		} finally {
-			delete (globalThis as { __arkenv_force_server__?: boolean })
-				.__arkenv_force_server__;
 			delete process.env.DATABASE_URL;
 		}
 	});

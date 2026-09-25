@@ -69,9 +69,16 @@
 			"default": "./dist/config/index.js"
 		},
 		"./standard": {
-			"types": "./dist/standard/index.d.ts",
-			"import": "./dist/standard/index.js",
-			"default": "./dist/standard/index.js"
+			"react-server": {
+				"types": "./dist/standard/react-server.d.ts",
+				"import": "./dist/standard/react-server.js",
+				"default": "./dist/standard/react-server.js"
+			},
+			"default": {
+				"types": "./dist/standard/index.d.ts",
+				"import": "./dist/standard/index.js",
+				"default": "./dist/standard/index.js"
+			}
 		},
 		"./standard/config": {
 			"types": "./dist/standard/config.d.ts",
