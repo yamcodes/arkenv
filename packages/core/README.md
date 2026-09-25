@@ -110,11 +110,13 @@ export const env = arkenv({
 
 <br/>
 
-## Installation
+## Getting started
 
 ```sh
 npx arkenv init
 ```
+
+The CLI asks a few questions and writes your schema.
 
 <br/>
 
