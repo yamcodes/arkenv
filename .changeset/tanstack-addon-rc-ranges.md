@@ -9,5 +9,5 @@ Scaffolded TanStack Start apps now install `@arkenv/core`, `@arkenv/standard`, a
 Usage:
 
 ```bash
-npx @tanstack/cli create my-app --add-ons arkenv
+npx @tanstack/cli create my-app --add-ons https://arkenv.js.org/tanstack/info.json
 ```
