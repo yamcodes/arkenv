@@ -110,6 +110,14 @@ export const env = arkenv({
 
 <br/>
 
+| ArkEnv | Instead of |
+| --- | --- |
+| Your existing TypeScript validator | A custom `.env.schema` DSL |
+| `arkenv({ ... })` | A hand-rolled wrapper around Zod |
+| One typed `env` object | Casting `process.env` |
+
+<br/>
+
 ## Getting started
 
 ```sh
