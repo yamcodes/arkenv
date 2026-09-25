@@ -1,5 +1,3 @@
-import { extractClientKeys } from "@arkenv/build";
-
 export { runCodegen } from "./codegen";
 export { extractKeys } from "./extract";
 export { setupArkEnv, withArkEnv } from "./setup";
@@ -8,4 +6,3 @@ export type {
 	NextConfigContext,
 	NextConfigFactory,
 } from "./types";
-export { extractClientKeys };

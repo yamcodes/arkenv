@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { extractClientKeys, extractKeys, extractServerKeys } from "./config";
+import { extractKeys } from "./config";
 
 describe("Nuxt config parser", () => {
 	it("should reject nested bag schema source", () => {
@@ -65,23 +65,5 @@ describe("Nuxt config parser", () => {
 			"NUXT_PUBLIC_TEMPLATE",
 		]);
 		expect(res.sharedKeys).toEqual(["NODE_ENV"]);
-	});
-
-	it("should extract client and server keys from separate file contents", () => {
-		const clientContent = `
-			import arkenv from "./generated/env.gen";
-			export const env = arkenv({
-				NUXT_PUBLIC_API_URL: "string"
-			});
-		`;
-		const serverContent = `
-			import arkenv from "@arkenv/nuxt";
-			export const env = arkenv({
-				DATABASE_URL: "string"
-			});
-		`;
-
-		expect(extractClientKeys(clientContent)).toEqual(["NUXT_PUBLIC_API_URL"]);
-		expect(extractServerKeys(serverContent)).toEqual(["DATABASE_URL"]);
 	});
 });
