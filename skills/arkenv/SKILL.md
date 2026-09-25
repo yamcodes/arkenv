@@ -185,10 +185,10 @@ Register the plugin in `vite.config.ts` without schema arguments:
 
 ```ts title="vite.config.ts"
 import { defineConfig } from "vite";
-import arkenv from "@arkenv/vite-plugin";
+import arkenvPlugin from "@arkenv/vite-plugin";
 
 export default defineConfig({
-  plugins: [arkenv()],
+  plugins: [arkenvPlugin()],
 });
 ```
 
@@ -225,12 +225,12 @@ plugins = ["@arkenv/bun-plugin"]
 In `Bun.build`:
 
 ```ts
-import arkenv from "@arkenv/bun-plugin";
+import arkenvPlugin from "@arkenv/bun-plugin";
 
 await Bun.build({
   entrypoints: ["./src/index.tsx"],
   outdir: "./dist",
-  plugins: [arkenv()],
+  plugins: [arkenvPlugin],
 });
 ```
 

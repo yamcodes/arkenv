@@ -22,12 +22,11 @@ npm install @arkenv/standard
 
 ## Exports
 
-| Export                      | Role                          |
-| --------------------------- | ----------------------------- |
-| default                     | `arkenvPlugin` plugin factory |
-| named `arkenvPlugin`        | Plugin factory                |
-| named `arkenvRsbuildPlugin` | Host-explicit named alias     |
-| `./standard`                | Standard Schema plugin entry  |
+| Export               | Role                          |
+| -------------------- | ----------------------------- |
+| default              | `arkenvPlugin` plugin factory |
+| named `arkenvPlugin` | Plugin factory                |
+| `./standard`         | Standard Schema plugin entry  |
 
 ## Transform options
 
@@ -40,8 +39,8 @@ Pass transform options only. A schema argument is rejected.
 | Plus                  | (none)          | All [`ArkEnvConfig`](/docs/reference/options) fields |
 | `logger` / `logLevel` | (none)          | Logging                                              |
 
-Call `arkenvPlugin()` (or `arkenvRsbuildPlugin()`) with no args, or an options
-object that includes transform fields (`schemaPath`, `clientPrefix`, logging).
+Call `arkenvPlugin()` with no args, or an options object that includes
+transform fields (`schemaPath`, `clientPrefix`, logging).
 Do not pass a schema map or compiled `type()` to the plugin.
 
 ## Next steps

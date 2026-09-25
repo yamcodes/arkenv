@@ -20,12 +20,12 @@ export const env = arkenv({
 ```
 
 ```ts title="vite.config.ts"
-import arkenvVitePlugin from "@arkenv/vite-plugin";
+import arkenvPlugin from "@arkenv/vite-plugin";
 import reactPlugin from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  plugins: [reactPlugin(), arkenvVitePlugin()],
+  plugins: [reactPlugin(), arkenvPlugin()],
 });
 ```
 

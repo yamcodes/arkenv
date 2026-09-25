@@ -27,12 +27,12 @@ export default env;
 And add the plugin in `vite.config.ts`:
 
 ```ts title="vite.config.ts"
-import arkenvVitePlugin from "@arkenv/vite-plugin/standard";
+import arkenvPlugin from "@arkenv/vite-plugin/standard";
 import reactPlugin from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  plugins: [reactPlugin(), arkenvVitePlugin()],
+  plugins: [reactPlugin(), arkenvPlugin()],
   resolve: {
     tsconfigPaths: true,
   },

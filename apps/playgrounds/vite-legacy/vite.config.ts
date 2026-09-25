@@ -1,4 +1,4 @@
-import arkenvVitePlugin from "@arkenv/vite-plugin";
+import arkenvPlugin from "@arkenv/vite-plugin";
 import reactPlugin from "@vitejs/plugin-react";
 import { defineConfig, type PluginOption } from "vite";
 
@@ -6,5 +6,5 @@ import { defineConfig, type PluginOption } from "vite";
 // vite major (with/without optional jiti), so PluginOption from plugin-react and
 // defineConfig disagree even though they are the same Vite API.
 export default defineConfig({
-	plugins: [reactPlugin() as PluginOption, arkenvVitePlugin() as PluginOption],
+	plugins: [reactPlugin() as PluginOption, arkenvPlugin() as PluginOption],
 });
