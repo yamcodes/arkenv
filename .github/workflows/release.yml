@@ -77,7 +77,7 @@ jobs:
         uses: changesets/action@v2.1.1
         with:
           publish-script: nub run --no-check release
-          version: node scripts/changeset-version.js
+          version-script: node scripts/changeset-version.js
           github-token: ${{ steps.generate-token.outputs.token }}
 
       # Product RC path: also point npm `latest` at the just-published
