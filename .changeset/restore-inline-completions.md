@@ -14,7 +14,7 @@ Inline objects and compiled `type()` schemas still typecheck. That overload was 
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
-	PORT: "number.port = 3000",
-	HOST: "string.host",
+  PORT: "number.port = 3000",
+  HOST: "string.host",
 });
 ```
