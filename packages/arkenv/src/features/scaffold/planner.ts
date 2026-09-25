@@ -2,13 +2,8 @@ import path from "node:path";
 import { shake } from "radashi";
 import { FRAMEWORKS } from "./frameworks";
 import { getEnvDefaultsForExample } from "./frameworks/example-env-defaults";
-import {
-	type CollectedState,
-	DEFAULT_SKILL_SOURCE,
-	type ScaffoldingPlan,
-} from "./plan";
+import type { CollectedState, ScaffoldingPlan } from "./plan";
 import { mergeEnvKeysWithPreset } from "./presets";
-import { getDlxCommand } from "./scaffold";
 import { VALIDATORS } from "./validators";
 
 /**
@@ -191,18 +186,6 @@ function createBaseMetadata(
 	}) as ScaffoldingPlan["metadata"];
 }
 
-function planSkillInstall(state: CollectedState, plan: ScaffoldingPlan): void {
-	if (!state.options.installSkill) {
-		return;
-	}
-
-	plan.skill = {
-		dlxCommand: getDlxCommand(state.packageManager),
-		packageName: DEFAULT_SKILL_SOURCE,
-		isYes: state.isYes,
-	};
-}
-
 /**
  * Build a scaffolding plan for a new project cloned from an example.
  *
@@ -241,8 +224,6 @@ export function createNewProjectPlan(state: CollectedState): ScaffoldingPlan {
 			...(targetDir !== undefined && { cwd: targetDir }),
 		},
 	};
-
-	planSkillInstall(state, plan);
 
 	const envContent = formatEnvContent(
 		getEnvDefaultsForExample(options.example, () =>
@@ -354,8 +335,6 @@ export function createExistingProjectPlan(
 	if (bootstrap) {
 		plan.bootstrap = bootstrap;
 	}
-
-	planSkillInstall(state, plan);
 
 	const relPath = path.relative(cwd, targetPath).replace(/\\/g, "/");
 	const displayPath = relPath.startsWith(".") ? relPath : `./${relPath}`;

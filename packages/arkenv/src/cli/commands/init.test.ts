@@ -622,8 +622,15 @@ describe("InitUseCase", () => {
 		);
 	});
 
-	it("should detect installed arkenv skill, log a message, and skip prompt setting installSkill to false", async () => {
-		vi.mocked(scanner.hasSkill).mockResolvedValue(true);
+	it.each([
+		{ isYes: false, isAgent: false, label: "interactive" },
+		{ isYes: true, isAgent: false, label: "--yes" },
+		{ isYes: false, isAgent: true, label: "--agent" },
+	])("does not prompt to install the skill ($label)", async ({
+		isYes,
+		isAgent,
+	}) => {
+		vi.mocked(scanner.hasSkill).mockResolvedValue(false);
 		vi.mocked(prompt.runWizard).mockResolvedValue({
 			path: "./env.ts",
 			validator: "arktype",
@@ -632,22 +639,23 @@ describe("InitUseCase", () => {
 		});
 
 		const result = await (useCase as any).collect({
-			isYes: false,
+			isYes,
 			isForce: false,
-			isQuiet: false,
-			isAgent: false,
+			isQuiet: isAgent,
+			isAgent,
 		});
 
 		expect(result).not.toBeNull();
-		expect(result.options.installSkill).toBe(false);
-		expect(result.options.skillDetected).toBe(true);
-		expect(logger.info).toHaveBeenCalledWith(
-			expect.stringContaining("ArkEnv agent skill detected."),
+		expect(result.options.skillDetected).toBe(false);
+		expect(result.options).not.toHaveProperty("installSkill");
+		expect(prompt.confirm).not.toHaveBeenCalledWith(
+			expect.stringContaining("agent skill"),
+			expect.anything(),
+			expect.anything(),
 		);
-		expect(prompt.confirm).not.toHaveBeenCalled();
 	});
 
-	it("should detect installed arkenv skill and skip prompt setting installSkill to false even with isYes = true", async () => {
+	it("records a detected skill without prompting to install it", async () => {
 		vi.mocked(scanner.hasSkill).mockResolvedValue(true);
 		vi.mocked(prompt.runWizard).mockResolvedValue({
 			path: "./env.ts",
@@ -663,52 +671,13 @@ describe("InitUseCase", () => {
 			isAgent: false,
 		});
 
-		expect(result).not.toBeNull();
-		expect(result.options.installSkill).toBe(false);
 		expect(result.options.skillDetected).toBe(true);
-	});
-
-	it("should set installSkill to false for isAgent when skill is missing", async () => {
-		vi.mocked(scanner.hasSkill).mockResolvedValue(false);
-		vi.mocked(prompt.runWizard).mockResolvedValue({
-			path: "./env.ts",
-			validator: "arktype",
-			framework: "vanilla",
-			language: "ts",
-		});
-
-		const result = await (useCase as any).collect({
-			isYes: false,
-			isForce: false,
-			isQuiet: true,
-			isAgent: true,
-		});
-
-		expect(result).not.toBeNull();
-		expect(result.options.installSkill).toBe(false);
-		expect(prompt.confirm).not.toHaveBeenCalled();
-	});
-
-	it("should set installSkill to false for isAgent when skill is already present", async () => {
-		vi.mocked(scanner.hasSkill).mockResolvedValue(true);
-		vi.mocked(prompt.runWizard).mockResolvedValue({
-			path: "./env.ts",
-			validator: "arktype",
-			framework: "vanilla",
-			language: "ts",
-		});
-
-		const result = await (useCase as any).collect({
-			isYes: false,
-			isForce: false,
-			isQuiet: true,
-			isAgent: true,
-		});
-
-		expect(result).not.toBeNull();
-		expect(result.options.installSkill).toBe(false);
-		expect(result.options.skillDetected).toBe(true);
-		expect(prompt.confirm).not.toHaveBeenCalled();
+		expect(result.options).not.toHaveProperty("installSkill");
+		expect(prompt.confirm).not.toHaveBeenCalledWith(
+			expect.stringContaining("agent skill"),
+			expect.anything(),
+			expect.anything(),
+		);
 	});
 
 	describe("version freshness pre-flight check", () => {

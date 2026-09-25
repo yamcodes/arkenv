@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { code } from "@/shared/visuals";
 import type { ScaffoldingPlan } from "./plan";
-import { DEFAULT_SKILL_SOURCE } from "./plan";
 import { getInstallCommand, getNextStepsNote } from "./utils";
 
 describe("scaffold utils", () => {
@@ -72,30 +71,24 @@ describe("scaffold utils", () => {
 			},
 		};
 
-		it("returns AI assistant instruction if skill is installed", () => {
-			const note = getNextStepsNote(basePlan, true);
+		it("recommends the manual skill install when the skill is absent", () => {
+			const note = getNextStepsNote(basePlan);
 			expect(note.title).toBe("Next steps");
 			expect(note.message).toContain(
-				`${code("/arkenv")} - automatically refine your schema`,
+				`(Recommended) Install the AI skill: ${code("npx skills add yamcodes/arkenv")}`,
 			);
 		});
 
-		it("returns AI assistant instruction if skill is detected in metadata", () => {
-			const plan: ScaffoldingPlan = {
+		it("omits the skill recommendation when the skill is already present", () => {
+			const note = getNextStepsNote({
 				...basePlan,
-				metadata: {
-					...basePlan.metadata,
-					skillDetected: true,
-				},
-			};
-			const note = getNextStepsNote(plan, false);
-			expect(note.title).toBe("Next steps");
-			expect(note.message).toContain(
-				`${code("/arkenv")} - automatically refine your schema`,
-			);
+				metadata: { ...basePlan.metadata, skillDetected: true },
+			});
+			expect(note.message).not.toContain("Install the AI skill");
+			expect(note.message).not.toContain("skills add");
 		});
 
-		it("returns vite-specific instructions when skill is not installed/detected", () => {
+		it("returns vite-specific instructions", () => {
 			const plan: ScaffoldingPlan = {
 				...basePlan,
 				metadata: {
@@ -103,7 +96,7 @@ describe("scaffold utils", () => {
 					framework: "vite",
 				},
 			};
-			const note = getNextStepsNote(plan, false);
+			const note = getNextStepsNote(plan);
 			expect(note.message).toContain(
 				`Check ${code("./src/env.ts")} and refine your environment schema.`,
 			);
@@ -112,7 +105,7 @@ describe("scaffold utils", () => {
 			);
 		});
 
-		it("returns bun-fullstack-specific instructions when skill is not installed/detected", () => {
+		it("returns bun-fullstack-specific instructions", () => {
 			const plan: ScaffoldingPlan = {
 				...basePlan,
 				metadata: {
@@ -120,7 +113,7 @@ describe("scaffold utils", () => {
 					framework: "bun-fullstack",
 				},
 			};
-			const note = getNextStepsNote(plan, false);
+			const note = getNextStepsNote(plan);
 			expect(note.message).toContain(
 				`Import and use: ${code('import { env } from "./src/env"')}`,
 			);
@@ -135,7 +128,7 @@ describe("scaffold utils", () => {
 					disableCodegen: false,
 				},
 			};
-			const note = getNextStepsNote(plan, false);
+			const note = getNextStepsNote(plan);
 			expect(note.message).toContain(
 				`Wrap your Next.js config with ${code("withArkEnv")} inside ${code("next.config.ts")}`,
 			);
@@ -159,43 +152,11 @@ describe("scaffold utils", () => {
 					disableCodegen: false,
 				},
 			};
-			const note = getNextStepsNote(plan, false, true);
+			const note = getNextStepsNote(plan, true);
 			expect(note.message).not.toContain("withArkEnv");
 			expect(note.message).toContain(
 				`Import and use: ${code('import { env } from "./src/env"')}`,
 			);
-		});
-
-		it("includes withArkEnv instruction even when skill is installed but nextjs config is not bootstrapped", () => {
-			const plan: ScaffoldingPlan = {
-				...basePlan,
-				metadata: {
-					...basePlan.metadata,
-					framework: "nextjs",
-					disableCodegen: false,
-				},
-			};
-			const note = getNextStepsNote(plan, true, false);
-			expect(note.message).toContain(
-				`${code("/arkenv")} - automatically refine your schema`,
-			);
-			expect(note.message).toContain("withArkEnv");
-		});
-
-		it("omits withArkEnv when skill is installed and nextjs config IS bootstrapped", () => {
-			const plan: ScaffoldingPlan = {
-				...basePlan,
-				metadata: {
-					...basePlan.metadata,
-					framework: "nextjs",
-					disableCodegen: false,
-				},
-			};
-			const note = getNextStepsNote(plan, true, true);
-			expect(note.message).toContain(
-				`${code("/arkenv")} - automatically refine your schema`,
-			);
-			expect(note.message).not.toContain("withArkEnv");
 		});
 
 		it("returns nextjs-specific instructions with codegen disabled", () => {
@@ -207,7 +168,7 @@ describe("scaffold utils", () => {
 					disableCodegen: true,
 				},
 			};
-			const note = getNextStepsNote(plan, false);
+			const note = getNextStepsNote(plan);
 			expect(note.message).not.toContain("withArkEnv");
 			expect(note.message).toContain(
 				`Import and use: ${code('import { env } from "./src/env"')}`,
@@ -215,31 +176,9 @@ describe("scaffold utils", () => {
 		});
 
 		it("returns default instructions for vanilla framework", () => {
-			const note = getNextStepsNote(basePlan, false);
+			const note = getNextStepsNote(basePlan);
 			expect(note.message).toContain(
 				`Import and use: ${code('import { env } from "./src/env"')}`,
-			);
-		});
-
-		it("uses custom skill package name and dlx command if configured in plan", () => {
-			const plan: ScaffoldingPlan = {
-				...basePlan,
-				skill: {
-					dlxCommand: ["bun", "x"],
-					packageName: "custom-packageName",
-					isYes: true,
-				},
-			};
-			const note = getNextStepsNote(plan, false);
-			expect(note.message).toContain(
-				`Install the AI skill: ${code("bun x skills add custom-packageName")}`,
-			);
-		});
-
-		it("falls back to default dlx command and package name if not configured in plan", () => {
-			const note = getNextStepsNote(basePlan, false);
-			expect(note.message).toContain(
-				`Install the AI skill: ${code(`npx skills add ${DEFAULT_SKILL_SOURCE}`)}`,
 			);
 		});
 	});

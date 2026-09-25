@@ -1,7 +1,6 @@
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import type { CollectedState } from "./plan";
-import { DEFAULT_SKILL_SOURCE } from "./plan";
 import { createPlan } from "./planner";
 
 describe("Planner", () => {
@@ -237,15 +236,16 @@ describe("Planner", () => {
 		expect(plan.files.some((f) => f.path.endsWith(".d.ts"))).toBe(false);
 	});
 
-	it("plans skill installation", () => {
+	it("does not plan a skill install when --yes is set", () => {
 		const state: CollectedState = {
 			...defaultState,
-			options: { ...defaultState.options, installSkill: true },
+			isYes: true,
+			options: { ...defaultState.options, skillDetected: false },
 		};
 		const plan = createPlan(state);
-		expect(plan.skill).toBeDefined();
-		expect(plan.skill?.packageName).toBe(DEFAULT_SKILL_SOURCE);
-		expect(plan.skill?.dlxCommand).toEqual(["pnpm", "dlx"]);
+		expect(plan).not.toHaveProperty("skill");
+		expect(JSON.stringify(plan)).not.toContain("skills add");
+		expect(plan.metadata.skillDetected).toBe(false);
 	});
 
 	it("normalizes metadata paths", () => {
@@ -312,7 +312,6 @@ describe("Planner", () => {
 				path: "./src/env.ts",
 				validator: "arktype",
 				language: "ts",
-				installSkill: false,
 			},
 			detectedFramework: "vanilla",
 			packageManager: "pnpm",

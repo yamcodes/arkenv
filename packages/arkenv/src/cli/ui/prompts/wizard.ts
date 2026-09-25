@@ -135,7 +135,6 @@ async function runNewProjectWizard(
 			validator: "arktype",
 			framework: example.framework,
 			language: "ts",
-			installSkill: false,
 		};
 	} catch (error) {
 		if (error instanceof CancelError) {
@@ -174,7 +173,6 @@ async function runExistingProjectWizard(
 					: undefined,
 			language: "ts",
 			overwriteEnvSchemaFile: true,
-			installSkill: false,
 			envKeys: detectedKeys ?? undefined,
 			disableCodegen: defaults?.disableCodegen ?? false,
 			wrapNextjsConfig: framework === "nextjs" ? true : undefined,
@@ -291,7 +289,6 @@ async function runExistingProjectWizard(
 			hostPreset,
 			bunFeatures,
 			language: "ts",
-			installSkill: false,
 			envKeys: useEnvExample ? (detectedKeys ?? undefined) : undefined,
 			disableCodegen,
 			wrapNextjsConfig,

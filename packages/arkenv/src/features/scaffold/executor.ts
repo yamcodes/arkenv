@@ -249,30 +249,7 @@ export class Executor {
 				}
 			}
 
-			// 5. Skill
-			let skillInstalled = false;
-			if (plan.skill && process.env.SKIP_INSTALL !== "true") {
-				this.reporter.step("Installing ArkEnv agent skill...");
-				try {
-					const [cmd, ...baseArgs] = plan.skill.dlxCommand;
-					const args = [...baseArgs, "skills", "add", plan.skill.packageName];
-					if (plan.skill.isYes) {
-						args.push("--yes");
-					}
-					await this.workspace.execute(cmd, args, plan.cwd);
-					skillInstalled = true;
-				} catch (err: unknown) {
-					const message = err instanceof Error ? err.message : String(err);
-					this.reporter.warn(`Failed to install ArkEnv AI skill: ${message}`);
-				}
-			}
-
-			// 6. Final reporting
-			const note = getNextStepsNote(
-				plan,
-				skillInstalled,
-				frameworkConfigBootstrapped,
-			);
+			const note = getNextStepsNote(plan, frameworkConfigBootstrapped);
 			this.reporter.note(note.message, note.title);
 
 			this.reporter.finish(
@@ -283,7 +260,6 @@ export class Executor {
 					validator: plan.metadata.validator,
 					packageManager: plan.metadata.packageManager,
 					tsConfigUpdated,
-					skillInstalled,
 				},
 				"init",
 			);

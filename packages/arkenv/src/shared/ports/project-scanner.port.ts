@@ -91,7 +91,7 @@ export type ProjectScannerPort = {
 		tsConfig?: ParsedTsConfig | null,
 	): Promise<"pnpm" | "yarn" | "npm" | "bun">;
 	/**
-	 * Detects whether the arkenv skill is already installed.
+	 * Detect whether the ArkEnv agent skill is already installed.
 	 */
 	hasSkill(cwd?: string): Promise<boolean>;
 	/**

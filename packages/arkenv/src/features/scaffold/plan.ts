@@ -16,24 +16,6 @@ export type Framework =
 export type PackageManager = "pnpm" | "yarn" | "npm" | "bun";
 
 /**
- * Short `skills add` source. `v1` is the GitHub default branch, so installs
- * always use the repo form (no `/tree/v1` pin).
- */
-export const SKILL_SOURCE_REPO = "yamcodes/arkenv";
-
-/**
- * Resolves the `skills add` source for this CLI.
- *
- * @returns Source argument for `skills add`.
- */
-export function getDefaultSkillSource(): string {
-	return SKILL_SOURCE_REPO;
-}
-
-/** Source for `skills add` for this build. */
-export const DEFAULT_SKILL_SOURCE = getDefaultSkillSource();
-
-/**
  * Options chosen by the user or inferred for scaffolding the project.
  */
 export type ProjectOptions = {
@@ -47,7 +29,10 @@ export type ProjectOptions = {
 	language: "ts"; // TODO: Support JS
 	overwriteEnvSchemaFile?: boolean;
 	envKeys?: string[];
-	installSkill?: boolean;
+	/**
+	 * The ArkEnv agent skill is already present. Init does not install it;
+	 * this only suppresses the next-steps recommendation.
+	 */
 	skillDetected?: boolean;
 	disableCodegen?: boolean;
 	wrapNextjsConfig?: boolean;
@@ -90,14 +75,6 @@ export type ScaffoldingPlan = {
 		packageManager: PackageManager;
 		dependencies: string[];
 		cwd?: string;
-	};
-	/**
-	 * Optional skill installation
-	 */
-	skill?: {
-		dlxCommand: string[];
-		packageName: string;
-		isYes: boolean;
 	};
 	/**
 	 * Framework-specific bootstrapping

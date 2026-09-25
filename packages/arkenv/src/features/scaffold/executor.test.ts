@@ -2,7 +2,6 @@ import fsp from "node:fs/promises";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Executor } from "./executor";
 import type { Reporter, ScaffoldingPlan, Workspace } from "./plan";
-import { DEFAULT_SKILL_SOURCE } from "./plan";
 
 const mockExistingFiles = new Set<string>();
 
@@ -300,21 +299,14 @@ describe("Executor", () => {
 		);
 	});
 
-	it("installs skill when planned", async () => {
-		const plan: ScaffoldingPlan = {
-			...defaultPlan,
-			skill: {
-				dlxCommand: ["pnpm", "dlx"],
-				packageName: DEFAULT_SKILL_SOURCE,
-				isYes: true,
-			},
-		};
-		await executor.execute(plan);
-		expect(mockWorkspace.execute).toHaveBeenCalledWith(
-			"pnpm",
-			["dlx", "skills", "add", DEFAULT_SKILL_SOURCE, "--yes"],
-			plan.cwd,
-		);
+	it("does not spawn skills add", async () => {
+		await executor.execute(defaultPlan);
+		const calls = vi.mocked(mockWorkspace.execute).mock.calls;
+		expect(
+			calls.some(
+				(call) => call[1]?.includes("skills") && call[1]?.includes("add"),
+			),
+		).toBe(false);
 	});
 
 	it("bootstraps nextjs config when planned", async () => {

@@ -137,7 +137,10 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 	}
 
 	/**
-	 * Detects whether the arkenv skill is already installed.
+	 * Detect whether the ArkEnv agent skill is already installed.
+	 *
+	 * @param cwd Project directory to scan
+	 * @returns Whether a skills lock entry or skill file is present
 	 */
 	async hasSkill(cwd = process.cwd()): Promise<boolean> {
 		try {
@@ -148,11 +151,10 @@ export class NodeProjectScannerAdapter implements ProjectScannerPort {
 				parsed &&
 				typeof parsed === "object" &&
 				parsed.skills &&
-				typeof parsed.skills === "object"
+				typeof parsed.skills === "object" &&
+				"arkenv" in parsed.skills
 			) {
-				if ("arkenv" in parsed.skills) {
-					return true;
-				}
+				return true;
 			}
 		} catch {
 			// ignore missing or malformed skills-lock.json

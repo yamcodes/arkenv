@@ -1,6 +1,8 @@
-import dedent from "dedent";
 import { code } from "@/shared/visuals";
-import { DEFAULT_SKILL_SOURCE, type ScaffoldingPlan } from "./plan";
+import type { ScaffoldingPlan } from "./plan";
+
+/** Manual install printed in next steps. Init does not run this command. */
+const SKILL_INSTALL_COMMAND = "npx skills add yamcodes/arkenv";
 
 /**
  * Build the package manager command used to install dependencies or run a bare install.
@@ -29,52 +31,14 @@ export function getInstallCommand(
 /**
  * Build the final next-steps note shown after a scaffolding run.
  *
- * When the AI skill is already installed, returns a short prompt to use the
- * `/arkenv` slash command. Otherwise constructs a numbered checklist tailored
- * to the project's framework and codegen settings.
- *
  * @param plan The scaffolding plan produced by the planner
- * @param skillInstalled Whether the ArkEnv AI skill was installed during this run
  * @param nextjsConfigBootstrapped Whether the Next.js config was already wrapped with `withArkEnv`
  * @returns An object with a `title` and a multi-line `message` string
  */
 export function getNextStepsNote(
 	plan: ScaffoldingPlan,
-	skillInstalled: boolean,
 	nextjsConfigBootstrapped?: boolean,
 ): { message: string; title: string } {
-	if (skillInstalled || plan.metadata.skillDetected) {
-		const isNextjsWithCodegen =
-			plan.metadata.framework === "nextjs" && !plan.metadata.disableCodegen;
-		const isNuxtWithCodegen =
-			plan.metadata.framework === "nuxt" && !plan.metadata.disableCodegen;
-		const needsManualConfig = isNextjsWithCodegen && !nextjsConfigBootstrapped;
-
-		let message = dedent`
-				Inside your AI assistant (e.g. Claude Code), use:
-				${code("/arkenv")} - automatically refine your schema and configure integrations.
-			`;
-
-		if (needsManualConfig) {
-			message += "\n\n";
-			message += `Also, wrap your Next.js config with ${code("withArkEnv")}:\n`;
-			message += `   ${code('import { withArkEnv } from "@arkenv/nextjs/config";')}\n`;
-			message += `   ${code("export default withArkEnv(nextConfig);")}\n`;
-			message += `Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
-		} else if (isNuxtWithCodegen) {
-			message += "\n\n";
-			message += `Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
-		}
-
-		return {
-			message,
-			title: "Next steps",
-		};
-	}
-
-	const dlx = plan.skill?.dlxCommand.join(" ") || "npx";
-	const packageName = plan.skill?.packageName || DEFAULT_SKILL_SOURCE;
-
 	let message = "";
 	let step = 1;
 
@@ -101,8 +65,9 @@ export function getNextStepsNote(
 		message += `${step++}. Import and use: ${code(`import { env } from "${plan.metadata.importPath}"`)}\n`;
 	}
 
-	message += `${step++}. (Recommended) Install the AI skill: ${code(`${dlx} skills add ${packageName}`)}\n`;
-	message += `   Then run ${code("/arkenv")} inside your AI assistant to finish.`;
+	if (!plan.metadata.skillDetected) {
+		message += `${step++}. (Recommended) Install the AI skill: ${code(SKILL_INSTALL_COMMAND)}\n`;
+	}
 
 	return {
 		message,
