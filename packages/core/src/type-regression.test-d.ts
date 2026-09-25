@@ -57,15 +57,11 @@ describe("Type Regression (Issue #796)", () => {
 		expectTypeOf(env.WITH_DEFAULT).toBeString();
 	});
 
-	/* 
-	   TODO: Re-enable completion snapshots once @ark/attest supports arktype@2.2.0.
-	   Currently deferred due to a version conflict (Scope already named Array).
-	   
-	   Local Issue: https://github.com/yamcodes/arkenv/issues/895
-	   Upstream Issue: https://github.com/arktypeio/arktype/issues/1617
-
-	   it("snapshots DSL completions for inline values", () => {
-	       attest(() => arkenv({ PORT: "n" })).completions({ n: ["never", "null", "number"] });
-	   });
+	/*
+	   DSL completion snapshots stay off. ArkType 2.2.5 lets two scopes share
+	   a name (arktypeio/arktype#1617), so @ark/attest can load beside
+	   @arkenv/core. `attest(() => arkenv({ PORT: "n" })).completions(...)`
+	   still returns {} — the language service offers no suggestions at that
+	   string. https://github.com/yamcodes/arkenv/issues/895
 	*/
 });

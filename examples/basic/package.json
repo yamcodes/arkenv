@@ -10,7 +10,7 @@
 	},
 	"dependencies": {
 		"@arkenv/core": "1.0.0-rc.1",
-		"arktype": "^2.2.0",
+		"arktype": "^2.2.5",
 		"zod": "^4.4.1"
 	},
 	"devDependencies": {

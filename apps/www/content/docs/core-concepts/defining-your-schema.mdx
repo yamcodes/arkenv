@@ -163,6 +163,24 @@ declaring the shape.
     `string | undefined` accepts a missing key. An empty string (`NOTE=`)
     still counts as present unless you set
     [`emptyAsUndefined`](/docs/reference/options).
+
+    Empty collections are defaults in the same string. ArkType 2.2.4
+    accepts `= []` and `= {}`, and each missing value gets a fresh array
+    or object:
+
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/core";
+
+    export const env = arkenv({
+    	FEATURE_FLAGS: "string[] = []",
+    	METADATA: "object = {}",
+    });
+    ```
+
+    On ArkType older than 2.2.4, that string fails to parse. Use
+    `type("string[]").default(() => [])` there. Non-empty lists still
+    need that function form, because `= ["localhost"]` is not valid
+    string syntax.
   </Tab>
 
   <Tab value="Zod (@arkenv/standard)">
@@ -279,7 +297,7 @@ For transforms, function defaults, or reuse across files:
 
     export const env = arkenv({
     	PORT: "number.port = 3000",
-    	FEATURE_FLAGS: type("string[]").default(() => []),
+    	ALLOWED_HOSTS: type("string[]").default(() => ["localhost"]),
     	BUILD_ID: type("string").pipe((value) => value.trim()),
     });
     ```
