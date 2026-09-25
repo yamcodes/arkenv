@@ -17,7 +17,7 @@ The main goal is to provide a developer-friendly way to validate and type-check 
 
 ### Core technologies
 
-- **TypeScript 6** - Primary language with strict type checking
+- **TypeScript 7** - Primary language with strict type checking
 - **ArkType 2** - Type validation library (peer dependency)
 - **pnpm 11** - Package manager for monorepo
 - **Turborepo 2** - Monorepo build system and task orchestration
