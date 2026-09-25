@@ -97,7 +97,15 @@ export const env = arkenv({
 
 <br/>
 
-## Why ArkEnv?
+| ArkEnv | Instead of |
+| --- | --- |
+| Your existing TypeScript validator | A custom `.env.schema` DSL |
+| `arkenv({ ... })` | A hand-rolled wrapper around Zod |
+| One typed `env` object | Casting `process.env` |
+
+<br/>
+
+## Features
 
 - Zero runtime dependencies
 - Works in Node.js and all modern browsers
@@ -107,14 +115,6 @@ export const env = arkenv({
 - Automatic coercion
 - Fail-fast startup errors with redacted values
 - One `env` object: [Next.js](https://arkenv.js.org/docs/frameworks/nextjs), [Nuxt](https://arkenv.js.org/docs/frameworks/nuxt), [Vite](https://arkenv.js.org/docs/frameworks/vite), [TanStack Start](https://arkenv.js.org/docs/frameworks/tanstack-start), [SolidStart](https://github.com/yamcodes/arkenv/tree/v1/examples/with-solid-start), and [Bun](https://arkenv.js.org/docs/frameworks/bun)
-
-<br/>
-
-| ArkEnv | Instead of |
-| --- | --- |
-| Your existing TypeScript validator | A custom `.env.schema` DSL |
-| `arkenv({ ... })` | A hand-rolled wrapper around Zod |
-| One typed `env` object | Casting `process.env` |
 
 <br/>
 
