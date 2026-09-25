@@ -24,7 +24,7 @@
 		"@vitejs/plugin-react": "^6.0.1",
 		"globals": "^17.5.0",
 		"rimraf": "^6.1.3",
-		"typescript": "^6.0.3",
+		"typescript": "^7.0.2",
 		"vite": "8.0.10"
 	},
 	"packageManager": "npm@11.9.0"

@@ -140,7 +140,7 @@ A scroll-driven increase in **Glass material** opacity/blur so content sliding u
 
 ### Core technologies
 
-- **TypeScript 6** - Primary language with strict type checking
+- **TypeScript 7** - Primary language with strict type checking
 - **ArkType 2** - Type validation library (peer dependency)
 - **Nub** - Package manager and script runner for the monorepo (`nub.lock`)
 - **Turborepo 2** - Monorepo build system and task orchestration

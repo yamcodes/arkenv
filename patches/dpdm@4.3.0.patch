@@ -1,0 +1,72 @@
+diff --git a/src/config.ts b/src/config.ts
+--- a/src/config.ts
++++ b/src/config.ts
+@@ -6,7 +6,7 @@
+ import fs from 'fs-extra';
+ import { createRequire } from 'module';
+ import path from 'path';
+-import ts from 'typescript';
++import ts from 'typescript-classic';
+ import { pathToFileURL } from 'url';
+ import type { Config } from './types';
+ 
+diff --git a/src/parser.ts b/src/parser.ts
+--- a/src/parser.ts
++++ b/src/parser.ts
+@@ -5,7 +5,7 @@
+ 
+ import fs from 'fs-extra';
+ import path from 'path';
+-import ts from 'typescript';
++import ts from 'typescript-classic';
+ import { DependencyKind } from './consts';
+ import { Dependency, DependencyTree, ParseOptions } from './types';
+ import {
+diff --git a/lib/config.mjs b/lib/config.mjs
+--- a/lib/config.mjs
++++ b/lib/config.mjs
+@@ -6,7 +6,7 @@
+ import fs from 'fs-extra';
+ import { createRequire } from 'module';
+ import path from 'path';
+-import ts from 'typescript';
++import ts from 'typescript-classic';
+ import { pathToFileURL } from 'url';
+ const configNames = [
+     'dpdm.config.ts',
+diff --git a/lib/config.js b/lib/config.js
+--- a/lib/config.js
++++ b/lib/config.js
+@@ -11,7 +11,7 @@
+ const fs_extra_1 = tslib_1.__importDefault(require("fs-extra"));
+ const module_1 = require("module");
+ const path_1 = tslib_1.__importDefault(require("path"));
+-const typescript_1 = tslib_1.__importDefault(require("typescript"));
++const typescript_1 = tslib_1.__importDefault(require("typescript-classic"));
+ const url_1 = require("url");
+ const configNames = [
+     'dpdm.config.ts',
+diff --git a/lib/parser.js b/lib/parser.js
+--- a/lib/parser.js
++++ b/lib/parser.js
+@@ -8,7 +8,7 @@
+ const tslib_1 = require("tslib");
+ const fs_extra_1 = tslib_1.__importDefault(require("fs-extra"));
+ const path_1 = tslib_1.__importDefault(require("path"));
+-const typescript_1 = tslib_1.__importDefault(require("typescript"));
++const typescript_1 = tslib_1.__importDefault(require("typescript-classic"));
+ const consts_1 = require("./consts");
+ const utils_1 = require("./utils");
+ const typescriptTransformOptions = {
+diff --git a/lib/parser.mjs b/lib/parser.mjs
+--- a/lib/parser.mjs
++++ b/lib/parser.mjs
+@@ -5,7 +5,7 @@
+ import { __awaiter } from "tslib";
+ import fs from 'fs-extra';
+ import path from 'path';
+-import ts from 'typescript';
++import ts from 'typescript-classic';
+ import { DependencyKind } from './consts';
+ import { globFiles, normalizeOptions, shortenTree, simpleResolver, } from './utils';
+ const typescriptTransformOptions = {

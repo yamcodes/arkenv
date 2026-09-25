@@ -10,7 +10,7 @@
 	"dependencies": {
 		"@arkenv/nextjs": "1.0.0-rc.1",
 		"@arkenv/standard": "1.0.0-rc.1",
-		"next": "^16.2.6",
+		"next": "^16.3.6",
 		"react": "19.2.5",
 		"react-dom": "19.2.5",
 		"zod": "^4.4.1"
@@ -19,7 +19,7 @@
 		"@types/node": "^24.12.2",
 		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
-		"typescript": "^6.0.3"
+		"typescript": "^7.0.2"
 	},
 	"engines": {
 		"node": ">=22"

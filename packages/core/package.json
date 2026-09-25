@@ -74,6 +74,7 @@
 		"size-limit": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
+		"typescript-classic": "npm:typescript@6.0.3",
 		"vitest": "catalog:",
 		"zod": "catalog:"
 	},
