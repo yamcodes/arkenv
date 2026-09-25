@@ -44,7 +44,7 @@
 
 ## What is ArkEnv?
 
-ArkEnv is typesafe environment variables for TypeScript. Define them with ArkType, Zod, or Valibot. You'll get back a strongly typed, validated `env` object.
+Define your environment variables with ArkType, Zod, or Valibot. ArkEnv gives you a strongly typed, validated `env` object you can use everywhere.
 
 <details open>
 <summary>ArkType</summary>
