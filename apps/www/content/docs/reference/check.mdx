@@ -57,7 +57,8 @@ These flags are specific to `check`.
 ### `--schema <path>` / `-s`
 
 Explicit path to the schema module. Overrides convention discovery
-(`env.ts`, `src/env.ts`, and related extensions). Split-layout leftovers
+(`env.ts` or `src/env.ts`). A JavaScript schema is not auto-discovered;
+pass `--schema` (for example `--schema ./env.js`). Split-layout leftovers
 such as `env/server.ts` are not auto-discovered. For a two-module recipe,
 pass `--schema` at the client (or other loadable) module — not a server
 file that imports `server-only`, which the CLI cannot evaluate in plain

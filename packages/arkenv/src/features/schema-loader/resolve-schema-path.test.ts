@@ -89,13 +89,36 @@ describe("resolveSchemaPath", () => {
 		expect(resolved).toBe(path.resolve(cwd, "env.ts"));
 	});
 
-	it("still resolves flat convention candidates by extension", async () => {
-		const workspace = createWorkspace(["/project/src/env.mjs"]);
+	it.each([
+		"env.js",
+		"src/env.js",
+		"env.mjs",
+		"src/env.mjs",
+	])("does not auto-discover %s", async (relativePath) => {
+		const workspace = createWorkspace([`/project/${relativePath}`]);
 		const scanner = createScanner();
 
 		const resolved = await resolveSchemaPath(cwd, workspace, scanner);
 
-		expect(resolved).toBe(path.resolve(cwd, "src/env.mjs"));
+		expect(resolved).toBeUndefined();
+	});
+
+	it.each([
+		"./env.js",
+		"./env.mjs",
+	])("still resolves an explicit --schema path %s", async (explicitPath) => {
+		const workspace = createWorkspace([path.join("/project", explicitPath)]);
+		const scanner = createScanner();
+
+		const resolved = await resolveSchemaPath(
+			cwd,
+			workspace,
+			scanner,
+			explicitPath,
+		);
+
+		expect(resolved).toBe(path.resolve(cwd, explicitPath));
+		expect(scanner.suggestDefaultEnvPath).not.toHaveBeenCalled();
 	});
 
 	it("still resolves an explicit --schema path to a server-layout file", async () => {
