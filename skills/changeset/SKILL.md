@@ -138,7 +138,7 @@ Follow the prompts:
 
 ### Manual method
 
-Create a file in **`.changeset/`** (repo root of that folder — **not** `.changeset/pre/`) with a random kebab-case name:
+Create a file in **`.changeset/`** (at the root of `.changeset/`, **not** under `.changeset/pre/`) with a random kebab-case name:
 
 ````markdown
 ---
@@ -170,12 +170,14 @@ On `v1` (and any branch in Changesets **pre mode**), two folders look similar bu
 
 | Path | Role | Who writes here |
 | --- | --- | --- |
-| `.changeset/<name>.md` | **Pending** — unread by release until `changeset version` | You / agents on feature PRs |
+| `.changeset/<name>.md` | **Pending** — not applied until `changeset version` (but `changesets/action` does read these to open/update the Version Packages PR) | You / agents on feature PRs |
 | `.changeset/pre/<name>.md` | **Consumed archive** — already applied by a Version Packages PR | Only `changeset version` / the release bot |
 
-**Never create, move, or commit a new changeset under `.changeset/pre/`.** `changesets/action` only scans pending root `.changeset/*.md` files. A file that lands only in `pre/` is invisible to release (“No changesets found”) and will not bump packages or open/update a Version Packages PR (see the #2022 extractors miss).
+**Never create, move, or commit a new changeset under `.changeset/pre/`.** `changesets/action` / `assemble-release-plan` only treat root `.changeset/*.md` as pending. A file that lands only in `pre/` is skipped (“No changesets found” when nothing else is pending) and will not bump packages or open/update a Version Packages PR (see the #2022 extractors miss, plus #2013 / #2014).
 
 Also never hand-edit or delete files already in `pre/` to “fix” a missed release — restore a **copy** as a new pending file under `.changeset/` instead (or move an *orphaned* never-consumed file from `pre/` back to `.changeset/` in a dedicated fix PR).
+
+**Orphaned vs deliberate deferral:** do not use `pre/` as a holding pen. If a change should not release yet, **do not add a changeset** (or keep the PR unmerged). A file under `pre/` that was added by a feature commit (not a Version Packages commit) is almost certainly an orphaned miss — move it back to `.changeset/`.
 
 `pre.json` (`mode` / `tag`) is the pre-release channel config. It is unrelated to the `pre/` directory of consumed markdown.
 ### File format

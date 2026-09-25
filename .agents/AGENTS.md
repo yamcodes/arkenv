@@ -41,5 +41,5 @@ For all work transitioning or porting features from the `v0` (dev) branch to the
 6. **Pending changesets vs `.changeset/pre/`** (hard rule on `v1` / any pre-mode branch):
    - Write new changesets only as `.changeset/<name>.md`.
    - **Never** create pending changesets under `.changeset/pre/` — that folder is the consumed archive filled by `changeset version` / Version Packages PRs.
-   - `changesets/action` ignores `pre/` and will log “No changesets found”, so the package never bumps (missed release after #2022).
-   - Follow the changeset skill (`.agents/skills/changeset/SKILL.md`) for voice, bumps, and this path rule.
+   - `changesets/action` / `assemble-release-plan` skip `pre/` for pending work, so the package never bumps (missed releases after #2022 / #2013 / #2014).
+   - Follow the changeset skill (`.agents/skills/changeset/SKILL.md`) for voice, bumps, and this path rule. Do not use `pre/` as a deferral holding pen.
