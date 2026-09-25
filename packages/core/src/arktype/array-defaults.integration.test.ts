@@ -28,6 +28,27 @@ describe("arkenv array defaults", () => {
 		expect(env.PORTS).toEqual([3000, 8080]);
 	});
 
+	it("accepts empty array and object defaults in string syntax", () => {
+		const env = arkenv({
+			FEATURE_FLAGS: "string[] = []",
+			METADATA: "object = {}",
+		});
+
+		expect(env.FEATURE_FLAGS).toEqual([]);
+		expect(env.METADATA).toEqual({});
+
+		const Flags = type({
+			FEATURE_FLAGS: "string[] = []",
+			METADATA: "object = {}",
+		});
+		const first = Flags.assert({});
+		first.FEATURE_FLAGS.push("beta");
+		expect(Flags.assert({})).toEqual({
+			FEATURE_FLAGS: [],
+			METADATA: {},
+		});
+	});
+
 	it("should support arrays with defaults and environment overrides", () => {
 		const env = arkenv(
 			{

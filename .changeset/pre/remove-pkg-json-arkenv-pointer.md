@@ -6,7 +6,7 @@
 
 `arkenv init` no longer writes a `package.json` `"arkenv"` field, and CLI
 schema discovery no longer reads one. Location is `--schema` / `-s`, then
-convention paths (`env.ts`, `src/env.ts`, …). Leftover `"arkenv"` keys are
+convention paths (`env.ts`, `src/env.ts`). Leftover `"arkenv"` keys are
 ignored.
 
 **BREAKING CHANGE**: If you relied on `package.json` `"arkenv"` (string or
