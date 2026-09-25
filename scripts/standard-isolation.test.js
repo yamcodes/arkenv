@@ -37,6 +37,15 @@ describe("standard-isolation helpers", () => {
 
 		expect(exportPaths).toEqual(["./standard", "./standard/config"]);
 	});
+
+	it("keeps Nuxt Standard exports to the runtime and module", () => {
+		const nuxtEntries = getStandardExportEntries(
+			join(rootDir, "packages/nuxt"),
+		);
+		const exportPaths = nuxtEntries.map((entry) => entry.exportPath).sort();
+
+		expect(exportPaths).toEqual(["./standard", "./standard/module"]);
+	});
 });
 
 describe("integration /standard isolation", () => {

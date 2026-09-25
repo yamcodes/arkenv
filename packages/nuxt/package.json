@@ -78,11 +78,6 @@
 			"types": "./dist/standard/module.d.ts",
 			"import": "./dist/standard/module.js",
 			"default": "./dist/standard/module.js"
-		},
-		"./standard/config": {
-			"types": "./dist/standard/config.d.ts",
-			"import": "./dist/standard/config.js",
-			"default": "./dist/standard/config.js"
 		}
 	},
 	"bugs": "https://github.com/yamcodes/arkenv/labels/%40arkenv%2Fnuxt",

@@ -54,9 +54,6 @@ export const arktypeTwoslashVfs = {
 			"@arkenv/nuxt/standard/module": [
 				path.join(root, "packages/nuxt/src/standard/module.ts"),
 			],
-			"@arkenv/nuxt/standard/config": [
-				path.join(root, "packages/nuxt/src/standard/config.ts"),
-			],
 			"@repo/types": [path.join(root, "packages/internal/types/src/index.ts")],
 			"@repo/utils": [path.join(root, "packages/internal/utils/src/index.ts")],
 			"@repo/log": [path.join(root, "packages/internal/log/src/index.ts")],

@@ -11,7 +11,6 @@ export default defineConfig({
 		"src/runtime/nitro-boot-plugin.ts",
 		"src/standard/index.ts",
 		"src/standard/module.ts",
-		"src/standard/config.ts",
 	],
 	format: ["esm"],
 	// Unminified: alwaysBundle of @repo/utils (index + boundary-access-error) then
