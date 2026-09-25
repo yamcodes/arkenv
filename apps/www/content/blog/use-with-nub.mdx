@@ -26,10 +26,12 @@ a value is missing or wrong.
 ## Fail earlier than the first import
 
 Import-time validation is enough when every process that needs config
-imports `env` early. Two gates fail before application code runs:
+imports `env` early. The next two gates run before the first import, or
+without starting the app:
 
-- **`preload` in `nub.jsonc`.** Point it at `./env.ts`. Every Nub launch
-  validates, including scripts that never import `env`.
+- **`preload` in `nub.jsonc`.** Point it at `./env.ts`. Every `nub`,
+  `nub run`, and `nub watch` launch validates, including scripts that
+  never import `env`.
 - **`nubx arkenv check`.** The same check, without starting the app. The
   process inherits Nub's `.env*` loading.
 
