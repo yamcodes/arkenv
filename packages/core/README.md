@@ -10,7 +10,7 @@
 <p align="center">
   <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Av1"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/test.yml/badge.svg?branch=v1"></a>
   <a href="https://arktype.io/docs/ecosystem#arkenv"><img alt="ArkType Ecosystem" src="https://custom-icon-badges.demolab.com/badge/ArkType%20Ecosystem-0d1526?logo=arktype2&logoColor=e9eef9"></a>
-  <a href="https://pullfrog.com"><img alt="Pullfrog" src="https://custom-icon-badges.demolab.com/badge/Powered%20by%20Pullfrog-2f4032?logo=pullfrog-white"></a>
+  <a href="https://pullfrog.com"><img alt="Reviewed by Pullfrog" src="https://custom-icon-badges.demolab.com/badge/Reviewed%20by%20Pullfrog-2f4032?logo=pullfrog-white"></a>
   <a href="https://github.com/yamcodes/arkenv/blob/v1/LICENSE"><img alt="License" src="https://img.shields.io/github/license/yamcodes/arkenv"></a>
   <a href="https://github.com/yamcodes/arkenv/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/yamcodes/arkenv"></a>
 </p>
