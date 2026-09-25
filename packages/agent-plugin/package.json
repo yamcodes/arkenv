@@ -57,7 +57,7 @@
 	},
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "^1.27.1",
-		"typescript": "catalog:"
+		"typescript": "7.0.2"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:",

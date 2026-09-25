@@ -1,5 +1,21 @@
 import path from "node:path";
-import ts from "typescript";
+import {
+	isElementAccessExpression,
+	isIdentifier,
+	isImportDeclaration,
+	isMetaProperty,
+	isNamedImports,
+	isNoSubstitutionTemplateLiteral,
+	isPropertyAccessExpression,
+	isPropertyAssignment,
+	isShorthandPropertyAssignment,
+	isStringLiteral,
+	type Node,
+	type SourceFile,
+	SyntaxKind,
+} from "typescript/unstable/ast";
+import { createVirtualFileSystem } from "typescript/unstable/fs";
+import { API } from "typescript/unstable/sync";
 import {
 	hasLegacyAmbient,
 	hasPublicPrefix,
@@ -19,11 +35,31 @@ import { collectSourceFiles } from "./walk";
  */
 export async function auditProject(root: string): Promise<AuditReport> {
 	const files = await collectSourceFiles(root);
-	const diagnostics: AuditDiagnostic[] = [];
-	for (const file of files) {
-		diagnostics.push(...auditSource(root, file.filePath, file.source));
+	if (files.length === 0) return { diagnostics: [] };
+
+	const virtualFiles: Record<string, string> = {};
+	for (const file of files) virtualFiles[file.filePath] = file.source;
+
+	const api = new API({ fs: createVirtualFileSystem(virtualFiles) });
+	try {
+		const snapshot = api.updateSnapshot({
+			openFiles: files.map((file) => file.filePath),
+		});
+		const diagnostics: AuditDiagnostic[] = [];
+		for (const file of files) {
+			const project = snapshot.getDefaultProjectForFile(file.filePath);
+			const parsed = project?.program.getSourceFile(file.filePath);
+			if (!parsed) {
+				throw new Error(`Unable to parse ${file.filePath}`);
+			}
+			diagnostics.push(
+				...auditParsed(root, file.filePath, file.source, parsed),
+			);
+		}
+		return { diagnostics };
+	} finally {
+		api.close();
 	}
-	return { diagnostics };
 }
 
 /**
@@ -39,16 +75,26 @@ export function auditSource(
 	filePath: string,
 	source: string,
 ): AuditDiagnostic[] {
+	return auditParsed(root, filePath, source, parseSourceFile(filePath, source));
+}
+
+/**
+ * Audit one already-parsed source file.
+ *
+ * @param root Project root used to relativize `file`
+ * @param filePath Absolute path of the file
+ * @param source File contents
+ * @param sf Parsed syntax tree for `source`
+ * @returns Diagnostics for this file
+ */
+function auditParsed(
+	root: string,
+	filePath: string,
+	source: string,
+	sf: SourceFile,
+): AuditDiagnostic[] {
 	const relative = path.relative(root, filePath) || filePath;
 	const diagnostics: AuditDiagnostic[] = [];
-	const scriptKind = scriptKindFor(filePath);
-	const sf = ts.createSourceFile(
-		filePath,
-		source,
-		ts.ScriptTarget.Latest,
-		true,
-		scriptKind,
-	);
 	const envModule = isEnvModule(filePath);
 	const client = isClientFile(filePath, source);
 	const envImport = hasCanonicalEnvImport(sf);
@@ -68,7 +114,7 @@ export function auditSource(
 		});
 	}
 
-	const visit = (node: ts.Node, parent: ts.Node | undefined): void => {
+	const visit = (node: Node, parent: Node | undefined): void => {
 		if (envModule) {
 			const schemaKey = objectLiteralEnvKey(node);
 			if (schemaKey && isPrefixViolation(schemaKey)) {
@@ -134,7 +180,7 @@ export function auditSource(
 				});
 			}
 		}
-		ts.forEachChild(node, (child) => visit(child, node));
+		node.forEachChild((child) => visit(child, node));
 	};
 
 	visit(sf, undefined);
@@ -149,36 +195,33 @@ type EnvAccess = {
 	pos: number;
 };
 
-function objectLiteralEnvKey(node: ts.Node): string | undefined {
-	if (
-		!ts.isPropertyAssignment(node) &&
-		!ts.isShorthandPropertyAssignment(node)
-	) {
+function objectLiteralEnvKey(node: Node): string | undefined {
+	if (!isPropertyAssignment(node) && !isShorthandPropertyAssignment(node)) {
 		return undefined;
 	}
 	const name = node.name;
-	if (ts.isIdentifier(name) || ts.isStringLiteral(name)) {
+	if (isIdentifier(name) || isStringLiteral(name)) {
 		return name.text;
 	}
 	return undefined;
 }
 
-function isWrapperAccess(parent: ts.Node | undefined, node: ts.Node): boolean {
+function isWrapperAccess(parent: Node | undefined, node: Node): boolean {
 	if (!parent) return false;
-	if (ts.isPropertyAccessExpression(parent) && parent.expression === node) {
+	if (isPropertyAccessExpression(parent) && parent.expression === node) {
 		return true;
 	}
-	if (ts.isElementAccessExpression(parent) && parent.expression === node) {
+	if (isElementAccessExpression(parent) && parent.expression === node) {
 		return true;
 	}
 	return false;
 }
 
 function readEnvAccess(
-	node: ts.Node,
-	parent: ts.Node | undefined,
+	node: Node,
+	parent: Node | undefined,
 ): EnvAccess | undefined {
-	if (ts.isPropertyAccessExpression(node)) {
+	if (isPropertyAccessExpression(node)) {
 		if (isProcessEnvExpr(node.expression)) {
 			return {
 				key: node.name.text,
@@ -193,12 +236,12 @@ function readEnvAccess(
 				pos: node.getStart(),
 			};
 		}
-		if (ts.isIdentifier(node.expression) && node.expression.text === "env") {
+		if (isIdentifier(node.expression) && node.expression.text === "env") {
 			return { key: node.name.text, via: "env", pos: node.getStart() };
 		}
 	}
 
-	if (ts.isElementAccessExpression(node)) {
+	if (isElementAccessExpression(node)) {
 		const key = stringLiteralKey(node.argumentExpression);
 		if (isProcessEnvExpr(node.expression)) {
 			return { key, via: "process.env", pos: node.getStart() };
@@ -206,7 +249,7 @@ function readEnvAccess(
 		if (isImportMetaEnvExpr(node.expression)) {
 			return { key, via: "import.meta.env", pos: node.getStart() };
 		}
-		if (ts.isIdentifier(node.expression) && node.expression.text === "env") {
+		if (isIdentifier(node.expression) && node.expression.text === "env") {
 			return { key, via: "env", pos: node.getStart() };
 		}
 	}
@@ -221,43 +264,43 @@ function readEnvAccess(
 	return undefined;
 }
 
-function isProcessEnvExpr(node: ts.Node): boolean {
+function isProcessEnvExpr(node: Node): boolean {
 	return (
-		ts.isPropertyAccessExpression(node) &&
-		ts.isIdentifier(node.expression) &&
+		isPropertyAccessExpression(node) &&
+		isIdentifier(node.expression) &&
 		node.expression.text === "process" &&
 		node.name.text === "env"
 	);
 }
 
-function isImportMetaEnvExpr(node: ts.Node): boolean {
+function isImportMetaEnvExpr(node: Node): boolean {
 	return (
-		ts.isPropertyAccessExpression(node) &&
-		ts.isMetaProperty(node.expression) &&
-		node.expression.keywordToken === ts.SyntaxKind.ImportKeyword &&
+		isPropertyAccessExpression(node) &&
+		isMetaProperty(node.expression) &&
+		node.expression.keywordToken === SyntaxKind.ImportKeyword &&
 		node.expression.name.text === "meta" &&
 		node.name.text === "env"
 	);
 }
 
-function stringLiteralKey(node: ts.Expression | undefined): string | undefined {
+function stringLiteralKey(node: Node | undefined): string | undefined {
 	if (!node) return undefined;
-	if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+	if (isStringLiteral(node) || isNoSubstitutionTemplateLiteral(node)) {
 		return node.text;
 	}
 	return undefined;
 }
 
-function hasCanonicalEnvImport(sf: ts.SourceFile): boolean {
+function hasCanonicalEnvImport(sf: SourceFile): boolean {
 	for (const stmt of sf.statements) {
-		if (!ts.isImportDeclaration(stmt) || !stmt.importClause) continue;
+		if (!isImportDeclaration(stmt) || !stmt.importClause) continue;
 		const spec = stmt.moduleSpecifier;
-		if (!ts.isStringLiteral(spec)) continue;
+		if (!isStringLiteral(spec)) continue;
 		if (!/env(?:\/(?:client|server))?$/.test(spec.text.replace(/\\/g, "/"))) {
 			continue;
 		}
 		const named = stmt.importClause.namedBindings;
-		if (named && ts.isNamedImports(named)) {
+		if (named && isNamedImports(named)) {
 			if (named.elements.some((el) => el.name.text === "env")) return true;
 		}
 		if (stmt.importClause.name?.text === "env") return true;
@@ -265,21 +308,33 @@ function hasCanonicalEnvImport(sf: ts.SourceFile): boolean {
 	return false;
 }
 
-function scriptKindFor(filePath: string): ts.ScriptKind {
-	if (filePath.endsWith(".tsx")) return ts.ScriptKind.TSX;
-	if (filePath.endsWith(".jsx")) return ts.ScriptKind.JSX;
-	if (
-		filePath.endsWith(".js") ||
-		filePath.endsWith(".mjs") ||
-		filePath.endsWith(".cjs")
-	) {
-		return ts.ScriptKind.JS;
+/**
+ * Parse source text into a syntax tree with the TypeScript 7 sync API.
+ *
+ * @param filePath Absolute path used as the virtual file name
+ * @param source File contents
+ * @returns Parsed source file
+ * @throws When the sync API does not return a source file for `filePath`
+ */
+function parseSourceFile(filePath: string, source: string): SourceFile {
+	const api = new API({
+		fs: createVirtualFileSystem({ [filePath]: source }),
+	});
+	try {
+		const snapshot = api.updateSnapshot({ openFiles: [filePath] });
+		const project = snapshot.getDefaultProjectForFile(filePath);
+		const parsed = project?.program.getSourceFile(filePath);
+		if (!parsed) {
+			throw new Error(`Unable to parse ${filePath}`);
+		}
+		return parsed;
+	} finally {
+		api.close();
 	}
-	return ts.ScriptKind.TS;
 }
 
 function locationOfLegacy(
-	sf: ts.SourceFile,
+	sf: SourceFile,
 	source: string,
 ): { line: number; character: number } {
 	const idx = Math.max(
