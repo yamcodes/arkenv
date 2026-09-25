@@ -91,7 +91,7 @@
 			"@vitejs/plugin-react": "6.0.1",
 			"@vitest/coverage-v8": "^4.1.5",
 			"@vitest/ui": "4.1.5",
-			"arktype": "2.2.0",
+			"arktype": "2.2.5",
 			"bun": "1.3.13",
 			"esbuild": "0.28.0",
 			"globals": "17.5.0",

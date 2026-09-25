@@ -12,11 +12,11 @@
 		"clean": "rimraf dist node_modules .output"
 	},
 	"dependencies": {
-		"@arkenv/core": "1.0.0-rc.1",
-		"@arkenv/vite-plugin": "1.0.0-rc.1",
+		"@arkenv/core": "1.0.0-rc.2",
+		"@arkenv/vite-plugin": "1.0.0-rc.2",
 		"@tanstack/react-router": "1.170.32",
 		"@tanstack/react-start": "1.168.49",
-		"arktype": "^2.2.0",
+		"arktype": "^2.2.5",
 		"react": "^19.2.5",
 		"react-dom": "^19.2.5"
 	},

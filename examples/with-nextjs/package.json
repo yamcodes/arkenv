@@ -8,9 +8,9 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@arkenv/core": "1.0.0-rc.1",
-		"@arkenv/nextjs": "1.0.0-rc.1",
-		"arktype": "^2.2.0",
+		"@arkenv/core": "1.0.0-rc.2",
+		"@arkenv/nextjs": "1.0.0-rc.2",
+		"arktype": "^2.2.5",
 		"next": "^16.2.6",
 		"react": "^19.2.5",
 		"react-dom": "^19.2.5"
