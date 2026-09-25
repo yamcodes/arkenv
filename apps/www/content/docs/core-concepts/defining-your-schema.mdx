@@ -164,7 +164,7 @@ declaring the shape.
     still counts as present unless you set
     [`emptyAsUndefined`](/docs/reference/options).
 
-    Empty collections are defaults in the same string. ArkType 2.2.4
+    Empty collections are defaults in the same string. ArkType 2.2.5
     accepts `= []` and `= {}`, and each missing value gets a fresh array
     or object:
 
@@ -177,7 +177,7 @@ declaring the shape.
     });
     ```
 
-    On ArkType older than 2.2.4, that string fails to parse. Use
+    On ArkType older than 2.2.5, that string fails to parse. Use
     `type("string[]").default(() => [])` there. Non-empty lists still
     need that function form, because `= ["localhost"]` is not valid
     string syntax.
