@@ -97,7 +97,7 @@ export const env = arkenv({
 
 ## Features
 
-- Zero runtime dependencies in `@arkenv/core` and `@arkenv/standard`
+- Zero runtime dependencies
 - Works in Node.js and all modern browsers
 - Fail-fast startup errors
 - Redacted values in error output
