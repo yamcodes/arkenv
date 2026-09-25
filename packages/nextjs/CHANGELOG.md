@@ -1,5 +1,38 @@
 # @arkenv/nextjs
 
+## 1.0.0-rc.3
+
+### Major Changes
+
+- #### Remove the SharedSchema key extractors _[`#2011`](https://github.com/yamcodes/arkenv/pull/2011) [`9483c3c`](https://github.com/yamcodes/arkenv/commit/9483c3c31691dca544ac975c0dfcd9ec3d7b938e) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`extractSharedKeys` and `extractSharedBlock` are no longer exported from `@arkenv/build`. `@arkenv/nextjs/config` and `@arkenv/nuxt` (including `@arkenv/nuxt/standard/config`) no longer re-export `extractSharedKeys`. Shared keys in a flat `arkenv()` call still come from `extractKeys` and `classifyEnvKeys`.
+	
+	**BREAKING CHANGE**: Those helpers scanned source for a `SharedSchema = { ... }` assignment. Classify a flat `arkenv()` call instead.
+	
+	```ts
+	import { classifyEnvKeys } from "@arkenv/build";
+	
+	const { sharedKeys } = classifyEnvKeys(source, ["NEXT_PUBLIC_"]);
+	```
+
+### Patch Changes
+
+<details><summary>Updated 3 dependencies</summary>
+
+<small>
+
+[`87f3743`](https://github.com/yamcodes/arkenv/commit/87f3743bf7da164476bc27c50d5090e5759093df) [`9483c3c`](https://github.com/yamcodes/arkenv/commit/9483c3c31691dca544ac975c0dfcd9ec3d7b938e) [`089ef43`](https://github.com/yamcodes/arkenv/commit/089ef436d3e007fa636e3948734d3911b1065758)
+
+</small>
+
+- `@arkenv/build@1.0.0-rc.3`
+- `@arkenv/core@1.0.0-rc.3`
+- `@arkenv/standard@1.0.0-rc.3`
+
+</details>
+
 ## 1.0.0-rc.2
 
 ### Major Changes

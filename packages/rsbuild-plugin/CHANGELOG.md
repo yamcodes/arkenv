@@ -1,5 +1,70 @@
 # @arkenv/rsbuild-plugin
 
+## 1.0.0-rc.3
+
+### Major Changes
+
+- #### Export only `arkenvPlugin` from the Rsbuild plugin _[`#2015`](https://github.com/yamcodes/arkenv/pull/2015) [`7417dd7`](https://github.com/yamcodes/arkenv/commit/7417dd7201c42e2cc987cb26c1763d7cbb9a56a2) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`@arkenv/rsbuild-plugin` and `@arkenv/rsbuild-plugin/standard` now export `arkenvPlugin` as the default and the only named export. The `arkenvRsbuildPlugin` alias has been removed.
+	
+	```ts
+	import { arkenvPlugin } from "@arkenv/rsbuild-plugin";
+	
+	export default defineConfig({
+	  plugins: [arkenvPlugin()],
+	});
+	```
+	
+	**BREAKING CHANGE**: `arkenvRsbuildPlugin` is no longer exported. Import `arkenvPlugin` instead.
+- #### Reject runtime options on bundler plugins _[`#2012`](https://github.com/yamcodes/arkenv/pull/2012) [`87f3743`](https://github.com/yamcodes/arkenv/commit/87f3743bf7da164476bc27c50d5090e5759093df) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Vite, Bun, and Rsbuild plugins now accept only `schemaPath`, `clientPrefix`, `logger`, and `logLevel`. The build validates the environment loaded for that compile. Variables already set on `process.env` win over env files.
+	
+	```ts
+	import { arkenvPlugin } from "@arkenv/vite-plugin";
+	
+	export default {
+	  plugins: [arkenvPlugin({ schemaPath: "src/env.ts" })],
+	};
+	```
+	
+	Set `env`, `coerce`, `onUndeclaredKey`, `arrayFormat`, `emptyAsUndefined`, `debugSecrets`, and `toJsonSchema` on `arkenv()` in `env.ts`. The plugin rejects those keys.
+	
+	```ts
+	import arkenv from "@arkenv/core";
+	
+	export const env = arkenv(
+	  { PORT: "number" },
+	  { coerce: true, onUndeclaredKey: "reject" },
+	);
+	```
+	
+	**BREAKING CHANGE**: Plugin option types no longer include runtime `arkenv()` fields, including `env`. Passing them now throws.
+	
+	```diff
+	- arkenvPlugin({ env: { PORT: "3000" }, coerce: true })
+	+ arkenvPlugin({ schemaPath: "src/env.ts" })
+	```
+
+### Patch Changes
+
+<details><summary>Updated 3 dependencies</summary>
+
+<small>
+
+[`87f3743`](https://github.com/yamcodes/arkenv/commit/87f3743bf7da164476bc27c50d5090e5759093df) [`9483c3c`](https://github.com/yamcodes/arkenv/commit/9483c3c31691dca544ac975c0dfcd9ec3d7b938e) [`089ef43`](https://github.com/yamcodes/arkenv/commit/089ef436d3e007fa636e3948734d3911b1065758)
+
+</small>
+
+- `@arkenv/build@1.0.0-rc.3`
+- `@arkenv/core@1.0.0-rc.3`
+- `@arkenv/standard@1.0.0-rc.3`
+
+</details>
+
 ## 1.0.0-rc.2
 
 ### Patch Changes

@@ -1,5 +1,32 @@
 # @arkenv/tanstack-addon
 
+## 1.0.0-rc.2
+
+### Patch Changes
+
+- #### Scaffold `arkenvPlugin` in the TanStack add-on _[`#2015`](https://github.com/yamcodes/arkenv/pull/2015) [`7417dd7`](https://github.com/yamcodes/arkenv/commit/7417dd7201c42e2cc987cb26c1763d7cbb9a56a2) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	The TanStack CLI add-on now registers the Vite plugin as `arkenvPlugin`.
+	
+	```ts
+	import arkenvPlugin from "@arkenv/vite-plugin";
+	
+	export default defineConfig({
+	  plugins: [arkenvPlugin()],
+	});
+	```
+- #### Point TanStack add-on dependencies at the current release _[`#1978`](https://github.com/yamcodes/arkenv/pull/1978) [`888e6c2`](https://github.com/yamcodes/arkenv/commit/888e6c2a7f41576dd5f2bfb9a421cfcf9aad9ad3) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Scaffolded TanStack Start apps now install `@arkenv/core`, `@arkenv/standard`, and `@arkenv/vite-plugin` at `^1.0.0-rc.2`, which matches the versions on npm `latest` and still accepts `1.0.0` when it publishes.
+	
+	Usage:
+	
+	```bash
+	npx @tanstack/cli create my-app --add-ons https://arkenv.js.org/tanstack/info.json
+	```
+
 ## 1.0.0-rc.1
 
 ### Patch Changes
