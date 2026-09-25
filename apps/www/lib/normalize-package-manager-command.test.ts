@@ -143,9 +143,9 @@ describe("normalizePackageManagerCommand", () => {
 
 	it("rewrites arkenv runners inside prose prompts", () => {
 		const prompt =
-			"Add ArkEnv to this repo. Run `npx arkenv@rc init --agent`, parse the JSON on stdout, and only retry with flags from `retryWith` if a refusal is safe to bypass.";
+			"Add ArkEnv to this repo. Run `npx arkenv@rc init --agent`, parse the JSON on stdout, and only retry with `--force` if the refusal's `nextActions` include a `run-command` with `--force`.";
 		expect(normalizePackageManagerCommand(prompt)).toBe(
-			"Add ArkEnv to this repo. Run `npx arkenv init --agent`, parse the JSON on stdout, and only retry with flags from `retryWith` if a refusal is safe to bypass.",
+			"Add ArkEnv to this repo. Run `npx arkenv init --agent`, parse the JSON on stdout, and only retry with `--force` if the refusal's `nextActions` include a `run-command` with `--force`.",
 		);
 
 		const initPresetPrompt =
@@ -155,7 +155,7 @@ describe("normalizePackageManagerCommand", () => {
 		);
 
 		expect(normalizePackageManagerCommand(prompt, "rc")).toBe(
-			"Add ArkEnv to this repo. Run `npx arkenv@rc init --agent`, parse the JSON on stdout, and only retry with flags from `retryWith` if a refusal is safe to bypass.",
+			"Add ArkEnv to this repo. Run `npx arkenv@rc init --agent`, parse the JSON on stdout, and only retry with `--force` if the refusal's `nextActions` include a `run-command` with `--force`.",
 		);
 	});
 });
