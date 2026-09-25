@@ -8,6 +8,7 @@ export {
 	loadValidatedEnv,
 	normalizeModuleId,
 	normalizePrefixes,
+	pluginOptionNotSupportedMessage,
 	resolveEnvModulePath,
 	SCHEMA_DEFINE_REMOVED,
 	type TransformOptions as BunTransformOptions,

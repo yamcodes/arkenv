@@ -1,10 +1,7 @@
 import type { TransformOptions as ViteTransformOptions } from "@arkenv/build";
 import type { ArkEnvLogOptions } from "@repo/log";
-import type { ParseStandardConfig as ArkEnvConfig } from "@repo/utils";
 
 /**
- * Combined config accepted by the Vite plugin factory (transform + ArkEnv + logging).
+ * Config accepted by the Vite plugin factory (transform options, logging, and a build-time `env` override).
  */
-export type VitePluginFactoryConfig = ArkEnvConfig &
-	ArkEnvLogOptions &
-	ViteTransformOptions;
+export type VitePluginFactoryConfig = ViteTransformOptions & ArkEnvLogOptions;

@@ -28,7 +28,7 @@ export function createBunPlugin(
 	/**
 	 * Create a Bun plugin that rewrites `env.ts` in browser bundles.
 	 *
-	 * @param options Transform options (`schemaPath`, `clientPrefix`) plus ArkEnv/logging config
+	 * @param options Transform options (`schemaPath`, `clientPrefix`, logging) plus a build-time `env` override
 	 * @returns A configured Bun plugin
 	 */
 	function arkenvPlugin(

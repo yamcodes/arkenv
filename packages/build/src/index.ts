@@ -22,6 +22,8 @@ export {
 export {
 	assertTransformModeCall,
 	isTransformModeCall,
+	pluginOptionNotSupportedMessage,
+	RUNTIME_ONLY_OPTION_KEYS,
 	SCHEMA_DEFINE_REMOVED,
 	TRANSFORM_OPTION_KEYS,
 	type TransformOptions,

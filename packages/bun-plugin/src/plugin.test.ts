@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { SCHEMA_DEFINE_REMOVED } from "./env-module.js";
+import {
+	pluginOptionNotSupportedMessage,
+	SCHEMA_DEFINE_REMOVED,
+} from "./env-module.js";
 import arkenvPluginDefault, {
 	arkenvBunPlugin,
 	arkenvPlugin,
@@ -71,5 +74,15 @@ describe("Bun Plugin", () => {
 		expect(() =>
 			plugin({ BUN_PUBLIC_TEST: "string" }, { coerce: false }),
 		).toThrow(SCHEMA_DEFINE_REMOVED);
+	});
+
+	it("rejects runtime validation options", () => {
+		const plugin = arkenvPluginDefault as (a?: unknown) => unknown;
+		expect(() => plugin({ coerce: true })).toThrow(
+			pluginOptionNotSupportedMessage(["coerce"]),
+		);
+		expect(() => plugin({ toJsonSchema: () => ({}) })).toThrow(
+			pluginOptionNotSupportedMessage(["toJsonSchema"]),
+		);
 	});
 });
