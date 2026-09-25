@@ -10,7 +10,7 @@ A partial keyword inside an inline schema suggests ArkType keywords again. `"n"`
 import arkenv from "@arkenv/core";
 
 export const env = arkenv({
-	PORT: "number.port = 3000",
-	HOST: "string.host",
+  PORT: "number.port = 3000",
+  HOST: "string.host",
 });
 ```
