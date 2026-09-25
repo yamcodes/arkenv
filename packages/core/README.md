@@ -97,6 +97,7 @@ export const env = arkenv({
 
 ## Features
 
+- TypeScript-first schemas with ArkType, Zod, or Valibot
 - Zero runtime dependencies
 - Works in Node.js and all modern browsers
 - Fail-fast startup errors
