@@ -1,4 +1,5 @@
-import { arkenv as coreArkenv, getSchemaKeys } from "@arkenv/standard";
+import { arkenv as coreArkenv } from "@arkenv/standard";
+import { getSchemaKeys } from "@arkenv/standard/issues";
 import type { StandardSchemaV1 } from "@repo/types";
 import { assertNotNestedBag } from "@repo/utils/nested-bag-migration-error";
 import { arkenvInternal } from "@/arkenv-internal";

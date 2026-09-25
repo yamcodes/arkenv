@@ -205,6 +205,19 @@ describe("Distribution Built Outputs", () => {
 			expect(source).not.toContain("safeExecute");
 		});
 
+		it("exports formatIssues and getSchemaKeys from @arkenv/standard/issues", async () => {
+			const issues = await import("../../standard/dist/issues.js");
+			expect(typeof issues.formatIssues).toBe("function");
+			expect(typeof issues.getSchemaKeys).toBe("function");
+		});
+
+		it("does not re-export formatIssues or getSchemaKeys from @arkenv/standard", async () => {
+			const index = await import("../../standard/dist/index.js");
+			expect("formatIssues" in index).toBe(false);
+			expect("getSchemaKeys" in index).toBe(false);
+			expect("ArkEnvError" in index).toBe(true);
+		});
+
 		it("exports arkenv from @arkenv/standard/safe as default and named", async () => {
 			const safe = await import("../../standard/dist/safe.js");
 			expect(typeof safe.arkenv).toBe("function");
