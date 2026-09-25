@@ -329,6 +329,7 @@ describe("CLI parser", () => {
 			]);
 			expect(cli.command).toBe("check");
 			expect(cli.checkInput.schema).toBe("./src/env.ts");
+			expect("file" in cli.checkInput).toBe(false);
 			expect(cli.checkInput.envFiles).toEqual([".env.local"]);
 			expect(cli.validationError).toBeUndefined();
 		});
@@ -356,7 +357,15 @@ describe("CLI parser", () => {
 		it("should parse short -s for --schema", () => {
 			const cli = new CLI(["node", "arkenv", "check", "-s", "./env.ts"]);
 			expect(cli.checkInput.schema).toBe("./env.ts");
+			expect("file" in cli.checkInput).toBe(false);
 			expect(cli.validationError).toBeUndefined();
+		});
+
+		it("should reject --file as an unknown argument", () => {
+			const cli = new CLI(["node", "arkenv", "check", "--file", "./env.ts"]);
+			expect(cli.validationError).toBe("Unknown argument: --file");
+			expect("file" in cli.checkInput).toBe(false);
+			expect(cli.checkInput.schema).toBeUndefined();
 		});
 
 		it("should parse boolean --verify-example flag", () => {
