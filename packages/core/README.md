@@ -1,39 +1,47 @@
 <p align="center">
   <a href="https://github.com/yamcodes/arkenv/blob/v1/apps/www/public/assets/icon-v1.svg"><img alt="ArkEnv Logo" src="https://arkenv.js.org/assets/icon-v1.svg" width="160px" align="center"/></a>
   <h1 align="center">ArkEnv</h1>
-  <div align="center">
-    <p align="center">
-      Typesafe environment variables with ArkType, Zod, or Valibot.<br/>
-      No boilerplate. Zero runtime dependencies.
-    </p>
-    <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Av1"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/test.yml/badge.svg?branch=v1"></a>
-    <a href="https://bundlejs.com/?q=%40arkenv%2Fcore&config=%7B%22esbuild%22%3A%7B%22external%22%3A%5B%22arktype%22%5D%7D%7D"><img alt="core bundle (gzipped)" src="https://img.shields.io/bundlejs/size/%40arkenv%2Fcore?externals=arktype&label=core%20bundle%20(gzipped)"></a>
-    <a href="https://arktype.io/docs/ecosystem#arkenv"><img alt="ArkType Ecosystem" src="https://custom-icon-badges.demolab.com/badge/ArkType%20Ecosystem-0d1526?logo=arktype2&logoColor=e9eef9"></a>
-    <a href="https://pullfrog.com"><img alt="Pullfrog" src="https://custom-icon-badges.demolab.com/badge/Powered%20by%20Pullfrog-2f4032?logo=pullfrog-white"></a>
-  </div>
+  <p align="center">
+    Typesafe environment variables with ArkType, Zod, or Valibot.
+  </p>
 </p>
+<br/>
 
-> [!IMPORTANT]
-> **v1** is in RC. Still on v0? [Migrate to v1](https://arkenv.js.org/docs/guides/migrating-to-v1).
+<p align="center">
+  <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Av1"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/test.yml/badge.svg?branch=v1"></a>
+  <a href="https://arktype.io/docs/ecosystem#arkenv"><img alt="ArkType Ecosystem" src="https://custom-icon-badges.demolab.com/badge/ArkType%20Ecosystem-0d1526?logo=arktype2&logoColor=e9eef9"></a>
+  <a href="https://pullfrog.com"><img alt="Pullfrog" src="https://custom-icon-badges.demolab.com/badge/Powered%20by%20Pullfrog-2f4032?logo=pullfrog-white"></a>
+  <a href="https://github.com/yamcodes/arkenv/blob/v1/LICENSE"><img alt="License" src="https://img.shields.io/github/license/yamcodes/arkenv"></a>
+  <a href="https://github.com/yamcodes/arkenv/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/yamcodes/arkenv"></a>
+</p>
 
 <div align="center">
   <a href="https://arkenv.js.org/docs">Docs</a>
-  <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
-  <a href="https://arkenv.js.org/docs/getting-started">Get started</a>
-  <span>&nbsp;&nbsp;⛯&nbsp;&nbsp;</span>
-  <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/v1/examples/stackblitz?file=index.ts">Try on StackBlitz</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://x.com/_yamcodes">𝕏</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/v1/examples/stackblitz?file=index.ts">StackBlitz</a>
   <br />
 </div>
 
-<br />
-<br />
+<br/>
+<br/>
 
+<p align="center">
+  ArkEnv v1 is in RC. Read the <a href="https://arkenv.js.org/blog/arkenv-v1-rc">release notes</a> and <a href="https://arkenv.js.org/docs/guides/migrating-to-v1">migration guide</a>.
+</p>
 
-<h3 align="center">
-  First-class integrations: <a href="https://arkenv.js.org/docs/frameworks/nextjs">Next.js</a>, <a href="https://arkenv.js.org/docs/frameworks/nuxt">Nuxt</a>, <a href="https://arkenv.js.org/docs/frameworks/vite">Vite</a>, <a href="https://arkenv.js.org/docs/frameworks/tanstack-start">TanStack Start</a>, <a href="https://github.com/yamcodes/arkenv/tree/v1/examples/with-solid-start">SolidStart</a>, and <a href="https://arkenv.js.org/docs/frameworks/bun">Bun fullstack</a>
-</h3>
+<br/>
+<br/>
 
-<br />
+### [Read the docs →](https://arkenv.js.org/docs/getting-started)
+
+<br/>
+<br/>
+
+## What is ArkEnv?
+
+Define your environment variables with a schema. ArkEnv gives you a strongly typed, validated `env` object you can use everywhere.
 
 <details open>
 <summary>ArkType</summary>
@@ -85,49 +93,38 @@ export const env = arkenv({
 
 </details>
 
-<br />
+<br/>
 
-<details open>
-<summary>npm</summary>
+| ArkEnv | Instead of |
+| --- | --- |
+| Your existing TypeScript validator | A custom `.env.schema` DSL |
+| `arkenv({ ... })` | A hand-rolled wrapper around Zod |
+| One typed `env` object | Casting `process.env` |
+
+<br/>
+
+## Features
+
+- Zero runtime dependencies
+- Works in Node.js and all modern browsers
+- Tiny: under 3kb core bundle (gzipped)
+- Use your existing TypeScript validator
+- No boilerplate
+- Automatic coercion
+- Fail-fast startup errors with redacted values
+- One `env` object: [Next.js](https://arkenv.js.org/docs/frameworks/nextjs), [Nuxt](https://arkenv.js.org/docs/frameworks/nuxt), [Vite](https://arkenv.js.org/docs/frameworks/vite), [TanStack Start](https://arkenv.js.org/docs/frameworks/tanstack-start), [SolidStart](https://github.com/yamcodes/arkenv/tree/v1/examples/with-solid-start), and [Bun](https://arkenv.js.org/docs/frameworks/bun)
+
+<br/>
+
+## Getting started
 
 ```sh
 npx arkenv init
 ```
 
-</details>
+The CLI walks you through setup for an existing project, or starts a new one from an example.
 
-<details>
-<summary>pnpm</summary>
-
-```sh
-pnpm dlx arkenv init
-```
-
-</details>
-
-<details>
-<summary>Yarn</summary>
-
-```sh
-yarn dlx arkenv init
-```
-
-</details>
-
-<details>
-<summary>Bun</summary>
-
-```sh
-bunx arkenv init
-```
-
-</details>
-
-<br />
-
-### [Read the docs →](https://arkenv.js.org/docs/getting-started)
-
-<br />
+<br/>
 
 ## Supporting ArkEnv
 
