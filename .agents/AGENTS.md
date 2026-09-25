@@ -25,9 +25,10 @@ For all work transitioning or porting features from the `v0` (dev) branch to the
    - `packages/cli/CHANGELOG.md` maps to `packages/arkenv/CHANGELOG.md`.
    - `packages/arkenv/CHANGELOG.md` (the old core) maps to `packages/core/CHANGELOG.md`.
 
-3. **Changelog Epoch Warnings (Right before v1.0.0 release)**:
-   - In `packages/arkenv/CHANGELOG.md`, prepend a prominent warning alerting users that `arkenv` is now the CLI, not the library.
-   - In `packages/core/CHANGELOG.md`, prepend a welcome header explaining that the core library has moved from `arkenv` to `@arkenv/core`.
+3. **Changelog Epoch Warnings** (shipped for RC on `latest`, not held for `1.0.0`):
+   - `packages/arkenv/CHANGELOG.md` warns that `arkenv` is the CLI, not the library.
+   - `packages/core/CHANGELOG.md` welcomes readers to the runtime that moved from `arkenv` to `@arkenv/core`.
+   - Both banners sit in an `<!-- arkenv-epoch -->` block directly under the heading and link to the v1 migration guide. `changeset version` inserts the next release under the heading, so `scripts/changeset-version.js` hoists that block back to the top.
 
 4. **CLI Import Restriction**:
    - The `arkenv` CLI package (`packages/arkenv`) must throw a clear error at runtime if imported or required as a library (using `require.main !== module`) to prevent accidental usage by users upgrading from `v0`.

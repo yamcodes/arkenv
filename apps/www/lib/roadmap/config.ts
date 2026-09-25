@@ -58,7 +58,7 @@ export const ROADMAP_EXTRAS: readonly RoadmapExtra[] = [
 	{
 		id: "changelog-epoch",
 		title: "Prepend changelog epoch warnings",
-		done: false,
+		done: true,
 		topic: "Docs",
 	},
 	{

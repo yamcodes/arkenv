@@ -63,8 +63,8 @@ jobs:
       - name: Install Dependencies
         run: nub install
 
-      # changesets/action runs `changeset version` directly (not via
-      # package.json scripts). Materialize the gitignored packages-only
+      # changesets/action versions via `scripts/changeset-version.js`
+      # (`changeset version`, then hoist the epoch banners). Materialize the gitignored packages-only
       # pnpm-workspace.yaml from package.json workspaces.packages so
       # @manypkg can discover packages under Nub identity. Publish itself
       # does not use pnpm — scripts/changeset-publish.js rewrites
@@ -77,6 +77,7 @@ jobs:
         uses: changesets/action@v2.1.1
         with:
           publish-script: nub run --no-check release
+          version: node scripts/changeset-version.js
           github-token: ${{ steps.generate-token.outputs.token }}
 
       # Product RC path: also point npm `latest` at the just-published

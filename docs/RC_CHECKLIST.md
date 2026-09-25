@@ -212,7 +212,8 @@ work lands):
 - [x] `parity-audit` - Final v0 parity audit — see
   [`docs/design/v0-parity-audit.md`](./design/v0-parity-audit.md)
 - [ ] `readme-prod-links` - Update README links from alpha to production
-- [ ] `changelog-epoch` - Prepend changelog epoch warnings
+- [x] `changelog-epoch` - Prepend changelog epoch warnings
+  (CLI and `@arkenv/core` changelogs; RC on `latest`, not held for GA)
 - [ ] `npm-deprecate-cli` - Deprecate `@arkenv/cli` on npm
 - [x] `v0-archive-dns-cutover` - Park v0 on `arkenv-v0.vercel.app` and
   point Production / `arkenv.js.org` at `v1` (no js.org subdomain)
