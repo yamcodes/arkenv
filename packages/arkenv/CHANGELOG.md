@@ -1,5 +1,14 @@
 # arkenv
 
+<!-- arkenv-epoch -->
+> **v1 package identity.** On the v1 line, including release candidates
+> on `latest`, `arkenv` is the CLI. Use it to scaffold and check
+> environment variables. Runtime validation lives in `@arkenv/core`
+> (ArkType) or `@arkenv/standard` (Zod, Valibot, and other Standard
+> Schema validators). Importing this package as a library throws.
+> [Migrate from v0](https://arkenv.js.org/docs/guides/migrating-to-v1).
+<!-- /arkenv-epoch -->
+
 ## 1.0.0-rc.2
 
 ### Major Changes

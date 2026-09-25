@@ -1,5 +1,11 @@
 # @arkenv/core
 
+<!-- arkenv-epoch -->
+> **v1 package identity.** The runtime that published as `arkenv` on v0
+> now publishes as `@arkenv/core`. The npm name `arkenv` is the CLI.
+> [Migrate from v0](https://arkenv.js.org/docs/guides/migrating-to-v1).
+<!-- /arkenv-epoch -->
+
 ## 1.0.0-rc.2
 
 ### Major Changes
