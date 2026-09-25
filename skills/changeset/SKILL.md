@@ -138,7 +138,7 @@ Follow the prompts:
 
 ### Manual method
 
-Create a file in `.changeset/` with a random name:
+Create a file in **`.changeset/`** (repo root of that folder — **not** `.changeset/pre/`) with a random kebab-case name:
 
 ````markdown
 ---
@@ -164,6 +164,20 @@ export const env = arkenv({
 ```
 ````
 
+### Pending vs `.changeset/pre/` (hard rule)
+
+On `v1` (and any branch in Changesets **pre mode**), two folders look similar but mean opposite things:
+
+| Path | Role | Who writes here |
+| --- | --- | --- |
+| `.changeset/<name>.md` | **Pending** — unread by release until `changeset version` | You / agents on feature PRs |
+| `.changeset/pre/<name>.md` | **Consumed archive** — already applied by a Version Packages PR | Only `changeset version` / the release bot |
+
+**Never create, move, or commit a new changeset under `.changeset/pre/`.** `changesets/action` only scans pending root `.changeset/*.md` files. A file that lands only in `pre/` is invisible to release (“No changesets found”) and will not bump packages or open/update a Version Packages PR (see the #2022 extractors miss).
+
+Also never hand-edit or delete files already in `pre/` to “fix” a missed release — restore a **copy** as a new pending file under `.changeset/` instead (or move an *orphaned* never-consumed file from `pre/` back to `.changeset/` in a dedicated fix PR).
+
+`pre.json` (`mode` / `tag`) is the pre-release channel config. It is unrelated to the `pre/` directory of consumed markdown.
 ### File format
 
 ```markdown
@@ -205,13 +219,13 @@ Include:
 
 ### Validation checklist after modification
 
+- [ ] File path is `.changeset/<name>.md` — **not** `.changeset/pre/<name>.md`
 - [ ] Bump type matches the decision guide (patch/minor for non-breaking, major for breaking)
 - [ ] Title starts with `####` header and uses imperative mood
 - [ ] Body is user-facing changelog prose (past tense or "now"), not imperative commands
 - [ ] Usage examples present for user-facing changes
 - [ ] No GitHub issue references (# numbers) or internal documentation references (e.g. ADRs, internal RFCs)
 - [ ] Breaking changes use `major` bump and include a `**BREAKING CHANGE**:` note at the bottom
-
 ## Release workflow
 
 ### 1. Create or modify changeset
@@ -268,13 +282,13 @@ ls .changeset/*.md
 | Wrong bump type | Unexpected version | Review decision guide above |
 | Vague description | Poor CHANGELOG | Be specific about changes |
 | Missing changeset | No release notes | Always add before PR |
+| **Writing under `.changeset/pre/`** | **Release ignores it (“No changesets found”); package never bumps** | **Put pending files only in `.changeset/<name>.md`. `pre/` is the consumed archive.** |
 | Imperative body ("Drop X") | Reads like a commit, not a changelog | Rewrite in past tense / "now" for users |
 | Past-tense title ("Removed…") | Title should be a command | Use imperative ("Remove…") |
 | Not including context | Hard to understand | Explain *why* not just *what* |
 | Meaningless changes | Cluttered CHANGELOG | Only document changes with consumer value |
 | Including issue links | Redundant data | Remove # references; PR links them automatically |
 | Referencing ADRs/internal docs | Unprofessional in consumer docs | Remove ADR / internal doc references; describe user-observable changes only |
-
 ## Common scenarios
 
 For detailed examples of common scenarios including:

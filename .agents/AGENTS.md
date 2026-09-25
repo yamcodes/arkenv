@@ -37,3 +37,9 @@ For all work transitioning or porting features from the `v0` (dev) branch to the
    - Channel labeling (`"alpha"`, `"rc"`, `""` for GA) is controlled by `RELEASE_TAG` in `apps/www/lib/config/release.ts`. It drives the Release Candidate badge and channel copy — not install CTAs.
    - User-facing install / init / MDX `package-install` tabs use `INSTALL_TAG` (via `getPackageSpecifier`, `getInitCommand`, and `normalizePackageManagerCommand`). Empty `INSTALL_TAG` yields bare commands (`npx arkenv init`, `pnpm add @arkenv/core`).
    - Keep them independent when you want an RC badge while advertising bare installs (after product `latest` → RC and the apex docs cutover). Flip `RELEASE_TAG` alone when graduating the badge/channel; flip `INSTALL_TAG` alone when you need tagged install copy again.
+
+6. **Pending changesets vs `.changeset/pre/`** (hard rule on `v1` / any pre-mode branch):
+   - Write new changesets only as `.changeset/<name>.md`.
+   - **Never** create pending changesets under `.changeset/pre/` — that folder is the consumed archive filled by `changeset version` / Version Packages PRs.
+   - `changesets/action` ignores `pre/` and will log “No changesets found”, so the package never bumps (missed release after #2022).
+   - Follow the changeset skill (`.agents/skills/changeset/SKILL.md`) for voice, bumps, and this path rule.

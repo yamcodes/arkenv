@@ -228,10 +228,11 @@ To create a changeset:
 
 1. Run `nub run changeset`
 2. Follow the prompts to describe your changes
-3. Commit the generated `.changeset/*.md` file
+3. Commit the generated **`.changeset/*.md`** file (repo root of that folder)
+
+**Pending vs `.changeset/pre/`:** while `v1` is in Changesets pre mode (`pre.json`), `changeset version` moves applied files into `.changeset/pre/`. That directory is a **consumed archive**, not where new changesets go. Always add pending changesets as `.changeset/<name>.md`. Files that only exist under `pre/` are invisible to `changesets/action` (“No changesets found”) and will not release.
 
 The changeset will be automatically used to bump versions and update the changelog when your PR is merged.
-
 ## All contributors
 
 We use the [All Contributors](https://allcontributors.org/) specification to recognize all contributions.
