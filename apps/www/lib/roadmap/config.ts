@@ -52,7 +52,7 @@ export const ROADMAP_EXTRAS: readonly RoadmapExtra[] = [
 	{
 		id: "readme-prod-links",
 		title: "Update README links from alpha to production",
-		done: false,
+		done: true,
 		topic: "Docs",
 	},
 	{
