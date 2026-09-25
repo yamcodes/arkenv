@@ -192,7 +192,7 @@ export class InitUseCase {
 		input: InitInput,
 		targetDir: string,
 	): Promise<CollectedState | null> {
-		const { isYes, isForce, isQuiet, isAgent } = input;
+		const { isYes, isForce } = input;
 
 		const requirements = await this.scanner.checkRequirements(targetDir);
 		const failures = requirements.filter((r) => r.status === "fail");
@@ -355,33 +355,6 @@ export class InitUseCase {
 
 		if (options === null) {
 			return null;
-		}
-
-		const hasSkill = await this.scanner.hasSkill(targetDir);
-		if (hasSkill) {
-			options.skillDetected = true;
-			if (!isQuiet && !isAgent) {
-				this.logger.info("ArkEnv agent skill detected.");
-			}
-		}
-
-		// Handle installSkill logic
-		if (hasSkill) {
-			options.installSkill = false;
-		} else if (isAgent) {
-			options.installSkill = false;
-		} else if (isYes) {
-			options.installSkill = true;
-		} else {
-			const confirmInstall = await this.prompt.confirm(
-				"Would you like to install the ArkEnv agent skill?",
-				true,
-				"Yes (Recommended)",
-			);
-			if (confirmInstall === null) {
-				return null;
-			}
-			options.installSkill = confirmInstall;
 		}
 
 		// Handle existing env file prompt
