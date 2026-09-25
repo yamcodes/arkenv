@@ -11,10 +11,8 @@ PRs, Discussions, and `ROADMAP_EXTRAS` before you execute a cut.
 > **Note:** Shortest critical path: **A** (product freeze) → **B**
 > (channel flip) → **C** (publish + smoke). Announce and social are a
 > same-day pack after that (section E). Production already serves `v1`
-> (`v0-archive-dns-cutover`). Do not rewrite README production links
-> until `readme-prod-links` in
-> [`apps/www/lib/roadmap/config.ts`](../apps/www/lib/roadmap/config.ts)
-> is done.
+> (`v0-archive-dns-cutover`). Root README links already use
+> `https://arkenv.js.org` (`readme-prod-links`).
 
 ---
 
@@ -211,7 +209,8 @@ work lands):
 
 - [x] `parity-audit` - Final v0 parity audit — see
   [`docs/design/v0-parity-audit.md`](./design/v0-parity-audit.md)
-- [ ] `readme-prod-links` - Update README links from alpha to production
+- [x] `readme-prod-links` - Update README links from alpha to production
+  (root README uses `https://arkenv.js.org`; install commands are bare)
 - [x] `changelog-epoch` - Prepend changelog epoch warnings
   (CLI and `@arkenv/core` changelogs; RC on `latest`, not held for GA)
 - [ ] `npm-deprecate-cli` - Deprecate `@arkenv/cli` on npm
@@ -221,8 +220,7 @@ work lands):
 - [ ] `v1-announcement` - Document v1 announcement
 
 First RC publish does **not** require every row above. Production
-already serves `v1`. README production-link copy still waits on
-`readme-prod-links`.
+already serves `v1`. README links already point at `arkenv.js.org`.
 
 ---
 
@@ -372,8 +370,7 @@ Actions → **release** → **Run workflow** → enable
 ## E. Site / GitHub cutover
 
 These overlap GA ops. Apex already serves `v1`; `arkenv-v0.vercel.app`
-is the archive. README production-link copy still waits on
-`readme-prod-links`. Full steps:
+is the archive. README links already point at `arkenv.js.org`. Full steps:
 [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §3.
 
 **Phased cutover:** **Now (RC) = Option A** — keep branch names; `v1`
@@ -452,8 +449,8 @@ Open on tip (re-verify):
   known gap on the RC announce, do not hold the channel flip
 - Essay / Reddit / Habr timing - marketing schedule, not a publish gate
 - Perfect completion of every `ROADMAP_EXTRAS` before first `rc` publish
-- Rewriting README production links before `readme-prod-links` is done
-  (`v0-archive-dns-cutover` has landed)
+- README production links — landed (`readme-prod-links`;
+  `v0-archive-dns-cutover` has landed)
 - ArkType ecosystem snippet - landed
   [arktypeio/arktype#1655](https://github.com/arktypeio/arktype/pull/1655);
   was never a reason to stay on alpha or delay tagging `rc`

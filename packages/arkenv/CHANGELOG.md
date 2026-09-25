@@ -1,4 +1,4 @@
-# @arkenv/core
+# arkenv
 
 <!-- arkenv-epoch -->
 > **v1 package identity.** On the v1 line, including release candidates
