@@ -286,6 +286,9 @@ old `expose` / `shared` option aliases are gone — see
 Earlier alphas shipped `npx arkenv init --strict` plus
 `@arkenv/nextjs/server` / `@arkenv/nuxt/client` (and related subpaths).
 That layout engine is gone. Flat `env.ts` is the only first-class path.
+`withArkEnv` no longer takes a `layout` option, including the old
+`"simple"` alias. Delete `layout: "simple"` (and `"flat"` or `"strict"`)
+from Next.js and Nuxt config.
 
 If you relied on `--strict` for name/type isolation, keep two modules by
 hand — the same shape as two T3 `createEnv` calls:
@@ -389,12 +392,6 @@ the same shapes in schema source.
 +   },
 + );
 ```
-
-## Deprecated APIs
-
-These still work for now. They will be removed in a later release.
-
-- Config `layout: "simple"`. Use `"flat"`.
 
 The [changelog](https://github.com/yamcodes/arkenv/releases) lists what
 changed in each release.
