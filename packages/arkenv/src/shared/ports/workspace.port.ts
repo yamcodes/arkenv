@@ -60,12 +60,6 @@ export type ConfigPort = {
 	): Promise<BootstrapResult>;
 	bootstrapNuxtConfig(path: string): Promise<BootstrapResult>;
 	bootstrapRsbuildConfig(path: string): Promise<BootstrapResult>;
-	appendMissingEnvExampleKeys(cwd: string, keys: string[]): Promise<boolean>;
-	removeEnvExampleKeys(
-		cwd: string,
-		keysToRemove: string[],
-		remainingKeys?: string[],
-	): Promise<boolean>;
 };
 
 /**
