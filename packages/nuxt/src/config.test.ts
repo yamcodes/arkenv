@@ -1,10 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import {
-	extractClientKeys,
-	extractKeys,
-	extractServerKeys,
-} from "./config";
+import { extractClientKeys, extractKeys, extractServerKeys } from "./config";
 
 describe("Nuxt config parser", () => {
 	it("should reject nested bag schema source", () => {
