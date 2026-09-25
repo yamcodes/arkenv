@@ -284,8 +284,8 @@ importers:
         specifier: ^17.5.0
         version: 17.5.0
       typescript:
-        specifier: ~6.0.2
-        version: 6.0.3
+        specifier: 7.0.2
+        version: 7.0.2
       typescript-eslint:
         specifier: ^8.58.2
         version: 8.59.2(eslint@10.3.0(jiti@2.7.0))(typescript@6.0.3)

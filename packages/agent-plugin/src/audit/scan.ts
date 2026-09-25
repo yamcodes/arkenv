@@ -35,11 +35,31 @@ import { collectSourceFiles } from "./walk";
  */
 export async function auditProject(root: string): Promise<AuditReport> {
 	const files = await collectSourceFiles(root);
-	const diagnostics: AuditDiagnostic[] = [];
-	for (const file of files) {
-		diagnostics.push(...auditSource(root, file.filePath, file.source));
+	if (files.length === 0) return { diagnostics: [] };
+
+	const virtualFiles: Record<string, string> = {};
+	for (const file of files) virtualFiles[file.filePath] = file.source;
+
+	const api = new API({ fs: createVirtualFileSystem(virtualFiles) });
+	try {
+		const snapshot = api.updateSnapshot({
+			openFiles: files.map((file) => file.filePath),
+		});
+		const diagnostics: AuditDiagnostic[] = [];
+		for (const file of files) {
+			const project = snapshot.getDefaultProjectForFile(file.filePath);
+			const parsed = project?.program.getSourceFile(file.filePath);
+			if (!parsed) {
+				throw new Error(`Unable to parse ${file.filePath}`);
+			}
+			diagnostics.push(
+				...auditParsed(root, file.filePath, file.source, parsed),
+			);
+		}
+		return { diagnostics };
+	} finally {
+		api.close();
 	}
-	return { diagnostics };
 }
 
 /**
@@ -55,9 +75,26 @@ export function auditSource(
 	filePath: string,
 	source: string,
 ): AuditDiagnostic[] {
+	return auditParsed(root, filePath, source, parseSourceFile(filePath, source));
+}
+
+/**
+ * Audit one already-parsed source file.
+ *
+ * @param root Project root used to relativize `file`
+ * @param filePath Absolute path of the file
+ * @param source File contents
+ * @param sf Parsed syntax tree for `source`
+ * @returns Diagnostics for this file
+ */
+function auditParsed(
+	root: string,
+	filePath: string,
+	source: string,
+	sf: SourceFile,
+): AuditDiagnostic[] {
 	const relative = path.relative(root, filePath) || filePath;
 	const diagnostics: AuditDiagnostic[] = [];
-	const sf = parseSourceFile(filePath, source);
 	const envModule = isEnvModule(filePath);
 	const client = isClientFile(filePath, source);
 	const envImport = hasCanonicalEnvImport(sf);
