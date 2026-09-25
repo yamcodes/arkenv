@@ -4,8 +4,9 @@ import type { ProjectScannerPort, WorkspacePort } from "@/shared/ports";
 /**
  * Resolve the path to the project's schema module.
  *
- * Honors an explicit `--schema`/`--file` path first, then flat convention
- * candidates (`env.ts`, `src/env.ts`, and related extensions). Split-layout
+ * Honors an explicit `--schema`/`--file` path first, then flat TypeScript
+ * convention candidates (`env.ts`, `src/env.ts`). A `.js` or `.mjs` schema
+ * is loaded only via an explicit `--schema` path. Split-layout
  * leftovers such as `env/server.ts` are not auto-discovered — pass
  * `--schema` at a loadable module (typically the recipe client or a flat
  * schema). Leftover `package.json` `"arkenv"` fields are ignored — CLI
@@ -31,10 +32,6 @@ export async function resolveSchemaPath(
 	const candidates = [
 		path.resolve(cwd, "env.ts"),
 		path.resolve(cwd, "src/env.ts"),
-		path.resolve(cwd, "env.js"),
-		path.resolve(cwd, "src/env.js"),
-		path.resolve(cwd, "env.mjs"),
-		path.resolve(cwd, "src/env.mjs"),
 	];
 
 	const suggested = await scanner.suggestDefaultEnvPath(cwd);

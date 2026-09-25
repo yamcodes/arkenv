@@ -91,7 +91,7 @@ export class CheckUseCase {
 		if (!schemaPath) {
 			const summary = requestedSchema
 				? `Schema file not found at "${path.resolve(cwd, requestedSchema)}".`
-				: "Could not locate your schema file. Place it at a convention path (env.ts, src/env.ts, …) or specify --schema <path>.";
+				: "Could not locate your schema file. Place it at a convention path (env.ts or src/env.ts) or specify --schema <path>.";
 
 			const nextActions: NextAction[] = [
 				{
