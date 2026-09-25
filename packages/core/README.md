@@ -4,7 +4,7 @@
   <p align="center">
     Typesafe environment variables with ArkType, Zod, or Valibot
     <br/>
-    by <a href="https://github.com/yamcodes">@yamcodes</a>
+    by <a href="https://x.com/_yamcodes">@_yamcodes</a>
   </p>
 </p>
 <br/>
