@@ -3,37 +3,40 @@ import {
 	pluginOptionNotSupportedMessage,
 	SCHEMA_DEFINE_REMOVED,
 } from "./env-module.js";
-import arkenvPluginDefault, {
-	arkenvPlugin,
-	arkenvRsbuildPlugin,
-} from "./index.js";
+import * as rsbuildEntry from "./index.js";
+import arkenvPluginDefault, { arkenvPlugin } from "./index.js";
+import * as rsbuildStandard from "./standard.js";
 import arkenvPluginStandardDefault, {
 	arkenvPlugin as arkenvPluginStandard,
-	arkenvRsbuildPlugin as arkenvRsbuildPluginStandard,
 } from "./standard.js";
 
 describe("plugin factory", () => {
 	it("is a function that returns a transform plugin", () => {
 		expect(typeof arkenvPluginDefault).toBe("function");
 		expect(arkenvPluginDefault).toBe(arkenvPlugin);
-		expect(arkenvPluginDefault).toBe(arkenvRsbuildPlugin);
+		expect(Object.keys(rsbuildEntry).sort()).toEqual([
+			"arkenvPlugin",
+			"default",
+		]);
 
 		const plugin = arkenvPluginDefault();
 		expect(plugin).toHaveProperty("name", "@arkenv/rsbuild-plugin");
 		expect(plugin).toHaveProperty("setup");
 	});
 
-	it("exports arkenvPlugin and arkenvRsbuildPlugin named exports identically", () => {
+	it("exports named arkenvPlugin identically to the default", () => {
 		const pluginNamed = arkenvPlugin();
-		const pluginAlias = arkenvRsbuildPlugin();
 		expect(pluginNamed.name).toBe("@arkenv/rsbuild-plugin");
-		expect(pluginAlias.name).toBe("@arkenv/rsbuild-plugin");
+		expect(arkenvPlugin).toBe(arkenvPluginDefault);
 	});
 
 	it("supports the /standard subpath with the same export interface", () => {
 		expect(typeof arkenvPluginStandardDefault).toBe("function");
 		expect(arkenvPluginStandardDefault).toBe(arkenvPluginStandard);
-		expect(arkenvPluginStandardDefault).toBe(arkenvRsbuildPluginStandard);
+		expect(Object.keys(rsbuildStandard).sort()).toEqual([
+			"arkenvPlugin",
+			"default",
+		]);
 
 		const standardPlugin = arkenvPluginStandardDefault();
 		expect(standardPlugin).toHaveProperty(

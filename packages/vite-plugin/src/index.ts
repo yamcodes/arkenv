@@ -19,5 +19,4 @@ export function arkenvPlugin(options?: VitePluginFactoryConfig): Plugin {
 	return arkenvCreator(options);
 }
 
-export { arkenvPlugin as arkenvVitePlugin };
 export default arkenvPlugin;

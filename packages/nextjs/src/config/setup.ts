@@ -49,6 +49,18 @@ type SetupResult = {
 };
 
 /**
+ * Non-public hooks for tests and the Standard Schema config entry.
+ */
+type ArkEnvInternalOptions = {
+	_jitiAliases?: Record<string, string>;
+	/**
+	 * Force generated `env.gen.ts` to import `@arkenv/nextjs/standard`.
+	 * Set only by `@arkenv/nextjs/standard/config`.
+	 */
+	_forceStandard?: boolean;
+};
+
+/**
  * Infer the app root from a flat schema path (`env.ts` or `src/env.ts`).
  */
 function resolveProjectRoot(schema: string): string {
@@ -63,13 +75,13 @@ function resolveProjectRoot(schema: string): string {
  * Run ArkEnv codegen and setup without wrapping nextConfig.
  *
  * @param options Optional configuration paths for schema and output files
- * @param internalOptions Optional configuration for internal testing hooks
+ * @param internalOptions Optional configuration for internal testing hooks and Standard Schema codegen
  * @returns Resolved output path used by `withArkEnv` for alias registration
  * @throws An error if the schema file cannot be found or if code generation fails
  */
 export function setupArkEnv(
 	options?: ArkEnvConfigOptions,
-	internalOptions?: { _jitiAliases?: Record<string, string> },
+	internalOptions?: ArkEnvInternalOptions,
 ): SetupResult {
 	const buildLog = resolveBuildLog(options);
 
@@ -98,7 +110,7 @@ export function setupArkEnv(
 			runCodegen(
 				schemaPath,
 				outputPath,
-				options?.standard,
+				internalOptions?._forceStandard,
 				options,
 				projectRoot,
 			);
@@ -162,7 +174,7 @@ export function setupArkEnv(
 				runCodegen(
 					schemaPath,
 					outputPath,
-					options?.standard,
+					internalOptions?._forceStandard,
 					options,
 					projectRoot,
 				);
@@ -254,12 +266,48 @@ function applyArkEnvAliases<T extends object>(
 }
 
 /**
+ * Apply ArkEnv codegen and aliases, including non-public hooks.
+ *
+ * Not exported from `@arkenv/nextjs/config`. The Standard Schema entry uses
+ * `internalOptions._forceStandard` so callers cannot turn that mode off.
+ *
+ * @param nextConfig The Next.js configuration object or `(phase, context)` factory
+ * @param options Optional configuration paths for schema and output files
+ * @param internalOptions Non-public hooks
+ * @returns The Next.js configuration object, or an async factory that resolves to it
+ * @throws An error if the schema file cannot be found or if code generation fails
+ */
+export function withArkEnvInternal<T extends object>(
+	nextConfig: T | NextConfigFactory<T>,
+	options?: ArkEnvConfigOptions,
+	internalOptions?: ArkEnvInternalOptions,
+): T | ((phase: string, context: NextConfigContext) => Promise<T>) {
+	if (typeof nextConfig === "function") {
+		return async (phase: string, context: NextConfigContext) => {
+			const setup = setupArkEnv(options, internalOptions);
+			const resolved = await nextConfig(phase, context);
+			return applyArkEnvAliases(resolved, options, setup);
+		};
+	}
+
+	if (nextConfig && typeof nextConfig === "object") {
+		const setup = setupArkEnv(options, internalOptions);
+		return applyArkEnvAliases(nextConfig, options, setup);
+	}
+
+	return nextConfig;
+}
+
+/**
  * Wrap a Next.js configuration object or function to generate `runtimeEnv` in
  * `env.gen.ts` and configure Turbopack/Webpack aliases for virtualized
  * `.arkenv/` placement.
  *
  * Function-form configs (sync or async) are preserved: ArkEnv awaits the user's
  * factory, then applies aliases to the resolved object.
+ *
+ * Standard Schema codegen is selected by importing `withArkEnv` from
+ * `@arkenv/nextjs/standard/config`, not by an options field.
  *
  * @param nextConfig The Next.js configuration object or `(phase, context)` factory
  * @param options Optional configuration paths for schema and output files
@@ -288,18 +336,5 @@ export function withArkEnv<T extends object>(
 	nextConfig: T | NextConfigFactory<T>,
 	options?: ArkEnvConfigOptions,
 ): T | ((phase: string, context: NextConfigContext) => Promise<T>) {
-	if (typeof nextConfig === "function") {
-		return async (phase: string, context: NextConfigContext) => {
-			const setup = setupArkEnv(options);
-			const resolved = await nextConfig(phase, context);
-			return applyArkEnvAliases(resolved, options, setup);
-		};
-	}
-
-	if (nextConfig && typeof nextConfig === "object") {
-		const setup = setupArkEnv(options);
-		return applyArkEnvAliases(nextConfig, options, setup);
-	}
-
-	return nextConfig;
+	return withArkEnvInternal(nextConfig, options);
 }

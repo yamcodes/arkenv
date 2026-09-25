@@ -1,9 +1,9 @@
-import {
-	type ArkEnvConfigOptions,
-	type NextConfigContext,
-	type NextConfigFactory,
-	withArkEnv as originalWithArkEnv,
+import type {
+	ArkEnvConfigOptions,
+	NextConfigContext,
+	NextConfigFactory,
 } from "@/config";
+import { withArkEnvInternal } from "@/config/setup";
 
 /**
  * Wrap a Next.js configuration object or function to generate `env.gen.ts` (Standard Mode).
@@ -24,8 +24,5 @@ export function withArkEnv<T extends object>(
 	nextConfig: T | NextConfigFactory<T>,
 	options?: ArkEnvConfigOptions,
 ): T | ((phase: string, context: NextConfigContext) => Promise<T>) {
-	return originalWithArkEnv(nextConfig as T, {
-		...options,
-		standard: true,
-	}) as T | ((phase: string, context: NextConfigContext) => Promise<T>);
+	return withArkEnvInternal(nextConfig, options, { _forceStandard: true });
 }

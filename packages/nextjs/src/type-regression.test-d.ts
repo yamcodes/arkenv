@@ -220,6 +220,16 @@ describe("withArkEnv config overloads", () => {
 		>();
 	});
 
+	it("rejects the removed standard option on the ArkType config entry", () => {
+		withArkEnv(
+			{ reactStrictMode: true },
+			{
+				// @ts-expect-error standard is not a public withArkEnv option
+				standard: true,
+			},
+		);
+	});
+
 	it("matches overloads on the Standard config entry", () => {
 		const wrapObject = () =>
 			withArkEnvStandard({ reactStrictMode: true as const });

@@ -13,7 +13,7 @@ Nuxt can swap public config without rebuilding because Nitro’s
 client bundle. `@arkenv/nextjs` respects that boundary instead of shipping a
 parallel browser global.
 
-## Default path: bake public values at build
+## Default path: baking public values at build
 
 Enable Next.js standalone output so the image can copy
 `.next/standalone`. `withArkEnv` still validates the schema at build time,
@@ -121,7 +121,7 @@ it was replaced at build time.
   catch missing keys instead.
 </Callout>
 
-## Dynamic public config: keep it off `NEXT_PUBLIC_*`
+## Dynamic public config: keeping it off `NEXT_PUBLIC_*`
 
 When a value must vary per deploy without rebuilding the client bundle,
 do not put it on a `NEXT_PUBLIC_*` key. Read it on the server and pass it

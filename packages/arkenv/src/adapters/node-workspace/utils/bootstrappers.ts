@@ -123,7 +123,7 @@ export function transformViteConfig(
 				// Add imports
 				mod.imports.$add({
 					from: "@arkenv/vite-plugin",
-					local: "arkenvVitePlugin",
+					local: "arkenvPlugin",
 					imported: "default",
 				});
 
@@ -143,7 +143,7 @@ export function transformViteConfig(
 		let code = generateCode(mod, {
 			format: detectCodeFormat(initialCode),
 		}).code;
-		const pluginCall = "arkenvVitePlugin()";
+		const pluginCall = "arkenvPlugin()";
 		code = code.replace(/['"]__ARK_PLUGIN_PLACEHOLDER__['"]/g, pluginCall);
 		code = normalizeImportSpacing(code);
 		code = preserveTrailingNewline(code, initialCode);
@@ -242,6 +242,7 @@ export function transformRsbuildConfig(
 					rsbuildPluginImports.add(item.local);
 				}
 			}
+			rsbuildPluginImports.add("arkenvPlugin");
 			rsbuildPluginImports.add("arkenvRsbuildPlugin");
 
 			// Check if already registered in the plugins array AST
@@ -269,21 +270,22 @@ export function transformRsbuildConfig(
 				const existingImport =
 					rsbuildImports.find(
 						(item) =>
+							item.imported === "arkenvPlugin" ||
 							item.imported === "arkenvRsbuildPlugin" ||
 							item.imported === "default",
 					) || rsbuildImports[0];
-				const localName = existingImport?.local || "arkenvRsbuildPlugin";
+				const localName = existingImport?.local || "arkenvPlugin";
 
 				if (!existingImport) {
 					mod.imports.$add({
 						from: "@arkenv/rsbuild-plugin",
-						local: "arkenvRsbuildPlugin",
-						imported: "arkenvRsbuildPlugin",
+						local: "arkenvPlugin",
+						imported: "arkenvPlugin",
 					});
 				}
 
 				const placeholder =
-					localName === "arkenvRsbuildPlugin"
+					localName === "arkenvPlugin"
 						? "__ARK_PLUGIN__"
 						: `__ARK_PLUGIN__:${localName}`;
 				config.plugins.push(placeholder);
@@ -303,7 +305,7 @@ export function transformRsbuildConfig(
 			format: detectCodeFormat(initialCode),
 		}).code;
 		code = code.replace(/['"]__ARK_PLUGIN__(?::(.+?))?['"]/g, (_, name) =>
-			name ? `${name}()` : "arkenvRsbuildPlugin()",
+			name ? `${name}()` : "arkenvPlugin()",
 		);
 		code = normalizeImportSpacing(code);
 		code = preserveTrailingNewline(code, initialCode);

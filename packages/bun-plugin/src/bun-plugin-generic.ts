@@ -13,13 +13,13 @@ export type { BunPluginFactoryConfig } from "./plugin-config";
  * Always uses the env-module transform: `arkenvPlugin()` / `arkenvPlugin({ schemaPath, clientPrefix })`.
  * The schema/`define` signature is rejected.
  *
- * The returned `hybrid` is the factory with transform `setup`/`target` attached so
+ * The returned factory has transform `setup`/`target` attached so
  * `bunfig.toml` / default-import usage (`plugins = ["@arkenv/bun-plugin"]`) enables
  * zero-config transform mode.
  *
  * @param pluginName The Bun plugin name
  * @param factoryLogOptions Optional default logging options for the factory
- * @returns An object containing the configured arkenvPlugin factory and the hybrid plugin
+ * @returns The `arkenvPlugin` factory with zero-config `name`, `target`, and `setup`
  */
 export function createBunPlugin(
 	pluginName: string,
@@ -45,17 +45,17 @@ export function createBunPlugin(
 		factoryLogOptions,
 	);
 
-	const hybrid = arkenvPlugin as typeof arkenvPlugin & BunPlugin;
+	const plugin = arkenvPlugin as typeof arkenvPlugin & BunPlugin;
 
-	Object.defineProperty(hybrid, "name", {
+	Object.defineProperty(plugin, "name", {
 		value: pluginName,
 		writable: false,
 	});
-	Object.defineProperty(hybrid, "target", {
+	Object.defineProperty(plugin, "target", {
 		value: "browser",
 		writable: false,
 	});
-	hybrid.setup = zeroConfigTransform.setup;
+	plugin.setup = zeroConfigTransform.setup;
 
-	return { arkenvPlugin: hybrid, hybrid };
+	return plugin;
 }

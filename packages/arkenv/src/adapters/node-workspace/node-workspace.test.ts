@@ -108,10 +108,8 @@ describe("NodeWorkspace", () => {
 		expect(result.updated).toBe(true);
 
 		const updated = await fsp.readFile(configPath, "utf-8");
-		expect(updated).toContain(
-			'import arkenvVitePlugin from "@arkenv/vite-plugin"',
-		);
-		expect(updated).toContain("arkenvVitePlugin()");
+		expect(updated).toContain('import arkenvPlugin from "@arkenv/vite-plugin"');
+		expect(updated).toContain("arkenvPlugin()");
 	});
 
 	it("is idempotent when ensuring vite plugin", async () => {
@@ -234,7 +232,7 @@ describe("NodeWorkspace", () => {
 		expect(found).toContain("rsbuild.config.ts");
 	});
 
-	it("bootstraps rsbuild config by injecting arkenvRsbuildPlugin", async () => {
+	it("bootstraps rsbuild config by injecting arkenvPlugin", async () => {
 		const rsbuildConfig = dedent`
 			import { defineConfig } from "@rsbuild/core";
 			export default defineConfig({
@@ -250,7 +248,7 @@ describe("NodeWorkspace", () => {
 
 		const updated = await fsp.readFile(configPath, "utf-8");
 		expect(updated).toContain('from "@arkenv/rsbuild-plugin"');
-		expect(updated).toContain("arkenvRsbuildPlugin()");
+		expect(updated).toContain("arkenvPlugin()");
 	});
 
 	it("is idempotent when bootstrapping rsbuild config that already has the plugin", async () => {

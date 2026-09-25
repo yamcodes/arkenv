@@ -57,8 +57,8 @@
 	"integrations": [
 		{
 			"type": "vite-plugin",
-			"import": "import arkenv from '@arkenv/vite-plugin'",
-			"code": "arkenv()"
+			"import": "import arkenvPlugin from '@arkenv/vite-plugin'",
+			"code": "arkenvPlugin()"
 		}
 	],
 	"packageTemplate": "<%\n  const arkenvOption = (typeof addOnOption !== 'undefined' && (\n    addOnOption['arkenv'] ||\n    Object.entries(addOnOption).find(([k]) => k.includes('arkenv') || k.includes('info.json'))?.[1]\n  )) || {};\n  const validator = arkenvOption.validator || 'arktype';\n-%>\n{\n  \"dependencies\": {\n<% if (validator === 'zod') { -%>\n    \"@arkenv/standard\": \"^1.0.0-rc.2\",\n    \"zod\": \"^3.24.2\"\n<% } else if (validator === 'valibot') { -%>\n    \"@arkenv/standard\": \"^1.0.0-rc.2\",\n    \"valibot\": \"^1.0.0\"\n<% } else { -%>\n    \"@arkenv/core\": \"^1.0.0-rc.2\",\n    \"arktype\": \"^2.2.0\"\n<% } -%>\n  },\n  \"devDependencies\": {\n    \"@arkenv/vite-plugin\": \"^1.0.0-rc.2\"\n  }\n}\n",

@@ -12,6 +12,11 @@
 			"import": "./dist/index.js",
 			"default": "./dist/index.js"
 		},
+		"./issues": {
+			"types": "./dist/issues.d.ts",
+			"import": "./dist/issues.js",
+			"default": "./dist/issues.js"
+		},
 		"./safe": {
 			"types": "./dist/safe.d.ts",
 			"import": "./dist/safe.js",

@@ -4,6 +4,5 @@ export {
 	extractClientKeys,
 	extractKeys,
 	extractServerKeys,
-	extractSharedKeys,
 	findSchemaPath,
 } from "@arkenv/build";

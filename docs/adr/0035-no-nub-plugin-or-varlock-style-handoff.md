@@ -24,7 +24,7 @@ That raised two product questions for ArkEnv × Nub:
 
 User-facing getting-started and framework guides keep stock runners
 (`npx`, `node --env-file`, framework CLIs). Nub remains optional for
-consumers; the [Use with Nub](../../apps/www/content/docs/guides/use-with-nub.mdx)
+consumers; the [Using ArkEnv with Nub](../../apps/www/content/docs/guides/use-with-nub.mdx)
 guide documents how the tools compose when a project already runs under
 Nub. [ADR 0028](./0028-nextjs-no-next-env-hook.md) already rejected a
 Varlock-style hijack of Next.js's `@next/env` pipeline.
@@ -71,7 +71,8 @@ Nub runtime hand-off for ArkEnv.
 
 - Compose Nub + ArkEnv with existing surfaces: Nub loads `.env*`;
   ArkEnv validates via import, `preload`, `arkenv check`, and framework
-  plugins. Document that in the Use with Nub guide; do not add packages.
+  plugins. Document that in the Using ArkEnv with Nub guide; do not add
+  packages.
 - Future "should we integrate with Nub?" reviews start here and at
   ADR 0028 for the related Varlock-style Next reject.
 - If Nub later exposes a stable, non-hijacking extension point that fits

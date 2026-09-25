@@ -3,7 +3,6 @@ import path from "node:path";
 import {
 	extractKeys as coreExtractKeys,
 	extractClientKeys,
-	extractSharedKeys,
 	findSchemaPath,
 	formatMissingSchemaError,
 } from "@arkenv/build";
@@ -17,7 +16,7 @@ export {
 	findSchemaPath,
 	formatMissingSchemaError,
 } from "@arkenv/build";
-export { extractClientKeys, extractSharedKeys, validateSchema };
+export { extractClientKeys, validateSchema };
 
 /**
  * Configuration options for the ArkEnv Nuxt module.

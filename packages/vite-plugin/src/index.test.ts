@@ -3,20 +3,18 @@ import {
 	pluginOptionNotSupportedMessage,
 	SCHEMA_DEFINE_REMOVED,
 } from "./env-module.js";
-import arkenvPluginDefault, {
-	arkenvPlugin,
-	arkenvVitePlugin,
-} from "./index.js";
+import * as viteEntry from "./index.js";
+import arkenvPluginDefault, { arkenvPlugin } from "./index.js";
+import * as viteStandard from "./standard.js";
 import arkenvPluginStandardDefault, {
 	arkenvPlugin as arkenvPluginStandard,
-	arkenvVitePlugin as arkenvVitePluginStandard,
 } from "./standard.js";
 
 describe("plugin factory", () => {
 	it("is a function that returns a transform plugin", () => {
 		expect(typeof arkenvPluginDefault).toBe("function");
 		expect(arkenvPluginDefault).toBe(arkenvPlugin);
-		expect(arkenvPluginDefault).toBe(arkenvVitePlugin);
+		expect(Object.keys(viteEntry).sort()).toEqual(["arkenvPlugin", "default"]);
 
 		const plugin = arkenvPluginDefault();
 		expect(plugin).toHaveProperty("name", "@arkenv/vite-plugin");
@@ -24,17 +22,19 @@ describe("plugin factory", () => {
 		expect(plugin).toHaveProperty("transform");
 	});
 
-	it("exports arkenvPlugin and arkenvVitePlugin named exports identically", () => {
+	it("exports named arkenvPlugin identically to the default", () => {
 		const pluginNamed = arkenvPlugin();
-		const pluginAlias = arkenvVitePlugin();
 		expect(pluginNamed.name).toBe("@arkenv/vite-plugin");
-		expect(pluginAlias.name).toBe("@arkenv/vite-plugin");
+		expect(arkenvPlugin).toBe(arkenvPluginDefault);
 	});
 
 	it("supports the /standard subpath with the same export interface", () => {
 		expect(typeof arkenvPluginStandardDefault).toBe("function");
 		expect(arkenvPluginStandardDefault).toBe(arkenvPluginStandard);
-		expect(arkenvPluginStandardDefault).toBe(arkenvVitePluginStandard);
+		expect(Object.keys(viteStandard).sort()).toEqual([
+			"arkenvPlugin",
+			"default",
+		]);
 
 		const standardPlugin = arkenvPluginStandardDefault();
 		expect(standardPlugin).toHaveProperty(

@@ -3,23 +3,18 @@ import {
 	pluginOptionNotSupportedMessage,
 	SCHEMA_DEFINE_REMOVED,
 } from "./env-module.js";
-import arkenvPluginDefault, {
-	arkenvBunPlugin,
-	arkenvPlugin,
-	hybrid,
-} from "./index.js";
+import * as bunEntry from "./index.js";
+import arkenvPluginDefault, { arkenvPlugin } from "./index.js";
+import * as bunStandard from "./standard.js";
 import arkenvPluginStandardDefault, {
-	arkenvBunPlugin as arkenvBunPluginStandard,
 	arkenvPlugin as arkenvPluginStandard,
-	hybrid as hybridStandard,
 } from "./standard.js";
 
 describe("Bun Plugin", () => {
 	it("should export arkenvPlugin as default and named export", () => {
 		expect(typeof arkenvPluginDefault).toBe("function");
 		expect(arkenvPluginDefault).toBe(arkenvPlugin);
-		expect(arkenvPluginDefault).toBe(arkenvBunPlugin);
-		expect(arkenvPluginDefault).toBe(hybrid);
+		expect(Object.keys(bunEntry).sort()).toEqual(["arkenvPlugin", "default"]);
 	});
 
 	it("returns a browser transform plugin when invoked as a function", () => {
@@ -35,21 +30,19 @@ describe("Bun Plugin", () => {
 		expect(pluginInstance).toHaveProperty("target", "browser");
 	});
 
-	it("exposes a hybrid plugin for bunfig.toml and direct plugin registration", () => {
+	it("exposes arkenvPlugin for bunfig.toml and direct plugin registration", () => {
 		expect(arkenvPluginDefault).toHaveProperty("name", "@arkenv/bun-plugin");
 		expect(arkenvPluginDefault).toHaveProperty("target", "browser");
 		expect(typeof arkenvPluginDefault.setup).toBe("function");
-
-		expect(hybrid).toHaveProperty("name", "@arkenv/bun-plugin");
-		expect(hybrid).toHaveProperty("target", "browser");
-		expect(typeof hybrid.setup).toBe("function");
 	});
 
 	it("supports the /standard subpath with the same export interface", () => {
 		expect(typeof arkenvPluginStandardDefault).toBe("function");
 		expect(arkenvPluginStandardDefault).toBe(arkenvPluginStandard);
-		expect(arkenvPluginStandardDefault).toBe(arkenvBunPluginStandard);
-		expect(arkenvPluginStandardDefault).toBe(hybridStandard);
+		expect(Object.keys(bunStandard).sort()).toEqual([
+			"arkenvPlugin",
+			"default",
+		]);
 
 		expect(arkenvPluginStandardDefault).toHaveProperty(
 			"name",
