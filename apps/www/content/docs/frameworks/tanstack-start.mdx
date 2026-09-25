@@ -33,6 +33,11 @@ Generate a TanStack Start app with ArkEnv wired in:
 npx @tanstack/cli create my-app --add-ons https://arkenv.js.org/tanstack/info.json
 ```
 
+<Callout type="info" title="No catalog id yet">
+  `@tanstack/cli` does not include an `arkenv` add-on, so
+  `--add-ons arkenv` fails. Use the URL above.
+</Callout>
+
 When the CLI runs, it asks a few setup questions — including which
 validator engine to use (ArkType, Zod, or Valibot) and whether to
 include the `/demo/arkenv` route. You can accept the defaults or pick

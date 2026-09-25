@@ -14,6 +14,27 @@
 		// CLI check crash tests) resolve @arkenv/* / @repo/* via NODE_PATH
 		// into the store public hoist — they are not at the repo root
 		// without this.
-		"publicHoist": ["@arkenv/*", "@repo/*"]
+		"publicHoist": ["@arkenv/*", "@repo/*"],
+		// Standing exemption: @nubjs/nub and its platform optional packages
+		// ship with the pinned packageManager, so a bump must install the
+		// same day. Every other package stays on Nub's default 24-hour
+		// cooling window.
+		//
+		// Escape hatch: an exact name@version entry admits one locked
+		// tarball that is still inside that window. Do not add a bare
+		// package name (that skips the window for every future publish).
+		// Delete the pin once that version is 24 hours old.
+		// TODO: drop arktype@2.2.5, @ark/schema@0.56.4, @ark/util@0.56.4,
+		// arkregex@0.0.10, @ark/attest@0.56.5, and @ark/fs@0.56.4 after
+		// 2026-09-25T21:40:00Z.
+		"minimumReleaseAgeExclude": [
+			"@nubjs/*",
+			"arktype@2.2.5",
+			"@ark/attest@0.56.5",
+			"@ark/fs@0.56.4",
+			"@ark/schema@0.56.4",
+			"@ark/util@0.56.4",
+			"arkregex@0.0.10"
+		]
 	}
 }
