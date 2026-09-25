@@ -210,6 +210,48 @@ describe("Planner", () => {
 		}
 	});
 
+	it("does not install arktype for Zod or Valibot", () => {
+		const cases = [
+			{ framework: "nextjs", validator: "zod" },
+			{ framework: "nextjs", validator: "valibot" },
+			{ framework: "nuxt", validator: "zod" },
+			{ framework: "nuxt", validator: "valibot" },
+			{ framework: "vite", validator: "zod" },
+			{ framework: "vite", validator: "valibot" },
+			{ framework: "rsbuild", validator: "zod" },
+			{ framework: "rsbuild", validator: "valibot" },
+			{
+				framework: "bun-fullstack",
+				validator: "zod",
+				bunFeatures: ["serve"],
+			},
+			{
+				framework: "bun-fullstack",
+				validator: "valibot",
+				bunFeatures: ["serve"],
+			},
+		] as const;
+
+		for (const { framework, validator, ...rest } of cases) {
+			const plan = createPlan({
+				...defaultState,
+				options: {
+					...defaultState.options,
+					framework,
+					validator,
+					...rest,
+				},
+				detectedFramework: framework,
+			});
+			expect
+				.soft(
+					plan.install?.dependencies,
+					`${framework} + ${validator} install list`,
+				)
+				.not.toContain("arktype");
+		}
+	});
+
 	it("plans vanilla valibot with the JSON Schema converter peer", () => {
 		const state: CollectedState = {
 			...defaultState,
