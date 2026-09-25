@@ -57,12 +57,13 @@
 	},
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "^1.27.1",
-		"typescript": "catalog:"
+		"@typescript/typescript6": "^6.0.2"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:",
 		"rimraf": "catalog:",
 		"tsdown": "catalog:",
+		"typescript": "catalog:",
 		"vitest": "catalog:"
 	}
 }
