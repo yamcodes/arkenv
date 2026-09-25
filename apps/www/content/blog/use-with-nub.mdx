@@ -1,0 +1,49 @@
+---
+title: Use ArkEnv with Nub
+description: Nub loads your .env files. ArkEnv validates environment variables on import, before entry, or with arkenv check.
+author: Yam Borodetsky
+authorGithub: yamcodes
+date: 2026-09-25
+draft: false
+---
+
+ArkEnv is designed to work seamlessly with [Nub](https://nubjs.com/) when
+your project already runs under it. ArkEnv validates and types your
+environment variables; Nub loads `.env*` files and runs TypeScript before
+your entry starts.
+
+## Who does what
+
+Nub injects `.env*` into `process.env` before Node starts (`nub`,
+`nub run`, `nub watch`, and `nubx`). ArkEnv does not load dotenv files.
+`import { env } from "./env"` reads that environment and fails fast when
+a value is missing or wrong.
+
+<Callout type="info" title="Not running under Nub?">
+	Getting started and the framework guides keep stock runners (`npx`,
+	`node --env-file`, framework CLIs). Nub is optional.
+</Callout>
+
+## Fail earlier than the first import
+
+Import-time validation is enough when every process that needs config
+imports `env` early. Two gates fail before application code runs:
+
+- **`preload` in `nub.jsonc`.** Point it at `./env.ts`. Every Nub launch
+  validates, including scripts that never import `env`.
+- **`nubx arkenv check`.** The same check, without starting the app. The
+  process inherits Nub's `.env*` loading.
+
+Framework builds stay on the Vite, Next.js, Nuxt, and Bun adapters.
+`nub run dev` does not replace them.
+
+The walkthrough, including the schema and the `preload` snippet, is
+[Use with Nub](/docs/guides/use-with-nub).
+
+## Next steps
+
+Read the guide for when each gate runs, then start a project the usual
+way if you are not on Nub yet.
+
+- [Use with Nub](/docs/guides/use-with-nub)
+- [Getting started](/docs/getting-started)
