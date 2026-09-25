@@ -1,5 +1,18 @@
 # @arkenv/agent-plugin
 
+## 1.0.0-rc.2
+
+### Patch Changes
+
+- #### Parse audit sources with the TypeScript 7 sync API _[`#1990`](https://github.com/yamcodes/arkenv/pull/1990) [`f3039bf`](https://github.com/yamcodes/arkenv/commit/f3039bf80847aacbc7eb9c66a569baaf864eee8a) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	The agent plugin audit now parses source files through `typescript/unstable/sync` instead of the classic TypeScript compiler API.
+- #### Point init refusals at nextActions _[`#1977`](https://github.com/yamcodes/arkenv/pull/1977) [`dd2fa82`](https://github.com/yamcodes/arkenv/commit/dd2fa8251c72d87c57668f404ec5b03dd9eddeb2) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Agent instructions now tell you to retry only when a refusal's `nextActions` include a `run-command` with `--force`.
+
 ## 1.0.0-rc.1
 
 ### Patch Changes

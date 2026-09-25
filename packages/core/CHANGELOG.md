@@ -6,6 +6,23 @@
 > [Migrate from v0](https://arkenv.js.org/docs/guides/migrating-to-v1).
 <!-- /arkenv-epoch -->
 
+## 1.0.0-rc.3
+
+### Patch Changes
+
+- #### Restore keyword suggestions inside inline schemas _[`#1975`](https://github.com/yamcodes/arkenv/pull/1975) [`089ef43`](https://github.com/yamcodes/arkenv/commit/089ef436d3e007fa636e3948734d3911b1065758) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	A partial keyword in an inline schema string suggests ArkType keywords again. `arkenv({ PORT: "n" })` offers `never`, `null`, and `number`. The same suggestions are back on `arkenv` from `@arkenv/core/safe`.
+	
+	```ts
+	import arkenv from "@arkenv/core";
+	
+	export const env = arkenv({
+	  PORT: "number.port = 3000",
+	});
+	```
+
 ## 1.0.0-rc.2
 
 ### Major Changes

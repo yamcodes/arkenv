@@ -9,6 +9,47 @@
 > [Migrate from v0](https://arkenv.js.org/docs/guides/migrating-to-v1).
 <!-- /arkenv-epoch -->
 
+## 1.0.0-rc.3
+
+### Minor Changes
+
+- #### Stop installing the agent skill during init _[`#1984`](https://github.com/yamcodes/arkenv/pull/1984) [`2c1dd0f`](https://github.com/yamcodes/arkenv/commit/2c1dd0f240be7f3e03acef4fff55b6035c9835b5) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`arkenv init` no longer prompts for or installs the ArkEnv agent skill, including under `--yes`. When the skill is not already in the project, the next-steps note still prints `npx skills add yamcodes/arkenv`. `@arkenv/agent-plugin` already includes the skill.
+- #### Scaffold `arkenvPlugin` in Vite and Rsbuild configs _[`#2015`](https://github.com/yamcodes/arkenv/pull/2015) [`7417dd7`](https://github.com/yamcodes/arkenv/commit/7417dd7201c42e2cc987cb26c1763d7cbb9a56a2) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`arkenv init` now writes `arkenvPlugin` into new Vite and Rsbuild config entries. Vite binds the default import as `arkenvPlugin`. Rsbuild imports the named `arkenvPlugin`.
+	
+	```ts
+	import arkenvPlugin from "@arkenv/vite-plugin";
+	
+	export default defineConfig({
+	  plugins: [arkenvPlugin()],
+	});
+	```
+
+### Patch Changes
+
+- #### Scaffold Zod and Valibot init on standard mode _[`#2020`](https://github.com/yamcodes/arkenv/pull/2020) [`a3815e6`](https://github.com/yamcodes/arkenv/commit/a3815e6ddd8843f7ae1227e49d0947da35f99b94) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	`arkenv init` no longer installs `arktype` when you choose Zod or Valibot. Next.js, Nuxt, Vite, Rsbuild, and Bun now scaffold the `/standard` integration entry, and Next.js and Nuxt also install `@arkenv/standard`.
+	
+	```ts
+	import arkenv from "@arkenv/nuxt/standard";
+	import * as z from "zod";
+	
+	export const env = arkenv({
+	  DATABASE_URL: z.url(),
+	});
+	```
+	
+	Re-running init replaces the other engine's entry. A Nuxt app that still registers `@arkenv/nuxt/module` switches to `@arkenv/nuxt/standard/module` when you choose Zod or Valibot, and the same replacement applies to the Next.js, Vite, and Rsbuild imports. Choosing ArkType switches those entries back.
+	
+	ArkType init is unchanged: it still installs `arktype` and uses the ArkType integration entry.
+
 ## 1.0.0-rc.2
 
 ### Major Changes
