@@ -70,7 +70,7 @@ export const ROADMAP_EXTRAS: readonly RoadmapExtra[] = [
 	{
 		id: "npm-deprecate-cli",
 		title: "Deprecate @arkenv/cli on npm",
-		done: false,
+		done: true,
 		topic: "CLI",
 	},
 	{

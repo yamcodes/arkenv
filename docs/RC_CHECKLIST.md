@@ -212,7 +212,8 @@ work lands):
   (root README uses `https://arkenv.js.org`; install commands are bare)
 - [x] `changelog-epoch` - Prepend changelog epoch warnings
   (CLI and `@arkenv/core` changelogs; RC on `latest`, not held for GA)
-- [ ] `npm-deprecate-cli` - Deprecate `@arkenv/cli` on npm
+- [x] `npm-deprecate-cli` - Deprecate `@arkenv/cli` on npm
+  (all versions, including `0.5.4` and `1.0.0-alpha.0`)
 - [x] `v0-archive-dns-cutover` - Park v0 on `arkenv-v0.vercel.app` and
   point Production / `arkenv.js.org` at `v1` (no js.org subdomain)
 - [ ] `release-v1` - Release v1
@@ -360,8 +361,8 @@ Actions → **release** → **Run workflow** → enable
   the link would not 404 on a v0 `arkenv.js.org`) is no longer needed.
 - [ ] **No migration codemod for RC** - ship guard + migration guide +
   `arkenv init`. Revisit post-RC only if support volume warrants it.
-- [ ] `npm deprecate` `@arkenv/cli` when ready
-  (`ROADMAP_EXTRAS` id `npm-deprecate-cli`). Wording reference:
+- [x] `npm deprecate` `@arkenv/cli`
+  (`ROADMAP_EXTRAS` id `npm-deprecate-cli`). Wording used:
   [LAUNCH_RUNBOOK.md](./LAUNCH_RUNBOOK.md) §2.3.
 
 ---
