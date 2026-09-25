@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { SCHEMA_DEFINE_REMOVED } from "./env-module.js";
+import {
+	pluginOptionNotSupportedMessage,
+	SCHEMA_DEFINE_REMOVED,
+} from "./env-module.js";
 import * as viteEntry from "./index.js";
 import arkenvPluginDefault, { arkenvPlugin } from "./index.js";
 import * as viteStandard from "./standard.js";
@@ -54,6 +57,19 @@ describe("plugin factory", () => {
 		);
 		expect(() => plugin({ VITE_TEST: "string" }, { coerce: false })).toThrow(
 			SCHEMA_DEFINE_REMOVED,
+		);
+	});
+
+	it("rejects runtime validation options", () => {
+		const plugin = arkenvPluginDefault as (a?: unknown) => unknown;
+		expect(() =>
+			plugin({ env: { VITE_API_URL: "https://api.example.com" } }),
+		).toThrow(pluginOptionNotSupportedMessage(["env"]));
+		expect(() => plugin({ coerce: true })).toThrow(
+			pluginOptionNotSupportedMessage(["coerce"]),
+		);
+		expect(() => plugin({ toJsonSchema: () => ({}) })).toThrow(
+			pluginOptionNotSupportedMessage(["toJsonSchema"]),
 		);
 	});
 });

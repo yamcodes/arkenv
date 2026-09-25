@@ -27,6 +27,10 @@ describe("transform mode helpers", () => {
 		expect(
 			isTransformModeCall({ BUN_PUBLIC_FOO: "string" }, { coerce: true }),
 		).toBe(false);
+		expect(
+			isTransformModeCall({ env: { BUN_PUBLIC_FOO: "override" } }, undefined),
+		).toBe(false);
+		expect(isTransformModeCall({ coerce: true }, undefined)).toBe(false);
 	});
 
 	it("classifies flat-layout keys by client prefix", () => {

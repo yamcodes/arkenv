@@ -12,7 +12,7 @@ const arkenvPluginInstance = createBunPlugin("@arkenv/bun-plugin/standard");
 /**
  * Create a Bun plugin (Standard Schema) that rewrites `env.ts` in browser bundles.
  *
- * @param options Transform options (`schemaPath`, `clientPrefix`) plus ArkEnv/logging config
+ * @param options Transform options (`schemaPath`, `clientPrefix`) and logging
  * @returns The Bun plugin instance
  */
 export const arkenvPlugin: ((options?: BunPluginFactoryConfig) => BunPlugin) &

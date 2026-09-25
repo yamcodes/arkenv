@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { SCHEMA_DEFINE_REMOVED } from "./env-module.js";
+import {
+	pluginOptionNotSupportedMessage,
+	SCHEMA_DEFINE_REMOVED,
+} from "./env-module.js";
 import * as rsbuildEntry from "./index.js";
 import arkenvPluginDefault, { arkenvPlugin } from "./index.js";
 import * as rsbuildStandard from "./standard.js";
@@ -55,6 +58,19 @@ describe("plugin factory", () => {
 		);
 		expect(() => plugin({ PUBLIC_TEST: "string" }, { coerce: false })).toThrow(
 			SCHEMA_DEFINE_REMOVED,
+		);
+	});
+
+	it("rejects runtime validation options", () => {
+		const plugin = arkenvPluginDefault as (a?: unknown) => unknown;
+		expect(() =>
+			plugin({ env: { PUBLIC_API_URL: "https://api.example.com" } }),
+		).toThrow(pluginOptionNotSupportedMessage(["env"]));
+		expect(() => plugin({ coerce: true })).toThrow(
+			pluginOptionNotSupportedMessage(["coerce"]),
+		);
+		expect(() => plugin({ toJsonSchema: () => ({}) })).toThrow(
+			pluginOptionNotSupportedMessage(["toJsonSchema"]),
 		);
 	});
 });

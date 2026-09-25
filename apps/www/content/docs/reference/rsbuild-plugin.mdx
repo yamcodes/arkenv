@@ -32,16 +32,54 @@ npm install @arkenv/standard
 
 Pass transform options only. A schema argument is rejected.
 
-| Option                | Default         | Meaning                                              |
-| --------------------- | --------------- | ---------------------------------------------------- |
-| `schemaPath`          | auto (`env.ts`) | Schema module to transform                           |
-| `clientPrefix`        | `PUBLIC_`       | Keys exposed to the client                           |
-| Plus                  | (none)          | All [`ArkEnvConfig`](/docs/reference/options) fields |
-| `logger` / `logLevel` | (none)          | Logging                                              |
+| Option                | Default         | Meaning                    |
+| --------------------- | --------------- | -------------------------- |
+| `schemaPath`          | auto (`env.ts`) | Schema module to transform |
+| `clientPrefix`        | `PUBLIC_`       | Keys exposed to the client |
+| `logger` / `logLevel` | (none)          | Logging                    |
+
+The plugin validates the environment loaded for that build: Rsbuild env
+files, with variables already set on `process.env` winning.
+
+<Callout type="info" title="Runtime options stay on arkenv()">
+  Set `env`, `coerce`, `onUndeclaredKey`, `arrayFormat`,
+  `emptyAsUndefined`, `debugSecrets`, and `toJsonSchema` on `arkenv()` in
+  `env.ts`. The plugin rejects them. See
+  [Options](/docs/reference/options).
+</Callout>
 
 Call `arkenvPlugin()` with no args, or an options object that includes
-transform fields (`schemaPath`, `clientPrefix`, logging).
-Do not pass a schema map or compiled `type()` to the plugin.
+transform fields (`schemaPath`, `clientPrefix`, logging). Do not pass a
+schema map or compiled `type()` to the plugin.
+
+## Tests and programmatic builds
+
+Tests and scripts often start Rsbuild in a process that already loaded env
+files. To give one compile different values, set them on `process.env`
+before the build. Rsbuild lets those values win over env files, and the
+plugin validates that loaded environment.
+
+```ts
+import { createRsbuild } from "@rsbuild/core";
+import arkenvPlugin from "@arkenv/rsbuild-plugin";
+
+const previous = process.env.PUBLIC_API_URL;
+process.env.PUBLIC_API_URL = "https://staging.example.com";
+try {
+  const rsbuild = await createRsbuild({
+    rsbuildConfig: {
+      plugins: [arkenvPlugin()],
+    },
+  });
+  await rsbuild.build();
+} finally {
+  if (previous === undefined) delete process.env.PUBLIC_API_URL;
+  else process.env.PUBLIC_API_URL = previous;
+}
+```
+
+Restore the previous value in `finally`. The next compile in the same process
+then sees the original environment.
 
 ## Next steps
 

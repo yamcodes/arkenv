@@ -39,9 +39,7 @@ export function createTransformPlugin(
 		clientPrefix: clientPrefixOption,
 		...configWithoutTransformKeys
 	} = transformOptions;
-	const { pluginConfig, logOptions } = splitPluginConfig(
-		configWithoutTransformKeys,
-	);
+	const { logOptions } = splitPluginConfig(configWithoutTransformKeys);
 	const buildLog = resolveBuildLog({ ...factoryLogOptions, ...logOptions });
 
 	const state: {
@@ -77,7 +75,6 @@ export function createTransformPlugin(
 		const loaded = {
 			...envLoad.parsed,
 			...process.env,
-			...(pluginConfig.env as Record<string, string | undefined> | undefined),
 		};
 
 		const validated = loadValidatedEnv(state.schemaPath, loaded, {
