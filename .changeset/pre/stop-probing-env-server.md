@@ -6,7 +6,7 @@
 
 Convention discovery no longer auto-resolves leftover split-layout filenames
 (`env/server.ts`, `src/env/server.ts`). Location remains `--schema` / `-s`,
-then flat convention paths (`env.ts`, `src/env.ts`, and related extensions).
+then flat convention paths (`env.ts`, `src/env.ts`).
 
 **BREAKING CHANGE**: If `arkenv check` previously found your schema only
 because `env/server.ts` (or `src/env/server.ts`) existed, point `--schema`

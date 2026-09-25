@@ -168,7 +168,6 @@ export class InitUseCase {
 					code: ERROR_CODES.NON_EMPTY_DIR,
 					message: "Directory is not empty and no package.json was found.",
 					why: "To scaffold a new project, run arkenv init in an empty directory or use --force to proceed anyway.",
-					retryWith: ["--force"],
 					nextActions: [
 						{
 							kind: "run-command",
@@ -223,7 +222,6 @@ export class InitUseCase {
 						code: ERROR_CODES.REQUIREMENTS_NOT_MET,
 						message: "Technical requirements not met.",
 						why: "Technical requirements (e.g. Node.js version) were not met.",
-						retryWith: ["--force"],
 						nextActions: [
 							{
 								kind: "run-command",
@@ -264,7 +262,6 @@ export class InitUseCase {
 						code: ERROR_CODES.GIT_TREE_DIRTY,
 						message: "Git working tree is not clean.",
 						why: "Commit or stash your changes before running arkenv init.",
-						retryWith: ["--force"],
 						nextActions: [
 							{
 								kind: "run-command",
@@ -469,7 +466,6 @@ export class InitUseCase {
 					message:
 						"Cannot scaffold into the current directory because it is not empty.",
 					why: "Run arkenv init in an empty directory or choose a sub-directory name instead, or use --force.",
-					retryWith: ["--force"],
 					nextActions: [
 						{
 							kind: "run-command",

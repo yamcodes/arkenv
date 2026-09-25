@@ -44,7 +44,7 @@ The legacy v0 pattern (`arkenv(schema)` plugin argument with native-accessor `de
 *Avoid*: recommending schema/define or ambient `.d.ts` augmentations in v1 docs, CLI, or skills; framing SPA mode as a supported v1 path
 
 **Check**:
-CLI command `arkenv check` that validates the resolved environment (`process.env` plus optional `--env-file` overlays) against the project schema. Findings are not a crash: `--json` emits a completed envelope with `ok: true` and exit code `4`. Schema discovery is `--schema` / `-s` then convention paths (`env.ts`, `src/env.ts`, …) only — not a `package.json` `"arkenv"` field ([ADR 0033](./adr/0033-cli-schema-location-no-package-json.md)).
+CLI command `arkenv check` that validates the resolved environment (`process.env` plus optional `--env-file` overlays) against the project schema. Findings are not a crash: `--json` emits a completed envelope with `ok: true` and exit code `4`. Schema discovery is `--schema` / `-s` then convention paths (`env.ts`, `src/env.ts`) only — not a `package.json` `"arkenv"` field ([ADR 0033](./adr/0033-cli-schema-location-no-package-json.md)).
 *Avoid*: treating validation findings as `ok: false` or exit `1`; calling Check a dotenv loader (it does not load `.env` unless `--env-file` is passed); folding file lint rules, unquoted space detection, or AST syntax diagnostics onto Check (that belongs in dedicated ecosystem tools like `dotenv-linter`); teaching agents or docs to set `package.json` `"arkenv"` for CLI discovery
 
 **Schema location** (CLI discovery):

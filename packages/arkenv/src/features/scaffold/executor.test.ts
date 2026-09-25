@@ -48,8 +48,6 @@ describe("Executor", () => {
 		bootstrapRsbuildConfig: vi
 			.fn()
 			.mockResolvedValue({ success: true, updated: true }),
-		appendMissingEnvExampleKeys: vi.fn().mockResolvedValue(true),
-		removeEnvExampleKeys: vi.fn().mockResolvedValue(true),
 	};
 
 	const mockReporter: Reporter = {

@@ -7,7 +7,7 @@ import { Logger } from "@/adapters/logger.adapter";
 import { NodeProjectScannerAdapter } from "@/adapters/node-project-scanner";
 import { NodeWorkspace } from "@/adapters/node-workspace";
 import { MemoryReporter } from "@/adapters/reporters/memory.reporter";
-import { CheckUseCase } from "@/cli/commands/check";
+import { type CheckInput, CheckUseCase } from "@/cli/commands/check";
 
 describe("CheckUseCase", () => {
 	let tempDir: string;
@@ -661,5 +661,13 @@ describe("CheckUseCase", () => {
 
 			expect(exitCode).toBe(0);
 		});
+	});
+});
+
+describe("CheckInput", () => {
+	it("does not accept a file field", () => {
+		// @ts-expect-error CheckInput has no file field
+		const input: CheckInput = { file: "./env.ts" };
+		expect(input.schema).toBeUndefined();
 	});
 });
