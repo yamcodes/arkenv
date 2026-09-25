@@ -30,8 +30,14 @@ plugin, an `env.ts` schema, and ArkType by default.
 Generate a TanStack Start app with ArkEnv wired in:
 
 ```package-install
-npx @tanstack/cli create my-app --add-ons https://arkenv.js.org/tanstack/info.json
+npx @tanstack/cli create my-app --add-ons arkenv
 ```
+
+<Callout type="info" title="Older CLI builds">
+  The bare `arkenv` id needs a `@tanstack/cli` release that includes the
+  catalog add-on. On an older CLI, pass
+  `https://arkenv.js.org/tanstack/info.json` instead of `arkenv`.
+</Callout>
 
 When the CLI runs, it asks a few setup questions — including which
 validator engine to use (ArkType, Zod, or Valibot) and whether to

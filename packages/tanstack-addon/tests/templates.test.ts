@@ -96,7 +96,8 @@ describe("Template Rendering", () => {
 			expect(parsed.dependencies["@arkenv/core"]).toBeDefined();
 			expect(parsed.dependencies.arktype).toBeDefined();
 			expect(parsed.dependencies["@arkenv/standard"]).toBeUndefined();
-			expect(parsed.devDependencies["@arkenv/vite-plugin"]).toBeDefined();
+			expect(parsed.devDependencies["@arkenv/vite-plugin"]).toBe("^1.0.0-rc.2");
+			expect(parsed.dependencies["@arkenv/core"]).toBe("^1.0.0-rc.2");
 		});
 
 		it("renders valid JSON with Zod dependencies", () => {
