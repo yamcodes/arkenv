@@ -46,8 +46,7 @@ Same transform call shape as
 | `clientPrefix`        | `BUN_PUBLIC_`   | Keys exposed to the client |
 | `logger` / `logLevel` | (none)          | Logging                    |
 
-The plugin validates `process.env` for that build. To point one build at
-different values, set them in the environment before Bun runs.
+The plugin validates `process.env` for that build.
 
 <Callout type="info" title="Runtime options stay on arkenv()">
   Set `env`, `coerce`, `onUndeclaredKey`, `arrayFormat`,
@@ -58,6 +57,31 @@ different values, set them in the environment before Bun runs.
 
 A schema argument is rejected. Plugin config has no safe mode — failed
 validation cannot soft-fail into the bundle.
+
+## Tests and programmatic builds
+
+Tests and scripts often call `Bun.build()` in a process that already has
+environment variables set. The plugin reads `process.env`, so assign the
+values for that compile before the build.
+
+```ts
+import arkenvPlugin from "@arkenv/bun-plugin";
+
+const previous = process.env.BUN_PUBLIC_API_URL;
+process.env.BUN_PUBLIC_API_URL = "https://staging.example.com";
+try {
+  await Bun.build({
+    entrypoints: ["./src/index.ts"],
+    plugins: [arkenvPlugin],
+  });
+} finally {
+  if (previous === undefined) delete process.env.BUN_PUBLIC_API_URL;
+  else process.env.BUN_PUBLIC_API_URL = previous;
+}
+```
+
+Restore the previous value in `finally`. The next compile in the same process
+then sees the original environment.
 
 ## Next steps
 

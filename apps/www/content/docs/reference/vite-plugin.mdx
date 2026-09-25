@@ -39,8 +39,7 @@ Pass transform options only. A schema argument is rejected.
 | `logger` / `logLevel` | (none)                     | Logging                    |
 
 The plugin validates the environment loaded for that build: Vite's env
-files, with variables already set on `process.env` winning. To point one
-build at different values, set them in the environment before Vite runs.
+files, with variables already set on `process.env` winning.
 
 <Callout type="info" title="Runtime options stay on arkenv()">
   Set `env`, `coerce`, `onUndeclaredKey`, `arrayFormat`,
@@ -64,6 +63,30 @@ during HMR.
 Without the plugin, validation is import-driven and runs when a module imports
 `env.ts`. Startup fail-fast is the documented behavior of the existing plugin
 contract; there is no default-off lazy-validation flag.
+
+## Tests and programmatic builds
+
+Tests and scripts often call `build()` in a process that already loaded a
+`.env` file. To give one compile different values, set them on `process.env`
+before the build. Vite lets those values win over env files, and the plugin
+validates that loaded environment.
+
+```ts
+import { build } from "vite";
+import arkenvPlugin from "@arkenv/vite-plugin";
+
+const previous = process.env.VITE_API_URL;
+process.env.VITE_API_URL = "https://staging.example.com";
+try {
+  await build({ plugins: [arkenvPlugin()] });
+} finally {
+  if (previous === undefined) delete process.env.VITE_API_URL;
+  else process.env.VITE_API_URL = previous;
+}
+```
+
+Restore the previous value in `finally`. The next compile in the same process
+then sees the original environment.
 
 ## Next steps
 
