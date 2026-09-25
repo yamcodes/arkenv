@@ -299,25 +299,21 @@ export function createExistingProjectPlan(
 	planEnvFiles(state, plan);
 	planGitignoreFiles(state, plan);
 
-	const basePkg =
-		options.framework === "nextjs" || options.framework === "nuxt"
-			? undefined
-			: options.validator === "arktype"
-				? "@arkenv/core"
-				: "@arkenv/standard";
+	// Next.js and Nuxt ArkType scaffolds import the framework package, which
+	// peers `@arkenv/core`. Every other scaffold installs its engine directly.
+	// Zod and Valibot always install `@arkenv/standard`, including on Next and Nuxt.
+	const frameworkPeersArkTypeEngine =
+		(options.framework === "nextjs" || options.framework === "nuxt") &&
+		options.validator === "arktype";
+	const enginePkg =
+		options.validator === "arktype" ? "@arkenv/core" : "@arkenv/standard";
 
 	const deps = [
-		...(basePkg ? [basePkg] : []),
+		...(frameworkPeersArkTypeEngine ? [] : [enginePkg]),
 		options.validator,
 		...(options.validator === "valibot" ? ["@valibot/to-json-schema"] : []),
 		...frameworkStrategy.getDependencies(options),
 	];
-	if (
-		frameworkStrategy.requiresArktypePeer(options) &&
-		!deps.includes("arktype")
-	) {
-		deps.push("arktype");
-	}
 
 	plan.install = {
 		packageManager,

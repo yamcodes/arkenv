@@ -21,10 +21,6 @@ export const bunFullstackStrategy: FrameworkStrategy = {
 		return options.bunFeatures?.length ? ["@arkenv/bun-plugin"] : [];
 	},
 
-	requiresArktypePeer(options) {
-		return Boolean(options.bunFeatures?.length);
-	},
-
 	bootstrap(options) {
 		return shake({
 			framework: "bun-fullstack" as const,

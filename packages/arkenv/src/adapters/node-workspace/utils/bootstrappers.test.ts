@@ -1,6 +1,7 @@
 import dedent from "dedent";
 import { describe, expect, it } from "vitest";
 import {
+	bootstrapBunConfig,
 	transformNextjsConfig,
 	transformNuxtConfig,
 	transformRsbuildConfig,
@@ -24,6 +25,24 @@ describe("bootstrappers", () => {
 				'import arkenvPlugin from "@arkenv/vite-plugin"',
 			);
 			expect(result.code).toContain("arkenvPlugin()");
+		});
+
+		it("injects the standard vite plugin for Zod and Valibot", async () => {
+			const initialContent = dedent`
+				import { defineConfig } from "vite"
+				export default defineConfig({
+					plugins: []
+				})
+			`;
+
+			const result = transformViteConfig({
+				code: initialContent,
+				standard: true,
+			});
+			expect(result.success).toBe(true);
+			expect(result.code).toContain(
+				'import arkenvPlugin from "@arkenv/vite-plugin/standard"',
+			);
 		});
 
 		it("injects plugin into a simple object export", async () => {
@@ -160,6 +179,24 @@ describe("bootstrappers", () => {
 			expect(result.code).toContain("export default withArkEnv(nextConfig)");
 		});
 
+		it("wraps Next.js config with the standard entry", async () => {
+			const initialContent = dedent`
+				const nextConfig = {
+					reactStrictMode: true
+				}
+				export default nextConfig
+			`;
+
+			const result = transformNextjsConfig({
+				code: initialContent,
+				standard: true,
+			});
+			expect(result.success).toBe(true);
+			expect(result.code).toContain(
+				'import { withArkEnv } from "@arkenv/nextjs/standard/config"',
+			);
+		});
+
 		it("supports disableCodegen option", async () => {
 			const initialContent = dedent`
 				export default {
@@ -258,6 +295,32 @@ describe("bootstrappers", () => {
 			expect(result.code).toContain('"@arkenv/nuxt/module"');
 		});
 
+		it("adds the standard nuxt module for Zod and Valibot", async () => {
+			const initialContent = dedent`
+				export default defineNuxtConfig({
+					modules: []
+				})
+			`;
+
+			const result = transformNuxtConfig({
+				code: initialContent,
+				standard: true,
+			});
+			expect(result.success).toBe(true);
+			expect(result.code).toContain('"@arkenv/nuxt/standard/module"');
+		});
+
+		it("does not add a second nuxt module when the standard module is already present", () => {
+			const initialContent = dedent`
+				export default defineNuxtConfig({
+					modules: ["@arkenv/nuxt/standard/module"]
+				})
+			`;
+			const result = transformNuxtConfig({ code: initialContent });
+			expect(result.success).toBe(true);
+			expect(result.updated).toBe(false);
+		});
+
 		it("creates modules array if missing in defineNuxtConfig", () => {
 			const initialContent =
 				"export default defineNuxtConfig({\n  ssr: true,\n});\n";
@@ -342,6 +405,24 @@ describe("bootstrappers", () => {
 				'import { arkenvPlugin } from "@arkenv/rsbuild-plugin"',
 			);
 			expect(result.code).toContain("arkenvPlugin()");
+		});
+
+		it("injects the standard rsbuild plugin for Zod and Valibot", async () => {
+			const initialContent = dedent`
+				import { defineConfig } from "@rsbuild/core"
+				export default defineConfig({
+					plugins: []
+				})
+			`;
+
+			const result = transformRsbuildConfig({
+				code: initialContent,
+				standard: true,
+			});
+			expect(result.success).toBe(true);
+			expect(result.code).toContain(
+				'import { arkenvPlugin } from "@arkenv/rsbuild-plugin/standard"',
+			);
 		});
 
 		it("injects plugin into a simple object export", async () => {
@@ -522,6 +603,20 @@ describe("bootstrappers", () => {
 			expect(result.updated).toBe(true);
 			expect(result.code).toContain("pluginReact()");
 			expect(result.code).toContain("arkenvPlugin()");
+		});
+	});
+
+	describe("bootstrapBunConfig", () => {
+		it("points serve instructions at the standard plugin", async () => {
+			const result = await bootstrapBunConfig(null, ["serve"], {
+				standard: true,
+			});
+			expect(result.success).toBe(true);
+			if (result.success) {
+				expect(result.instructions).toContain(
+					'plugins = ["@arkenv/bun-plugin/standard"]',
+				);
+			}
 		});
 	});
 });

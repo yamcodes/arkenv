@@ -143,6 +143,22 @@ describe("scaffold utils", () => {
 			);
 		});
 
+		it("points Zod Next.js setup at the standard config entry", () => {
+			const plan: ScaffoldingPlan = {
+				...basePlan,
+				metadata: {
+					...basePlan.metadata,
+					framework: "nextjs",
+					validator: "zod",
+					disableCodegen: false,
+				},
+			};
+			const note = getNextStepsNote(plan);
+			expect(note.message).toContain(
+				code('import { withArkEnv } from "@arkenv/nextjs/standard/config";'),
+			);
+		});
+
 		it("omits withArkEnv instruction when nextjs config is bootstrapped", () => {
 			const plan: ScaffoldingPlan = {
 				...basePlan,

@@ -1,6 +1,6 @@
 import { FRAMEWORK_CLIENT_PREFIXES } from "@/features/scaffold/frameworks/client-prefixes";
 import { getCodegenConfig } from "@/features/scaffold/frameworks/codegen-config";
-import type { Framework, ProjectOptions } from "./plan";
+import type { Framework, ProjectOptions, Validator } from "./plan";
 import type { HostPreset } from "./presets";
 
 /**
@@ -8,6 +8,10 @@ import type { HostPreset } from "./presets";
  */
 export type ScaffoldContext = {
 	framework: Framework;
+	/**
+	 * Validator selected during init. Zod and Valibot use the Standard Schema entry.
+	 */
+	validator: Validator;
 	/**
 	 * Client env prefix from the active framework strategy (e.g. `NEXT_PUBLIC_`, `VITE_`).
 	 */
@@ -43,6 +47,7 @@ export function createScaffoldContext(
 
 	return {
 		framework: options.framework,
+		validator: options.validator,
 		clientPrefix: FRAMEWORK_CLIENT_PREFIXES[options.framework],
 		...(codegen?.packageName !== undefined && {
 			packageName: codegen.packageName,

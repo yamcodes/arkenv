@@ -1,4 +1,9 @@
+import {
+	integrationEntry,
+	usesStandardEngine,
+} from "@/features/scaffold/engine";
 import type { CodegenFrameworkConfig } from "@/features/scaffold/frameworks/codegen-config";
+import type { Validator } from "@/features/scaffold/plan";
 import {
 	getPresetKeys,
 	type HostPreset,
@@ -12,6 +17,7 @@ import type { Dialect } from "@/features/scaffold/validators/dialects";
 export type CodegenLayoutOptions = {
 	envKeys?: string[] | undefined;
 	dialect: Dialect;
+	validator: Validator;
 	config: CodegenFrameworkConfig;
 	/**
 	 * Generated env import path when codegen is enabled (Next.js).
@@ -138,6 +144,7 @@ export function assembleCodegenTemplate(options: CodegenLayoutOptions): string {
 	const {
 		envKeys,
 		dialect,
+		validator,
 		config,
 		importPath: nextjsImportPath,
 		disableCodegen,
@@ -185,6 +192,7 @@ export function assembleCodegenTemplate(options: CodegenLayoutOptions): string {
 		sharedFields,
 		envKeys,
 		dialect,
+		validator,
 		config,
 		nextjsImportPath,
 		disableCodegen,
@@ -198,6 +206,7 @@ type FieldBuckets = {
 	sharedFields: string[];
 	envKeys?: string[] | undefined;
 	dialect: Dialect;
+	validator: Validator;
 	config: CodegenFrameworkConfig;
 	nextjsImportPath?: string | undefined;
 	disableCodegen?: boolean | undefined;
@@ -211,6 +220,7 @@ function assembleFlatLayout(params: FieldBuckets): string {
 		sharedFields,
 		envKeys,
 		dialect,
+		validator,
 		config,
 		nextjsImportPath,
 		disableCodegen,
@@ -291,12 +301,11 @@ function assembleFlatLayout(params: FieldBuckets): string {
 	const optionsStr =
 		optionParts.length > 0 ? `, {\n${optionParts.join(",\n")}\n}` : "";
 
+	const entry = integrationEntry(pkgName, usesStandardEngine(validator));
 	const flatImportPath =
-		framework === "nuxt"
-			? pkgName
-			: disableCodegen
-				? pkgName
-				: nextjsImportPath || "@/.arkenv";
+		framework === "nuxt" || disableCodegen
+			? entry
+			: nextjsImportPath || "@/.arkenv";
 
 	const imports = [
 		`import arkenv from "${flatImportPath}";`,
@@ -305,7 +314,7 @@ function assembleFlatLayout(params: FieldBuckets): string {
 
 	const flatDocsHint =
 		framework === "nuxt"
-			? `In ${frameworkName}, use \`${pkgName}\` to validate variables at build-time and runtime.`
+			? `In ${frameworkName}, use \`${entry}\` to validate variables at build-time and runtime.`
 			: `In ${frameworkName}, import the generated \`arkenv\` from \`@/.arkenv\` to validate variables.`;
 
 	return `${imports}

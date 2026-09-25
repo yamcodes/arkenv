@@ -147,8 +147,67 @@ describe("Planner", () => {
 		};
 		const plan = createPlan(state);
 		expect(plan.install?.dependencies).toContain("@arkenv/nextjs");
+		expect(plan.install?.dependencies).toContain("@arkenv/standard");
 		expect(plan.install?.dependencies).toContain("zod");
-		expect(plan.install?.dependencies).toContain("arktype");
+		expect(plan.install?.dependencies).not.toContain("arktype");
+		expect(plan.install?.dependencies).not.toContain("@arkenv/core");
+		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
+		expect(envFile?.content).toContain('import arkenv from "@/.arkenv"');
+		expect(envFile?.content).toContain('import * as z from "zod"');
+	});
+
+	it("plans nextjs zod without codegen on the standard entry", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: {
+				...defaultState.options,
+				framework: "nextjs",
+				validator: "zod",
+				disableCodegen: true,
+			},
+			detectedFramework: "nextjs",
+		};
+		const plan = createPlan(state);
+		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
+		expect(envFile?.content).toContain(
+			'import arkenv from "@arkenv/nextjs/standard"',
+		);
+		expect(plan.install?.dependencies).not.toContain("arktype");
+	});
+
+	it("plans nuxt zod on the standard entry without arktype", () => {
+		const state: CollectedState = {
+			...defaultState,
+			options: {
+				...defaultState.options,
+				framework: "nuxt",
+				validator: "zod",
+			},
+			detectedFramework: "nuxt",
+		};
+		const plan = createPlan(state);
+		expect(plan.install?.dependencies).toContain("@arkenv/nuxt");
+		expect(plan.install?.dependencies).toContain("@arkenv/standard");
+		expect(plan.install?.dependencies).toContain("zod");
+		expect(plan.install?.dependencies).not.toContain("arktype");
+		const envFile = plan.files.find((f) => f.path.endsWith("env.ts"));
+		expect(envFile?.content).toContain(
+			'import arkenv from "@arkenv/nuxt/standard"',
+		);
+	});
+
+	it("plans vite and rsbuild zod without arktype", () => {
+		for (const framework of ["vite", "rsbuild"] as const) {
+			const plan = createPlan({
+				...defaultState,
+				options: { ...defaultState.options, framework, validator: "zod" },
+				detectedFramework: framework,
+			});
+			expect(plan.install?.dependencies).toContain("@arkenv/standard");
+			expect(plan.install?.dependencies).toContain("zod");
+			expect(plan.install?.dependencies).not.toContain("arktype");
+			expect(plan.install?.dependencies).not.toContain("@arkenv/core");
+		}
 	});
 
 	it("plans vanilla valibot with the JSON Schema converter peer", () => {

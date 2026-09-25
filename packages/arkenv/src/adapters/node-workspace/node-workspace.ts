@@ -134,29 +134,38 @@ export class NodeWorkspace implements WorkspacePort {
 	async bootstrapViteConfig(
 		filePath: string,
 		importPath: string,
+		options?: { standard?: boolean },
 	): Promise<BootstrapResult> {
-		return bootstrapViteConfig(this, filePath, importPath);
+		return bootstrapViteConfig(this, filePath, importPath, options);
 	}
 
 	async bootstrapBunConfig(
 		configPath?: string | null,
 		features?: ("serve" | "build")[],
+		options?: { standard?: boolean },
 	): Promise<BootstrapResult> {
-		return bootstrapBunConfig(configPath, features);
+		return bootstrapBunConfig(configPath, features, options);
 	}
 
 	async bootstrapNextjsConfig(
 		filePath: string,
 		disableCodegen?: boolean,
+		options?: { standard?: boolean },
 	): Promise<BootstrapResult> {
-		return bootstrapNextjsConfig(this, filePath, disableCodegen);
+		return bootstrapNextjsConfig(this, filePath, disableCodegen, options);
 	}
 
-	async bootstrapNuxtConfig(filePath: string): Promise<BootstrapResult> {
-		return bootstrapNuxtConfig(this, filePath);
+	async bootstrapNuxtConfig(
+		filePath: string,
+		options?: { standard?: boolean },
+	): Promise<BootstrapResult> {
+		return bootstrapNuxtConfig(this, filePath, options);
 	}
 
-	async bootstrapRsbuildConfig(filePath: string): Promise<BootstrapResult> {
-		return bootstrapRsbuildConfig(this, filePath);
+	async bootstrapRsbuildConfig(
+		filePath: string,
+		options?: { standard?: boolean },
+	): Promise<BootstrapResult> {
+		return bootstrapRsbuildConfig(this, filePath, options);
 	}
 }

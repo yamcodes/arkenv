@@ -137,6 +137,19 @@ describe("NodeWorkspace", () => {
 				"Bun Fullstack programmatic bundling (Bun.build)",
 			);
 			expect(stripped).toContain("inline environment variables");
+			expect(stripped).toContain('plugins = ["@arkenv/bun-plugin"]');
+		}
+	});
+
+	it("points bun instructions at the standard plugin for Zod", async () => {
+		const result = await workspace.bootstrapBunConfig(null, ["serve"], {
+			standard: true,
+		});
+		expect(result.success).toBe(true);
+		if (result.success) {
+			expect(stripAnsi(result.instructions)).toContain(
+				'plugins = ["@arkenv/bun-plugin/standard"]',
+			);
 		}
 	});
 

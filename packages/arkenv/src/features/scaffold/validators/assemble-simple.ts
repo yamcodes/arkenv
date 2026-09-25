@@ -35,6 +35,7 @@ export function assembleSimpleFromDialect(
 		return `${assembleCodegenTemplate({
 			...(combinedKeys !== undefined ? { envKeys: combinedKeys } : {}),
 			dialect,
+			validator: context.validator,
 			config: codegenConfig,
 			...(context.nextjsImportPath !== undefined && {
 				importPath: context.nextjsImportPath,

@@ -9,6 +9,7 @@ import {
 } from "magicast";
 import pc from "picocolors";
 import { code } from "@/cli/ui/visuals";
+import { integrationEntry } from "@/features/scaffold/engine";
 import type { BootstrapResult } from "@/shared/ports";
 
 /**
@@ -17,7 +18,27 @@ import type { BootstrapResult } from "@/shared/ports";
 export type MutationInput = {
 	code: string;
 	disableCodegen?: boolean | undefined;
+	/**
+	 * Register the Standard Schema entry (`/standard`) instead of the ArkType entry.
+	 */
+	standard?: boolean | undefined;
 };
+
+/**
+ * Specifier for a framework integration entry.
+ *
+ * @param pkg Framework integration package
+ * @param standard Whether Zod or Valibot was selected
+ * @param subpath Optional config or module subpath
+ * @returns Package specifier written into the user's config
+ */
+function entry(
+	pkg: Parameters<typeof integrationEntry>[0],
+	standard: boolean | undefined,
+	subpath?: "config" | "module",
+): string {
+	return integrationEntry(pkg, standard === true, subpath);
+}
 
 /**
  * Normalizes named import spacing in generated code.
@@ -122,7 +143,7 @@ export function transformViteConfig(
 			if (!hasPlugin) {
 				// Add imports
 				mod.imports.$add({
-					from: "@arkenv/vite-plugin",
+					from: entry("@arkenv/vite-plugin", input.standard),
 					local: "arkenvPlugin",
 					imported: "default",
 				});
@@ -278,7 +299,7 @@ export function transformRsbuildConfig(
 
 				if (!existingImport) {
 					mod.imports.$add({
-						from: "@arkenv/rsbuild-plugin",
+						from: entry("@arkenv/rsbuild-plugin", input.standard),
 						local: "arkenvPlugin",
 						imported: "arkenvPlugin",
 					});
@@ -371,7 +392,7 @@ export function transformNextjsConfig(
 
 		// Add import
 		mod.imports.$add({
-			from: "@arkenv/nextjs/config",
+			from: entry("@arkenv/nextjs", input.standard, "config"),
 			imported: "withArkEnv",
 		});
 
@@ -452,10 +473,13 @@ export function transformNuxtConfig(
 		}
 
 		if (Array.isArray(config.modules)) {
-			const hasModule = config.modules.includes("@arkenv/nuxt/module");
+			const moduleId = entry("@arkenv/nuxt", input.standard, "module");
+			const hasModule =
+				config.modules.includes("@arkenv/nuxt/module") ||
+				config.modules.includes("@arkenv/nuxt/standard/module");
 
 			if (!hasModule) {
-				config.modules.push("@arkenv/nuxt/module");
+				config.modules.push(moduleId);
 			} else {
 				return { success: true, updated: false };
 			}
@@ -562,12 +586,14 @@ export async function bootstrapNextjsConfig(
 	},
 	filePath: string,
 	disableCodegen?: boolean,
+	options?: { standard?: boolean },
 ): Promise<BootstrapResult> {
 	try {
 		const configCode = await workspace.readFile(filePath);
 		const result = transformNextjsConfig({
 			code: configCode,
 			disableCodegen,
+			standard: options?.standard,
 		});
 
 		if (result.success && result.updated && result.code) {
@@ -625,11 +651,13 @@ export async function bootstrapNuxtConfig(
 		writeFile(path: string, content: string): Promise<void>;
 	},
 	filePath: string,
+	options?: { standard?: boolean },
 ): Promise<BootstrapResult> {
 	try {
 		const configCode = await workspace.readFile(filePath);
 		const result = transformNuxtConfig({
 			code: configCode,
+			standard: options?.standard,
 		});
 
 		if (result.success && result.updated && result.code) {
@@ -660,11 +688,13 @@ export async function bootstrapViteConfig(
 	},
 	filePath: string,
 	_importPath?: string,
+	options?: { standard?: boolean },
 ): Promise<BootstrapResult> {
 	try {
 		const configCode = await workspace.readFile(filePath);
 		const result = transformViteConfig({
 			code: configCode,
+			standard: options?.standard,
 		});
 
 		if (result.success && result.updated && result.code) {
@@ -716,11 +746,13 @@ export async function bootstrapRsbuildConfig(
 		writeFile(path: string, content: string): Promise<void>;
 	},
 	filePath: string,
+	options?: { standard?: boolean },
 ): Promise<BootstrapResult> {
 	try {
 		const configCode = await workspace.readFile(filePath);
 		const result = transformRsbuildConfig({
 			code: configCode,
+			standard: options?.standard,
 		});
 
 		if (result.success && result.updated && result.code) {
@@ -747,6 +779,7 @@ export async function bootstrapRsbuildConfig(
 export async function bootstrapBunConfig(
 	_configPath?: string | null,
 	features?: ("serve" | "build")[],
+	options?: { standard?: boolean },
 ): Promise<BootstrapResult> {
 	if (!features || features.length === 0) {
 		return {
@@ -762,6 +795,7 @@ export async function bootstrapBunConfig(
 
 	const hasServe = features.includes("serve");
 	const hasBuild = features.includes("build");
+	const plugin = entry("@arkenv/bun-plugin", options?.standard);
 
 	let instructions = "";
 
@@ -771,7 +805,7 @@ export async function bootstrapBunConfig(
 			To inline environment variables (e.g. ${code("PUBLIC_*")}) in your ${pc.cyan("client-side")} code, add the plugin to ${code("bunfig.toml")}:
 
 			[serve.static]
-			plugins = ["@arkenv/bun-plugin"]
+			plugins = ["${plugin}"]
 
 		`;
 	}
@@ -782,7 +816,7 @@ export async function bootstrapBunConfig(
 			${pc.bold("Bun Fullstack programmatic bundling (Bun.build):")}
 			To inline environment variables (e.g. ${code("PUBLIC_*")}) in your custom ${pc.cyan("client-side")} build script, add the plugin to your ${code("Bun.build")} call:
 
-			${code('import arkenvPlugin from "@arkenv/bun-plugin";')}
+			${code(`import arkenvPlugin from "${plugin}";`)}
 
 			await Bun.build({
 			  entrypoints: ["./index.ts"],

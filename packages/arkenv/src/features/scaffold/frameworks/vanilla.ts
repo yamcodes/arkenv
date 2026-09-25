@@ -19,10 +19,6 @@ export const vanillaStrategy: FrameworkStrategy = {
 		return [];
 	},
 
-	requiresArktypePeer() {
-		return false;
-	},
-
 	bootstrap() {
 		return undefined;
 	},
