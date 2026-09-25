@@ -63,18 +63,6 @@ export type ArkEnvConfigOptions = {
 	outputPath?: string;
 
 	/**
-	 * Force standard mode code generation.
-	 *
-	 * When `true`, the generated `env.gen.ts` imports from `@arkenv/nextjs/standard`
-	 * instead of `@arkenv/nextjs`, ensuring the Standard Schema engine (`@arkenv/standard`)
-	 * is used and `arktype` is never bundled. This is set automatically when importing from
-	 * `@arkenv/nextjs/standard/config`, but can be toggled manually for custom setups.
-	 *
-	 * @default false
-	 */
-	standard?: boolean;
-
-	/**
 	 * Enable or disable build-time environment variable validation during build/dev startup.
 	 *
 	 * @default true

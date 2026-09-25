@@ -486,6 +486,31 @@ describe("withArkEnv wrapper", () => {
 		expect(resolved.turbopack?.resolveAlias?.["@/.arkenv"]).toBeDefined();
 	});
 
+	it("forces Standard Schema codegen from the Standard config entry", () => {
+		if (!fs.existsSync(tempDir)) {
+			fs.mkdirSync(tempDir, { recursive: true });
+		}
+
+		fs.writeFileSync(
+			schemaPath,
+			`export const env = arkenv({ DATABASE_URL: "string" });`,
+			"utf-8",
+		);
+
+		withArkEnvStandard(
+			{ reactStrictMode: true },
+			{ schemaPath, validate: false },
+		);
+
+		const generated = fs.readFileSync(
+			path.join(tempDir, ".arkenv", "env.gen.ts"),
+			"utf-8",
+		);
+		expect(generated).toContain(
+			'import { arkenv as coreArkenv } from "@arkenv/nextjs/standard";',
+		);
+	});
+
 	it("should close the previous watcher when initialized multiple times in development", () => {
 		useMockWatcher = true;
 		mockWatch.mockClear();

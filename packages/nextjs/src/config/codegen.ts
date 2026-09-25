@@ -66,19 +66,19 @@ function projectRootFromDefaultOutput(outputPath: string): string | undefined {
  *
  * @param schemaPath The absolute path to the schema file
  * @param outputPath The absolute path to the generated output file
- * @param forceStandard Force standard mode code generation
+ * @param _forceStandard Internal switch that forces Standard Schema codegen. Prefer importing `withArkEnv` from `@arkenv/nextjs/standard/config`
  * @param _logOptions Reserved for logger options (unused in flat-only codegen)
  * @param projectRoot App root used to keep `.arkenv/index.ts` as the `@/.arkenv` TypeScript entry
  */
 export function runCodegen(
 	schemaPath: string,
 	outputPath: string,
-	forceStandard?: boolean,
+	_forceStandard?: boolean,
 	_logOptions?: Pick<ArkEnvConfigOptions, "logger" | "logLevel">,
 	projectRoot?: string,
 ) {
 	const fileContent = fs.readFileSync(schemaPath, "utf-8");
-	const isStandard = detectStandard(fileContent, forceStandard);
+	const isStandard = detectStandard(fileContent, _forceStandard);
 
 	const { clientKeys, sharedKeys } = extractKeys(fileContent);
 	const generatedCode = generateFlatFactoryCode(
