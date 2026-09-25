@@ -11,11 +11,11 @@ For a feature cheatsheet, see [Why ArkEnv?](/docs/why-arkenv).
 
 The table below is the mapping you need while you edit files.
 
-| Feature          | T3 Env                                  | ArkEnv                                                      |
-| ---------------- | --------------------------------------- | ----------------------------------------------------------- |
-| Core function    | `createEnv` from `@t3-oss/env-nextjs`   | `arkenv` from `@arkenv/nextjs` or `@arkenv/core`            |
-| Schema structure | Nested `{ server, client, runtimeEnv }` | Flat schema (optional two-module recipe for name isolation) |
-| Client inlining  | Manual `runtimeEnv` object              | `withArkEnv` writes the mapping                             |
+| Feature          | T3 Env                                  | ArkEnv                                                                |
+| ---------------- | --------------------------------------- | --------------------------------------------------------------------- |
+| Core function    | `createEnv` from `@t3-oss/env-nextjs`   | `arkenv` from `@arkenv/nextjs` or `@arkenv/core`                      |
+| Schema structure | Nested `{ server, client, runtimeEnv }` | Flat schema (optional two-module recipe for name isolation)           |
+| Client inlining  | Manual `runtimeEnv` object              | `withArkEnv` writes the mapping                                       |
 | Validator        | Zod only                                | ArkType via `@arkenv/core`, or Zod and Valibot via `@arkenv/standard` |
 
 A flat layout still infers types and throws if client code reads a
