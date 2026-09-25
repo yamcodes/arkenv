@@ -43,7 +43,7 @@
 
 ## What is ArkEnv?
 
-Define your environment variables with ArkType, Zod, or Valibot. ArkEnv gives you a strongly typed, validated `env` object you can use everywhere.
+Define your environment variables with a schema. ArkEnv gives you a strongly typed, validated `env` object you can use everywhere.
 
 <details open>
 <summary>ArkType</summary>
