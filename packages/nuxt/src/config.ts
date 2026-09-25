@@ -2,7 +2,6 @@ import fs from "node:fs";
 import path from "node:path";
 import {
 	extractKeys as coreExtractKeys,
-	extractClientKeys,
 	findSchemaPath,
 	formatMissingSchemaError,
 } from "@arkenv/build";
@@ -12,11 +11,10 @@ import { validateSchema } from "./validate-schema";
 export type { Logger } from "@arkenv/build";
 export {
 	extractArkenvBlock,
-	extractServerKeys,
 	findSchemaPath,
 	formatMissingSchemaError,
 } from "@arkenv/build";
-export { extractClientKeys, validateSchema };
+export { validateSchema };
 
 /**
  * Configuration options for the ArkEnv Nuxt module.

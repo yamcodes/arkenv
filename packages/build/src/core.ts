@@ -473,28 +473,6 @@ export function extractArkenvBlock(content: string): string | null {
 }
 
 /**
- * Extract environment variable keys statically from client schema file content.
- *
- * @param content The string content of the client schema file
- * @returns An array of extracted client keys
- */
-export function extractClientKeys(content: string): string[] {
-	const block = extractArkenvBlock(content);
-	return block ? parseBlockKeys(block) : [];
-}
-
-/**
- * Extract environment variable keys statically from server schema file content.
- *
- * @param content The string content of the server schema file
- * @returns An array of extracted server keys
- */
-export function extractServerKeys(content: string): string[] {
-	const block = extractArkenvBlock(content);
-	return block ? parseBlockKeys(block) : [];
-}
-
-/**
  * Watch the schema file(s) for changes and automatically run a callback on change.
  *
  * @param schemaPath The absolute path or list of paths of schema files to watch

@@ -23,7 +23,7 @@ We decided to create a new, published npm package: `@arkenv/build`.
 1. **Publishing Status**: The package is published to npm but is explicitly documented in its README as an unstable, internal-only package. Changesets track `@arkenv/build` to automate its versioning and publication.
 2. **Centralized Responsibilities**: The package contains:
    - Layout resolution (`resolveLayout`) for simple vs. strict schema file/directory structures.
-   - Key extraction (`extractKeys`, `extractClientKeys`, `extractServerKeys`) via regex-based AST parsing.
+   - Key extraction (`extractKeys`) via regex-based AST parsing.
    - Development file watching (`watchSchema`, `closeWatcher`) built on top of `chokidar` (v4).
 3. **Package Usage**: `@arkenv/nextjs` and `@arkenv/nuxt` list `@arkenv/build` as a regular dependency (or devDependency where appropriate) to access these shared helpers during build/dev phases.
 
