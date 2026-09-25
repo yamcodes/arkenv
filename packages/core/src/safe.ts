@@ -46,10 +46,6 @@ export function arkenv<T extends CompiledEnvSchema>(
 export function arkenv<
 	const T extends SchemaShape,
 	const D extends EnvSchema<T> | CompiledEnvSchema,
->(def: D, config?: SafeArkenvConfig): SafeArkEnvResult<ArkenvOutput<T, D>>;
-export function arkenv<
-	const T extends SchemaShape,
-	const D extends EnvSchema<T> | CompiledEnvSchema,
 >(def: D, config: SafeArkenvConfig = {}): SafeArkEnvResult<ArkenvOutput<T, D>> {
 	if (recordIfCapturing(def)) {
 		// Capture records the schema only. Stub data has no values, so schema

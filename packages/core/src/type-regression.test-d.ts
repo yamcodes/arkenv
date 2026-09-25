@@ -1,3 +1,4 @@
+import { attest } from "@ark/attest";
 import { describe, expectTypeOf, it } from "vitest";
 import { type ArkEnvConfig, arkenv, type } from ".";
 
@@ -57,11 +58,12 @@ describe("Type Regression (Issue #796)", () => {
 		expectTypeOf(env.WITH_DEFAULT).toBeString();
 	});
 
-	/*
-	   DSL completion snapshots stay off. ArkType 2.2.5 lets two scopes share
-	   a name (arktypeio/arktype#1617), so @ark/attest can load beside
-	   @arkenv/core. `attest(() => arkenv({ PORT: "n" })).completions(...)`
-	   still returns {} — the language service offers no suggestions at that
-	   string. https://github.com/yamcodes/arkenv/issues/895
-	*/
+	it("snapshots DSL completions for inline values", () => {
+		attest(() =>
+			// @ts-expect-error incomplete DSL prefix is only here to snapshot completions
+			arkenv({ PORT: "n" }),
+		).completions({
+			n: ["never", "null", "number"],
+		});
+	});
 });

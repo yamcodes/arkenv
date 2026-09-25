@@ -79,7 +79,7 @@
 			"apps/playgrounds/*"
 		],
 		"catalog": {
-			"@ark/attest": "0.56.0",
+			"@ark/attest": "0.56.5",
 			"@axe-core/playwright": "4.11.3",
 			"@nubjs/nub": "0.9.3",
 			"@size-limit/esbuild-why": "12.1.0",
