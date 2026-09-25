@@ -1,4 +1,4 @@
-import { extractClientKeys, extractSharedKeys } from "@arkenv/build";
+import { extractClientKeys } from "@arkenv/build";
 
 export { runCodegen } from "./codegen";
 export { extractKeys } from "./extract";
@@ -8,4 +8,4 @@ export type {
 	NextConfigContext,
 	NextConfigFactory,
 } from "./types";
-export { extractClientKeys, extractSharedKeys };
+export { extractClientKeys };
