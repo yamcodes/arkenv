@@ -320,10 +320,10 @@ class CancelError extends Error {
  * @returns The unwrapped prompt value
  * @throws CancelError If the user cancelled the prompt or if the result is null
  */
-function unwrapPrompt<T>(value: T | symbol | null): T {
-	if (value === null || isCancel(value)) {
+function unwrapPrompt<T>(value: T | symbol | null): Exclude<T, symbol> {
+	if (value === null || typeof value === "symbol" || isCancel(value)) {
 		cancel("Operation cancelled");
 		throw new CancelError();
 	}
-	return value as T;
+	return value as Exclude<T, symbol>;
 }
