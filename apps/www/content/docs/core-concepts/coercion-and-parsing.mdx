@@ -19,8 +19,8 @@ Coercion is **on** by default (`coerce: true`). Zod 4.2+ uses
 `v.boolean()`; ArkEnv converts `"8080"` and `"true"` before the schema
 runs.
 
-<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)", "Valibot (@arkenv/standard)"]}>
-  <Tab value="ArkType (@arkenv/core)">
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/core";
 
@@ -45,7 +45,7 @@ runs.
     ```
   </Tab>
 
-  <Tab value="Zod (@arkenv/standard)">
+  <Tab value="Zod">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
     import * as z from "zod";
@@ -71,7 +71,7 @@ runs.
     ```
   </Tab>
 
-  <Tab value="Valibot (@arkenv/standard)">
+  <Tab value="Valibot">
     ```ts title="./env.ts" twoslash
     import { arkenv } from "@arkenv/standard/valibot";
     import * as v from "valibot";
@@ -476,8 +476,8 @@ morphs, or pipes. ArkEnv runs them as part of parsing.
 
 `PORT` still uses built-in coercion, not a custom pipe:
 
-<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)", "Valibot (@arkenv/standard)"]}>
-  <Tab value="ArkType (@arkenv/core)">
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
     ```ts title="./env.ts" twoslash
     import arkenv, { type } from "@arkenv/core";
 
@@ -493,7 +493,7 @@ morphs, or pipes. ArkEnv runs them as part of parsing.
     ```
   </Tab>
 
-  <Tab value="Zod (@arkenv/standard)">
+  <Tab value="Zod">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
     import * as z from "zod";
@@ -512,7 +512,7 @@ morphs, or pipes. ArkEnv runs them as part of parsing.
     ```
   </Tab>
 
-  <Tab value="Valibot (@arkenv/standard)">
+  <Tab value="Valibot">
     ```ts title="./env.ts" twoslash
     import { arkenv } from "@arkenv/standard/valibot";
     import * as v from "valibot";
@@ -539,8 +539,8 @@ morphs, or pipes. ArkEnv runs them as part of parsing.
 Coercion can feed a transformation. The string `"3"` becomes a number
 before your pipe runs:
 
-<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)", "Valibot (@arkenv/standard)"]}>
-  <Tab value="ArkType (@arkenv/core)">
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
     ```ts title="./env.ts" twoslash
     import arkenv, { type } from "@arkenv/core";
 
@@ -555,7 +555,7 @@ before your pipe runs:
     ```
   </Tab>
 
-  <Tab value="Zod (@arkenv/standard)">
+  <Tab value="Zod">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
     import * as z from "zod";
@@ -571,7 +571,7 @@ before your pipe runs:
     ```
   </Tab>
 
-  <Tab value="Valibot (@arkenv/standard)">
+  <Tab value="Valibot">
     ```ts title="./env.ts" twoslash
     import { arkenv } from "@arkenv/standard/valibot";
     import * as v from "valibot";
@@ -712,8 +712,8 @@ export const env = arkenv(
 Turn the pipeline off when a field must stay a string, or when you want
 the schema library to parse it.
 
-<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)", "Valibot (@arkenv/standard)"]}>
-  <Tab value="ArkType (@arkenv/core)">
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/core";
 
@@ -726,7 +726,7 @@ the schema library to parse it.
     ```
   </Tab>
 
-  <Tab value="Zod (@arkenv/standard)">
+  <Tab value="Zod">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
     import * as z from "zod";
@@ -740,7 +740,7 @@ the schema library to parse it.
     ```
   </Tab>
 
-  <Tab value="Valibot (@arkenv/standard)">
+  <Tab value="Valibot">
     ```ts title="./env.ts" twoslash
     import { arkenv } from "@arkenv/standard/valibot";
     import * as v from "valibot";

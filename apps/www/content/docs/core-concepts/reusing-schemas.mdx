@@ -16,8 +16,8 @@ Common cases:
 
 Export the schema once, then call `arkenv()` (or the framework/plugin entry) wherever you need a validated object.
 
-<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)", "Valibot (@arkenv/standard)"]}>
-  <Tab value="ArkType (@arkenv/core)">
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
     ```ts title="./env-schema.ts" twoslash
     import arkenv, { type } from "@arkenv/core";
 
@@ -52,7 +52,7 @@ Export the schema once, then call `arkenv()` (or the framework/plugin entry) whe
     Keywords such as `string.host` and `number.port` work inside `type()` the same way they do inside `arkenv()`.
   </Tab>
 
-  <Tab value="Zod (@arkenv/standard)">
+  <Tab value="Zod">
     ```ts title="./env-schema.ts"
     import * as z from "zod";
 
@@ -89,7 +89,7 @@ Export the schema once, then call `arkenv()` (or the framework/plugin entry) whe
     ```
   </Tab>
 
-  <Tab value="Valibot (@arkenv/standard)">
+  <Tab value="Valibot">
     ```ts title="./env-schema.ts"
     import * as v from "valibot";
 
@@ -188,8 +188,8 @@ from client code. See [client vs. server](/docs/core-concepts/client-vs-server#a
 
 Put the shared schema in an internal package, then call the host `arkenv` (or plugin) from each app:
 
-<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)", "Valibot (@arkenv/standard)"]}>
-  <Tab value="ArkType (@arkenv/core)">
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
     ```ts title="./packages/env/src/schema.ts"
     import { type } from "@arkenv/core";
 
@@ -207,7 +207,7 @@ Put the shared schema in an internal package, then call the host `arkenv` (or pl
     ```
   </Tab>
 
-  <Tab value="Zod (@arkenv/standard)">
+  <Tab value="Zod">
     ```ts title="./packages/env/src/schema.ts"
     import * as z from "zod";
 
@@ -225,7 +225,7 @@ Put the shared schema in an internal package, then call the host `arkenv` (or pl
     ```
   </Tab>
 
-  <Tab value="Valibot (@arkenv/standard)">
+  <Tab value="Valibot">
     ```ts title="./packages/env/src/schema.ts"
     import * as v from "valibot";
 
