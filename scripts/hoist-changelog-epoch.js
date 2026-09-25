@@ -34,10 +34,11 @@ export function hoistEpochBanner(markdown) {
 
 	const blockEnd = end + EPOCH_END.length;
 	const block = markdown.slice(start, blockEnd).trim();
-	const without = `${markdown.slice(0, start)}${markdown.slice(blockEnd)}`.replace(
-		/\n{3,}/g,
-		"\n\n",
-	);
+	const without =
+		`${markdown.slice(0, start)}${markdown.slice(blockEnd)}`.replace(
+			/\n{3,}/g,
+			"\n\n",
+		);
 	const newline = without.indexOf("\n");
 	if (newline === -1) return `${without}\n\n${block}\n`;
 
