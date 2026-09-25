@@ -23,7 +23,7 @@ For high-level architectural trade-offs, see
 ## Quickstart
 
 Vite is the default path. The TanStack CLI add-on scaffolds the Vite
-plugin, an `env.ts` schema, and ArkType by default.
+plugin and an `env.ts` schema for ArkType, Zod, or Valibot.
 
 ### Create a new project
 
@@ -85,8 +85,8 @@ engine. Author bare `@arkenv/*` package names; the docs site applies the
 release tag automatically.
 
 <Callout type="info">
-  Prefer `@arkenv/core` and your host plugin as app dependencies — not
-  the `arkenv` CLI package.
+  Prefer `@arkenv/core` or `@arkenv/standard` and your host plugin as app
+  dependencies — not the `arkenv` CLI package.
 </Callout>
 
 ### Vite
@@ -100,10 +100,15 @@ npm install -D @arkenv/vite-plugin
 
 #### Standard Schema engine
 
-If you aren't using ArkType, install `@arkenv/standard`:
+Zod or Valibot:
 
 ```package-install
-npm install @arkenv/standard
+npm install @arkenv/standard zod
+npm install -D @arkenv/vite-plugin
+```
+
+```package-install
+npm install @arkenv/standard valibot @valibot/to-json-schema
 npm install -D @arkenv/vite-plugin
 ```
 
@@ -118,10 +123,15 @@ npm install -D @arkenv/rsbuild-plugin
 
 #### Standard Schema engine
 
-If you aren't using ArkType, install `@arkenv/standard`:
+Zod or Valibot:
 
 ```package-install
-npm install @arkenv/standard
+npm install @arkenv/standard zod
+npm install -D @arkenv/rsbuild-plugin
+```
+
+```package-install
+npm install @arkenv/standard valibot @valibot/to-json-schema
 npm install -D @arkenv/rsbuild-plugin
 ```
 
@@ -227,6 +237,13 @@ reads must match your bundler's client prefix: `VITE_` for Vite or
     ```
   </Tab>
 </Tabs>
+
+<Callout type="info" title="Zod and Valibot use the same keys">
+  Swap the import for `@arkenv/standard` (Zod) or
+  `@arkenv/standard/valibot` (Valibot) and declare each field with that
+  library. The client prefixes stay `VITE_` or `PUBLIC_`. See
+  [Defining your schema](/docs/core-concepts/defining-your-schema).
+</Callout>
 
 <Callout type="info" title="Pass the schema as an object literal">
   Pass the object literal into `arkenv({ ... })`, or wrap a shared shape
@@ -350,10 +367,10 @@ TanStack Start builds two module graphs: the SSR graph for the server
 functions and routes you render on the server, and the client graph for
 what ships to the browser.
 
-- **Server graph:** `env.ts` executes the real `@arkenv/core` runtime at
-  boot and validates your process environment before requests are
-  served. `createServerFn` handlers run on this graph, so they read
-  real, validated values.
+- **Server graph:** `env.ts` executes `@arkenv/core` or
+  `@arkenv/standard` at boot and validates your process environment
+  before requests are served. `createServerFn` handlers run on this
+  graph, so they read real, validated values.
 - **Client graph:** `@arkenv/vite-plugin` or `@arkenv/rsbuild-plugin`
   transforms `env.ts` during the client build. It inlines public values
   and replaces private server keys with throwing getters, so the

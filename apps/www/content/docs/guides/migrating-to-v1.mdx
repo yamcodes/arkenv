@@ -88,15 +88,48 @@ Follow these steps if the v0 plugin still receives a schema argument.
   <Step>
     ### Export `env` from `env.ts`
 
-    ```ts title="./env.ts" twoslash
-    import arkenv from "@arkenv/core";
+    <Tabs items={["ArkType", "Zod", "Valibot"]}>
+      <Tab value="ArkType">
+        ```ts title="./env.ts" twoslash
+        import arkenv from "@arkenv/core";
 
-    export const env = arkenv({
-      DATABASE_URL: "string",
-      VITE_API_URL: "string",
-      PORT: "number.port = 3000",
-    });
-    ```
+        export const env = arkenv({
+        	DATABASE_URL: "string",
+        	VITE_API_URL: "string",
+        	PORT: "number.port = 3000",
+        });
+        ```
+      </Tab>
+
+      <Tab value="Zod">
+        ```ts title="./env.ts" twoslash
+        import arkenv from "@arkenv/standard";
+        import * as z from "zod";
+
+        export const env = arkenv({
+        	DATABASE_URL: z.url(),
+        	VITE_API_URL: z.string(),
+        	PORT: z.int().min(0).max(65535).default(3000),
+        });
+        ```
+      </Tab>
+
+      <Tab value="Valibot">
+        ```ts title="./env.ts" twoslash
+        import { arkenv } from "@arkenv/standard/valibot";
+        import * as v from "valibot";
+
+        export const env = arkenv({
+        	DATABASE_URL: v.pipe(v.string(), v.url()),
+        	VITE_API_URL: v.string(),
+        	PORT: v.optional(
+        		v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)),
+        		3000,
+        	),
+        });
+        ```
+      </Tab>
+    </Tabs>
   </Step>
 
   <Step>
@@ -158,14 +191,42 @@ Same shape as Vite: schema in `env.ts`, plugin with no schema argument.
   <Step>
     ### Export `env` from `env.ts`
 
-    ```ts title="./env.ts" twoslash
-    import arkenv from "@arkenv/core";
+    <Tabs items={["ArkType", "Zod", "Valibot"]}>
+      <Tab value="ArkType">
+        ```ts title="./env.ts" twoslash
+        import arkenv from "@arkenv/core";
 
-    export const env = arkenv({
-      BUN_PUBLIC_API_URL: "string.url",
-      DATABASE_URL: "string",
-    });
-    ```
+        export const env = arkenv({
+        	BUN_PUBLIC_API_URL: "string.url",
+        	DATABASE_URL: "string",
+        });
+        ```
+      </Tab>
+
+      <Tab value="Zod">
+        ```ts title="./env.ts" twoslash
+        import arkenv from "@arkenv/standard";
+        import * as z from "zod";
+
+        export const env = arkenv({
+        	BUN_PUBLIC_API_URL: z.url(),
+        	DATABASE_URL: z.url(),
+        });
+        ```
+      </Tab>
+
+      <Tab value="Valibot">
+        ```ts title="./env.ts" twoslash
+        import { arkenv } from "@arkenv/standard/valibot";
+        import * as v from "valibot";
+
+        export const env = arkenv({
+        	BUN_PUBLIC_API_URL: v.pipe(v.string(), v.url()),
+        	DATABASE_URL: v.pipe(v.string(), v.url()),
+        });
+        ```
+      </Tab>
+    </Tabs>
   </Step>
 
   <Step>

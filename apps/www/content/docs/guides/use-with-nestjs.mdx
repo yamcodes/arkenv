@@ -9,15 +9,53 @@ ArkEnv validates and types your environment variables when the module is importe
 
 Define and validate your environment variables in `src/env.ts`. Export the typed `env` object:
 
-```ts title="src/env.ts" twoslash
-import arkenv from "@arkenv/core";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="src/env.ts" twoslash
+    import arkenv from "@arkenv/core";
 
-export const env = arkenv({
-  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-  PORT: "number.port = 3000",
-  DATABASE_URL: "string",
-});
-```
+    export const env = arkenv({
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    	PORT: "number.port = 3000",
+    	DATABASE_URL: "string",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="src/env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	NODE_ENV: z
+    		.enum(["development", "production", "test"])
+    		.default("development"),
+    	PORT: z.int().min(0).max(65535).default(3000),
+    	DATABASE_URL: z.string(),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="src/env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	NODE_ENV: v.optional(
+    		v.picklist(["development", "production", "test"]),
+    		"development",
+    	),
+    	PORT: v.optional(
+    		v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)),
+    		3000,
+    	),
+    	DATABASE_URL: v.string(),
+    });
+    ```
+  </Tab>
+</Tabs>
 
 Import `env` directly across your controllers, services, and modules:
 

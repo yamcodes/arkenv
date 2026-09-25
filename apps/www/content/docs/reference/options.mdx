@@ -4,6 +4,10 @@ description: Configuration object passed as the second argument to arkenv().
 ---
 
 The second argument to `arkenv()` is an optional configuration object.
+The snippets below use ArkType. Zod and Valibot take the same options;
+only the field schemas change. See
+[Defining your schema](/docs/core-concepts/defining-your-schema).
+
 Shared fields exist on both engines: `env`, `coerce`,
 `emptyAsUndefined`, `onUndeclaredKey`, `arrayFormat`, and `debugSecrets`.
 `toJsonSchema` exists only on

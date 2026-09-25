@@ -56,14 +56,42 @@ These options live under `arkenv` in `nuxt.config`.
 
 Use the default entry for a single schema file.
 
-```ts title="./env.ts"
-import arkenv from "@arkenv/nuxt";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env.ts"
+    import arkenv from "@arkenv/nuxt";
 
-export const env = arkenv({
-  DATABASE_URL: "string",
-  NUXT_PUBLIC_API_URL: "string",
-});
-```
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    	NUXT_PUBLIC_API_URL: "string",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./env.ts"
+    import arkenv from "@arkenv/nuxt/standard";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	DATABASE_URL: z.url(),
+    	NUXT_PUBLIC_API_URL: z.string(),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts"
+    import arkenv from "@arkenv/nuxt/standard";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	DATABASE_URL: v.pipe(v.string(), v.url()),
+    	NUXT_PUBLIC_API_URL: v.string(),
+    });
+    ```
+  </Tab>
+</Tabs>
 
 For an optional client/server module split, see
 [Client vs. server](/docs/core-concepts/client-vs-server#advanced-two-module-recipe).

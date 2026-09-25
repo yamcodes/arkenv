@@ -9,16 +9,18 @@ toward the types your schema declares so application code can treat
 
 The same `coerce` option and pre-coercion pipeline apply to
 [`@arkenv/core`](/docs/reference/core) and
-[`@arkenv/standard`](/docs/reference/standard).
+[`@arkenv/standard`](/docs/reference/standard), including Zod and
+Valibot.
 
 ## Defaults
 
 Coercion is **on** by default (`coerce: true`). Zod 4.2+ uses
-`z.number()` and `z.boolean()` here; ArkEnv converts `"8080"` and
-`"true"` before the schema runs.
+`z.number()` and `z.boolean()`, and Valibot uses `v.number()` and
+`v.boolean()`; ArkEnv converts `"8080"` and `"true"` before the schema
+runs.
 
-<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
-  <Tab value="ArkType (@arkenv/core)">
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/core";
 
@@ -43,7 +45,7 @@ Coercion is **on** by default (`coerce: true`). Zod 4.2+ uses
     ```
   </Tab>
 
-  <Tab value="Zod (@arkenv/standard)">
+  <Tab value="Zod">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
     import * as z from "zod";
@@ -68,126 +70,375 @@ Coercion is **on** by default (`coerce: true`). Zod 4.2+ uses
     env.TAGS; // string[]
     ```
   </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv(
+    	{
+    		PORT: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)),
+    		DEBUG: v.optional(v.boolean(), false),
+    		TAGS: v.array(v.string()),
+    	},
+    	{
+    		env: {
+    			PORT: "8080",
+    			DEBUG: "true",
+    			TAGS: "web, api",
+    		},
+    	},
+    );
+
+    env.PORT; // number
+    env.DEBUG; // boolean
+    env.TAGS; // string[]
+    ```
+  </Tab>
 </Tabs>
 
 ## Numbers
 
-Any field typed as `number` or a numeric subtype (including
-[`number.port`](/docs/reference/keywords)) is parsed from the string
-form:
+Any field typed as `number` or a numeric subtype (including ArkType
+[`number.port`](/docs/reference/keywords), Zod `z.int()`, or Valibot
+`v.number()`) is parsed from the string form:
 
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/core";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/core";
 
-export const env = arkenv(
-  {
-    PORT: "number.port",
-    RETRY_COUNT: "number.integer = 3",
-    AGE: "0 <= number.integer <= 120",
-  },
-  {
-    env: {
-      PORT: "8080",
-      RETRY_COUNT: "5",
-      AGE: "30",
-    },
-  },
-);
+    export const env = arkenv(
+    	{
+    		PORT: "number.port",
+    		RETRY_COUNT: "number.integer = 3",
+    		AGE: "0 <= number.integer <= 120",
+    	},
+    	{
+    		env: {
+    			PORT: "8080",
+    			RETRY_COUNT: "5",
+    			AGE: "30",
+    		},
+    	},
+    );
 
-env.PORT;
-// ^?
-```
+    env.PORT;
+    // ^?
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv(
+    	{
+    		PORT: z.int().min(0).max(65535),
+    		RETRY_COUNT: z.int().default(3),
+    		AGE: z.int().min(0).max(120),
+    	},
+    	{
+    		env: {
+    			PORT: "8080",
+    			RETRY_COUNT: "5",
+    			AGE: "30",
+    		},
+    	},
+    );
+
+    env.PORT; // number
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv(
+    	{
+    		PORT: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)),
+    		RETRY_COUNT: v.optional(v.pipe(v.number(), v.integer()), 3),
+    		AGE: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(120)),
+    	},
+    	{
+    		env: {
+    			PORT: "8080",
+    			RETRY_COUNT: "5",
+    			AGE: "30",
+    		},
+    	},
+    );
+
+    env.PORT; // number
+    ```
+  </Tab>
+</Tabs>
 
 ## Booleans
 
 `boolean` accepts the lowercase strings `"true"` and `"false"` only.
 Values like `"0"`, `"1"`, `"True"`, `"YES"`, or `"on"` are **not**
-coerced and fail validation.
+coerced and fail validation. The same rule applies to ArkType
+`boolean`, Zod `z.boolean()`, and Valibot `v.boolean()`.
 
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/core";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/core";
 
-export const env = arkenv(
-  { DEBUG: "boolean = false" },
-  { env: { DEBUG: "true" } },
-);
+    export const env = arkenv(
+    	{ DEBUG: "boolean = false" },
+    	{ env: { DEBUG: "true" } },
+    );
 
-env.DEBUG;
-// ^?
-```
+    env.DEBUG;
+    // ^?
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv(
+    	{ DEBUG: z.boolean().default(false) },
+    	{ env: { DEBUG: "true" } },
+    );
+
+    env.DEBUG; // boolean
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv(
+    	{ DEBUG: v.optional(v.boolean(), false) },
+    	{ env: { DEBUG: "true" } },
+    );
+
+    env.DEBUG; // boolean
+    ```
+  </Tab>
+</Tabs>
 
 Need a wider truthy set? Normalize with a [transform](#transforms)
-(ArkType morph or Zod/Valibot `.transform`), or keep the field as
-`string` and map it in application code.
+(an ArkType morph, Zod `.transform`, or Valibot `v.transform`), or keep
+the field as `string` and map it in application code.
 
 ## Arrays
 
 By default ArkEnv splits on commas and trims each entry:
 
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/core";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/core";
 
-export const env = arkenv(
-  {
-    TAGS: "string[]",
-    PORTS: "number[]",
-  },
-  {
-    env: {
-      TAGS: "web, app, api",
-      PORTS: "3000, 8080",
-    },
-  },
-);
+    export const env = arkenv(
+    	{
+    		TAGS: "string[]",
+    		PORTS: "number[]",
+    	},
+    	{
+    		env: {
+    			TAGS: "web, app, api",
+    			PORTS: "3000, 8080",
+    		},
+    	},
+    );
 
-env.TAGS;
-// ^?
-env.PORTS;
-// ^?
-```
+    env.TAGS;
+    // ^?
+    env.PORTS;
+    // ^?
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv(
+    	{
+    		TAGS: z.array(z.string()),
+    		PORTS: z.array(z.number()),
+    	},
+    	{
+    		env: {
+    			TAGS: "web, app, api",
+    			PORTS: "3000, 8080",
+    		},
+    	},
+    );
+
+    env.TAGS; // string[]
+    env.PORTS; // number[]
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv(
+    	{
+    		TAGS: v.array(v.string()),
+    		PORTS: v.array(v.number()),
+    	},
+    	{
+    		env: {
+    			TAGS: "web, app, api",
+    			PORTS: "3000, 8080",
+    		},
+    	},
+    );
+
+    env.TAGS; // string[]
+    env.PORTS; // number[]
+    ```
+  </Tab>
+</Tabs>
 
 Switch to JSON arrays with `arrayFormat: "json"`:
 
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/core";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/core";
 
-export const env = arkenv(
-  { TAGS: "string[]" },
-  {
-    arrayFormat: "json",
-    env: { TAGS: '["web", "app"]' },
-  },
-);
+    export const env = arkenv(
+    	{ TAGS: "string[]" },
+    	{
+    		arrayFormat: "json",
+    		env: { TAGS: '["web", "app"]' },
+    	},
+    );
 
-env.TAGS;
-// ^?
-```
+    env.TAGS;
+    // ^?
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv(
+    	{ TAGS: z.array(z.string()) },
+    	{
+    		arrayFormat: "json",
+    		env: { TAGS: '["web", "app"]' },
+    	},
+    );
+
+    env.TAGS; // string[]
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv(
+    	{ TAGS: v.array(v.string()) },
+    	{
+    		arrayFormat: "json",
+    		env: { TAGS: '["web", "app"]' },
+    	},
+    );
+
+    env.TAGS; // string[]
+    ```
+  </Tab>
+</Tabs>
 
 ## Objects
 
 JSON strings map onto nested object schemas. Nested fields are coerced
 too:
 
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/core";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/core";
 
-export const env = arkenv(
-  {
-    DATABASE: {
-      HOST: "string",
-      PORT: "number",
-    },
-  },
-  {
-    env: {
-      DATABASE: '{"HOST": "localhost", "PORT": "5432"}',
-    },
-  },
-);
+    export const env = arkenv(
+    	{
+    		DATABASE: {
+    			HOST: "string",
+    			PORT: "number",
+    		},
+    	},
+    	{
+    		env: {
+    			DATABASE: '{"HOST": "localhost", "PORT": "5432"}',
+    		},
+    	},
+    );
 
-env.DATABASE;
-// ^?
-```
+    env.DATABASE;
+    // ^?
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv(
+    	{
+    		DATABASE: z.object({
+    			HOST: z.string(),
+    			PORT: z.number(),
+    		}),
+    	},
+    	{
+    		env: {
+    			DATABASE: '{"HOST": "localhost", "PORT": "5432"}',
+    		},
+    	},
+    );
+
+    env.DATABASE; // { HOST: string; PORT: number }
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv(
+    	{
+    		DATABASE: v.object({
+    			HOST: v.string(),
+    			PORT: v.number(),
+    		}),
+    	},
+    	{
+    		env: {
+    			DATABASE: '{"HOST": "localhost", "PORT": "5432"}',
+    		},
+    	},
+    );
+
+    env.DATABASE; // { HOST: string; PORT: number }
+    ```
+  </Tab>
+</Tabs>
 
 ## Pre-coercion model
 
@@ -225,8 +476,8 @@ morphs, or pipes. ArkEnv runs them as part of parsing.
 
 `PORT` still uses built-in coercion, not a custom pipe:
 
-<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
-  <Tab value="ArkType (@arkenv/core)">
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
     ```ts title="./env.ts" twoslash
     import arkenv, { type } from "@arkenv/core";
 
@@ -242,7 +493,7 @@ morphs, or pipes. ArkEnv runs them as part of parsing.
     ```
   </Tab>
 
-  <Tab value="Zod (@arkenv/standard)">
+  <Tab value="Zod">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
     import * as z from "zod";
@@ -260,13 +511,36 @@ morphs, or pipes. ArkEnv runs them as part of parsing.
     env.BUILD_ID; // "ABC"
     ```
   </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv(
+    	{
+    		BUILD_ID: v.pipe(
+    			v.string(),
+    			v.transform((value) => value.trim().toUpperCase()),
+    		),
+    		PORT: v.optional(
+    			v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)),
+    			3000,
+    		),
+    	},
+    	{ env: { BUILD_ID: "  abc  " } },
+    );
+
+    env.BUILD_ID; // "ABC"
+    ```
+  </Tab>
 </Tabs>
 
 Coercion can feed a transformation. The string `"3"` becomes a number
 before your pipe runs:
 
-<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
-  <Tab value="ArkType (@arkenv/core)">
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
     ```ts title="./env.ts" twoslash
     import arkenv, { type } from "@arkenv/core";
 
@@ -281,7 +555,7 @@ before your pipe runs:
     ```
   </Tab>
 
-  <Tab value="Zod (@arkenv/standard)">
+  <Tab value="Zod">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
     import * as z from "zod";
@@ -289,6 +563,25 @@ before your pipe runs:
     export const env = arkenv(
     	{
     		RETRY_COUNT: z.number().transform((n) => Math.max(0, n)),
+    	},
+    	{ env: { RETRY_COUNT: "3" } },
+    );
+
+    env.RETRY_COUNT; // 3
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv(
+    	{
+    		RETRY_COUNT: v.pipe(
+    			v.number(),
+    			v.transform((n) => Math.max(0, n)),
+    		),
     	},
     	{ env: { RETRY_COUNT: "3" } },
     );
@@ -419,8 +712,8 @@ export const env = arkenv(
 Turn the pipeline off when a field must stay a string, or when you want
 the schema library to parse it.
 
-<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
-  <Tab value="ArkType (@arkenv/core)">
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/core";
 
@@ -433,7 +726,7 @@ the schema library to parse it.
     ```
   </Tab>
 
-  <Tab value="Zod (@arkenv/standard)">
+  <Tab value="Zod">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
     import * as z from "zod";
@@ -446,11 +739,25 @@ the schema library to parse it.
     env.PORT; // string
     ```
   </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv(
+    	{ PORT: v.string() },
+    	{ coerce: false, env: { PORT: "3000" } },
+    );
+
+    env.PORT; // string
+    ```
+  </Tab>
 </Tabs>
 
 With `coerce: false`, a numeric schema rejects `"3000"` unless you
 transform the string yourself (or use a helper such as
-`z.coerce.number()`).
+`z.coerce.number()` or Valibot `v.pipe(v.string(), v.transform(Number))`).
 
 ## Next steps
 

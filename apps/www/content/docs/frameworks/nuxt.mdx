@@ -36,10 +36,15 @@ npm install @arkenv/core @arkenv/nuxt arktype
 
 ### Standard Schema engine
 
-If you aren't using ArkType, install `@arkenv/standard`:
+If you aren't using ArkType, install `@arkenv/standard` with Zod or
+Valibot:
 
 ```package-install
-npm install @arkenv/standard @arkenv/nuxt
+npm install @arkenv/standard @arkenv/nuxt zod
+```
+
+```package-install
+npm install @arkenv/standard @arkenv/nuxt valibot @valibot/to-json-schema
 ```
 
 ## Module configuration
@@ -55,17 +60,65 @@ export default defineNuxtConfig({
 
 ## Schema
 
-Use a single `env.ts`. Public keys must use the `NUXT_PUBLIC_` prefix:
+Use a single `env.ts`. Public keys must use the `NUXT_PUBLIC_` prefix.
+Zod and Valibot both import `@arkenv/nuxt/standard` and register
+`@arkenv/nuxt/standard/module`.
 
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/nuxt";
+`@arkenv/nuxt/standard` binds the root `@arkenv/standard` engine. Zod
+4.2+ coerces numbers and booleans from that entry. Valibot does not:
+there is no `@arkenv/nuxt/standard/valibot` binding, so installing
+`@valibot/to-json-schema` does not coerce `v.number()` or `v.boolean()`
+here. Keep Valibot fields as strings on this entry, or validate them
+with [`@arkenv/standard/valibot`](/docs/validators/valibot) outside the
+Nuxt module.
 
-export const env = arkenv({
-  DATABASE_URL: "string",
-  NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
-  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-});
-```
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/nuxt";
+
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    	NUXT_PUBLIC_API_URL: "string = 'https://api.example.com'",
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/nuxt/standard";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	DATABASE_URL: z.url(),
+    	NUXT_PUBLIC_API_URL: z.url().default("https://api.example.com"),
+    	NODE_ENV: z
+    		.enum(["development", "production", "test"])
+    		.default("development"),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/nuxt/standard";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	DATABASE_URL: v.pipe(v.string(), v.url()),
+    	NUXT_PUBLIC_API_URL: v.optional(
+    		v.pipe(v.string(), v.url()),
+    		"https://api.example.com",
+    	),
+    	NODE_ENV: v.optional(
+    		v.picklist(["development", "production", "test"]),
+    		"development",
+    	),
+    });
+    ```
+  </Tab>
+</Tabs>
 
 Unlike Next.js, Nuxt does not emit an `env.gen.ts` file; `@arkenv/nuxt` acts as
 the primary entrypoint.
@@ -85,24 +138,12 @@ typed and coerced and server secrets stay out of the client bundle.
 
 ## Standard Schema
 
-If you aren't using ArkType, point the module at the standard module path and
-import from `@arkenv/nuxt/standard`:
+Zod and Valibot both point the module at the standard module path.
+The schema tabs above already import from `@arkenv/nuxt/standard`.
 
 ```ts title="./nuxt.config.ts"
 export default defineNuxtConfig({
   modules: ["@arkenv/nuxt/standard/module"],
-});
-```
-
-Then define your schema in `env.ts` using your validator:
-
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/nuxt/standard";
-import * as z from "zod";
-
-export const env = arkenv({
-  DATABASE_URL: z.url(),
-  NUXT_PUBLIC_API_URL: z.url().default("https://api.example.com"),
 });
 ```
 

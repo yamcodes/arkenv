@@ -5,8 +5,7 @@ description: Put env.ts in place, declare field types, and fail fast with a type
 
 ArkEnv is designed around one schema file and one typed `env` object.
 ArkEnv proves the process has the configuration it claims before
-application code runs, whether you use ArkType, Zod, or another Standard
-Schema validator.
+application code runs, whether you use ArkType, Zod, or Valibot.
 
 ## Fail fast
 
@@ -34,8 +33,8 @@ Install either engine, then create `env.ts` next to the code that boots
 first. Root of the app or package is common; `src/env.ts` is fine when
 the rest of your entrypoints already live under `src/`.
 
-<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
-  <Tab value="ArkType (@arkenv/core)">
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
     ```package-install
     npm install @arkenv/core arktype
     ```
@@ -51,7 +50,7 @@ the rest of your entrypoints already live under `src/`.
     ```
   </Tab>
 
-  <Tab value="Zod (@arkenv/standard)">
+  <Tab value="Zod">
     ```package-install
     npm install @arkenv/standard zod
     ```
@@ -66,6 +65,29 @@ the rest of your entrypoints already live under `src/`.
     	NODE_ENV: z
     		.enum(["development", "production", "test"])
     		.default("development"),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```package-install
+    npm install @arkenv/standard valibot @valibot/to-json-schema
+    ```
+
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	HOST: v.optional(v.string(), "localhost"),
+    	PORT: v.optional(
+    		v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)),
+    		3000,
+    	),
+    	NODE_ENV: v.optional(
+    		v.picklist(["development", "production", "test"]),
+    		"development",
+    	),
     });
     ```
   </Tab>
@@ -142,8 +164,8 @@ stack per project; both paths produce a typed `env` object.
 covers how strings become numbers and booleans. This section is about
 declaring the shape.
 
-<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
-  <Tab value="ArkType (@arkenv/core)">
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/core";
 
@@ -183,7 +205,7 @@ declaring the shape.
     string syntax.
   </Tab>
 
-  <Tab value="Zod (@arkenv/standard)">
+  <Tab value="Zod">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
     import * as z from "zod";
@@ -202,10 +224,56 @@ declaring the shape.
     });
     ```
 
-    Pass each field's schema as the map value for Valibot and other
-    Standard Schema libraries. Valibot:
-    [`@arkenv/standard/valibot`](/docs/validators/valibot).
     Package: [`@arkenv/standard`](/docs/reference/standard).
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	API_URL: v.pipe(v.string(), v.url()),
+    	APP_NAME: v.optional(v.string(), "My App"),
+    	OPTIONAL_NOTE: v.optional(v.string()),
+    	PORT: v.optional(
+    		v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)),
+    		3000,
+    	),
+    	RETRY_COUNT: v.optional(v.pipe(v.number(), v.integer()), 3),
+    	DEBUG: v.optional(v.boolean(), false),
+    	NODE_ENV: v.optional(
+    		v.picklist(["development", "production", "test"]),
+    		"development",
+    	),
+    	LOG_LEVEL: v.optional(
+    		v.picklist(["debug", "info", "warn", "error"]),
+    		"info",
+    	),
+    });
+    ```
+
+    A bare schema requires the key. `v.optional(schema, fallback)` supplies
+    a default when the key is missing. `v.optional(schema)` accepts a
+    missing key. An empty string (`NOTE=`) still counts as present unless
+    you set [`emptyAsUndefined`](/docs/reference/options).
+
+    Empty collections are defaults on the same field. Each missing value
+    gets the fallback you pass:
+
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	FEATURE_FLAGS: v.optional(v.array(v.string()), []),
+    	METADATA: v.optional(v.record(v.string(), v.unknown()), {}),
+    });
+    ```
+
+    Import from [`@arkenv/standard/valibot`](/docs/validators/valibot) so
+    coercion is wired. The root `@arkenv/standard` import does not bind
+    Valibot's JSON Schema converter.
   </Tab>
 </Tabs>
 
@@ -236,8 +304,8 @@ Full details: [keywords](/docs/reference/keywords).
 The schema is the single source of truth for runtime checks and
 TypeScript types.
 
-<Tabs items={["ArkType (@arkenv/core)", "Zod (@arkenv/standard)"]}>
-  <Tab value="ArkType (@arkenv/core)">
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
     ```ts title="./env.ts" twoslash
     import arkenv, { type Infer } from "@arkenv/core";
 
@@ -253,7 +321,7 @@ TypeScript types.
     ```
   </Tab>
 
-  <Tab value="Zod (@arkenv/standard)">
+  <Tab value="Zod">
     ```ts title="./env.ts" twoslash
     import arkenv from "@arkenv/standard";
     import * as z from "zod";
@@ -261,6 +329,26 @@ TypeScript types.
     const schema = {
     	DATABASE_URL: z.url(),
     	PORT: z.int().min(0).max(65535).default(3000),
+    };
+
+    export const env = arkenv(schema);
+    export type Env = typeof env;
+
+    env.PORT; // number
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    const schema = {
+    	DATABASE_URL: v.pipe(v.string(), v.url()),
+    	PORT: v.optional(
+    		v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)),
+    		3000,
+    	),
     };
 
     export const env = arkenv(schema);
@@ -290,8 +378,8 @@ graph. See
 
 For transforms, function defaults, or reuse across files:
 
-<Tabs items={["ArkType type()", "Zod"]}>
-  <Tab value="ArkType type()">
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
     ```ts title="./env.ts" twoslash
     import arkenv, { type } from "@arkenv/core";
 
@@ -314,11 +402,29 @@ For transforms, function defaults, or reuse across files:
     });
     ```
   </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	PORT: v.optional(
+    		v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)),
+    		3000,
+    	),
+    	BUILD_ID: v.pipe(
+    		v.string(),
+    		v.transform((value) => value.trim()),
+    	),
+    });
+    ```
+  </Tab>
 </Tabs>
 
 See
 [Transforms](/docs/core-concepts/coercion-and-parsing#transforms)
-for morph vs Zod `.transform`, and
+for ArkType morphs, Zod `.transform`, and Valibot `v.pipe`, and
 [reusing schemas](/docs/core-concepts/reusing-schemas)
 when the whole schema should be shared.
 
@@ -328,14 +434,44 @@ By default `arkenv()` reads `process.env`. Pass a custom record for
 tests, Workers bindings, or any host that injects env outside
 `process.env`:
 
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/core";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/core";
 
-export const env = arkenv(
-  { PORT: "number.port" },
-  { env: { PORT: "3000" } },
-);
-```
+    export const env = arkenv(
+    	{ PORT: "number.port" },
+    	{ env: { PORT: "3000" } },
+    );
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv(
+    	{ PORT: z.int().min(0).max(65535) },
+    	{ env: { PORT: "3000" } },
+    );
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv(
+    	{
+    		PORT: v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)),
+    	},
+    	{ env: { PORT: "3000" } },
+    );
+    ```
+  </Tab>
+</Tabs>
 
 Framework plugins (Next.js, Nuxt, Vite, Bun) wire the usual sources for
 you. See [options](/docs/reference/options) for `coerce`, `arrayFormat`,

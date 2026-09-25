@@ -55,10 +55,16 @@ npm install -D @arkenv/vite-plugin
 
 ### Standard Schema engine
 
-If you aren't using ArkType, install `@arkenv/standard`:
+If you aren't using ArkType, install `@arkenv/standard` with Zod or
+Valibot:
 
 ```package-install
-npm install @arkenv/standard
+npm install @arkenv/standard zod
+npm install -D @arkenv/vite-plugin
+```
+
+```package-install
+npm install @arkenv/standard valibot @valibot/to-json-schema
 npm install -D @arkenv/vite-plugin
 ```
 
@@ -79,21 +85,58 @@ export default defineConfig({
 });
 ```
 
-If you aren't using ArkType, import the plugin from `@arkenv/vite-plugin/standard`.
+Zod and Valibot import the plugin from `@arkenv/vite-plugin/standard`.
 
 ### Define your schema
 
-Create an `env.ts` file in your source tree. Import from `@arkenv/core` (or `@arkenv/standard`); the `arkenv` package is CLI-only:
+Create an `env.ts` file in your source tree. Import the runtime from
+`@arkenv/core`, `@arkenv/standard`, or `@arkenv/standard/valibot`. The
+`arkenv` package is the CLI only.
 
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/core";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/core";
 
-export const env = arkenv({
-  DATABASE_URL: "string",
-  VITE_API_URL: "string",
-  NODE_ENV: "'development' | 'production' | 'test' = 'development'",
-});
-```
+    export const env = arkenv({
+    	DATABASE_URL: "string",
+    	VITE_API_URL: "string",
+    	NODE_ENV: "'development' | 'production' | 'test' = 'development'",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	DATABASE_URL: z.url(),
+    	VITE_API_URL: z.string(),
+    	NODE_ENV: z
+    		.enum(["development", "production", "test"])
+    		.default("development"),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	DATABASE_URL: v.pipe(v.string(), v.url()),
+    	VITE_API_URL: v.string(),
+    	NODE_ENV: v.optional(
+    		v.picklist(["development", "production", "test"]),
+    		"development",
+    	),
+    });
+    ```
+  </Tab>
+</Tabs>
 
 Import `{ env } from "./env"` across your application. In server contexts (such as
 SSR or development scripts), the real validation module runs at boot. In client
@@ -145,7 +188,7 @@ Types and options: [`@arkenv/vite-plugin`](/docs/reference/vite-plugin).
 
 Vite maintains two distinct module graphs when building and serving full-stack or SSR applications:
 
-- **Server graph:** During SSR execution and dev server requests, `env.ts` executes real `@arkenv/core` runtime validation at boot. It ensures private secrets (such as `DATABASE_URL`) and public configuration validate before handling requests.
+- **Server graph:** During SSR execution and dev server requests, `env.ts` executes real `@arkenv/core` or `@arkenv/standard` validation at boot. It ensures private secrets (such as `DATABASE_URL`) and public configuration validate before handling requests.
 - **Client graph:** During client compilation, `@arkenv/vite-plugin` intercepts and transforms `env.ts`. It inlines public `VITE_*` values as static literals and replaces private server keys with throwing runtime stubs. Client bundles omit the validator engine.
 
 On Vite 6+, the Environment API drives this split: server consumers and custom

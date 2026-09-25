@@ -47,14 +47,45 @@ ArkEnv replaces manual presence checks and ad-hoc parsing with declarative schem
 schema in `env.ts`; `arkenv()` validates against it so application code never
 touches loose `process.env`:
 
-```ts title="./env.ts" twoslash
-import arkenv from "@arkenv/core";
+<Tabs items={["ArkType", "Zod", "Valibot"]}>
+  <Tab value="ArkType">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/core";
 
-export const env = arkenv({
-  PORT: "number.port = 3000",
-  DEBUG: "boolean = false",
-});
-```
+    export const env = arkenv({
+    	PORT: "number.port = 3000",
+    	DEBUG: "boolean = false",
+    });
+    ```
+  </Tab>
+
+  <Tab value="Zod">
+    ```ts title="./env.ts" twoslash
+    import arkenv from "@arkenv/standard";
+    import * as z from "zod";
+
+    export const env = arkenv({
+    	PORT: z.int().min(0).max(65535).default(3000),
+    	DEBUG: z.boolean().default(false),
+    });
+    ```
+  </Tab>
+
+  <Tab value="Valibot">
+    ```ts title="./env.ts" twoslash
+    import { arkenv } from "@arkenv/standard/valibot";
+    import * as v from "valibot";
+
+    export const env = arkenv({
+    	PORT: v.optional(
+    		v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(65535)),
+    		3000,
+    	),
+    	DEBUG: v.optional(v.boolean(), false),
+    });
+    ```
+  </Tab>
+</Tabs>
 
 The same `if` as above, after ArkEnv:
 
@@ -88,7 +119,12 @@ In a full-stack app, we **must keep secrets off the client**. The Next.js,
 Nuxt, Vite, and Bun packages enforce that split. See
 [Client vs. server](/docs/core-concepts/client-vs-server).
 
-ArkEnv uses ArkType by default. However, **it works with Zod, Valibot, and any other [standard schema](https://standardschema.dev/)**. See the [Zod](/docs/validators/zod) guide for one such example.
+ArkType, Zod, and Valibot are first-class. Use
+[`@arkenv/core`](/docs/validators/arktype) for ArkType, or
+[`@arkenv/standard`](/docs/validators) for Zod and Valibot (and any other
+[Standard Schema](https://standardschema.dev/) validator). See the
+[Zod](/docs/validators/zod) and [Valibot](/docs/validators/valibot)
+guides.
 
 ## How to use these docs
 

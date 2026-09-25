@@ -11,12 +11,12 @@ For a feature cheatsheet, see [Why ArkEnv?](/docs/why-arkenv).
 
 The table below is the mapping you need while you edit files.
 
-| Feature          | T3 Env                                  | ArkEnv                                                      |
-| ---------------- | --------------------------------------- | ----------------------------------------------------------- |
-| Core function    | `createEnv` from `@t3-oss/env-nextjs`   | `arkenv` from `@arkenv/nextjs` or `@arkenv/core`            |
-| Schema structure | Nested `{ server, client, runtimeEnv }` | Flat schema (optional two-module recipe for name isolation) |
-| Client inlining  | Manual `runtimeEnv` object              | `withArkEnv` writes the mapping                             |
-| Validator        | Zod only                                | ArkType via `@arkenv/core`, or Zod via `@arkenv/standard`   |
+| Feature          | T3 Env                                  | ArkEnv                                                                |
+| ---------------- | --------------------------------------- | --------------------------------------------------------------------- |
+| Core function    | `createEnv` from `@t3-oss/env-nextjs`   | `arkenv` from `@arkenv/nextjs` or `@arkenv/core`                      |
+| Schema structure | Nested `{ server, client, runtimeEnv }` | Flat schema (optional two-module recipe for name isolation)           |
+| Client inlining  | Manual `runtimeEnv` object              | `withArkEnv` writes the mapping                                       |
+| Validator        | Zod only                                | ArkType via `@arkenv/core`, or Zod and Valibot via `@arkenv/standard` |
 
 A flat layout still infers types and throws if client code reads a
 server key. Use the
@@ -42,6 +42,13 @@ Work through these steps on an existing Next.js app.
 
     ```package-install
     npm install @arkenv/standard @arkenv/nextjs zod
+    npm rm @t3-oss/env-nextjs
+    ```
+
+    Valibot:
+
+    ```package-install
+    npm install @arkenv/standard @arkenv/nextjs valibot @valibot/to-json-schema
     npm rm @t3-oss/env-nextjs
     ```
   </Step>
@@ -85,28 +92,45 @@ Work through these steps on an existing Next.js app.
     });
     ```
 
-    ArkEnv (ArkType). `withArkEnv` generates `.arkenv/env.gen.ts`:
+    ArkEnv. `withArkEnv` generates `.arkenv/env.gen.ts`. Zod and Valibot
+    import `withArkEnv` from `@arkenv/nextjs/standard/config`.
 
-    ```ts title="./env.ts" twoslash
-    import arkenv from "@/.arkenv";
+    <Tabs items={["ArkType", "Zod", "Valibot"]}>
+      <Tab value="ArkType">
+        ```ts title="./env.ts" twoslash
+        import arkenv from "@/.arkenv";
 
-    export const env = arkenv({
-      DATABASE_URL: "string.url",
-      NEXT_PUBLIC_APP_URL: "string.url",
-    });
-    ```
+        export const env = arkenv({
+          DATABASE_URL: "string.url",
+          NEXT_PUBLIC_APP_URL: "string.url",
+        });
+        ```
+      </Tab>
 
-    ArkEnv (Zod):
+      <Tab value="Zod">
+        ```ts title="./env.ts" twoslash
+        import arkenv from "@/.arkenv";
+        import * as z from "zod";
 
-    ```ts title="./env.ts" twoslash
-    import arkenv from "@/.arkenv";
-    import * as z from "zod";
+        export const env = arkenv({
+          DATABASE_URL: z.url(),
+          NEXT_PUBLIC_APP_URL: z.url(),
+        });
+        ```
+      </Tab>
 
-    export const env = arkenv({
-      DATABASE_URL: z.url(),
-      NEXT_PUBLIC_APP_URL: z.url(),
-    });
-    ```
+      <Tab value="Valibot">
+        ```ts title="./env.ts" twoslash
+        import arkenv from "@/.arkenv";
+        import * as v from "valibot";
+
+        export const env = arkenv({
+          DATABASE_URL: v.pipe(v.string(), v.url()),
+          NEXT_PUBLIC_APP_URL: v.pipe(v.string(), v.url()),
+        });
+        ```
+      </Tab>
+    </Tabs>
 
     You do not copy keys into `runtimeEnv`. `NEXT_PUBLIC_` marks client
     variables.
