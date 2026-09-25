@@ -1,0 +1,32 @@
+diff --git a/dist/index.js b/dist/index.js
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -533,15 +533,19 @@
+ 	const name = symbol.name === "default" ? identifier.text : symbol.name;
+ 	if (flags & SymbolFlags.Variable) return `${variableKeyword(symbol)} ${name}: ${typeToString(type)}`;
+ 	if (flags & (SymbolFlags.Function | SymbolFlags.Method)) {
+-		const signatures = checker.getSignaturesOfType(type, SignatureKind.Call);
+-		const signature = (call && checker.getResolvedSignature(call)) ?? signatures[0];
+-		const declaration = signature && checker.signatureToSignatureDeclaration(signature, SyntaxKind.MethodSignature, node, typeFlags);
+-		if (declaration) {
+-			const head = flags & SymbolFlags.Method ? `(method) ${qualifiedName(symbol)}` : `function ${name}`;
+-			const overloads = signatures.length - 1;
+-			let text = head + emitter.printNode(declaration).replace(/;$/, "");
+-			if (overloads > 0) text += ` (+${overloads} overload${overloads > 1 ? "s" : ""})`;
+-			return text;
++		try {
++			const signatures = checker.getSignaturesOfType(type, SignatureKind.Call);
++			const signature = (call && checker.getResolvedSignature(call)) ?? signatures[0];
++			const declaration = signature && checker.signatureToSignatureDeclaration(signature, SyntaxKind.MethodSignature, node, typeFlags);
++			if (declaration) {
++				const head = flags & SymbolFlags.Method ? `(method) ${qualifiedName(symbol)}` : `function ${name}`;
++				const overloads = signatures.length - 1;
++				let text = head + emitter.printNode(declaration).replace(/;$/, "");
++				if (overloads > 0) text += ` (+${overloads} overload${overloads > 1 ? "s" : ""})`;
++				return text;
++			}
++		} catch {
++			return `function ${name}`;
+ 		}
+ 	}
+ 	if (flags & SymbolFlags.Enum) return `enum ${name}`;

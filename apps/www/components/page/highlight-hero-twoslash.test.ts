@@ -17,11 +17,10 @@ describe("highlightHeroTwoslash", () => {
 		);
 		expect(html).toContain("twoslash");
 		expect(html).toContain("twoslash-hover");
-		expect(html).toContain("twoslash-popup-container");
+		expect(html).toContain("PopupContent");
 		expect(html).not.toContain("twoslash-error");
 		expect(html).toContain("@arkenv/core");
 		const hover = extractEnvHoverHtml(html);
-		expect(hover).toContain("twoslash-popup-code");
 		expect(hover).toContain("DATABASE_URL");
 		expect(hover).toMatch(/--shiki-dark|--shiki-light/);
 	});

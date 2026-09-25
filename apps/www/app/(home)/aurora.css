@@ -3315,8 +3315,10 @@
 	padding: var(--space-sm) var(--space-md);
 }
 
-/* Inactive stacked panes keep CSS hover nodes for height; never show them. */
-.home-aurora__code-window .twoslash-popup-container {
+/* Inactive stacked panes keep hover nodes for height; never show the type dump. */
+.home-aurora__code-window .twoslash-popup-container,
+/* biome-ignore lint/correctness/noUnknownTypeSelector: fumadocs-twoslash 4 hover element */
+.home-aurora__code-window popupcontent {
 	display: none;
 }
 

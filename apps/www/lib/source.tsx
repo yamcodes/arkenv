@@ -1,7 +1,12 @@
 import { blogPosts, docs } from "fumadocs-mdx:collections/server";
 import type { autocomplete } from "@ark/util";
 import * as SimpleIcons from "@icons-pack/react-simple-icons";
-import { loader } from "fumadocs-core/source";
+import {
+	loader,
+	type MetaData,
+	type PageData,
+	type StaticSource,
+} from "fumadocs-core/source";
 import { toFumadocsSource } from "fumadocs-mdx/runtime/server";
 import { icons } from "lucide-react";
 import { createElement } from "react";
@@ -12,9 +17,22 @@ export type IconName = keyof typeof icons | "New" | "Updated";
 
 export const SITE_URL = "https://arkenv.js.org";
 
+/**
+ * fumadocs-core 16.15 does not infer collection fields from `toFumadocsSource()`.
+ * Restate the source generic so `loader()` keeps `body`, `toc`, and frontmatter.
+ */
+function loaderSource<Page extends PageData, Meta extends MetaData>(
+	source: StaticSource<{ pageData: Page; metaData: Meta }>,
+): StaticSource<{ pageData: Page; metaData: Meta }> {
+	return source;
+}
+
 export const source = loader({
 	baseUrl: "/docs",
-	source: docs.toFumadocsSource(),
+	source: loaderSource<
+		(typeof docs)["docs"][number],
+		(typeof docs)["meta"][number]
+	>(docs.toFumadocsSource()),
 	icon(icon?: autocomplete<IconName>) {
 		if (!icon) return;
 
@@ -32,7 +50,9 @@ export const source = loader({
 export const blog = loader({
 	baseUrl: "/blog",
 	// defineCollections({ type: "doc" }) yields an array — use toFumadocsSource(pages, []).
-	source: toFumadocsSource(blogPosts, []),
+	source: loaderSource<(typeof blogPosts)[number], MetaData>(
+		toFumadocsSource(blogPosts, []),
+	),
 });
 
 export { isPublishedBlogPage } from "./blog-published";

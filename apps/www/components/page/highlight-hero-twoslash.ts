@@ -1,4 +1,4 @@
-import { transformerTwoslash } from "@shikijs/twoslash";
+import { transformerTwoslash } from "fumadocs-twoslash";
 import { createFileSystemTypesCache } from "fumadocs-twoslash/cache-fs";
 import { cache } from "react";
 import { codeToHtml, type ShikiTransformer } from "shiki";

@@ -6,30 +6,41 @@ export function extractTwoslashHoverHtml(
 	html: string,
 	token: string,
 ): string | undefined {
-	const open = /<span(?=[\s>])/g;
+	const open = /<(span|Popup)(?=[\s>])/g;
 	let match = open.exec(html);
 	while (match) {
 		const start = match.index;
+		const tag = match[1] ?? "span";
 		const gt = html.indexOf(">", start);
 		if (gt === -1) break;
 		const opening = html.slice(start, gt + 1);
 		if (/\btwoslash-hover\b/.test(opening)) {
-			const element = extractElement(html, start, "span");
-			const popup = firstChildByClass(
-				element.inner,
-				"twoslash-popup-container",
-			);
-			if (
-				popup &&
-				textContent(element.inner.slice(popup.end)).trim() === token
-			) {
-				return popup.inner;
-			}
+			const element = extractElement(html, start, tag);
+			const popup = hoverBody(element.inner, tag, token);
+			if (popup) return popup;
 			open.lastIndex = element.end;
 		}
 		match = open.exec(html);
 	}
 	return undefined;
+}
+
+function hoverBody(
+	inner: string,
+	tag: string,
+	token: string,
+): string | undefined {
+	if (tag === "Popup") {
+		const content = firstChildByTag(inner, "PopupContent");
+		const trigger = firstChildByTag(inner, "PopupTrigger");
+		if (!content || !trigger) return undefined;
+		if (textContent(trigger.inner).trim() !== token) return undefined;
+		return content.inner;
+	}
+	const popup = firstChildByClass(inner, "twoslash-popup-container");
+	if (!popup) return undefined;
+	if (textContent(inner.slice(popup.end)).trim() !== token) return undefined;
+	return popup.inner;
 }
 
 export function extractEnvHoverHtml(html: string): string {
@@ -79,6 +90,16 @@ function extractElement(
 		}
 	}
 	throw new Error(`unclosed <${tag}>`);
+}
+
+function firstChildByTag(
+	html: string,
+	tag: string,
+): { end: number; inner: string } | undefined {
+	const needle = new RegExp(`<${tag}(?=[\\s>/])`);
+	const match = needle.exec(html);
+	if (!match) return undefined;
+	return extractElement(html, match.index, tag);
 }
 
 function firstChildByClass(

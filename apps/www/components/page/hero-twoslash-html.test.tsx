@@ -1,7 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
+import { heroMvpSnippet } from "./hero-mvp-snippets";
 import { HeroTwoslashHtml } from "./hero-twoslash-html";
+import { highlightHeroTwoslash } from "./highlight-hero-twoslash";
 
 const urlHoverHtml = [
 	'<pre class="shiki twoslash"><code><span class="line">',
@@ -69,5 +71,25 @@ describe("HeroTwoslashHtml", () => {
 		).not.toBeInTheDocument();
 		expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 		expect(document.querySelector(".twoslash-hover")).not.toBeNull();
+	});
+
+	it("opens a popover from fumadocs-twoslash 4 hover markup", {
+		timeout: 30_000,
+	}, async () => {
+		const user = userEvent.setup();
+		const html = await highlightHeroTwoslash(
+			heroMvpSnippet("vanilla", "arktype"),
+		);
+		expect(html).toContain("PopupContent");
+
+		render(<HeroTwoslashHtml html={html} active />);
+
+		await user.hover(screen.getByRole("button", { name: "env" }));
+
+		const popup = await screen.findByRole("dialog");
+		expect(popup).toHaveClass("fd-twoslash-popover");
+		expect(popup).toHaveTextContent("DATABASE_URL");
+		expect(document.querySelector("popup")).toBeNull();
+		expect(document.querySelector("popupcontent")).toBeNull();
 	});
 });

@@ -9,7 +9,7 @@ export const revalidate = false;
  * @returns A Response containing the plain-text index of all documentation pages
  */
 export async function GET() {
-	const indexContent = llms(source).index();
+	const indexContent = await llms(source).index();
 
 	return new Response(indexContent, {
 		headers: {

@@ -32,6 +32,22 @@ describe("extractTwoslashHoverHtml", () => {
 		expect(html).not.toContain("function arkenv");
 	});
 
+	it("returns PopupContent for fumadocs-twoslash v4 hovers", () => {
+		const html = [
+			"<pre>",
+			'<Popup class="twoslash-hover">',
+			'<PopupContent class="nd-copy-ignore">',
+			'<pre class="shiki">DATABASE_URL: string</pre>',
+			"</PopupContent>",
+			"<PopupTrigger>env</PopupTrigger>",
+			"</Popup>",
+			"</pre>",
+		].join("");
+		const hover = extractTwoslashHoverHtml(html, "env");
+		expect(hover).toContain("DATABASE_URL");
+		expect(hover).not.toContain("PopupTrigger");
+	});
+
 	it("throws when env is missing", () => {
 		expect(() => extractEnvHoverHtml("<pre>no hover</pre>")).toThrow(
 			/no hover for env/,

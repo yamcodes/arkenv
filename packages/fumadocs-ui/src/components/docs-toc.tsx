@@ -2,7 +2,6 @@
 
 import type { TOCItemType } from "fumadocs-core/toc";
 import { useTOCItems } from "fumadocs-ui/components/toc";
-import { I18nLabel } from "fumadocs-ui/contexts/i18n";
 import {
 	TOCPopover,
 	type TOCProps,
@@ -200,7 +199,7 @@ function DocsTOCMain({ container, header, footer, list }: TOCProps) {
 				className="inline-flex items-center gap-1.5 px-(--docs-toc-gutter) text-sm text-fd-muted-foreground"
 			>
 				<Text className="size-4" />
-				<I18nLabel label="toc" />
+				On this page
 			</h3>
 			<DocsTOCItems {...list} />
 			{footer}

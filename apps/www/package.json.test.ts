@@ -19,6 +19,15 @@ const resolvedSnapshots = (name: string) =>
 				line.endsWith(":"),
 		);
 
+const snapshotVersions = (name: string) => [
+	...new Set(
+		resolvedSnapshots(name).map((line) => {
+			const version = line.slice(`  ${name}@`.length).split("(")[0];
+			return version;
+		}),
+	),
+];
+
 describe("www package scripts", () => {
 	it("keeps next dev as the only long-lived process", () => {
 		expect(packageJson.scripts.dev).toBe("next dev");
@@ -44,8 +53,8 @@ describe("www Vitest dependency graph", () => {
 		expect(deps).not.toHaveProperty("babel-plugin-react-compiler");
 	});
 
-	it("keeps a single fumadocs graph after dropping www Babel", () => {
-		expect(resolvedSnapshots("fumadocs-core")).toHaveLength(1);
-		expect(resolvedSnapshots("fumadocs-ui")).toHaveLength(1);
+	it("keeps a single fumadocs version after dropping www Babel", () => {
+		expect(snapshotVersions("fumadocs-core")).toEqual(["16.15.14"]);
+		expect(snapshotVersions("fumadocs-ui")).toEqual(["16.15.14"]);
 	});
 });
