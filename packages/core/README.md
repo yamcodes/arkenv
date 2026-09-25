@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://github.com/yamcodes/arkenv/actions/workflows/test.yml?query=branch%3Av1"><img alt="Test Status" src="https://github.com/yamcodes/arkenv/actions/workflows/test.yml/badge.svg?branch=v1"></a>
-  <a href="https://bundlephobia.com/package/@arkenv/core"><img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/%40arkenv%2Fcore"></a>
+  <a href="https://bundlejs.com/?q=%40arkenv%2Fcore&config=%7B%22esbuild%22%3A%7B%22external%22%3A%5B%22arktype%22%5D%7D%7D"><img alt="core bundle (gzipped)" src="https://img.shields.io/bundlejs/size/%40arkenv%2Fcore?externals=arktype&label=core%20bundle%20(gzipped)"></a>
   <a href="https://arktype.io/docs/ecosystem#arkenv"><img alt="ArkType Ecosystem" src="https://custom-icon-badges.demolab.com/badge/ArkType%20Ecosystem-0d1526?logo=arktype2&logoColor=e9eef9"></a>
   <a href="https://pullfrog.com"><img alt="Pullfrog" src="https://custom-icon-badges.demolab.com/badge/Powered%20by%20Pullfrog-2f4032?logo=pullfrog-white"></a>
   <a href="https://github.com/yamcodes/arkenv/blob/v1/LICENSE"><img alt="License" src="https://img.shields.io/github/license/yamcodes/arkenv"></a>
@@ -26,6 +26,9 @@
   <a href="https://stackblitz.com/github/yamcodes/arkenv/tree/v1/examples/stackblitz?file=index.ts">StackBlitz</a>
   <br />
 </div>
+
+<br/>
+<br/>
 
 <p align="center">
   v1 is in RC. Read the <a href="https://arkenv.js.org/blog/arkenv-v1-rc">release notes</a> and <a href="https://arkenv.js.org/docs/guides/migrating-to-v1">migration guide</a>.
