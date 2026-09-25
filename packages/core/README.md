@@ -43,7 +43,7 @@
 
 ## What is ArkEnv?
 
-Define your environment variables with ArkType, Zod, or Valibot. ArkEnv gives you a strongly typed, validated `env` object you can use everywhere. Raw strings are coerced automatically.
+Define your environment variables with ArkType, Zod, or Valibot. ArkEnv gives you a strongly typed, validated `env` object you can use everywhere.
 
 <details open>
 <summary>ArkType</summary>
@@ -104,7 +104,7 @@ export const env = arkenv({
 - Tiny: under 3kb core bundle (gzipped)
 - Use your existing TypeScript validator
 - No boilerplate
-- Works with TypeScript and plain JS
+- Automatic coercion
 - Fail-fast startup errors with redacted values
 - One `env` object: [Next.js](https://arkenv.js.org/docs/frameworks/nextjs), [Nuxt](https://arkenv.js.org/docs/frameworks/nuxt), [Vite](https://arkenv.js.org/docs/frameworks/vite), [TanStack Start](https://arkenv.js.org/docs/frameworks/tanstack-start), [SolidStart](https://github.com/yamcodes/arkenv/tree/v1/examples/with-solid-start), and [Bun](https://arkenv.js.org/docs/frameworks/bun)
 
