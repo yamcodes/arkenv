@@ -116,7 +116,7 @@ export const env = arkenv({
 npx arkenv init
 ```
 
-The CLI asks a few questions and writes your schema.
+The CLI walks you through setup for an existing project, or starts a new one from an example.
 
 <br/>
 
