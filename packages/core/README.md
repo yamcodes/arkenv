@@ -100,8 +100,7 @@ export const env = arkenv({
 
 ## Features
 
-- TypeScript-first schemas
-- Your existing validator
+- Use your existing TypeScript validator
 - Zero runtime dependencies
 - Works in Node.js and all modern browsers
 - Fail-fast startup errors with redacted values
