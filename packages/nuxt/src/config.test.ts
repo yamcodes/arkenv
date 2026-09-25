@@ -4,7 +4,6 @@ import {
 	extractClientKeys,
 	extractKeys,
 	extractServerKeys,
-	extractSharedKeys,
 } from "./config";
 
 describe("Nuxt config parser", () => {
@@ -72,7 +71,7 @@ describe("Nuxt config parser", () => {
 		expect(res.sharedKeys).toEqual(["NODE_ENV"]);
 	});
 
-	it("should extract client, server, and shared keys from separate file contents", () => {
+	it("should extract client and server keys from separate file contents", () => {
 		const clientContent = `
 			import arkenv from "./generated/env.gen";
 			export const env = arkenv({
@@ -85,15 +84,8 @@ describe("Nuxt config parser", () => {
 				DATABASE_URL: "string"
 			});
 		`;
-		const sharedContent = `
-			import { type } from "@arkenv/core";
-			export const SharedSchema = type({
-				NODE_ENV: "string"
-			});
-		`;
 
 		expect(extractClientKeys(clientContent)).toEqual(["NUXT_PUBLIC_API_URL"]);
 		expect(extractServerKeys(serverContent)).toEqual(["DATABASE_URL"]);
-		expect(extractSharedKeys(sharedContent)).toEqual(["NODE_ENV"]);
 	});
 });
