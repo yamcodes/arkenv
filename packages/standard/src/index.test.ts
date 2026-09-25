@@ -1,5 +1,11 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
-import type { EnvIssue, EnvIssueCode, EnvIssueMeta } from "./issues";
+import type { SafeArkEnvResult } from "./index";
+import {
+	type EnvIssue,
+	type EnvIssueCode,
+	type EnvIssueMeta,
+	formatIssues,
+} from "./issues";
 
 type RootModule = typeof import("./index");
 type IssuesModule = typeof import("./issues");
@@ -10,7 +16,6 @@ describe("@arkenv/standard root", () => {
 		const mod = await import("./index");
 		expect("formatIssues" in mod).toBe(false);
 		expect("getSchemaKeys" in mod).toBe(false);
-		expect("EnvIssue" in mod).toBe(false);
 		expect("arkenv" in mod).toBe(true);
 		expect("ArkEnvError" in mod).toBe(true);
 		expectTypeOf<Extract<keyof RootModule, ValueHelpers>>().toBeNever();
@@ -25,6 +30,12 @@ describe("@arkenv/standard root", () => {
 		>().toEqualTypeOf<ValueHelpers>();
 		expectTypeOf<EnvIssue["code"]>().toEqualTypeOf<EnvIssueCode>();
 		expectTypeOf<EnvIssue["meta"]>().toEqualTypeOf<EnvIssueMeta | undefined>();
+
+		const failed: Extract<SafeArkEnvResult<unknown>, { success: false }> = {
+			success: false,
+			issues: [],
+		};
+		expect(formatIssues(failed.issues)).toBe("");
 	});
 
 	it("does not re-export issue helpers from /valibot or /zod-mini", async () => {
@@ -38,3 +49,10 @@ describe("@arkenv/standard root", () => {
 		expect("ArkEnvError" in zodMini).toBe(true);
 	});
 });
+
+// @ts-expect-error EnvIssue lives on ./issues
+type _rootEnvIssue = import("./index").EnvIssue;
+// @ts-expect-error EnvIssueCode lives on ./issues
+type _rootEnvIssueCode = import("./index").EnvIssueCode;
+// @ts-expect-error EnvIssueMeta lives on ./issues
+type _rootEnvIssueMeta = import("./index").EnvIssueMeta;

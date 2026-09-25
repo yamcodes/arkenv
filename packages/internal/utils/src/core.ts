@@ -102,10 +102,10 @@ export type EnvIssue = {
 /**
  * Format a list of normalized environment issues into a single styled string.
  *
- * @param issues - The array of normalized issues to format
+ * @param issues The array of normalized issues to format
  * @returns The formatted and styled error report string
  */
-export function formatIssues(issues: EnvIssue[]): string {
+export function formatIssues(issues: readonly EnvIssue[]): string {
 	return issues
 		.map((issue) => {
 			const pathStr = styleText("yellow", issue.path);
