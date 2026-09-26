@@ -18,15 +18,23 @@ runs:
       if: ${{ inputs.node-version != '' }}
       shell: bash
       run: echo "${{ inputs.node-version }}" > .node-version
+    # Keep the CLI on the same Nub as packageManager / catalog (@nubjs/nub
+    # 0.9.3). setup-nub defaults to `latest`; after 0.9.5 shipped, CI installed
+    # 0.9.5 while package scripts still ran the 0.9.3 binary from node_modules,
+    # stacking both preload hooks and crashing tsdown with:
+    #   ENOENT open 'data:text/javascript,…globalThis.Temporal…'
+    # Pin until we deliberately bump packageManager + catalog together.
     - name: Set up Nub (project pin)
       if: ${{ inputs.node-version == '' }}
       uses: nubjs/setup-nub@v0
       with:
         shim: true
+        nub-version: "0.9.3"
         node-version-file: .node-version
     - name: Set up Nub (job override)
       if: ${{ inputs.node-version != '' }}
       uses: nubjs/setup-nub@v0
       with:
         shim: true
+        nub-version: "0.9.3"
         node-version: ${{ inputs.node-version }}
