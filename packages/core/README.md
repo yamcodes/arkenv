@@ -107,7 +107,7 @@ export const env = arkenv({
 
 - Zero runtime dependencies
 - Works in Node.js and all modern browsers
-- Tiny: under 3kb core bundle (gzipped)
+- Tiny: under 3 kB core bundle (gzipped)
 - Use your existing TypeScript validator
 - No boilerplate
 - Automatic coercion
