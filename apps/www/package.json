@@ -89,7 +89,7 @@
 		"@vitejs/plugin-react": "catalog:",
 		"jsdom": "29.1.1",
 		"mdast-util-mdx-jsx": "3.2.0",
-		"postcss": "8.5.14",
+		"postcss": "8.5.23",
 		"rimraf": "catalog:",
 		"tailwindcss": "4.2.4",
 		"typescript": "catalog:",
