@@ -5,8 +5,8 @@
     "": {
       "name": "arkenv-example-with-bun-react",
       "dependencies": {
-        "@arkenv/bun-plugin": "1.0.0-rc.2",
-        "@arkenv/core": "1.0.0-rc.2",
+        "@arkenv/bun-plugin": "1.0.0-rc.4",
+        "@arkenv/core": "1.0.0-rc.4",
         "arktype": "^2.2.5",
         "react": "^19.2.5",
         "react-dom": "^19.2.5",
@@ -24,11 +24,11 @@
 
     "@ark/util": ["@ark/util@0.56.4", "", {}, "sha512-KKqwGSia44cvuuDY70jGfbiUdG2E8F2cM4npdqvJ22S5a0LknlwG6nIrfQG1nF8fzxpzP30098wp0a8ASs0prQ=="],
 
-    "@arkenv/build": ["@arkenv/build@1.0.0-rc.2", "", { "dependencies": { "chokidar": "^4.0.3", "jiti": "2.7.0" } }, "sha512-XayN0Fw6wYqq5hLQIHRNdFE1gsqsLe1maKEKLfZ4bmUXmfys83fQPmej6fsVT5OqkNOpukAi9TgGxhe7ECyoNQ=="],
+    "@arkenv/build": ["@arkenv/build@1.0.0-rc.4", "", { "dependencies": { "chokidar": "^4.0.3", "jiti": "2.7.0" } }, "sha512-M1/OPi9t9SwbheH/v56KkxwTdROyR8ioNT0PrFAdJlUnXYWf6ZImdRfE51Zc7L7plpI3G94i+AR5Buw7XEWFCg=="],
 
-    "@arkenv/bun-plugin": ["@arkenv/bun-plugin@1.0.0-rc.2", "", { "dependencies": { "@arkenv/build": "1.0.0-rc.2", "jiti": "2.7.0" }, "peerDependencies": { "@arkenv/core": "^1.0.0", "@arkenv/standard": "^1.0.0", "arktype": "^2.1.22", "bun": "^1.0.0" }, "optionalPeers": ["@arkenv/core", "@arkenv/standard", "arktype"] }, "sha512-+gwxCIuB6LEgRxswyjKD2SDCemtyYKPFGkoKD54krmCpmBtkYNBv84ZofYB7A6u1zm2ci5+/2pm2HYwOrkiC2w=="],
+    "@arkenv/bun-plugin": ["@arkenv/bun-plugin@1.0.0-rc.4", "", { "dependencies": { "@arkenv/build": "1.0.0-rc.4", "jiti": "2.7.0" }, "peerDependencies": { "@arkenv/core": "^1.0.0", "@arkenv/standard": "^1.0.0", "arktype": "^2.1.22", "bun": "^1.0.0" }, "optionalPeers": ["@arkenv/core", "@arkenv/standard", "arktype"] }, "sha512-7UO2TnKJhmfv/14vH1EIWohPlcOiMNyUSQ99PE9GJ4UlVn7dAhY4FjEaz7Ps+e04nw59mRYlyLnh41gzCFqk9g=="],
 
-    "@arkenv/core": ["@arkenv/core@1.0.0-rc.2", "", { "peerDependencies": { "arktype": "^2.1.22" } }, "sha512-3KUzqWnSHXR/6PH06dA5qcBQU5OdY4u40wjUwR81nD/r5ajoe+S7/sqwa8XwpmxqbaF7YjKM9aVNbluSf8U4eg=="],
+    "@arkenv/core": ["@arkenv/core@1.0.0-rc.4", "", { "peerDependencies": { "arktype": "^2.1.22" } }, "sha512-KO87DcYqWq1MJEDAx10Mtki9wzeUUeKDDiDhCbU9sp5Zg2U2VxyZcPXd1dv/T55i6gGo0Y9iYni/ksm0kLL6MA=="],
 
     "@oven/bun-darwin-aarch64": ["@oven/bun-darwin-aarch64@1.3.13", "", { "os": "darwin", "cpu": "arm64" }, "sha512-qAS6Hg8Q14ckfBuqJ2Zh7gBQSVSUHeibSq4OFqBTv6DzyJuxYlr0sdYQzmYmnbPxbqobekqUDTa/4XEaqRi7vg=="],
 
