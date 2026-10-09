@@ -231,9 +231,15 @@
 	background-size:
 		var(--rule-hair) 100%,
 		var(--rule-hair) 100%;
+	/*
+	 * background-position percentages already align the 1px image's end
+	 * edge, so the right rail is `100% - inset` — same pixel as a
+	 * border-inline-end on the docs cage. Subtracting --rule-hair again
+	 * shifts it 1px left of that border.
+	 */
 	background-position:
 		var(--home-rail-inset) 0,
-		calc(100% - var(--home-rail-inset) - var(--rule-hair)) 0;
+		calc(100% - var(--home-rail-inset)) 0;
 	background-repeat: no-repeat;
 }
 
