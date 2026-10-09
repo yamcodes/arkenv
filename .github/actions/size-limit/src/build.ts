@@ -1,5 +1,5 @@
-import { spawn } from "bun";
 import type { Config } from "./config.ts";
+import { spawn } from "./spawn.ts";
 
 // Install dependencies and build before running size checks
 export const installAndBuild = async (

@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env nub
 
 import { installAndBuild } from "./build.ts";
 import { getConfig } from "./config.ts";

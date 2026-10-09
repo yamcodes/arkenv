@@ -1,4 +1,5 @@
 import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { getPackageNames } from "../package/names.ts";
 import { runSizeLimitOnPackage } from "../size-limit/package.ts";
@@ -24,7 +25,9 @@ export const getBaselineSizesFromNpm = async (
 	);
 
 	const packageNames = getPackageNames(filter);
-	const tempDir = join(process.cwd(), ".npm-baseline");
+	// Outside the repo. `nub install` in a checkout subdirectory attaches to
+	// the monorepo workspace instead of the downloaded package.
+	const tempDir = join(tmpdir(), "arkenv-size-limit-npm-baseline");
 
 	// Clean up temp directory if it exists
 	if (existsSync(tempDir)) {
