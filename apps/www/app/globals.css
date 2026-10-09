@@ -21,10 +21,10 @@
 /*
  * Shared page gutter and outer-rail inset.
  * Content pads with --page-rail-gutter (1rem, then 1.5rem from 40rem).
- * Vertical hairlines start at 48rem (Vite's md). Below that,
- * --page-rail-inset is 0: phones have no side rails and no rail margin.
- * From 48rem the inset matches the gutter until the viewport can center
- * the 1400px column.
+ * Vertical hairlines start at 960px, with the docs sidebar. Below that
+ * the layout is still one column, and --page-rail-inset is 0: no side
+ * rails and no rail margin. From 960px the inset matches the gutter
+ * until the viewport can center the 1400px column.
  */
 :root {
 	--page-rail-gutter: 1rem;
@@ -37,7 +37,7 @@
 	}
 }
 
-@media (min-width: 48rem) {
+@media (min-width: 960px) {
 	:root {
 		--page-rail-inset: var(--page-rail-gutter);
 	}

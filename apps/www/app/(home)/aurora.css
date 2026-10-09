@@ -201,10 +201,10 @@
 	position: relative;
 	/*
 	 * Full-bleed canvas (open-slide): horizontals + hatch/paper bands run to
-	 * the viewport. From 48rem, vertical rails sit on --home-rail-inset and
-	 * content pads to --home-content-inset (one gutter inside the rails).
-	 * Below 48rem the rail inset is 0, so copy keeps a single gutter and
-	 * the side lines stay off — same cutoff as vite.dev.
+	 * the viewport. From 960px (the docs sidebar), vertical rails sit on
+	 * --home-rail-inset and content pads to --home-content-inset (one gutter
+	 * inside the rails). Below that the rail inset is 0, so copy keeps a
+	 * single gutter and the side lines stay off.
 	 *
 	 * Measure the shell, not 100vw. 100vw includes the scrollbar, so the
 	 * rails drifted from the docs cage (which sizes off the content box).
@@ -245,7 +245,7 @@
 	background-repeat: no-repeat;
 }
 
-@media (min-width: 48rem) {
+@media (min-width: 960px) {
 	.home-aurora__rails {
 		background-image: linear-gradient(var(--color-rule-y), var(--color-rule-y)), linear-gradient(var(--color-rule-y), var(--color-rule-y));
 	}
@@ -1304,9 +1304,7 @@
 		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 	}
 
-	.home-aurora__pitch:not(.home-aurora__pitch--span):nth-child(odd) {
-		border-inline-end: var(--rule-hair) solid var(--color-rule-y);
-	}
+	/* Center hairline waits until the page rails exist (960px). */
 
 	.home-aurora__pitch:not(.home-aurora__pitch--span) > .home-aurora__pitch-head {
 		max-width: none;
@@ -1333,6 +1331,12 @@
 	.home-aurora__node-widget {
 		max-width: none;
 		width: 100%;
+	}
+}
+
+@media (min-width: 960px) {
+	.home-aurora__pitch:not(.home-aurora__pitch--span):nth-child(odd) {
+		border-inline-end: var(--rule-hair) solid var(--color-rule-y);
 	}
 }
 

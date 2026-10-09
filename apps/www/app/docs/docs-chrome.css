@@ -18,8 +18,9 @@
 
 /*
  * Outer cage when a column is hidden. Sidebar (>=960px) and TOC (>=1200px)
- * paint their own outer borders; these stand in from 48rem so the left/right
- * hairlines stay on the same x as the homepage rails. Phones have neither.
+ * paint their own outer borders; these stand in from 960px so the left/right
+ * hairlines stay on the same x as the homepage rails. Below 960px neither
+ * page has side lines.
  */
 #docs-chrome-shell::before,
 #docs-chrome-shell::after {
@@ -41,8 +42,8 @@
 	right: max(var(--page-rail-inset, 0px), calc((100% - var(--fd-layout-width, 1400px)) / 2));
 }
 
-/* Phones: no side rails (vite.dev hides the frame below md / 48rem). */
-@media (min-width: 48rem) {
+/* Side lines start with the sidebar. Below 960px the page is one column. */
+@media (min-width: 960px) {
 	#docs-chrome-shell::before,
 	#docs-chrome-shell::after {
 		content: "";
@@ -127,9 +128,9 @@
 
 /*
  * Fumadocs sizes the outer tracks as minmax(min-content, 1fr), so below the
- * 1400px column they collapse to the viewport edge. From 48rem, homepage
+ * 1400px column they collapse to the viewport edge. From 960px, homepage
  * rails stay at --page-rail-inset until the column can center. Raise the
- * floor to that inset (0 on phones, so the cage has no rail margin).
+ * floor to that inset (0 below 960px, so the cage has no rail margin).
  * !important beats the inline grid-template shorthand.
  */
 #nd-docs-layout {
@@ -146,8 +147,8 @@
  * % there is (container - image), so a 1px strip sits ~1px left of the
  * sidebar/TOC borders (stair-step at the footer-top hairline).
  * Same box model as the cage: a centered column no wider than
- * --fd-layout-width. From 48rem it stays at least --page-rail-inset off
- * the viewport; on phones the inset is 0 and the borders stay off.
+ * --fd-layout-width. From 960px it stays at least --page-rail-inset off
+ * the viewport; below that the inset is 0 and the borders stay off.
  * `top: -1px` crosses the edge-to-edge footer-top hairline (open-slide).
  * Inner splitters stay on the columns and stop here.
  */
@@ -171,7 +172,7 @@
 	border-inline: none;
 }
 
-@media (min-width: 48rem) {
+@media (min-width: 960px) {
 	.docs-outer-rails {
 		border-inline: 1px solid var(--color-rule-y, var(--color-fd-border));
 	}

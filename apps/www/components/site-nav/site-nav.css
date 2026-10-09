@@ -3,8 +3,8 @@
 /*
  * Canonical chrome metrics — literal rem only.
  * The inline gutter is --page-rail-gutter so the bar lines up with the
- * page rails. The bar's outer shrink is --page-rail-inset (0 below 48rem,
- * so phones have no rail margin). Do not pull --page-gutter / --space-*
+ * page rails. The bar's outer shrink is --page-rail-inset (0 below 960px,
+ * so the single-column layout has no rail margin). Do not pull --page-gutter / --space-*
  * (home Aurora defines them; docs does not).
  */
 .site-nav-root {
