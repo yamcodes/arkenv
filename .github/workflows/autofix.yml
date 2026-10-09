@@ -28,10 +28,12 @@ jobs:
         uses: ./.github/actions/setup-nub-ci
 
       # TODO(2057): hosted Renovate leaves nub.lock stale. --lockfile-only
-      # rewrites it so autofix.ci can commit it. Drop this step once
-      # renovatebot/renovate#44422 is on the Mend app.
+      # rewrites it so autofix.ci can commit it. --minimum-release-age=0
+      # lets that rewrite pick a version still inside the 24-hour gate;
+      # without it the refresh aborts and the lockfile is never committed.
+      # Drop this step once renovatebot/renovate#44422 is on the Mend app.
       - name: Refresh lockfile
-        run: nub install --lockfile-only
+        run: nub install --lockfile-only --minimum-release-age=0
 
       - name: Install dependencies
         run: nub install
