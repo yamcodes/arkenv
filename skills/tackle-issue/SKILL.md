@@ -23,9 +23,10 @@ Before starting any work, you MUST verify that the issue is ready for an agent.
    ```bash
    gh issue view <issue-number> --json title,body,labels,comments
    ```
-2. **Verify "ready for agent" Label**: Check if the `ready for agent` label is present in the `labels` array.
-   - **If the label is MISSING**: Abort the process immediately. Inform the user: `Issue #<number> is not marked as 'ready for agent'. Please ensure it is fully specified and labeled correctly before proceeding.`
-   - **If the label is PRESENT**: Continue to the next step.
+2. **Verify the issue can start**: Check the `labels` array.
+   - **If `blocked` is present**: Abort the process immediately, even when `ready for agent` is also present. Inform the user: `Issue #<number> is labeled 'blocked'. Work cannot start until that blocker clears.`
+   - **If `ready for agent` is MISSING**: Abort the process immediately. Inform the user: `Issue #<number> is not marked as 'ready for agent'. Please ensure it is fully specified and labeled correctly before proceeding.`
+   - **If `ready for agent` is present and `blocked` is not**: Continue to the next step.
 
 ### 2. Development setup
 
