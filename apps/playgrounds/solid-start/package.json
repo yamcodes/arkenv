@@ -14,7 +14,7 @@
 		"arktype": "catalog:",
 		"nitro": "3.0.260903-beta",
 		"solid-js": "1.9.12",
-		"vite": "8.0.10"
+		"vite": "8.0.16"
 	},
 	"engines": {
 		"node": ">=24"

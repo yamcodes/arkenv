@@ -28,7 +28,7 @@
 		"@vitejs/plugin-react": "catalog:",
 		"rimraf": "catalog:",
 		"typescript": "catalog:",
-		"vite": "8.0.10"
+		"vite": "8.0.16"
 	},
 	"engines": {
 		"node": ">=22.12.0"
