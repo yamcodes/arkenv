@@ -61,7 +61,7 @@
 		"rimraf": "catalog:",
 		"turbo": "2.11.2",
 		"typescript": "catalog:",
-		"typescript-classic": "npm:typescript@6.0.3",
+		"typescript-classic": "npm:typescript@7.0.2",
 		"vitest": "catalog:"
 	},
 	"packageManager": "nub@0.9.3",
