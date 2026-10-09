@@ -16,9 +16,8 @@
 	gap: var(--space-sm);
 	padding-block: var(--fd-page-pad-top) var(--space-3xl);
 	/*
-	 * Full-bleed pad like .home-aurora__intro — --home-content-inset grows with
-	 * the viewport to keep content inside the rails. Reading measure lives on
-	 * children so the growing inset cannot eat a max-width on this box.
+	 * Same inset as the homepage hero: one gutter, and from 960px one gutter
+	 * inside the rails. Sections fill that box so the rules meet both rails.
 	 */
 	padding-inline: var(--home-content-inset);
 	width: 100%;
@@ -43,7 +42,6 @@
 
 .roadmap-page__header,
 .roadmap-page__section {
-	max-width: 48rem;
 	width: 100%;
 }
 

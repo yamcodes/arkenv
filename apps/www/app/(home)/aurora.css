@@ -108,10 +108,7 @@
 	--fd-primary: var(--color-ink);
 	--color-fd-primary: var(--color-ink);
 	--fd-layout-width: 1400px;
-	--home-gutter: 1rem;
-	--home-col: min(var(--fd-layout-width), calc(100vw - 2 * var(--home-gutter)));
-	--home-rail-inset: max(0px, calc((100vw - var(--home-col)) / 2));
-	--home-content-inset: calc(var(--home-rail-inset) + var(--home-gutter));
+	--home-gutter: var(--page-rail-gutter, 1rem);
 
 	position: relative;
 	/* No isolation: isolate — it breaks Site Nav backdrop-filter */
@@ -122,12 +119,6 @@
 	background-color: var(--color-paper);
 	font-family: var(--font-body);
 	overflow-x: clip;
-}
-
-@media (min-width: 40rem) {
-	.home-aurora {
-		--home-gutter: 1.5rem;
-	}
 }
 
 .home-aurora__atmosphere {
@@ -212,9 +203,15 @@
 	position: relative;
 	/*
 	 * Full-bleed canvas (open-slide): horizontals + hatch/paper bands run to
-	 * the viewport. Vertical rails sit on --home-rail-inset. Content pads to
-	 * --home-content-inset so it still lines up inside the rails.
+	 * the viewport. From 960px (the docs sidebar), vertical rails sit on
+	 * --home-rail-inset and content pads to --home-content-inset (one gutter
+	 * inside the rails). Below that the rail inset is 0, so copy keeps a
+	 * single gutter and the side lines stay off.
+	 *
+	 * Measure the shell, not 100vw. 100vw includes the scrollbar, so the
+	 * rails drifted from the docs cage (which sizes off the content box).
 	 */
+	container-type: inline-size;
 	padding: var(--space-lg) 0 0;
 	flex: 1;
 	display: flex;
@@ -223,19 +220,37 @@
 	--home-split-gap: var(--space-xl);
 }
 
+/* 100cqi is the shell. Descendants inherit the resolved length. */
+.home-aurora__shell > * {
+	--home-rail-inset: max(var(--page-rail-inset, 0px), calc((100cqi - var(--fd-layout-width)) / 2));
+	--home-content-inset: calc(var(--home-rail-inset) + var(--home-gutter));
+}
+
 .home-aurora__rails {
 	position: absolute;
 	inset: 0;
 	z-index: 4;
 	pointer-events: none;
-	background-image: linear-gradient(var(--color-rule-y), var(--color-rule-y)), linear-gradient(var(--color-rule-y), var(--color-rule-y));
+	background-image: none;
 	background-size:
 		var(--rule-hair) 100%,
 		var(--rule-hair) 100%;
+	/*
+	 * background-position percentages already align the 1px image's end
+	 * edge, so the right rail is `100% - inset` — same pixel as a
+	 * border-inline-end on the docs cage. Subtracting --rule-hair again
+	 * shifts it 1px left of that border.
+	 */
 	background-position:
 		var(--home-rail-inset) 0,
-		calc(100% - var(--home-rail-inset) - var(--rule-hair)) 0;
+		calc(100% - var(--home-rail-inset)) 0;
 	background-repeat: no-repeat;
+}
+
+@media (min-width: 960px) {
+	.home-aurora__rails {
+		background-image: linear-gradient(var(--color-rule-y), var(--color-rule-y)), linear-gradient(var(--color-rule-y), var(--color-rule-y));
+	}
 }
 
 @media (min-width: 40rem) {
@@ -1291,9 +1306,7 @@
 		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 	}
 
-	.home-aurora__pitch:not(.home-aurora__pitch--span):nth-child(odd) {
-		border-inline-end: var(--rule-hair) solid var(--color-rule-y);
-	}
+	/* Center hairline waits until the page rails exist (960px). */
 
 	.home-aurora__pitch:not(.home-aurora__pitch--span) > .home-aurora__pitch-head {
 		max-width: none;
@@ -1320,6 +1333,12 @@
 	.home-aurora__node-widget {
 		max-width: none;
 		width: 100%;
+	}
+}
+
+@media (min-width: 960px) {
+	.home-aurora__pitch:not(.home-aurora__pitch--span):nth-child(odd) {
+		border-inline-end: var(--rule-hair) solid var(--color-rule-y);
 	}
 }
 
