@@ -1,7 +1,5 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { regex } from "arkregex";
-import { glob } from "glob";
 import type { SizeLimitResult, SizeLimitState } from "../types.ts";
 import { formatBytes } from "./size.ts";
 
@@ -10,8 +8,8 @@ import { formatBytes } from "./size.ts";
  */
 export async function parseJsonFiles(): Promise<SizeLimitResult[]> {
 	const results: SizeLimitResult[] = [];
-	const files = glob.sync("packages/**/.size-limit.json", {
-		ignore: ["**/node_modules/**", "**/.turbo/**"],
+	const files = fs.globSync("packages/**/.size-limit.json", {
+		exclude: ["**/node_modules/**", "**/.turbo/**"],
 	});
 
 	for (const file of files) {
@@ -226,10 +224,9 @@ export function parseSizeLimitOutput(
 		}
 	};
 
-	const ansiRegex = regex(
-		"[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]",
-		"g",
-	);
+	const ansiRegex =
+		// biome-ignore lint/suspicious/noControlCharactersInRegex: ANSI CSI sequences start with ESC
+		/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
 
 	for (const line of lines) {
 		const cleanLine = line.replace(ansiRegex, "");
