@@ -12,8 +12,8 @@
 		"clean": "rimraf dist node_modules .output"
 	},
 	"dependencies": {
-		"@arkenv/core": "1.0.0-rc.2",
-		"@arkenv/rsbuild-plugin": "1.0.0-rc.2",
+		"@arkenv/core": "1.0.0-rc.4",
+		"@arkenv/rsbuild-plugin": "1.0.0-rc.4",
 		"@tanstack/react-router": "1.170.32",
 		"@tanstack/react-start": "1.168.49",
 		"arktype": "^2.2.5",

@@ -65,7 +65,7 @@ jobs:
       - uses: ./.github/actions/setup-nub-ci
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.4.0
+          bun-version: 1.4.2
 
       - run: nub install
       - run: nub run --no-check build:packages
