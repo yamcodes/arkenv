@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { spawn } from "bun";
+import { spawn } from "../spawn.ts";
 import type { SizeLimitResult } from "../types.ts";
 import { parseSizeLimitOutput } from "../utils/parser.ts";
 
@@ -118,7 +118,8 @@ export const runSizeLimitOnPackage = async (
 	// Create a temporary package.json with size-limit config and dependencies
 	// We need to preserve the package name, main/module fields, and dependencies for size-limit to work
 	// Also need to include the preset in devDependencies so size-limit can find it
-	// Include peerDependencies as regular dependencies since bun install won't install them automatically
+	// Include peerDependencies as regular dependencies. The installer does not
+	// install peerDependencies on its own.
 	const tempPackageJson = {
 		name: packageJson.name,
 		version: packageJson.version,
@@ -157,7 +158,7 @@ export const runSizeLimitOnPackage = async (
 		// Install all dependencies (production + dev) from package.json
 		// This includes both the package's dependencies (needed for bundling) and size-limit plugins
 		console.log(`📦 Installing dependencies for ${packageName}...`);
-		const installProc = spawn(["bun", "install"], {
+		const installProc = spawn(["nub", "install"], {
 			cwd: packageDir,
 			stdout: "pipe",
 			stderr: "pipe",
@@ -172,12 +173,12 @@ export const runSizeLimitOnPackage = async (
 			console.log(
 				`⚠️ Failed to install dependencies: ${installStderr || installStdout}`,
 			);
-			// Continue anyway - bunx might still work
+			// Continue anyway. nubx may still resolve a local binary.
 		}
 
 		// Run size-limit on this package
 		console.log(`🔍 Running size-limit on ${packageName}...`);
-		const proc = spawn(["bunx", "size-limit", "--json"], {
+		const proc = spawn(["nubx", "size-limit", "--json"], {
 			cwd: packageDir,
 			stdout: "pipe",
 			stderr: "pipe",
@@ -227,7 +228,7 @@ export const runSizeLimitOnPackage = async (
 			console.log(
 				`⚠️ Failed to parse JSON output, trying text parsing: ${parseError instanceof Error ? parseError.message : String(parseError)}`,
 			);
-			results = parseSizeLimitOutput(stdout + stderr, packageName);
+			results = parseSizeLimitOutput(stdout + stderr, [packageName]);
 		}
 
 		// If we have results, return them even if exit code is non-zero
