@@ -21,7 +21,11 @@ export function DocsTocLinks({
 	roadmapStale = false,
 }: {
 	pageTitle: string;
-	editHref: string;
+	/**
+	 * GitHub edit URL for this page. Omitted on surfaces with no single file
+	 * (the blog index).
+	 */
+	editHref?: string;
 	roadmapPercent: number;
 	roadmapStale?: boolean;
 }) {
@@ -61,15 +65,17 @@ export function DocsTocLinks({
 					<CircleArrowUp aria-hidden="true" className="size-3.5 shrink-0" />
 					Scroll to top
 				</button>
-				<a
-					href={editHref}
-					target="_blank"
-					rel="noopener noreferrer"
-					className="inline-flex items-center gap-2 hover:text-fd-foreground transition-colors"
-				>
-					<Pencil aria-hidden="true" className="size-3.5 shrink-0" />
-					Edit this page
-				</a>
+				{editHref ? (
+					<a
+						href={editHref}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="inline-flex items-center gap-2 hover:text-fd-foreground transition-colors"
+					>
+						<Pencil aria-hidden="true" className="size-3.5 shrink-0" />
+						Edit this page
+					</a>
+				) : null}
 				<DocsFeedbackButton
 					pageTitle={pageTitle}
 					onEmotionSelect={handleEmotionSelect}
