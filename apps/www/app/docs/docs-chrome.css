@@ -129,6 +129,44 @@
 }
 
 /*
+ * Blog (no sidebar) uses the same 1400px cage, so the wordmark and search
+ * sit on the docs rails. Outer rails: sidebar start from 960px, far-right
+ * from 1200px. The article fills that frame. The TOC keeps its start
+ * border (article↔TOC); the shell rail is the far-right line.
+ */
+#docs-chrome-shell[data-sidebar="off"] #nd-page {
+	max-width: none;
+	margin-inline: 0;
+}
+
+@media (min-width: 960px) {
+	#docs-chrome-shell[data-sidebar="off"]::before {
+		content: "";
+		position: absolute;
+		z-index: 4;
+		pointer-events: none;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		box-sizing: border-box;
+		width: min(100%, var(--fd-layout-width, 1400px));
+		margin-inline: auto;
+		border-inline-start: 1px solid var(--color-rule-y, var(--color-fd-border));
+	}
+}
+
+@media (min-width: 1200px) {
+	#docs-chrome-shell[data-sidebar="off"]::before {
+		border-inline-end: 1px solid var(--color-rule-y, var(--color-fd-border));
+	}
+
+	#docs-chrome-shell[data-sidebar="off"] #nd-toc {
+		border-inline-end: none;
+	}
+}
+
+/*
  * Copyright hairline — edge-to-edge like homepage `.home-aurora__footer-meta`.
  * 100cqi is the bleed (viewport content), not 100vw (avoids scrollbar delta).
  * Text stays on the band+footer gutter; the rule itself runs to the margins.

@@ -32,9 +32,9 @@ export function DocsChrome({
 		<main
 			style={
 				{
-					// Without the 300px sidebar, shrink the cage so the article
-					// stays the docs reading measure beside the TOC.
-					"--fd-layout-width": sidebar ? "1400px" : "1100px",
+					// Docs and blog share this cage so the wordmark and search
+					// sit on the same rails.
+					"--fd-layout-width": "1400px",
 				} as CSSProperties
 			}
 		>
@@ -44,7 +44,7 @@ export function DocsChrome({
 			 * on resize and can leave sticky with a stale top offset.
 			 * SSR it here — portaling after paint is what made the bar jump.
 			 */}
-			<div id="docs-chrome-shell">
+			<div id="docs-chrome-shell" data-sidebar={sidebar ? "on" : "off"}>
 				<SiteNavDocs
 					sidebarTrigger={sidebar ? <DocsSidebarTrigger /> : undefined}
 					releaseTag={RELEASE_TAG}
@@ -83,8 +83,8 @@ export function DocsChrome({
 					{children}
 				</DocsLayout>
 			</div>
-			{/* Footer cage rails continue the sidebar. The blog has no sidebar. */}
-			<SiteFooter rails={sidebar} />
+			{/* Outer rails continue through the footer on docs and the blog. */}
+			<SiteFooter rails />
 		</main>
 	);
 }
