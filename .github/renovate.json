@@ -5,6 +5,14 @@
 	"schedule": ["on friday"],
 	"vulnerabilityAlerts": {
 		"enabled": true,
+		// Default is update-lockfile. For a range with no lockfile entry
+		// (peerDependencies), Renovate then switches that to bump. bump
+		// rewrites each `||` alternative and joins them with spaces, so
+		// `^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0` becomes
+		// `^8.0.16 ^8.0.16 ^8.0.16 ^8.0.16 ^8.0.16` (see #2033).
+		// `auto` widens peers and leaves an in-range peer range unchanged.
+		// Pinned devDependencies still move to the fixed version.
+		"rangeStrategy": "auto",
 	},
 	"osvVulnerabilityAlerts": true,
 	"updateInternalDeps": true,
@@ -21,7 +29,9 @@
 		// Note: Order by least important to most important,
 		// see note at the end of https://docs.renovatebot.com/configuration-options/#packagerules
 
-		// Do not edit peer dependency ranges in package manifests.
+		// Do not edit peer dependency ranges on regular updates.
+		// Security updates re-enable peers; vulnerabilityAlerts.rangeStrategy
+		// above stops those from rewriting `||` ranges.
 		{
 			"matchDepTypes": ["peerDependencies"],
 			"enabled": false,

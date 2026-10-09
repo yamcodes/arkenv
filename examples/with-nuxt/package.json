@@ -13,7 +13,7 @@
 		"@arkenv/core": "1.0.0-rc.4",
 		"@arkenv/nuxt": "1.0.0-rc.4",
 		"arktype": "^2.2.5",
-		"nuxt": "^4.4.8"
+		"nuxt": "^4.5.1"
 	},
 	"devDependencies": {
 		"@types/node": "^24.12.2",

@@ -40,6 +40,19 @@ describe("Renovate configuration", () => {
 		expect(pnpmGroup).toContain('"examples/**"');
 	});
 
+	it("keeps security updates from rewriting peer OR ranges", () => {
+		const alertsStart = config.indexOf('"vulnerabilityAlerts"');
+		const alertsEnd = config.indexOf('"osvVulnerabilityAlerts"');
+		const alerts = config.slice(alertsStart, alertsEnd);
+
+		expect(alertsStart).toBeGreaterThanOrEqual(0);
+		expect(alertsEnd).toBeGreaterThan(alertsStart);
+		expect(alerts).toContain('"enabled": true');
+		// update-lockfile is rewritten to bump for unlocked ranges, which
+		// joins `||` alternatives with spaces. auto widens peers instead.
+		expect(alerts).toContain('"rangeStrategy": "auto"');
+	});
+
 	it("keeps generated examples excluded from Renovate updates", () => {
 		const disableRuleStart = config.indexOf(
 			'"description": "Disable sync-generated example apps"',

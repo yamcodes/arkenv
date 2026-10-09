@@ -43,7 +43,8 @@
 	display: block;
 	width: 100%;
 	height: 100%;
-	color: color-mix(in oklch, var(--color-fd-foreground) 14%, transparent);
+	--dot-alpha: 14%;
+	color: color-mix(in oklch, var(--color-fd-foreground) var(--dot-alpha), transparent);
 	background-image: radial-gradient(currentColor 0.75px, transparent 1.1px);
 	background-size: var(--dot-spacing, 14px) var(--dot-spacing, 14px);
 }

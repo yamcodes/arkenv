@@ -20,11 +20,12 @@ jobs:
             const issue = context.payload.issue;
             const action = context.payload.action;
             const labelName = context.payload.label ? context.payload.label.name : null;
+            const readyLabels = ['ready for human', 'ready for agent'];
             const stateLabels = [
-              'ready for human',
-              'ready for agent',
+              ...readyLabels,
               'needs more info',
-              'wontfix'
+              'wontfix',
+              'blocked'
             ];
             const stateOrMetaLabels = [...stateLabels, 'meta'];
 
@@ -65,6 +66,33 @@ jobs:
 
             core.info(`Action: ${action}, Label: ${labelName}`);
             core.info(`Current labels: ${JSON.stringify(currentLabels)}`);
+
+            const dropReadyLabels = async () => {
+              for (const name of readyLabels) {
+                if (currentLabels.includes(name)) {
+                  core.info(`'blocked' is set. Removing '${name}'...`);
+                  await removeLabel(name);
+                }
+              }
+            };
+
+            // Ready means the work can start. Blocked means it cannot.
+            // The label just added wins. An issue opened (or left) with both keeps blocked.
+            if (action === 'labeled' && labelName === 'blocked') {
+              await dropReadyLabels();
+            } else if (
+              action === 'labeled' &&
+              readyLabels.includes(labelName) &&
+              currentLabels.includes('blocked')
+            ) {
+              core.info(`Label '${labelName}' was added. Removing 'blocked'...`);
+              await removeLabel('blocked');
+            } else if (
+              (action === 'opened' || action === 'unlabeled') &&
+              currentLabels.includes('blocked')
+            ) {
+              await dropReadyLabels();
+            }
 
             if (action === 'labeled' && labelName) {
               if (stateOrMetaLabels.includes(labelName)) {
