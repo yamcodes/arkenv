@@ -27,8 +27,12 @@ jobs:
       - name: Set up Nub
         uses: ./.github/actions/setup-nub-ci
 
+      # Renovate edits package.json and leaves nub.lock unchanged. CI's
+      # frozen `nub install` then exits 16 (ERR_NUB_OUTDATED_LOCKFILE) and
+      # every later job fails. Refresh the lockfile here so the autofix.ci
+      # action below commits it; the next CI run installs from that file.
       - name: Install dependencies
-        run: nub install
+        run: node scripts/nub-install-refresh-lockfile.js
 
       # Note: We only skip manypkg for Changesets-driven version bumps.
       # This avoids touching versions that haven't been published yet,
