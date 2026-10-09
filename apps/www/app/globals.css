@@ -44,6 +44,14 @@
 }
 
 /*
+ * Read the inset in this file. The CSS pipeline drops a custom property
+ * whose only references live in other stylesheets.
+ */
+:root {
+	--page-rail-floor: var(--page-rail-inset);
+}
+
+/*
  * Clip wide children on page shells (not html/body). Site Nav glass uses
  * sticky + absolute positioning so backdrop-filter still samples inside
  * these clipped shells; position:fixed does not.
