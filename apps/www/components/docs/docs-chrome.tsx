@@ -13,21 +13,28 @@ import { RELEASE_TAG } from "~/lib/config/release";
 import "~/app/docs/docs-chrome.css";
 
 /**
- * Shared docs shell: Site Nav, drill-in sidebar, TOC column, and footer rails.
- * Docs and the blog both render inside this so the reading layout stays one system.
+ * Shared docs shell: Site Nav, optional drill-in sidebar, TOC column, and footer.
+ * The blog turns the sidebar off and keeps the article + “On this page” rail.
  */
 export function DocsChrome({
 	tree,
 	children,
+	sidebar = true,
 }: {
 	tree: PageTree.Root;
 	children: ReactNode;
+	/**
+	 * Docs drill-in sidebar. Off for the blog (TanStack-style: article + TOC).
+	 */
+	sidebar?: boolean;
 }) {
 	return (
 		<main
 			style={
 				{
-					"--fd-layout-width": "1400px",
+					// Without the 300px sidebar, shrink the cage so the article
+					// stays the docs reading measure beside the TOC.
+					"--fd-layout-width": sidebar ? "1400px" : "1100px",
 				} as CSSProperties
 			}
 		>
@@ -39,17 +46,22 @@ export function DocsChrome({
 			 */}
 			<div id="docs-chrome-shell">
 				<SiteNavDocs
-					sidebarTrigger={<DocsSidebarTrigger />}
+					sidebarTrigger={sidebar ? <DocsSidebarTrigger /> : undefined}
 					releaseTag={RELEASE_TAG}
 				/>
 				<DocsLayout
 					tree={tree}
 					sidebar={{
+						enabled: sidebar,
 						collapsible: false,
 					}}
-					slots={{
-						sidebar: drillInSidebarSlots,
-					}}
+					slots={
+						sidebar
+							? {
+									sidebar: drillInSidebarSlots,
+								}
+							: undefined
+					}
 					themeSwitch={{ enabled: false }}
 					searchToggle={{ enabled: false }}
 					nav={{
@@ -63,7 +75,7 @@ export function DocsChrome({
 									aria-hidden="true"
 								/>
 								{/* Registers drawer state for the Site Nav trigger (outside this grid). */}
-								<DocsSidebarSync />
+								{sidebar ? <DocsSidebarSync /> : null}
 							</>
 						),
 					}}
@@ -71,7 +83,8 @@ export function DocsChrome({
 					{children}
 				</DocsLayout>
 			</div>
-			<SiteFooter rails />
+			{/* Footer cage rails continue the sidebar. The blog has no sidebar. */}
+			<SiteFooter rails={sidebar} />
 		</main>
 	);
 }

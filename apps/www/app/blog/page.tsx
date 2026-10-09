@@ -21,7 +21,7 @@ export default function BlogIndexPage() {
 	);
 
 	return (
-		<BlogDocsPage pageTitle="Blog" toc={[]}>
+		<BlogDocsPage toc={[]}>
 			<DocsTitle className="mb-0 min-w-0 text-balance">Blog</DocsTitle>
 			<DocsDescription className="mt-3 mb-3">
 				Release notes, typed env deep dives, and agent-friendly CLI guides.

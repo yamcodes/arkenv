@@ -6,6 +6,8 @@ import "./blog.css";
 
 export default function BlogLayout({ children }: { children: ReactNode }) {
 	return (
-		<DocsChrome tree={blogPageTree(getBlogPages())}>{children}</DocsChrome>
+		<DocsChrome sidebar={false} tree={blogPageTree(getBlogPages())}>
+			{children}
+		</DocsChrome>
 	);
 }

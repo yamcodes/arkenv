@@ -1,50 +1,32 @@
-import {
-	DocsBreadcrumb,
-	DocsFooter,
-	docsTocSlots,
-} from "@arkenv/fumadocs-ui/components";
+import { DocsBreadcrumb, docsTocSlots } from "@arkenv/fumadocs-ui/components";
 import type { TOCItemType } from "fumadocs-core/toc";
 import { DocsPage } from "fumadocs-ui/page";
 import type { ReactNode } from "react";
-import { DocsTocLinks } from "~/components/docs/toc-links";
-import { FeatureFlags } from "~/lib/feature-flags";
-import { fetchRoadmap } from "~/lib/roadmap/fetch-roadmap";
 
 /**
- * Blog article frame. Same page slots as docs: breadcrumb, pager, TOC rail.
+ * Blog article frame. Docs page slots, without the pager or TOC extras
+ * (scroll, edit, feedback, star, roadmap). The rail is headings only.
  */
-export async function BlogDocsPage({
-	pageTitle,
-	editHref,
+export function BlogDocsPage({
 	toc,
 	children,
 }: {
-	pageTitle: string;
-	editHref?: string;
 	toc: TOCItemType[];
 	children: ReactNode;
 }) {
-	const roadmap = await fetchRoadmap();
-	const tocLinks = (
-		<DocsTocLinks
-			pageTitle={pageTitle}
-			editHref={editHref}
-			roadmapPercent={roadmap.percent}
-			roadmapStale={roadmap.stale}
-		/>
-	);
-
 	return (
 		<DocsPage
 			toc={toc}
-			tableOfContent={{ enabled: true, footer: tocLinks, single: true }}
+			footer={{ enabled: false }}
+			tableOfContent={{
+				enabled: toc.length > 0,
+				single: true,
+			}}
 			tableOfContentPopover={{
-				enabled: FeatureFlags.DOCS_TOC_POPOVER,
-				footer: tocLinks,
+				enabled: false,
 			}}
 			slots={{
 				breadcrumb: DocsBreadcrumb,
-				footer: DocsFooter,
 				toc: docsTocSlots,
 			}}
 		>

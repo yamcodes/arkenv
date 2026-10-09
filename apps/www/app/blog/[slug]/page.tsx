@@ -6,15 +6,7 @@ import { BlogByline } from "~/components/blog/blog-byline";
 import { BlogDocsPage } from "~/components/blog/blog-docs-page";
 import { isPublishedBlogPage } from "~/lib/blog-published";
 import { blog, getBlogPages, SITE_URL } from "~/lib/source";
-import { getLinkTitleAndHref } from "~/lib/utils";
 import { getMDXComponents } from "~/mdx-components";
-
-const BLOG_CONTENT_DIR = "apps/www/content/blog";
-
-function getBlogEditHref(pagePath: string): string {
-	const normalizedPath = pagePath.replace(/^\/+/, "");
-	return getLinkTitleAndHref(`${BLOG_CONTENT_DIR}/${normalizedPath}`).href;
-}
 
 export default async function BlogPostPage(props: {
 	params: Promise<{ slug: string }>;
@@ -26,11 +18,7 @@ export default async function BlogPostPage(props: {
 	const MDX = page.data.body;
 
 	return (
-		<BlogDocsPage
-			pageTitle={page.data.title}
-			editHref={getBlogEditHref(page.path)}
-			toc={page.data.toc}
-		>
+		<BlogDocsPage toc={page.data.toc}>
 			<DocsTitle className="mb-0 min-w-0 text-balance">
 				{page.data.title}
 				{page.data.draft ? (
