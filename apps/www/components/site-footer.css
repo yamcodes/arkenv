@@ -177,18 +177,12 @@
 
 .site-footer-band {
 	position: relative;
-	width: 100%;
-	max-width: var(--fd-layout-width, 1400px);
+	width: min(calc(100% - 2 * var(--page-rail-inset, 0px)), var(--fd-layout-width, 1400px));
+	max-width: none;
 	margin-inline: auto;
-	/* Match Site Nav / home shell gutter. No extra pad below copyright. */
-	padding-inline: 1rem;
+	/* One gutter inside the rails — same content inset as the homepage footer. */
+	padding-inline: var(--page-rail-gutter, 1rem);
 	background: var(--color-paper-2);
-}
-
-@media (min-width: 40rem) {
-	.site-footer-band {
-		padding-inline: 1.5rem;
-	}
 }
 
 .site-footer-band .logo-link {

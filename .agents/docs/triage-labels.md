@@ -1,6 +1,6 @@
 # Triage labels
 
-The skills speak in terms of five canonical triage roles. This file maps those roles to the actual label strings used in this repo's issue tracker.
+The skills speak in terms of six canonical triage state roles, plus an exempt `meta` role. This file maps those roles to the actual label strings used in this repo's issue tracker.
 
 | Label in mattpocock/skills | Label in our tracker | Meaning                                                        |
 | -------------------------- | -------------------- | ------------------------------------------------------------- |
@@ -8,6 +8,7 @@ The skills speak in terms of five canonical triage roles. This file maps those r
 | `needs-info`               | `needs more info`    | Waiting on reporter for more information                      |
 | `ready-for-agent`          | `ready for agent`    | Fully specified, ready for immediate implementation           |
 | `ready-for-human`          | `ready for human`    | Needs a judgment call or design decision before implementation |
+| `blocked`                  | `blocked`            | Specified, but work cannot start until an external dependency clears. Mutually exclusive with the ready labels. |
 | `wontfix`                  | `wontfix`            | Will not be actioned                                          |
 | `meta`                     | `meta`               | Living docs (dashboards, roadmaps)                            |
 
