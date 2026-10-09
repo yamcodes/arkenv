@@ -27,23 +27,26 @@ Two **category** roles:
 - `bug` - something is broken
 - `enhancement` - new feature or improvement
 
-Five **state** roles:
+Six **state** roles:
 
 - `needs-triage` - maintainer needs to evaluate
 - `needs-info` - waiting on reporter for more information
 - `ready-for-agent` - fully specified, ready for immediate implementation
 - `ready-for-human` - needs a judgment call or design decision before implementation
+- `blocked` - specified, but work cannot start until an external dependency clears (an upstream release, another issue). Not a pickup target.
 - `wontfix` - will not be actioned
 
 One **exempt** role:
 
 - `meta` - living documents (dashboards, roadmaps) that do not require triage state labels.
 
-Every triaged issue should carry exactly one category role and one state role, unless it is a `meta` issue. If state roles conflict, flag it and ask the maintainer before doing anything else.
+Every triaged issue should carry exactly one category role and one state role, unless it is a `meta` issue. If state roles conflict, flag it and ask the maintainer before doing anything else. The `blocked` / ready pair is the exception: resolve it as described below, without asking.
 
 These are canonical role names - the actual label strings used in the issue tracker may differ. The mapping should have been provided to you - run `/setup-matt-pocock-skills` if not.
 
-State transitions: an unlabeled issue normally goes to `needs-triage` first; from there it moves to `needs-info`, `ready-for-agent`, `ready-for-human`, or `wontfix`. `needs-info` returns to `needs-triage` once the reporter replies. The maintainer can override at any time - flag transitions that look unusual and ask before proceeding.
+State transitions: an unlabeled issue normally goes to `needs-triage` first; from there it moves to `needs-info`, `ready-for-agent`, `ready-for-human`, `blocked`, or `wontfix`. `needs-info` returns to `needs-triage` once the reporter replies. `blocked` returns to `ready-for-agent` or `ready-for-human` once the external dependency clears — record which one in the triage comment so the return trip is obvious.
+
+`blocked` and the ready states contradict each other. Ready means the work can start; `blocked` means it cannot. Applying `blocked` removes `ready-for-agent` and `ready-for-human`. Applying either ready state removes `blocked`. Do not ask first. The needs-triage workflow enforces the same pair when labels are edited by hand: the label just added wins, and an issue opened with both keeps `blocked`. The maintainer can override at any time - flag other unusual transitions and ask before proceeding.
 
 ## Invocation
 
@@ -80,11 +83,12 @@ Show counts and a one-line summary per issue. Let the maintainer pick.
    - `needs-info` - post triage notes (template below).
    - `wontfix` (bug) - polite explanation, then close.
    - `wontfix` (enhancement) - record in `docs/adr/` when architectural; otherwise a closing comment is enough. Link the record from the issue, then close ([OUT-OF-SCOPE.md](OUT-OF-SCOPE.md)). **Never** create `.out-of-scope/` in ArkEnv.
+   - `blocked` - apply the role and remove any ready label. Comment with what the issue is waiting on, and which ready state to restore when that clears. Do not close the issue.
    - `needs-triage` - apply the role. Optional comment if there's partial progress.
 
 ## Quick state override
 
-If the maintainer says "move #42 to ready-for-agent", trust them and apply the role directly. Confirm what you're about to do (role changes, comment, close), then act. Skip grilling. If moving to `ready-for-agent` without a grilling session, ask whether they want to write an agent brief.
+If the maintainer says "move #42 to ready-for-agent", trust them and apply the role directly. Confirm what you're about to do (role changes, comment, close), then act. Skip grilling. If moving to `ready-for-agent` without a grilling session, ask whether they want to write an agent brief. Moving to `blocked` removes any ready label; name the blocker and which ready state to restore later. Moving from `blocked` to a ready state removes `blocked`.
 
 ## Needs-info template
 

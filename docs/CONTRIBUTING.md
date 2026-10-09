@@ -13,6 +13,8 @@ To help you find work, triaged issues carry a readiness label:
 
 Don't let the label names give you the wrong impression: `ready for agent` simply means "ready to build," not "reserved for bots." Feel free to grab either kind of issue.
 
+An issue labeled **`blocked`** is not ready, even when the write-up is finished. Work is waiting on something else (an upstream release, an external issue) and cannot start. `blocked` does not sit on an issue that is also `ready for agent` or `ready for human`. When the blocker clears, the issue moves to one of those ready labels.
+
 ## Development setup
 
 1. ### Install Nub
