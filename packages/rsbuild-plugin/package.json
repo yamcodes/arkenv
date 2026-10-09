@@ -98,7 +98,10 @@
 				"@rsbuild/core",
 				"arktype",
 				"jiti",
-				"@arkenv/build"
+				"@arkenv/build",
+				"node:path",
+				"node:fs",
+				"node:process"
 			]
 		}
 	]

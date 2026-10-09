@@ -113,8 +113,14 @@ jobs:
         run: nub run --no-check build:packages
       - name: Apply overrides for Vite version
         run: node scripts/override-vite.js ${{ matrix.vite-version }}
+      # `--no-frozen-lockfile` throws the lockfile away and resolves every
+      # range to its newest match. A transitive published in the last 24
+      # hours then aborts the job (`ERR_NUB_NO_MATURE_MATCHING_VERSION`),
+      # even when that package is not the Vite override. Prefer-frozen
+      # keeps the locked versions and re-resolves only the override. The
+      # 24-hour gate still applies to whatever that override newly resolves.
       - name: Reinstall dependencies with overrides
-        run: nub install --no-frozen-lockfile
+        run: nub install --prefer-frozen-lockfile
       - name: Build vite-legacy playground
         run: nub run --no-check --node build --filter=vite-legacy-playground
 
