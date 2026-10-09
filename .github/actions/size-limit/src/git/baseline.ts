@@ -1,5 +1,5 @@
-import { spawn } from "bun";
 import { runSizeLimit } from "../size-limit/run.ts";
+import { spawn } from "../spawn.ts";
 import type { SizeInBytes } from "../types.ts";
 import { parseSizeToBytes } from "../utils/size.ts";
 

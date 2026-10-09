@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
-import { spawn } from "bun";
+import { spawn } from "../spawn.ts";
 
 // Function to download and extract npm package
 export const downloadNpmPackage = async (

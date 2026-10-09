@@ -1,4 +1,5 @@
-import { describe, expect, it } from "bun:test";
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import { parseSizeLimitOutput } from "./parser.ts";
 
 describe("parseSizeLimitOutput", () => {
@@ -23,23 +24,23 @@ arkenv:size:   Size:       441 B with all dependencies, minified and brotlied
 		const relevantPackages = ["arkenv"];
 		const results = parseSizeLimitOutput(sampleOutput, relevantPackages);
 
-		expect(results).toHaveLength(3);
+		assert.equal(results.length, 3);
 
-		expect(results[0]).toMatchObject({
+		assert.partialDeepStrictEqual(results[0], {
 			package: "arkenv",
 			file: "arkenv",
 			size: "1.77 kB",
 			limit: "2 kB",
 		});
 
-		expect(results[1]).toMatchObject({
+		assert.partialDeepStrictEqual(results[1], {
 			package: "arkenv",
 			file: "arkenv/standard",
 			size: "1.03 kB",
 			limit: "1.1 kB",
 		});
 
-		expect(results[2]).toMatchObject({
+		assert.partialDeepStrictEqual(results[2], {
 			package: "arkenv",
 			file: "arkenv/core",
 			size: "441 B",
@@ -59,9 +60,12 @@ other-pkg:size: Size: 2 kB
 		const relevantPackages = ["arkenv"];
 		const results = parseSizeLimitOutput(sampleOutput, relevantPackages);
 
-		expect(results).toHaveLength(1);
-		expect(results[0].package).toBe("arkenv");
-		expect(results[0].size).toBe("1 kB");
-		expect(results.find((r) => r.package === "other-pkg")).toBeUndefined();
+		assert.equal(results.length, 1);
+		assert.equal(results[0]?.package, "arkenv");
+		assert.equal(results[0]?.size, "1 kB");
+		assert.equal(
+			results.find((result) => result.package === "other-pkg"),
+			undefined,
+		);
 	});
 });
