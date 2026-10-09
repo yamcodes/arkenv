@@ -1,6 +1,7 @@
 "use client";
 
 import { type CSSProperties, useEffect, useRef } from "react";
+import { parseDotAlpha, resolveDotFill } from "./dot-grid-color";
 
 /**
  * Physics tuned for a quiet Aurora field at `DEFAULT_SPACING`.
@@ -15,10 +16,14 @@ const DRAG = 1.6;
 const MAX_OFFSET = 14;
 const MAX_POINTER_SPEED = 2600;
 const REST_THRESHOLD = 0.01;
+/** Frames to keep re-reading color after a client navigation. */
+const STYLE_WATCH_FRAMES = 120;
 
 /**
  * Interactive faded-dot atmosphere for the home hero and docs CTAs.
  * Static CSS dots paint first; the canvas takes over after hydration.
+ * A late route stylesheet can leave `color` as opaque ink. That sample is
+ * faded with `--dot-alpha` instead of painted solid.
  * Spatial push (influence, force, drag, max travel) scales with `spacing`
  * so a denser/zoomed grid keeps the same feel as the hero field.
  */
@@ -57,8 +62,11 @@ export function DotGrid({
 		let rows = 0;
 		// ox, oy, vx, vy per dot
 		let dots = new Float32Array(0);
-		let color = "";
+		let fill = "";
+		let fillAlpha = 1;
+		let tookOver = false;
 		let raf = 0;
+		let styleRaf = 0;
 		let running = false;
 		let lastTime = 0;
 		const pointer = {
@@ -73,13 +81,11 @@ export function DotGrid({
 
 		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-		const resolveColor = () => {
-			color = getComputedStyle(canvas).color;
-		};
-
 		const draw = () => {
+			if (!fill) return;
 			ctx.clearRect(0, 0, width, height);
-			ctx.fillStyle = color;
+			ctx.globalAlpha = fillAlpha;
+			ctx.fillStyle = fill;
 			ctx.beginPath();
 			for (let row = 0; row < rows; row++) {
 				for (let col = 0; col < cols; col++) {
@@ -199,6 +205,27 @@ export function DotGrid({
 			draw();
 		};
 
+		const syncFill = (): "faded" | "fallback" | "pending" => {
+			const style = getComputedStyle(canvas);
+			const resolved = resolveDotFill(
+				style.color,
+				parseDotAlpha(style.getPropertyValue("--dot-alpha")),
+			);
+			if (!resolved) return "pending";
+			const changed =
+				resolved.fill !== fill || resolved.globalAlpha !== fillAlpha;
+			fill = resolved.fill;
+			fillAlpha = resolved.globalAlpha;
+			if (!tookOver) {
+				tookOver = true;
+				resize();
+				canvas.style.backgroundImage = "none";
+			} else if (changed) {
+				draw();
+			}
+			return resolved.kind;
+		};
+
 		const deactivatePointer = () => {
 			pointer.active = false;
 			pointer.vx = 0;
@@ -237,21 +264,59 @@ export function DotGrid({
 			if (!event.relatedTarget) deactivatePointer();
 		};
 
-		resolveColor();
-		resize();
-		canvas.style.backgroundImage = "none";
+		let styleFrames = 0;
+		const watchStyle = () => {
+			const kind = syncFill();
+			if (kind === "faded") return;
+			styleFrames += 1;
+			if (styleFrames < STYLE_WATCH_FRAMES) {
+				styleRaf = requestAnimationFrame(watchStyle);
+			}
+		};
 
 		const resizeObserver = new ResizeObserver(resize);
-		resizeObserver.observe(canvas);
 
 		const themeObserver = new MutationObserver(() => {
-			resolveColor();
-			draw();
+			syncFill();
 		});
 		themeObserver.observe(document.documentElement, {
 			attributes: true,
 			attributeFilter: ["class", "data-theme", "style"],
 		});
+
+		const styleAbort = new AbortController();
+		const onStylesheet = () => {
+			syncFill();
+		};
+		const watchLink = (node: Node) => {
+			if (!(node instanceof HTMLLinkElement) || node.rel !== "stylesheet")
+				return;
+			node.addEventListener("load", onStylesheet, {
+				signal: styleAbort.signal,
+			});
+		};
+		for (const link of document.head?.querySelectorAll(
+			'link[rel="stylesheet"]',
+		) ?? []) {
+			watchLink(link);
+		}
+		const headObserver = new MutationObserver((records) => {
+			for (const record of records) {
+				record.addedNodes.forEach(watchLink);
+			}
+			syncFill();
+		});
+		if (document.head) {
+			headObserver.observe(document.head, { childList: true, subtree: true });
+		}
+
+		const onPageShow = () => {
+			syncFill();
+			if (tookOver) resize();
+		};
+
+		watchStyle();
+		resizeObserver.observe(canvas);
 
 		const onMotionPreferenceChange = () => {
 			if (!reduceMotion.matches) return;
@@ -267,18 +332,23 @@ export function DotGrid({
 		window.addEventListener("pointerout", onWindowOut, { passive: true });
 		window.addEventListener("blur", deactivatePointer);
 		window.addEventListener("scroll", deactivatePointer, { passive: true });
+		window.addEventListener("pageshow", onPageShow);
 		reduceMotion.addEventListener("change", onMotionPreferenceChange);
 
 		return () => {
 			sleep();
+			cancelAnimationFrame(styleRaf);
+			styleAbort.abort();
 			resizeObserver.disconnect();
 			themeObserver.disconnect();
+			headObserver.disconnect();
 			window.removeEventListener("pointermove", onPointerMove);
 			window.removeEventListener("pointerup", onPointerEnd);
 			window.removeEventListener("pointercancel", onPointerEnd);
 			window.removeEventListener("pointerout", onWindowOut);
 			window.removeEventListener("blur", deactivatePointer);
 			window.removeEventListener("scroll", deactivatePointer);
+			window.removeEventListener("pageshow", onPageShow);
 			reduceMotion.removeEventListener("change", onMotionPreferenceChange);
 		};
 	}, [radius, spacing]);

@@ -149,12 +149,14 @@
 	z-index: 1;
 }
 
-/* Static CSS dots until the canvas hydrates and clears the image */
+/* Static CSS dots until the canvas hydrates and clears the image.
+ * --dot-alpha is also the canvas fade when route CSS arrives late. */
 .home-aurora__dot-grid {
 	display: block;
 	width: 100%;
 	height: 100%;
-	color: color-mix(in oklch, var(--color-ink) 14%, transparent);
+	--dot-alpha: 14%;
+	color: color-mix(in oklch, var(--color-ink) var(--dot-alpha), transparent);
 	background-image: radial-gradient(currentColor 1px, transparent 1.5px);
 	background-size: 24px 24px;
 }
