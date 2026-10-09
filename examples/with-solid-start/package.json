@@ -8,8 +8,8 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"@arkenv/core": "1.0.0-rc.2",
-		"@arkenv/vite-plugin": "1.0.0-rc.2",
+		"@arkenv/core": "1.0.0-rc.4",
+		"@arkenv/vite-plugin": "1.0.0-rc.4",
 		"@solidjs/start": "^2.0.4",
 		"arktype": "^2.2.5",
 		"nitro": "3.0.260903-beta",
