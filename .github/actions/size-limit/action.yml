@@ -17,14 +17,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Setup Bun
-      uses: oven-sh/setup-bun@v2
-      with:
-        bun-version: 1.4.2
-    - name: Install dependencies
-      shell: bash
-      run: bun install
-      working-directory: ${{ github.action_path }}
     - name: Run size checks
       id: size-check
       shell: bash
@@ -37,7 +29,7 @@ runs:
         INPUT_HEAD_BRANCH: ${{ github.event.pull_request.head.ref || '' }}
         GITHUB_EVENT_NAME: ${{ github.event_name }}
       run: |
-        bun ${{ github.action_path }}/src/index.ts
+        nub --no-env-file ${{ github.action_path }}/src/index.ts
     - name: Comment PR
       if: github.event_name == 'pull_request' && (success() || failure()) && steps.size-check.outputs.packages_changed == 'true'
       uses: actions/github-script@v9
