@@ -1,4 +1,4 @@
-import { spawn } from "bun";
+import { spawn } from "../spawn.ts";
 
 // Function to get latest version of a package from npm
 export const getLatestVersion = async (
