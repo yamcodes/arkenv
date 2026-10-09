@@ -3,6 +3,7 @@ on:
   pull_request:
     branches:
       - dev
+      - v1
     paths:
       - "packages/**"
   workflow_dispatch:
