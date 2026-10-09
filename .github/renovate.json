@@ -95,7 +95,6 @@
 			"groupName": "the Bun group",
 			"matchManagers": ["bun"],
 			"matchFileNames": [
-				".github/actions/size-limit/package.json", // Bun script
 				"apps/playgrounds/**/*bun*/**",
 				"examples/**/*bun*/**",
 			],

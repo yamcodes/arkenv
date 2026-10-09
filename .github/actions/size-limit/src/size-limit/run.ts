@@ -1,4 +1,4 @@
-import { spawn } from "bun";
+import { spawn } from "../spawn.ts";
 import type { SizeLimitResult } from "../types.ts";
 import {
 	getPackageNames,
