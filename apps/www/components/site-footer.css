@@ -177,7 +177,7 @@
 
 .site-footer-band {
 	position: relative;
-	width: min(calc(100% - 2 * var(--page-rail-gutter, 1rem)), var(--fd-layout-width, 1400px));
+	width: min(calc(100% - 2 * var(--page-rail-inset, 0px)), var(--fd-layout-width, 1400px));
 	max-width: none;
 	margin-inline: auto;
 	/* One gutter inside the rails — same content inset as the homepage footer. */

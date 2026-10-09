@@ -18,12 +18,12 @@
 
 /*
  * Outer cage when a column is hidden. Sidebar (>=960px) and TOC (>=1200px)
- * paint their own outer borders; these stand in so the left/right hairlines
- * stay on the same x as the homepage rails.
+ * paint their own outer borders; these stand in from 48rem so the left/right
+ * hairlines stay on the same x as the homepage rails. Phones have neither.
  */
 #docs-chrome-shell::before,
 #docs-chrome-shell::after {
-	content: "";
+	content: none;
 	position: absolute;
 	z-index: 6;
 	top: var(--fd-nav-height, 3.5rem);
@@ -34,11 +34,19 @@
 }
 
 #docs-chrome-shell::before {
-	left: max(var(--page-rail-gutter, 1rem), calc((100% - var(--fd-layout-width, 1400px)) / 2));
+	left: max(var(--page-rail-inset, 0px), calc((100% - var(--fd-layout-width, 1400px)) / 2));
 }
 
 #docs-chrome-shell::after {
-	right: max(var(--page-rail-gutter, 1rem), calc((100% - var(--fd-layout-width, 1400px)) / 2));
+	right: max(var(--page-rail-inset, 0px), calc((100% - var(--fd-layout-width, 1400px)) / 2));
+}
+
+/* Phones: no side rails (vite.dev hides the frame below md / 48rem). */
+@media (min-width: 48rem) {
+	#docs-chrome-shell::before,
+	#docs-chrome-shell::after {
+		content: "";
+	}
 }
 
 @media (min-width: 960px) {
@@ -119,17 +127,18 @@
 
 /*
  * Fumadocs sizes the outer tracks as minmax(min-content, 1fr), so below the
- * 1400px column they collapse to the viewport edge. Homepage rails never do:
- * they stay at --page-rail-gutter until the column can center. Raise the
- * floor to that gutter. !important beats the inline grid-template shorthand.
+ * 1400px column they collapse to the viewport edge. From 48rem, homepage
+ * rails stay at --page-rail-inset until the column can center. Raise the
+ * floor to that inset (0 on phones, so the cage has no rail margin).
+ * !important beats the inline grid-template shorthand.
  */
 #nd-docs-layout {
 	grid-template-columns:
-		minmax(var(--page-rail-gutter, 1rem), 1fr)
+		minmax(var(--page-rail-inset, 0px), 1fr)
 		var(--fd-sidebar-col)
 		minmax(0, calc(var(--fd-layout-width, 1400px) - var(--fd-sidebar-width) - var(--fd-toc-width)))
 		var(--fd-toc-width)
-		minmax(var(--page-rail-gutter, 1rem), 1fr) !important;
+		minmax(var(--page-rail-inset, 0px), 1fr) !important;
 }
 
 /*
@@ -137,7 +146,8 @@
  * % there is (container - image), so a 1px strip sits ~1px left of the
  * sidebar/TOC borders (stair-step at the footer-top hairline).
  * Same box model as the cage: a centered column no wider than
- * --fd-layout-width, and never closer to the viewport than --page-rail-gutter.
+ * --fd-layout-width. From 48rem it stays at least --page-rail-inset off
+ * the viewport; on phones the inset is 0 and the borders stay off.
  * `top: -1px` crosses the edge-to-edge footer-top hairline (open-slide).
  * Inner splitters stay on the columns and stop here.
  */
@@ -156,9 +166,15 @@
 	z-index: 6;
 	pointer-events: none;
 	box-sizing: border-box;
-	width: min(calc(100% - 2 * var(--page-rail-gutter, 1rem)), var(--fd-layout-width, 1400px));
+	width: min(calc(100% - 2 * var(--page-rail-inset, 0px)), var(--fd-layout-width, 1400px));
 	margin-inline: auto;
-	border-inline: 1px solid var(--color-rule-y, var(--color-fd-border));
+	border-inline: none;
+}
+
+@media (min-width: 48rem) {
+	.docs-outer-rails {
+		border-inline: 1px solid var(--color-rule-y, var(--color-fd-border));
+	}
 }
 
 /*
@@ -168,7 +184,7 @@
  */
 .site-footer-bleed .home-aurora__footer-meta {
 	--docs-footer-gutter: var(--page-rail-gutter, 1rem);
-	--docs-outer-rail-inset: max(var(--docs-footer-gutter), calc((100cqi - var(--fd-layout-width, 1400px)) / 2));
+	--docs-outer-rail-inset: max(var(--page-rail-inset, 0px), calc((100cqi - var(--fd-layout-width, 1400px)) / 2));
 	position: relative;
 	box-sizing: border-box;
 	width: 100cqi;
