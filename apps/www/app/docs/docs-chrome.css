@@ -7,8 +7,8 @@
 #nd-sidebar-mobile {
 	--docs-chrome-radius: 0.25rem;
 	--docs-control-radius: 0.375rem;
-	--docs-toc-gutter: 1rem;
-	--site-nav-gutter: 1rem;
+	--docs-toc-gutter: var(--page-rail-gutter, 1rem);
+	--site-nav-gutter: var(--page-rail-gutter, 1rem);
 }
 
 #docs-chrome-shell {
@@ -16,11 +16,40 @@
 	background-color: var(--color-fd-background);
 }
 
-@media (min-width: 40rem) {
-	#docs-chrome-shell,
-	#nd-sidebar-mobile {
-		--docs-toc-gutter: 1.5rem;
-		--site-nav-gutter: 1.5rem;
+/*
+ * Outer cage when a column is hidden. Sidebar (>=960px) and TOC (>=1200px)
+ * paint their own outer borders; these stand in so the left/right hairlines
+ * stay on the same x as the homepage rails.
+ */
+#docs-chrome-shell::before,
+#docs-chrome-shell::after {
+	content: "";
+	position: absolute;
+	z-index: 6;
+	top: var(--fd-nav-height, 3.5rem);
+	bottom: 0;
+	width: 1px;
+	background: var(--color-rule-y, var(--color-fd-border));
+	pointer-events: none;
+}
+
+#docs-chrome-shell::before {
+	left: max(var(--page-rail-gutter, 1rem), calc((100% - var(--fd-layout-width, 1400px)) / 2));
+}
+
+#docs-chrome-shell::after {
+	right: max(var(--page-rail-gutter, 1rem), calc((100% - var(--fd-layout-width, 1400px)) / 2));
+}
+
+@media (min-width: 960px) {
+	#docs-chrome-shell::before {
+		content: none;
+	}
+}
+
+@media (min-width: 1200px) {
+	#docs-chrome-shell::after {
+		content: none;
 	}
 }
 
@@ -89,12 +118,28 @@
 }
 
 /*
+ * Fumadocs sizes the outer tracks as minmax(min-content, 1fr), so below the
+ * 1400px column they collapse to the viewport edge. Homepage rails never do:
+ * they stay at --page-rail-gutter until the column can center. Raise the
+ * floor to that gutter. !important beats the inline grid-template shorthand.
+ */
+#nd-docs-layout {
+	grid-template-columns:
+		minmax(var(--page-rail-gutter, 1rem), 1fr)
+		var(--fd-sidebar-col)
+		minmax(0, calc(var(--fd-layout-width, 1400px) - var(--fd-sidebar-width) - var(--fd-toc-width)))
+		var(--fd-toc-width)
+		minmax(var(--page-rail-gutter, 1rem), 1fr) !important;
+}
+
+/*
  * Site footer outer cage. Do not paint these with background-position % —
  * % there is (container - image), so a 1px strip sits ~1px left of the
  * sidebar/TOC borders (stair-step at the footer-top hairline).
- * Same box model as the cage: a centered --fd-layout-width column with
- * border-inline start/end. `top: -1px` crosses the edge-to-edge footer-top
- * hairline (open-slide). Inner splitters stay on the columns and stop here.
+ * Same box model as the cage: a centered column no wider than
+ * --fd-layout-width, and never closer to the viewport than --page-rail-gutter.
+ * `top: -1px` crosses the edge-to-edge footer-top hairline (open-slide).
+ * Inner splitters stay on the columns and stop here.
  */
 .site-footer-bleed {
 	container-type: inline-size;
@@ -102,40 +147,28 @@
 }
 
 .docs-outer-rails {
-	display: none;
-}
-
-@media (min-width: 960px) {
-	.docs-outer-rails {
-		display: block;
-		position: absolute;
-		top: -1px;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		z-index: 6;
-		pointer-events: none;
-		box-sizing: border-box;
-		width: min(100%, var(--fd-layout-width, 1400px));
-		margin-inline: auto;
-		border-inline-start: 1px solid var(--color-rule-y, var(--color-fd-border));
-	}
-}
-
-@media (min-width: 1200px) {
-	.docs-outer-rails {
-		border-inline-end: 1px solid var(--color-rule-y, var(--color-fd-border));
-	}
+	display: block;
+	position: absolute;
+	top: -1px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 6;
+	pointer-events: none;
+	box-sizing: border-box;
+	width: min(calc(100% - 2 * var(--page-rail-gutter, 1rem)), var(--fd-layout-width, 1400px));
+	margin-inline: auto;
+	border-inline: 1px solid var(--color-rule-y, var(--color-fd-border));
 }
 
 /*
  * Copyright hairline — edge-to-edge like homepage `.home-aurora__footer-meta`.
  * 100cqi is the bleed (viewport content), not 100vw (avoids scrollbar delta).
- * Text stays on the band+footer gutter; the rule itself runs to the margins.
+ * Text sits one gutter inside the outer rails; the rule itself runs to the margins.
  */
 .site-footer-bleed .home-aurora__footer-meta {
-	--docs-footer-gutter: 1rem;
-	--docs-outer-rail-inset: max(0px, calc((100cqi - var(--fd-layout-width, 1400px)) / 2));
+	--docs-footer-gutter: var(--page-rail-gutter, 1rem);
+	--docs-outer-rail-inset: max(var(--docs-footer-gutter), calc((100cqi - var(--fd-layout-width, 1400px)) / 2));
 	position: relative;
 	box-sizing: border-box;
 	width: 100cqi;
@@ -143,12 +176,6 @@
 	margin-inline: calc(50% - 50cqi);
 	padding-inline: calc(var(--docs-outer-rail-inset) + var(--docs-footer-gutter));
 	padding-block: var(--sf-space-sm, 1rem);
-}
-
-@media (min-width: 40rem) {
-	.site-footer-bleed .home-aurora__footer-meta {
-		--docs-footer-gutter: 1.5rem;
-	}
 }
 
 /* Copy page split — same 0.375rem as Get started / Search, not --radius 0.6rem. */

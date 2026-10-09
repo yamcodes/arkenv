@@ -108,10 +108,7 @@
 	--fd-primary: var(--color-ink);
 	--color-fd-primary: var(--color-ink);
 	--fd-layout-width: 1400px;
-	--home-gutter: 1rem;
-	--home-col: min(var(--fd-layout-width), calc(100vw - 2 * var(--home-gutter)));
-	--home-rail-inset: max(0px, calc((100vw - var(--home-col)) / 2));
-	--home-content-inset: calc(var(--home-rail-inset) + var(--home-gutter));
+	--home-gutter: var(--page-rail-gutter, 1rem);
 
 	position: relative;
 	/* No isolation: isolate — it breaks Site Nav backdrop-filter */
@@ -122,12 +119,6 @@
 	background-color: var(--color-paper);
 	font-family: var(--font-body);
 	overflow-x: clip;
-}
-
-@media (min-width: 40rem) {
-	.home-aurora {
-		--home-gutter: 1.5rem;
-	}
 }
 
 .home-aurora__atmosphere {
@@ -212,13 +203,23 @@
 	 * Full-bleed canvas (open-slide): horizontals + hatch/paper bands run to
 	 * the viewport. Vertical rails sit on --home-rail-inset. Content pads to
 	 * --home-content-inset so it still lines up inside the rails.
+	 *
+	 * Measure the shell, not 100vw. 100vw includes the scrollbar, so the
+	 * rails drifted from the docs cage (which sizes off the content box).
 	 */
+	container-type: inline-size;
 	padding: var(--space-lg) 0 0;
 	flex: 1;
 	display: flex;
 	flex-direction: column;
 	--home-split-cols: minmax(0, 1fr) minmax(20rem, 0.95fr);
 	--home-split-gap: var(--space-xl);
+}
+
+/* 100cqi is the shell. Descendants inherit the resolved length. */
+.home-aurora__shell > * {
+	--home-rail-inset: max(var(--home-gutter), calc((100cqi - var(--fd-layout-width)) / 2));
+	--home-content-inset: calc(var(--home-rail-inset) + var(--home-gutter));
 }
 
 .home-aurora__rails {

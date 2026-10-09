@@ -19,6 +19,21 @@
 }
 
 /*
+ * Shared outer-rail inset. Homepage, blog, roadmap, and docs all sit their
+ * left/right hairlines on this gutter (1rem, then 1.5rem from 40rem) until
+ * the viewport is wide enough to center the 1400px column.
+ */
+:root {
+	--page-rail-gutter: 1rem;
+}
+
+@media (min-width: 40rem) {
+	:root {
+		--page-rail-gutter: 1.5rem;
+	}
+}
+
+/*
  * Clip wide children on page shells (not html/body). Site Nav glass uses
  * sticky + absolute positioning so backdrop-filter still samples inside
  * these clipped shells; position:fixed does not.

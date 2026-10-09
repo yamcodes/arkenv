@@ -2,10 +2,12 @@
 
 /*
  * Canonical chrome metrics — literal rem only.
- * Do not pull --page-gutter / --space-* (home Aurora defines them; docs does not).
+ * The inline gutter is --page-rail-gutter so the bar lines up with the
+ * page rails. Do not pull --page-gutter / --space-* (home Aurora defines
+ * them; docs does not).
  */
 .site-nav-root {
-	--site-nav-gutter: 1rem;
+	--site-nav-gutter: var(--page-rail-gutter, 1rem);
 	--site-nav-bar-height: 3.5rem;
 	--site-nav-offset: var(--site-nav-bar-height);
 	/* Controls (CTA, links, search) — match grid geometry, not a consumer pill */
@@ -49,12 +51,6 @@
 	/* Fumadocs sets overflow-x-clip on the grid; keep clip on the shell so
 	   glass and article share one paint root and sticky isn’t nested in clip. */
 	overflow-x: visible;
-}
-
-@media (min-width: 40rem) {
-	.site-nav-root {
-		--site-nav-gutter: 1.5rem;
-	}
 }
 
 /* Beat theme.css :root !important so docs content clears the bar */
