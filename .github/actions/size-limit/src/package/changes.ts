@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { spawn } from "bun";
+import { spawn } from "../spawn.ts";
 
 export type ChangedPackagesResult =
 	| { success: true; packages: Set<string> }
