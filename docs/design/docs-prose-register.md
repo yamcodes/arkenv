@@ -3,13 +3,13 @@
 Living evaluation, not an ADR. Update this file as options enter or leave
 the hat. Promoted decisions belong in `docs/adr/`.
 
-**Status:** working note. **Chosen public story:** `A1 + B1 + C1 + D1`.
+**Status:** working note. **Chosen public story:** `A1 + B1 + C1 + D1`, owned by one skill. `the-voice` drafts, then runs `skills/the-voice/references/humanize.md`. Upstream humanizer is not installed.
 
 The field survey behind the hat: Wikipedia's
 [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)
 (WikiProject AI Cleanup) is the shared pattern source.
 [blader/humanizer](https://github.com/blader/humanizer) (\~55k stars, MIT,
-35 of those patterns, two-pass claim check) and
+26 patterns as of v3.1.0, two-pass claim check) and
 [hardikpandya/stop-slop](https://github.com/hardikpandya/stop-slop)
 (\~18k stars) are the skills people actually install.
 [StoryScope](https://arxiv.org/abs/2604.03136) (arXiv:2604.03136) showed
@@ -37,10 +37,10 @@ by the same person who wrote the canon pages:
 5. Non-prose surfaces stay as they are: changelogs, boundary-error
    strings, fenced agent prompts.
 
-`the-voice` already states (1) and (2). Its step 5 says to pass
-`stop-slop` afterward, and then spends three lines telling that pass
-not to strip the why or flatten the lead. That tension is the problem.
-The de-AI pass and the register are currently aimed at different prose.
+`the-voice` already states (1) and (2). When this note opened, its
+step 5 named `stop-slop` and then had to tell that pass not to strip
+the why or flatten the lead. That tension was the problem. The second
+pass now lives in the same skill, in `references/humanize.md`.
 
 ## Layer map
 
@@ -84,7 +84,7 @@ A complete answer is one pick per layer.
 | #   | Option                                    | Notes                                                                                                                                                                                                                 |
 | --- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | B1  | blader/humanizer                          | Technical and reference prose stays plain. A writing sample overrides its default rules. Second pass checks the draft against the patterns and the original claims. Leaves code, frontmatter, and link targets alone. |
-| B2  | hardikpandya/stop-slop                    | What `the-voice` step 5 names today. Bans phrases, "not X, it's Y", em dashes, Wh- starters, and all adverbs.                                                                                                         |
+| B2  | hardikpandya/stop-slop                    | What step 5 named when the hat opened. Bans phrases, "not X, it's Y", em dashes, Wh- starters, and all adverbs.                                                                                                       |
 | B3  | Stop-Slop v3 routing                      | Positive constraints while drafting. Pattern catalog stays out of the generation prompt and is an editorial audit only.                                                                                               |
 | B4  | Sepia / StoryScope                        | Narrative-architecture repair. Built on fiction features: ambiguity, subplots, broken chronology.                                                                                                                     |
 | B5  | One-shot pattern scrub                    | Delete tells in a single pass. No claim check, no sample.                                                                                                                                                             |
@@ -118,7 +118,7 @@ A complete answer is one pick per layer.
 
 ## Evaluation
 
-**A1 `the-voice`.** Register lock is the point of the skill: canon pages, the Turbo lead, H2 shape, house terms, Callouts for forks. Fact lock is explicit (do not invent features to add meat). MDX safety is explicit (`package-install` fences, leave prompts and changelogs alone). Tell removal is incomplete on its own; skinny and stuffed are the failures it names, and a page can satisfy the shape and still read as a model. Genre fit is exact: this is the instructional register. Footgun: step 5 hands the page to a skill that the same file then has to restrain. Maintenance is low; the skill and the canons already live here.
+**A1 `the-voice`.** Register lock is the point of the skill: canon pages, the Turbo lead, H2 shape, house terms, Callouts for forks. Fact lock is explicit (do not invent features to add meat). MDX safety is explicit (`package-install` fences, leave prompts and changelogs alone). Tell removal is incomplete on its own; skinny and stuffed are the failures it names, and a page can satisfy the shape and still read as a model. Genre fit is exact: this is the instructional register. Footgun at the time of the hat: step 5 handed the page to a skill the same file then had to restrain. The second pass is now in this skill. Maintenance is low; the skill and the canons already live here.
 
 **A2 generic human.** Tell removal can look successful and still fail register lock. The result is bursty, opinionated, and uneven across pages. Fact lock depends on the operator. MDX safety is unspecified. Genre fit is "blog post." Footgun: a docs site that no longer sounds like one product.
 
@@ -130,9 +130,9 @@ A complete answer is one pick per layer.
 
 **A6 `docs-writer` alone.** MDX safety and link mechanics are its job. Used as the register it produces skinny command lists. `the-voice` already wins tone conflicts. Keep it for links and wrapping; it is not a hat winner for this problem.
 
-**B1 humanizer.** Tell removal is the strongest general tool that still has a technical-prose mode. Fact lock is structural: a second pass compares the draft to the original claims and refuses invented names, numbers, and citations. MDX safety is structural: code, frontmatter, and link targets are out of bounds. Register lock holds when D1 is required, and slips when the sample is omitted, because the default personal-writing rules are not the Turbo lead. Genre fit is good for reference prose and merely okay for the specific cadence ("seamlessly" in the AI-guide lead is exactly the sort of adverb a strict ban deletes). Footgun: the pattern list grew from 24 to 35 through 2026 and includes Wikipedia formatting tells that do not apply to MDX. Mitigation is the sample plus the do-not-touch list, not vendoring the skill. Maintenance is acceptable if we treat upstream as a tool and our exemptions as the pin.
+**B1 humanizer.** Tell removal is the strongest general tool that still has a technical-prose mode. Fact lock is structural: a second pass compares the draft to the original claims and refuses invented names, numbers, and citations. MDX safety is structural: code, frontmatter, and link targets are out of bounds. Register lock holds when D1 is required, and slips when the sample is omitted, because the default personal-writing rules are not the Turbo lead. Genre fit is good for reference prose and merely okay for the specific cadence ("seamlessly" in the AI-guide lead is exactly the sort of adverb a strict ban deletes). Footgun: the list moved through 2026 (24, then 35, then v3.0.0 consolidated those 35 into 25, and v3.1.0 is 26). It shrank and regrouped rather than growing without bound, and it still includes Wikipedia formatting tells that do not apply to MDX. Mitigation is the sample plus the do-not-touch list, not vendoring the skill. Maintenance is acceptable if we treat upstream as a source for the contract and keep the pass in-repo.
 
-**B2 stop-slop.** Tell removal is real and overshoots. The bans (every adverb, every em dash, every Wh- starter, active voice only, no negative-then-positive) define an essay voice. Register lock fails on the lead the canons require, which is why `the-voice` already says the pass must not flatten it and must not delete why bullets. Fact lock is not a check, only a hope. MDX safety is unspecified. Genre fit is personal essay. Footgun is the highest of the serious options: three guardrail sentences in the skill are evidence the tool and the register conflict. Maintenance of the upstream skill is fine; maintenance of the guardrails is the ongoing cost.
+**B2 stop-slop.** Tell removal is real and overshoots. The bans (every adverb, every em dash, every Wh- starter, active voice only, no negative-then-positive) define an essay voice. Register lock fails on the lead the canons require. The skill used to warn this pass not to flatten that lead or delete why bullets. That warning was the conflict. Fact lock is not a check, only a hope. MDX safety is unspecified. Genre fit is personal essay. Footgun is the highest of the serious options. Those guardrail sentences were the evidence, and they are gone. Maintenance of the upstream skill is fine. It is not the named pass.
 
 **B3 v3 routing.** This is a generation rule, and A1 already implements it for this product: aim at a basin, do not draft from a deny-list. As a substitute for B1 it has no claim check and no MDX rule. As a companion to C1 it is already adopted. Installing the v3 repo would not improve the pages.
 
@@ -185,7 +185,7 @@ Answers to the whole problem. One pick per layer.
 **A**
 
 - **A1 + B13 + C1 + D1.** Same order, with a short checklist instead of humanizer. Ship this if we decide an external skill is the wrong dependency. Coverage is lower. Ownership is higher. Not required to close the decision.
-- Retargeting `the-voice` step 5 from `stop-slop` to this stack, including the do-not-touch list in the skill text. Until that line changes, agents will keep running B2. That edit is the rollout, not a second design.
+- Retargeting `the-voice` step 5. Done: the second pass is `references/humanize.md`, not a call to upstream and not a second skill. A sibling skill would trigger alone and skip the register (C2).
 
 **B**
 
@@ -271,12 +271,11 @@ docs-writer still owns relative links, wrapping, and Next steps.
 
 ## Current lean
 
-Ship the stack as the docs workflow: `the-voice` first, humanizer second, canon pages as the sample, prose only. `stop-slop` stays available and is no longer the named second pass.
+One skill. `the-voice` drafts against the canons, then runs `references/humanize.md` on the prose: canon pages as the sample, claim diff, do-not-touch list. That file is B1's contract without the upstream pattern list.
 
-Do not vendor humanizer. Do not install Sepia, Stop-Slop v3, a synonym engine, or a detector bypass for this site. Do not add the checklist unless humanizer's pattern list starts eating the lead or the house terms.
-
-The skill file still tells agents to pass `stop-slop`. Changing that line is the rollout. It is not part of this note.
+Do not install blader/humanizer, Sepia, Stop-Slop v3, a synonym engine, or a detector bypass for this site. Do not add a second skill that agents can trigger on its own.
 
 ## Changelog of this note
 
 - 2026-10-10: First write-up (layers, metrics, hat, tier list).
+- 2026-10-10: Corrected the humanizer pattern count (v3.1.0 is 26; v3.0.0 had consolidated 35 into 25). Recorded the rollout: the second pass lives in `the-voice`, not as a sibling skill.
