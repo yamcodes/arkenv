@@ -2,12 +2,16 @@
 name: the-voice
 description: >
   Rewrite ArkEnv docs and site copy in the product voice: Turbo-shaped
-  what/why/how, not skinny command lists and not marketing hype. Use when
-  the user says "fix the voice", "/the-voice", "too skinny", "too terse",
-  "needs meat", "match turborepo", or when writing, reviewing, or editing
-  docs/MDX/homepage copy — even if they did not name this skill. Prefer
-  this over docs-writer for register; keep docs-writer for links
-  and wrapping. Use fumadocs `<Callout>` for forks and defaults.
+  what/why/how, not skinny command lists and not marketing hype, then
+  cut chatbot tells without sanding off that voice. Use when the user
+  says "fix the voice", "/the-voice", "too skinny", "too terse",
+  "needs meat", "match turborepo", "sounds like AI", "humanize",
+  "AI tells", "de-AI", "stop slop", or when writing, reviewing, or
+  editing docs/MDX/homepage copy — even if they did not name this
+  skill. This skill is the whole pass. Do not reach for a separate
+  humanizer or stop-slop skill. Prefer this over docs-writer for
+  register; keep docs-writer for links and wrapping. Use fumadocs
+  `<Callout>` for forks and defaults.
 metadata:
   author: Yam Borodetsky
   internal: true
@@ -19,12 +23,14 @@ ArkEnv docs sound like [turborepo.dev](https://turborepo.dev/docs) plus
 the pages already in that register: getting-started, Introduction,
 Installation, Community, and a framework guide (for example Vite).
 `docs-writer` is Gemini CLI boilerplate for mechanics. This skill is the
-register. `stop-slop` cuts AI tells after the meat is in; it must not
-strip why.
+register and the second pass. The second pass cuts chatbot tells after
+the meat is in. It must not strip why.
 
 Read [references/canons.md](references/canons.md) before rewriting a
 page. Read [references/examples.md](references/examples.md) when the
-task is a voice pass (the AI guide is the worked example).
+task is a voice pass (the AI guide is the worked example). Read
+[references/humanize.md](references/humanize.md) for the second pass.
+Do not run `stop-slop` or an external humanizer.
 
 ## What "fix the voice" means
 
@@ -59,7 +65,7 @@ The **page lead** is two sentences, product name in both, like Turbo:
 
 Do not open with commands, "It gives them…", or a feature list. Name
 the outcome; let H2s name the features. Keep "seamlessly" in this
-cadence. `stop-slop` must not flatten that lead.
+cadence. The second pass must not flatten that lead.
 
 ## House terms
 
@@ -103,4 +109,5 @@ stay `text`.
 3. Rewrite in the Turbo H2 shape. Add why with product facts, not
    filler. Do not invent features to add meat.
 4. Point at reference for shapes, flags, and APIs.
-5. Pass `stop-slop` without deleting the why bullets.
+5. Run [references/humanize.md](references/humanize.md). Cut tells.
+   Keep the why bullets, the lead, and every claim from step 3.
