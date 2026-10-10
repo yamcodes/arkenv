@@ -73,16 +73,11 @@
 }
 
 /* Scroll reveals. ScrollReveal adds .reveal-hidden below the fold.
- * Hits stay off until .reveal-settled. The fade delay leaves a stable,
- * still-transparent box; a click there focuses the link and does not navigate. */
+ * Fade targets hold links and only animate opacity. A transform on that
+ * box focuses the link and does not navigate. */
 .home-aurora [data-reveal].reveal-hidden {
 	opacity: 0;
 	transform: translateY(18px);
-	pointer-events: none;
-}
-
-.home-aurora [data-reveal].reveal-shown:not(.reveal-settled) {
-	pointer-events: none;
 }
 
 .home-aurora [data-reveal="blur"].reveal-hidden {
@@ -98,6 +93,13 @@
 		opacity var(--dur-reveal) var(--ease-out-strong),
 		transform var(--dur-reveal) var(--ease-out-strong),
 		filter 700ms var(--ease-out-strong);
+	transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* Fade targets hold links. A transform on that box focuses the link and
+ * does not navigate, so fade only animates opacity. */
+.home-aurora [data-reveal="fade"].reveal-shown {
+	transition: opacity var(--dur-reveal) var(--ease-out-strong);
 	transition-delay: var(--reveal-delay, 0ms);
 }
 
@@ -173,12 +175,10 @@
 	}
 
 	.home-aurora [data-reveal].reveal-hidden,
-	.home-aurora [data-reveal="blur"].reveal-hidden,
-	.home-aurora [data-reveal].reveal-shown:not(.reveal-settled) {
+	.home-aurora [data-reveal="blur"].reveal-hidden {
 		opacity: 1;
 		transform: none;
 		filter: none;
-		pointer-events: auto;
 	}
 
 	.home-aurora__cycle-viewport,
