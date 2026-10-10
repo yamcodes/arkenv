@@ -88,8 +88,9 @@ export function projectPublicProcessEnv(
 
 	runtimeConfig.public = runtimeConfig.public || {};
 	for (const key of publicKeys) {
-		if (Object.hasOwn(env, key)) {
-			runtimeConfig.public[key] = env[key];
+		const value = env[key];
+		if (value !== undefined) {
+			runtimeConfig.public[key] = value;
 		}
 	}
 }
