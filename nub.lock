@@ -794,8 +794,8 @@ importers:
         specifier: 4.0.1
         version: 4.0.1(patch_hash=f5aa6866324c04a1faeb4292de715e5ab4055b3670e5cd083a32d672f293b25f)(@types/node@24.12.2)(@types/react@19.2.14)(@types/react-dom@19.2.3(@types/react@19.2.14))(fumadocs-core@16.15.14(@mdx-js/mdx@3.1.1)(@types/hast@3.0.4)(@types/mdast@4.0.4)(@types/react@19.2.14)(lucide-react@1.14.0(react@19.2.5))(next@16.3.6(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react@19.2.5)(react-dom@19.2.5(react@19.2.5)))(react@19.2.5)(react-dom@19.2.5(react@19.2.5))(zod@4.4.1))(fumadocs-ui@16.15.14(@types/mdx@2.0.13)(@types/react@19.2.14)(fumadocs-core@16.15.14(@mdx-js/mdx@3.1.1)(@types/hast@3.0.4)(@types/mdast@4.0.4)(@types/react@19.2.14)(lucide-react@1.14.0(react@19.2.5))(next@16.3.6(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react@19.2.5)(react-dom@19.2.5(react@19.2.5)))(react@19.2.5)(react-dom@19.2.5(react@19.2.5))(zod@4.4.1))(next@16.3.6(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react@19.2.5)(react-dom@19.2.5(react@19.2.5)))(react@19.2.5)(react-dom@19.2.5(react@19.2.5)))(react@19.2.5)(react-dom@19.2.5(react@19.2.5))(shiki@4.4.3)(tailwindcss@4.2.4)
       fumadocs-typescript:
-        specifier: 5.5.1
-        version: 5.5.1(d051441e5e2e868733b085dc04b0780b)
+        specifier: 5.4.1
+        version: 5.4.1(d051441e5e2e868733b085dc04b0780b)
       fumadocs-ui:
         specifier: 16.15.14
         version: 16.15.14(@types/mdx@2.0.13)(@types/node@24.12.2)(@types/react@19.2.14)(@types/react-dom@19.2.3(@types/react@19.2.14))(fumadocs-core@16.15.14(@mdx-js/mdx@3.1.1)(@types/hast@3.0.4)(@types/mdast@4.0.4)(@types/react@19.2.14)(lucide-react@1.14.0(react@19.2.5))(next@16.3.6(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react@19.2.5)(react-dom@19.2.5(react@19.2.5)))(react@19.2.5)(react-dom@19.2.5(react@19.2.5))(zod@4.4.1))(next@16.3.6(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react@19.2.5)(react-dom@19.2.5(react@19.2.5)))(react@19.2.5)(react-dom@19.2.5(react@19.2.5))(tailwindcss@4.2.4)
@@ -9313,14 +9313,14 @@ packages:
       '@types/react':
         optional: true
 
-  fumadocs-typescript@5.5.1:
-    resolution: {integrity: sha512-dnK9YeF5UL3zENYthI/529QWRoQDw2JjyhZmXPVbGMs/kRdQ4env5qGKgtxr/J11jpqf0lPt92zB+4p3yUmTOw==}
+  fumadocs-typescript@5.4.1:
+    resolution: {integrity: sha512-qW61uHWNnK7XWFpINeWedX9UMQotPOLDC5oHybwA5l39CAR0xC/G6hlyGgTF2WH4AQjsFDwDAwgVuuU4dbmNJQ==}
     peerDependencies:
       '@types/estree': '*'
       '@types/hast': '*'
       '@types/mdast': '*'
       '@types/react': '*'
-      fumadocs-core: ^16.17.1
+      fumadocs-core: ^16.7.0
       fumadocs-ui: ^16.7.0
       react: ^19.2.0
       react-dom: ^19.2.0
@@ -21942,7 +21942,7 @@ snapshots:
       - date-fns
       - supports-color
 
-  fumadocs-typescript@5.5.1(d051441e5e2e868733b085dc04b0780b):
+  fumadocs-typescript@5.4.1(d051441e5e2e868733b085dc04b0780b):
     dependencies:
       '@types/hast': 3.0.4
       '@types/mdast': 4.0.4
@@ -21956,9 +21956,10 @@ snapshots:
       react-dom: 19.2.5(react@19.2.5)
       remark: 15.0.1(vfile@6.0.3)
       remark-rehype: 11.1.2
-      shiki: 4.5.0
+      shiki: 4.4.3
       typescript: 7.0.2
       unified: 11.0.5
+      unist-util-visit: 5.1.0
     transitivePeerDependencies:
       - supports-color
 

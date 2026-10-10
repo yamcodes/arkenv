@@ -10,7 +10,7 @@
 	"dependencies": {
 		"@arkenv/core": "1.0.0-rc.4",
 		"@arkenv/vite-plugin": "1.0.0-rc.4",
-		"@solidjs/start": "^2.0.4",
+		"@solidjs/start": "2.0.6",
 		"arktype": "^2.2.5",
 		"nitro": "3.0.260903-beta",
 		"solid-js": "1.9.12",
