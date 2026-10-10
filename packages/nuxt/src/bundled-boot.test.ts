@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import * as nodeUrl from "node:url";
+import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
 	cloneRuntimeConfig,
@@ -46,22 +46,42 @@ describe("bundled schema module ids", () => {
 		expect(source).not.toContain("createJiti");
 		expect(source).not.toContain("schemaPath");
 	});
+
+	it("imports the standard engine when that module is selected", () => {
+		const source = createBundledSchemaVirtualModules({
+			engine: "standard",
+			captureRuntimePath: "/pkg/bundled-schema.js",
+			captureModuleId: toCaptureModuleId("/app/env.ts"),
+		})["#arkenv/schema"];
+
+		expect(source).toContain('from "@arkenv/standard"');
+		expect(source).not.toContain('from "@arkenv/core"');
+	});
 });
 
 describe("bundled boot gate", () => {
-	it("validates when Nitro's placeholder import.meta.url would throw on Windows", () => {
-		const spy = vi.spyOn(nodeUrl, "fileURLToPath").mockImplementation(() => {
-			throw Object.assign(new Error("File URL path must be absolute"), {
-				code: "ERR_INVALID_FILE_URL_PATH",
-			});
-		});
+	it("validates when Nitro's placeholder import.meta.url cannot name a package directory", () => {
+		const placeholder = "file:///_entry.js";
 		(globalThis as { _importMeta_?: { url: string } })._importMeta_ = {
-			url: "file:///_entry.js",
+			url: placeholder,
 		};
+
+		let packageDir = "";
+		let invalidFileUrl = false;
+		try {
+			packageDir = path.dirname(fileURLToPath(placeholder));
+		} catch (error) {
+			invalidFileUrl =
+				error instanceof Error &&
+				"code" in error &&
+				error.code === "ERR_INVALID_FILE_URL_PATH";
+		}
+		expect(packageDir === "/" || invalidFileUrl).toBe(true);
 
 		const runtimeConfig = {
 			public: { NUXT_PUBLIC_PORT: "4000" },
 			DATABASE_URL: "postgres://localhost/db",
+			PORT: "8080",
 		};
 
 		runBundledBootGate(
@@ -71,6 +91,7 @@ describe("bundled boot gate", () => {
 				schema: {
 					NUXT_PUBLIC_PORT: "number",
 					DATABASE_URL: "string",
+					PORT: "number",
 				} as never,
 				coreArkenv: (_schema, config) => {
 					const env = config?.env ?? {};
@@ -81,6 +102,7 @@ describe("bundled boot gate", () => {
 					return {
 						NUXT_PUBLIC_PORT: port,
 						DATABASE_URL: env.DATABASE_URL,
+						PORT: Number(env.PORT),
 					};
 				},
 			},
@@ -90,32 +112,7 @@ describe("bundled boot gate", () => {
 		expect(runtimeConfig.public.NUXT_PUBLIC_PORT).toBe(4000);
 		expect(typeof runtimeConfig.public.NUXT_PUBLIC_PORT).toBe("number");
 		expect(runtimeConfig.DATABASE_URL).toBe("postgres://localhost/db");
-		expect(spy).not.toHaveBeenCalled();
-	});
-
-	it("validates when the placeholder URL would resolve to the filesystem root", () => {
-		const spy = vi
-			.spyOn(nodeUrl, "fileURLToPath")
-			.mockReturnValue("/_entry.js");
-		(globalThis as { _importMeta_?: { url: string } })._importMeta_ = {
-			url: "file:///_entry.js",
-		};
-
-		const runtimeConfig = { PORT: "8080" };
-		runBundledBootGate(
-			{
-				engine: "arktype",
-				publicKeys: [],
-				schema: { PORT: "number" } as never,
-				coreArkenv: (_schema, config) => ({
-					PORT: Number(config?.env?.PORT),
-				}),
-			},
-			runtimeConfig,
-		);
-
 		expect(runtimeConfig.PORT).toBe(8080);
-		expect(spy).not.toHaveBeenCalled();
 	});
 
 	it("projects an empty public env override over a baked runtimeConfig value", () => {

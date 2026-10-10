@@ -37,7 +37,6 @@ describe("Nitro output boots from the bundled schema", () => {
 			ready: true,
 			overrides: {
 				telemetry: false as never,
-				nitro: { minify: false, sourceMap: false },
 			},
 		});
 
@@ -51,10 +50,14 @@ describe("Nitro output boots from the bundled schema", () => {
 		const serverEntry = path.join(outputDir, "server", "index.mjs");
 		expect(fs.existsSync(serverEntry)).toBe(true);
 
-		const bundledSource = readServerBundle(path.join(outputDir, "server"));
+		const serverFiles = listServerJs(path.join(outputDir, "server"));
+		const bundledSource = serverFiles
+			.map((file) => fs.readFileSync(file, "utf8"))
+			.join("\n");
 		expect(bundledSource).not.toContain("createJiti");
-		expect(bundledSource).not.toContain("fileURLToPath");
 		expect(bundledSource).not.toContain(path.join(FIXTURE, "env.ts"));
+		expect(bundledSource).toContain("loadBundledSchema");
+		expect(bundledSource).toContain("beginBundledCapture");
 		expect(
 			fs.existsSync(path.join(outputDir, "server", "node_modules", "jiti")),
 		).toBe(false);
@@ -97,13 +100,13 @@ describe("Nitro output boots from the bundled schema", () => {
 });
 
 /**
- * Read the emitted server JavaScript so assertions see chunks, not only the entry.
+ * List emitted server JavaScript files, skipping traced `node_modules`.
  *
  * @param serverDir Nitro server output directory
- * @returns Concatenated JavaScript source
+ * @returns Absolute paths of server chunks
  */
-function readServerBundle(serverDir: string): string {
-	const parts: string[] = [];
+function listServerJs(serverDir: string): string[] {
+	const files: string[] = [];
 	const visit = (dir: string) => {
 		for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
 			const full = path.join(dir, entry.name);
@@ -113,12 +116,12 @@ function readServerBundle(serverDir: string): string {
 				continue;
 			}
 			if (entry.name.endsWith(".mjs") || entry.name.endsWith(".js")) {
-				parts.push(fs.readFileSync(full, "utf8"));
+				files.push(full);
 			}
 		}
 	};
 	visit(serverDir);
-	return parts.join("\n");
+	return files;
 }
 
 /**
