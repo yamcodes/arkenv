@@ -63,11 +63,25 @@ Because this is a monorepo, plugins reference the local core packages during dev
 - When published to npm, pnpm rewrites `workspace:*` to the **exact current version** (e.g., `"1.0.0-alpha.1"`).
 - This is correct for `devDependencies` because they are not installed by end users.
 
-**`peerDependencies`: `"@arkenv/core": "^1.0.0", "@arkenv/standard": "^1.0.0"`**
+**`peerDependencies`: `"@arkenv/core": "^1.0.0-0", "@arkenv/standard": "^1.0.0-0"`**
 
-- We use the **Wide Peer** strategy by hardcoding the absolute minimum supported version of the core packages. We completely drop the `workspace:` prefix here.
-- This decoupling is necessary to solve the "Artificial Floor" problem where using `workspace:^` forces the published package to artificially require the exact version of the core engine present in the monorepo at publish time.
-- Because it is a regular hardcoded range, anyone from `1.0.0` upwards can install the new plugin update without being forced to upgrade their core engine.
+- We use the **Wide Peer** strategy by hardcoding the minimum supported
+  version of the core packages. We drop the `workspace:` prefix here.
+- This decoupling solves the artificial-floor problem. Publishing
+  `workspace:^` rewrites the range to a caret of the core version in the
+  monorepo at that moment (for example `^1.0.0-rc.4`). That pins
+  consumers to the current prerelease and forces a core upgrade they may
+  not need.
+- The published range is `^1.0.0-0`. The `-0` suffix is the base
+  threshold for the `1.0.0` tuple, so the wide floor includes the
+  `1.0.0` prerelease line (`1.0.0-alpha.*` and `1.0.0-rc.*`) during the
+  RC phase. A bare `^1.0.0` has no prerelease comparator, and npm matches
+  none of those published versions.
+- The range matches stable `1.0.0`, `1.0.1`, and `1.1.0` (anything
+  `>=1.0.0 <2.0.0`). It does not match `2.0.0` or `2.0.0-0`.
+- npm matches a prerelease only when a comparator shares that
+  major.minor.patch tuple. `1.1.0-rc.0` does not match `^1.0.0-0`. This
+  floor is not every 1.x prerelease.
 
 **`dependencies` (Highly Coupled Internals): `"@arkenv/core": "workspace:~"`**
 
@@ -79,7 +93,7 @@ Because this is a monorepo, plugins reference the local core packages during dev
 | Field                  | Protocol      | Local Dev           | Published                       |
 | :--------------------- | :------------ | :------------------ | :------------------------------ |
 | `devDependencies`      | `workspace:*` | Links to workspace  | Exact version (`1.0.0-alpha.1`) |
-| `peerDependencies`     | `^1.0.0`      | Standard resolution | Hardcoded range (`^1.0.0`)      |
+| `peerDependencies`     | `^1.0.0-0`    | Standard resolution | Hardcoded range (`^1.0.0-0`)    |
 | `dependencies` (tight) | `workspace:~` | Links to workspace  | Tilde range (`~1.0.0-alpha.1`)  |
 
 > **Reference:** See [pnpm documentation on publishing workspace packages](https://pnpm.io/workspaces#publishing-workspace-packages) for full details on how `workspace:` protocols are rewritten during publish.
