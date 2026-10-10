@@ -26,6 +26,7 @@ export default defineConfig({
 			"@nuxt/schema",
 			"nitropack",
 			"#arkenv/server-boot",
+			"#arkenv/schema",
 			"arktype",
 		],
 	},

@@ -1,6 +1,7 @@
 /**
- * Server-side `#arkenv/server-boot` implementation.
+ * Satisfy the thin accessor hook without loading a schema.
  *
- * Re-exports {@link ensureBootGate} from the Nitro boot-gate module (core-backed).
+ * Coercion already ran in the Nitro boot plugin from the schema compiled into
+ * the server bundle. Calling this again must not read a file or start jiti.
  */
-export { ensureBootGate } from "./boot-gate";
+export function ensureBootGate(): void {}

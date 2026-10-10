@@ -1,26 +1,20 @@
-import type { Dict, SchemaShape } from "@repo/types";
+import type { SchemaShape } from "@repo/types";
+import {
+	applyBootGateWith,
+	type BootGateRuntimeConfig,
+	flattenRuntimeConfig,
+} from "./boot-gate-apply";
 import {
 	type BootGateConfig,
 	type BootGateEngine,
 	buildSchemaJitiAliases,
 	loadSchemaViaCapture,
 } from "./boot-gate-load";
-import {
-	getBootGateResult,
-	isBootGateDone,
-	resetBootGateResultForTests,
-	setBootGateResult,
-} from "./boot-gate-state";
+import { isBootGateDone, resetBootGateResultForTests } from "./boot-gate-state";
 import { resolveCoreArkenv } from "./resolve-core-arkenv";
 
-export type { BootGateConfig, BootGateEngine };
-export { buildSchemaJitiAliases, loadSchemaViaCapture };
-
-export type BootGateRuntimeConfig = {
-	public?: Record<string, unknown>;
-	arkenvGate?: BootGateConfig;
-	[key: string]: unknown;
-};
+export type { BootGateConfig, BootGateEngine, BootGateRuntimeConfig };
+export { buildSchemaJitiAliases, flattenRuntimeConfig, loadSchemaViaCapture };
 
 let gateConfig: BootGateConfig | null = null;
 
@@ -55,51 +49,15 @@ export function resetBootGateForTests(): void {
 	resetBootGateResultForTests();
 }
 
-/**
- * Flatten Nuxt `runtimeConfig` into a single key→value map for validation.
- *
- * @param runtimeConfig The live Nitro runtime config (after string overrides)
- * @returns Flat env map including public keys at the top level
- */
-export function flattenRuntimeConfig(
-	runtimeConfig: BootGateRuntimeConfig,
-): Record<string, unknown> {
-	const { public: publicConfig, arkenvGate: _gate, ...rest } = runtimeConfig;
-	const flat: Record<string, unknown> = { ...rest };
-	if (publicConfig && typeof publicConfig === "object") {
-		Object.assign(flat, publicConfig);
-	}
-	return flat;
-}
-
-/**
- * Write coerced values back into `runtimeConfig`, including `public`.
- *
- * @param runtimeConfig The live Nitro runtime config to mutate
- * @param coerced Validated/coerced values from core
- * @param publicKeys Keys that belong under `runtimeConfig.public`
- */
-export function applyCoercedToRuntimeConfig(
-	runtimeConfig: BootGateRuntimeConfig,
-	coerced: Record<string, unknown>,
-	publicKeys: Set<string>,
-): void {
-	runtimeConfig.public = runtimeConfig.public || {};
-
-	for (const [key, value] of Object.entries(coerced)) {
-		if (publicKeys.has(key)) {
-			runtimeConfig.public[key] = value;
-		} else {
-			runtimeConfig[key] = value;
-		}
-	}
-}
+export { applyCoercedToRuntimeConfig } from "./boot-gate-apply";
 
 /**
  * Apply validation and coercion on live runtimeConfig for a given schema and public key set.
  *
  * Separable from file-system and Jiti schema capture, enabling isolated testing
- * and direct runtime application.
+ * and direct runtime application. Production Nitro boots call
+ * {@link applyBootGateWith} with the schema compiled into the server bundle
+ * instead of loading `schemaPath` here.
  *
  * @param schema Flat schema object for core validation
  * @param publicKeys Set of public keys to route to runtimeConfig.public
@@ -114,34 +72,9 @@ export function applyBootGate(
 	engine: BootGateEngine,
 	runtimeConfig: BootGateRuntimeConfig,
 ): Record<string, unknown> {
-	if (Object.keys(schema).length === 0) {
-		const flat = flattenRuntimeConfig(runtimeConfig);
-		setBootGateResult(flat);
-		return flat;
-	}
-
-	const sourceValues = flattenRuntimeConfig(runtimeConfig);
-	const processEnv =
-		typeof process !== "undefined" ? (process.env as Dict<string>) : {};
-
-	// `runtimeConfig` after Nitro boot is authoritative — including deliberate empty
-	// string overrides (`NUXT_PUBLIC_FOO=""`). Spread `process.env` first as a
-	// fallback for keys Nitro has not projected into config yet.
-	const combinedEnv: Record<string, unknown> = { ...processEnv };
-	for (const [key, value] of Object.entries(sourceValues)) {
-		if (value !== undefined) {
-			combinedEnv[key] = value;
-		}
-	}
-
-	const coreArkenv = resolveCoreArkenv(engine);
-	const coerced = coreArkenv(schema, {
-		env: combinedEnv as Dict<string>,
-	});
-
-	applyCoercedToRuntimeConfig(runtimeConfig, coerced, publicKeys);
-	setBootGateResult({ ...coerced });
-	return getBootGateResult() as Record<string, unknown>;
+	const coreArkenv =
+		Object.keys(schema).length === 0 ? () => ({}) : resolveCoreArkenv(engine);
+	return applyBootGateWith(coreArkenv, schema, publicKeys, runtimeConfig);
 }
 
 /**
