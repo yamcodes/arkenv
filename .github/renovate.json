@@ -121,11 +121,25 @@
 			"automergeType": "pr",
 		},
 		{
+			"description": "5.5 requires fumadocs-core ^16.17.1, which is pinned together with fumadocs-ui. Bump both before allowing this.",
+			"matchPackageNames": ["fumadocs-typescript"],
+			"allowedVersions": "<=5.4.1",
+		},
+		{
 			"groupName": "arkenv packages",
 			"matchPackageNames": ["arkenv"],
 			"matchPackagePatterns": ["^@arkenv/"],
 			"automerge": true,
 			"automergeType": "pr",
+		},
+		// typescript-classic is the JS compiler API pin (npm:typescript@6)
+		// for @ark/attest and dpdm. Catalog typescript stays on 7 (native).
+		// TypeScript 7 does not export parseConfigFileTextToJson, so a major
+		// bump fails vitest setup. 6.x patches stay allowed.
+		{
+			"description": "Keep typescript-classic on the TypeScript 6 compiler API",
+			"matchDepNames": ["typescript-classic"],
+			"allowedVersions": "<7.0.0",
 		},
 	],
 }

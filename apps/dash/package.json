@@ -13,10 +13,10 @@
 	},
 	"dependencies": {
 		"@arkenv/core": "workspace:*",
-		"@getdashfy/ext-github": "^0.2.1",
-		"@getdashfy/ext-json": "^0.2.2",
-		"@getdashfy/server": "^0.2.0",
-		"@getdashfy/ui": "^0.3.1",
+		"@getdashfy/ext-github": "0.2.1",
+		"@getdashfy/ext-json": "0.2.2",
+		"@getdashfy/server": "0.2.0",
+		"@getdashfy/ui": "0.3.1",
 		"arktype": "catalog:",
 		"react": "catalog:",
 		"react-dom": "catalog:"
@@ -27,7 +27,7 @@
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",
 		"@vitejs/plugin-react": "catalog:",
-		"concurrently": "^10.0.0",
+		"concurrently": "10.0.6",
 		"rimraf": "catalog:",
 		"typescript": "catalog:",
 		"vite": "8.0.16"

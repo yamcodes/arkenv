@@ -36,14 +36,6 @@ import {
  */
 export type ModuleOptions = ArkEnvConfigOptions;
 
-type NitroConfigHook = {
-	alias?: Record<string, string>;
-	virtual?: Record<string, string | (() => string)>;
-	plugins?: string[];
-	rollupConfig?: { plugins?: unknown[] };
-	externals?: { traceInclude?: string[] };
-};
-
 declare module "@nuxt/schema" {
 	// biome-ignore lint/style/useConsistentTypeDefinitions: module augmentation requires an interface for declaration merging
 	interface NuxtConfig {
@@ -52,10 +44,6 @@ declare module "@nuxt/schema" {
 	// biome-ignore lint/style/useConsistentTypeDefinitions: module augmentation requires an interface for declaration merging
 	interface NuxtOptions {
 		arkenv?: ModuleOptions;
-	}
-	// biome-ignore lint/style/useConsistentTypeDefinitions: module augmentation requires an interface for declaration merging
-	interface NuxtHooks {
-		"nitro:config": (nitroConfig: NitroConfigHook) => void;
 	}
 }
 
@@ -117,20 +105,27 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 		);
 
 		nuxt.hook("nitro:config", (nitroConfig) => {
-			nitroConfig.alias = nitroConfig.alias || {};
-			nitroConfig.alias["#arkenv/server-boot"] = realServerBoot;
+			// Nuxt 4.6 types this hook as NitroConfig, which stays NitroConfigFallback
+			// (no `alias`) until a server builder registers. Nitro still accepts these fields.
+			const config = nitroConfig as typeof nitroConfig & {
+				alias?: Record<string, string>;
+				rollupConfig?: { plugins?: unknown[] };
+				externals?: { traceInclude?: string[] };
+			};
+			config.alias = config.alias || {};
+			config.alias["#arkenv/server-boot"] = realServerBoot;
 
 			const aliases: Record<string, string> = {};
 			for (const [key, value] of Object.entries(nuxt.options.alias || {})) {
 				if (typeof value === "string") aliases[key] = value;
 			}
-			for (const [key, value] of Object.entries(nitroConfig.alias)) {
+			for (const [key, value] of Object.entries(config.alias)) {
 				if (typeof value === "string") aliases[key] = value;
 			}
 
-			nitroConfig.virtual = nitroConfig.virtual || {};
+			config.virtual = config.virtual || {};
 			Object.assign(
-				nitroConfig.virtual,
+				config.virtual,
 				createBundledSchemaVirtualModules({
 					engine,
 					captureRuntimePath,
@@ -138,9 +133,9 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 				}),
 			);
 
-			nitroConfig.rollupConfig = nitroConfig.rollupConfig || {};
-			const rollupPlugins = Array.isArray(nitroConfig.rollupConfig.plugins)
-				? nitroConfig.rollupConfig.plugins
+			config.rollupConfig = config.rollupConfig || {};
+			const rollupPlugins = Array.isArray(config.rollupConfig.plugins)
+				? config.rollupConfig.plugins
 				: [];
 			const hasCapturePlugin = rollupPlugins.some(
 				(plugin) =>
@@ -157,21 +152,19 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 					}),
 				);
 			}
-			nitroConfig.rollupConfig.plugins = rollupPlugins;
+			config.rollupConfig.plugins = rollupPlugins;
 
 			const enginePackage =
 				engine === "standard" ? "@arkenv/standard" : "@arkenv/core";
-			nitroConfig.externals = nitroConfig.externals || {};
-			const traceInclude = nitroConfig.externals.traceInclude ?? [];
+			config.externals = config.externals || {};
+			const traceInclude = config.externals.traceInclude ?? [];
 			if (!traceInclude.includes(enginePackage)) {
-				nitroConfig.externals.traceInclude = [...traceInclude, enginePackage];
+				config.externals.traceInclude = [...traceInclude, enginePackage];
 			}
 
-			nitroConfig.plugins = nitroConfig.plugins || [];
-			nitroConfig.plugins = nitroConfig.plugins.filter(
-				(plugin) => !isBootPlugin(plugin),
-			);
-			nitroConfig.plugins.unshift(bootPlugin);
+			config.plugins = config.plugins || [];
+			config.plugins = config.plugins.filter((plugin) => !isBootPlugin(plugin));
+			config.plugins.unshift(bootPlugin);
 		});
 
 		if (nuxt.options.dev) {
