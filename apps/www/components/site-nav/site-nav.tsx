@@ -95,7 +95,8 @@ function SiteNavLink({
 }
 
 /**
- * Docs-only — same footprint as Get started (`.site-nav__action`).
+ * Same footprint as Get started (`.site-nav__action`).
+ * Docs, blog, and roadmap use this in the shared right action slot.
  */
 function SiteNavSearchAction() {
 	const { setOpenSearch } = useSearchContext();
@@ -129,7 +130,8 @@ export type SiteNavProps = {
 	 */
 	showGetStarted?: boolean;
 	/**
-	 * Docs — Search in the shared right action slot (same footprint as Get started).
+	 * Docs, blog, and roadmap — Search in the shared right action slot
+	 * (same footprint as Get started).
 	 */
 	showSearch?: boolean;
 	/**
@@ -287,6 +289,27 @@ export function SiteNav({
 
 export function SiteNavHome({ releaseTag }: { releaseTag: string }) {
 	return <SiteNav showGetStarted releaseTag={releaseTag} />;
+}
+
+function isRoadmapPath(pathname: string): boolean {
+	return pathname === "/roadmap" || pathname.startsWith("/roadmap/");
+}
+
+/**
+ * Aurora shell (home and roadmap). Home keeps Get started; roadmap uses
+ * Search in that same slot, matching the blog.
+ */
+export function SiteNavAurora({ releaseTag }: { releaseTag: string }) {
+	const pathname = usePathname();
+	const showSearch = isRoadmapPath(pathname);
+
+	return (
+		<SiteNav
+			showGetStarted={!showSearch}
+			showSearch={showSearch}
+			releaseTag={releaseTag}
+		/>
+	);
 }
 
 /**
