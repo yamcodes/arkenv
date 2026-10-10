@@ -1523,8 +1523,8 @@ importers:
         specifier: 'catalog:'
         version: 2.2.5
       ejs:
-        specifier: ^3.1.10
-        version: 3.1.10
+        specifier: ^6.0.0
+        version: 6.0.1
       rimraf:
         specifier: 'catalog:'
         version: 6.1.3
@@ -8463,6 +8463,11 @@ packages:
   ejs@3.1.10:
     resolution: {integrity: sha512-UeJmFfOrAQS8OJWPZ4qtgHyWExa088/MtK5UEyoJGFH67cDEXkZSviOiKRCZ4Xij0zxI3JECgYs3oKx+AizQBA==}
     engines: {node: '>=0.10.0'}
+    hasBin: true
+
+  ejs@6.0.1:
+    resolution: {integrity: sha512-UaaM14yby8U3k02ihS1Bmj5Kz2d7CCQM1scxpgs4Mhkq8F1wR2gl3+Ts4h5Ne4Mnt7M9m4Dw7jsuMr3+xO4vZA==}
+    engines: {node: '>=0.12.18'}
     hasBin: true
 
   electron-to-chromium@1.5.438:
@@ -20440,6 +20445,8 @@ snapshots:
       - coffeescript
       - livescript
       - ts-node
+
+  ejs@6.0.1: {}
 
   electron-to-chromium@1.5.438: {}
 
