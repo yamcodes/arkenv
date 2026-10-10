@@ -4,8 +4,9 @@
 # successes or failures. A skipped run here is ignored by the badge, so the last real
 # result stays put. See https://github.com/actions/runner/issues/4047
 #
-# README images must use this file (`tests-badge.yml/badge.svg`), not `test.yml`.
-# The link can still open `test.yml`, which is the real workflow.
+# README images must use this file (`tests-badge.yml/badge.svg`), not `test.yml`,
+# and must omit `?branch=` so the image follows the repository default branch.
+# The link can still open `test.yml` filtered to `v1`.
 # `head_branch` follows `repository.default_branch` so a default-branch rename
 # (main → dev → v1) does not freeze the badge on a branch we no longer push to.
 
