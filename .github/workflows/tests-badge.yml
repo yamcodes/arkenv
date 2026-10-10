@@ -1,8 +1,14 @@
 # This workflow mirrors the result of the main "test" workflow for the README badge.
 # GitHub marks cancelled runs as "failed", which breaks the badge when we use concurrency.
-# This file filters out cancelled runs and only updates the badge on real successes or failures.
-# See relevant issue: https://github.com/actions/runner/issues/4047
-# For the real workflow, see test.yml
+# This file filters out cancelled and skipped runs and only updates the badge on real
+# successes or failures. A skipped run here is ignored by the badge, so the last real
+# result stays put. See https://github.com/actions/runner/issues/4047
+#
+# README images must use this file (`tests-badge.yml/badge.svg`), not `test.yml`,
+# and must omit `?branch=` so the image follows the repository default branch.
+# The link can still open `test.yml` filtered to `v1`.
+# `head_branch` follows `repository.default_branch` so a default-branch rename
+# (main → dev → v1) does not freeze the badge on a branch we no longer push to.
 
 name: tests # `name` is what appears in the badge
 
@@ -13,11 +19,12 @@ on:
 
 jobs:
   mirror-status:
-    # Only care about push to dev, and ignore cancelled runs
+    # Pushes to the default branch only. Cancelled and skipped sources do not run.
     if: >
       github.event.workflow_run.event == 'push' &&
-      github.event.workflow_run.head_branch == 'dev' &&
-      github.event.workflow_run.conclusion != 'cancelled'
+      github.event.workflow_run.head_branch == github.event.repository.default_branch &&
+      github.event.workflow_run.conclusion != 'cancelled' &&
+      github.event.workflow_run.conclusion != 'skipped'
     runs-on: ubuntu-latest
     steps:
       - name: Mirror conclusion for badge
