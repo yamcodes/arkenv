@@ -1,6 +1,9 @@
 import path from "node:path";
 import { withArkEnv } from "@arkenv/nextjs/config";
-import { type SentryBuildOptions, withSentryConfig } from "@sentry/nextjs";
+import {
+	type SentryBuildOptions,
+	withSentryConfig,
+} from "@sentry/nextjs/config";
 import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
 import {
