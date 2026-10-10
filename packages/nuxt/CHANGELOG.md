@@ -1,5 +1,43 @@
 # @arkenv/nuxt
 
+## 1.0.0-rc.5
+
+### Patch Changes
+
+- #### Include 1.0.0 prereleases in framework plugin core peers _[`#2069`](https://github.com/yamcodes/arkenv/pull/2069) [`222d8e9`](https://github.com/yamcodes/arkenv/commit/222d8e90b608a506aa1e42dd71d793c962d85168) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Optional `@arkenv/core` and `@arkenv/standard` peers on the Next.js, Nuxt,
+	Vite, Bun, and Rsbuild plugins now use `^1.0.0-0`. Installing a plugin
+	together with `@arkenv/core@1.0.0-rc.4` and `@arkenv/standard@1.0.0-rc.4`
+	resolves on npm 11. The peers stay optional. The range matches `1.0.0`
+	prereleases and stable 1.x below `2.0.0`.
+	
+	```bash
+	npm install @arkenv/nuxt @arkenv/core@1.0.0-rc.4 @arkenv/standard@1.0.0-rc.4
+	```
+	
+	```json
+	{
+	  "peerDependencies": {
+	    "@arkenv/core": "^1.0.0-0",
+	    "@arkenv/standard": "^1.0.0-0"
+	  },
+	  "peerDependenciesMeta": {
+	    "@arkenv/core": { "optional": true },
+	    "@arkenv/standard": { "optional": true }
+	  }
+	}
+	```
+- #### Compile the Nuxt schema into the Nitro server bundle _[`#2073`](https://github.com/yamcodes/arkenv/pull/2073) [`f882c42`](https://github.com/yamcodes/arkenv/commit/f882c425e9cefe4cbb33ed20ed303fac2c5abc5d) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Production startup and prerender now validate the schema compiled into the server bundle. A copied `.output` directory no longer reads the build-machine `env.ts` and no longer needs `jiti`. Live `NUXT_*` and `NUXT_PUBLIC_*` overrides, including empty strings, still win over values baked at build time.
+- #### Fix Nuxt 4.6 `nitro:config` hook types _[`#2040`](https://github.com/yamcodes/arkenv/pull/2040) [`17ff351`](https://github.com/yamcodes/arkenv/commit/17ff3513d38629595f2bd46881f5f852d05b9ab0) [@renovate](https://github.com/apps/renovate)_
+
+	
+	`@arkenv/nuxt` typechecks again with Nuxt 4.6. The module no longer redeclares the `nitro:config` hook, which now uses Nuxt's `NitroConfig` type, and still registers the server boot alias on that hook.
+
 ## 1.0.0-rc.4
 
 ### Major Changes

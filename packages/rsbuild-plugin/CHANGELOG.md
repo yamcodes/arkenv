@@ -1,5 +1,35 @@
 # @arkenv/rsbuild-plugin
 
+## 1.0.0-rc.5
+
+### Patch Changes
+
+- #### Include 1.0.0 prereleases in framework plugin core peers _[`#2069`](https://github.com/yamcodes/arkenv/pull/2069) [`222d8e9`](https://github.com/yamcodes/arkenv/commit/222d8e90b608a506aa1e42dd71d793c962d85168) [@yamcodes](https://github.com/yamcodes)_
+
+	
+	Optional `@arkenv/core` and `@arkenv/standard` peers on the Next.js, Nuxt,
+	Vite, Bun, and Rsbuild plugins now use `^1.0.0-0`. Installing a plugin
+	together with `@arkenv/core@1.0.0-rc.4` and `@arkenv/standard@1.0.0-rc.4`
+	resolves on npm 11. The peers stay optional. The range matches `1.0.0`
+	prereleases and stable 1.x below `2.0.0`.
+	
+	```bash
+	npm install @arkenv/nuxt @arkenv/core@1.0.0-rc.4 @arkenv/standard@1.0.0-rc.4
+	```
+	
+	```json
+	{
+	  "peerDependencies": {
+	    "@arkenv/core": "^1.0.0-0",
+	    "@arkenv/standard": "^1.0.0-0"
+	  },
+	  "peerDependenciesMeta": {
+	    "@arkenv/core": { "optional": true },
+	    "@arkenv/standard": { "optional": true }
+	  }
+	}
+	```
+
 ## 1.0.0-rc.4
 
 ### Patch Changes
