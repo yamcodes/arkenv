@@ -127,5 +127,14 @@
 			"automerge": true,
 			"automergeType": "pr",
 		},
+		// typescript-classic is the JS compiler API pin (npm:typescript@6)
+		// for @ark/attest and dpdm. Catalog typescript stays on 7 (native).
+		// TypeScript 7 does not export parseConfigFileTextToJson, so a major
+		// bump fails vitest setup. 6.x patches stay allowed.
+		{
+			"description": "Keep typescript-classic on the TypeScript 6 compiler API",
+			"matchDepNames": ["typescript-classic"],
+			"allowedVersions": "<7.0.0",
+		},
 	],
 }
