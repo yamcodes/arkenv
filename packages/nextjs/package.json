@@ -10,7 +10,7 @@
 	"module": "./dist/index.js",
 	"dependencies": {
 		"@arkenv/build": "workspace:*",
-		"chokidar": "^4.0.3",
+		"chokidar": "^5.0.0",
 		"jiti": "catalog:",
 		"server-only": "^0.0.1"
 	},
