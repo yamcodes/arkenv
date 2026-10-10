@@ -3,13 +3,16 @@ title: Migrating from T3 Env
 description: Replace createEnv and runtimeEnv with a flat ArkEnv schema.
 ---
 
-T3 Env is a major inspiration for ArkEnv's Next.js security model. On
-ArkEnv you drop the manual `runtimeEnv` map and keep a flat schema.
-For a feature cheatsheet, see [Why ArkEnv?](/docs/why-arkenv).
+A T3 Env Next.js setup keeps a `runtimeEnv` map in sync with the
+schema. ArkEnv keeps the flat `env` object and drops that map.
+
+T3 Env is a major inspiration for that security model. The cheatsheet
+of what else changes is [Why ArkEnv?](/docs/why-arkenv).
 
 ## What changes
 
-The table below is the mapping you need while you edit files.
+Edit files against this mapping. The flat schema replaces the nested
+`server` / `client` / `runtimeEnv` object.
 
 | Feature          | T3 Env                                  | ArkEnv                                                                |
 | ---------------- | --------------------------------------- | --------------------------------------------------------------------- |

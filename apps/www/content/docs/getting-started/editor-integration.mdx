@@ -3,14 +3,18 @@ title: Editor integration
 description: Configure autocomplete, type inspection, and diagnostics in your editor.
 ---
 
-To get the best experience with `arkenv()`, ArkEnv provides a few utilities
-for integrating with your editor.
+ArkType schema strings are still strings to the TypeScript language
+service. ArkEnv keeps them highlighted in the editor, and TypeScript
+infers keys on `env` from the same declaration you validate at runtime.
 
 ## Syntax highlighting and inline type errors
 
-The [ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark)
+ArkType schema strings are still strings to the TypeScript language
+service. The
+[ArkType VS Code extension](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkdark)
 and [JetBrains plugin](https://plugins.jetbrains.com/plugin/27099-arktype)
-highlight ArkType schema strings and surface inline type errors.
+highlight those strings and report type errors inline, so a bad
+`number.port` shows up before you run the app.
 
 The extension highlights calls whose name contains `ark`. Keep the
 **default** import name `arkenv`:
@@ -33,8 +37,8 @@ The extension highlights calls whose name contains `ark`. Keep the
 
 ## ArkThemes
 
-ArkThemes is a VS Code (and Cursor) color theme that makes ArkType schema
-strings read like TypeScript, in light and dark modes.
+The extension highlights syntax. ArkThemes colors those strings so they
+read like TypeScript, in light and dark mode, in VS Code and Cursor.
 
 Visit the
 [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=arktypeio.arkthemes)
@@ -42,8 +46,10 @@ to install.
 
 ## Autocomplete on `env.*`
 
-TypeScript infers **keys and types** from the schema you pass to `arkenv()`.
-Import `env` in application code.
+Once the schema typechecks, `env.` completes with the keys you declared
+and the types ArkEnv inferred. That only holds when application code
+imports `env`. Reading `process.env` skips both the check and the
+completion list.
 
 ```ts title="./server.ts" twoslash
 // @filename: env.ts

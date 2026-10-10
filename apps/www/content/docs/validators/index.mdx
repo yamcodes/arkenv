@@ -3,12 +3,15 @@ title: Validators
 description: Choose between @arkenv/core and @arkenv/standard, then wire ArkType, Zod, or Valibot.
 ---
 
-ArkEnv ships two engines. Both call `arkenv()`, share fail-fast errors,
-the coercion pipeline, and framework plugins. Shared
-[options](/docs/reference/options) (`env`, `coerce`, …) apply
-to both. `toJsonSchema` is on `@arkenv/standard` only; ArkType already
-exposes JSON Schema. The engines also differ in schema style and peer
-dependencies.
+ArkType, Zod, and Valibot can all describe an environment variable.
+ArkEnv ships two engines that share `arkenv()`, fail-fast errors, and
+the framework plugins. You pick the one that matches the schemas you
+already write.
+
+Shared [options](/docs/reference/options) (`env`, `coerce`, and the
+rest) apply to both. `toJsonSchema` is on `@arkenv/standard` only.
+ArkType already exposes JSON Schema. The engines differ in schema style
+and peer dependencies.
 
 |                                             | [`@arkenv/core`](/docs/reference/core) | [`@arkenv/standard`](/docs/reference/standard)                                                            |
 | ------------------------------------------- | -------------------------------------- | --------------------------------------------------------------------------------------------------------- |
@@ -156,7 +159,7 @@ related tools.
 
   <Card href="/docs/validators/zod" title="Zod" description="@arkenv/standard with Zod 4.2+, Zod Mini, or Zod v3." />
 
-  <Card href="/docs/validators/valibot" title="Valibot" description="@arkenv/standard/valibot with zero-boilerplate coercion." />
+  <Card href="/docs/validators/valibot" title="Valibot" description="@arkenv/standard/valibot with coercion wired through JSON Schema." />
 
   <Card href="/docs/reference/core" title="@arkenv/core" description="ArkType engine package reference." />
 

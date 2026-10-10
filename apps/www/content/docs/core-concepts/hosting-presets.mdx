@@ -3,24 +3,25 @@ title: Hosting presets
 description: Pre-populate schemas with Vercel, Netlify, Cloudflare, Railway, Render, or Fly.io environment variables.
 ---
 
-Hosting providers inject system environment variables at build and
-runtime. Presets teach ArkEnv which variables to generate into your
-schema, pre-typed and optional, so you do not have to look them up manually.
+Vercel, Netlify, Cloudflare, and the other hosts inject system
+variables you would otherwise copy out of their docs. ArkEnv presets
+write those variables into your schema, pre-typed and optional, while
+you scaffold.
 
 Presets work with ArkType, Zod, and Valibot on a flat `env.ts` schema.
 
-{/* prettier-ignore */}
-
-> [!NOTE]
-> ArkEnv is **code-first**. Presets write readable TypeScript schema code
-> directly into your `./env.ts`.
-> There are no runtime dependencies on CLI presets or black-box configuration
-> loaders.
+<Callout type="info" title="Presets write schema code">
+  ArkEnv is code-first. A preset writes readable TypeScript into
+  `./env.ts`. Nothing loads that preset at runtime.
+</Callout>
 
 ## Select a preset during init
 
-When bootstrapping a project, select your hosting provider from the interactive
-wizard or specify the `--preset` flag:
+Pick the host while you scaffold. Those system variables land in the
+schema as optional, pre-typed fields. You can still paste them in later
+from the snippets below.
+
+Select the provider in the wizard, or pass `--preset`:
 
 ```package-install
 npx arkenv init --preset vercel
@@ -33,8 +34,9 @@ without provider fields.
 
 ## Adding presets to an existing schema
 
-Because ArkEnv is code-first and generates plain TypeScript schemas, you can copy
-and paste hosting provider fields directly into your `./env.ts` at any time.
+Init is not the only moment you can name a host. The snippets below are
+the same TypeScript the preset would have written. Paste them into an
+existing `./env.ts` when the project is already running.
 
 ### Vercel
 

@@ -3,14 +3,20 @@ title: Migrating to v1
 description: Move a v0 project to the v1 packages and the canonical env object.
 ---
 
-v1 splits the old `arkenv` library from the CLI, and it uses the same
-`import { env } from "./env"` surface on every host. Vite and Bun no
-longer take a schema in the plugin call. Packages ship as
-`1.0.0-rc.n` under the `rc` npm tag (and `latest` during the RC window);
-APIs are frozen for the final validation pass before 1.0.0.
+On v0, the npm package `arkenv` was the library. ArkEnv v1 moves the
+runtime off that name and uses one `import { env } from "./env"` on
+every host.
 
-If you are coming from T3 Env rather than ArkEnv v0, use
-[Migrating from T3 Env](/docs/guides/migrating-from-t3-env).
+v0's `arkenv` package was the library. On v1 that name is the CLI, and
+importing it as a library throws. Vite and Bun no longer take a schema
+in the plugin call. Packages ship as `1.0.0-rc.n` under the `rc` npm
+tag (and `latest` during the RC window). APIs are frozen for the final
+validation pass before 1.0.0.
+
+<Callout type="info" title="Coming from T3 Env?">
+  Use [Migrating from T3 Env](/docs/guides/migrating-from-t3-env)
+  instead. This page is the v0 to v1 package move.
+</Callout>
 
 Set TypeScript `moduleResolution` to `"bundler"`, `"node16"`, or
 `"nodenext"`. Legacy `"node"` does not load package `exports` subpaths

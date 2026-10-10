@@ -3,28 +3,34 @@ title: Next.js
 description: Learn how to use ArkEnv in a Next.js project.
 ---
 
-`@arkenv/nextjs` validates Next.js environment variables, generates
-typesafe accessors, and blocks server secrets from Client Components.
+Next.js will boot a dev server and a production build without checking
+your schema. ArkEnv runs that check before the app serves traffic, and
+keeps server secrets out of Client Components.
 
-For high-level architectural trade-offs, see
+How this host compares with Nuxt, Vite, and Bun is in
 [Frameworks](/docs/frameworks).
 
 ## Quickstart
 
-Scaffold Next.js integration in an existing project using the CLI:
+`arkenv init` is the default on an existing Next.js app. It detects the
+framework, installs the packages, wraps `next.config` with `withArkEnv`,
+gitignores `.arkenv/`, and writes a schema that imports from
+`@/.arkenv`.
 
 ```package-install
 npx arkenv init
 ```
 
-The CLI detects Next.js, installs the required packages, wraps `next.config`
-with `withArkEnv`, gitignores `.arkenv/`, and creates your initial schema
-file importing from `@/.arkenv`.
-
 ## Manual installation
 
-If you prefer manual setup, install `@arkenv/nextjs` alongside your chosen
-validation engine.
+<Callout type="info" title="Already ran init?">
+  Skip this section. The CLI already installed the packages and wrapped
+  `next.config`.
+</Callout>
+
+Install `@arkenv/nextjs` next to the engine you write schemas with, when
+`next.config.ts` is already yours and you want each package explicit in
+`package.json`.
 
 ### ArkType engine
 
@@ -49,10 +55,10 @@ npm install @arkenv/standard @arkenv/nextjs valibot @valibot/to-json-schema
 
 ## Configuration
 
-Wrap your Next.js configuration object with `withArkEnv`. This plugin runs schema
-validation during development and builds, and generates typed accessors in
-`.arkenv/env.gen.ts`. Import that factory as `@/.arkenv`. Add `.arkenv/`
-to `.gitignore`.
+Next.js does not validate an env schema on its own. `withArkEnv` runs
+that check during development and builds, and writes typed accessors to
+`.arkenv/env.gen.ts`. Import that factory as `@/.arkenv`. Add
+`.arkenv/` to `.gitignore` so the generated files stay out of git.
 
 ```ts title="./next.config.ts" twoslash
 import type { NextConfig } from "next";
@@ -78,9 +84,11 @@ export default withArkEnv(async (phase, { defaultConfig }): Promise<NextConfig> 
 
 ## Schema
 
-Use a single `env.ts`. Client variables must use the `NEXT_PUBLIC_` prefix.
-Zod and Valibot use the same `@/.arkenv` factory; point `withArkEnv` at
-`@arkenv/nextjs/standard/config` (shown below).
+One `env.ts` is the schema. Client variables use the `NEXT_PUBLIC_`
+prefix so Next can inline them. Everything else stays on the server.
+Zod and Valibot use the same `@/.arkenv` factory. Point `withArkEnv` at
+`@arkenv/nextjs/standard/config`, shown under
+[Standard Schema](#standard-schema).
 
 <Tabs items={["ArkType", "Zod", "Valibot"]}>
   <Tab value="ArkType">
@@ -165,7 +173,7 @@ export default withArkEnv(nextConfig);
 ## Read `env` in application code
 
 Import `{ env } from "./env"` in Server Components, route handlers, and
-Client Components.
+Client Components. One module is the typed object everywhere.
 
 :::warning[Do not read `process.env` directly]
 Reading `process.env` skips ArkEnv. Import `{ env }` so public keys stay

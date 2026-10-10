@@ -3,26 +3,36 @@ title: Bun fullstack dev server
 description: Learn how to use ArkEnv in a Bun fullstack application.
 ---
 
-ArkEnv supports most Bun apps out of the box, no further configuration required.
+A plain Bun script can call `arkenv()` with no extra plugin. Apps that
+bundle a client with
+[Bun's fullstack dev server](https://bun.com/docs/bundler/fullstack)
+(`Bun.serve()`) or [Bun's bundler](https://bun.com/docs/bundler)
+(`Bun.build()`) need `@arkenv/bun-plugin` so the client bundle cannot
+see server secrets.
 
-However, some Bun apps use [Bun's fullstack dev server](https://bun.com/docs/bundler/fullstack) (`Bun.serve()`) or [Bun's bundler](https://bun.com/docs/bundler) (`Bun.build()`). The Bun integration was built to support these use cases.
-
-Continue reading if you're using `Bun.serve()` or `Bun.build()`. Otherwise, the [Getting started](/docs/getting-started) guide is a good place to start.
+<Callout type="info" title="Backend-only script?">
+  Stop at [Getting started](/docs/getting-started). You do not need this
+  plugin when nothing ships to a browser.
+</Callout>
 
 ## Quickstart
 
-Scaffold Bun integration in an existing project using the interactive CLI:
+`arkenv init` is the default when the app uses `Bun.serve()` or
+`Bun.build()`. It installs `@arkenv/bun-plugin` and writes `env.ts`.
 
 ```package-install
 npx arkenv init
 ```
 
-The CLI installs `@arkenv/bun-plugin` and creates your initial `env.ts` schema file.
-
 ## Manual installation
 
-If you prefer manual setup, install `@arkenv/bun-plugin` alongside your chosen
-validation engine.
+<Callout type="info" title="Already ran init?">
+  Skip this section. The CLI already installed the plugin and wrote the
+  schema.
+</Callout>
+
+Install `@arkenv/bun-plugin` next to the engine you write schemas with,
+when `bunfig.toml` or the `Bun.build` script is already yours.
 
 ### ArkType engine
 
@@ -50,8 +60,9 @@ npm install -D @arkenv/bun-plugin
 
 ## Full-stack setup
 
-When building a full-stack Bun application with client bundling, configure the
-plugin across your schema, dev server, and build script.
+A full-stack Bun app has two graphs: the server process, and the client
+bundle. The plugin has to be on both the dev server and `Bun.build`, or
+the client graph still imports the real schema.
 
 ### Define your schema
 
@@ -125,8 +136,10 @@ Import `{ env } from "./env"` in application code. Transform mode inlines public
 
 ## Backend-only Bun
 
-If your project runs exclusively on the server with no client bundling, skip the
-plugin and call the runtime directly:
+<Callout type="info" title="No client bundle?">
+  Skip `@arkenv/bun-plugin`. Call the runtime directly. The plugin is
+  for `Bun.serve()` and `Bun.build()` client graphs.
+</Callout>
 
 <Tabs items={["ArkType", "Zod", "Valibot"]}>
   <Tab value="ArkType">

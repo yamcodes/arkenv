@@ -3,10 +3,16 @@ title: "@arkenv/vite-plugin"
 description: Exports and transform options for the Vite plugin.
 ---
 
-API reference for `@arkenv/vite-plugin`. Setup recipes:
+`@arkenv/vite-plugin` validates `env.ts` while Vite resolves config, then
+rewrites the client graph so public keys inline and server keys throw.
+This page is the export and option list. Setup recipes live in the
 [Vite guide](/docs/frameworks/vite).
 
 ## Installation
+
+Install the plugin as a dev dependency next to the engine you write
+schemas with. The plugin does not bundle `@arkenv/core` or
+`@arkenv/standard`.
 
 ```package-install
 npm install -D @arkenv/vite-plugin
@@ -21,6 +27,10 @@ npm install @arkenv/standard
 ```
 
 ## Exports
+
+The default export and the named `arkenvPlugin` export are the same
+factory. Zod and Valibot import `./standard`, which binds
+`@arkenv/standard`.
 
 | Export               | Role                          |
 | -------------------- | ----------------------------- |
@@ -60,9 +70,8 @@ abort the dev server or production build before Vite is ready. The plugin
 revalidates the schema when a relevant `.env` file or schema module changes
 during HMR.
 
-Without the plugin, validation is import-driven and runs when a module imports
-`env.ts`. Startup fail-fast is the documented behavior of the existing plugin
-contract; there is no default-off lazy-validation flag.
+Without the plugin, validation runs when a module imports `env.ts`.
+There is no default-off lazy-validation flag.
 
 ## Tests and programmatic builds
 

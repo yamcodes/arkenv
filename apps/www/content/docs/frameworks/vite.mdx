@@ -3,46 +3,50 @@ title: Vite
 description: Learn how to use ArkEnv in a Vite project.
 ---
 
-`@arkenv/vite-plugin` validates during Vite dev and production builds.
-Transform mode inlines public `VITE_` keys into the client bundle and
-keeps server secrets out.
+Vite reports that it is ready before your schema has run, unless
+something validates during config resolution. ArkEnv does that check,
+and keeps server secrets out of the client bundle.
 
 ## When does validation run?
 
-When `@arkenv/vite-plugin` is registered, it discovers and validates `env.ts`
-during Vite config resolution. An invalid or missing value aborts the dev
-server or production build before Vite reports that it is ready. Relevant
-`.env` and schema changes are validated again during HMR.
+When `@arkenv/vite-plugin` is registered, it discovers and validates
+`env.ts` during Vite config resolution. An invalid or missing value
+aborts the dev server or production build before Vite reports that it
+is ready. Relevant `.env` and schema changes are validated again during
+HMR.
 
 Without the plugin, validation is import-driven: `env.ts` runs when an
-application module imports it. This distinction applies to both server and
-client graphs; the plugin is what lets Vite validate the schema before the
-graph is ready and transform client imports safely. See the
-[`@arkenv/vite-plugin` reference](/docs/reference/vite-plugin) for the
-plugin contract.
+application module imports it. That applies to both the server graph and
+the client graph. The plugin is what lets Vite validate the schema
+before the graph is ready, and rewrite client imports so public `VITE_`
+keys inline. See the
+[`@arkenv/vite-plugin` reference](/docs/reference/vite-plugin).
 
-This documents the existing fail-fast behavior. ArkEnv does not add a
-default-off lazy-validation flag; a separate lazy mode would be an
-intentionally scoped feature.
+There is no default-off lazy-validation flag.
 
-For high-level architectural trade-offs, see
+How this host compares with Next.js, Nuxt, and Bun is in
 [Frameworks](/docs/frameworks).
 
 ## Quickstart
 
-Scaffold Vite integration in an existing project using the CLI:
+`arkenv init` is the default on an existing Vite app. It installs
+`@arkenv/vite-plugin`, configures `vite.config.ts`, and scaffolds
+`env.ts`.
 
 ```package-install
 npx arkenv init
 ```
 
-The CLI installs `@arkenv/vite-plugin`, configures `vite.config.ts`, and scaffolds
-your initial `env.ts` schema file.
-
 ## Manual installation
 
-If you prefer manual setup, install `@arkenv/vite-plugin` alongside your chosen
-validation engine.
+<Callout type="info" title="Already ran init?">
+  Skip this section. The CLI already installed the plugin and wrote
+  `vite.config.ts`.
+</Callout>
+
+Install `@arkenv/vite-plugin` next to the engine you write schemas with,
+when `vite.config.ts` is already in the repo and you want each package
+explicit in `package.json`.
 
 ### ArkType engine
 
@@ -70,11 +74,13 @@ npm install -D @arkenv/vite-plugin
 
 ## Configuration
 
-Add the plugin to your `vite.config.ts`.
+Vite does not know about your schema until the plugin is in the plugins
+array. `arkenvPlugin()` is what validates during config resolution and
+rewrites client imports.
 
 ### Register the plugin
 
-Import and register the plugin in your Vite plugins array:
+Import the plugin and add it next to the rest of your Vite plugins:
 
 ```ts title="./vite.config.ts" twoslash
 import { defineConfig } from "vite";
@@ -89,9 +95,9 @@ Zod and Valibot import the plugin from `@arkenv/vite-plugin/standard`.
 
 ### Define your schema
 
-Create an `env.ts` file in your source tree. Import the runtime from
-`@arkenv/core`, `@arkenv/standard`, or `@arkenv/standard/valibot`. The
-`arkenv` package is the CLI only.
+The plugin looks for `env.ts`. Import the runtime from `@arkenv/core`,
+`@arkenv/standard`, or `@arkenv/standard/valibot`. The `arkenv` package
+is the CLI only. Importing it as a library throws.
 
 <Tabs items={["ArkType", "Zod", "Valibot"]}>
   <Tab value="ArkType">
