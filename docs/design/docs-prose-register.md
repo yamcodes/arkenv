@@ -8,10 +8,10 @@ the hat. Promoted decisions belong in `docs/adr/`.
 The field survey behind the hat: Wikipedia's
 [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)
 (WikiProject AI Cleanup) is the shared pattern source.
-[blader/humanizer](https://github.com/blader/humanizer) (~55k stars, MIT,
+[blader/humanizer](https://github.com/blader/humanizer) (\~55k stars, MIT,
 35 of those patterns, two-pass claim check) and
 [hardikpandya/stop-slop](https://github.com/hardikpandya/stop-slop)
-(~18k stars) are the skills people actually install.
+(\~18k stars) are the skills people actually install.
 [StoryScope](https://arxiv.org/abs/2604.03136) (arXiv:2604.03136) showed
 that fiction is separable on plot shape alone (93.2% macro-F1 without
 style features). [sepia](https://github.com/Nanako0129/sepia) and
@@ -56,65 +56,65 @@ A complete answer is one pick per layer.
 
 ## Metrics
 
-| Metric | Question |
-| ------ | -------- |
-| Register lock | Does the page still match the canon cadence, including the lead and the why bullets? |
-| Fact lock | Are claims limited to the source page and the product? |
-| MDX safety | Do fences, frontmatter, links, Callouts, and house terms survive byte-for-byte where they should? |
-| Tell removal | Are chatbot rhythms gone, without a new scrubbed dialect taking their place? |
-| Genre fit | Was this built for instructional reference, or for fiction, essays, or detector scores? |
-| Footguns | What does it destroy that these docs need? |
-| Maintenance | Can we keep the rule without tracking a moving upstream pattern list? |
+| Metric        | Question                                                                                          |
+| ------------- | ------------------------------------------------------------------------------------------------- |
+| Register lock | Does the page still match the canon cadence, including the lead and the why bullets?              |
+| Fact lock     | Are claims limited to the source page and the product?                                            |
+| MDX safety    | Do fences, frontmatter, links, Callouts, and house terms survive byte-for-byte where they should? |
+| Tell removal  | Are chatbot rhythms gone, without a new scrubbed dialect taking their place?                      |
+| Genre fit     | Was this built for instructional reference, or for fiction, essays, or detector scores?           |
+| Footguns      | What does it destroy that these docs need?                                                        |
+| Maintenance   | Can we keep the rule without tracking a moving upstream pattern list?                             |
 
 ## The hat
 
 ### Register
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| A1 | `the-voice` plus the canon pages | In repo. Positive routing into Turbo docs. |
-| A2 | Generic "sound human" | No product register. |
-| A3 | A personal writing sample, no canons | Matches a person, misses the site. |
-| A4 | Stop-Slop v3 generic basins | technical / instructional / business. The repo has ~2 stars. |
-| A5 | Hallmark | Visual anti-slop. Out of scope for prose. Scored so it does not get reused as a copy pass. |
-| A6 | `docs-writer` alone | Links, wrapping, Next steps. Gemini boilerplate if used as the register. |
+| #  | Option                               | Notes                                                                                      |
+| -- | ------------------------------------ | ------------------------------------------------------------------------------------------ |
+| A1 | `the-voice` plus the canon pages     | In repo. Positive routing into Turbo docs.                                                 |
+| A2 | Generic "sound human"                | No product register.                                                                       |
+| A3 | A personal writing sample, no canons | Matches a person, misses the site.                                                         |
+| A4 | Stop-Slop v3 generic basins          | technical / instructional / business. The repo has \~2 stars.                              |
+| A5 | Hallmark                             | Visual anti-slop. Out of scope for prose. Scored so it does not get reused as a copy pass. |
+| A6 | `docs-writer` alone                  | Links, wrapping, Next steps. Gemini boilerplate if used as the register.                   |
 
 ### De-AI mechanism
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| B1 | blader/humanizer | Technical and reference prose stays plain. A writing sample overrides its default rules. Second pass checks the draft against the patterns and the original claims. Leaves code, frontmatter, and link targets alone. |
-| B2 | hardikpandya/stop-slop | What `the-voice` step 5 names today. Bans phrases, "not X, it's Y", em dashes, Wh- starters, and all adverbs. |
-| B3 | Stop-Slop v3 routing | Positive constraints while drafting. Pattern catalog stays out of the generation prompt and is an editorial audit only. |
-| B4 | Sepia / StoryScope | Narrative-architecture repair. Built on fiction features: ambiguity, subplots, broken chronology. |
-| B5 | One-shot pattern scrub | Delete tells in a single pass. No claim check, no sample. |
-| B6 | texthumanize and other synonym engines | Offline rules: burstiness, connector swaps. The project says it normalizes style and does not produce a voice. |
-| B7 | Detector bypass | Perplexity and burstiness targeting, synonym maps, injected errors, "stealth" modes. Aimed at GPTZero / Turnitin. |
-| B8 | stylometric-transfer | JSON fingerprint from a corpus, then a constrained rewrite. |
-| B9 | No de-AI pass | Register only. |
-| B10 | Wikipedia catalog inside the draft prompt | The failure mode B3 is written to avoid. |
-| B11 | Aboudjem humanizer-skill | 55 patterns, five generic voices, a 0–100 score. |
-| B12 | academic-humanizer | Papers and grants. Scholarly voice. |
-| B13 | Short in-repo checklist | The tells these docs actually grow, maintained next to `the-voice`. No third-party skill. |
+| #   | Option                                    | Notes                                                                                                                                                                                                                 |
+| --- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| B1  | blader/humanizer                          | Technical and reference prose stays plain. A writing sample overrides its default rules. Second pass checks the draft against the patterns and the original claims. Leaves code, frontmatter, and link targets alone. |
+| B2  | hardikpandya/stop-slop                    | What `the-voice` step 5 names today. Bans phrases, "not X, it's Y", em dashes, Wh- starters, and all adverbs.                                                                                                         |
+| B3  | Stop-Slop v3 routing                      | Positive constraints while drafting. Pattern catalog stays out of the generation prompt and is an editorial audit only.                                                                                               |
+| B4  | Sepia / StoryScope                        | Narrative-architecture repair. Built on fiction features: ambiguity, subplots, broken chronology.                                                                                                                     |
+| B5  | One-shot pattern scrub                    | Delete tells in a single pass. No claim check, no sample.                                                                                                                                                             |
+| B6  | texthumanize and other synonym engines    | Offline rules: burstiness, connector swaps. The project says it normalizes style and does not produce a voice.                                                                                                        |
+| B7  | Detector bypass                           | Perplexity and burstiness targeting, synonym maps, injected errors, "stealth" modes. Aimed at GPTZero / Turnitin.                                                                                                     |
+| B8  | stylometric-transfer                      | JSON fingerprint from a corpus, then a constrained rewrite.                                                                                                                                                           |
+| B9  | No de-AI pass                             | Register only.                                                                                                                                                                                                        |
+| B10 | Wikipedia catalog inside the draft prompt | The failure mode B3 is written to avoid.                                                                                                                                                                              |
+| B11 | Aboudjem humanizer-skill                  | 55 patterns, five generic voices, a 0–100 score.                                                                                                                                                                      |
+| B12 | academic-humanizer                        | Papers and grants. Scholarly voice.                                                                                                                                                                                   |
+| B13 | Short in-repo checklist                   | The tells these docs actually grow, maintained next to `the-voice`. No third-party skill.                                                                                                                             |
 
 ### Order and scope
 
-| # | Option | Notes |
-| - | ------ | ----- |
+| #  | Option                                   | Notes                                                |
+| -- | ---------------------------------------- | ---------------------------------------------------- |
 | C1 | Register first, de-AI second, prose only | `the-voice` workflow order. Exemptions listed below. |
-| C2 | The de-AI skill does the whole rewrite | Register is skipped. |
-| C3 | Pattern list loaded while drafting | Generation and audit are the same prompt. |
-| C4 | Human audit only | No skill rewrite. |
-| C5 | Every surface | Changelogs, error strings, prompt fences, code. |
+| C2 | The de-AI skill does the whole rewrite   | Register is skipped.                                 |
+| C3 | Pattern list loaded while drafting       | Generation and audit are the same prompt.            |
+| C4 | Human audit only                         | No skill rewrite.                                    |
+| C5 | Every surface                            | Changelogs, error strings, prompt fences, code.      |
 
 ### Voice lock
 
-| # | Option | Notes |
-| - | ------ | ----- |
-| D1 | In-repo canon pages as the sample | Getting started, Introduction, Installation, Community, one framework guide. |
-| D2 | No sample | The tool's default voice. |
-| D3 | turborepo.dev as the only sample | Shape reference. Copies features ArkEnv does not have if used as the text source. |
-| D4 | Computed fingerprint of the published docs | B8's lock, applied to `apps/www/content/docs/`. |
+| #  | Option                                     | Notes                                                                             |
+| -- | ------------------------------------------ | --------------------------------------------------------------------------------- |
+| D1 | In-repo canon pages as the sample          | Getting started, Introduction, Installation, Community, one framework guide.      |
+| D2 | No sample                                  | The tool's default voice.                                                         |
+| D3 | turborepo.dev as the only sample           | Shape reference. Copies features ArkEnv does not have if used as the text source. |
+| D4 | Computed fingerprint of the published docs | B8's lock, applied to `apps/www/content/docs/`.                                   |
 
 ## Evaluation
 
