@@ -72,13 +72,12 @@
 	animation: home-aurora-rise-blur 1s var(--ease-out-strong) backwards;
 }
 
-/* Scroll reveals - ScrollReveal only adds .reveal-hidden below the fold.
- * pointer-events: none so a mid-hydration / mid-transition click cannot
- * focus the link without navigating (Chromium Playwright flake). */
+/* Scroll reveals. ScrollReveal adds .reveal-hidden below the fold.
+ * Fade targets hold links and only animate opacity. A transform on that
+ * box focuses the link and does not navigate. */
 .home-aurora [data-reveal].reveal-hidden {
 	opacity: 0;
 	transform: translateY(18px);
-	pointer-events: none;
 }
 
 .home-aurora [data-reveal="blur"].reveal-hidden {
@@ -94,6 +93,13 @@
 		opacity var(--dur-reveal) var(--ease-out-strong),
 		transform var(--dur-reveal) var(--ease-out-strong),
 		filter 700ms var(--ease-out-strong);
+	transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* Fade targets hold links. A transform on that box focuses the link and
+ * does not navigate, so fade only animates opacity. */
+.home-aurora [data-reveal="fade"].reveal-shown {
+	transition: opacity var(--dur-reveal) var(--ease-out-strong);
 	transition-delay: var(--reveal-delay, 0ms);
 }
 

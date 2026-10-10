@@ -111,7 +111,7 @@ export default function HomePage() {
 					</div>
 					<div
 						className="home-aurora__outro-cta"
-						data-reveal
+						data-reveal="fade"
 						style={{ ["--reveal-delay" as string]: "80ms" }}
 					>
 						<InstallPanel variant="outro" />
