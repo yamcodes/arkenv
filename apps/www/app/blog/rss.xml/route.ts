@@ -14,6 +14,9 @@ export function GET() {
 	});
 
 	for (const page of getBlogPages()) {
+		// `rss` writes the permalink into both `<link>` and
+		// `<guid isPermaLink="true">`. That pair is normal RSS 2.0:
+		// readers key identity on guid and follow link.
 		feed.item({
 			title: page.data.title,
 			description: page.data.description ?? "",

@@ -1,5 +1,5 @@
 import { createRelativeLink } from "fumadocs-ui/mdx";
-import { DocsBody, DocsDescription, DocsTitle } from "fumadocs-ui/page";
+import { DocsBody, DocsTitle } from "fumadocs-ui/page";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlogByline } from "~/components/blog/blog-byline";
@@ -26,14 +26,11 @@ export default async function BlogPostPage(props: {
 				) : null}
 			</DocsTitle>
 			<BlogByline
-				className="mt-4"
+				className="mt-4 mb-8 min-[960px]:mb-12"
 				author={page.data.author}
 				authorGithub={page.data.authorGithub}
 				date={page.data.date}
 			/>
-			<DocsDescription className="mt-3 mb-8 min-[960px]:mb-12">
-				{page.data.description}
-			</DocsDescription>
 			<DocsBody>
 				<MDX
 					components={getMDXComponents({
