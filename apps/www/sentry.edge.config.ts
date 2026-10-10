@@ -29,10 +29,6 @@ Sentry.init({
 
 	environment: ENV, // "development" | "preview" | "production"
 
-	// Adds request headers and IP for users, for more info visit:
-	// https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
-	sendDefaultPii: true,
-
 	// Tracing: higher in preview for catch-rate, lower in prod by default
 	tracesSampleRate: isProd
 		? Number.isFinite(tracesRateEnv)
