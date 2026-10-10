@@ -29,8 +29,8 @@
 		"vitest": "catalog:"
 	},
 	"peerDependencies": {
-		"@arkenv/core": "^1.0.0",
-		"@arkenv/standard": "^1.0.0",
+		"@arkenv/core": "^1.0.0-0",
+		"@arkenv/standard": "^1.0.0-0",
 		"@rsbuild/core": "^1.0.0 || ^2.0.0",
 		"arktype": "^2.1.22"
 	},
