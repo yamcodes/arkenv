@@ -72,12 +72,16 @@
 	animation: home-aurora-rise-blur 1s var(--ease-out-strong) backwards;
 }
 
-/* Scroll reveals - ScrollReveal only adds .reveal-hidden below the fold.
- * pointer-events: none so a mid-hydration / mid-transition click cannot
- * focus the link without navigating (Chromium Playwright flake). */
+/* Scroll reveals. ScrollReveal adds .reveal-hidden below the fold.
+ * Hits stay off until .reveal-settled. The fade delay leaves a stable,
+ * still-transparent box; a click there focuses the link and does not navigate. */
 .home-aurora [data-reveal].reveal-hidden {
 	opacity: 0;
 	transform: translateY(18px);
+	pointer-events: none;
+}
+
+.home-aurora [data-reveal].reveal-shown:not(.reveal-settled) {
 	pointer-events: none;
 }
 
@@ -169,10 +173,12 @@
 	}
 
 	.home-aurora [data-reveal].reveal-hidden,
-	.home-aurora [data-reveal="blur"].reveal-hidden {
+	.home-aurora [data-reveal="blur"].reveal-hidden,
+	.home-aurora [data-reveal].reveal-shown:not(.reveal-settled) {
 		opacity: 1;
 		transform: none;
 		filter: none;
+		pointer-events: auto;
 	}
 
 	.home-aurora__cycle-viewport,
