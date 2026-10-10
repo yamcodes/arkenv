@@ -3,26 +3,35 @@ title: Start with an example
 description: Start with an example ArkEnv project.
 ---
 
-Use the interactive CLI to bootstrap an example with your favorite tooling:
+ArkEnv is designed to work seamlessly with a starter you can run today.
+ArkEnv's CLI scaffolds an example in the current directory so you can
+see a typed `env` object before you add one to your own repo.
 
 ```package-install
 npx arkenv init --example <example-name>
 ```
 
-Run it in an **empty directory**, or pass `--force` to overwrite.
+Run that in an empty directory. The CLI writes the example in place.
+Pass `--force` only when you accept overwriting files that are already
+there.
 
-<Callout type="info">
-  For a repo that **already has application code**, skip `--example` and follow
-  [Installation](/docs/getting-started/installation).
+<Callout type="info" title="Repo already has application code?">
+  Skip `--example` and follow
+  [Installation](/docs/getting-started/installation) instead. Init will
+  adopt the existing project.
 </Callout>
 
 ## Examples
 
-The following examples can be bootstrapped with the CLI. Just use the `--example <example-name>` flag with the corresponding name.
+Each card is an `--example` name. Pass that name and the CLI scaffolds
+the project.
 
 <ExampleCards />
 
-For a more manual approach, you can clone an example and run it locally using `degit`:
+<Callout type="info" title="Want the files without the CLI?">
+  `degit` copies the example directory. You still install dependencies
+  and copy `.env.example` yourself.
+</Callout>
 
 ```package-install
 npx degit yamcodes/arkenv/examples/<example-name> <project-name>

@@ -100,6 +100,9 @@ runs.
 
 ## Numbers
 
+`PORT=3000` arrives as the string `"3000"`. Parsing it here is what
+makes `port + 1` equal `3001`.
+
 Any field typed as `number` or a numeric subtype (including ArkType
 [`number.port`](/docs/reference/keywords), Zod `z.int()`, or Valibot
 `v.number()`) is parsed from the string form:
@@ -235,6 +238,9 @@ the field as `string` and map it in application code.
 
 ## Arrays
 
+A list in an env file is still one string. Splitting on commas is how
+`TAGS=web, api` becomes `["web", "api"]`.
+
 By default ArkEnv splits on commas and trims each entry:
 
 <Tabs items={["ArkType", "Zod", "Valibot"]}>
@@ -366,8 +372,9 @@ Switch to JSON arrays with `arrayFormat: "json"`:
 
 ## Objects
 
-JSON strings map onto nested object schemas. Nested fields are coerced
-too:
+A nested config has to fit in one environment variable, so the usual
+shape is a JSON string. ArkEnv parses that string, then coerces nested
+fields the same way it coerces top-level ones.
 
 <Tabs items={["ArkType", "Zod", "Valibot"]}>
   <Tab value="ArkType">

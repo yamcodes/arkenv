@@ -3,9 +3,14 @@ title: Migrating from a getEnv helper
 description: Graduate from a 12-line presence check helper to typed coercion and boundary enforcement.
 ---
 
-ArkEnv is designed to replace handwritten environment variable helpers with zero boilerplate. ArkEnv provides declarative parsing, automatic coercion, and framework boundaries using the TypeScript validator you already know.
+ArkEnv is designed to replace a handwritten `getEnv` helper. ArkEnv
+parses and coerces environment variables from one schema, and framework
+plugins keep server secrets off the client.
 
-A lightweight presence check is often the first thing teams write to validate `process.env`. It installs zero dependencies and types keys as `string`. But as soon as an application introduces booleans, port numbers, or browser bundles, presence-only checks fail quietly.
+A presence check is often the first helper a team writes. It installs
+nothing and types every key as `string`. It holds while every variable
+is a required string. Booleans, ports, and a browser bundle are where
+it fails quietly.
 
 ## The DIY helper
 
@@ -32,7 +37,7 @@ This helper works when all variables are required strings. The breakdown happens
 
 ## Failure classes comparison
 
-The table below contrasts how a presence helper behaves compared to ArkEnv:
+The same four inputs, and what each approach does with them:
 
 | Failure class                   | Helper                                                                                  | ArkEnv                                                                                                                                                                           |
 | ------------------------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -41,7 +46,7 @@ The table below contrasts how a presence helper behaves compared to ArkEnv:
 | Empty strings (`DATABASE_URL=`) | Presence check passes; returns `""`                                                     | Fails the `string.url` rule at boot (invalid URL), **not** a generic presence / “missing” check. Note: `emptyAsUndefined` is **opt-in**; default does not treat `""` as missing. |
 | Client/server secrets           | No boundary; a server secret imported on the client can leak or silently go `undefined` | Framework plugins enforce the public prefix and block server-key access / server-schema import on the client                                                                     |
 
-## Forensic breakdown
+## Where the helper breaks
 
 ### 1. Boolean coercion
 
@@ -103,7 +108,8 @@ Bundlers importing this helper into the browser either bundle the plaintext secr
 
 ## Graduating to ArkEnv
 
-Replace the helper with a single declarative schema in `./env.ts`:
+Replace the helper with one schema in `./env.ts`. The keys stay. The
+types stop being strings, and a bad value fails at import.
 
 <Tabs items={["ArkType", "Zod", "Valibot"]}>
   <Tab value="ArkType">

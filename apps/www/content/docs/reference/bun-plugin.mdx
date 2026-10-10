@@ -3,11 +3,17 @@ title: "@arkenv/bun-plugin"
 description: Exports and transform options for the Bun plugin.
 ---
 
-API reference for `@arkenv/bun-plugin`. Setup recipes:
-[Bun guide](/docs/frameworks/bun). Backend-only Bun scripts use
-[`@arkenv/core`](/docs/reference/core) without this plugin.
+`@arkenv/bun-plugin` rewrites `env.ts` in a Bun client bundle so
+`BUN_PUBLIC_` keys inline and server keys throw. Backend-only scripts
+skip it and call [`@arkenv/core`](/docs/reference/core) directly. This
+page is the export and option list. Setup recipes live in the
+[Bun guide](/docs/frameworks/bun).
 
 ## Installation
+
+Install the plugin as a dev dependency next to the engine you write
+schemas with. The plugin does not bundle `@arkenv/core` or
+`@arkenv/standard`.
 
 ```package-install
 npm install -D @arkenv/bun-plugin

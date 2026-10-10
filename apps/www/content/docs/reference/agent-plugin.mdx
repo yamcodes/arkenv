@@ -3,13 +3,16 @@ title: "@arkenv/agent-plugin"
 description: Coding-agent plugin and MCP server for init and env audits.
 ---
 
-`@arkenv/agent-plugin` is the installable ArkEnv plugin for coding
-agents. It ships slash commands, a bundled skill, and an MCP server that
-scaffolds projects and audits source for unvalidated env access.
+Coding agents that support plugins can scaffold ArkEnv and audit
+unvalidated env access without grepping the tree.
+`@arkenv/agent-plugin` is that plugin: slash commands, a bundled skill,
+and an MCP server.
 
-Install the plugin. It already includes the skill, slash commands, and
-MCP. Use the [Agent skill](/docs/guides/ai#agent-skill) only when the
-host cannot load plugins. Do not install both.
+<Callout type="info" title="Host cannot load plugins?">
+  Use the [Agent skill](/docs/guides/ai#agent-skill) instead. The plugin
+  already includes the skill, slash commands, and MCP. Do not install
+  both.
+</Callout>
 
 ## Install
 

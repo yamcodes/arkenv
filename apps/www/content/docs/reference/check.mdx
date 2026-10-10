@@ -3,9 +3,13 @@ title: check
 description: Validate environment variables against the schema with CI-friendly exit codes.
 ---
 
-`arkenv check` validates the active environment against your project's
-schema. Use it as a standalone verification step in CI/CD pipelines,
-local verification scripts, or pre-commit hooks.
+`arkenv check` validates the active environment against your schema
+without starting the app. Run it in CI, a local script, or a pre-commit
+hook when the failure should happen before boot.
+
+The bare command uses the environment already on the process. Add
+`--env-file` to load a dotenv file first (later files win). Add
+`--schema` when the module is not `env.ts` or `src/env.ts`.
 
 ```package-install
 npx arkenv check
@@ -164,9 +168,10 @@ run, `4` findings.
 
 ## CI/CD integration
 
-Add `arkenv check` to your CI workflow to ensure required environment
-variables are present before building or deploying. You can also use
-`--verify-example` to enforce that documentation stays up to date in PRs:
+Add `arkenv check` to CI so a missing or invalid variable fails the job
+before the build or deploy. `--verify-example` checks that `.env.example`
+still lists every schema key, so a new key without an example entry
+fails the job:
 
 ```yaml title=".github/workflows/ci.yml"
 name: CI

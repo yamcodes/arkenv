@@ -3,10 +3,16 @@ title: "@arkenv/rsbuild-plugin"
 description: Exports and transform options for the Rsbuild plugin.
 ---
 
-API reference for `@arkenv/rsbuild-plugin`. Setup recipes:
-[TanStack Start guide](/docs/frameworks/tanstack-start#rsbuild).
+`@arkenv/rsbuild-plugin` validates `env.ts` during an Rsbuild compile and
+rewrites the client graph so `PUBLIC_` keys inline and server keys
+throw. This page is the export and option list. Setup recipes live in
+the [TanStack Start guide](/docs/frameworks/tanstack-start#rsbuild).
 
 ## Installation
+
+Install the plugin as a dev dependency next to the engine you write
+schemas with. The plugin does not bundle `@arkenv/core` or
+`@arkenv/standard`.
 
 ```package-install
 npm install -D @arkenv/rsbuild-plugin
@@ -21,6 +27,10 @@ npm install @arkenv/standard
 ```
 
 ## Exports
+
+The default export and the named `arkenvPlugin` export are the same
+factory. Zod and Valibot import `./standard`, which binds
+`@arkenv/standard`.
 
 | Export               | Role                          |
 | -------------------- | ----------------------------- |

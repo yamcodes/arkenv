@@ -3,19 +3,24 @@ title: "@arkenv/standard"
 description: ArkType-free environment validation via Standard Schema.
 ---
 
-`@arkenv/standard` is the ArkType-free validation engine. First-class support
-is Zod and Valibot. It consumes
-[Standard Schema](https://standardschema.dev/) validators; libraries that only
-implement the validate hook may still need a `toJsonSchema` helper or a
-dedicated subpath (for example `@arkenv/standard/valibot`). The root import has
-no runtime dependencies or peers.
+`@arkenv/standard` is the ArkType-free validation engine. First-class
+support is Zod and Valibot. It consumes
+[Standard Schema](https://standardschema.dev/) validators. Libraries
+that only implement the validate hook may still need a `toJsonSchema`
+helper or a dedicated subpath (for example `@arkenv/standard/valibot`).
+The root import has no runtime dependencies or peers.
 
-- **If you use ArkType**, use [`@arkenv/core`](/docs/reference/core). **You do not need `@arkenv/standard`**.
-- **If you use Zod or Valibot**, use `@arkenv/standard`. This keeps `arktype` out of the tree. **You do not need `@arkenv/core`**.
+<Callout type="info" title="Already on ArkType?">
+  Use [`@arkenv/core`](/docs/reference/core) instead. ArkType strings
+  belong on that engine, not wrapped through this one.
+</Callout>
 
 TypeScript must use `moduleResolution: "bundler" | "node16" | "nodenext"`.
 
 ## Installation
+
+Install the engine next to Zod or Valibot. It does not pull in
+`arktype`.
 
 ```package-install
 npm install @arkenv/standard

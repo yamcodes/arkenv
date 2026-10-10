@@ -3,28 +3,33 @@ title: Nuxt
 description: Learn how to use ArkEnv in a Nuxt project.
 ---
 
-`@arkenv/nuxt` validates environment variables on server and client
-routes, maps public keys onto Nuxt runtime config, and keeps server
-secrets off the browser.
+ArkEnv is designed to work seamlessly with Nuxt. ArkEnv validates
+environment variables on server and client routes, and keeps server
+secrets off the browser while public keys ride Nitro's runtime config.
 
-For high-level architectural trade-offs, see
+How this host compares with Next.js, Vite, and Bun is in
 [Frameworks](/docs/frameworks).
 
 ## Quickstart
 
-Scaffold Nuxt integration in an existing project using the CLI:
+`arkenv init` is the default on an existing Nuxt app. It registers
+`@arkenv/nuxt/module` in your Nuxt config and writes the first schema
+file.
 
 ```package-install
 npx arkenv init
 ```
 
-The CLI registers `@arkenv/nuxt/module` in your Nuxt config and creates your initial
-schema file.
-
 ## Manual installation
 
-If you prefer manual setup, install `@arkenv/nuxt` alongside your chosen
-validation engine.
+<Callout type="info" title="Already ran init?">
+  Skip this section. The CLI already registered the module and wrote
+  the schema.
+</Callout>
+
+Install `@arkenv/nuxt` next to the engine you write schemas with, when
+`nuxt.config.ts` is already yours and you want each package explicit in
+`package.json`.
 
 ### ArkType engine
 
@@ -49,8 +54,10 @@ npm install @arkenv/standard @arkenv/nuxt valibot @valibot/to-json-schema
 
 ## Module configuration
 
-Register the module in your `nuxt.config.ts`. The module automatically injects
-runtime configuration and validates variables during build and development.
+Nuxt loads modules from `nuxt.config.ts`. Registering `@arkenv/nuxt`
+there is what injects runtime config and validates variables during
+development and build. Without the module, importing `env` only checks
+the process that happens to load it.
 
 ```ts title="./nuxt.config.ts"
 export default defineNuxtConfig({
@@ -60,7 +67,10 @@ export default defineNuxtConfig({
 
 ## Schema
 
-Use a single `env.ts`. Public keys must use the `NUXT_PUBLIC_` prefix.
+One `env.ts` is the schema. Public keys use the `NUXT_PUBLIC_` prefix
+so Nitro can hydrate them on the client. Everything else stays on the
+server.
+
 Zod and Valibot both import `@arkenv/nuxt/standard` and register
 `@arkenv/nuxt/standard/module`.
 
@@ -129,7 +139,8 @@ the server module from client or Vue code**. See the
 
 ## Read `env` in application code
 
-Import `{ env } from "./env"`.
+Import `{ env } from "./env"` in server routes and Vue components. One
+module is the typed object everywhere.
 
 :::warning[Do not read `process.env` directly]
 Reading `process.env` skips ArkEnv. Import `{ env }` so public keys stay
@@ -149,9 +160,9 @@ export default defineNuxtConfig({
 
 ## Nitro boot gate and runtimeConfig hydration
 
-Containers in staging and production inject environment variables at startup rather than at build time.
-
-Vite and Bun inline literals at build time through compile-time transforms. `@arkenv/nuxt` hooks into Nuxt's Nitro engine instead:
+Staging and production containers inject environment variables when the
+process starts, not when the image is built. Vite and Bun inline
+literals at build time. `@arkenv/nuxt` hooks into Nitro instead:
 
 1. **Server boot gate:** At server startup, an internal Nitro plugin runs before route handlers execute. It validates the environment against your schema and throws fail-fast errors on invalid secrets.
 2. **Runtime configuration hydration:** An internal Nitro plugin passes validated public variables (`NUXT_PUBLIC_*`) into `useRuntimeConfig().public`.

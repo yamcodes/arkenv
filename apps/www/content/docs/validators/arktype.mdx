@@ -3,15 +3,17 @@ title: ArkType
 description: Validate environment variables with @arkenv/core and ArkType.
 ---
 
-`@arkenv/core` is the ArkType engine: DSL strings, keywords such as
-`number.port` and `string.host`, and built-in string coercion.
+ArkEnv is designed to work seamlessly with ArkType. ArkEnv's core
+engine takes DSL strings, adds env keywords such as `number.port` and
+`string.host`, and coerces strings before validation.
 
-For an overview of available engines, see
-[Validators](/docs/validators).
+`arktype` is a required peer of `@arkenv/core`. How this engine differs
+from Zod and Valibot is in [Validators](/docs/validators).
 
 ## Installation
 
-Install `@arkenv/core` and its peer dependency `arktype`:
+Install `@arkenv/core` and its peer `arktype`. The peer is required.
+`@arkenv/core` itself has no runtime dependencies.
 
 ```package-install
 npm install @arkenv/core arktype
@@ -19,8 +21,11 @@ npm install @arkenv/core arktype
 
 ## Define your schema
 
-Declare environment variables in an `env.ts` file using ArkType string definitions
-or compiled `type()` objects:
+Put the schema in `env.ts` and import `{ env }` where the process
+starts. A missing key or a value that fails the schema throws
+[`ArkEnvError`](/docs/reference/core) at that import, before the rest of
+the app runs. DSL strings cover the common keys. Reach for compiled
+`type()` when you need a morph or a function default.
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/core";
@@ -33,14 +38,12 @@ export const env = arkenv({
 });
 ```
 
-Import `{ env } from "./env"` at application startup. If any required variables
-are missing or fail validation, ArkEnv throws an
-[`ArkEnvError`](/docs/reference/core) with formatted issue details.
-
 ## Automatic coercion
 
-ArkEnv inspects the compiled ArkType schema's JSON Schema to automatically coerce
-incoming string values into numbers, booleans, and arrays before validation:
+Environment variables arrive as strings. ArkEnv reads the compiled
+ArkType schema's JSON Schema and coerces those strings into numbers,
+booleans, and arrays before validation, so `PORT` is a `number` in
+application code.
 
 ```ts title="./env.ts" twoslash
 import arkenv from "@arkenv/core";

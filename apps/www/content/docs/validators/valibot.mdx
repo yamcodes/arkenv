@@ -3,18 +3,23 @@ title: Valibot
 description: Validate environment variables with @arkenv/standard/valibot.
 ---
 
-`@arkenv/standard/valibot` wires Valibot into ArkEnv. Valibot implements
-Standard Schema. The subpath pre-configures
-[`@valibot/to-json-schema`](https://valibot.dev/guides/json-schema/) so
-ArkEnv can coerce strings into numbers, booleans, and arrays.
+ArkEnv is designed to work seamlessly with Valibot. ArkEnv's
+`@arkenv/standard/valibot` entry wires coercion so `v.number()` and
+`v.boolean()` accept the strings environment variables actually are.
 
-For an overview of engine options, see
-[Validators](/docs/validators).
+Valibot implements Standard Schema. It does not embed JSON Schema on
+the schema object, so the subpath pre-configures
+[`@valibot/to-json-schema`](https://valibot.dev/guides/json-schema/).
+That converter is what lets ArkEnv turn strings into numbers, booleans,
+and arrays.
+
+How the two engines differ is in [Validators](/docs/validators).
 
 ## Installation
 
-Install `@arkenv/standard`, `valibot`, and the JSON Schema converter (an
-optional peer of `@arkenv/standard`):
+Install `@arkenv/standard`, `valibot`, and the JSON Schema converter.
+The converter is an optional peer of `@arkenv/standard`. The `/valibot`
+entry imports it, so this path needs the package installed.
 
 ```package-install
 npm install @arkenv/standard valibot @valibot/to-json-schema
@@ -25,7 +30,10 @@ Subpath exports are not resolved under legacy `"node"` module resolution.
 
 ## Define your schema
 
-Declare environment variables in an `env.ts` file using Valibot schemas:
+Put Valibot schemas in `env.ts` and import `arkenv` from
+`@arkenv/standard/valibot`, not the root `@arkenv/standard` entry. The
+root import does not bind Valibot's JSON Schema converter, so numbers
+and booleans stay strings.
 
 ```ts title="./env.ts" twoslash
 import { arkenv } from "@arkenv/standard/valibot";

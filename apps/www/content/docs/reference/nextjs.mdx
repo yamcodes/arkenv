@@ -3,8 +3,10 @@ title: "@arkenv/nextjs"
 description: Next.js integration framework for ArkEnv.
 ---
 
-`@arkenv/nextjs` adds Next.js-aware `arkenv()` entries, build-time
-validation, and `.arkenv` codegen. Setup recipes:
+Next.js does not validate an env schema during `next dev` or
+`next build` on its own. `@arkenv/nextjs` adds that check, Next-aware
+`arkenv()` entries, and `.arkenv` codegen. This page is the subpath and
+option list. Setup recipes live in the
 [Next.js guide](/docs/frameworks/nextjs).
 
 Flat `arkenv(schema, { exposeToClient })` is the only call shape.
@@ -12,6 +14,9 @@ Nested bags and `expose` / `shared` aliases were removed — see
 [Migrating to v1](/docs/guides/migrating-to-v1#removed-in-v1).
 
 ## Installation
+
+Install the adapter next to the engine you write schemas with. The
+adapter does not bundle `@arkenv/core` or `@arkenv/standard`.
 
 ```package-install
 npm install @arkenv/core @arkenv/nextjs arktype
