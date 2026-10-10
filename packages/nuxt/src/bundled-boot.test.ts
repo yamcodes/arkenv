@@ -32,6 +32,15 @@ describe("bundled schema module ids", () => {
 		expect(fromCaptureModuleId(filePath)).toBeNull();
 	});
 
+	it("round-trips an extensionless capture id", () => {
+		const filePath = path.join("/app", "env");
+		const captureId = toCaptureModuleId(filePath);
+		expect(captureId).toBe(`${filePath}.arkenv-capture`);
+		expect(path.extname(captureId)).toBe(".arkenv-capture");
+		expect(fromCaptureModuleId(captureId)).toBe(filePath);
+		expect(fromCaptureModuleId(`${captureId}?v=1`)).toBe(filePath);
+	});
+
 	it("puts the capture prelude import ahead of the schema module", () => {
 		const source = createBundledSchemaVirtualModules({
 			engine: "arktype",

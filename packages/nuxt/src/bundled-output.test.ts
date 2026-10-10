@@ -1,4 +1,4 @@
-import { spawn } from "node:child_process";
+import { execFileSync, spawn } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -27,6 +27,10 @@ describe("Nitro output boots from the bundled schema", () => {
 		process.env.NUXT_PUBLIC_PORT = "4000";
 		process.env.NUXT_PUBLIC_LABEL = "build-label";
 		process.env.SHARED_TOKEN = "shared-build";
+
+		buildPackage();
+		const bundledSchema = path.join(__dirname, "../dist/bundled-schema.js");
+		expect(fs.existsSync(bundledSchema)).toBe(true);
 
 		writeFixture();
 
@@ -125,6 +129,18 @@ function listServerJs(serverDir: string): string[] {
 }
 
 /**
+ * Build the published package so the fixture resolves modules from `dist`.
+ */
+function buildPackage(): void {
+	const packageDir = path.join(__dirname, "..");
+	const tsdown = path.join(packageDir, "node_modules/.bin/tsdown");
+	execFileSync(tsdown, {
+		cwd: packageDir,
+		stdio: "inherit",
+	});
+}
+
+/**
  * Write a minimal Nuxt app whose schema is only available at build time.
  */
 function writeFixture(): void {
@@ -132,8 +148,8 @@ function writeFixture(): void {
 	fs.mkdirSync(path.join(FIXTURE, "server", "api"), { recursive: true });
 	fs.mkdirSync(path.join(FIXTURE, "app"), { recursive: true });
 
-	const moduleEntry = path.join(__dirname, "module.ts");
-	const nuxtEntry = path.join(__dirname, "index.ts");
+	const moduleEntry = path.join(__dirname, "../dist/module.js");
+	const nuxtEntry = path.join(__dirname, "../dist/index.js");
 
 	fs.writeFileSync(
 		path.join(FIXTURE, "package.json"),

@@ -223,6 +223,7 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
  *
  * @param basePath Resolver path without an extension
  * @returns Absolute path of the existing file
+ * @throws When none of the candidate files exist
  */
 function resolveEmittedModule(basePath: string): string {
 	const candidates = [
@@ -236,7 +237,9 @@ function resolveEmittedModule(basePath: string): string {
 			return candidate;
 		}
 	}
-	return `${basePath}.js`;
+	throw new Error(
+		`ArkEnv could not find an emitted module for ${basePath}. Expected one of: ${candidates.join(", ")}.`,
+	);
 }
 
 /**

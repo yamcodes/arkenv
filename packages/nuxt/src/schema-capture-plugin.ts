@@ -49,15 +49,17 @@ export function toCaptureModuleId(filePath: string): string {
  * @returns Absolute file path, or `null` when `id` is not a capture module
  */
 export function fromCaptureModuleId(id: string): string | null {
-	const queryIndex = id.indexOf("?");
-	const bare = queryIndex === -1 ? id : id.slice(0, queryIndex);
-	const ext = path.extname(bare);
-	const marker = ext ? `${CAPTURE_MARKER}${ext}` : CAPTURE_MARKER;
-	if (!bare.endsWith(marker)) {
-		return null;
+	const bare = stripQuery(id);
+	for (const ext of SOURCE_EXTENSIONS) {
+		const marker = `${CAPTURE_MARKER}${ext}`;
+		if (bare.endsWith(marker)) {
+			return `${bare.slice(0, -marker.length)}${ext}`;
+		}
 	}
-	const withoutMarker = bare.slice(0, -marker.length);
-	return ext ? `${withoutMarker}${ext}` : withoutMarker;
+	if (bare.endsWith(CAPTURE_MARKER)) {
+		return bare.slice(0, -CAPTURE_MARKER.length);
+	}
+	return null;
 }
 
 /**
