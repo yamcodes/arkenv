@@ -121,6 +121,11 @@
 			"automergeType": "pr",
 		},
 		{
+			"description": "5.5 requires fumadocs-core ^16.17.1, which is pinned together with fumadocs-ui. Bump both before allowing this.",
+			"matchPackageNames": ["fumadocs-typescript"],
+			"allowedVersions": "<=5.4.1",
+		},
+		{
 			"groupName": "arkenv packages",
 			"matchPackageNames": ["arkenv"],
 			"matchPackagePatterns": ["^@arkenv/"],
