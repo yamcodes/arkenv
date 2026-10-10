@@ -6,14 +6,14 @@ authorGithub: yamcodes
 draft: true
 ---
 
-ArkEnv is designed to work seamlessly with TanStack Start. ArkEnv gives
-those apps one typed `env` object, checks it before the dev server is
-ready, and keeps server secrets inside server functions.
+TanStack Start reads config in the browser and inside
+`createServerFn`. ArkEnv gives those apps one typed `env` object,
+checks it before the dev server is ready, and keeps server secrets
+inside the server functions.
 
-A Start app reads config in two places: the browser, and a
-`createServerFn` handler. Public keys such as `VITE_API_URL` belong in
-the client. `DATABASE_URL` does not. The same contract you already use
-on Vite, Next.js, and Nuxt now has Start wiring.
+Public keys such as `VITE_API_URL` belong in the client. `DATABASE_URL`
+does not. The same contract you already use on Vite, Next.js, and Nuxt
+now has Start wiring.
 
 ## Why this matters
 

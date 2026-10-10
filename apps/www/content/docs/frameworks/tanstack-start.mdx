@@ -3,9 +3,9 @@ title: TanStack Start
 description: Learn how to use ArkEnv in a TanStack Start project.
 ---
 
-ArkEnv is designed to work seamlessly with TanStack Start. ArkEnv
-validates environment variables at boot, inlines public keys into the
-client bundle, and keeps server secrets inside server functions.
+TanStack Start ships a client bundle next to `createServerFn` handlers.
+ArkEnv validates environment variables at boot, inlines public keys
+into that bundle, and keeps server secrets inside the server functions.
 
 When the Vite plugin is registered, it discovers and validates `env.ts`
 during Vite config resolution. Missing or invalid values abort the dev

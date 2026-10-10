@@ -3,10 +3,10 @@ title: Hosting presets
 description: Pre-populate schemas with Vercel, Netlify, Cloudflare, Railway, Render, or Fly.io environment variables.
 ---
 
-ArkEnv is designed to work seamlessly with the host you deploy on.
-ArkEnv presets write that provider's system variables into your schema,
-pre-typed and optional, so you are not looking them up from a provider
-doc while you scaffold.
+Vercel, Netlify, Cloudflare, and the other hosts inject system
+variables you would otherwise copy out of their docs. ArkEnv presets
+write those variables into your schema, pre-typed and optional, while
+you scaffold.
 
 Presets work with ArkType, Zod, and Valibot on a flat `env.ts` schema.
 

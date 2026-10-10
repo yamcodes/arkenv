@@ -3,9 +3,8 @@ title: Migrating from T3 Env
 description: Replace createEnv and runtimeEnv with a flat ArkEnv schema.
 ---
 
-ArkEnv is designed to work seamlessly with a Next.js app that already
-uses T3 Env. ArkEnv keeps the flat `env` object and drops the manual
-`runtimeEnv` map.
+A T3 Env Next.js setup keeps a `runtimeEnv` map in sync with the
+schema. ArkEnv keeps the flat `env` object and drops that map.
 
 T3 Env is a major inspiration for that security model. The cheatsheet
 of what else changes is [Why ArkEnv?](/docs/why-arkenv).

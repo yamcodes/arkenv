@@ -3,9 +3,9 @@ title: Using ArkEnv with NestJS
 description: Validate and type environment variables in NestJS with a fail-fast env module.
 ---
 
-ArkEnv is designed to work seamlessly with NestJS. ArkEnv validates
-environment variables when `env.ts` is first imported, before
-`NestFactory.create()` builds the container.
+Nest builds modules, providers, and database connections inside
+`NestFactory.create()`. ArkEnv validates environment variables when
+`env.ts` is first imported, before that call.
 
 ## 1. Setup
 
@@ -77,9 +77,8 @@ export class AppService {
 
 ## 2. Fail-fast entrypoint
 
-Nest constructs modules, providers, and database connections inside
-`NestFactory.create()`. Import `env` at the top of `src/main.ts`, before
-that call, so a bad variable stops the process first.
+Import `env` at the top of `src/main.ts`, before
+`NestFactory.create()`, so a bad variable stops the process first.
 
 ```ts title="src/main.ts"
 import { env } from "./env";

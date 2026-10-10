@@ -3,9 +3,9 @@ title: Vite
 description: Learn how to use ArkEnv in a Vite project.
 ---
 
-ArkEnv is designed to work seamlessly with Vite. ArkEnv validates
-environment variables before the dev server or production build is
-ready, and keeps server secrets out of the client bundle.
+Vite reports that it is ready before your schema has run, unless
+something validates during config resolution. ArkEnv does that check,
+and keeps server secrets out of the client bundle.
 
 ## When does validation run?
 

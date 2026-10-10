@@ -3,9 +3,9 @@ title: Migrating to v1
 description: Move a v0 project to the v1 packages and the canonical env object.
 ---
 
-ArkEnv v1 is designed to work seamlessly with apps you already run on
-v0. ArkEnv v1 moves the runtime off the `arkenv` npm name and uses one
-`import { env } from "./env"` on every host.
+On v0, the npm package `arkenv` was the library. ArkEnv v1 moves the
+runtime off that name and uses one `import { env } from "./env"` on
+every host.
 
 v0's `arkenv` package was the library. On v1 that name is the CLI, and
 importing it as a library throws. Vite and Bun no longer take a schema

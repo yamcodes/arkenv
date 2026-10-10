@@ -3,9 +3,9 @@ title: ArkType
 description: Validate environment variables with @arkenv/core and ArkType.
 ---
 
-ArkEnv is designed to work seamlessly with ArkType. ArkEnv's core
-engine takes DSL strings, adds env keywords such as `number.port` and
-`string.host`, and coerces strings before validation.
+ArkType strings can describe a port or a host without wrapping each
+key. ArkEnv's core engine takes those DSL strings, adds `number.port`
+and `string.host`, and coerces strings before validation.
 
 `arktype` is a required peer of `@arkenv/core`. How this engine differs
 from Zod and Valibot is in [Validators](/docs/validators).

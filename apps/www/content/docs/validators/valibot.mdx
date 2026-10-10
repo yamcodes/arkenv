@@ -3,9 +3,10 @@ title: Valibot
 description: Validate environment variables with @arkenv/standard/valibot.
 ---
 
-ArkEnv is designed to work seamlessly with Valibot. ArkEnv's
-`@arkenv/standard/valibot` entry wires coercion so `v.number()` and
-`v.boolean()` accept the strings environment variables actually are.
+Valibot's `v.number()` and `v.boolean()` expect real numbers and
+booleans. Environment variables arrive as strings, so ArkEnv's
+`@arkenv/standard/valibot` entry wires coercion before those schemas
+run.
 
 Valibot implements Standard Schema. It does not embed JSON Schema on
 the schema object, so the subpath pre-configures
