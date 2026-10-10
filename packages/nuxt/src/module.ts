@@ -31,10 +31,6 @@ import { getDefaultBootGateEngine } from "./module-engine";
  */
 export type ModuleOptions = ArkEnvConfigOptions;
 
-type NitroConfigHook = {
-	alias?: Record<string, string>;
-};
-
 declare module "@nuxt/schema" {
 	// biome-ignore lint/style/useConsistentTypeDefinitions: module augmentation requires an interface for declaration merging
 	interface NuxtConfig {
@@ -43,10 +39,6 @@ declare module "@nuxt/schema" {
 	// biome-ignore lint/style/useConsistentTypeDefinitions: module augmentation requires an interface for declaration merging
 	interface NuxtOptions {
 		arkenv?: ModuleOptions;
-	}
-	// biome-ignore lint/style/useConsistentTypeDefinitions: module augmentation requires an interface for declaration merging
-	interface NuxtHooks {
-		"nitro:config": (nitroConfig: NitroConfigHook) => void;
 	}
 }
 
@@ -103,8 +95,13 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 		});
 
 		nuxt.hook("nitro:config", (nitroConfig) => {
-			nitroConfig.alias = nitroConfig.alias || {};
-			nitroConfig.alias["#arkenv/server-boot"] = realServerBoot;
+			// Nuxt 4.6 types this hook as NitroConfig, which stays NitroConfigFallback
+			// (no `alias`) until a server builder registers. Nitro still accepts alias.
+			const config = nitroConfig as typeof nitroConfig & {
+				alias?: Record<string, string>;
+			};
+			config.alias = config.alias || {};
+			config.alias["#arkenv/server-boot"] = realServerBoot;
 		});
 
 		if (nuxt.options.dev) {
