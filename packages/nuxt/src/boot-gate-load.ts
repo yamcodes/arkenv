@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { SchemaShape } from "@repo/types";
 import { createJiti } from "jiti";
+import type { BootGateEngine } from "./boot-gate-apply";
 import {
 	beginCapture,
 	combineCapturedSchemas,
@@ -11,7 +12,7 @@ import {
 } from "./capture";
 import { withForceServer } from "./validate-context";
 
-export type BootGateEngine = "arktype" | "standard";
+export type { BootGateEngine };
 
 export type BootGateConfig = {
 	schemaPath: string;

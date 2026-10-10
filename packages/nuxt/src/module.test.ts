@@ -83,10 +83,12 @@ describe("Nuxt module integration", () => {
 				mockNuxt.options.runtimeConfig.public.NUXT_PUBLIC_API_URL,
 			).toBeDefined();
 			expect(mockNuxt.options.runtimeConfig.public.NODE_ENV).toBeDefined();
-			expect(mockNuxt.options.runtimeConfig.arkenvGate).toMatchObject({
+			expect(mockNuxt.options.runtimeConfig.arkenvGate).toEqual({
 				engine: "arktype",
 			});
-			expect(mockNuxt.options.runtimeConfig.arkenvGate.layout).toBeUndefined();
+			expect(
+				mockNuxt.options.runtimeConfig.arkenvGate.schemaPath,
+			).toBeUndefined();
 
 			expect(mockNuxt.hook).toHaveBeenCalledWith(
 				"vite:extendConfig",
@@ -225,6 +227,21 @@ describe("Nuxt module integration", () => {
 			expect(nitroConfig.alias["#arkenv/client-env"]).toBeUndefined();
 			expect(nitroConfig.alias["#arkenv/shared-schema"]).toBeUndefined();
 			expect(nitroConfig.alias["#arkenv/server-boot"]).toBeDefined();
+			expect(nitroConfig.virtual["#arkenv/schema"]).toContain(
+				"loadBundledSchema",
+			);
+			expect(
+				nitroConfig.virtual["#arkenv/schema"].indexOf(
+					"#arkenv/schema-capture-prelude",
+				),
+			).toBeLessThan(
+				nitroConfig.virtual["#arkenv/schema"].indexOf(".arkenv-capture"),
+			);
+			expect(JSON.stringify(nitroConfig.virtual)).not.toContain("createJiti");
+			expect(nitroConfig.plugins[0]).toContain("nitro-boot-plugin");
+			expect(
+				mockNuxt.options.runtimeConfig.arkenvGate.schemaPath,
+			).toBeUndefined();
 
 			const config: any = { plugins: [], resolve: { alias: {} } };
 			runHooks(mockNuxt, "vite:extendConfig", config, { isClient: false });

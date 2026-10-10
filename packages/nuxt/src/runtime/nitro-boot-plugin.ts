@@ -1,23 +1,35 @@
 import { defineNitroPlugin, useRuntimeConfig } from "nitropack/runtime";
+import { loadBundledSchema } from "#arkenv/schema";
 import {
-	type BootGateConfig,
+	applyCoercedToRuntimeConfig,
 	type BootGateRuntimeConfig,
-	configureBootGate,
-	ensureBootGate,
-} from "../boot-gate";
+	cloneRuntimeConfig,
+	projectPublicProcessEnv,
+	runBundledBootGate,
+} from "../boot-gate-apply";
+import { getBootGateResult } from "../boot-gate-state";
+
+const bundled = loadBundledSchema();
+const publicKeys = new Set(bundled.publicKeys);
+const liveConfig = cloneRuntimeConfig(
+	useRuntimeConfig() as BootGateRuntimeConfig,
+);
+projectPublicProcessEnv(liveConfig, publicKeys);
+runBundledBootGate(bundled, liveConfig);
+
+const coerced = getBootGateResult();
 
 /**
- * Nitro boot plugin: coerce schema keys into `runtimeConfig` after string overrides.
+ * Nitro boot plugin: copy the coerced payload onto each request's runtime config.
  *
- * Registered by `@arkenv/nuxt/module`. This is the single `createEnv` moment for
- * Nuxt — thin `arkenv()` accessors only read the coerced payload afterward.
+ * Validation runs when this module evaluates, which is before route modules load.
+ * The schema comes from `#arkenv/schema`, not from a build-machine path.
  */
-export default defineNitroPlugin(() => {
-	const runtimeConfig = useRuntimeConfig() as BootGateRuntimeConfig;
-	const gate = runtimeConfig.arkenvGate as BootGateConfig | undefined;
+export default defineNitroPlugin((nitroApp) => {
+	if (!coerced) return;
 
-	if (gate?.schemaPath) {
-		configureBootGate(gate);
-		ensureBootGate(runtimeConfig);
-	}
+	nitroApp.hooks.hook("request", (event) => {
+		const runtimeConfig = useRuntimeConfig(event) as BootGateRuntimeConfig;
+		applyCoercedToRuntimeConfig(runtimeConfig, coerced, publicKeys);
+	});
 });

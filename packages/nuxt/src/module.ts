@@ -5,6 +5,7 @@ import type { NuxtModule } from "@nuxt/schema";
 import { formatBuildError } from "@repo/log";
 import { name, peerDependencies, version } from "../package.json";
 import type { BootGateEngine } from "./boot-gate";
+import { createBundledSchemaVirtualModules } from "./bundled-schema";
 import {
 	type ArkEnvConfigOptions,
 	extractKeys,
@@ -13,6 +14,10 @@ import {
 	validateSchema,
 } from "./config";
 import { getDefaultBootGateEngine } from "./module-engine";
+import {
+	arkenvSchemaCapturePlugin,
+	toCaptureModuleId,
+} from "./schema-capture-plugin";
 
 /**
  * Configuration options for the ArkEnv Nuxt module.
@@ -94,14 +99,72 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 			}
 		});
 
+		const bootPlugin = resolver.resolve("./runtime/nitro-boot-plugin");
+		const captureRuntimePath = resolveEmittedModule(
+			resolver.resolve("./bundled-schema"),
+		);
+
 		nuxt.hook("nitro:config", (nitroConfig) => {
 			// Nuxt 4.6 types this hook as NitroConfig, which stays NitroConfigFallback
-			// (no `alias`) until a server builder registers. Nitro still accepts alias.
+			// (no `alias`) until a server builder registers. Nitro still accepts these fields.
 			const config = nitroConfig as typeof nitroConfig & {
 				alias?: Record<string, string>;
+				rollupConfig?: { plugins?: unknown[] };
+				externals?: { traceInclude?: string[] };
 			};
 			config.alias = config.alias || {};
 			config.alias["#arkenv/server-boot"] = realServerBoot;
+
+			const aliases: Record<string, string> = {};
+			for (const [key, value] of Object.entries(nuxt.options.alias || {})) {
+				if (typeof value === "string") aliases[key] = value;
+			}
+			for (const [key, value] of Object.entries(config.alias)) {
+				if (typeof value === "string") aliases[key] = value;
+			}
+
+			config.virtual = config.virtual || {};
+			Object.assign(
+				config.virtual,
+				createBundledSchemaVirtualModules({
+					engine,
+					captureRuntimePath,
+					captureModuleId: toCaptureModuleId(schemaPath),
+				}),
+			);
+
+			config.rollupConfig = config.rollupConfig || {};
+			const rollupPlugins = Array.isArray(config.rollupConfig.plugins)
+				? config.rollupConfig.plugins
+				: [];
+			const hasCapturePlugin = rollupPlugins.some(
+				(plugin) =>
+					typeof plugin === "object" &&
+					plugin !== null &&
+					"name" in plugin &&
+					(plugin as { name?: string }).name === "arkenv-schema-capture",
+			);
+			if (!hasCapturePlugin) {
+				rollupPlugins.push(
+					arkenvSchemaCapturePlugin({
+						aliases,
+						rootDir: nuxt.options.rootDir,
+					}),
+				);
+			}
+			config.rollupConfig.plugins = rollupPlugins;
+
+			const enginePackage =
+				engine === "standard" ? "@arkenv/standard" : "@arkenv/core";
+			config.externals = config.externals || {};
+			const traceInclude = config.externals.traceInclude ?? [];
+			if (!traceInclude.includes(enginePackage)) {
+				config.externals.traceInclude = [...traceInclude, enginePackage];
+			}
+
+			config.plugins = config.plugins || [];
+			config.plugins = config.plugins.filter((plugin) => !isBootPlugin(plugin));
+			config.plugins.unshift(bootPlugin);
 		});
 
 		if (nuxt.options.dev) {
@@ -148,12 +211,45 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
 		}
 
 		(nuxt.options.runtimeConfig as { arkenvGate?: unknown }).arkenvGate = {
-			schemaPath,
 			engine,
 		};
 
-		addServerPlugin(resolver.resolve("./runtime/nitro-boot-plugin"));
+		addServerPlugin(bootPlugin);
 	},
 });
+
+/**
+ * Resolve a module path to the source or compiled file Nitro should bundle.
+ *
+ * @param basePath Resolver path without an extension
+ * @returns Absolute path of the existing file
+ * @throws When none of the candidate files exist
+ */
+function resolveEmittedModule(basePath: string): string {
+	const candidates = [
+		basePath,
+		`${basePath}.ts`,
+		`${basePath}.mjs`,
+		`${basePath}.js`,
+	];
+	for (const candidate of candidates) {
+		if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) {
+			return candidate;
+		}
+	}
+	throw new Error(
+		`ArkEnv could not find an emitted module for ${basePath}. Expected one of: ${candidates.join(", ")}.`,
+	);
+}
+
+/**
+ * Report whether a Nitro plugin path is the ArkEnv boot plugin.
+ *
+ * @param plugin Plugin path registered on the Nitro config
+ * @returns `true` when the path points at the boot plugin
+ */
+function isBootPlugin(plugin: string): boolean {
+	return plugin.replace(/\\/g, "/").includes("/runtime/nitro-boot-plugin");
+}
 
 export default module;
