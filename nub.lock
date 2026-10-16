@@ -716,8 +716,8 @@ importers:
   apps/www:
     dependencies:
       '@ark/util':
-        specifier: 0.56.6
-        version: 0.56.6
+        specifier: 0.56.7
+        version: 0.56.7
       '@arkenv/bun-plugin':
         specifier: workspace:*
         version: link:../../packages/bun-plugin
@@ -1617,8 +1617,8 @@ packages:
   '@ark/util@0.56.4':
     resolution: {integrity: sha512-KKqwGSia44cvuuDY70jGfbiUdG2E8F2cM4npdqvJ22S5a0LknlwG6nIrfQG1nF8fzxpzP30098wp0a8ASs0prQ==}
 
-  '@ark/util@0.56.6':
-    resolution: {integrity: sha512-mHqq0f0HyDd9YadpFl25w0QECAP7d8HGIUpEC85duD+L+xr4i/CwfOid/Z7zJFFF/47oLt6+pZB9RbqWpBYTYg==}
+  '@ark/util@0.56.7':
+    resolution: {integrity: sha512-z8pVnrPk/x9GC18yOp5wCe8rR2+Z6us4CTSg7dvxdsDLuA2xXYq+QETD1fO6f3fMuXe+PCjpvtCnhTW9RHLgEw==}
 
   '@asamuzakjp/css-color@5.1.11':
     resolution: {integrity: sha512-KVw6qIiCTUQhByfTd78h2yD1/00waTmm9uy/R7Ck/ctUyAPj+AEDLkQIdJW0T8+qGgj3j5bpNKK7Q3G+LedJWg==}
@@ -13727,7 +13727,7 @@ snapshots:
 
   '@ark/util@0.56.4': {}
 
-  '@ark/util@0.56.6': {}
+  '@ark/util@0.56.7': {}
 
   '@asamuzakjp/css-color@5.1.11':
     dependencies:

@@ -18,7 +18,7 @@
 		"twoslash": "nub bin/twoslash-mdx.ts"
 	},
 	"dependencies": {
-		"@ark/util": "0.56.6",
+		"@ark/util": "0.56.7",
 		"@arkenv/bun-plugin": "workspace:*",
 		"@arkenv/core": "workspace:*",
 		"@arkenv/fumadocs-ui": "workspace:*",
