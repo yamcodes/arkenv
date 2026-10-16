@@ -16,7 +16,7 @@
 		"@arkenv/core": "workspace:*",
 		"@arkenv/vite-plugin": "workspace:*",
 		"@tanstack/react-router": "1.170.32",
-		"@tanstack/react-start": "1.168.49",
+		"@tanstack/react-start": "1.168.60",
 		"arktype": "catalog:",
 		"react": "catalog:",
 		"react-dom": "catalog:"
