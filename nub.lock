@@ -93,7 +93,7 @@ overrides:
   '@types/node': 24.12.2
   fumadocs-core: 16.15.14
   fumadocs-ui: 16.15.14
-  import-in-the-middle: 2.0.6
+  import-in-the-middle: 3.5.2
   require-in-the-middle: 8.0.1
   zod: 4.4.1
 
@@ -803,8 +803,8 @@ importers:
         specifier: 1.7.2
         version: 1.7.2(@types/node@24.12.2)(next@16.3.6(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react@19.2.5)(react-dom@19.2.5(react@19.2.5)))
       import-in-the-middle:
-        specifier: 2.0.6
-        version: 2.0.6
+        specifier: 3.5.2
+        version: 3.5.2
       lucide-react:
         specifier: 1.14.0
         version: 1.14.0(react@19.2.5)
@@ -8805,6 +8805,9 @@ packages:
   es-module-lexer@2.3.2:
     resolution: {integrity: sha512-poHGpORABojJJucnV9KbOavETW8lBVnphkW77ER5/BQ5Fz7oXSoCNek7IH3vR5nRjdsEz926ibFYX8KtLQmdyw==}
 
+  es-module-lexer@3.0.2:
+    resolution: {integrity: sha512-BuIB67FngDSyQ/dpQNOZybwdEBDUGJQvOqwWr4ha/ufYiqzuEwPkKO2zLhRAgay28tStRIHUeWmszZAJo3GCOg==}
+
   es-object-atoms@1.1.2:
     resolution: {integrity: sha512-HWcBoN6NileqtSydK2FqHbS/LoDd2pqrnQHLyJzBj4kOp/ky2MWMN694xOfkK8/SnUsW2DH7EfyVlydKCsm1Zw==}
     engines: {node: '>= 0.4'}
@@ -9670,8 +9673,9 @@ packages:
   image-meta@0.2.2:
     resolution: {integrity: sha512-3MOLanc3sb3LNGWQl1RlQlNWURE5g32aUphrDyFeCsxBTk08iE3VNe4CwsUZ0Qs1X+EfX0+r29Sxdpza4B+yRA==}
 
-  import-in-the-middle@2.0.6:
-    resolution: {integrity: sha512-3vZV3jX0XRFW3EJDTwzWoZa+RH1b8eTTx6YOCjglrLyPuepwoBti1k3L2dKwdCUrnVEfc5CuRuGstaC/uQJJaw==}
+  import-in-the-middle@3.5.2:
+    resolution: {integrity: sha512-WseIA/4o56+GYO3RmlOPvejYi771OFeJEeK/ejROsr9bdjW+E5NXTOD1Di8TL40Qgg3JJX9aa97Hf8iiSVIKZw==}
+    engines: {node: '>=18'}
 
   import-meta-resolve@4.2.0:
     resolution: {integrity: sha512-Iqv2fzaTQN28s/FwZAoFq0ZSs/7hMAHJVX+w8PZl3cY19Pxk6jFFalxQoIfW2826i/fDLXv8IiEZRIT0lDuWcg==}
@@ -18242,7 +18246,6 @@ snapshots:
       vite: 8.0.16(@types/node@24.12.2)(esbuild@0.28.0)
     transitivePeerDependencies:
       - '@farmfe/core'
-      - '@rsbuild/core'
       - '@rspack/core'
       - '@standard-schema/spec'
       - '@tanstack/virtual-file-routes'
@@ -18302,6 +18305,7 @@ snapshots:
 
   '@tanstack/react-start@1.168.60(@rsbuild/core@2.2.3)(react@19.2.5)(react-dom@19.2.5(react@19.2.5))(rolldown@1.2.10)(rollup@4.63.5)(vite@8.0.16(@types/node@24.12.2)(esbuild@0.28.0))':
     dependencies:
+      '@rsbuild/core': 2.2.3
       '@tanstack/react-router': 1.170.41(react@19.2.5)(react-dom@19.2.5(react@19.2.5))
       '@tanstack/react-start-client': 1.168.39(react@19.2.5)(react-dom@19.2.5(react@19.2.5))
       '@tanstack/react-start-rsc': 0.1.59(@rsbuild/core@2.2.3)(react@19.2.5)(react-dom@19.2.5(react@19.2.5))(rolldown@1.2.10)(rollup@4.63.5)(vite@8.0.16(@types/node@24.12.2)(esbuild@0.28.0))
@@ -18316,7 +18320,6 @@ snapshots:
       vite: 8.0.16(@types/node@24.12.2)(esbuild@0.28.0)
     transitivePeerDependencies:
       - '@farmfe/core'
-      - '@rsbuild/core'
       - '@rspack/core'
       - '@standard-schema/spec'
       - '@tanstack/virtual-file-routes'
@@ -18401,6 +18404,7 @@ snapshots:
       '@babel/core': 7.29.7
       '@babel/template': 7.29.7
       '@babel/types': 7.29.8
+      '@rsbuild/core': 2.2.3
       '@tanstack/react-router': 1.170.41(react@19.2.5)(react-dom@19.2.5(react@19.2.5))
       '@tanstack/router-core': 1.171.34
       '@tanstack/router-generator': 1.167.40(vite@8.0.16(@types/node@24.12.2)(esbuild@0.28.0))
@@ -18501,6 +18505,7 @@ snapshots:
       '@babel/core': 7.29.7
       '@babel/types': 7.29.8
       '@jridgewell/remapping': 2.3.5
+      '@rsbuild/core': 2.2.3
       '@tanstack/router-core': 1.171.34
       '@tanstack/router-generator': 1.167.40(vite@8.0.16(@types/node@24.12.2)(esbuild@0.28.0))
       '@tanstack/router-plugin': 1.168.42(@rsbuild/core@2.2.3)(@tanstack/react-router@1.170.41(react@19.2.5)(react-dom@19.2.5(react@19.2.5)))(rolldown@1.2.10)(rollup@4.63.5)(vite@8.0.16(@types/node@24.12.2)(esbuild@0.28.0))
@@ -18521,7 +18526,6 @@ snapshots:
       zod: 4.4.1
     transitivePeerDependencies:
       - '@farmfe/core'
-      - '@rsbuild/core'
       - '@rspack/core'
       - '@standard-schema/spec'
       - '@tanstack/virtual-file-routes'
@@ -20990,6 +20994,8 @@ snapshots:
 
   es-module-lexer@2.3.2: {}
 
+  es-module-lexer@3.0.2: {}
+
   es-object-atoms@1.1.2:
     dependencies:
       es-errors: 1.3.0
@@ -22088,11 +22094,10 @@ snapshots:
 
   image-meta@0.2.2: {}
 
-  import-in-the-middle@2.0.6:
+  import-in-the-middle@3.5.2:
     dependencies:
-      acorn: 8.18.0
-      acorn-import-attributes: 1.9.5(acorn@8.18.0)
       cjs-module-lexer: 2.2.1
+      es-module-lexer: 3.0.2
       module-details-from-path: 1.0.4
 
   import-meta-resolve@4.2.0: {}
