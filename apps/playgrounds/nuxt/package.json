@@ -12,7 +12,7 @@
 		"@arkenv/core": "workspace:*",
 		"@arkenv/nuxt": "workspace:*",
 		"arktype": "catalog:",
-		"nuxt": "4.6.1"
+		"nuxt": "4.6.2"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:",

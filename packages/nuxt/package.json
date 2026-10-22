@@ -25,7 +25,7 @@
 		"arktype": "catalog:",
 		"esbuild": "catalog:",
 		"nitropack": "2.13.4",
-		"nuxt": "4.6.1",
+		"nuxt": "4.6.2",
 		"rimraf": "catalog:",
 		"size-limit": "catalog:",
 		"tsdown": "catalog:",
