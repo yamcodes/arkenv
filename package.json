@@ -115,7 +115,7 @@
 		"@types/node": "24.12.2",
 		"import-in-the-middle": "3.5.2",
 		"require-in-the-middle": "8.0.1",
-		"zod": "4.4.1",
+		"zod": "4.6.6",
 		"fumadocs-core": "16.15.14",
 		"fumadocs-ui": "16.15.14"
 	},
