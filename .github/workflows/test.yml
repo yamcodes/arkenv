@@ -42,7 +42,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.4.3
+          bun-version: 1.4.4
       - name: Install dependencies
         run: nub install
       - name: Build packages
@@ -87,7 +87,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.4.3
+          bun-version: 1.4.4
       - run: nub install
       # --node: outer nub run skips TS preload. Nested turbo children are still
       # `nub run` under packageManager=nub; nuxt-playground keeps a stub
@@ -197,7 +197,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.4.3
+          bun-version: 1.4.4
       - name: Install dependencies
         run: nub install
       - uses: actions/cache@v6
@@ -247,7 +247,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.4.3
+          bun-version: 1.4.4
       - name: Install dependencies
         run: nub install
       - uses: actions/cache@v6
