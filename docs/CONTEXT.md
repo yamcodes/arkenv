@@ -559,7 +559,7 @@ A non-interactive muted label that only **groups** sibling **Leaves** under a **
 
 **Runtime Support:**
 
-- Tested on Node.js LTS and Current (22 and 25)
+- Tested on Node.js 26 (the Active LTS pin; the CI latest channel is also 26 while Node 27 is alpha)
 - Tested on Bun 1.2+
 - Browser support via Vite plugin
 
