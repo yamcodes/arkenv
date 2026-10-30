@@ -20,7 +20,8 @@ permissions:
 jobs:
   test:
     # Channel labels stay `lts` / `latest` so required-check names stay
-    # fixed. `lts` reads `.node-version`; `latest` overrides to 26.
+    # fixed. `lts` reads `.node-version` (26 LTS). `latest` still overrides
+    # to 26 while Node 27 is alpha.
     name: test (${{ matrix.channel }})
     runs-on: ubuntu-latest
     strategy:
