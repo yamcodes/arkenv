@@ -86,7 +86,7 @@
 			"@size-limit/esbuild-why": "12.1.0",
 			"@size-limit/preset-small-lib": "12.1.0",
 			"@types/bun": "1.3.13",
-			"@types/node": "24.12.2",
+			"@types/node": "26.6.5",
 			"@types/react": "19.2.14",
 			"@types/react-dom": "19.2.3",
 			"@vitejs/plugin-react": "6.0.1",
@@ -112,7 +112,6 @@
 	},
 	"overrides": {
 		"@playwright/test": "1.59.1",
-		"@types/node": "26.6.5",
 		"import-in-the-middle": "3.5.2",
 		"require-in-the-middle": "8.0.1",
 		"zod": "4.6.6",
