@@ -26,7 +26,7 @@
 		"@arkenv/standard": "workspace:*",
 		"@arkenv/vite-plugin": "workspace:*",
 		"@nubjs/nub": "catalog:",
-		"@tanstack/create": "0.70.1",
+		"@tanstack/create": "0.71.0",
 		"@types/ejs": "3.1.5",
 		"@types/node": "catalog:",
 		"arktype": "catalog:",
