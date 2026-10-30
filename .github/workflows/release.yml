@@ -56,7 +56,7 @@ jobs:
           team: ${{ vars.TURBO_TEAM }}
 
       - name: Set up Nub
-        # Pin is `.node-version` (24.21.0; changesets needs >=24.18.0).
+        # Pin is `.node-version` (26.13.0; changesets needs >=24.18.0).
         # see: https://github.com/changesets/changesets/issues/2123#issuecomment-4814124084
         uses: ./.github/actions/setup-nub-ci
 
