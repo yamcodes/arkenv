@@ -112,7 +112,7 @@
 	},
 	"overrides": {
 		"@playwright/test": "1.59.1",
-		"@types/node": "24.12.2",
+		"@types/node": "26.6.5",
 		"import-in-the-middle": "3.5.2",
 		"require-in-the-middle": "8.0.1",
 		"zod": "4.6.6",
