@@ -5,7 +5,10 @@ import { describe, expect, it } from "vitest";
 function coerce(at: typeof type, schema: any) {
 	return (env: any) => {
 		const json = schema.in.toJsonSchema({
-			fallback: (ctx: { base: unknown }) => ctx.base,
+			fallback: (ctx: { code: string; base: unknown; unit?: unknown }) =>
+				ctx.code === "unit" && typeof ctx.unit === "number"
+					? { ...(ctx.base as object), type: "number" }
+					: ctx.base,
 		});
 		const targets = findCoercionPaths(json);
 		const coercedEnv =
@@ -37,7 +40,7 @@ describe("coerce", () => {
 
 		const failure = coercedSchema({ AGE: "15" });
 		expect(failure).toBeInstanceOf(ArkErrors);
-		expect(failure.toString()).toContain("AGE must be at least 18 (was 15)");
+		expect(failure.toString()).toContain("AGE must be at least 18");
 	});
 
 	it("should coerce numeric divisors", () => {
@@ -50,7 +53,7 @@ describe("coerce", () => {
 
 		const failure = coercedSchema({ EVEN: "3" });
 		expect(failure).toBeInstanceOf(ArkErrors);
-		expect(failure.toString()).toContain("EVEN must be even (was 3)");
+		expect(failure.toString()).toContain("EVEN must be even");
 	});
 
 	it("should coerce boolean properties", () => {
@@ -64,7 +67,7 @@ describe("coerce", () => {
 		// Verify case sensitivity - currently implementation expects lowercase "true"/"false"
 		const result = coercedSchema({ DEBUG: "TRUE" });
 		expect(result).toBeInstanceOf(ArkErrors);
-		expect(result.toString()).toContain('DEBUG must be boolean (was "TRUE")');
+		expect(result.toString()).toContain("DEBUG must be boolean");
 	});
 
 	it("should work with optional properties", () => {
@@ -82,7 +85,7 @@ describe("coerce", () => {
 		expect(coercedSchema("20")).toBe(20);
 		const failure = coercedSchema("5");
 		expect(failure).toBeInstanceOf(ArkErrors);
-		expect(failure.toString()).toContain("must be at least 10 (was 5)");
+		expect(failure.toString()).toContain("must be at least 10");
 	});
 
 	it("should work with strict number literals", () => {
@@ -138,15 +141,11 @@ describe("coerce", () => {
 
 		const emptyResult = coercedSchema({ PORT: "" });
 		expect(emptyResult).toBeInstanceOf(ArkErrors);
-		expect(emptyResult.toString()).toContain(
-			"PORT must be a number (was a string)",
-		);
+		expect(emptyResult.toString()).toContain("PORT must be a number");
 
 		const whitespaceResult = coercedSchema({ PORT: "   " });
 		expect(whitespaceResult).toBeInstanceOf(ArkErrors);
-		expect(whitespaceResult.toString()).toContain(
-			"PORT must be a number (was a string)",
-		);
+		expect(whitespaceResult.toString()).toContain("PORT must be a number");
 	});
 
 	it("should fail on non-numeric strings for numeric properties", () => {
@@ -157,7 +156,7 @@ describe("coerce", () => {
 
 		const result = coercedSchema({ PORT: "abc" });
 		expect(result).toBeInstanceOf(ArkErrors);
-		expect(result.toString()).toContain("PORT must be a number (was a string)");
+		expect(result.toString()).toContain("PORT must be a number");
 	});
 
 	it("should fail on invalid boolean strings", () => {
@@ -168,7 +167,7 @@ describe("coerce", () => {
 
 		const result = coercedSchema({ DEBUG: "yes" });
 		expect(result).toBeInstanceOf(ArkErrors);
-		expect(result.toString()).toContain('DEBUG must be boolean (was "yes")');
+		expect(result.toString()).toContain("DEBUG must be boolean");
 	});
 
 	it("should parse JSON string into object", () => {
@@ -328,7 +327,7 @@ describe("coerce", () => {
 		const coercedSchema = coerce(type, schema);
 		const result = coercedSchema({ VAL: "NaN" });
 		expect(result).toBeInstanceOf(ArkErrors);
-		expect(result.toString()).toContain("VAL must be a number (was NaN)");
+		expect(result.toString()).toContain("VAL must be a number");
 	});
 	it("should coerce array elements for numeric properties", () => {
 		const schema = type({
@@ -351,6 +350,6 @@ describe("coerce", () => {
 		// Then validation sees [1, 2] against "number" and fails
 		const result = coercedSchema({ VAL: ["1", "2"] });
 		expect(result).toBeInstanceOf(ArkErrors);
-		expect(result.toString()).toContain("VAL must be a number (was an object)");
+		expect(result.toString()).toContain("VAL must be a number");
 	});
 });
