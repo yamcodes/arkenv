@@ -32,7 +32,14 @@ const ARKTYPE_CODE_MAP = {
 	before: "INVALID_FORMAT",
 	after: "INVALID_FORMAT",
 	predicate: "CUSTOM",
-} satisfies Record<ArkError["code"], EnvIssueCode>;
+	// ArkType 3's codes. The index signature admits each major's codes the
+	// other lacks, like ArkType 2's `intersection`
+	discriminant: "INVALID_TYPE",
+	undeclared: "CUSTOM",
+	notEqual: "INVALID_FORMAT",
+	notEqualLength: "INVALID_FORMAT",
+} satisfies Record<ArkError["code"], EnvIssueCode> &
+	Record<string, EnvIssueCode>;
 
 /**
  * Map an ArkType error code to an ArkEnv issue code.
@@ -101,6 +108,42 @@ function redactMessageWasValue(
 export type { distill };
 
 /**
+ * Write each part of a schema JSON Schema can't express as its base, except a
+ * number literal JSON can't hold, like `number.Infinity`, which is a number so
+ * it's still coerced. ArkType 2 wrote one as `const: Infinity`, and ArkType 3
+ * passes it to the `unit` fallback with an empty base.
+ *
+ * @param ctx The fallback context ArkType passes
+ * @returns The JSON Schema to write in its place
+ */
+const jsonSchemaFallback = (ctx: {
+	code: string;
+	base: unknown;
+	unit?: unknown;
+}) =>
+	ctx.code === "unit" && typeof ctx.unit === "number"
+		? { ...(ctx.base as object), type: "number" }
+		: ctx.base;
+
+/**
+ * The first error at each path, keyed by path.
+ *
+ * ArkType 2's `ArkErrors` has a `byPath` property. ArkType 3's `ArkErrors` is
+ * not an array and has no `byPath`, so collect the first error at each path
+ * from its `issues`, as ArkType 3's `byPath()` does.
+ *
+ * @param errors The ArkType errors object
+ * @returns Each path's first error
+ */
+function errorsByPath(errors: ArkErrors): Record<string, ArkError> {
+	if ("byPath" in errors) return errors.byPath as Record<string, ArkError>;
+	const byPath: Record<string, ArkError> = {};
+	for (const error of (errors as { issues: readonly ArkError[] }).issues)
+		byPath[error.propString] ??= error;
+	return byPath;
+}
+
+/**
  * Convert ArkType's `ArkErrors` (keyed by path) into a flat `EnvIssue[]`
  * suitable for `ArkEnvError`.
  *
@@ -114,7 +157,7 @@ function arkErrorsToIssues(
 	errors: ArkErrors,
 	config?: ArkEnvConfig,
 ): EnvIssue[] {
-	return Object.entries(errors.byPath).map(([path, error]) => {
+	return Object.entries(errorsByPath(errors)).map(([path, error]) => {
 		let message = error.message;
 
 		// Strip leading path reference if ArkType included it in the message
@@ -128,6 +171,12 @@ function arkErrorsToIssues(
 				rest = rest.slice(1);
 			}
 			message = rest.trimStart();
+		}
+
+		// ArkType 3 leaves the value out of messages. Write it as ArkType 2 did
+		// so it's shown, or redacted, the same on both
+		if (error.actual && !/\(was .*\)/.test(message)) {
+			message = `${message} (was ${error.actual})`;
 		}
 
 		// Redact and style (was ...) inline values
@@ -200,7 +249,7 @@ export function parse<const T extends SchemaShape>(
 		shouldCoerce
 			? () => {
 					const json = schemaWithKeys.in.toJsonSchema({
-						fallback: (ctx: { base: unknown }) => ctx.base,
+						fallback: jsonSchemaFallback,
 					});
 					return { schema: json, hasSchema: true };
 				}
