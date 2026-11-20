@@ -14,7 +14,7 @@
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
-		"@nubjs/nub": "^0.9.3"
+		"@nubjs/nub": "^0.11.0"
 	},
 	"dependencies": {
 		"@arkenv/standard": "1.0.0-rc.4",
